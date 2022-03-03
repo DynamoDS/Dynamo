@@ -369,6 +369,10 @@ namespace Dynamo.Logging
         /// View event, when user wants to see some information
         /// </summary>
         View,
+        /// <summary>
+        /// Search event, when the user searches by any criteria
+        /// </summary>
+        Search,
     }
 
     /// <summary>

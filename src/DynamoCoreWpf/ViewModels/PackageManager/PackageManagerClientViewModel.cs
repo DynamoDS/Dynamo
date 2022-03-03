@@ -187,6 +187,8 @@ namespace Dynamo.ViewModels
 
         #region Properties/Fields
 
+        public string SearchCriteria { get; set; }
+
         public PackageManagerSearchView Owner { get; set; }
 
         ObservableCollection<PackageUploadHandle> _uploads = new ObservableCollection<PackageUploadHandle>();
@@ -935,6 +937,10 @@ namespace Dynamo.ViewModels
                     }
                     SetPackageState(packageDownloadHandle, installPath);
                     Analytics.TrackEvent(Actions.Installed, Categories.PackageManagerOperations, $"{packageDownloadHandle?.Name}");
+                    if (SearchCriteria.Length > 0)
+                    {
+                        Analytics.TrackEvent(Actions.Search, Categories.PackageManagerOperations, $"{SearchCriteria}");
+                    }
                 }
                 catch (Exception e)
                 {

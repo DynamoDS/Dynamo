@@ -525,7 +525,7 @@ namespace Dynamo.PackageManager
                 .DynamoViewModel
                 .OnViewExtensionOpenWithParameterRequest("C71CA1B9-BF9F-425A-A12C-53DF56770406", packageManagerSearchElement);
 
-            Analytics.TrackEvent(Actions.View, Categories.PackageManagerOperations, $"{packageManagerSearchElement.Name}");
+            Analytics.TrackEvent(Actions.View, Categories.PackageManagerOperations, $"{packageManagerSearchElement?.Name}");
         }
 
         /// <summary>
@@ -797,6 +797,7 @@ namespace Dynamo.PackageManager
             if (LastSync == null) return;
 
             this.SearchText = query;
+            PackageManagerClientViewModel.SearchCriteria = query;
 
             var results = Search(query);
 
