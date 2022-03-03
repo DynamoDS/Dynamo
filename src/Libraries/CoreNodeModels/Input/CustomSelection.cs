@@ -30,6 +30,11 @@ namespace CoreNodeModels.Input
         private CustomSelectionItemViewModel selectedItem;
 
         /// <summary>
+        /// This command is bound to the Add button in the GUI
+        /// </summary>
+        public ICommand AddCommand { get; private set; }
+
+        /// <summary>
         /// All menu items
         /// </summary>
         public ObservableCollection<CustomSelectionItemViewModel> Items
@@ -50,10 +55,10 @@ namespace CoreNodeModels.Input
         }
 
         /// <summary>
-        /// The menu items with valid names and values
+        /// The menu items with valid names and values. This property is bound to the combo box in the GUI
         /// </summary>
         [JsonIgnore]
-        public ObservableCollection<CustomSelectionItemViewModel> ValidEnumItems
+        public ObservableCollection<CustomSelectionItemViewModel> ValidItems
             => new ObservableCollection<CustomSelectionItemViewModel>(Items.Where(item => item.IsValid));
 
 
@@ -65,19 +70,13 @@ namespace CoreNodeModels.Input
             get => selectedItem;
             set
             {
-                selectedItem = value == null ? null : ValidEnumItems.FirstOrDefault(item => item.Name == value.Name);
+                selectedItem = value == null ? null : Items.FirstOrDefault(item => item.Name == value.Name);
                 RaisePropertyChanged(nameof(SelectedItem));
-
                 OnNodeModified();
             }
         }
 
 
-        /// <summary>
-        /// Command for adding a new menu item
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public ICommand AddCommand { get; private set; }
 
 
 
@@ -97,7 +96,7 @@ namespace CoreNodeModels.Input
                 new CustomSelectionItemViewModel(new CustomSelectionItem {Name = "Three", Value = "3"}),
             };
 
-            SelectedItem = ValidEnumItems.FirstOrDefault();
+            SelectedItem = Items.FirstOrDefault();
 
             AddCommand = new AddMenuItemCommand(AddMenuItem);
         }
@@ -113,7 +112,7 @@ namespace CoreNodeModels.Input
 
         private void OnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            RaisePropertyChanged(nameof(ValidEnumItems));
+            RaisePropertyChanged(nameof(ValidItems));
             OnNodeModified();
         }
 
@@ -169,7 +168,7 @@ namespace CoreNodeModels.Input
 
         private void OnItemChanged()
         {
-            RaisePropertyChanged(nameof(ValidEnumItems));
+            RaisePropertyChanged(nameof(ValidItems));
 
             foreach (var item in Items)
                 item.Validate();
@@ -184,7 +183,7 @@ namespace CoreNodeModels.Input
             item.ItemChanged -= OnItemChanged;
             item.RemoveRequested -= OnRemoveRequested;
             Items.Remove(item);
-            RaisePropertyChanged(nameof(ValidEnumItems));
+            RaisePropertyChanged(nameof(ValidItems));
             RaisePropertyChanged(nameof(SelectedItem));
         }
 
@@ -315,6 +314,7 @@ namespace CoreNodeModels.Input
                 InitItem(newItem);
 
                 Items.Add(newItem);
+                RaisePropertyChanged(nameof(Items));
             }
         }
 

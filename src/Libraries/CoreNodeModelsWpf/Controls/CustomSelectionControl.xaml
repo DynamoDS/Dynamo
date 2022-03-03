@@ -123,7 +123,7 @@
                     <TextBlock Grid.Column="1" Margin="0,6,0,3" Text="{x:Static localProperties:CoreNodeModelWpfResources.LblValue}" Style="{ DynamicResource LabelStyle}"/>
                 </Grid>
 
-                <ListBox Grid.Row="1" x:Name="EnumItemsListbox" Background="Transparent" ItemsSource="{Binding EnumItems}" BorderThickness="0" PreviewKeyDown="EnumItemsListbox_PreviewKeyDown"
+                <ListBox Grid.Row="1" x:Name="EnumItemsListbox" Background="Transparent" ItemsSource="{Binding Items}" BorderThickness="0" PreviewKeyDown="EnumItemsListbox_PreviewKeyDown"
                          ItemContainerStyle="{StaticResource EnumItemsListItemStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListBox.Style>
                         <Style TargetType="ListBox">
@@ -164,7 +164,7 @@
                 <Button Grid.Row="2" Margin="0,0,17,0" Content="{x:Static localProperties:CoreNodeModelWpfResources.LblAdd}" Width="60" HorizontalAlignment="Right" Command="{Binding AddCommand}" Style="{DynamicResource STextButton}" />
             </Grid>
         </Expander>
-        <ComboBox Grid.Row="0" Grid.Column="1" Height="25" VerticalAlignment="Top" SelectedValue="{Binding SelectedItem, Mode=TwoWay}" ItemsSource="{Binding ValidEnumItems}" DisplayMemberPath="Name" Style="{DynamicResource RefreshComboBox}"/>
+        <ComboBox Grid.Row="0" Grid.Column="1" Height="25" VerticalAlignment="Top" SelectedValue="{Binding SelectedItem, Mode=TwoWay}" ItemsSource="{Binding ValidItems}" DisplayMemberPath="Name" Style="{DynamicResource RefreshComboBox}"/>
     </Grid>
 </UserControl>
 

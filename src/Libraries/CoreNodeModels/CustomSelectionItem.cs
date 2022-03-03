@@ -29,6 +29,7 @@ namespace CoreNodeModels
     {
         private readonly CustomSelectionItem customSelectionItem;
 
+
         internal Func<CustomSelectionItem, bool> IsUnique { get; set; }
         internal Action ItemChanged { get; set; }
         internal Action<CustomSelectionItemViewModel> RemoveRequested { get; set; }
@@ -39,9 +40,8 @@ namespace CoreNodeModels
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Command for removing the menu item
+        /// This command is bound to the remove button on each item in the GUI
         /// </summary>
-        [JsonIgnore]
         public ICommand RemoveCommand { get; private set; }
 
         /// <summary>
@@ -86,10 +86,7 @@ namespace CoreNodeModels
                 if (string.IsNullOrWhiteSpace(Name))
                     return false;
 
-                if (IsUnique != null && !IsUnique(customSelectionItem))
-                    return false;
-
-                return true;
+                return IsUnique == null || IsUnique(customSelectionItem);
             }
         }
 
