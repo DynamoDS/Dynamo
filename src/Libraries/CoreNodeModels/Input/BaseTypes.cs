@@ -142,7 +142,7 @@ namespace CoreNodeModels.Input
                     Id = this.GUID,
                     Name = this.Name,
                     Type = NodeInputTypes.numberInput,
-                    Type2 = InputTypes.numberInput,
+                    Type2 = NodeInputTypes.numberInput,
                     Description = this.Description,
                     Value = Value,
 

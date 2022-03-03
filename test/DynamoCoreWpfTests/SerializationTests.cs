@@ -1064,7 +1064,7 @@ namespace DynamoCoreWpfTests
             var dropnode = new EnumAsStringConcrete();
             var data = dropnode.InputData;
             Assert.AreEqual(NodeInputTypes.selectionInput, data.Type);
-            Assert.AreEqual(InputTypes.dropdownSelection, data.Type2);
+            Assert.AreEqual(NodeInputTypes.dropdownSelection, data.Type2);
         }
         [Test]
         public void SelectionNodesHaveCorrectInputDataTypes()
@@ -1072,7 +1072,7 @@ namespace DynamoCoreWpfTests
             var selectNode = new SelectionConcrete(SelectionType.One, SelectionObjectType.None, "", "");
             var data = selectNode.InputData;
             Assert.AreEqual(NodeInputTypes.selectionInput, data.Type);
-            Assert.AreEqual(InputTypes.hostSelection, data.Type2);
+            Assert.AreEqual(NodeInputTypes.hostSelection, data.Type2);
         }
 
         public object[] FindWorkspaces()
