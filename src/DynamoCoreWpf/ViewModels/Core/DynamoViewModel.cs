@@ -1196,7 +1196,7 @@ namespace Dynamo.ViewModels
         {
             var groups = Model.CurrentWorkspace.Annotations;
             //Create Group should be disabled when a group is selected
-            if (groups.Any(x => x.IsSelected))
+            if (groups.Any(x => x.IsSelected && x.HasNestedGroups))
             {
                 return false;
             }
