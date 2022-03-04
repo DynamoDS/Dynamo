@@ -48,6 +48,7 @@ namespace CoreNodeModels.Input
                     //use the <T> type to convert to the correct nodeTypeString defined by
                     //the schema
                     Type = NodeInputData.getNodeInputTypeFromType(typeof(T)),
+                    Type2 = NodeInputData.getNodeInputTypeFromType(typeof(T)),
                     Description = this.Description,
                     Value = Value.ToString(),
                 };
