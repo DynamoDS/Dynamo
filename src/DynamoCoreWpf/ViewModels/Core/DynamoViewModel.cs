@@ -1546,10 +1546,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void model_ComputeModelDeserialized()
         {
-            if (filePath == String.Empty) return;
-            string fileContents = File.ReadAllText(filePath);
+            if (String.IsNullOrEmpty(filePath)) return;
+            
             try
             {
+                string fileContents = File.ReadAllText(filePath);
                 // This call will fail in the case of an XML file
                 ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
 
