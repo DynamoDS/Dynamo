@@ -179,18 +179,26 @@ namespace Dynamo.Wpf.Views
                 newItem.GroupName = "Input";
 
             //if the validation returns false it means that the new style that will be added doesn't exists
-            if (viewModel.ValidateExistingStyle(newItem) == false)
+            if (string.IsNullOrEmpty(groupNameLabel.Text))
+            {
+                viewModel.CurrentWarningMessage = Res.PreferencesViewEmptyStyleWarning;
+                viewModel.IsWarningEnabled = true;
+                viewModel.IsSaveButtonEnabled = false;
+            }
+            else if (viewModel.ValidateExistingStyle(newItem) == true)
+            {
+                viewModel.CurrentWarningMessage = Res.PreferencesViewAlreadyExistingStyleWarning;
+                viewModel.IsWarningEnabled = true;
+                viewModel.IsSaveButtonEnabled = false;
+            }
+            else
             {
                 viewModel.AddStyle(newItem);
                 viewModel.ResetAddStyleControl();
                 AddStyleBorder.Visibility = Visibility.Collapsed;
                 AddStyleButton.IsEnabled = true;
-            }
-            else
-            {
-                viewModel.IsWarningEnabled = true;
-            }
-            
+                viewModel.IsSaveButtonEnabled = true;
+            }          
         }
 
         private void AddStyle_CancelButton_Click(object sender, RoutedEventArgs e)
@@ -289,6 +297,20 @@ namespace Dynamo.Wpf.Views
             if (e.OriginalSource == e.Source)
             {
                 managePackageCommandEvent?.Dispose();
+            }
+        }
+
+        private void groupNameBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var groupNameTextBox = sender as TextBox;
+            if (groupNameBox == null) return;
+            if (string.IsNullOrEmpty(groupNameBox.Text))
+            {
+                viewModel.IsSaveButtonEnabled = false;
+            }
+            else
+            {
+                viewModel.IsSaveButtonEnabled = true;
             }
         }
     }

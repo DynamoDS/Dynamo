@@ -3646,7 +3646,7 @@
                         <Canvas Grid.Column="1"
                                 Visibility="{Binding Path=IsWarningEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Canvas.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.PreferencesViewStyleWarning}" Style="{StaticResource GenericToolTipLight}"/>
+                                <ToolTip Content="{Binding CurrentWarningMessage}" Style="{StaticResource GenericToolTipLight}"/>
                             </Canvas.ToolTip>
                             <Polygon Points="10,5 18,20 2,20">
                                 <Polygon.Fill>

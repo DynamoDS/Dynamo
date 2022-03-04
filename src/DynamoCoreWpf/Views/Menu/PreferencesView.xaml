@@ -567,6 +567,7 @@
                                                           CaretBrush="{StaticResource PreferencesWindowButtonColor}"
                                                           VerticalAlignment="Center"
                                                           HorizontalAlignment ="Left"
+                                                          PreviewKeyDown="groupNameBox_PreviewKeyDown"
                                                           Style="{StaticResource TextBoxWaterMarkStyle}"
                                                           Grid.Row="0"
                                                           Margin="10"
@@ -601,19 +602,20 @@
                                                             <ColumnDefinition Width="*"></ColumnDefinition>
                                                         </Grid.ColumnDefinitions>
                                                         <Button x:Name="AddStyle_SaveButton" 
-                                                            Style="{StaticResource OutlinedButtonStyle}"
-                                                            Grid.Column="0"
-                                                            HorizontalAlignment="Right"
-                                                            Click="AddStyle_SaveButton_Click"
-                                                            Width="50"
-                                                            Height="30">Save</Button>
+                                                                Style="{StaticResource OutlinedButtonStyle}"
+                                                                Grid.Column="0"
+                                                                HorizontalAlignment="Right"
+                                                                IsEnabled="{Binding IsSaveButtonEnabled}"
+                                                                Click="AddStyle_SaveButton_Click"
+                                                                Width="50"
+                                                                Height="30">Save</Button>
                                                         <Button x:Name="AddStyle_CancelButton" 
-                                                            Style="{StaticResource OutlinedButtonStyle}"
-                                                            Grid.Column="1"
-                                                            HorizontalAlignment="Right"
-                                                            Click="AddStyle_CancelButton_Click"
-                                                            Width="50"
-                                                            Height="30">Cancel</Button>
+                                                                Style="{StaticResource OutlinedButtonStyle}"
+                                                                Grid.Column="1"
+                                                                HorizontalAlignment="Right"
+                                                                Click="AddStyle_CancelButton_Click"
+                                                                Width="50"
+                                                                Height="30">Cancel</Button>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>

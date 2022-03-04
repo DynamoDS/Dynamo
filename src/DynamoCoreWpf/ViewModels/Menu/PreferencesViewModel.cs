@@ -64,6 +64,8 @@ namespace Dynamo.ViewModels
         private HomeWorkspaceModel homeSpace;
         private DynamoViewModel dynamoViewModel;
         private bool isWarningEnabled;
+        private string currentWarningMessage;
+        private bool isSaveButtonEnabled = true;
         private GeometryScalingOptions optionsGeometryScale = null;
 
         private InstalledPackagesViewModel installedPackagesViewModel;
@@ -441,6 +443,35 @@ namespace Dynamo.ViewModels
             {
                 isWarningEnabled = value;
                 RaisePropertyChanged(nameof(IsWarningEnabled));
+            }
+        }
+
+        /// <summary>
+        /// This property will hold the warning message that has to be shown in the warning icon next to the TextBox
+        /// </summary>
+        public string CurrentWarningMessage
+        {
+            get
+            {
+                return currentWarningMessage;
+            }
+            set
+            {
+                currentWarningMessage = value;
+                RaisePropertyChanged(nameof(CurrentWarningMessage));
+            }
+        }
+
+        public bool IsSaveButtonEnabled
+        {
+            get
+            {
+                return isSaveButtonEnabled;
+            }
+            set
+            {
+                isSaveButtonEnabled = value;
+                RaisePropertyChanged(nameof(IsSaveButtonEnabled));
             }
         }
 
