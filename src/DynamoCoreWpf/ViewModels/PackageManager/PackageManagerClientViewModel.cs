@@ -187,8 +187,6 @@ namespace Dynamo.ViewModels
 
         #region Properties/Fields
 
-        public string SearchCriteria { get; set; }
-
         public PackageManagerSearchView Owner { get; set; }
 
         ObservableCollection<PackageUploadHandle> _uploads = new ObservableCollection<PackageUploadHandle>();
