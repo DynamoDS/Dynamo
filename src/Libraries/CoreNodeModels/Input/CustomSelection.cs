@@ -226,13 +226,13 @@ namespace CoreNodeModels.Input
             base.SerializeCore(element, context);
 
             var xmlDocument = element.OwnerDocument;
-            var enumItemsNode = xmlDocument.CreateElement("CustomSelectionItem");
+            var enumItemsNode = xmlDocument.CreateElement("Items");
 
             foreach (CustomSelectionItemViewModel item in Items)
             {
                 if (item.IsValid)
                 {
-                    var itemNode = xmlDocument.CreateElement("CustomSelectionItem");
+                    var itemNode = xmlDocument.CreateElement("Item");
                     itemNode.SetAttribute("Name", item.Name);
                     itemNode.SetAttribute("Value", item.Value?.ToString());
 
@@ -244,7 +244,7 @@ namespace CoreNodeModels.Input
 
             if (SelectedItem != null)
             {
-                var selectedItemNode = xmlDocument.CreateElement("CustomSelectionSelectedItem");
+                var selectedItemNode = xmlDocument.CreateElement("SelectedItem");
                 selectedItemNode.SetAttribute("Name", SelectedItem.Name);
 
                 element.AppendChild(selectedItemNode);
@@ -257,12 +257,12 @@ namespace CoreNodeModels.Input
 
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
-                if (subNode.Name.Equals("CustomSelectionItem"))
+                if (subNode.Name.Equals("Items"))
                 {
                     DeserializeEnumItems(subNode);
                 }
 
-                if (subNode.Name.Equals("CustomSelectionSelectedItem"))
+                if (subNode.Name.Equals("SelectedItem"))
                 {
                     foreach (XmlAttribute attribute in subNode.Attributes)
                     {
@@ -289,11 +289,11 @@ namespace CoreNodeModels.Input
             return SelectionState.Restore;
         }
 
-        private void DeserializeEnumItems(XmlNode enumItemsNode)
+        private void DeserializeEnumItems(XmlNode itemsNode)
         {
             Items.Clear();
 
-            foreach (XmlNode childNode in enumItemsNode.ChildNodes)
+            foreach (XmlNode childNode in itemsNode.ChildNodes)
             {
                 var name = string.Empty;
                 var value = string.Empty;
