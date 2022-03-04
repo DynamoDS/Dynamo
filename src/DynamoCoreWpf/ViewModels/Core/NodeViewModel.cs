@@ -385,14 +385,23 @@ namespace Dynamo.ViewModels
             }
         }
 
-
         /// <summary>
         /// Determines the color of the node's visual overlay, which displays
         /// if the node is in a Frozen, Info, Error or Warning state.
         /// </summary>
         [JsonIgnore]
-        public SolidColorBrush NodeOverlayColor => IsFrozen ?
-                    (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeFrozenOverlayColor"] : null;
+        public SolidColorBrush NodeOverlayColor
+        {
+            get => nodeOverlayColor;
+            internal set
+            {
+                if (nodeOverlayColor != value)
+                {
+                    nodeOverlayColor = value;
+                    RaisePropertyChanged(nameof(NodeOverlayColor));
+                }
+            }
+        }
 
         [JsonIgnore]
         public Visibility PeriodicUpdateVisibility
@@ -531,8 +540,18 @@ namespace Dynamo.ViewModels
 
         private bool isNodeNewlyAdded;
         private ImageSource imageSource;
+        private string imgGlyphOneSource;
+        private string imgGlyphTwoSource;
+        private string imgGlyphThreeSource;
         private SolidColorBrush warningBarColor;
-        
+        private SolidColorBrush nodeOverlayColor;
+
+        private static readonly string warningGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/alert-64px.png";
+        private static readonly string errorGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/error-64px.png";
+        private static readonly string infoGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/info-64px.png";
+        private static readonly string previewGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/hidden-64px.png";
+        private static readonly string frozenGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png";
+
         [JsonIgnore]
         public bool IsNodeAddedRecently
         {
@@ -637,6 +656,39 @@ namespace Dynamo.ViewModels
             {
                 imageSource = value;
                 RaisePropertyChanged(nameof(ImageSource));
+            }
+        }
+
+        [JsonIgnore]
+        public string ImgGlyphOneSource
+        {
+            get => imgGlyphOneSource;
+            set
+            {
+                imgGlyphOneSource = value;
+                RaisePropertyChanged(nameof(ImgGlyphOneSource));
+            }
+        }
+
+        [JsonIgnore]
+        public string ImgGlyphTwoSource
+        {
+            get => imgGlyphTwoSource;
+            set
+            {
+                imgGlyphTwoSource = value;
+                RaisePropertyChanged(nameof(ImgGlyphTwoSource));
+            }
+        }
+
+        [JsonIgnore]
+        public string ImgGlyphThreeSource
+        {
+            get => imgGlyphThreeSource;
+            set
+            {
+                imgGlyphThreeSource = value;
+                RaisePropertyChanged(nameof(ImgGlyphThreeSource));
             }
         }
 
@@ -1019,7 +1071,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "State":
                     RaisePropertyChanged("State");
-                    WarningBarColor = GetWarningColor();
+                    HandleColorOverlayChange();
                     RaisePropertyChanged(nameof(NodeWarningBarVisible));
                     break;
                 case "ArgumentLacing":
@@ -1031,7 +1083,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
-                    WarningBarColor = GetWarningColor();
+                    HandleColorOverlayChange();
                     RaisePropertyChanged(nameof(NodeWarningBarVisible));
                     break;
                 case "Width":
@@ -1064,8 +1116,8 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsFrozen":
                     RaiseFrozenPropertyChanged();
+                    HandleColorOverlayChange();
                     RaisePropertyChanged(nameof(NodeOverlayVisible));
-                    RaisePropertyChanged(nameof(NodeOverlayColor));
                     break;
             }
         }
@@ -1080,10 +1132,21 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case nameof(ErrorBubble.DoesNodeDisplayMessages):
-                    WarningBarColor = GetWarningColor();
+                    HandleColorOverlayChange();
                     RaisePropertyChanged(nameof(NodeWarningBarVisible));
                     break;
             }
+        }
+
+        /// <summary>
+        /// A single method that handles all color-related overrides
+        /// The following events trigger color update:
+        /// Error, Warning, Frozen, PreviewOff, Info TODO(still don't know what that is)
+        /// </summary>
+        private void HandleColorOverlayChange()
+        {
+            WarningBarColor = GetWarningColor();
+            NodeOverlayColor = GetBorderColor();
         }
 
         /// <summary>
@@ -1161,6 +1224,90 @@ namespace Dynamo.ViewModels
 
             return noPreviewColor;
         }
+        /// <summary>
+        /// Determines the color of the overlay border based on the
+        /// state of the node. Priorities apply in order of appearance in if/else statement.
+        /// Applicable if zoom is smaller than 60% (State 2)
+        /// TODO: Can be done with switch case statement if we refactor node view states
+        /// </summary>
+        /// <returns></returns>
+        internal SolidColorBrush GetBorderColor()
+        {
+            // TODO: What defines 'info' state?
+            bool infoState = false;
+            SolidColorBrush result = null;
+
+            /*
+                Priorities seem to be:
+                Error > Warning > Info > Preview > Frozen > None
+                Pass through all possible states in reverse order 
+                to assign icon values for each possible scenario
+            */
+
+            ResetColorGlyphs();
+
+            if (this.IsFrozen)
+            {
+                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeFrozenOverlayColor"];
+                ImgGlyphOneSource = frozenGlyph;
+            }
+            if (!this.IsVisible)
+            {
+                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
+                if (ImgGlyphOneSource == null)
+                {
+                    ImgGlyphOneSource = previewGlyph;
+                }
+                else
+                {
+                    ImgGlyphTwoSource = previewGlyph;
+                }
+            }
+            if (infoState)
+            {
+                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInfoColor"];
+                if (ImgGlyphTwoSource != null)
+                {
+                    ImgGlyphTwoSource = infoGlyph;
+                }
+                else
+                {
+                    ImgGlyphThreeSource = infoGlyph;
+                }
+            }
+            if (NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning)
+            {
+                result = warningColor;
+                if (ImgGlyphTwoSource == null)
+                {
+                    ImgGlyphTwoSource = warningGlyph;
+                }
+                else
+                {
+                    ImgGlyphThreeSource = warningGlyph;
+                }
+            }
+            if (NodeModel.State == ElementState.Error)
+            {
+                result = errorColor;
+                if (ImgGlyphTwoSource == null)
+                {
+                    ImgGlyphTwoSource = errorGlyph;
+                }
+                else
+                {
+                    ImgGlyphThreeSource = errorGlyph;
+                }
+            }
+
+            return result;
+        }
+        private void ResetColorGlyphs()
+        {
+            ImgGlyphOneSource = null;
+            ImgGlyphTwoSource = null;
+            ImgGlyphThreeSource = null;
+        }
 
         /// <summary>
         /// Disposes the ErrorBubble when it's no longer needed.
@@ -1218,13 +1365,13 @@ namespace Dynamo.ViewModels
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
                     ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                    WarningBarColor = GetWarningColor();
+                    HandleColorOverlayChange();
                 });
             }
             else
             {
                 ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                WarningBarColor = GetWarningColor();
+                HandleColorOverlayChange();
             }
             
             ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
