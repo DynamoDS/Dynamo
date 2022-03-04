@@ -1662,7 +1662,7 @@ namespace Dynamo.Graph.Workspaces
 
             // Check if any of the selected nodes or notes already in a group which could happen
             // when user select them from inside the group. In that case, we decided to disable group creation
-            if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
+            if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes, selectedAnnotations))
             {
                 // Return null so from an API level, this is consistent with context menu behavior
                 return null;
@@ -1708,10 +1708,11 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Checks if selected models exists in some group.
         /// </summary>
-        /// <param name="selectedNodes">The select nodes.</param>
-        /// <param name="selectedNotes">The select notes.</param>
+        /// <param name="selectedNodes">The selected nodes.</param>
+        /// <param name="selectedNotes">The selected notes.</param>
+        /// <param name="selectedGroups">The selected groups.</param>
         /// <returns>true if any of the models are already in a group</returns>
-        private bool CheckIfModelExistsInSomeGroup(IEnumerable<NodeModel> selectedNodes, IEnumerable<NoteModel> selectedNotes)
+        private bool CheckIfModelExistsInSomeGroup(IEnumerable<NodeModel> selectedNodes, IEnumerable<NoteModel> selectedNotes, IEnumerable<AnnotationModel> selectedGroups)
         {
             foreach (var model in selectedNodes)
             {
@@ -1722,6 +1723,14 @@ namespace Dynamo.Graph.Workspaces
             }
 
             foreach (var model in selectedNotes)
+            {
+                if (this.Annotations.ContainsModel(model))
+                {
+                    return true;
+                }
+            }
+
+            foreach (var model in selectedGroups)
             {
                 if (this.Annotations.ContainsModel(model))
                 {
