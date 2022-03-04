@@ -1634,7 +1634,7 @@ namespace Dynamo.Graph.Workspaces
         /// <returns></returns>
         internal AnnotationModel AddAnnotation(string text, Guid id)
         {
-            return AddAnnotation(null, text, id);
+            return AddAnnotation(string.Empty, text, id);
         }
 
         /// <summary>
@@ -1658,6 +1658,14 @@ namespace Dynamo.Graph.Workspaces
             {
                 selectedNodes = selectedNodes.Except(group.Nodes.OfType<NodeModel>());
                 selectedNotes = selectedNotes.Except(group.Nodes.OfType<NoteModel>());
+            }
+
+            // Check if any of the selected nodes or notes already in a group which could happen
+            // when user select them from inside the group. In that case, we decided to disable group creation
+            if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
+            {
+                // Return null so from an API level, this is consistent with context menu behavior
+                return null;
             }
 
             return CreateAndSubcribeAnnotationModel(selectedNodes, selectedNotes, selectedAnnotations, id, titleText, text);
@@ -1695,6 +1703,33 @@ namespace Dynamo.Graph.Workspaces
 
             HasUnsavedChanges = true;
             return annotationModel;
+        }
+
+        /// <summary>
+        /// Checks if selected models exists in some group.
+        /// </summary>
+        /// <param name="selectedNodes">The select nodes.</param>
+        /// <param name="selectedNotes">The select notes.</param>
+        /// <returns>true if any of the models are already in a group</returns>
+        private bool CheckIfModelExistsInSomeGroup(IEnumerable<NodeModel> selectedNodes, IEnumerable<NoteModel> selectedNotes)
+        {
+            foreach (var model in selectedNodes)
+            {
+                if (this.Annotations.ContainsModel(model))
+                {
+                    return true;
+                }
+            }
+
+            foreach (var model in selectedNotes)
+            {
+                if (this.Annotations.ContainsModel(model))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

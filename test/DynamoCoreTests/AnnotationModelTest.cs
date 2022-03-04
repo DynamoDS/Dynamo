@@ -65,6 +65,7 @@ namespace Dynamo.Tests
             var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
             Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 1);
             Assert.AreNotEqual(0, annotation.Width);
+            Assert.AreEqual(string.Empty, annotation.AnnotationText);
 
             //Update the Annotation Text
             model.ExecuteCommand(
@@ -77,7 +78,7 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.Undo();
             
             //Title should be changed now.
-            Assert.AreEqual("This is a test group", annotation.AnnotationText);
+            Assert.AreEqual(string.Empty, annotation.AnnotationText);
         }
 
         [Test]
