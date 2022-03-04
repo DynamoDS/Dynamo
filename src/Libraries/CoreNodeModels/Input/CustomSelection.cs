@@ -32,6 +32,7 @@ namespace CoreNodeModels.Input
         /// <summary>
         /// This command is bound to the Add button in the GUI
         /// </summary>
+        [JsonIgnore]
         public ICommand AddCommand { get; private set; }
 
         /// <summary>

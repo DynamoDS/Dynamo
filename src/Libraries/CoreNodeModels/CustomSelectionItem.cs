@@ -29,7 +29,6 @@ namespace CoreNodeModels
     {
         private readonly CustomSelectionItem customSelectionItem;
 
-
         internal Func<CustomSelectionItem, bool> IsUnique { get; set; }
         internal Action ItemChanged { get; set; }
         internal Action<CustomSelectionItemViewModel> RemoveRequested { get; set; }
@@ -64,7 +63,6 @@ namespace CoreNodeModels
             }
         }
 
-
         /// <summary>
         /// The value stored in the menu item
         /// </summary>
@@ -96,6 +94,14 @@ namespace CoreNodeModels
             }
         }
 
+        /// <summary>
+        /// Construct a new custom dropdown menu item with empty name and empty value
+        /// </summary>
+        public CustomSelectionItemViewModel()
+        {
+            customSelectionItem = new CustomSelectionItem();
+            RemoveCommand = new RemoveMenuItemCommand(RemoveMenuItem);
+        }
 
         /// <summary>
         /// Construct a new custom dropdown menu item with a given name and value
