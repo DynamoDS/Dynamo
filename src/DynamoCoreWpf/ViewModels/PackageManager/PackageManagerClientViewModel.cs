@@ -937,10 +937,6 @@ namespace Dynamo.ViewModels
                     }
                     SetPackageState(packageDownloadHandle, installPath);
                     Analytics.TrackEvent(Actions.Installed, Categories.PackageManagerOperations, $"{packageDownloadHandle?.Name}");
-                    if (SearchCriteria.Length > 0)
-                    {
-                        Analytics.TrackEvent(Actions.Search, Categories.PackageManagerOperations, $"{SearchCriteria}");
-                    }
                 }
                 catch (Exception e)
                 {
