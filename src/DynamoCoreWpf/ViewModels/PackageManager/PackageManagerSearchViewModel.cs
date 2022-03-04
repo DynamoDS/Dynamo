@@ -797,7 +797,6 @@ namespace Dynamo.PackageManager
             if (LastSync == null) return;
 
             this.SearchText = query;
-            PackageManagerClientViewModel.SearchCriteria = query;
 
             var results = Search(query);
 
