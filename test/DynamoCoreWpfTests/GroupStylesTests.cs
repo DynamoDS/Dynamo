@@ -19,7 +19,6 @@ namespace DynamoCoreWpfTests
     {
         public AnnotationView NodeViewWithGuid(string guid)
         {
-            //dynamoView.WorkspaceTabs.ChildrenOfType<WorkspaceView>().First().ChildNodeViews();
             var annotationView =
                 View.WorkspaceTabs.ChildrenOfType<WorkspaceView>().First().ChildrenOfType<AnnotationView>();
             var annotationViewOfType = annotationView.Where(x => x.ViewModel.AnnotationModel.GUID.ToString() == guid);

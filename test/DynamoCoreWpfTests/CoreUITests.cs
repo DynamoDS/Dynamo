@@ -515,7 +515,9 @@ namespace DynamoCoreWpfTests
         {
             // Test that thte group style list is being initialized with an empty list                       
             Assert.NotNull(ViewModel.PreferenceSettings.GroupStyleItemsList);
-            Assert.AreEqual(0, ViewModel.PreferenceSettings.GroupStyleItemsList.Count);
+
+            //Now by default we will have always 4 GroupStyles added by Dynamo
+            Assert.AreEqual(4, ViewModel.PreferenceSettings.GroupStyleItemsList.Count);
 
             // Test serialization of GroupStyles 
             string tempPath = System.IO.Path.GetTempPath();
