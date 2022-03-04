@@ -48,10 +48,6 @@ namespace Dynamo.Scheduler
             }
         }
 
-        /// <summary>
-        /// Returns true if a task is curently executing.
-        /// </summary>
-        public bool HasTaskInProgress { get; set; }
         #endregion
 
         #region Private Class Helper Methods
@@ -149,7 +145,6 @@ namespace Dynamo.Scheduler
 
         private void ProcessTaskInternal(AsyncTask asyncTask)
         {
-            HasTaskInProgress = true;
             NotifyTaskStateChanged(asyncTask, TaskStateChangedEventArgs.State.ExecutionStarting);
 
             var executionState = asyncTask.Execute()
@@ -159,7 +154,6 @@ namespace Dynamo.Scheduler
             NotifyTaskStateChanged(asyncTask, executionState);
             asyncTask.HandleTaskCompletion();
             NotifyTaskStateChanged(asyncTask, TaskStateChangedEventArgs.State.CompletionHandled);
-            HasTaskInProgress = false;
         }
 
         #endregion
