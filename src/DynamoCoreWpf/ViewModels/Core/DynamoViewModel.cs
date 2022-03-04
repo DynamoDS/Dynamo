@@ -1195,7 +1195,7 @@ namespace Dynamo.ViewModels
         internal bool CanAddAnnotation(object parameter)
         {
             var groups = Model.CurrentWorkspace.Annotations;
-            //Create Group should be disabled when a group is selected
+            // Create Group should be disabled when a group is among selection and come with nested group inside
             if (groups.Any(x => x.IsSelected && x.HasNestedGroups))
             {
                 return false;
