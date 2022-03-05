@@ -360,7 +360,15 @@ namespace Dynamo.Logging
         /// <summary>
         /// When a package conflict is encountered which involves at least one built-in package.
         /// </summary>
-        BuiltInPackageConflict, 
+        BuiltInPackageConflict,
+        /// <summary>
+        /// Sort event, when user wants to sort some information
+        /// </summary>
+        Sort,
+        /// <summary>
+        /// View event, when user wants to see some information
+        /// </summary>
+        View,
     }
 
     /// <summary>
