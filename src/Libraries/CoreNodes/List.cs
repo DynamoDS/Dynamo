@@ -56,7 +56,6 @@ namespace DSCore
             {
                 if (obj is IList) result = result || Contains((IList)obj, item);
             }
-
             // After checking all sublists, check if the current list contains the item
             return result || (IndexInList(list, item) >= 0);
         }
@@ -1386,6 +1385,11 @@ namespace DSCore
         {
             for (int index = 0; index < list.Count; index++)
             {
+                if ((list[index] is long || list[index] is double) && (item is long || item is double))
+                {
+                    if (ProtoCore.Utils.MathUtils.Equals(Convert.ToDouble(list[index]), Convert.ToDouble(item)))
+                        return index;
+                }
                 if (list[index] is ArrayList && item is ArrayList)
                 {
                     if (((ArrayList)list[index]).Cast<object>().SequenceEqual<object>(((ArrayList)item).Cast<object>())) return index;
