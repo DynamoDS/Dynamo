@@ -43,6 +43,41 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void CanAddAnnotationWithAnnotationSelected()
+        {
+            //Add a Node
+            var model = CurrentDynamoModel;
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", Guid.NewGuid());
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 1);
+
+            // Select the group and try to call API again, this should create a parent group on top of it
+            DynamoSelection.Instance.Selection.Add(annotation);
+            var parentAnnotation = model.CurrentWorkspace.AddAnnotation("This is a parent test group", Guid.NewGuid());
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 2);
+
+            // Select the parent group and try to call API again, the creation should fail
+            DynamoSelection.Instance.Selection.Add(parentAnnotation);
+            var newParentAnnotation = model.CurrentWorkspace.AddAnnotation("This is another parent test group", Guid.NewGuid());
+            Assert.AreEqual(newParentAnnotation, null);
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 2);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void UndoAnnotationText()
         {
             //Add a Node
@@ -65,6 +100,7 @@ namespace Dynamo.Tests
             var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
             Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 1);
             Assert.AreNotEqual(0, annotation.Width);
+            Assert.AreEqual(string.Empty, annotation.AnnotationText);
 
             //Update the Annotation Text
             model.ExecuteCommand(
@@ -77,7 +113,7 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.Undo();
             
             //Title should be changed now.
-            Assert.AreEqual("This is a test group", annotation.AnnotationText);
+            Assert.AreEqual(string.Empty, annotation.AnnotationText);
         }
 
         [Test]
