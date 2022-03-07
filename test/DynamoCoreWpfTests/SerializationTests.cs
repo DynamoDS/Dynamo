@@ -23,6 +23,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using TestUINodes;
 using DoubleSlider = CoreNodeModels.Input.DoubleSlider;
 
 namespace DynamoCoreWpfTests
@@ -1055,6 +1056,23 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(numXMLNotes, 0);
             Assert.AreEqual(numXMLAnnotations, numJsonAnnotations);
+        }
+
+        [Test]
+        public void DropDownsHaveCorrectInputDataTypes()
+        {
+            var dropnode = new EnumAsStringConcrete();
+            var data = dropnode.InputData;
+            Assert.AreEqual(NodeInputTypes.selectionInput, data.Type);
+            Assert.AreEqual(NodeInputTypes.dropdownSelection, data.Type2);
+        }
+        [Test]
+        public void SelectionNodesHaveCorrectInputDataTypes()
+        {
+            var selectNode = new SelectionConcrete(SelectionType.One, SelectionObjectType.None, "", "");
+            var data = selectNode.InputData;
+            Assert.AreEqual(NodeInputTypes.selectionInput, data.Type);
+            Assert.AreEqual(NodeInputTypes.hostSelection, data.Type2);
         }
 
         public object[] FindWorkspaces()

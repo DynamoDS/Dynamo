@@ -144,7 +144,7 @@ namespace Dynamo.PackageDetails
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        internal PackageManagerSearchElement GetPackageByName(string name)
+        internal virtual PackageManagerSearchElement GetPackageByName(string name)
         {
             List<PackageManagerSearchElement> packageManagerSearchElements;
 

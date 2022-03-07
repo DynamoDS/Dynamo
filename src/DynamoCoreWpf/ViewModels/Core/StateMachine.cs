@@ -1054,8 +1054,8 @@ namespace Dynamo.ViewModels
                     throw new InvalidOperationException();
 
                 // Before setting the drag state,
-                // shift + left click triggers removal of group node or note belongs to
-                if (Keyboard.IsKeyDown(Key.LeftShift) && !DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any())
+                // Alt + left click triggers removal of group node or note belongs to
+                if (Keyboard.IsKeyDown(Key.LeftAlt) && !DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any())
                 {
                     foreach (var model in DynamoSelection.Instance.Selection.OfType<ModelBase>())
                     {

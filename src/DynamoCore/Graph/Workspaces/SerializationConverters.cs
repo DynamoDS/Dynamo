@@ -507,7 +507,18 @@ namespace Dynamo.Graph.Workspaces
             var inputsToken = obj["Inputs"];
             if (inputsToken != null)
             {
-                var inputs = inputsToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
+                var inputs = inputsToken.ToArray().Select(x =>
+                {
+                    try
+                    { return x.ToObject<NodeInputData>(); }
+                    catch (Exception ex)
+                    {
+                        engine?.AsLogger().Log(ex);
+                        return null;
+                    }
+                    //dump nulls
+                }).Where(x => !(x is null)).ToList();
+
                 // Use the inputs to set the correct properties on the nodes.
                 foreach (var inputData in inputs)
                 {
