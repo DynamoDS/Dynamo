@@ -1021,8 +1021,6 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string LinkText { get; set; }
 
-        private string TextWithLink;
-
         public InfoBubbleDataPacket(
             InfoBubbleViewModel.Style style,
             Point topLeft,
@@ -1038,13 +1036,7 @@ namespace Dynamo.ViewModels
             ConnectingDirection = connectingDirection;
             MessageNumber = "";
             Message = Text;
-            LinkText = "";
-            TextWithLink = text;
-        }
-
-        internal bool TextMessageExists(string message)
-        {
-            return TextWithLink.Equals(message);
+            LinkText = "";         
         }
 
         //Check if has link

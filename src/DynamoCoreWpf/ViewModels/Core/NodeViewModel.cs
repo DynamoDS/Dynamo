@@ -1192,8 +1192,9 @@ namespace Dynamo.ViewModels
             if (DynamoViewModel == null) return;
 
             bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning;
-            if (!NodeModel.WasInvolvedInExecution && !hasErrorOrWarning) return;
 
+            if (!(NodeModel.WasInvolvedInExecution && hasErrorOrWarning)) return;
+            
             if (ErrorBubble == null) BuildErrorBubble();
 
             if (!WorkspaceViewModel.Errors.Contains(ErrorBubble)) return;
@@ -1219,23 +1220,19 @@ namespace Dynamo.ViewModels
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
                     var messageNode = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-                    if(ErrorBubble.NodeMessages.Count(x=> x.TextMessageExists(content)) == 0)
-                    {
-                        ErrorBubble.NodeMessages.Add(messageNode);
-                    }
+                    ErrorBubble.NodeMessages.Add(messageNode);
                     WarningBarColor = GetWarningColor();
                 });
             }
             else
             {
                 var messageNode = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-                if (ErrorBubble.NodeMessages.Count(x => x.TextMessageExists(content)) == 0)
-                {
-                    ErrorBubble.NodeMessages.Add(messageNode);
-                }
+                ErrorBubble.NodeMessages.Add(messageNode);
+                WarningBarColor = GetWarningColor();
             }
-            
+
             ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
+            
         }
 
         private void UpdateErrorBubblePosition()
