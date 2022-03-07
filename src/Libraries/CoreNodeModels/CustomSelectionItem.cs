@@ -117,7 +117,7 @@ namespace CoreNodeModels
             RemoveCommand = new RemoveMenuItemCommand(RemoveMenuItem);
         }
 
-        private void RemoveMenuItem(object param)
+        private void RemoveMenuItem()
         {
             if (RemoveRequested != null)
                 RemoveRequested(this);
@@ -139,16 +139,16 @@ namespace CoreNodeModels
 
         class RemoveMenuItemCommand : ICommand
         {
-            private readonly Action<object> execute;
+            private readonly Action execute;
             public event EventHandler CanExecuteChanged;
 
-            public RemoveMenuItemCommand(Action<object> execute)
+            public RemoveMenuItemCommand(Action execute)
             {
                 this.execute = execute;
             }
 
             public bool CanExecute(object parameter) => true;
-            public void Execute(object parameter) => execute(parameter);
+            public void Execute(object parameter) => execute();
         }
     }
 }

@@ -41,7 +41,7 @@ namespace CoreNodeModels.Input
         public ObservableCollection<CustomSelectionItemViewModel> Items
         {
             get => items;
-            set
+            private set
             {
                 items = value;
 
@@ -152,7 +152,7 @@ namespace CoreNodeModels.Input
             items.CollectionChanged -= OnCollectionChanged;
         }
 
-        private void AddMenuItem(object param)
+        private void AddMenuItem()
         {
             var newItem = new CustomSelectionItemViewModel(new CustomSelectionItem());
             InitItem(newItem);
@@ -322,16 +322,16 @@ namespace CoreNodeModels.Input
 
         class AddMenuItemCommand : ICommand
         {
-            private readonly Action<object> execute;
+            private readonly Action execute;
             public event EventHandler CanExecuteChanged;
 
-            public AddMenuItemCommand(Action<object> execute)
+            public AddMenuItemCommand(Action execute)
             {
                 this.execute = execute;
             }
 
             public bool CanExecute(object parameter) => true;
-            public void Execute(object parameter) => execute(parameter);
+            public void Execute(object parameter) => execute();
         }
     }
 }
