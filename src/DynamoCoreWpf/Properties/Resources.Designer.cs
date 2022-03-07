@@ -2930,7 +2930,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add only selected groups to this group.
+        ///   Looks up a localized string similar to Add selected groups to this group.
         /// </summary>
         public static string GroupContextMenuAddGroupToGroupTooltip {
             get {
@@ -4054,7 +4054,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add only selected nodes to this group.
+        ///   Looks up a localized string similar to Add selected nodes to group.
         /// </summary>
         public static string NodeContextMenuAddToGroupTooltip {
             get {
