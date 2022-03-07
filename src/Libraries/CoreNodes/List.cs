@@ -1,12 +1,11 @@
-﻿#region
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using DSCore.Properties;
+using ProtoCore.Utils;
 
-#endregion
 
 namespace DSCore
 {
@@ -1385,9 +1384,9 @@ namespace DSCore
         {
             for (int index = 0; index < list.Count; index++)
             {
-                if ((list[index] is long || list[index] is double) && (item is long || item is double))
+                if (MathUtils.IsNumber(list[index]) && MathUtils.IsNumber(item))
                 {
-                    if (ProtoCore.Utils.MathUtils.Equals(Convert.ToDouble(list[index]), Convert.ToDouble(item)))
+                    if (MathUtils.Equals(Convert.ToDouble(list[index]), Convert.ToDouble(item)))
                         return index;
                 }
                 if (list[index] is ArrayList && item is ArrayList)
