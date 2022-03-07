@@ -58,7 +58,8 @@ namespace ProtoCore.Utils
                     || value is ulong
                     || value is float
                     || value is double
-                    || value is decimal;
+                    || value is decimal
+                    || value is System.Numerics.BigInteger;
         }
     }
 }
