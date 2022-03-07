@@ -847,6 +847,13 @@ namespace Dynamo.Graph.Workspaces
                 // currently fire differently from one another. 
                 foreach (NodeModel nodeModel in task.ModifiedNodes)
                 {
+                    // CodeBlockNodes are unique in that they can exhibit two types of warnings and errors - 
+                    // those that are found at precompilation (compile time errors and warnings),
+                    // and those that are found at execution time (runtime errors and warnings). In the case
+                    // of CBNs therefore, we need to retain errors and warnings from both stages, which is why we cannot 
+                    // clear them here (before execution) as this will wipe out those from the precompilation stage.
+                    if (nodeModel is CodeBlockNodeModel) continue;
+
                     nodeModel.OnNodeMessagesClearing();
                 }
 

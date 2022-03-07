@@ -1210,6 +1210,7 @@ namespace Dynamo.ViewModels
             const InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
             var data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
 
+            // TODO: Perhaps need to aggregate errors here instead of replacing/updating error content.
             ErrorBubble.UpdateContentCommand.Execute(data);
 
             // If running Dynamo with UI, use dispatcher, otherwise not
