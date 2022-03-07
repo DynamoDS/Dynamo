@@ -84,6 +84,8 @@ namespace Dynamo.Wpf.Utilities
         /// <param name="isChecked"></param>
         /// <param name="visibility"></param>
         /// <param name="isEnabled"></param>
+        /// <param name="itemsSource"></param>
+        /// <param name="tooltip"></param>
         /// <returns></returns>
         internal static MenuItem CreateMenuItem
         (
@@ -95,7 +97,8 @@ namespace Dynamo.Wpf.Utilities
             Binding isChecked = null,
             Binding visibility = null,
             Binding isEnabled = null,
-            Binding itemsSource = null
+            Binding itemsSource = null,
+            ToolTip tooltip = null
         )
         {
             MenuItem menuItem = new MenuItem { Header = header, IsCheckable = isCheckable };
@@ -107,6 +110,11 @@ namespace Dynamo.Wpf.Utilities
             if (visibility != null) menuItem.SetBinding(UIElement.VisibilityProperty, visibility);
             if (isEnabled != null) menuItem.SetBinding(UIElement.IsEnabledProperty, isEnabled);
             if (itemsSource != null) menuItem.SetBinding(ItemsControl.ItemsSourceProperty, itemsSource);
+            if (tooltip != null)
+            {
+                ToolTipService.SetShowOnDisabled(menuItem, true);
+                menuItem.ToolTip = tooltip;
+            }
 
             return menuItem;
         }
@@ -159,6 +167,10 @@ namespace Dynamo.Wpf.Utilities
                     {
                         Source = NodeViewModel,
                         Path = new PropertyPath(nameof(NodeViewModel.AddToGroupCommand))
+                    },
+                    tooltip: new ToolTip()
+                    {
+                        Content= Properties.Resources.NodeContextMenuAddToGroupTooltip
                     }
                 )
             );

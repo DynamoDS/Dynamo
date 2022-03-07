@@ -2930,6 +2930,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add only selected groups to this group.
+        /// </summary>
+        public static string GroupContextMenuAddGroupToGroupTooltip {
+            get {
+                return ResourceManager.GetString("GroupContextMenuAddGroupToGroupTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Background.
         /// </summary>
         public static string GroupContextMenuBackground {
@@ -4041,6 +4050,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeAutoCompleteNotAvailableForCollapsedGroups {
             get {
                 return ResourceManager.GetString("NodeAutoCompleteNotAvailableForCollapsedGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add only selected nodes to this group.
+        /// </summary>
+        public static string NodeContextMenuAddToGroupTooltip {
+            get {
+                return ResourceManager.GetString("NodeContextMenuAddToGroupTooltip", resourceCulture);
             }
         }
         

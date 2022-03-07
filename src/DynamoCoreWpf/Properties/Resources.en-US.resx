@@ -3040,4 +3040,10 @@ To install the latest version of a package, click Install. \n
   <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
     <value>Group Name</value>
   </data>
+  <data name="GroupContextMenuAddGroupToGroupTooltip" xml:space="preserve">
+    <value>Add only selected groups to this group</value>
+  </data>
+  <data name="NodeContextMenuAddToGroupTooltip" xml:space="preserve">
+    <value>Add only selected nodes to this group</value>
+  </data>
 </root>
