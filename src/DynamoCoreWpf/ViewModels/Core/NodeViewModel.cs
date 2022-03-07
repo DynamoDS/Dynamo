@@ -774,7 +774,6 @@ namespace Dynamo.ViewModels
             DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
 
-
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -1193,8 +1192,7 @@ namespace Dynamo.ViewModels
 
             bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning;
 
-            if (!(NodeModel.WasInvolvedInExecution && hasErrorOrWarning)) return;
-            
+            if (!(NodeModel.WasInvolvedInExecution && hasErrorOrWarning)) return;            
             if (ErrorBubble == null) BuildErrorBubble();
 
             if (!WorkspaceViewModel.Errors.Contains(ErrorBubble)) return;
@@ -1219,20 +1217,16 @@ namespace Dynamo.ViewModels
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
-                    var messageNode = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-                    ErrorBubble.NodeMessages.Add(messageNode);
+                    ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
                     WarningBarColor = GetWarningColor();
                 });
             }
             else
             {
-                var messageNode = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-                ErrorBubble.NodeMessages.Add(messageNode);
+                ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
                 WarningBarColor = GetWarningColor();
             }
-
-            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
-            
+            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);            
         }
 
         private void UpdateErrorBubblePosition()

@@ -1036,13 +1036,12 @@ namespace Dynamo.ViewModels
             ConnectingDirection = connectingDirection;
             MessageNumber = "";
             Message = Text;
-            LinkText = "";         
+            LinkText = "";
         }
 
         //Check if has link
         private static string RemoveLinkFromText(string text)
         {
-            
             // if there is no link, we do nothing
             if (!text.Contains(externalLinkIdentifier)) return text;
 
