@@ -27,6 +27,7 @@
 
     <UserControl.Resources>
         <utilities:GroupStyleItemSelector x:Key="GroupStyleItemSelector"/>
+        <controls:StringToBrushColorConverter x:Key="StringToBrushColorConverter"/>
         <CornerRadius x:Key="ExpanderCornerRadius"
                       TopLeft="10"
                       TopRight="10" />
@@ -307,11 +308,11 @@
                                     Margin="5,0,5,0"
                                     FontFamily="{StaticResource ArtifaktElementRegular}"
                                     FontSize="14px"
-                                    Background="{Binding HexColorString}" 
+                                    Background="{Binding HexColorString, Converter={StaticResource StringToBrushColorConverter}}" 
                                     Width="15" 
                                     Height="15"/>
                             <Label Name="GroupStyleLabelName"
-                                    Content ="{Binding TextContent}"
+                                    Content ="{Binding Name}"
                                     Margin="5,0,5,0"
                                     Foreground="{StaticResource NodeContextMenuForeground}"
                                     FontFamily="{StaticResource ArtifaktElementRegular}"

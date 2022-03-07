@@ -1,4 +1,5 @@
-﻿using Dynamo.Graph.Annotations;
+﻿using Dynamo.Configuration;
+using Dynamo.Graph.Annotations;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -15,7 +16,7 @@ namespace Dynamo.Wpf.Utilities
             {
                 return (Style)((FrameworkElement)container).FindResource("GroupStyleSeparatorStyle");
             }
-            if (item is GroupStyleItemEntry)
+            if (item is GroupStyleItem)
             {
                 return (Style)((FrameworkElement)container).FindResource("GroupStyleItemStyle");
             }

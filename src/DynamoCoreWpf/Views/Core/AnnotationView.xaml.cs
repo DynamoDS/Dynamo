@@ -16,6 +16,7 @@ using TextBox = System.Windows.Controls.TextBox;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Graph.Annotations;
 using Dynamo.Logging;
+using Dynamo.Configuration;
 
 namespace Dynamo.Nodes
 {
@@ -449,7 +450,7 @@ namespace Dynamo.Nodes
             var menuItemSelected = sender as MenuItem;
             if (menuItemSelected == null) return;
 
-            var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItemEntry;
+            var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItem;
             if (groupStyleItemSelected == null) return;
 
             //Means that no GroupStyle (Default, Custom) has been selected the the clicked one will be selected
@@ -462,11 +463,6 @@ namespace Dynamo.Nodes
             //Means that the user clicked over a MenuItem that is already selected, when we need uncheck it if is not a Default Style
             if (groupStyleItemSelected != ViewModel.CurrentGroupStyleSelected && groupStyleItemSelected.IsChecked == false)
             {
-                var groupStyleItems = ViewModel.GroupStyleList.OfType<GroupStyleItemEntry>();
-                groupStyleItems.Where(c => !c.TextContent.Equals(groupStyleItemSelected.TextContent)).ToList().ForEach(cc =>
-                {
-                    cc.IsChecked = false;
-                });
                 ViewModel.UpdateGroupStyle(groupStyleItemSelected);
                 return;
             }
@@ -474,7 +470,7 @@ namespace Dynamo.Nodes
             //Means that the GroupStyle selected is not a Default Style and is already checked
             if (ViewModel.CurrentGroupStyleSelected.IsChecked == true && !groupStyleItemSelected.IsDefault)
             {
-                var groupStyleItems = ViewModel.GroupStyleList.OfType<GroupStyleItemEntry>();
+                var groupStyleItems = ViewModel.GroupStyleList.OfType<GroupStyleItem>();
                 var firstDefaultGroupStyle = groupStyleItems.Where(item => item.IsDefault == true).FirstOrDefault();
                 ViewModel.UpdateGroupStyle(firstDefaultGroupStyle);
                 return;
@@ -486,7 +482,7 @@ namespace Dynamo.Nodes
             var menuItemSelected = sender as MenuItem;
             if (menuItemSelected == null) return;
 
-            var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItemEntry;
+            var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItem;
             if (groupStyleItemSelected == null) return;
 
             ViewModel.CurrentGroupStyleSelected = groupStyleItemSelected;

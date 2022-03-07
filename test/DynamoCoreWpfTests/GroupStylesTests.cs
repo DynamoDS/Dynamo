@@ -1,4 +1,4 @@
-﻿using Dynamo.Graph.Annotations;
+﻿using Dynamo.Configuration;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -72,7 +72,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             //Check that the GroupStyles in the AnnotationView match the ones in the PreferencesView (default ones)
-            Assert.AreEqual(annotationViewModel.GroupStyleList.OfType<GroupStyleItemEntry>().Count(), prefViewModel.StyleItemsList.Count);
+            Assert.AreEqual(annotationViewModel.GroupStyleList.OfType<GroupStyleItem>().Count(), prefViewModel.StyleItemsList.Count);
 
         }
 
@@ -99,7 +99,7 @@ namespace DynamoCoreWpfTests
             var annotationViewModel = annotationView.DataContext as AnnotationViewModel;
 
             //Check that the GroupStyles in the AnnotationView match the ones in the PreferencesView
-            Assert.AreEqual(annotationViewModel.GroupStyleList.OfType<GroupStyleItemEntry>().Count(), prefViewModel.StyleItemsList.Count);
+            Assert.AreEqual(annotationViewModel.GroupStyleList.OfType<GroupStyleItem>().Count(), prefViewModel.StyleItemsList.Count);
 
             //Add one Custom Group Style to the PreferencesView
             preferencesSettings.GroupStyleItemsList.Add(new Dynamo.Configuration.GroupStyleItem { Name = "Custom 1", HexColorString = "FFFF00", IsDefault = false });
@@ -117,7 +117,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             //Check that the GroupStyles in the AnnotationView match the ones in the PreferencesView
-            Assert.AreEqual(annotationViewModel.GroupStyleList.OfType<GroupStyleItemEntry>().Count(), currentGroupStylesCounter);
+            Assert.AreEqual(annotationViewModel.GroupStyleList.OfType<GroupStyleItem>().Count(), currentGroupStylesCounter);
 
         }
     }

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Windows.Input;
-using System.Windows.Media;
-using Dynamo.Configuration;
+﻿using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -14,8 +7,14 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Dynamo.Wpf.Utilities;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Windows.Input;
+using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 
 namespace Dynamo.ViewModels
@@ -29,7 +28,7 @@ namespace Dynamo.ViewModels
         // vertical offset accounts for the port margins
         private const int verticalOffset = 20;
         private const int portVerticalMidPoint = 17;
-        private ObservableCollection<GroupStyleBase> groupStyleList;
+        private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
         private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
         private PreferenceSettings preferenceSettings;
 
@@ -176,7 +175,7 @@ namespace Dynamo.ViewModels
         }
 
         [JsonIgnore]
-        internal GroupStyleItemEntry CurrentGroupStyleSelected { get; set; }
+        internal GroupStyleItem CurrentGroupStyleSelected { get; set; }
 
         [JsonIgnore]
         public IEnumerable<ModelBase> Nodes
@@ -342,7 +341,7 @@ namespace Dynamo.ViewModels
         /// This property will be used to populate the GroupStyle context menu (the one shown when clicking right over a Group)
         /// </summary>
         [JsonIgnore]
-        public ObservableCollection<GroupStyleBase> GroupStyleList
+        public ObservableCollection<Configuration.StyleItem> GroupStyleList
         {
             get
             {
@@ -567,7 +566,7 @@ namespace Dynamo.ViewModels
                 SetGroupOutPorts();
                 CollapseGroupContents(true);
             }
-            groupStyleList = new ObservableCollection<GroupStyleBase>();
+            groupStyleList = new ObservableCollection<Configuration.StyleItem>();
             //This will add the GroupStyles created in Preferences panel to the Group Style Context menu.
             LoadGroupStylesFromPreferences(preferenceSettings.GroupStyleItemsList);
         }
@@ -974,13 +973,22 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// This method will be called by the ChangeGroupStyleCommand when a GroupStyle is selected from the ContextMenu
         /// </summary>
-        /// <param name="parameter"></param>
-        internal void UpdateGroupStyle(GroupStyleItemEntry itemEntryParameter)
+        /// <param name="itemEntryParameter">GroupStyle item selected</param>
+        internal void UpdateGroupStyle(GroupStyleItem itemEntryParameter)
         {
             if (itemEntryParameter == null) return;
+
+            var groupStyleItems = GroupStyleList.OfType<GroupStyleItem>();
+            groupStyleItems.Where(c => !c.Name.Equals(itemEntryParameter.Name)).ToList().ForEach(cc =>
+            {
+                cc.IsChecked = false;
+            });
+
             itemEntryParameter.IsChecked = true;
             CurrentGroupStyleSelected = itemEntryParameter;
-            Background = (Color)ColorConverter.ConvertFromString(itemEntryParameter.HexColorString);
+            Background = (Color)ColorConverter.ConvertFromString("#"+itemEntryParameter.HexColorString);
+
+            WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
         /// <summary>
@@ -996,19 +1004,13 @@ namespace Dynamo.ViewModels
             var customGroupStylesList = styleItemsList.Where(style => style.IsDefault == false);
 
             //Adds to the list the Default Group Styles created by Dynamo
-            foreach (var style in defaultGroupStylesList)
-            {
-                groupStyleList.Add(new GroupStyleItemEntry { TextContent = style.Name, HexColorString = style.HexColorString, IsDefault = style.IsDefault });
-            }
+            groupStyleList.AddRange(defaultGroupStylesList);
 
             //Adds the separator between the Default Group Styles and the Custom Group Styles
             groupStyleList.Add(new GroupStyleSeparator());
 
             //Adds to the list the Custom Group Styles created by the user
-            foreach (var style in customGroupStylesList)
-            {
-                groupStyleList.Add(new GroupStyleItemEntry { TextContent = style.Name, HexColorString = style.HexColorString, IsDefault = style.IsDefault });
-            }
+            groupStyleList.AddRange(customGroupStylesList);
         }
 
         /// <summary>
@@ -1018,14 +1020,14 @@ namespace Dynamo.ViewModels
         internal void ReloadGroupStyles()
         {
             if (preferencesStyleItemsList == null) return;
-            var currentSelectedGroupStyle = groupStyleList.OfType<GroupStyleItemEntry>().Where(style => style.IsChecked == true).FirstOrDefault();
+            var currentSelectedGroupStyle = groupStyleList.OfType<GroupStyleItem>().Where(style => style.IsChecked == true).FirstOrDefault();
             groupStyleList.Clear();
 
             LoadGroupStylesFromPreferences(preferencesStyleItemsList);
             if (currentSelectedGroupStyle == null) return;
 
-            var currentCustomGroupStyles = groupStyleList.OfType<GroupStyleItemEntry>();
-            var selectedGroupStyle = currentCustomGroupStyles.Where(style => style.TextContent.Equals(currentSelectedGroupStyle.TextContent)).FirstOrDefault();
+            var currentCustomGroupStyles = groupStyleList.OfType<GroupStyleItem>();
+            var selectedGroupStyle = currentCustomGroupStyles.Where(style => style.Name.Equals(currentSelectedGroupStyle.Name)).FirstOrDefault();
 
             if (selectedGroupStyle == null) return;
             selectedGroupStyle.IsChecked = true;  
