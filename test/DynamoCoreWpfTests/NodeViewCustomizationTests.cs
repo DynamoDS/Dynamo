@@ -314,6 +314,7 @@ namespace DynamoCoreWpfTests
 
             // Starting from Dynamo 2.13, node view now comes with 
             // images like node icon, lacing image etc
+            // TODO: Add correct number with explanation
             Assert.AreEqual(3, imgs.Count());
 
             var img = imgs.Last();
