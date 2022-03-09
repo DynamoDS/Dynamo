@@ -785,7 +785,7 @@ namespace Dynamo.ViewModels
             StyleItemsList = LoadStyles(preferenceSettings.GroupStyleItemsList);
           
             //When pressing the "Add Style" button some controls will be shown with some values by default so later they can be populated by the user
-            AddStyleControl = new StyleItem() { Name = "", HexColorString = GetRandomHexStringColor() };
+            AddStyleControl = new StyleItem() { Name = string.Empty, HexColorString = GetRandomHexStringColor() };
 
             //This piece of code will populate all the description text for the RadioButtons in the Geometry Scaling section.
             optionsGeometryScale = new GeometryScalingOptions();

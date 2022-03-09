@@ -1,7 +1,7 @@
-﻿using Dynamo.Configuration;
-using Dynamo.Graph.Annotations;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Configuration;
+using Dynamo.Graph.Annotations;
 
 namespace Dynamo.Wpf.Utilities
 {

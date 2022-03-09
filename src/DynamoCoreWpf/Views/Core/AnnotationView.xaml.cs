@@ -453,7 +453,7 @@ namespace Dynamo.Nodes
             var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItem;
             if (groupStyleItemSelected == null) return;
 
-            //Means that no GroupStyle (Default, Custom) has been selected the the clicked one will be selected
+            //Means that no GroupStyle (Default, Custom) has been selected then the clicked one will be selected
             if (ViewModel.CurrentGroupStyleSelected == null)
             {
                 ViewModel.UpdateGroupStyle(groupStyleItemSelected);

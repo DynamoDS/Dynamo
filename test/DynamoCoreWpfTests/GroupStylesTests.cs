@@ -1,4 +1,9 @@
-﻿using Dynamo.Configuration;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using Dynamo.Configuration;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -6,11 +11,6 @@ using Dynamo.Views;
 using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 
 namespace DynamoCoreWpfTests
 {

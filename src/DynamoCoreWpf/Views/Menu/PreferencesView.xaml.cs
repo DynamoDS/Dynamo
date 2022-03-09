@@ -1,14 +1,14 @@
-﻿using Dynamo.Configuration;
-using Dynamo.Controls;
-using Dynamo.Logging;
-using Dynamo.ViewModels;
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Configuration;
+using Dynamo.Controls;
+using Dynamo.Logging;
+using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Wpf.Views

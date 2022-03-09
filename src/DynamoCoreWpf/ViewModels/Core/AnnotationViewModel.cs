@@ -1,4 +1,11 @@
-﻿using Dynamo.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Windows.Input;
+using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -8,13 +15,6 @@ using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Windows.Input;
-using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 
 namespace Dynamo.ViewModels
