@@ -57,6 +57,8 @@ namespace Dynamo.Wpf.Views
 
             //We need to store the ScaleFactor value in a temporary variable always when the Preferences dialog is created.
             scaleValue = dynViewModel.ScaleFactorLog;
+
+            ResetGroupStyleForm();
         }
 
         /// <summary>
@@ -160,6 +162,13 @@ namespace Dynamo.Wpf.Views
             AddStyleBorder.Visibility = Visibility.Visible;
             AddStyleButton.IsEnabled = false;
             groupNameBox.Focus();
+        }
+
+        private void ResetGroupStyleForm()
+        {
+            viewModel.CurrentWarningMessage = string.Empty;
+            viewModel.IsWarningEnabled = false;
+            viewModel.IsSaveButtonEnabled = true;
         }
 
         private void AddStyle_SaveButton_Click(object sender, RoutedEventArgs e)
