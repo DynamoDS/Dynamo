@@ -1648,7 +1648,7 @@ namespace Dynamo.Models
         #region save/load
 
         /// <summary>
-        /// Opens a Dynamo workspace from a json string.
+        /// Opens a Dynamo workspace from a Json string.
         /// </summary>
         /// <param name="fileContents">Json file content</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
@@ -1864,7 +1864,10 @@ namespace Dynamo.Models
           bool forceManualExecutionMode,
           out WorkspaceModel workspace)
         {
-            CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filePath), IsTestMode);
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filePath), IsTestMode);
+            }            
 
             var currentHomeSpace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             currentHomeSpace.UndefineCBNFunctionDefinitions();
@@ -1882,7 +1885,7 @@ namespace Dynamo.Models
                 CustomNodeManager,
                 this.LinterManager);
 
-            workspace.FileName = String.IsNullOrEmpty(filePath) ? "" : filePath;
+            workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
 
             // NOTE: This is to handle the case of opening a JSON file that does not have a version string
@@ -1898,6 +1901,11 @@ namespace Dynamo.Models
                 homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
 
                 homeWorkspace.ReCompileCodeBlockNodesForFunctionDefinitions();
+
+                if (string.IsNullOrEmpty(workspace.FileName))
+                {
+                    workspace.HasUnsavedChanges = true;
+                }
 
                 RunType runType;
                 if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)

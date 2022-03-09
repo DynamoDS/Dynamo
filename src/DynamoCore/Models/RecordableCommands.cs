@@ -144,6 +144,9 @@ namespace Dynamo.Models
                     case "OpenFileCommand":
                         command = OpenFileCommand.DeserializeCore(element);
                         break;
+                    case "OpenFileFromJsonCommand":
+                        command = OpenFileFromJsonCommand.DeserializeCore(element);
+                        break;
                     case "PausePlaybackCommand":
                         command = PausePlaybackCommand.DeserializeCore(element);
                         break;
@@ -527,6 +530,83 @@ namespace Dynamo.Models
                 // Log file open action and the number of nodes in the opened workspace
                 Dynamo.Logging.Analytics.TrackFileOperationEvent(
                     FilePath,
+                    Logging.Actions.Open,
+                    dynamoModel.CurrentWorkspace.Nodes.Count());
+
+                // If there are unresolved nodes in the opened workspace, log the node names and count
+                var unresolvedNodes = dynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+                if (unresolvedNodes != null && unresolvedNodes.Any())
+                {
+                    Dynamo.Logging.Analytics.TrackEvent(
+                        Logging.Actions.Unresolved,
+                        Logging.Categories.NodeOperations,
+                        unresolvedNodes.Select(n => string.Format("{0}:{1}", n.LegacyAssembly, n.LegacyFullName))
+                            .Aggregate((x, y) => string.Format("{0}, {1}", x, y)),
+                        unresolvedNodes.Count());
+                }
+            }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// A command to open a file from Json content.
+        /// </summary>
+        [DataContract]
+        public class OpenFileFromJsonCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="fileContents">The Json content of a file.</param>
+            /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
+            public OpenFileFromJsonCommand(string fileContents, bool forceManualExecutionMode = false)
+            {
+                FileContents = fileContents;
+                ForceManualExecutionMode = forceManualExecutionMode;
+            }
+
+            internal static OpenFileFromJsonCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                string xmlFileContents = helper.ReadString("XmlFileContents");
+                return new OpenFileFromJsonCommand(xmlFileContents);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            [DataMember]
+            internal string FileContents { get; private set; }
+            internal bool ForceManualExecutionMode { get; private set; }
+            private DynamoModel dynamoModel;
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                this.dynamoModel = dynamoModel;
+                dynamoModel.OpenFileFromJsonImpl(this);
+            }
+
+            
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("XmlFileContents", FileContents);
+            }
+            
+
+            internal override void TrackAnalytics()
+            {
+                // Log file open action and the number of nodes in the opened workspace
+                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                    dynamoModel.CurrentWorkspace.Name,
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
 
