@@ -285,11 +285,7 @@
                 <MenuItem Name="AddGroupToGroup"
                           Command="{Binding AddGroupToGroupCommand}"
                           Header="{x:Static p:Resources.GroupContextMenuAddGroupToGroup}"
-                          ToolTipService.ShowOnDisabled="True">
-                          <MenuItem.ToolTip>
-                        <ToolTip Content="{x:Static p:Resources.GroupContextMenuAddGroupToGroupTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                          </MenuItem.ToolTip>
-                </MenuItem>
+                          ToolTipService.ShowOnDisabled="True" />
                 <MenuItem Name="GraphLayoutAnnotation"
                           Click="OnGraphLayoutAnnotation"
                           Header="{x:Static p:Resources.GroupContextMenuGraphLayout}" />

@@ -502,7 +502,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add To Group.
+        ///   Looks up a localized string similar to Add Node To Group.
         /// </summary>
         public static string ContextAddGroupFromSelection {
             get {
@@ -2921,20 +2921,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Group to Group.
+        ///   Looks up a localized string similar to Add Group to This Group.
         /// </summary>
         public static string GroupContextMenuAddGroupToGroup {
             get {
                 return ResourceManager.GetString("GroupContextMenuAddGroupToGroup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add selected groups to this group.
-        /// </summary>
-        public static string GroupContextMenuAddGroupToGroupTooltip {
-            get {
-                return ResourceManager.GetString("GroupContextMenuAddGroupToGroupTooltip", resourceCulture);
             }
         }
         
@@ -4050,15 +4041,6 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeAutoCompleteNotAvailableForCollapsedGroups {
             get {
                 return ResourceManager.GetString("NodeAutoCompleteNotAvailableForCollapsedGroups", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add selected nodes to group.
-        /// </summary>
-        public static string NodeContextMenuAddToGroupTooltip {
-            get {
-                return ResourceManager.GetString("NodeContextMenuAddToGroupTooltip", resourceCulture);
             }
         }
         

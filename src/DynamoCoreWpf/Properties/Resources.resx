@@ -191,7 +191,7 @@
     <comment>Context menu item</comment>
   </data>
   <data name="ContextAddGroupFromSelection" xml:space="preserve">
-    <value>Add To Group</value>
+    <value>Add Node To Group</value>
     <comment>Context menu item</comment>
   </data>
   <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
@@ -2767,7 +2767,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>&lt;Double click here to edit group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
-    <value>Add Group to Group</value>
+    <value>Add Group to This Group</value>
   </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this guide later from the Help menu.</value>
@@ -3026,11 +3026,5 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
     <value>Group Name</value>
-  </data>
-  <data name="GroupContextMenuAddGroupToGroupTooltip" xml:space="preserve">
-    <value>Add selected groups to this group</value>
-  </data>
-  <data name="NodeContextMenuAddToGroupTooltip" xml:space="preserve">
-    <value>Add selected nodes to group</value>
   </data>
 </root>
