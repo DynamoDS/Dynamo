@@ -1239,27 +1239,28 @@ namespace Dynamo.ViewModels
 
             /*
                 Priorities seem to be:
-                Error > Warning > Info > Preview > Frozen > None
+                Error > Warning > Info ; Frozen > Preview > None
                 Pass through all possible states in reverse order 
                 to assign icon values for each possible scenario
             */
 
             ResetColorGlyphs();
 
-            if (this.IsFrozen)
-            {
-                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeFrozenOverlayColor"];
-                ImgGlyphOneSource = frozenGlyph;
-            }
             if (!this.IsVisible)
             {
                 result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
+                ImgGlyphOneSource = previewGlyph; 
+            }
+            if (this.IsFrozen)
+            {
+                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeFrozenOverlayColor"]; 
                 if (ImgGlyphOneSource == null)
                 {
-                    ImgGlyphOneSource = previewGlyph;
+                    ImgGlyphOneSource = frozenGlyph;
                 }
                 else
                 {
+                    ImgGlyphOneSource = frozenGlyph;
                     ImgGlyphTwoSource = previewGlyph;
                 }
             }
