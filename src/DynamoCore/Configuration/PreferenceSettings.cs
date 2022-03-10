@@ -534,6 +534,9 @@ namespace Dynamo.Configuration
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
+
+            //Add the default group styles
+            AddDefaultStyles();
         }
 
         /// <summary>
@@ -607,6 +610,7 @@ namespace Dynamo.Configuration
             }
             catch (Exception) { }
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
+            settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
             return settings;
         }
