@@ -1717,7 +1717,7 @@ namespace Dynamo.Graph.Nodes
                 State = ElementState.PersistentWarning;
                 if (!string.Equals(persistentWarning, p))
                 {
-                    persistentWarning += p;
+                    persistentWarning += persistentWarning == "" ? p : $"{Environment.NewLine}{p}";
                 }
                 ToolTipText = persistentWarning;
             }
@@ -1725,7 +1725,7 @@ namespace Dynamo.Graph.Nodes
             {
                 State = ElementState.Warning;
                 transientWarning = p;
-                ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.IsNullOrEmpty(p) ? persistentWarning : $"{persistentWarning}\n{p}";
+                ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.IsNullOrEmpty(p) ? persistentWarning : $"{persistentWarning}{Environment.NewLine}{p}";
             }
         }
 

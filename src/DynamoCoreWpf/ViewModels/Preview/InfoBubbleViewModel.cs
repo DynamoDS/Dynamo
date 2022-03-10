@@ -994,7 +994,7 @@ namespace Dynamo.ViewModels
         }
     }
 
-    public struct InfoBubbleDataPacket
+    public struct InfoBubbleDataPacket : IEquatable<InfoBubbleDataPacket>
     {
         private const string externalLinkIdentifier = "href=";
         public InfoBubbleViewModel.Style Style;
@@ -1047,7 +1047,7 @@ namespace Dynamo.ViewModels
             if (!text.Contains(externalLinkIdentifier)) return text;
 
             // return the text without the link or identifier
-            string[] split = text.Split(new string[] { externalLinkIdentifier, "\\n" }, StringSplitOptions.None);
+            string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
             return split[0];
         }
 
@@ -1072,5 +1072,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool Equals(InfoBubbleDataPacket other)
+        {
+            return 
+                Style == other.Style &&
+                Text == other.Text &&
+                TopLeft == other.TopLeft &&
+                BotRight == other.BotRight &&
+                Link == other.Link &&
+                ConnectingDirection == other.ConnectingDirection;
+        }
     }
 }

@@ -1194,6 +1194,10 @@ namespace Dynamo.ViewModels
             bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning;
             if (!NodeModel.WasInvolvedInExecution && !hasErrorOrWarning) return;
 
+            // NOTE!: If tooltip is not cached here, it will be cleared once the dispatcher is invoked below
+            string content = NodeModel.ToolTipText;
+            if (string.IsNullOrWhiteSpace(content)) return;
+
             if (ErrorBubble == null) BuildErrorBubble();
 
             if (!WorkspaceViewModel.Errors.Contains(ErrorBubble)) return;
@@ -1205,27 +1209,40 @@ namespace Dynamo.ViewModels
                 ? InfoBubbleViewModel.Style.Error
                 : InfoBubbleViewModel.Style.Warning;
 
-            // NOTE!: If tooltip is not cached here, it will be cleared once the dispatcher is invoked below
-            string content = NodeModel.ToolTipText;
-            if (string.IsNullOrWhiteSpace(content)) return;
             const InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
-            var data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-
-            // TODO: Perhaps need to aggregate errors here instead of replacing/updating error content.
-            ErrorBubble.UpdateContentCommand.Execute(data);
+            var warningTexts = content.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            var packets = new List<InfoBubbleDataPacket>(warningTexts.Length);
+            foreach (var text in warningTexts)
+            {
+                var data = new InfoBubbleDataPacket(style, topLeft, botRight, text, connectingDirection);
+                packets.Add(data);
+                ErrorBubble.UpdateContentCommand.Execute(data);
+            }
 
             // If running Dynamo with UI, use dispatcher, otherwise not
             if (DynamoViewModel.UIDispatcher != null)
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
-                    ErrorBubble.NodeMessages.Add(data);
+                    foreach (var data in packets)
+                    {
+                        if (!ErrorBubble.NodeMessages.Contains(data))
+                        {
+                            ErrorBubble.NodeMessages.Add(data);
+                        }
+                    }
                     WarningBarColor = GetWarningColor();
                 });
             }
             else
             {
-                ErrorBubble.NodeMessages.Add(data);
+                foreach (var data in packets)
+                {
+                    if (!ErrorBubble.NodeMessages.Contains(data))
+                    {
+                        ErrorBubble.NodeMessages.Add(data);
+                    }
+                }
                 WarningBarColor = GetWarningColor();
             }
             
