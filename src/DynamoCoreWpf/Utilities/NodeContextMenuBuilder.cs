@@ -85,7 +85,6 @@ namespace Dynamo.Wpf.Utilities
         /// <param name="visibility"></param>
         /// <param name="isEnabled"></param>
         /// <param name="itemsSource"></param>
-        /// <param name="tooltip"></param>
         /// <returns></returns>
         internal static MenuItem CreateMenuItem
         (
