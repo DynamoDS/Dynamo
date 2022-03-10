@@ -428,21 +428,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged(nameof(StyleItemsList));
         }
 
-        /// <summary>
-        /// This method will add the Defaul GroupStyles to the Preferences panel
-        /// </summary>
-        private void AddDefaultStyles()
-        {
-            var defaultGroupStylesList = StyleItemsList.Where(style => style.IsDefault == true);
-            //Just in case the Default profiles have not been added then are added.
-            if(defaultGroupStylesList != null && defaultGroupStylesList.Count() == 0)
-            {
-                AddStyle(new StyleItem() { Name = Res.GroupStyleDefaultActions, HexColorString = Res.GroupStyleDefaultActionsColor, IsDefault = true });
-                AddStyle(new StyleItem() { Name = Res.GroupStyleDefaultInputs, HexColorString = Res.GroupStyleDefaultInputsColor, IsDefault = true });
-                AddStyle(new StyleItem() { Name = Res.GroupStyleDefaultOutputs, HexColorString = Res.GroupStyleDefaultOutputsColor, IsDefault = true });
-                AddStyle(new StyleItem() { Name = Res.GroupStyleDefaultReview, HexColorString = Res.GroupStyleDefaultReviewColor, IsDefault = true });
-            }           
-        }
+      
 
         /// <summary>
         /// This flag will be in true when the Style that user is trying to add already exists (otherwise will be false - Default)
@@ -824,8 +810,6 @@ namespace Dynamo.ViewModels
 
             PropertyChanged += Model_PropertyChanged;
 
-            //Add the default group styles in the Group Styles section.
-            AddDefaultStyles();
         }
 
         /// <summary>

@@ -602,6 +602,8 @@ namespace Dynamo.Models
             {
                 PreferenceSettings = settings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+                //Add the default group styles
+                (preferences as PreferenceSettings).AddDefaultStyles();
             }
 
             if (config is DefaultStartConfiguration defaultStartConfiguration)
