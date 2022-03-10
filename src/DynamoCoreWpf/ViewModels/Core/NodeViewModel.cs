@@ -1193,11 +1193,9 @@ namespace Dynamo.ViewModels
 
             bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning;
 
-            if (!(NodeModel.WasInvolvedInExecution && hasErrorOrWarning)) return;  
+            if (!(NodeModel.WasInvolvedInExecution && hasErrorOrWarning)) return;
 
-            // NOTE!: If tooltip is not cached here, it will be cleared once the dispatcher is invoked below
-            string content = NodeModel.ToolTipText;
-            if (string.IsNullOrWhiteSpace(content)) return;
+            if (!NodeModel.Infos.Any()) return;
 
             if (ErrorBubble == null) BuildErrorBubble();
 
@@ -1211,11 +1209,10 @@ namespace Dynamo.ViewModels
                 : InfoBubbleViewModel.Style.Warning;
 
             const InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
-            var warningTexts = content.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-            var packets = new List<InfoBubbleDataPacket>(warningTexts.Length);
-            foreach (var text in warningTexts)
+            var packets = new List<InfoBubbleDataPacket>(NodeModel.Infos.Count);
+            foreach (var info in NodeModel.Infos)
             {
-                var data = new InfoBubbleDataPacket(style, topLeft, botRight, text, connectingDirection);
+                var data = new InfoBubbleDataPacket(style, topLeft, botRight, info.Message, connectingDirection);
                 packets.Add(data);
                 ErrorBubble.UpdateContentCommand.Execute(data);
             }
