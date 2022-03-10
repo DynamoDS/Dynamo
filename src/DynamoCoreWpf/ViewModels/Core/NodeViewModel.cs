@@ -805,6 +805,7 @@ namespace Dynamo.ViewModels
             logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
 
             logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsVisible)));
+            logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(ToolTipText)));
         }
 
 
@@ -1218,13 +1219,13 @@ namespace Dynamo.ViewModels
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
-                    ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
+                    ErrorBubble.NodeMessages.Add(data);
                     WarningBarColor = GetWarningColor();
                 });
             }
             else
             {
-                ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
+                ErrorBubble.NodeMessages.Add(data);
                 WarningBarColor = GetWarningColor();
             }
             

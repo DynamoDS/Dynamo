@@ -364,7 +364,7 @@ namespace Dynamo.Graph.Nodes
             set
             {
                 toolTipText = value;
-                RaisePropertyChanged("ToolTipText");
+                RaisePropertyChanged(nameof(ToolTipText));
             }
         }
 

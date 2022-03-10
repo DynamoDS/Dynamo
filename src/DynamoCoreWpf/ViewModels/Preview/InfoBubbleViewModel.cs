@@ -1047,7 +1047,7 @@ namespace Dynamo.ViewModels
             if (!text.Contains(externalLinkIdentifier)) return text;
 
             // return the text without the link or identifier
-            string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
+            string[] split = text.Split(new string[] { externalLinkIdentifier, "\\n" }, StringSplitOptions.None);
             return split[0];
         }
 
