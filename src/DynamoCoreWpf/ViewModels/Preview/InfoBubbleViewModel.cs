@@ -1039,7 +1039,6 @@ namespace Dynamo.ViewModels
             LinkText = "";
         }
 
-
         //Check if has link
         private static string RemoveLinkFromText(string text)
         {
