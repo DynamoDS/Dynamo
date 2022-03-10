@@ -170,7 +170,7 @@ namespace DynamoCoreWpfTests
                 nodeView.PreviewControl.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
                 { RoutedEvent = Mouse.MouseEnterEvent });
             });
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();            
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
@@ -392,6 +392,27 @@ namespace DynamoCoreWpfTests
             // open preview bubble
             RaiseMouseEnterOnNode(nodeView);
             Assert.IsFalse(nodeView.PreviewControl.IsHidden, "Preview bubble for color range should be shown");
+        }
+
+        [Test]
+        public void PreviewBubble_AvoidDuplicatedWarningMessages()
+        {
+            Open(@"core\watch\WatchDuplicatedWarningMessages.dyn");
+            var nodeView = NodeViewWithGuid("67b46c3f-b60f-49d7-a8cf-bb9cc4a03450");
+
+            Assert.AreEqual(1, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+
+            var selectNodeCommand =
+             new Dynamo.Models.DynamoModel.SelectModelCommand(nodeView.ViewModel.Id.ToString(), System.Windows.Input.ModifierKeys.None.AsDynamoType());
+
+            Model.ExecuteCommand(selectNodeCommand);
+
+            Model.Copy();
+            Model.Paste();
+
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(1, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
         }
 
         [Test]

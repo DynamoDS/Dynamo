@@ -1192,7 +1192,8 @@ namespace Dynamo.ViewModels
             if (DynamoViewModel == null) return;
 
             bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning;
-            if (!NodeModel.WasInvolvedInExecution && !hasErrorOrWarning) return;
+
+            if (!(NodeModel.WasInvolvedInExecution && hasErrorOrWarning)) return;  
 
             // NOTE!: If tooltip is not cached here, it will be cleared once the dispatcher is invoked below
             string content = NodeModel.ToolTipText;
@@ -1245,8 +1246,7 @@ namespace Dynamo.ViewModels
                 }
                 WarningBarColor = GetWarningColor();
             }
-            
-            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
+            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);            
         }
 
         private void UpdateErrorBubblePosition()

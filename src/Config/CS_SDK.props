@@ -63,10 +63,6 @@
   <Target Name="CleanIntermediaryFolder" Condition="Exists('$(ProjectDir)$(BaseIntermediateOutputPath)')" BeforeTargets="Clean" >
      <RemoveDir ContinueOnError="WarnAndContinue" Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> <!-- int -->
   </Target>
-  <Target Name="CleanObjFolder" Condition="Exists('$(ProjectDir)obj')" BeforeTargets="Clean">
-	 <RemoveDir ContinueOnError="WarnAndContinue" Directories="$(ProjectDir)obj" />
-	 <!-- obj -->
-  </Target>
   <Target Name="CopyPackageData" AfterTargets="Build" Outputs="%(PackageReference.Identity)" >
     <PropertyGroup>
       <Local_CopyMetaData>%(PackageReference.CopyMetaData)</Local_CopyMetaData>
