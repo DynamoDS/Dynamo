@@ -464,6 +464,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// This property describes if the SaveButton will be enabled or not (when trying to save a new Style).
+        /// </summary>
         public bool IsSaveButtonEnabled
         {
             get

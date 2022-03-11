@@ -55,7 +55,6 @@ namespace Dynamo.Wpf.Views
 
             //We need to store the ScaleFactor value in a temporary variable always when the Preferences dialog is created.
             scaleValue = dynViewModel.ScaleFactorLog;
-
             ResetGroupStyleForm();
         }
 
