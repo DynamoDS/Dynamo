@@ -1594,7 +1594,7 @@ namespace Dynamo.Graph.Nodes
         private void ClearTooltipText()
         {
             ToolTipText = "";
-            infos.RemoveWhere(x => x.State == ElementState.Warning);
+            infos.RemoveWhere(x => x.State == ElementState.Warning || x.State == ElementState.Error);
         }
 
         private void ClearPersistentWarning()
@@ -1718,8 +1718,9 @@ namespace Dynamo.Graph.Nodes
         public void Error(string p)
         {
             State = ElementState.Error;
-            ToolTipText = p;
             infos.Add(new Info(p, ElementState.Error));
+
+            ToolTipText = p;
         }
 
         /// <summary>

@@ -1211,18 +1211,21 @@ namespace Dynamo.ViewModels
             var topLeft = new Point(NodeModel.X, NodeModel.Y);
             var botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
 
-            InfoBubbleViewModel.Style style = NodeModel.State == ElementState.Error
-                ? InfoBubbleViewModel.Style.Error
-                : InfoBubbleViewModel.Style.Warning;
-
             const InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
             var packets = new List<InfoBubbleDataPacket>(NodeModel.Infos.Count);
             foreach (var info in NodeModel.Infos)
             {
-                var data = new InfoBubbleDataPacket(style, topLeft, botRight, info.Message, connectingDirection);
+                var infoStyle = info.State == ElementState.Error ? InfoBubbleViewModel.Style.Error : InfoBubbleViewModel.Style.Warning;
+                var data = new InfoBubbleDataPacket(infoStyle, topLeft, botRight, info.Message, connectingDirection);
                 packets.Add(data);
-                ErrorBubble.UpdateContentCommand.Execute(data);
+                //ErrorBubble.UpdateContentCommand.Execute(data);
             }
+            InfoBubbleViewModel.Style style = NodeModel.State == ElementState.Error
+                ? InfoBubbleViewModel.Style.Error
+                : InfoBubbleViewModel.Style.Warning;
+
+            ErrorBubble.InfoBubbleStyle = style;
+            ErrorBubble.ConnectingDirection = connectingDirection;
 
             // If running Dynamo with UI, use dispatcher, otherwise not
             if (DynamoViewModel.UIDispatcher != null)
