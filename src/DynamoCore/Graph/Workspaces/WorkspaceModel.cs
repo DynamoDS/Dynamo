@@ -1614,6 +1614,11 @@ namespace Dynamo.Graph.Workspaces
             OnAnnotationRemoved(annotation);
         }
 
+        /// <summary>
+        /// Create parent group given child group,
+        /// so far only leveraged in tests so no analytics tracking added for this
+        /// </summary>
+        /// <param name="annotationModel"></param>
         internal void AddAnnotation(AnnotationModel annotationModel)
         {
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
@@ -1621,44 +1626,74 @@ namespace Dynamo.Graph.Workspaces
             AddNewAnnotation(annotationModel);
         }
 
+        /// <summary>
+        /// Wrapper function of group creation based on Dynamo selection
+        /// </summary>
+        /// <param name="text">Group description</param>
+        /// <param name="id">Group id</param>
+        /// <returns></returns>
         internal AnnotationModel AddAnnotation(string text, Guid id)
         {
-            var selectedNodes = this.Nodes == null ? null : this.Nodes.Where(s => s.IsSelected);
-            var selectedNotes = this.Notes == null ? null : this.Notes.Where(s => s.IsSelected);
-
-            if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
-            {
-                return null;
-            }
-
-            return CreateAndSubcribeAnnotationModel(selectedNodes, selectedNotes, id, text);
+            return AddAnnotation(string.Empty, text, id);
         }
 
+        /// <summary>
+        /// Wrapper function of group creation based on Dynamo selection
+        /// </summary>
+        /// <param name="titleText">Group title</param>
+        /// <param name="text">Group description</param>
+        /// <param name="id">Group id</param>
+        /// <returns></returns>
         internal AnnotationModel AddAnnotation(string titleText, string text, Guid id)
         {
-            var selectedNodes = this.Nodes == null ? null : this.Nodes.Where(s => s.IsSelected);
-            var selectedNotes = this.Notes == null ? null : this.Notes.Where(s => s.IsSelected);
+            var selectedNodes = Nodes?.Where(s => s.IsSelected);
+            var selectedNotes = Notes?.Where(s => s.IsSelected);
+            // Only allow single level of nest, in this case,
+            // if the selected group already has a child group
+            // skip from group creation
+            var selectedAnnotations = Annotations?.Where(s => s.IsSelected && !s.HasNestedGroups);
 
-            if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
+            // Remove nodes or notes selected which are already in the selected group
+            foreach(var group in selectedAnnotations)
             {
+                selectedNodes = selectedNodes.Except(group.Nodes.OfType<NodeModel>());
+                selectedNotes = selectedNotes.Except(group.Nodes.OfType<NoteModel>());
+            }
+
+            // Check if any of the selected nodes or notes already in a group which could happen
+            // when user select them from inside the group. In that case, we decided to disable group creation
+            if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes, selectedAnnotations))
+            {
+                // Return null so from an API level, this is consistent with context menu behavior
                 return null;
             }
 
-            return CreateAndSubcribeAnnotationModel(selectedNodes, selectedNotes, id, titleText, text);
+            return CreateAndSubcribeAnnotationModel(selectedNodes, selectedNotes, selectedAnnotations, id, titleText, text);
         }
 
+        /// <summary>
+        /// Create new group containing selected elements
+        /// </summary>
+        /// <param name="nodes">Selected nodes</param>
+        /// <param name="notes">Selected notes</param>
+        /// <param name="groups">Selected groups</param>
+        /// <param name="id">group id</param>
+        /// <param name="title">group title</param>
+        /// <param name="description">group description, defaulting to empty string</param>
+        /// <returns></returns>
         private AnnotationModel CreateAndSubcribeAnnotationModel(
             IEnumerable<NodeModel> nodes,
             IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> groups,
             Guid id,
-            string titel,
+            string title,
             string description = "")
         {
-            var annotationModel = new AnnotationModel(nodes, notes)
+            var annotationModel = new AnnotationModel(nodes, notes, groups)
             {
                 GUID = id,
                 AnnotationDescriptionText = description,
-                AnnotationText = titel
+                AnnotationText = title
             };
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
             annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
@@ -1668,6 +1703,42 @@ namespace Dynamo.Graph.Workspaces
 
             HasUnsavedChanges = true;
             return annotationModel;
+        }
+
+        /// <summary>
+        /// Checks if selected models exists in some group.
+        /// </summary>
+        /// <param name="selectedNodes">The selected nodes.</param>
+        /// <param name="selectedNotes">The selected notes.</param>
+        /// <param name="selectedGroups">The selected groups.</param>
+        /// <returns>true if any of the models are already in a group</returns>
+        private bool CheckIfModelExistsInSomeGroup(IEnumerable<NodeModel> selectedNodes, IEnumerable<NoteModel> selectedNotes, IEnumerable<AnnotationModel> selectedGroups)
+        {
+            foreach (var model in selectedNodes)
+            {
+                if (this.Annotations.ContainsModel(model))
+                {
+                    return true;
+                }
+            }
+
+            foreach (var model in selectedNotes)
+            {
+                if (this.Annotations.ContainsModel(model))
+                {
+                    return true;
+                }
+            }
+
+            foreach (var model in selectedGroups)
+            {
+                if (this.Annotations.ContainsModel(model))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -1706,30 +1777,6 @@ namespace Dynamo.Graph.Workspaces
             }
 
             return model;
-        }
-
-        /// <summary>
-        /// Checks if model exists in some group.
-        /// </summary>
-        /// <param name="selectNodes">The select nodes.</param>
-        /// <param name="selectNotes">The select notes.</param>
-        /// <returns>true if any of the models are already in a group</returns>
-        private bool CheckIfModelExistsInSomeGroup(IEnumerable<NodeModel> selectNodes, IEnumerable<NoteModel> selectNotes)
-        {
-            var selectedModels = selectNodes.Concat(selectNotes.Cast<ModelBase>()).ToList();
-            bool nodesInSomeGroup = false;
-            foreach (var group in this.Annotations)
-            {
-                var groupModels = group.Nodes;
-
-                //Selected models minus the ones in the current annotation
-                var modelsExceptGroup = selectedModels.Except(groupModels).ToList();
-
-                nodesInSomeGroup = modelsExceptGroup.Count() != selectedModels.Count();
-                if (nodesInSomeGroup)
-                    break;
-            }
-            return nodesInSomeGroup;
         }
 
         internal void ResetWorkspace()

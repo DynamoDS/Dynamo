@@ -251,7 +251,7 @@
     <value>I agree to data collection in desktop products for Autodesk analytics programs.</value>
   </data>
   <data name="ContextAddGroupFromSelection" xml:space="preserve">
-    <value>Add To Group</value>
+    <value>Add Node To Group</value>
     <comment>Context menu item</comment>
   </data>
   <data name="ContextCreateGroupFromSelection" xml:space="preserve">
@@ -2540,7 +2540,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>&lt;Click here to edit the group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
-    <value>Add Group to Group</value>
+    <value>Add Group to This Group</value>
   </data>
   <data name="NodeInformationalStateDismiss" xml:space="preserve">
     <value>Dismiss</value>
@@ -3042,5 +3042,8 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="PreferencesViewEmptyStyleWarning" xml:space="preserve">
     <value>Please enter a valid name</value>
+  </data>
+  <data name="GroupStyleContextAnnotation" xml:space="preserve">
+    <value>Group Style</value>
   </data>
 </root>

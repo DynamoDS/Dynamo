@@ -502,7 +502,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add To Group.
+        ///   Looks up a localized string similar to Add Node To Group.
         /// </summary>
         public static string ContextAddGroupFromSelection {
             get {
@@ -2921,7 +2921,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Group to Group.
+        ///   Looks up a localized string similar to Add Group to This Group.
         /// </summary>
         public static string GroupContextMenuAddGroupToGroup {
             get {
@@ -2989,6 +2989,15 @@ namespace Dynamo.Wpf.Properties {
         public static string GroupNameDefaultText {
             get {
                 return ResourceManager.GetString("GroupNameDefaultText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group Style.
+        /// </summary>
+        public static string GroupStyleContextAnnotation {
+            get {
+                return ResourceManager.GetString("GroupStyleContextAnnotation", resourceCulture);
             }
         }
         

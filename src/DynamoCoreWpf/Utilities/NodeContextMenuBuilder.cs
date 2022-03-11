@@ -84,6 +84,7 @@ namespace Dynamo.Wpf.Utilities
         /// <param name="isChecked"></param>
         /// <param name="visibility"></param>
         /// <param name="isEnabled"></param>
+        /// <param name="itemsSource"></param>
         /// <returns></returns>
         internal static MenuItem CreateMenuItem
         (

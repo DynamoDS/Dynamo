@@ -426,9 +426,11 @@ namespace Dynamo.ViewModels
         public void AddStyle(StyleItem style)
         {
             StyleItemsList.Add(style);
-            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { HexColorString = style.HexColorString, Name = style.GroupName });
+            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { HexColorString = style.HexColorString, Name = style.Name, IsDefault = style.IsDefault });
             RaisePropertyChanged(nameof(StyleItemsList));
         }
+
+      
 
         /// <summary>
         /// This flag will be in true when the Style that user is trying to add already exists (otherwise will be false - Default)
@@ -800,7 +802,7 @@ namespace Dynamo.ViewModels
             StyleItemsList = LoadStyles(preferenceSettings.GroupStyleItemsList);
           
             //When pressing the "Add Style" button some controls will be shown with some values by default so later they can be populated by the user
-            AddStyleControl = new StyleItem() { GroupName = "", HexColorString = "#" + GetRandomHexStringColor() };
+            AddStyleControl = new StyleItem() { Name = string.Empty, HexColorString = GetRandomHexStringColor() };
 
             //This piece of code will populate all the description text for the RadioButtons in the Geometry Scaling section.
             optionsGeometryScale = new GeometryScalingOptions();
@@ -838,6 +840,7 @@ namespace Dynamo.ViewModels
             WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
 
             PropertyChanged += Model_PropertyChanged;
+
         }
 
         /// <summary>
@@ -850,7 +853,7 @@ namespace Dynamo.ViewModels
             ObservableCollection<StyleItem> styles = new ObservableCollection<StyleItem>();
             foreach (var style in styleItemsList)
             {
-                styles.Add(new StyleItem { GroupName = style.Name, HexColorString = style.HexColorString });
+                styles.Add(new StyleItem { Name = style.Name, HexColorString = style.HexColorString, IsDefault = style.IsDefault });
             }
             return styles;
         }
@@ -1055,7 +1058,7 @@ namespace Dynamo.ViewModels
         /// <param name="groupName"></param>
         internal void RemoveStyleEntry(string groupName)
         {
-            StyleItem itemToRemove = (from item in StyleItemsList where item.GroupName.Equals(groupName) select item).FirstOrDefault();
+            StyleItem itemToRemove = (from item in StyleItemsList where item.Name.Equals(groupName) select item).FirstOrDefault();
             StyleItemsList.Remove(itemToRemove);
 
             GroupStyleItem itemToRemovePreferences = preferenceSettings.GroupStyleItemsList.FirstOrDefault(x => x.Name.Equals(groupName));
@@ -1071,7 +1074,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         internal bool ValidateExistingStyle(StyleItem item1)
         {
-            return StyleItemsList.Where(x => x.GroupName.Equals(item1.GroupName)).Any();
+            return StyleItemsList.Where(x => x.Name.Equals(item1.Name)).Any();
         }
 
         /// <summary>
@@ -1079,8 +1082,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void ResetAddStyleControl()
         {
-            AddStyleControl.GroupName = String.Empty;
-            AddStyleControl.HexColorString = "#" + GetRandomHexStringColor();
+            AddStyleControl.Name = String.Empty;
+            AddStyleControl.HexColorString = GetRandomHexStringColor();
             IsWarningEnabled = false;
         }
 
@@ -1100,41 +1103,6 @@ namespace Dynamo.ViewModels
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 AddPythonEnginesOptions();
-            }
-        }
-    }
-
-    /// <summary>
-    /// This Class will act as a container for each of the StyleItems in the Styles list located in in the Visual Settings -> Group Styles section
-    /// </summary>
-    public class StyleItem : ViewModelBase
-    {
-        private string groupName;
-        private string hexColorString;
-
-        /// <summary>
-        /// This property will containt the Group Name thas was added by the user when creating a new Style
-        /// </summary>
-        public string GroupName
-        {
-            get { return groupName; }
-            set
-            {
-                groupName = value;
-                RaisePropertyChanged(nameof(GroupName));
-            }
-        }
-
-        /// <summary>
-        /// This property represents a color in a hexadecimal representation (with the # character at the beginning of the string)
-        /// </summary>
-        public string HexColorString
-        {
-            get { return hexColorString; }
-            set
-            {
-                hexColorString = value;
-                RaisePropertyChanged(nameof(HexColorString));
             }
         }
     }

@@ -515,7 +515,9 @@ namespace DynamoCoreWpfTests
         {
             // Test that thte group style list is being initialized with an empty list                       
             Assert.NotNull(ViewModel.PreferenceSettings.GroupStyleItemsList);
-            Assert.AreEqual(0, ViewModel.PreferenceSettings.GroupStyleItemsList.Count);
+
+            //Now by default we will have always 4 GroupStyles added by Dynamo
+            Assert.AreEqual(4, ViewModel.PreferenceSettings.GroupStyleItemsList.Count);
 
             // Test serialization of GroupStyles 
             string tempPath = System.IO.Path.GetTempPath();
@@ -533,16 +535,16 @@ namespace DynamoCoreWpfTests
             resultSetting = PreferenceSettings.Load(tempPath);
 
             // Test if the fields are being saved
-            Assert.AreEqual(1, initalSetting.GroupStyleItemsList.Count);
-            Assert.AreEqual(resultSetting.GroupStyleItemsList[0].Name, initalSetting.GroupStyleItemsList[0].Name);
-            Assert.AreEqual(resultSetting.GroupStyleItemsList[0].HexColorString, initalSetting.GroupStyleItemsList[0].HexColorString);
+            Assert.AreEqual(5, initalSetting.GroupStyleItemsList.Count);
+            Assert.AreEqual(resultSetting.GroupStyleItemsList[4].Name, initalSetting.GroupStyleItemsList[4].Name);
+            Assert.AreEqual(resultSetting.GroupStyleItemsList[4].HexColorString, initalSetting.GroupStyleItemsList[4].HexColorString);
 
             // Test loading the settings defined in the xml configuration file
             var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-OneGroupStyle.xml");
             PreferenceSettings OneGroupStyle = PreferenceSettings.Load(filePath);
-            Assert.AreEqual(1, OneGroupStyle.GroupStyleItemsList.Count);
-            Assert.AreEqual(OneGroupStyle.GroupStyleItemsList[0].Name, initalSetting.GroupStyleItemsList[0].Name);
-            Assert.AreEqual(OneGroupStyle.GroupStyleItemsList[0].HexColorString, initalSetting.GroupStyleItemsList[0].HexColorString);
+            Assert.AreEqual(5, OneGroupStyle.GroupStyleItemsList.Count);
+            Assert.AreEqual(OneGroupStyle.GroupStyleItemsList[4].Name, initalSetting.GroupStyleItemsList[4].Name);
+            Assert.AreEqual(OneGroupStyle.GroupStyleItemsList[4].HexColorString, initalSetting.GroupStyleItemsList[4].HexColorString);
         }
 
         [Test]

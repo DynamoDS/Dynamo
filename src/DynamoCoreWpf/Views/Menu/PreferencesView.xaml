@@ -55,7 +55,7 @@
                                     <RowDefinition Height="*"></RowDefinition>
                                 </Grid.RowDefinitions>
                                 <Label Name="groupNameLabel"
-                                        Content="{Binding GroupName}"
+                                        Content="{Binding Name}"
                                         HorizontalAlignment="Left"
                                         Grid.Row="0"
                                         Margin="5,0,0,0"
@@ -573,7 +573,7 @@
                                                           Margin="10"
                                                           Height="25"
                                                           Width="300"
-                                                          Text="{Binding AddStyleControl.GroupName}"
+                                                          Text="{Binding AddStyleControl.Name}"
                                                           Tag="{x:Static p:Resources.PreferencesViewVisualSettingsGroupStyleInput}"/>
                                                 <Grid Grid.Row="1"
                                                       Margin="10,0,10,0"
@@ -587,7 +587,7 @@
                                                             Grid.Column="0">
                                                         <Button x:Name="buttonColorPicker"
                                                                 Style="{StaticResource ButtonColorPickerStyle}"
-                                                                Background="{Binding AddStyleControl.HexColorString}" 
+                                                                Background="{Binding AddStyleControl.HexColorString, Converter={StaticResource StringToBrushColorConverter}}"
                                                                 Click="ButtonColorPicker_Click"
                                                                 Width="25" 
                                                                 Height="15"/>

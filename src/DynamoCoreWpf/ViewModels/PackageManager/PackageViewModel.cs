@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows;
 using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.Properties;
@@ -390,6 +391,7 @@ namespace Dynamo.ViewModels
             if (Directory.Exists(Model.RootDirectory))
             {
                 Process.Start(Model.RootDirectory);
+                Analytics.TrackEvent(Actions.Open, Categories.PackageManagerOperations, $"{Model?.Name}");
             }
             else
             {
