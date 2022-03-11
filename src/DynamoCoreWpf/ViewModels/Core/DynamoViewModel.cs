@@ -1690,9 +1690,9 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
 
                 // If the current workspace is a CustomNodeWorkspaceModel, then call the save method on it.
-                if (currentWorkspaceViewModel.Model is CustomNodeWorkspaceModel)
+                if (CurrentSpaceViewModel.Model is CustomNodeWorkspaceModel)
                 {
-                    currentWorkspaceViewModel.Model.Save(path, false, Model.EngineController);
+                    CurrentSpaceViewModel.Model.Save(path, false, Model.EngineController);
                 }
                 else
                 {
