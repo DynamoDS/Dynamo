@@ -1688,7 +1688,17 @@ namespace Dynamo.ViewModels
             try
             {
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
-                CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
+
+                // If the current workspace is a CustomNodeWorkspaceModel, then call the save method on it.
+                if (currentWorkspaceViewModel.Model is CustomNodeWorkspaceModel)
+                {
+                    currentWorkspaceViewModel.Model.Save(path, false, Model.EngineController);
+                }
+                else
+                {
+                    CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
+                }
+
                 if (!isBackup) AddToRecentFiles(path);
             }
             catch (Exception ex)
