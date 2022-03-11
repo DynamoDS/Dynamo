@@ -420,7 +420,8 @@
                     Orientation="Horizontal">
             <Grid x:Name="FrozenGlyph" 
                   Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
-                <Image Width="16px"
+                <Image x:Name="FrozenImage"
+                       Width="16px"
                        Height="16px"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
@@ -429,7 +430,8 @@
             </Grid>
             <Grid x:Name="HiddenEyeGlyph" 
                   Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, Mode=OneWay}">
-                <Image Width="16px"
+                <Image x:Name="HiddenEyeImage"
+                       Width="16px"
                        Height="16px"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
@@ -599,6 +601,7 @@
                           HorizontalAlignment="Center" VerticalAlignment="Bottom"
                           Visibility="{Binding ImgGlyphThreeSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <Image Stretch="Uniform"  HorizontalAlignment="Center" VerticalAlignment="Bottom" 
+                       x:Name="ZoomStateImgOne"
                        Width="64"
                        Source="{Binding ImgGlyphThreeSource, UpdateSourceTrigger=PropertyChanged}"
                        Visibility="{Binding ImgGlyphThreeSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
@@ -612,6 +615,7 @@
                     <ColumnDefinition Width="{Binding ImgGlyphTwoSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0"
+                       x:Name="ZoomStateImgTwo"
                        Stretch="Uniform" 
                        HorizontalAlignment="Left" VerticalAlignment="Center"
                        Margin="5 0 "
@@ -619,6 +623,7 @@
                        Source="{Binding ImgGlyphOneSource, UpdateSourceTrigger=PropertyChanged}"
                        Visibility="{Binding ImgGlyphOneSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
                 <Image Grid.Column="1"
+                       x:Name="ZoomStateImgThree"
                        Stretch="Uniform"  
                        HorizontalAlignment="Right" VerticalAlignment="Center" 
                        Margin="5 0"
