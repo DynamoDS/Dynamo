@@ -395,7 +395,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void PreviewBubble_AvoidDuplicatedWarningMessages()
+        public void InfoBubble_AvoidDuplicatedWarningMessages()
         {
             Open(@"core\watch\WatchDuplicatedWarningMessages.dyn");
             var nodeView = NodeViewWithGuid("67b46c3f-b60f-49d7-a8cf-bb9cc4a03450");
@@ -413,6 +413,33 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             Assert.AreEqual(1, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+        }
+
+        [Test]
+        public void InfoBubble_ShowsWarningOnCopyPastedCBN()
+        {
+            Open(@"core\watch\ShowsWarningOnCopyPastedCBN.dyn");
+            var nodeView = NodeViewWithGuid("686892b3-ea1d-4a1a-9c50-a891eb4479f6");
+
+            Assert.AreEqual(2, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+
+            var selectNodeCommand =
+             new Dynamo.Models.DynamoModel.SelectModelCommand(nodeView.ViewModel.Id.ToString(), System.Windows.Input.ModifierKeys.None.AsDynamoType());
+
+            Model.ExecuteCommand(selectNodeCommand);
+
+            Model.Copy();
+            Model.Paste();
+
+            DispatcherUtil.DoEvents();
+
+            var nodes = Model.CurrentWorkspace.Nodes;
+            Assert.AreEqual(2, nodes.Count());
+            foreach (var node in nodes)
+            {
+                var nView = NodeViewWithGuid(node.GUID.ToString());
+                Assert.AreEqual(2, nView.ViewModel.ErrorBubble.NodeMessages.Count);
+            }
         }
 
         [Test]

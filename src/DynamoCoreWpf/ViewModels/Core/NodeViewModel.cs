@@ -1222,14 +1222,12 @@ namespace Dynamo.ViewModels
                 var infoStyle = info.State == ElementState.Error ? InfoBubbleViewModel.Style.Error : InfoBubbleViewModel.Style.Warning;
                 var data = new InfoBubbleDataPacket(infoStyle, topLeft, botRight, info.Message, connectingDirection);
                 packets.Add(data);
-                //ErrorBubble.UpdateContentCommand.Execute(data);
             }
             InfoBubbleViewModel.Style style = NodeModel.State == ElementState.Error
                 ? InfoBubbleViewModel.Style.Error
                 : InfoBubbleViewModel.Style.Warning;
 
             ErrorBubble.InfoBubbleStyle = style;
-            ErrorBubble.ConnectingDirection = connectingDirection;
 
             // If running Dynamo with UI, use dispatcher, otherwise not
             if (DynamoViewModel.UIDispatcher != null)
