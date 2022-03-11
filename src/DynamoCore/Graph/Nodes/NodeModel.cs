@@ -1736,8 +1736,12 @@ namespace Dynamo.Graph.Nodes
                 State = ElementState.PersistentWarning;
                 if (!string.Equals(persistentWarning, p))
                 {
-                    persistentWarning += string.IsNullOrEmpty(persistentWarning) ? p : $"{Environment.NewLine}{p}";
-                    infos.Add(new Info(p, State));
+                    persistentWarning += string.IsNullOrEmpty(persistentWarning) ? p : $"\n{p}";
+                    var texts = persistentWarning.Split(new[] { "\n" }, StringSplitOptions.None);
+                    foreach (var text in texts)
+                    {
+                        infos.Add(new Info(text, State));
+                    }
                 }
                 ToolTipText = persistentWarning;
             }

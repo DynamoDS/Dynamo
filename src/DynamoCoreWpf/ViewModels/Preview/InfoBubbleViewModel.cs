@@ -1076,8 +1076,6 @@ namespace Dynamo.ViewModels
             return 
                 Style == other.Style &&
                 Text == other.Text &&
-                TopLeft == other.TopLeft &&
-                BotRight == other.BotRight &&
                 Link == other.Link &&
                 ConnectingDirection == other.ConnectingDirection;
         }

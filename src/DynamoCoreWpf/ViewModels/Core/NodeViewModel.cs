@@ -1193,7 +1193,14 @@ namespace Dynamo.ViewModels
 
             bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning;
 
-            if (!(NodeModel.WasInvolvedInExecution && hasErrorOrWarning)) return;
+            if (NodeModel is CodeBlockNodeModel)
+            {
+                if (!hasErrorOrWarning) return;
+            }
+            else
+            {
+                if (!(NodeModel.WasInvolvedInExecution && hasErrorOrWarning)) return;
+            }
 
             if (!NodeModel.Infos.Any()) return;
 
