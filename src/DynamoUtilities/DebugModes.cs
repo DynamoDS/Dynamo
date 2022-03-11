@@ -52,6 +52,8 @@ namespace Dynamo.Utilities
 
         internal static void LoadDebugModesStatusFromConfig(string configPath)
         {
+            if (!File.Exists(configPath)) return;
+
             try
             {
                 XmlDocument xmlDoc;

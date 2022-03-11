@@ -52,6 +52,13 @@ namespace Dynamo.Models
             //ClipBoard.Clear();
         }
 
+        protected virtual void OpenFileFromJsonImpl(OpenFileFromJsonCommand command)
+        {
+            string fileContents = command.FileContents;
+            bool forceManualMode = command.ForceManualExecutionMode;
+            OpenFileFromJson(fileContents, forceManualMode);
+        }
+
         private void RunCancelImpl(RunCancelCommand command)
         {
             var model = CurrentWorkspace as HomeWorkspaceModel;

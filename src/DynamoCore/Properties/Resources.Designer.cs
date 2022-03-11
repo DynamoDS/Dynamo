@@ -651,6 +651,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File load failure.
+        /// </summary>
+        public static string FileLoadFailureMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("FileLoadFailureMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your file may not open correctly.
         /// </summary>
         public static string FileNotOpenedCorrectly {
