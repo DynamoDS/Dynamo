@@ -756,11 +756,16 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         public override void Deselect()
         {           
-            foreach (var models in Nodes)
+            foreach (var model in Nodes)
             {
-                models.IsSelected = false;
-            }   
-       
+                model.IsSelected = false;
+                // De-select all elements under the deleted group if there is any nested group
+                if (model is AnnotationModel)
+                {
+                    (model as AnnotationModel).Deselect();
+                }
+            }
+
             base.Deselect();
         }
 
@@ -787,7 +792,7 @@ namespace Dynamo.Graph.Annotations
                 foreach (var model in this.Nodes)
                 {
                     model.PropertyChanged -= model_PropertyChanged;
-                    model.Disposed -= model_Disposed;                    
+                    model.Disposed -= model_Disposed;
                 }
             }
             base.Dispose();

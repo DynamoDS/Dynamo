@@ -16,6 +16,7 @@ using TextBox = System.Windows.Controls.TextBox;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Graph.Annotations;
 using Dynamo.Logging;
+using Dynamo.Configuration;
 
 namespace Dynamo.Nodes
 {
@@ -437,6 +438,64 @@ namespace Dynamo.Nodes
         private void GroupDescriptionControls_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             SetTextHeight();
+        }
+
+        /// <summary>
+        /// According to the current GroupStyle selected (or not selected) in the ContextMenu several actions can be executed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GroupStyleCheckmark_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItemSelected = sender as MenuItem;
+            if (menuItemSelected == null) return;
+
+            var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItem;
+            if (groupStyleItemSelected == null) return;
+
+            //Means that no GroupStyle (Default, Custom) has been selected then the clicked one will be selected
+            if (ViewModel.CurrentGroupStyleSelected == null)
+            {
+                ViewModel.UpdateGroupStyle(groupStyleItemSelected);
+                return;
+            }           
+
+            //Means that the user clicked over a MenuItem that is already selected, when we need uncheck it if is not a Default Style
+            if (groupStyleItemSelected != ViewModel.CurrentGroupStyleSelected && groupStyleItemSelected.IsChecked == false)
+            {
+                ViewModel.UpdateGroupStyle(groupStyleItemSelected);
+                return;
+            }
+            
+            //Means that the GroupStyle selected is not a Default Style and is already checked
+            if (ViewModel.CurrentGroupStyleSelected.IsChecked == true && !groupStyleItemSelected.IsDefault)
+            {
+                var groupStyleItems = ViewModel.GroupStyleList.OfType<GroupStyleItem>();
+                var firstDefaultGroupStyle = groupStyleItems.Where(item => item.IsDefault == true).FirstOrDefault();
+                ViewModel.UpdateGroupStyle(firstDefaultGroupStyle);
+                return;
+            }
+        }
+
+        private void GroupStyleCheckmark_Checked(object sender, RoutedEventArgs e)
+        {
+            var menuItemSelected = sender as MenuItem;
+            if (menuItemSelected == null) return;
+
+            var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItem;
+            if (groupStyleItemSelected == null) return;
+
+            ViewModel.CurrentGroupStyleSelected = groupStyleItemSelected;
+        }
+
+        /// <summary>
+        /// When the GroupStyle Submenu is opened then we need to re-load the GroupStyles in the ContextMenu (in case more Styles were added in Preferences panel).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GroupStyleAnnotation_SubmenuOpened(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ReloadGroupStyles();
         }
     }
 }
