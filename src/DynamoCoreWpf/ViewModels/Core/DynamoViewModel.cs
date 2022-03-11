@@ -1556,7 +1556,10 @@ namespace Dynamo.ViewModels
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, "Json file content");
                     }
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
-                    System.Windows.MessageBox.Show(errorMsgString);
+                    Wpf.Utilities.MessageBoxService.Show(errorMsgString, 
+                        Properties.Resources.FileLoadFailureMessageBoxTitle, 
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Exclamation);
                 }
                 else
                 {
@@ -1635,23 +1638,8 @@ namespace Dynamo.ViewModels
 
         private bool CanOpenFromJson(object parameters)
         {
-            string fileContent = parameters as string;
-            if (string.IsNullOrEmpty(fileContent))
-            {
-                return false;
-            }
-
-            try
-            {
-                var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContent);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Dynamo.Logging.LogMessage.Error(e);
-            }
-
-            return false;
+            string fileContents = parameters as string;
+            return PathHelper.isFileContentsValidJson(fileContents, out _);
         }
 
         /// <summary>

@@ -834,4 +834,7 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="LibraryLoadFailureMessageBoxTitle" xml:space="preserve">
     <value>Library load failure</value>
   </data>
+  <data name="FileLoadFailureMessageBoxTitle" xml:space="preserve">
+    <value>File load failure</value>
+  </data>
 </root>

@@ -141,70 +141,70 @@ namespace Dynamo.Models
 
                 switch (element.Name)
                 {
-                    case "OpenFileCommand":
+                    case nameof(OpenFileCommand):
                         command = OpenFileCommand.DeserializeCore(element);
                         break;
-                    case "OpenFileFromJsonCommand":
+                    case nameof(OpenFileFromJsonCommand):
                         command = OpenFileFromJsonCommand.DeserializeCore(element);
                         break;
-                    case "PausePlaybackCommand":
+                    case nameof(PausePlaybackCommand):
                         command = PausePlaybackCommand.DeserializeCore(element);
                         break;
-                    case "RunCancelCommand":
+                    case nameof(RunCancelCommand):
                         command = RunCancelCommand.DeserializeCore(element);
                         break;
-                    case "CreateNodeCommand":
+                    case nameof(CreateNodeCommand):
                         command = CreateNodeCommand.DeserializeCore(element);
                         break;
-                    case "SelectModelCommand":
+                    case nameof(SelectModelCommand):
                         command = SelectModelCommand.DeserializeCore(element);
                         break;
-                    case "CreateNoteCommand":
+                    case nameof(CreateNoteCommand):
                         command = CreateNoteCommand.DeserializeCore(element);
                         break;
-                    case "SelectInRegionCommand":
+                    case nameof(SelectInRegionCommand):
                         command = SelectInRegionCommand.DeserializeCore(element);
                         break;
-                    case "DragSelectionCommand":
+                    case nameof(DragSelectionCommand):
                         command = DragSelectionCommand.DeserializeCore(element);
                         break;
-                    case "MakeConnectionCommand":
+                    case nameof(MakeConnectionCommand):
                         command = MakeConnectionCommand.DeserializeCore(element);
                         break;
-                    case "DeleteModelCommand":
+                    case nameof(DeleteModelCommand):
                         command = DeleteModelCommand.DeserializeCore(element);
                         break;
-                    case "UndoRedoCommand":
+                    case nameof(UndoRedoCommand):
                         command = UndoRedoCommand.DeserializeCore(element);
                         break;
-                    case "ModelEventCommand":
+                    case nameof(ModelEventCommand):
                         command = ModelEventCommand.DeserializeCore(element);
                         break;
-                    case "UpdateModelValueCommand":
+                    case nameof(UpdateModelValueCommand):
                         command = UpdateModelValueCommand.DeserializeCore(element);
                         break;
-                    case "ConvertNodesToCodeCommand":
+                    case nameof(ConvertNodesToCodeCommand):
                         command = ConvertNodesToCodeCommand.DeserializeCore(element);
                         break;
-                    case "CreateCustomNodeCommand":
+                    case nameof(CreateCustomNodeCommand):
                         command = CreateCustomNodeCommand.DeserializeCore(element);
                         break;
-                    case "SwitchTabCommand":
+                    case nameof(SwitchTabCommand):
                         command = SwitchTabCommand.DeserializeCore(element);
                         break;
-                    case "CreateAnnotationCommand":
+                    case nameof(CreateAnnotationCommand):
                         command = CreateAnnotationCommand.DeserializeCore(element);
                         break;
-                    case "UngroupModelCommand":
+                    case nameof(UngroupModelCommand):
                         command = UngroupModelCommand.DeserializeCore(element);
                         break;
-                    case "AddPresetCommand":
+                    case nameof(AddPresetCommand):
                         command = AddPresetCommand.DeserializeCore(element);
                         break;
-                    case "ApplyPresetCommand":
+                    case nameof(ApplyPresetCommand):
                         command = ApplyPresetCommand.DeserializeCore(element);
                         break;
-                    case "CreateAndConnectNodeCommand":
+                    case nameof(CreateAndConnectNodeCommand):
                         command = CreateAndConnectNodeCommand.DeserializeCore(element);
                         break;
                 }
@@ -606,7 +606,7 @@ namespace Dynamo.Models
             {
                 // Log file open action and the number of nodes in the opened workspace
                 Dynamo.Logging.Analytics.TrackFileOperationEvent(
-                    dynamoModel.CurrentWorkspace.Name,
+                    "In memory json file",
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
 
