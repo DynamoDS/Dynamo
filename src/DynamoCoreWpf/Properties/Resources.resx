@@ -3027,4 +3027,7 @@ To install the latest version of a package, click Install. \n
   <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
     <value>Group Name</value>
   </data>
+  <data name="GroupStyleContextAnnotation" xml:space="preserve">
+    <value>Group Style</value>
+  </data>
 </root>

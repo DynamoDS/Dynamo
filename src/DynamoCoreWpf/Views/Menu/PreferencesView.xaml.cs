@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Logging;
-using Dynamo.Models;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -173,10 +171,10 @@ namespace Dynamo.Wpf.Views
 
             var colorHexString = grid.FindName("colorHexVal") as Label;
 
-            var newItem = new StyleItem() { GroupName = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString() };
+            var newItem = new StyleItem() { Name = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString() };
 
-            if (string.IsNullOrEmpty(newItem.GroupName))
-                newItem.GroupName = "Input";
+            if (string.IsNullOrEmpty(newItem.Name))
+                newItem.Name = "Input";
 
             //if the validation returns false it means that the new style that will be added doesn't exists
             if (viewModel.ValidateExistingStyle(newItem) == false)

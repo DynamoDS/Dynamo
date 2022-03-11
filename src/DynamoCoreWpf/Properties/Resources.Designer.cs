@@ -2993,6 +2993,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group Style.
+        /// </summary>
+        public static string GroupStyleContextAnnotation {
+            get {
+                return ResourceManager.GetString("GroupStyleContextAnnotation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide Classic Node Library.
         /// </summary>
         public static string HideClassicNodeLibrary {
