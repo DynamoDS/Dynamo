@@ -152,7 +152,6 @@ namespace Dynamo.WorkspaceDependency
                             info.Path = customNodeInfo.Path;
                         }
                     }
-
                     info.Size = PathHelper.GetFileSize(info.Path);
                 }
                 catch (Exception ex)
