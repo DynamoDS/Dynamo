@@ -128,6 +128,42 @@ namespace DynamoUtilities
         }
 
         /// <summary>
+        /// This is a utility method for checking if a given string represents a valid Json document.
+        /// </summary>
+        /// <param name="fileContents"> string contents of target json file</param>
+        /// <returns>Return true if fileContents is Json, false if file is not Json, exception as out param</returns>
+        public static bool isFileContentsValidJson(string fileContents, out Exception ex)
+        {
+            ex = null;
+            if (string.IsNullOrEmpty(fileContents))
+            {
+                ex = new JsonReaderException();
+                return false;
+            }
+            
+            try
+            {
+                fileContents = fileContents.Trim();
+                if ((fileContents.StartsWith("{") && fileContents.EndsWith("}")) || //For object
+                    (fileContents.StartsWith("[") && fileContents.EndsWith("]"))) //For array
+                {
+                    var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
+                    return true;
+                }
+                else 
+                {
+                    ex = new JsonReaderException();
+                }
+            }
+            catch(Exception e)
+            {
+                ex = e;
+            }
+            
+            return false;
+        }
+
+        /// <summary>
         /// This is a utility method for checking if given path contains valid Json document.
         /// </summary>
         /// <param name="path">path to the target json file</param>
@@ -139,16 +175,7 @@ namespace DynamoUtilities
             try
             {
                 fileContents = File.ReadAllText(path);
-                fileContents = fileContents.Trim();
-                if ((fileContents.StartsWith("{") && fileContents.EndsWith("}")) || //For object
-                    (fileContents.StartsWith("[") && fileContents.EndsWith("]"))) //For array
-                {
-                    var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
-                    ex = null;
-                    return true;
-                }
-                ex = new JsonReaderException();
-                return false;
+                return isFileContentsValidJson(fileContents, out ex);
             }
             catch (Exception e) //some other exception
             {
