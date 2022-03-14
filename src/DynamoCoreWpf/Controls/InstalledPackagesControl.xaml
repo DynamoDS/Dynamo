@@ -109,7 +109,7 @@
                                                     </TextBlock.ToolTip>
                                                 </TextBlock>
                                                 <TextBlock Text="{Binding Path=Model.VersionName}"
-                                                               MinWidth="50"
+                                                               MinWidth="70"
                                                                FontSize="11"
                                                                Foreground="{StaticResource PreferencesWindowFontColor}"></TextBlock>
                                                 <Grid Height="18"
