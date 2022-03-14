@@ -3043,4 +3043,7 @@ To install the latest version of a package, click Install. \n
   <data name="GroupStyleContextAnnotation" xml:space="preserve">
     <value>Group Style</value>
   </data>
+  <data name="ContextPinToNodeTooltip" xml:space="preserve">
+    <value>Select a node to pin to this note.</value>
+  </data>
 </root>
