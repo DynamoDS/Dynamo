@@ -152,7 +152,6 @@ namespace Dynamo.WorkspaceDependency
                             info.Path = customNodeInfo.Path;
                         }
                     }
-
                     info.Size = PathHelper.GetFileSize(info.Path);
                 }
                 catch (Exception ex)
@@ -160,12 +159,12 @@ namespace Dynamo.WorkspaceDependency
                     dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
                 }
 
-                HasDependencyIssue = info.Path == null;
+                HasDependencyIssue = string.IsNullOrEmpty(info.Path);
             }
 
             foreach (DependencyInfo info in externalFiles)
             {
-                HasDependencyIssue = info.Path == null;
+                HasDependencyIssue = string.IsNullOrEmpty(info.Path);
             }
 
             var pythonPackageDependencies = ws.OnRequestPackageDependencies();
