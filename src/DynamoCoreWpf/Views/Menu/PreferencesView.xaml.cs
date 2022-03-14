@@ -191,7 +191,7 @@ namespace Dynamo.Wpf.Views
                 viewModel.IsWarningEnabled = true;
                 viewModel.IsSaveButtonEnabled = false;
             }
-            else if (viewModel.ValidateExistingStyle(newItem) == true)
+            else if (viewModel.ValidateExistingStyle(newItem))
             {
                 viewModel.CurrentWarningMessage = Res.PreferencesViewAlreadyExistingStyleWarning;
                 viewModel.IsWarningEnabled = true;
