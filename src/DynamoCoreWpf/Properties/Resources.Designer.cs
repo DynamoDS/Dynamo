@@ -2786,7 +2786,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn more about Dynamo in the #online help=https://primer.dynamobim.org/.
+        ///   Looks up a localized string similar to Learn more about Dynamo in the #online help=https://primer2.dynamobim.org/.
         /// </summary>
         public static string GetStartedGuideSurveyText {
             get {
