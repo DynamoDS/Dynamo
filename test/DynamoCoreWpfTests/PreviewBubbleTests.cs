@@ -8,6 +8,7 @@ using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
+using Dynamo.Models;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
@@ -403,7 +404,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
 
             var selectNodeCommand =
-             new Dynamo.Models.DynamoModel.SelectModelCommand(nodeView.ViewModel.Id.ToString(), System.Windows.Input.ModifierKeys.None.AsDynamoType());
+             new DynamoModel.SelectModelCommand(nodeView.ViewModel.Id.ToString(), System.Windows.Input.ModifierKeys.None.AsDynamoType());
 
             Model.ExecuteCommand(selectNodeCommand);
 
@@ -424,7 +425,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
 
             var selectNodeCommand =
-             new Dynamo.Models.DynamoModel.SelectModelCommand(nodeView.ViewModel.Id.ToString(), System.Windows.Input.ModifierKeys.None.AsDynamoType());
+             new DynamoModel.SelectModelCommand(nodeView.ViewModel.Id.ToString(), System.Windows.Input.ModifierKeys.None.AsDynamoType());
 
             Model.ExecuteCommand(selectNodeCommand);
 
@@ -452,7 +453,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
 
             var cbnGuid = Guid.Parse(guid);
-            var command = new Dynamo.Models.DynamoModel.UpdateModelValueCommand(
+            var command = new DynamoModel.UpdateModelValueCommand(
                 Guid.Empty, cbnGuid, "Code", @"a=0;
                                                a="";
                                                b=0..1;
@@ -479,6 +480,54 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
 
             var cbnGuid = Guid.Parse(guid);
+            var command = new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, cbnGuid, "Code", @"a=0;
+                                               a="";
+                                               b=0..1;
+                                               c=b[2];
+                                               %$#^$@;");
+            Model.ExecuteCommand(command);
+
+            var selectNodeCommand =
+             new DynamoModel.SelectModelCommand(nodeView.ViewModel.Id.ToString(), System.Windows.Input.ModifierKeys.None.AsDynamoType());
+
+            Model.ExecuteCommand(selectNodeCommand);
+
+            Model.Copy();
+            Model.Paste();
+
+            DispatcherUtil.DoEvents();
+
+            var nodes = Model.CurrentWorkspace.Nodes;
+            Assert.AreEqual(2, nodes.Count());
+
+            var msgs = nodeView.ViewModel.ErrorBubble.NodeMessages;
+            Assert.AreEqual(3, msgs.Count);
+            var warnings = msgs.Where(x => x.Style == Dynamo.ViewModels.InfoBubbleViewModel.Style.Warning);
+            Assert.AreEqual(2, warnings.Count());
+
+            var errors = msgs.Where(x => x.Style == Dynamo.ViewModels.InfoBubbleViewModel.Style.Error);
+            Assert.AreEqual(1, errors.Count());
+
+            var copy = nodes.Where(n => n.GUID.ToString() != guid).FirstOrDefault();
+            nodeView = NodeViewWithGuid(copy.GUID.ToString());
+            msgs = nodeView.ViewModel.ErrorBubble.NodeMessages;
+            Assert.AreEqual(1, msgs.Count);
+
+            errors = msgs.Where(x => x.Style == Dynamo.ViewModels.InfoBubbleViewModel.Style.Error);
+            Assert.AreEqual(1, errors.Count());
+        }
+
+        [Test]
+        public void InfoBubble_ShowsError_CopyPastedCBN_UndoRedo()
+        {
+            Open(@"core\watch\ShowsWarningOnCopyPastedCBN.dyn");
+            var guid = "686892b3-ea1d-4a1a-9c50-a891eb4479f6";
+            var nodeView = NodeViewWithGuid(guid);
+
+            Assert.AreEqual(2, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+
+            var cbnGuid = Guid.Parse(guid);
             var command = new Dynamo.Models.DynamoModel.UpdateModelValueCommand(
                 Guid.Empty, cbnGuid, "Code", @"a=0;
                                                a="";
@@ -488,12 +537,18 @@ namespace DynamoCoreWpfTests
             Model.ExecuteCommand(command);
 
             var selectNodeCommand =
-             new Dynamo.Models.DynamoModel.SelectModelCommand(nodeView.ViewModel.Id.ToString(), System.Windows.Input.ModifierKeys.None.AsDynamoType());
+             new DynamoModel.SelectModelCommand(nodeView.ViewModel.Id.ToString(), System.Windows.Input.ModifierKeys.None.AsDynamoType());
 
             Model.ExecuteCommand(selectNodeCommand);
 
             Model.Copy();
             Model.Paste();
+
+            var undoCommand = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
+            Model.ExecuteCommand(undoCommand);
+
+            var redoCommand = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Redo);
+            Model.ExecuteCommand(redoCommand);
 
             DispatcherUtil.DoEvents();
 
