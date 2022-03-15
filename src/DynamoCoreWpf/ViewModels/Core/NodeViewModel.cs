@@ -1201,7 +1201,7 @@ namespace Dynamo.ViewModels
             // 1. Compile-time warnings in CBNs
             // 2. Obsolete nodes with warnings
             // 3. Dummy or unresolved nodes
-            if (NodeModel.State != ElementState.PersistentWarning)
+            if (NodeModel.State != ElementState.PersistentWarning && !NodeModel.IsInErrorState)
             {
                 if (!(NodeModel.WasInvolvedInExecution && hasErrorOrWarning)) return;
             }
