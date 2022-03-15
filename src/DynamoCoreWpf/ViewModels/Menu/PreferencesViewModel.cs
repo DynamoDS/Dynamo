@@ -64,10 +64,14 @@ namespace Dynamo.ViewModels
         private HomeWorkspaceModel homeSpace;
         private DynamoViewModel dynamoViewModel;
         private bool isWarningEnabled;
+        private string currentWarningMessage;
+        private bool isSaveButtonEnabled = true;
         private GeometryScalingOptions optionsGeometryScale = null;
 
         private InstalledPackagesViewModel installedPackagesViewModel;
         private string selectedPackagePathForInstall;
+        private bool isVisibleAddStyleBorder;
+        private bool isEnabledAddStyleButton;
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -447,6 +451,38 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// This property will hold the warning message that has to be shown in the warning icon next to the TextBox
+        /// </summary>
+        public string CurrentWarningMessage
+        {
+            get
+            {
+                return currentWarningMessage;
+            }
+            set
+            {
+                currentWarningMessage = value;
+                RaisePropertyChanged(nameof(CurrentWarningMessage));
+            }
+        }
+
+        /// <summary>
+        /// This property describes if the SaveButton will be enabled or not (when trying to save a new Style).
+        /// </summary>
+        public bool IsSaveButtonEnabled
+        {
+            get
+            {
+                return isSaveButtonEnabled;
+            }
+            set
+            {
+                isSaveButtonEnabled = value;
+                RaisePropertyChanged(nameof(IsSaveButtonEnabled));
+            }
+        }
+
+        /// <summary>
         /// This property was created just a container for default information when the user is adding a new Style
         /// When users press the Add Style button some controls are shown so the user can populate them, this property will contain default values shown
         /// </summary>
@@ -559,6 +595,38 @@ namespace Dynamo.ViewModels
                 preferenceSettings.ShowCodeBlockLineNumber = value;
                 showCodeBlockLineNumber = value;
                 RaisePropertyChanged(nameof(ShowCodeBlockLineNumber));
+            }
+        }
+
+        /// <summary>
+        /// This property will make Visible or Collapse the AddStyle Border defined in the GroupStyles section
+        /// </summary>
+        public bool IsVisibleAddStyleBorder 
+        {
+            get
+            {
+                return isVisibleAddStyleBorder;
+            } 
+            set
+            {
+                isVisibleAddStyleBorder = value;
+                RaisePropertyChanged(nameof(IsVisibleAddStyleBorder));
+            }
+        }
+
+        /// <summary>
+        /// This property will Enable or Disable the AddStyle button defined in the GroupStyles section
+        /// </summary>
+        public bool IsEnabledAddStyleButton 
+        {
+            get
+            {
+                return isEnabledAddStyleButton;
+            }
+            set
+            {
+                isEnabledAddStyleButton = value;
+                RaisePropertyChanged(nameof(IsEnabledAddStyleButton));
             }
         }
         #endregion
@@ -1051,9 +1119,23 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void ResetAddStyleControl()
         {
+            IsEnabledAddStyleButton = true;
+            IsSaveButtonEnabled = true;
             AddStyleControl.Name = String.Empty;
             AddStyleControl.HexColorString = GetRandomHexStringColor();
             IsWarningEnabled = false;
+            IsVisibleAddStyleBorder = false;          
+        }
+
+        /// <summary>
+        /// This method will enable the warning icon next to the GroupName TextBox and other buttons needed
+        /// </summary>
+        /// <param name="warningMessage">Message that will be displayed when the mouse is over the warning</param>
+        internal void EnableGroupStyleWarningState(string warningMessage)
+        {
+            CurrentWarningMessage = warningMessage;
+            IsWarningEnabled = true;
+            IsSaveButtonEnabled = false;
         }
 
         /// <summary>

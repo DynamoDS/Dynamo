@@ -2584,7 +2584,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Render Precision</value>
     <comment>Expander Header Name</comment>
   </data>
-  <data name="PreferencesViewStyleWarning" xml:space="preserve">
+  <data name="PreferencesViewAlreadyExistingStyleWarning" xml:space="preserve">
     <value>Style name already in use</value>
   </data>
   <data name="PreferencesViewVisualSettingsDisplaySettings" xml:space="preserve">
@@ -3026,6 +3026,9 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
     <value>Group Name</value>
+  </data>
+  <data name="PreferencesViewEmptyStyleWarning" xml:space="preserve">
+    <value>Please enter a valid name</value>
   </data>
   <data name="GroupStyleContextAnnotation" xml:space="preserve">
     <value>Group Style</value>
