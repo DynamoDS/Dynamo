@@ -30,19 +30,19 @@ namespace Dynamo.Tests.Models
             cbn.Warning("TestPermanent2", true);
 
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\r\nTestPermanent1", "\r\nTestPermanent2" }), cbn.ToolTipText);
+            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\nTestPermanent1", "\nTestPermanent2" }), cbn.ToolTipText);
 
             cbn.Warning("TestTransient0", false);
             Assert.AreEqual(ElementState.Warning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\r\nTestPermanent1", "\r\nTestPermanent2", "\r\nTestTransient0" }), cbn.ToolTipText);
+            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\nTestPermanent1", "\nTestPermanent2", "\r\nTestTransient0" }), cbn.ToolTipText);
 
             cbn.ClearTransientWarning("TestTransientOther");
             Assert.AreEqual(ElementState.Warning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\r\nTestPermanent1", "\r\nTestPermanent2", "\r\nTestTransient0" }), cbn.ToolTipText);
+            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\nTestPermanent1", "\nTestPermanent2", "\r\nTestTransient0" }), cbn.ToolTipText);
 
             cbn.ClearTransientWarning("TestTransient0");
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\r\nTestPermanent1", "\r\nTestPermanent2" }), cbn.ToolTipText);
+            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\nTestPermanent1", "\nTestPermanent2" }), cbn.ToolTipText);
 
             cbn.ClearErrorsAndWarnings();
             Assert.AreEqual(ElementState.Active, cbn.State);
@@ -53,15 +53,15 @@ namespace Dynamo.Tests.Models
             cbn.Warning("TestPermanent2", true);
 
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\r\nTestPermanent1", "\r\nTestPermanent2" }), cbn.ToolTipText);
+            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\nTestPermanent1", "\nTestPermanent2" }), cbn.ToolTipText);
                                                                                                          
             cbn.Warning("TestTransient0", false);                                                        
             Assert.AreEqual(ElementState.Warning, cbn.State);                                            
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\r\nTestPermanent1", "\r\nTestPermanent2", "\r\nTestTransient0" }), cbn.ToolTipText);
+            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\nTestPermanent1", "\nTestPermanent2", "\r\nTestTransient0" }), cbn.ToolTipText);
                                                                                                          
             cbn.ClearTransientWarning();                                                                 
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);                                  
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\r\nTestPermanent1", "\r\nTestPermanent2" }), cbn.ToolTipText);
+            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\nTestPermanent1", "\nTestPermanent2" }), cbn.ToolTipText);
 
             cbn.ClearErrorsAndWarnings();
             Assert.AreEqual(ElementState.Active, cbn.State);
@@ -95,12 +95,12 @@ namespace Dynamo.Tests.Models
             cbn.Warning("TestPermanent1", true);
   
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\r\nTestPermanent1" }), cbn.ToolTipText);
+            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\nTestPermanent1" }), cbn.ToolTipText);
 
             cbn.Warning("TestTransient1", false);
 
             Assert.AreEqual(ElementState.Warning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\r\nTestPermanent1", "\r\nTestTransient1" }), cbn.ToolTipText);
+            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\nTestPermanent1", "\r\nTestTransient1" }), cbn.ToolTipText);
 
             cbn.ClearErrorsAndWarnings();
             Assert.AreEqual(ElementState.Active, cbn.State);
