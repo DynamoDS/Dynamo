@@ -156,8 +156,8 @@ namespace Dynamo.Wpf.Views
 
         private void AddStyleButton_Click(object sender, RoutedEventArgs e)
         {
-            AddStyleBorder.Visibility = Visibility.Visible;
-            AddStyleButton.IsEnabled = false;
+            viewModel.IsVisibleAddStyleBorder = true;
+            viewModel.IsEnabledAddStyleButton = false;
             groupNameBox.Focus();
         }
 
@@ -166,6 +166,8 @@ namespace Dynamo.Wpf.Views
             viewModel.CurrentWarningMessage = string.Empty;
             viewModel.IsWarningEnabled = false;
             viewModel.IsSaveButtonEnabled = true;
+            viewModel.IsVisibleAddStyleBorder = false;
+            viewModel.IsEnabledAddStyleButton = true;
         }
 
         private void AddStyle_SaveButton_Click(object sender, RoutedEventArgs e)
@@ -187,30 +189,23 @@ namespace Dynamo.Wpf.Views
             //if the validation returns false it means that the new style that will be added doesn't exists
             if (string.IsNullOrEmpty(groupNameLabel.Text))
             {
-                viewModel.CurrentWarningMessage = Res.PreferencesViewEmptyStyleWarning;
-                viewModel.IsWarningEnabled = true;
-                viewModel.IsSaveButtonEnabled = false;
+                viewModel.EnableGroupStyleWarningState(Res.PreferencesViewEmptyStyleWarning);
             }
+            //Means that the Style name to be created already exists
             else if (viewModel.ValidateExistingStyle(newItem))
             {
-                viewModel.CurrentWarningMessage = Res.PreferencesViewAlreadyExistingStyleWarning;
-                viewModel.IsWarningEnabled = true;
-                viewModel.IsSaveButtonEnabled = false;
+                viewModel.EnableGroupStyleWarningState(Res.PreferencesViewAlreadyExistingStyleWarning);
             }
+            //Means that the Style will be created successfully.
             else
             {
                 viewModel.AddStyle(newItem);
                 viewModel.ResetAddStyleControl();
-                AddStyleBorder.Visibility = Visibility.Collapsed;
-                AddStyleButton.IsEnabled = true;
-                viewModel.IsSaveButtonEnabled = true;
             }          
         }
 
         private void AddStyle_CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            AddStyleBorder.Visibility = Visibility.Collapsed;
-            AddStyleButton.IsEnabled = true;
             viewModel.ResetAddStyleControl();
         }
 
@@ -317,6 +312,8 @@ namespace Dynamo.Wpf.Views
             else
             {
                 viewModel.IsSaveButtonEnabled = true;
+                viewModel.CurrentWarningMessage = string.Empty;
+                viewModel.IsWarningEnabled = false;
             }
         }
     }

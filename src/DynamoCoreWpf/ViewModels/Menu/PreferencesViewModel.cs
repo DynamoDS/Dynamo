@@ -70,6 +70,8 @@ namespace Dynamo.ViewModels
 
         private InstalledPackagesViewModel installedPackagesViewModel;
         private string selectedPackagePathForInstall;
+        private bool isVisibleAddStyleBorder;
+        private bool isEnabledAddStyleButton;
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -595,6 +597,38 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(ShowCodeBlockLineNumber));
             }
         }
+
+        /// <summary>
+        /// This property will make Visible or Collapse the AddStyle Border defined in the GroupStyles section
+        /// </summary>
+        public bool IsVisibleAddStyleBorder 
+        {
+            get
+            {
+                return isVisibleAddStyleBorder;
+            } 
+            set
+            {
+                isVisibleAddStyleBorder = value;
+                RaisePropertyChanged(nameof(IsVisibleAddStyleBorder));
+            }
+        }
+
+        /// <summary>
+        /// This property will Enable or Disable the AddStyle button defined in the GroupStyles section
+        /// </summary>
+        public bool IsEnabledAddStyleButton 
+        {
+            get
+            {
+                return isEnabledAddStyleButton;
+            }
+            set
+            {
+                isEnabledAddStyleButton = value;
+                RaisePropertyChanged(nameof(IsEnabledAddStyleButton));
+            }
+        }
         #endregion
 
         //This includes all the properties that can be set on the Features tab
@@ -1085,9 +1119,23 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void ResetAddStyleControl()
         {
+            IsEnabledAddStyleButton = true;
+            IsSaveButtonEnabled = true;
             AddStyleControl.Name = String.Empty;
             AddStyleControl.HexColorString = GetRandomHexStringColor();
             IsWarningEnabled = false;
+            IsVisibleAddStyleBorder = false;          
+        }
+
+        /// <summary>
+        /// This method will enable the warning icon next to the GroupName TextBox and other buttons needed
+        /// </summary>
+        /// <param name="warningMessage">Message that will be displayed when the mouse is over the warning</param>
+        internal void EnableGroupStyleWarningState(string warningMessage)
+        {
+            CurrentWarningMessage = warningMessage;
+            IsWarningEnabled = true;
+            IsSaveButtonEnabled = false;
         }
 
         /// <summary>
