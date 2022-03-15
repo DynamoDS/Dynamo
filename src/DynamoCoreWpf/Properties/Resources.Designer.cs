@@ -754,6 +754,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select a node to pin to this note..
+        /// </summary>
+        public static string ContextPinToNodeTooltip {
+            get {
+                return ResourceManager.GetString("ContextPinToNodeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downstream.
         /// </summary>
         public static string ContextSelectConnectedDownstream {
