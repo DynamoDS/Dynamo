@@ -805,7 +805,6 @@ namespace Dynamo.ViewModels
             logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
 
             logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsVisible)));
-            logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(ToolTipText)));
         }
 
 
