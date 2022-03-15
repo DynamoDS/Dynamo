@@ -1196,13 +1196,13 @@ namespace Dynamo.ViewModels
 
             bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning;
 
-            // Persistent warnings should not be dismissed even if nodes are not involved in an execution as they can include:
+            // Persistent warnings should continue to be displayed even if nodes are not involved in an execution as they can include:
             // 1. Compile-time warnings in CBNs
             // 2. Obsolete nodes with warnings
             // 3. Dummy or unresolved nodes
             if (NodeModel.State != ElementState.PersistentWarning && !NodeModel.IsInErrorState)
             {
-                if (!(NodeModel.WasInvolvedInExecution && hasErrorOrWarning)) return;
+                if (!NodeModel.WasInvolvedInExecution || !hasErrorOrWarning) return;
             }
 
             if (!NodeModel.Infos.Any()) return;
