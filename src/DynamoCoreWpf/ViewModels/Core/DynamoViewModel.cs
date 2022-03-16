@@ -34,6 +34,7 @@ using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.UI.GuidedTour;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
@@ -1619,7 +1620,7 @@ namespace Dynamo.ViewModels
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
                     }
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
-                    System.Windows.MessageBox.Show(errorMsgString);
+                    MessageBoxService.Show(errorMsgString, string.Empty, MessageBoxButton.OK, MessageBoxImage.None);
                 }
                 else
                 {
@@ -1791,7 +1792,7 @@ namespace Dynamo.ViewModels
         private void InternalSaveAs(string path, SaveContext saveContext, bool isBackup = false)
         {
             try
-            {
+            {                
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
                 CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
                 if (!isBackup) AddToRecentFiles(path);
@@ -1802,7 +1803,7 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(ex.StackTrace);
 
                 if (ex is IOException || ex is UnauthorizedAccessException)
-                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                    MessageBoxService.Show(ex.Message, string.Empty, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -1859,7 +1860,7 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(ex.StackTrace);
 
                 if (ex is IOException || ex is UnauthorizedAccessException)
-                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                    MessageBoxService.Show(ex.Message, string.Empty, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

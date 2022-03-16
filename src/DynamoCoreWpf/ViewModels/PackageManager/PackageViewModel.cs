@@ -395,13 +395,13 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show(Wpf.Properties.Resources.PackageNotExisted, Wpf.Properties.Resources.DirectoryNotFound, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                MessageBoxService.Show(Wpf.Properties.Resources.PackageNotExisted, Wpf.Properties.Resources.DirectoryNotFound, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void Deprecate()
         {
-            var res = MessageBox.Show(String.Format(Resources.MessageToDeprecatePackage, this.Model.Name),
+            var res = MessageBoxService.Show(String.Format(Resources.MessageToDeprecatePackage, this.Model.Name),
                                       Resources.DeprecatingPackageMessageBoxTitle, 
                                       MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
@@ -417,7 +417,7 @@ namespace Dynamo.ViewModels
 
         private void Undeprecate()
         {
-            var res = MessageBox.Show(String.Format(Resources.MessageToUndeprecatePackage, this.Model.Name),
+            var res = MessageBoxService.Show(String.Format(Resources.MessageToUndeprecatePackage, this.Model.Name),
                                       Resources.UndeprecatingPackageMessageBoxTitle, 
                                       MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;

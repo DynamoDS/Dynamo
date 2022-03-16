@@ -13,6 +13,7 @@ using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
@@ -709,7 +710,7 @@ namespace Dynamo.PackageManager
             var message = string.Format(Resources.MessageUninstallCustomNodeToContinue,
                 installed.Name + " " + installed.VersionName, conflicting.Name + " " + conflicting.VersionName);
 
-            var dialogResult = MessageBox.Show(message,
+            var dialogResult = MessageBoxService.Show(message,
                 Resources.CannotDownloadPackageMessageBoxTitle,
                 MessageBoxButton.YesNo, MessageBoxImage.Error);
 

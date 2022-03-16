@@ -1505,9 +1505,9 @@ namespace Dynamo.PackageManager
                     }
                     string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
                     UploadState = PackageUploadHandle.State.Error;
-                    DialogResult response = DynamoModel.IsTestMode ? DialogResult.OK : System.Windows.Forms.MessageBox.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    if (response == DialogResult.OK)
+                    if (response == MessageBoxResult.OK)
                     {
                         this.ClearPackageContents();
                         UploadState = PackageUploadHandle.State.Ready;
@@ -1530,9 +1530,9 @@ namespace Dynamo.PackageManager
                 if (UploadState == PackageUploadHandle.State.Uploaded)
                 {
                     // For test mode, presume the dialog input to be No and proceed.
-                    DialogResult dialogResult = DynamoModel.IsTestMode ? DialogResult.No : System.Windows.Forms.MessageBox.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information); ;
+                    MessageBoxResult dialogResult = DynamoModel.IsTestMode ? MessageBoxResult.No : MessageBoxService.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButton.YesNo, MessageBoxImage.Information); ;
 
-                    if (dialogResult == DialogResult.Yes)
+                    if (dialogResult == MessageBoxResult.Yes)
                     { 
                         this.ClearAllEntries();
                         Uploading = false;
