@@ -664,7 +664,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// </summary>
         public Output()
         {
-            InPorts.Add(new Nodes.PortModel(PortType.Input, this, new PortData("", "")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Properties.Resources.ToolTipSymbol)));
 
             RegisterAllPorts();
 
