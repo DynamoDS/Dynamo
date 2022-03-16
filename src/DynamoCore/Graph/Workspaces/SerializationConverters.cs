@@ -601,7 +601,7 @@ namespace Dynamo.Graph.Workspaces
             var nodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
             var externalFiles = new List<INodeLibraryDependencyInfo>();
 
-            if (obj[NodeLibraryDependenciesPropString] != null)
+            if (obj[NodeLibraryDependenciesPropString] != null && obj[NodeLibraryDependenciesPropString].HasValues)
             {
                 workspaceReferences = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
             }
