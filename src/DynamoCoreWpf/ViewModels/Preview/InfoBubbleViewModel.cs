@@ -994,7 +994,7 @@ namespace Dynamo.ViewModels
         }
     }
 
-    public struct InfoBubbleDataPacket
+    public struct InfoBubbleDataPacket : IEquatable<InfoBubbleDataPacket>
     {
         private const string externalLinkIdentifier = "href=";
         public InfoBubbleViewModel.Style Style;
@@ -1071,5 +1071,13 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool Equals(InfoBubbleDataPacket other)
+        {
+            return 
+                Style == other.Style &&
+                Text == other.Text &&
+                Link == other.Link &&
+                ConnectingDirection == other.ConnectingDirection;
+        }
     }
 }

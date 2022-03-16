@@ -29,7 +29,7 @@ namespace CoreNodeModelsWpf.Nodes
             RenderOptions.SetBitmapScalingMode(dummyNodeImage, BitmapScalingMode.HighQuality);
 
             nodeView.inputGrid.Children.Add(dummyNodeImage);
-            model.Warning(model.GetDescription());
+            model.Warning(model.GetDescription(), true);
         }
 
         public void Dispose()

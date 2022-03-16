@@ -55,6 +55,7 @@ namespace Dynamo.Wpf.Views
 
             //We need to store the ScaleFactor value in a temporary variable always when the Preferences dialog is created.
             scaleValue = dynViewModel.ScaleFactorLog;
+            ResetGroupStyleForm();
         }
 
         /// <summary>
@@ -155,9 +156,18 @@ namespace Dynamo.Wpf.Views
 
         private void AddStyleButton_Click(object sender, RoutedEventArgs e)
         {
-            AddStyleBorder.Visibility = Visibility.Visible;
-            AddStyleButton.IsEnabled = false;
+            viewModel.IsVisibleAddStyleBorder = true;
+            viewModel.IsEnabledAddStyleButton = false;
             groupNameBox.Focus();
+        }
+
+        private void ResetGroupStyleForm()
+        {
+            viewModel.CurrentWarningMessage = string.Empty;
+            viewModel.IsWarningEnabled = false;
+            viewModel.IsSaveButtonEnabled = true;
+            viewModel.IsVisibleAddStyleBorder = false;
+            viewModel.IsEnabledAddStyleButton = true;
         }
 
         private void AddStyle_SaveButton_Click(object sender, RoutedEventArgs e)
@@ -177,24 +187,25 @@ namespace Dynamo.Wpf.Views
                 newItem.Name = "Input";
 
             //if the validation returns false it means that the new style that will be added doesn't exists
-            if (viewModel.ValidateExistingStyle(newItem) == false)
+            if (string.IsNullOrEmpty(groupNameLabel.Text))
+            {
+                viewModel.EnableGroupStyleWarningState(Res.PreferencesViewEmptyStyleWarning);
+            }
+            //Means that the Style name to be created already exists
+            else if (viewModel.ValidateExistingStyle(newItem))
+            {
+                viewModel.EnableGroupStyleWarningState(Res.PreferencesViewAlreadyExistingStyleWarning);
+            }
+            //Means that the Style will be created successfully.
+            else
             {
                 viewModel.AddStyle(newItem);
                 viewModel.ResetAddStyleControl();
-                AddStyleBorder.Visibility = Visibility.Collapsed;
-                AddStyleButton.IsEnabled = true;
-            }
-            else
-            {
-                viewModel.IsWarningEnabled = true;
-            }
-            
+            }          
         }
 
         private void AddStyle_CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            AddStyleBorder.Visibility = Visibility.Collapsed;
-            AddStyleButton.IsEnabled = true;
             viewModel.ResetAddStyleControl();
         }
 
@@ -287,6 +298,22 @@ namespace Dynamo.Wpf.Views
             if (e.OriginalSource == e.Source)
             {
                 managePackageCommandEvent?.Dispose();
+            }
+        }
+
+        private void groupNameBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var groupNameTextBox = sender as TextBox;
+            if (groupNameBox == null) return;
+            if (string.IsNullOrEmpty(groupNameBox.Text))
+            {
+                viewModel.IsSaveButtonEnabled = false;
+            }
+            else
+            {
+                viewModel.IsSaveButtonEnabled = true;
+                viewModel.CurrentWarningMessage = string.Empty;
+                viewModel.IsWarningEnabled = false;
             }
         }
     }

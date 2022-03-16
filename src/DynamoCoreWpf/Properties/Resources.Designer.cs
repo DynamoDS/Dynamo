@@ -754,6 +754,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select a node to pin to this note..
+        /// </summary>
+        public static string ContextPinToNodeTooltip {
+            get {
+                return ResourceManager.GetString("ContextPinToNodeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downstream.
         /// </summary>
         public static string ContextSelectConnectedDownstream {
@@ -5712,6 +5721,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Style name already in use.
+        /// </summary>
+        public static string PreferencesViewAlreadyExistingStyleWarning {
+            get {
+                return ResourceManager.GetString("PreferencesViewAlreadyExistingStyleWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default Python Engine.
         /// </summary>
         public static string PreferencesViewDefaultPythonEngine {
@@ -5735,6 +5753,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewDisableCustomPackages {
             get {
                 return ResourceManager.GetString("PreferencesViewDisableCustomPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid name.
+        /// </summary>
+        public static string PreferencesViewEmptyStyleWarning {
+            get {
+                return ResourceManager.GetString("PreferencesViewEmptyStyleWarning", resourceCulture);
             }
         }
         
@@ -5924,15 +5951,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewShowWhitespaceInPythonEditor {
             get {
                 return ResourceManager.GetString("PreferencesViewShowWhitespaceInPythonEditor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Style name already in use.
-        /// </summary>
-        public static string PreferencesViewStyleWarning {
-            get {
-                return ResourceManager.GetString("PreferencesViewStyleWarning", resourceCulture);
             }
         }
         

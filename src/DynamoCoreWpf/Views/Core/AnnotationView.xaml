@@ -326,7 +326,8 @@
                             <Setter Property="MenuItem.Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type MenuItem}">
-                                        <StackPanel Orientation="Horizontal"
+                                        <StackPanel x:Name="groupStyleStackPanel"
+                                                    Orientation="Horizontal"
                                                     MinWidth="150"
                                                     Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
                                             <Label x:Name="GroupStyleCheckmark"
@@ -351,8 +352,16 @@
                                                    Foreground="{StaticResource NodeContextMenuForeground}"
                                                    FontFamily="{StaticResource ArtifaktElementRegular}"
                                                    FontSize="14px"
-                                                   FontWeight="Medium"/>   
+                                                   FontWeight="Medium"/>
                                         </StackPanel>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="groupStyleStackPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="False">
+                                                <Setter TargetName="groupStyleStackPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
