@@ -221,7 +221,7 @@
                                         </Image.Style>
                                     </Image>
 
-                                           <!--Expander button-->
+                                    <!--Expander button-->
                                     <ToggleButton OverridesDefaultStyle="True"
                                                   Grid.Column="1"
                                                   Margin="0,0,0,2.5"
@@ -265,66 +265,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <Style x:Key="GroupStyleSeparatorStyle" TargetType="{x:Type MenuItem}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Border Height="1"
-                                Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
-                            <Border Height="1"
-                                Width="129"
-                                Background="{StaticResource NodeContextMenuSeparatorColor}">
-                            </Border>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="GroupStyleItemStyle" TargetType="{x:Type MenuItem}">
-            <Setter Property="MenuItem.IsChecked"
-                    Value="{Binding IsChecked}"/>
-            <EventSetter Event="Click" 
-                     Handler="GroupStyleCheckmark_Click"/>
-            <EventSetter Event="Checked" 
-                     Handler="GroupStyleCheckmark_Checked"/>
-            <Setter Property="MenuItem.Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type MenuItem}">
-                        <StackPanel Orientation="Horizontal"
-                                    MinWidth="150"
-                                    Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
-                            <Label x:Name="GroupStyleCheckmark"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Center"
-                                   HorizontalContentAlignment="Center"
-                                   VerticalContentAlignment="Center"
-                                   Content="✓"
-                                   FontSize="14px"
-                                   Foreground="White"
-                                   Visibility="{Binding Path=IsChecked,Converter={StaticResource BooleanToVisibilityConverter}}" />
-                            <Label x:Name="buttonColorPicker"
-                                    Margin="5,0,5,0"
-                                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                                    FontSize="14px"
-                                    Background="{Binding HexColorString, Converter={StaticResource StringToBrushColorConverter}}" 
-                                    Width="15" 
-                                    Height="15"/>
-                            <Label Name="GroupStyleLabelName"
-                                    Content ="{Binding Name}"
-                                    Margin="5,0,5,0"
-                                    Foreground="{StaticResource NodeContextMenuForeground}"
-                                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                                    FontSize="14px"
-                                    FontWeight="Medium"/>
-                        </StackPanel>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-       
-      
     </UserControl.Resources>
 
     <Grid Name="AnnotationGrid"
@@ -359,6 +299,74 @@
                           SubmenuOpened="GroupStyleAnnotation_SubmenuOpened"
                           Header="{x:Static p:Resources.GroupStyleContextAnnotation}"
                           ItemContainerStyleSelector="{StaticResource GroupStyleItemSelector}">
+                    <MenuItem.Resources>
+                        <Style x:Key="GroupStyleSeparatorStyle" TargetType="{x:Type MenuItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Border Height="1"
+                                                Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
+                                            <Border Height="1"
+                                                    Width="129"
+                                                    Background="{StaticResource NodeContextMenuSeparatorColor}">
+                                            </Border>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+                        <Style x:Key="GroupStyleItemStyle" TargetType="{x:Type MenuItem}">
+                            <Setter Property="MenuItem.IsChecked"
+                                    Value="{Binding IsChecked}"/>
+                                <EventSetter Event="Click" 
+                                             Handler="GroupStyleCheckmark_Click"/>
+                                <EventSetter Event="Checked" 
+                                             Handler="GroupStyleCheckmark_Checked"/>
+                            <Setter Property="MenuItem.Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                                        <StackPanel x:Name="groupStyleStackPanel"
+                                                    Orientation="Horizontal"
+                                                    MinWidth="150"
+                                                    Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
+                                            <Label x:Name="GroupStyleCheckmark"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   Content="✓"
+                                                   FontSize="14px"
+                                                   Foreground="White"
+                                                   Visibility="{Binding Path=IsChecked,Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                            <Label x:Name="buttonColorPicker"
+                                                   Margin="5,0,5,0"
+                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                   FontSize="14px"
+                                                   Background="{Binding HexColorString, Converter={StaticResource StringToBrushColorConverter}}" 
+                                                   Width="15" 
+                                                   Height="15"/>
+                                            <Label Name="GroupStyleLabelName"
+                                                   Content ="{Binding Name}"
+                                                   Margin="5,0,5,0"
+                                                   Foreground="{StaticResource NodeContextMenuForeground}"
+                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                   FontSize="14px"
+                                                   FontWeight="Medium"/>
+                                        </StackPanel>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="groupStyleStackPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="False">
+                                                <Setter TargetName="groupStyleStackPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </MenuItem.Resources>
                 </MenuItem>
                 <MenuItem Name="ChangeSize" Header="{x:Static p:Resources.GroupContextMenuFont}">
                     <MenuItem Name="FontSize0"
