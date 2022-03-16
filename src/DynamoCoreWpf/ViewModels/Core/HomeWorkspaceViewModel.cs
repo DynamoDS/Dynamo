@@ -187,20 +187,18 @@ namespace Dynamo.Wpf.ViewModels.Core
                     SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage);
                 }
             }
+        }
 
-            void UpdateNodeInfoBubbleContent(EvaluationCompletedEventArgs evalargs)
+        private void UpdateNodeInfoBubbleContent(EvaluationCompletedEventArgs evalargs)
+        {
+            if (evalargs.MessageKeys == null) return;
+
+            foreach (var messageID in evalargs.MessageKeys)
             {
-                if (e.MessageKeys == null)
-                {
-                    return;
-                }
-                foreach (var messageID in evalargs.MessageKeys)
-                { 
-                    var node = this.Nodes.FirstOrDefault(n => n.Id == messageID);
-                    if (node == null)
-                        continue;
-                    node.UpdateBubbleContent();
-                }
+                var node = Nodes.FirstOrDefault(n => n.Id == messageID);
+                if (node == null) continue;
+
+                node.UpdateBubbleContent();
             }
         }
 

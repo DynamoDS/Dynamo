@@ -52,7 +52,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
             using (new MousePointManipulatorTest(pntNode, dme))
             {
                 Assert.AreEqual(ElementState.Warning, pntNode.State);
-                Assert.AreEqual("TestPersistentWarning" + "\n" + 
+                Assert.AreEqual("TestPersistentWarning" + "\r\n" + 
                     "Failed to create manipulator for Direct Manipulation of geometry: Exception of type 'System.Exception' was thrown.", 
                     pntNode.ToolTipText);
             }
