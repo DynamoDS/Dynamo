@@ -1625,23 +1625,38 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         internal void ClearTransientWarning(string t = null)
         {
-            if (State == ElementState.Warning)
+            if (State != ElementState.Warning) return;
+
+            bool cond = false;
+            infos.RemoveWhere(x =>
             {
-                if (string.IsNullOrEmpty(t) || infos.Any(x => x.Message == t && x.State == ElementState.Warning))
-                {// Called with null (or empty argument) or argument matched the existing transient warning
-                    infos.RemoveWhere(x => x.State == ElementState.Warning);
-                    if (!string.IsNullOrEmpty(persistentWarning))
-                    {// Still have persistent warnings then switch to the PersistentWarning state
-                        State = ElementState.PersistentWarning;
-                        ToolTipText = persistentWarning;
-                        infos.Add(new Info(persistentWarning, ElementState.PersistentWarning));
+                if (string.IsNullOrEmpty(t) && x.State == ElementState.Warning)
+                {
+                    cond = true;
+                }
+                else if (!string.IsNullOrEmpty(t))
+                {
+                    if (x.Message == t && x.State == ElementState.Warning)
+                    {
+                        cond = true;
                     }
-                    else
-                    {// No persistent warnings, go to default
-                        State = ElementState.Dead;
-                        ClearErrorsAndWarnings();
-                    }
-                } 
+                }
+                return cond;
+            });
+            if (cond)
+            {
+                if (!string.IsNullOrEmpty(persistentWarning))
+                {
+                    // Still have persistent warnings then switch to the PersistentWarning state
+                    State = ElementState.PersistentWarning;
+                    ToolTipText = persistentWarning;
+                }
+                else
+                {
+                    // No persistent warnings, go to default
+                    State = ElementState.Dead;
+                    ClearErrorsAndWarnings();
+                }
             }
         }
 
