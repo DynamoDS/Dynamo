@@ -855,6 +855,8 @@ namespace Dynamo.ViewModels
         /// <param name="obj"></param>
         private void Logic_NodeInfoMessagesClearing(NodeModel obj)
         {
+            if (ErrorBubble == null) return;
+
             if (DynamoViewModel.UIDispatcher != null)
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
