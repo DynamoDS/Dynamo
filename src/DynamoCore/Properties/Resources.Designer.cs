@@ -1912,6 +1912,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input Data.
+        /// </summary>
+        public static string ToolTipInputData {
+            get {
+                return ResourceManager.GetString("ToolTipInputData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Output #.
         /// </summary>
         public static string ToolTipOutput {
@@ -1921,20 +1930,20 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Output Data.
+        /// </summary>
+        public static string ToolTipOutputData {
+            get {
+                return ResourceManager.GetString("ToolTipOutputData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to return value.
         /// </summary>
         public static string ToolTipReturnValue {
             get {
                 return ResourceManager.GetString("ToolTipReturnValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Symbol.
-        /// </summary>
-        public static string ToolTipSymbol {
-            get {
-                return ResourceManager.GetString("ToolTipSymbol", resourceCulture);
             }
         }
         
