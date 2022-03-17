@@ -323,7 +323,8 @@ namespace CoreNodeModels.Input
                     return true; // UpdateValueCore handled.
                 case nameof(Value):
                 case "ValueText":
-                    Value = ConvertStringToInt64(value);                   
+                    UpdateNodeInfo(value);
+                    Value = ConvertStringToInt64(value);
                     return true; // UpdateValueCore handled.
                 case nameof(Step):
                 case "StepText":
@@ -332,6 +333,18 @@ namespace CoreNodeModels.Input
             }
 
             return base.UpdateValueCore(updateValueParams);
+        }
+
+        private void UpdateNodeInfo(string value)
+        {
+            if (IsValueInt64(value))
+            {
+                ClearInfoMessages();
+            }
+            else
+            {
+                Info(Resources.IntegerSliderInfoMessage);
+            }
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
