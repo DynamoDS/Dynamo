@@ -3327,4 +3327,25 @@ namespace Dynamo.Controls
 
         #endregion
     }
+
+    /// <summary>
+    /// Converts a boolean to Visibility but inverted, then false will be Visible and true will be Collapsed
+    /// </summary>
+    [ValueConversion(typeof(bool), typeof(Visibility))]
+    public class InvertedBooleanToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType,
+                              object parameter, CultureInfo culture)
+        {
+            var boolValue = (bool)value;
+
+            return boolValue ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
 }
