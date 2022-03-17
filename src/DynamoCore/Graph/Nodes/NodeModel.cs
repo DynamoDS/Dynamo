@@ -38,6 +38,25 @@ namespace Dynamo.Graph.Nodes
             Message = message;
             State =  state;
         }
+
+        public override bool Equals(object other)
+        {
+            if (other == null) return false;
+
+            var otherInfo = (Info)other;
+            return Message == otherInfo.Message && State == otherInfo.State;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 23 + Message == null ? 0 : Message.GetHashCode();
+                hash = hash * 23 + State.GetHashCode();
+                return hash;
+            }
+        }
     }
 
     public abstract class NodeModel : ModelBase, IRenderPackageSource<NodeModel>, IDisposable
@@ -53,7 +72,7 @@ namespace Dynamo.Graph.Nodes
         private string name;
         private ElementState state;
         private string toolTipText = string.Empty;
-        private HashSet<Info> infos = new HashSet<Info>();
+        private readonly ObservableHashSet<Info> infos = new ObservableHashSet<Info>();
         private string description;
         private string persistentWarning = string.Empty;
 
@@ -340,7 +359,7 @@ namespace Dynamo.Graph.Nodes
                 if (state == value) return;
 
                 state = value;
-                RaisePropertyChanged("State");
+                RaisePropertyChanged(nameof(State));
             }
         }
 
@@ -379,7 +398,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Collection of warnings, errors and info items applied to the NodeModel.
         /// </summary>
-        internal HashSet<Info> Infos
+        internal ObservableHashSet<Info> Infos
         {
             get { return infos; }
         }
@@ -1649,7 +1668,7 @@ namespace Dynamo.Graph.Nodes
                 {
                     // Still have persistent warnings then switch to the PersistentWarning state
                     State = ElementState.PersistentWarning;
-                    ToolTipText = persistentWarning;
+                    //ToolTipText = persistentWarning;
                 }
                 else
                 {
