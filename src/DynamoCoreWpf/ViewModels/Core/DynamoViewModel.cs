@@ -1813,7 +1813,7 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(ex.StackTrace);
 
                 if (ex is IOException || ex is UnauthorizedAccessException)
-                    MessageBoxService.Show(ex.Message, string.Empty, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBoxService.Show(ex.Message, Resources.SaveConfirmationMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
