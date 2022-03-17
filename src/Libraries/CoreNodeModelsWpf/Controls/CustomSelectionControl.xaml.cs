@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using CoreNodeModels.Input;
+using Dynamo.Utilities;
 
 namespace CoreNodeModelsWpf.Controls
 {
@@ -31,8 +33,7 @@ namespace CoreNodeModelsWpf.Controls
             {
                 if (e.Key == Key.Tab)
                 {
-                    var textBoxes = new List<TextBox>();
-                    CollectChildrenOfType<TextBox>(listBox,textBoxes);
+                    List<TextBox> textBoxes = listBox.ChildrenOfType<TextBox>().ToList();
 
                     for (int i = 0; i < textBoxes.Count - 1; i++)
                     {

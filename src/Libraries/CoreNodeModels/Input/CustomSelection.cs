@@ -21,7 +21,7 @@ namespace CoreNodeModels.Input
     [NodeDescription("CustomSelectionNodeDescription", typeof(Properties.Resources))]
     [NodeSearchTags("CustomSelectionSearchTags", typeof(Properties.Resources))]
     [OutPortNames("value")]
-    [OutPortTypes("object")]
+    [OutPortTypes("var")]
     [OutPortDescriptions("Selected value")]
     [IsDesignScriptCompatible]
     public class CustomSelectionNodeModel : DSDropDownBase
