@@ -3649,26 +3649,34 @@
                             <Canvas.ToolTip>
                                 <ToolTip Content="{Binding CurrentWarningMessage}" Style="{StaticResource GenericToolTipLight}"/>
                             </Canvas.ToolTip>
-                            <Polygon Points="10,5 18,20 2,20">
-                                <Polygon.Fill>
-                                    <SolidColorBrush Color="{StaticResource YellowOrange500}" />
-                                </Polygon.Fill>
-                            </Polygon>
-
-                            <Line x:Name="exclamationMark"
-                                  Stroke="Black"
-                                  StrokeThickness="2"
-                                  X1="10"
-                                  X2="10"
-                                  Y1="8"
-                                  Y2="15" />
-                            <Ellipse x:Name="exclamationPoint"
-                                     Canvas.Left="9"
-                                     Canvas.Top="17"
-                                     Canvas.Right="10"
-                                     Width="2"
-                                     Height="2"
-                                     Fill="Black" />
+                            <Path Fill="#FAA21B">
+                                <Path.Data>
+                                    <CombinedGeometry GeometryCombineMode="Exclude">
+                                        <CombinedGeometry.Geometry1>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="True" StartPoint="10,5">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="18,20" />
+                                                                    <LineSegment Point="2,20" />
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                        </CombinedGeometry.Geometry1>
+                                        <CombinedGeometry.Geometry2>
+                                            <GeometryGroup FillRule="EvenOdd">
+                                                <EllipseGeometry Center="10,18" RadiusX="1.5" RadiusY="1.5"/>
+                                                <RectangleGeometry Rect="8.5,8.5,3,7.5"/>
+                                            </GeometryGroup>
+                                        </CombinedGeometry.Geometry2>
+                                    </CombinedGeometry>
+                                </Path.Data>
+                            </Path>
                         </Canvas>
                     </Grid>
                     <ControlTemplate.Triggers>
