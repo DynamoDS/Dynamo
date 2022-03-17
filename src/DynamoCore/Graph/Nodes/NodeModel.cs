@@ -166,6 +166,20 @@ namespace Dynamo.Graph.Nodes
             NodeMessagesClearing?.Invoke(this);
         }
 
+        /// <summary>
+        /// Event triggered whenever the node re-executes to clear its info messages
+        /// </summary>
+        public event Action<NodeModel> NodeInfoMessagesClearing;
+
+        /// <summary>
+        /// Fires on each node that is modified to clear info messages, when the graph executes.
+        /// </summary>
+        internal void OnNodeInfoMessagesClearing()
+        {
+            NodeInfoMessagesClearing?.Invoke(this);
+        }
+
+
         internal void OnNodeExecutionBegin()
         {
             NodeExecutionBegin?.Invoke(this);
@@ -332,7 +346,7 @@ namespace Dynamo.Graph.Nodes
             get { return state; }
             set
             {
-                if (value != ElementState.Error && value != ElementState.AstBuildBroken)
+                if (value != ElementState.Error && value != ElementState.Info && value != ElementState.AstBuildBroken)
                     ClearTooltipText();
 
                 // Check before settings and raising
@@ -1593,7 +1607,7 @@ namespace Dynamo.Graph.Nodes
 
         private void ClearTooltipText()
         {
-            ToolTipText = "";
+            ToolTipText = string.Empty;
             infos.RemoveWhere(x => x.State == ElementState.Warning || x.State == ElementState.Error);
         }
 
@@ -1615,6 +1629,18 @@ namespace Dynamo.Graph.Nodes
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTooltipText();
             OnNodeMessagesClearing();
+        }
+
+        /// <summary>
+        /// Clears the info messages that are generated when running the graph,
+        /// the State will be set to ElementState.Dead.
+        /// </summary>
+        public virtual void ClearInfoMessages()
+        {
+            infos.RemoveWhere(x => x.State == ElementState.Info);
+            State = ElementState.Dead;
+            ClearTooltipText();
+            OnNodeInfoMessagesClearing();
         }
 
         /// <summary>
@@ -1734,6 +1760,18 @@ namespace Dynamo.Graph.Nodes
         {
             State = ElementState.Error;
             infos.Add(new Info(p, ElementState.Error));
+
+            ToolTipText = p;
+        }
+
+        /// <summary>
+        /// Set an info on a node.
+        /// </summary>
+        /// <param name="p">The info text.</param>
+        public void Info(string p)
+        {
+            State = ElementState.Info;
+            infos.Add(new Info(p, ElementState.Info));
 
             ToolTipText = p;
         }
@@ -2758,7 +2796,8 @@ namespace Dynamo.Graph.Nodes
         Warning,
         PersistentWarning,
         Error,
-        AstBuildBroken
+        AstBuildBroken,
+        Info
     };
 
     /// <summary>
