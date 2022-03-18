@@ -17,12 +17,12 @@
   <ItemGroup>
     <Compile Remove="Graph\ConnectorPinModel.cs" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net48' ">
     <PackageReference Include="Newtonsoft.Json" Version="8.0.3" CopyXML="true" />
     <Reference Include="System.Configuration" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net50' ">
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net50orAbove' ">
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" CopyXML="true" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />

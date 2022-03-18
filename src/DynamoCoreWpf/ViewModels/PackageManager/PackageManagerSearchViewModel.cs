@@ -446,7 +446,7 @@ namespace Dynamo.PackageManager
                 list.Reverse();
             }
 
-            Analytics.TrackEvent(Actions.Sort, Categories.PackageManagerOperations, $"{SortingDirection}");
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Sort, Categories.PackageManagerOperations, $"{SortingDirection}");
 
             // temporarily hide binding
             var temp = this.SearchResults;
@@ -526,7 +526,7 @@ namespace Dynamo.PackageManager
                 .DynamoViewModel
                 .OnViewExtensionOpenWithParameterRequest("C71CA1B9-BF9F-425A-A12C-53DF56770406", packageManagerSearchElement);
 
-            Analytics.TrackEvent(Actions.View, Categories.PackageManagerOperations, $"{packageManagerSearchElement?.Name}");
+            Dynamo.Logging.Analytics.TrackEvent(Actions.View, Categories.PackageManagerOperations, $"{packageManagerSearchElement?.Name}");
         }
 
         /// <summary>

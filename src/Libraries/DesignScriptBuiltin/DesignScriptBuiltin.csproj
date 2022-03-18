@@ -11,7 +11,7 @@
     <DocumentationFile>$(OutputPath)\$(UICulture)\DesignScriptBuiltin.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup Label="System.Collections.Immutable@portable-net45+win8+wp8+wpa81"
-             Condition=" '$(TargetFramework)' == 'net48' ">
+             Condition=" '$(TargetFrameworkId)' == 'net48' ">
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0">
       <GeneratePathProperty>true</GeneratePathProperty>
       <IncludeAssets>none</IncludeAssets>
@@ -20,7 +20,7 @@
       <HintPath>$(PkgSystem_Collections_Immutable)\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net50' ">
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net50orAbove' ">
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
   </ItemGroup>

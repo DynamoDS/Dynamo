@@ -20,11 +20,11 @@
     <ProjectReference Include="..\..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj" />
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net48' ">
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net50' ">
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net50orAbove' ">
     <PackageReference Include="System.CodeDom" Version="6.0.0" />
     <PackageReference Include="SoapFormatter" Version="1.0.11" />
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
@@ -32,8 +32,8 @@
   <ItemGroup>
     <None Include="FFI\FFICppFunction.cs" />
     <None Include="FFI\PInvokeFFI.cs" />
-    <Compile Condition=" '$(TargetFramework)' == 'net50' " Remove="FFI\FFICppFunction.cs" />
-    <Compile Condition=" '$(TargetFramework)' == 'net50' " Remove="FFI\PInvokeFFI.cs" />
+    <Compile Condition=" '$(TargetFrameworkId)' == 'net50orAbove' " Remove="FFI\FFICppFunction.cs" />
+    <Compile Condition=" '$(TargetFrameworkId)' == 'net50orAbove' " Remove="FFI\PInvokeFFI.cs" />
     <Compile Remove="LexUtils.cs" />
     <Compile Remove="Parser/AssociativeGraph.cs" />
   </ItemGroup>

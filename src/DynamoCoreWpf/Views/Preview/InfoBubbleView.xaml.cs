@@ -1044,7 +1044,7 @@ namespace Dynamo.Controls
             RefreshDismissedMessages(InfoBubbleViewModel.Style.Warning);
             RefreshDismissedMessages(InfoBubbleViewModel.Style.WarningCondensed);
             // Track dismiss warning event and how many warnings dismissed
-            Analytics.TrackEvent(Actions.Dismiss, Categories.NodeOperations, "Warning", ViewModel.DismissedMessages.Count);
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Dismiss, Categories.NodeOperations, "Warning", ViewModel.DismissedMessages.Count);
             ViewModel.RefreshNodeInformationalStateDisplay();
         }
 

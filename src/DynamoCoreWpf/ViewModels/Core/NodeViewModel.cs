@@ -176,7 +176,7 @@ namespace Dynamo.ViewModels
                         Guid.Empty, NodeModel.GUID, nameof(IsSetAsInput), value.ToString()));
 
                     RaisePropertyChanged(nameof(IsSetAsInput));
-                    Analytics.TrackEvent(Actions.Set, Categories.NodeContextMenuOperations, "AsInput");
+                    Dynamo.Logging.Analytics.TrackEvent(Actions.Set, Categories.NodeContextMenuOperations, "AsInput");
                 }
             }
         }
@@ -204,7 +204,7 @@ namespace Dynamo.ViewModels
                         Guid.Empty, NodeModel.GUID, nameof(IsSetAsOutput), value.ToString()));
 
                     RaisePropertyChanged(nameof(IsSetAsOutput));
-                    Analytics.TrackEvent(Actions.Set, Categories.NodeContextMenuOperations, "AsOutput");
+                    Dynamo.Logging.Analytics.TrackEvent(Actions.Set, Categories.NodeContextMenuOperations, "AsOutput");
                 }
             }
         }
@@ -445,7 +445,7 @@ namespace Dynamo.ViewModels
                     Guid.Empty, NodeModel.GUID, nameof(nodeLogic.DisplayLabels), value.ToString()));
 
                     RaisePropertyChanged(nameof(IsDisplayingLabels));
-                    Analytics.TrackEvent(Actions.Show, Categories.NodeContextMenuOperations, "Labels");
+                    Dynamo.Logging.Analytics.TrackEvent(Actions.Show, Categories.NodeContextMenuOperations, "Labels");
                 }
             }
         }
@@ -1275,7 +1275,7 @@ namespace Dynamo.ViewModels
             //helpDialog.Show();
 
             OnRequestShowNodeHelp(this, new NodeDialogEventArgs(NodeModel));
-            Analytics.TrackEvent(Actions.Show, Categories.NodeContextMenuOperations, "Help");
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Show, Categories.NodeContextMenuOperations, "Help");
         }
 
         private bool CanShowHelp(object parameter)
@@ -1286,7 +1286,7 @@ namespace Dynamo.ViewModels
         private void ShowRename(object parameter)
         {
             OnRequestShowNodeRename(this, new NodeDialogEventArgs(NodeModel));
-            Analytics.TrackEvent(Actions.Rename, Categories.NodeContextMenuOperations);
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Rename, Categories.NodeContextMenuOperations);
         }
 
         private bool CanShowRename(object parameter)
@@ -1304,7 +1304,7 @@ namespace Dynamo.ViewModels
             var command = new DynamoModel.DeleteModelCommand(nodeLogic.GUID);
             DynamoViewModel.ExecuteCommand(command);
             OnRemoved(this, EventArgs.Empty);
-            Analytics.TrackEvent(Actions.Delete, Categories.NodeContextMenuOperations, nodeLogic.Name);
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Delete, Categories.NodeContextMenuOperations, nodeLogic.Name);
         }
 
         private void SetLacingType(object param)
@@ -1315,7 +1315,7 @@ namespace Dynamo.ViewModels
 
             DynamoViewModel.RaiseCanExecuteUndoRedo();
 
-            Analytics.TrackEvent(Actions.Set, Categories.NodeContextMenuOperations, "Lacing");
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Set, Categories.NodeContextMenuOperations, "Lacing");
         }
 
         private bool CanSetLacingType(object param)
@@ -1502,7 +1502,7 @@ namespace Dynamo.ViewModels
             DynamoViewModel.Model.ExecuteCommand(command);
             DynamoViewModel.RaiseCanExecuteUndoRedo();
 
-            Analytics.TrackEvent(Actions.Preview, Categories.NodeContextMenuOperations, visibility);
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Preview, Categories.NodeContextMenuOperations, visibility);
         }
 
         private bool CanVisibilityBeToggled(object parameter)
@@ -1591,7 +1591,7 @@ namespace Dynamo.ViewModels
         private void CreateGroup(object parameters)
         {
             DynamoViewModel.AddAnnotationCommand.Execute(null);
-            Analytics.TrackEvent(Actions.Create, Categories.NodeContextMenuOperations, "Group");
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Create, Categories.NodeContextMenuOperations, "Group");
         }
 
         private bool CanCreateGroup(object parameters)
@@ -1638,7 +1638,7 @@ namespace Dynamo.ViewModels
 
             RaiseFrozenPropertyChanged();
 
-            Analytics.TrackEvent(Actions.Freeze, Categories.NodeContextMenuOperations);
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Freeze, Categories.NodeContextMenuOperations);
         }
 
         private void RaiseFrozenPropertyChanged()
@@ -1669,7 +1669,7 @@ namespace Dynamo.ViewModels
         private void UngroupNode(object parameters)
         {
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
-            Analytics.TrackEvent(Actions.RemovedFrom, Categories.NodeContextMenuOperations, "Node");
+            Dynamo.Logging.Analytics.TrackEvent(Actions.RemovedFrom, Categories.NodeContextMenuOperations, "Node");
         }
 
         private bool CanUngroupNode(object parameters)
@@ -1685,7 +1685,7 @@ namespace Dynamo.ViewModels
         private void AddToGroup(object parameters)
         {
             WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
-            Analytics.TrackEvent(Actions.AddedTo, Categories.NodeContextMenuOperations, "Node");
+            Dynamo.Logging.Analytics.TrackEvent(Actions.AddedTo, Categories.NodeContextMenuOperations, "Node");
         }
 
         private bool CanAddToGroup(object parameters)

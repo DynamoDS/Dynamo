@@ -49,7 +49,7 @@ namespace Dynamo.Services
             get
             {
                 return !DynamoModel.IsTestMode
-                    && !Analytics.DisableAnalytics
+                    && !Dynamo.Logging.Analytics.DisableAnalytics
                     && (dynamoViewModel != null
                         && dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved);
             }
@@ -87,7 +87,7 @@ namespace Dynamo.Services
 
         /// <summary>
         /// Analytics is the opt-out tracking system
-        /// PII is prohibited from Analytics.
+        /// PII is prohibited from Dynamo.Logging.Analytics.
         /// </summary>
         public bool IsAnalyticsReportingApproved
         {
@@ -96,7 +96,7 @@ namespace Dynamo.Services
                 if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
-                if (Analytics.DisableAnalytics)
+                if (Dynamo.Logging.Analytics.DisableAnalytics)
                 {
                     return false;
                 }
@@ -109,7 +109,7 @@ namespace Dynamo.Services
 
             private set
             {
-                if (Analytics.DisableAnalytics)
+                if (Dynamo.Logging.Analytics.DisableAnalytics)
                 {
                     return;// Do not override anything when DisableAnalytics is on
                 }
@@ -161,7 +161,7 @@ namespace Dynamo.Services
             // First run of Dynamo
             if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun
                 && !dynamoViewModel.HideReportOptions
-                && !Analytics.DisableAnalytics
+                && !Dynamo.Logging.Analytics.DisableAnalytics
                 && !DynamoModel.IsTestMode)
             {
                 //Prompt user for detailed reporting

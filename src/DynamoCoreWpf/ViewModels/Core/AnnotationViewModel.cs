@@ -440,7 +440,7 @@ namespace Dynamo.ViewModels
                         this.AnnotationModel.AddToSelectedModels(model, true);
                     }
                 }
-                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Node");
+                Dynamo.Logging.Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Node");
             }
         }
 
@@ -497,7 +497,7 @@ namespace Dynamo.ViewModels
                         AddToCutGeometryDictionary(groupViewModel);
                     }
                 }
-                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Group");
+                Dynamo.Logging.Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Group");
             }
         }
 
@@ -512,7 +512,7 @@ namespace Dynamo.ViewModels
                 new DynamoModel.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
             RaisePropertyChanged(nameof(ZIndex));
-            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Group");
+            Dynamo.Logging.Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Group");
         }
 
         private bool CanUngroupGroup(object parameters)
@@ -867,7 +867,7 @@ namespace Dynamo.ViewModels
 
             CollapseConnectors();
 
-            Analytics.TrackEvent(Actions.Collapsed, Categories.GroupOperations);
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Collapsed, Categories.GroupOperations);
         }
 
         private void CollapseConnectors()
@@ -937,7 +937,7 @@ namespace Dynamo.ViewModels
             UpdateConnectorsAndPortsOnShowContents(Nodes);
             UpdateProxyPortsPosition();
 
-            Analytics.TrackEvent(Actions.Expanded, Categories.GroupOperations);
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Expanded, Categories.GroupOperations);
         }
 
         private void UpdateConnectorsAndPortsOnShowContents(IEnumerable<ModelBase> nodes)
@@ -1130,13 +1130,13 @@ namespace Dynamo.ViewModels
 
         private void OnModelRemovedFromGroup(object sender, EventArgs e)
         {
-            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Node");
+            Dynamo.Logging.Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Node");
             RaisePropertyChanged(nameof(ZIndex));
         }
 
         private void OnModelAddedToGroup(object sender, EventArgs e)
         {
-            Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Group");
+            Dynamo.Logging.Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Group");
             RaisePropertyChanged(nameof(ZIndex));
         }
 

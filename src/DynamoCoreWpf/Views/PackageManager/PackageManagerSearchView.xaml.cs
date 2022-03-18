@@ -32,7 +32,7 @@ namespace Dynamo.PackageManager.UI
             ViewModel.RegisterTransientHandlers();
             ViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
             ViewModel.RequestDisableTextSearch += ViewModel_RequestDisableTextSearch;
-            Logging.Analytics.TrackScreenView("PackageManager");
+            Dynamo.Logging.Analytics.TrackScreenView("PackageManager");
         }
 
         private void ViewModel_RequestDisableTextSearch(object sender, PackagePathEventArgs e)

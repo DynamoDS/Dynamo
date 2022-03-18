@@ -50,9 +50,6 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="filePath">File path</param>
         /// <returns></returns>
-#if NET5_0_OR_GREATER
-        [SupportedOSPlatform("windows")]
-#endif
         public static bool IsReadOnlyPath(string filePath)
         {
             if (IsValidPath(filePath))
@@ -61,7 +58,13 @@ namespace DynamoUtilities
                 // We mark the path read only when
                 // 1. file read-only
                 // 2. user does not have write access to the folder
-                return Finfo.IsReadOnly || !HasWritePermissionOnDir(Finfo.Directory.ToString());
+#if NET5_0_OR_GREATER
+                // We have no cross platform Directory access writes APIs.
+                bool hasWritePermissionOnDir = !OperatingSystem.IsWindows() || HasWritePermissionOnDir(Finfo.Directory.ToString());
+#else
+                bool hasWritePermissionOnDir = HasWritePermissionOnDir(Finfo.Directory.ToString();
+#endif
+                return Finfo.IsReadOnly || !hasWritePermissionOnDir;
             }
             else
                 return false;
@@ -72,16 +75,14 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="folderPath">Folder path</param>
         /// <returns></returns>
-#if NET5_0_OR_GREATER
         [SupportedOSPlatform("windows")]
-#endif
         public static bool HasWritePermissionOnDir(string folderPath)
         {
             try
             {
                 var writeAllow = false;
                 var writeDeny = false;
-                DirectoryInfo dInfo = new DirectoryInfo(folderPath);
+                DirectoryInfo dInfo = new(folderPath);
                 if (dInfo == null)
                     return false;
                 var accessControlList = dInfo.GetAccessControl(AccessControlSections.All);

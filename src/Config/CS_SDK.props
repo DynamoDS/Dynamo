@@ -35,12 +35,18 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('NET48'))">
     <TargetFramework>net48</TargetFramework>
+    <TargetFrameworkId>net48</TargetFrameworkId>
   </PropertyGroup>
-  <PropertyGroup Condition="$(Platform.Contains('NET50'))">
+    <PropertyGroup Condition="$(Platform.Contains('NET60'))" >
+    <TargetFramework>net60</TargetFramework>
+    <TargetFrameworkId>net60orAbove</TargetFrameworkId>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform.Contains('NET50'))" >
     <TargetFramework>net50</TargetFramework>
+    <TargetFrameworkId>net50orAbove</TargetFrameworkId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(UILib)' == 'true' AND $(Platform.Contains('NET50'))">
-    <TargetFrameworks>net50-windows</TargetFrameworks>
+    <TargetFramework>net50-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>

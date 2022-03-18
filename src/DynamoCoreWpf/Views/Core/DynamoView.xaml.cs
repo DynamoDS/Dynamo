@@ -490,7 +490,7 @@ namespace Dynamo.Controls
         {
             var tabName = (sender as Button).DataContext.ToString();
             UndockExtension(tabName);
-            Logging.Analytics.TrackEvent(
+            Dynamo.Logging.Analytics.TrackEvent(
                Actions.Undock,
                Categories.ViewExtensionOperations, tabName);
         }
@@ -558,7 +558,7 @@ namespace Dynamo.Controls
                 {
                     settings.DisplayMode = ViewExtensionDisplayMode.DockRight;
                 }
-                Analytics.TrackEvent(Actions.Dock, Categories.ViewExtensionOperations, extName);
+                Dynamo.Logging.Analytics.TrackEvent(Actions.Dock, Categories.ViewExtensionOperations, extName);
             }
             else
             {
@@ -1023,7 +1023,7 @@ namespace Dynamo.Controls
 
         private void TrackStartupAnalytics()
         {
-            if (!Analytics.ReportingAnalytics) return;
+            if (!Dynamo.Logging.Analytics.ReportingAnalytics) return;
 
             string packages = string.Empty;
             var pkgExtension = dynamoViewModel.Model.GetPackageManagerExtension();
@@ -1033,7 +1033,7 @@ namespace Dynamo.Controls
                     .Select(p => string.Format("{0} {1}", p.Name, p.VersionName))
                     .Aggregate(String.Empty, (x, y) => string.Format("{0}, {1}", x, y));
             }
-            Analytics.TrackTimedEvent(Categories.Performance, "ViewStartup", dynamoViewModel.Model.stopwatch.Elapsed, packages);
+            Dynamo.Logging.Analytics.TrackTimedEvent(Categories.Performance, "ViewStartup", dynamoViewModel.Model.stopwatch.Elapsed, packages);
         }
 
         /// <summary>
@@ -1117,7 +1117,7 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
-            var cmd = Analytics.TrackCommandEvent("PublishPackage");
+            var cmd = Dynamo.Logging.Analytics.TrackCommandEvent("PublishPackage");
             if (_pubPkgView == null)
             {
                 _pubPkgView = new PublishPackageView(model)
@@ -1142,7 +1142,7 @@ namespace Dynamo.Controls
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
 
-            var cmd = Analytics.TrackCommandEvent("SearchPackage");
+            var cmd = Dynamo.Logging.Analytics.TrackCommandEvent("SearchPackage");
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);

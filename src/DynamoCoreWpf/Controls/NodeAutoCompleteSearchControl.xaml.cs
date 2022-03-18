@@ -97,7 +97,7 @@ namespace Dynamo.UI.Controls
                 if (searchElement.CreateAndConnectCommand.CanExecute(port.PortModel))
                 {
                     searchElement.CreateAndConnectCommand.Execute(port.PortModel);
-                    Analytics.TrackEvent(
+                    Dynamo.Logging.Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Select,
                     Dynamo.Logging.Categories.NodeAutoCompleteOperations,
                     searchElement.FullName);
@@ -129,7 +129,7 @@ namespace Dynamo.UI.Controls
             // When launching this control, always start with clear search term.
             SearchTextBox.Clear();
 
-            Analytics.TrackEvent(
+            Dynamo.Logging.Analytics.TrackEvent(
             Dynamo.Logging.Actions.Open,
             Dynamo.Logging.Categories.NodeAutoCompleteOperations);
 

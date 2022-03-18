@@ -260,7 +260,7 @@ namespace Dynamo.ViewModels
                 }
 
                 showStartPage = value;
-                if (showStartPage) Logging.Analytics.TrackScreenView("StartPage");
+                if (showStartPage) Dynamo.Logging.Analytics.TrackScreenView("StartPage");
 
                 RaisePropertyChanged("ShowStartPage");
                 if (DisplayStartPageCommand != null)

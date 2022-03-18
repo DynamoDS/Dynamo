@@ -35,7 +35,7 @@ namespace Dynamo.PackageManager
             );
 
             publishPackageViewModel.RequestShowFolderBrowserDialog += OnRequestShowFolderBrowserDialog;
-            Logging.Analytics.TrackScreenView("PackageManager");
+            Dynamo.Logging.Analytics.TrackScreenView("PackageManager");
         }
 
         private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)

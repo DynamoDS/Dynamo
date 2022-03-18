@@ -382,7 +382,7 @@ namespace Dynamo.ViewModels
             //Subscribed to PinnedNode.Removed event of Node to remove pinned note when node is removed.
             PinnedNode.Removed += PinnedNodeViewModel_OnPinnedNodeRemoved;
 
-            Analytics.TrackEvent(
+            Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Pin,
                 Categories.NoteOperations, Model.PinnedNode.Name);
         }
@@ -396,7 +396,7 @@ namespace Dynamo.ViewModels
                 PinnedNode.Selected -= PinnedNodeViewModel_OnPinnedNodeSelected;
                 PinnedNode.Removed -= PinnedNodeViewModel_OnPinnedNodeRemoved;
 
-                Analytics.TrackEvent(
+                Dynamo.Logging.Analytics.TrackEvent(
                     Actions.Unpin,
                     Categories.NoteOperations, Model.PinnedNode.Name);
             }

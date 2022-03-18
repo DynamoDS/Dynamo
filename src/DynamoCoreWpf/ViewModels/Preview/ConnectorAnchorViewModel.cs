@@ -224,7 +224,7 @@ namespace Dynamo.ViewModels
             List<ModelBase> AllCreatedModels = PlaceWatchNode(ViewModel.ConnectorModel, pinLocations, AllDeletedModels);
 
             // Log analytics of creation of watch node
-            Logging.Analytics.TrackEvent(
+            Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Create,
                 Categories.ConnectorOperations,
                 "Watch Node");
@@ -254,7 +254,7 @@ namespace Dynamo.ViewModels
         private void PinConnectorCommandExecute(object parameters)
         {
             ViewModel.PinConnectorCommand.Execute(null);
-            Logging.Analytics.TrackEvent(
+            Dynamo.Logging.Analytics.TrackEvent(
                     Actions.Pin,
                     Categories.ConnectorOperations);
         }

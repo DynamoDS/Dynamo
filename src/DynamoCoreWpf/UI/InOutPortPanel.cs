@@ -73,7 +73,7 @@ namespace Dynamo.UI.Controls
             if (aggregatedExceptions.Count > 0)
             {
                 var aggException = new AggregateException($"XamlParseException(s) InOutPortPanel MeasureOverride:{aggregatedExceptions.Count}", aggregatedExceptions);
-                Analytics.TrackException(aggException, false);
+                Dynamo.Logging.Analytics.TrackException(aggException, false);
             }
 
 

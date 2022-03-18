@@ -528,7 +528,7 @@ namespace Dynamo.PackageManager
         {
             if (BuiltInPackage) 
             {
-                Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name } {versionName} marked to be unloaded");
+                Logging.Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name } {versionName} marked to be unloaded");
                 LoadState.SetScheduledForUnload();
             } 
             else
@@ -600,7 +600,7 @@ namespace Dynamo.PackageManager
                 if (BuiltInPackage)
                 {
                     LoadState.SetAsUnloaded();
-                    Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name } {versionName} set unloaded");
+                    Logging.Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name } {versionName} set unloaded");
 
                     RaisePropertyChanged(nameof(LoadState));
 

@@ -10,10 +10,10 @@
     <AssemblyName>DynamoUnits</AssemblyName>
     <DocumentationFile>$(OutputPath)\DynamoUnits.xml</DocumentationFile>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net48' ">
+  <ItemGroup Condition="'$(TargetFrameworkId)' == 'net48' ">
     <Reference Include="System.Configuration" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net50' ">
+  <ItemGroup Condition="'$(TargetFrameworkId)' == 'net50orAbove' ">
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
   </ItemGroup>

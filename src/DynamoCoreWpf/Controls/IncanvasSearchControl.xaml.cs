@@ -76,10 +76,10 @@ namespace Dynamo.UI.Controls
             if (searchElement != null)
             {
                 searchElement.Position = ViewModel.InCanvasSearchPosition;
-                searchElement.ClickedCommand?.Execute(null);
-                Analytics.TrackEvent(
-                Dynamo.Logging.Actions.Select,
-                Dynamo.Logging.Categories.InCanvasSearchOperations,
+                searchElement.ClickedCommand?.Execute(null); 
+                Logging.Analytics.TrackEvent(
+                Actions.Select,
+                Categories.InCanvasSearchOperations,
                 searchElement.FullName);
             }
         }
@@ -108,7 +108,7 @@ namespace Dynamo.UI.Controls
             // Select text in text box.
             SearchTextBox.SelectAll();
 
-            Analytics.TrackEvent(
+            Dynamo.Logging.Analytics.TrackEvent(
             Dynamo.Logging.Actions.Open,
             Dynamo.Logging.Categories.InCanvasSearchOperations);
 

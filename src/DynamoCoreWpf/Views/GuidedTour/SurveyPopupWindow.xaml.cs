@@ -37,7 +37,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             IsOpen = false;
             surveyViewModel.Step.OnStepClosed(surveyViewModel.Step.Name, surveyViewModel.Step.StepType);
-            Logging.Analytics.TrackEvent(Logging.Actions.Rate, Logging.Categories.Command, surveyViewModel.Step.RatingTextTitle, SurveyRatingControl.Value);
+            Dynamo.Logging.Analytics.TrackEvent(Logging.Actions.Rate, Logging.Categories.Command, surveyViewModel.Step.RatingTextTitle, SurveyRatingControl.Value);
         }
     }
 }

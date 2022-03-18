@@ -233,7 +233,7 @@ namespace Dynamo.ViewModels
         private void UnpinWireCommandExecute(object parameter)
         {
             OnRequestRemove(this, EventArgs.Empty);
-            Logging.Analytics.TrackEvent(
+            Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Unpin,
                 Categories.ConnectorOperations);
             WorkspaceViewModel.Model.HasUnsavedChanges = true;

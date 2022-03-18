@@ -534,7 +534,7 @@ namespace Dynamo.ViewModels
                         MessageBoxService.Show(Owner, message, Resources.CannotDownloadPackageMessageBoxTitle,
                             MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
-                    Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, packageToDownload);
+                    Dynamo.Logging.Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, packageToDownload);
                     return false;// All conflicts with built-in packages must be first resolved manually before continuing to download.
                 }
 
@@ -614,7 +614,7 @@ namespace Dynamo.ViewModels
                 // Conflicts with builtin packages
                 var message = string.Format(Resources.MessagePackageDepsInBuiltinPackages, packageToDownload,
                         JoinPackageNames(builtinPackages));
-                Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, packageToDownload);
+                Dynamo.Logging.Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, packageToDownload);
                 var dialogResult = MessageBoxService.Show(Owner, message,
                     Resources.BuiltInPackageConflictMessageBoxTitle,
                     MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
@@ -934,7 +934,7 @@ namespace Dynamo.ViewModels
                         }
                     }
                     SetPackageState(packageDownloadHandle, installPath);
-                    Analytics.TrackEvent(Actions.Installed, Categories.PackageManagerOperations, $"{packageDownloadHandle?.Name}");
+                    Dynamo.Logging.Analytics.TrackEvent(Actions.Installed, Categories.PackageManagerOperations, $"{packageDownloadHandle?.Name}");
                 }
                 catch (Exception e)
                 {

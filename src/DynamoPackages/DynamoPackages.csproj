@@ -9,8 +9,12 @@
     <RootNamespace>DynamoPackages</RootNamespace>
     <AssemblyName>DynamoPackages</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net48' ">
     <Reference Include="System.Configuration" />
+    <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net50orAbove' ">
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
@@ -32,8 +36,7 @@
     <Content Include="PackageManagerExtension_ExtensionDefinition.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Greg" Version="2.1.8012.31283" />
-    <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+    <PackageReference Include="Greg" Version="2.1.8112.17919" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
   </ItemGroup>
   <ItemGroup>

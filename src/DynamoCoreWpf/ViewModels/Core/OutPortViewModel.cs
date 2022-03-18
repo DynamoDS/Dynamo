@@ -152,7 +152,7 @@ namespace Dynamo.ViewModels
         private void BreakConnections(object parameter)
         {
             // Send analytics data ahead of the actual break operation so connector count is still accurate
-            Analytics.TrackEvent(Actions.Break, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Break, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
             for (var i = port.Connectors.Count - 1; i >= 0; i--)
             {
                 // Attempting to get the relevant ConnectorViewModel via matching GUID
@@ -184,11 +184,11 @@ namespace Dynamo.ViewModels
             }
             if (AreConnectorsHidden)
             {
-                Analytics.TrackEvent(Actions.Show, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
+                Dynamo.Logging.Analytics.TrackEvent(Actions.Show, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
             }
             else
             {
-                Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
+                Dynamo.Logging.Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
             }
             RefreshHideWiresState();
         }

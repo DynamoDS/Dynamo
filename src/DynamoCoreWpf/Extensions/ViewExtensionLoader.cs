@@ -24,7 +24,7 @@ namespace Dynamo.Wpf.Extensions
                     var result = assembly.CreateInstance(viewExtension.TypeName) as IViewExtension;
                     ExtensionLoading?.Invoke(result);
 
-                    Analytics.TrackEvent(
+                    Dynamo.Logging.Analytics.TrackEvent(
                     Actions.Load,
                     Categories.ExtensionOperations, viewExtension.TypeName);
 

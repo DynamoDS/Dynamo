@@ -391,7 +391,7 @@ namespace Dynamo.ViewModels
             if (Directory.Exists(Model.RootDirectory))
             {
                 Process.Start(Model.RootDirectory);
-                Analytics.TrackEvent(Actions.Open, Categories.PackageManagerOperations, $"{Model?.Name}");
+                Dynamo.Logging.Analytics.TrackEvent(Actions.Open, Categories.PackageManagerOperations, $"{Model?.Name}");
             }
             else
             {

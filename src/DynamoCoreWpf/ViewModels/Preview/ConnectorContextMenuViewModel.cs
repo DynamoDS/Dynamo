@@ -109,7 +109,7 @@ namespace Dynamo.ViewModels
             ViewModel.BreakConnectionCommand.Execute(null);
             // Track break connection event, this is distinguished with break connections from input/output port.
             // So sending connector and number of connector as 1
-            Analytics.TrackEvent(Actions.Break, Categories.ConnectorOperations, "Connector", 1);
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Break, Categories.ConnectorOperations, "Connector", 1);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace Dynamo.ViewModels
         {
             ViewModel.SelectConnectedCommand.Execute(null);
             // Track select connected nodes event
-            Analytics.TrackEvent(Actions.Select, Categories.ConnectorOperations, "SelectConnected");
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Select, Categories.ConnectorOperations, "SelectConnected");
         }
         /// <summary>
         /// Request disposal of this viewmodel after command has run.
@@ -131,11 +131,11 @@ namespace Dynamo.ViewModels
             // Track Show or hide connected nodes event
             if (ViewModel.IsHidden)
             {
-                Analytics.TrackEvent(Actions.Show, Categories.ConnectorOperations, "Connector", 1);
+                Dynamo.Logging.Analytics.TrackEvent(Actions.Show, Categories.ConnectorOperations, "Connector", 1);
             }
             else
             {
-                Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, "Connector", 1);
+                Dynamo.Logging.Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, "Connector", 1);
             }
             ViewModel.ShowhideConnectorCommand.Execute(null);
         }

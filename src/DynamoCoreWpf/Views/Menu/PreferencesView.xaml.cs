@@ -99,7 +99,7 @@ namespace Dynamo.Wpf.Views
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             managePackageCommandEvent?.Dispose();
-            Analytics.TrackEvent(Actions.Close, Categories.Preferences);
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Close, Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
             viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
@@ -289,7 +289,7 @@ namespace Dynamo.Wpf.Views
         {
             if (e.OriginalSource == e.Source)
             {
-                managePackageCommandEvent = Analytics.TrackCommandEvent("ManagePackage");
+                managePackageCommandEvent = Dynamo.Logging.Analytics.TrackCommandEvent("ManagePackage");
             }
         }
 
