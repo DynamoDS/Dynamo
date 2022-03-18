@@ -288,7 +288,7 @@ b = c[w][x][y][z];";
                 var codeBlockNode = CreateCodeBlockNode();
                 UpdateCodeBlockNodeContent(codeBlockNode, "Curve.Patch();");
                 Assert.AreEqual(ElementState.Warning, codeBlockNode.State);
-                Assert.AreEqual("Failed to obtain this object for 'Curve.Patch'", codeBlockNode.ToolTipText);
+                Assert.IsTrue(codeBlockNode.Infos.Any(x => x.Message.Equals("Failed to obtain this object for 'Curve.Patch'")));
             }
             finally
             {
@@ -352,7 +352,7 @@ b = c[w][x][y][z];";
 
             Assert.IsNotNull(cbn);
             Assert.AreEqual(ElementState.Active, cbn.State);
-            Assert.AreEqual(string.Empty, cbn.ToolTipText);
+            Assert.IsTrue(cbn.Infos.Count == 0);
         }
 
         [Test]
@@ -370,7 +370,7 @@ b = c[w][x][y][z];";
 
             Assert.IsNotNull(cbn);
             Assert.AreEqual(ElementState.Active, cbn.State);
-            Assert.AreEqual(string.Empty, cbn.ToolTipText);
+            Assert.True(cbn.Infos.Count == 0);
         }
 
         [Test]
@@ -388,7 +388,8 @@ b = c[w][x][y][z];";
 
             Assert.IsNotNull(cbn);
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreNotEqual(string.Empty, cbn.ToolTipText);
+            Assert.AreEqual(1, cbn.Infos.Count);
+            Assert.True(cbn.Infos.Any(x => x.State == ElementState.PersistentWarning));
         }
 
         [Test]
@@ -406,7 +407,8 @@ b = c[w][x][y][z];";
 
             Assert.IsNotNull(cbn);
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreNotEqual(string.Empty, cbn.ToolTipText);
+            Assert.AreEqual(1, cbn.Infos.Count);
+            Assert.True(cbn.Infos.Any(x => x.State == ElementState.PersistentWarning));
         }
 
         [Test]
@@ -429,7 +431,8 @@ b = c[w][x][y][z];";
 
             Assert.IsNotNull(cbn);
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreNotEqual(string.Empty, cbn.ToolTipText);
+            Assert.AreEqual(1, cbn.Infos.Count);
+            Assert.True(cbn.Infos.Any(x => x.State == ElementState.PersistentWarning));
 
             var core = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
             var procedureNodes = core.CodeBlockList[0].procedureTable.Procedures;
@@ -459,7 +462,8 @@ b = c[w][x][y][z];";
 
             Assert.IsNotNull(cbn);
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreNotEqual(string.Empty, cbn.ToolTipText);
+            Assert.AreEqual(1, cbn.Infos.Count);
+            Assert.True(cbn.Infos.Any(x => x.State == ElementState.PersistentWarning));
         }
 
         [Test]
@@ -476,7 +480,7 @@ b = c[w][x][y][z];";
             UpdateCodeBlockNodeContent(cbn2, "test();");
 
             Assert.AreEqual(ElementState.Active, cbn2.State);
-            Assert.AreEqual(string.Empty, cbn2.ToolTipText);
+            Assert.AreEqual(0, cbn2.Infos.Count);
         }
 
         [Test]
@@ -490,7 +494,8 @@ b = c[w][x][y][z];";
             UpdateCodeBlockNodeContent(cbn1, "test();");
 
             Assert.AreEqual(ElementState.PersistentWarning, cbn1.State);
-            Assert.AreNotEqual(string.Empty, cbn1.ToolTipText);
+            Assert.AreEqual(1, cbn1.Infos.Count);
+            Assert.True(cbn1.Infos.Any(x => x.State == ElementState.PersistentWarning));
         }
 
         [Test]
@@ -1433,42 +1438,42 @@ var06 = g;
 
             Assert.IsNotNull(dsSum);
             Assert.AreEqual(ElementState.Warning, dsSum.State);
-            Assert.AreEqual(expectedWarning, dsSum.ToolTipText);
+            Assert.IsTrue(dsSum.Infos.Any(x => x.Message.Equals(expectedWarning)));
             AssertPreviewValue(dsSum.AstIdentifierGuid, -2);
 
             Assert.IsNotNull(dsSub);
             Assert.AreEqual(ElementState.Warning, dsSub.State);
-            Assert.AreEqual(expectedWarning, dsSub.ToolTipText);
+            Assert.IsTrue(dsSub.Infos.Any(x => x.Message.Equals(expectedWarning)));
             AssertPreviewValue(dsSub.AstIdentifierGuid, 2);
 
             Assert.IsNotNull(dsNeg);
             Assert.AreEqual(ElementState.Warning, dsNeg.State);
-            Assert.AreEqual(expectedWarning, dsNeg.ToolTipText);
+            Assert.IsTrue(dsNeg.Infos.Any(x => x.Message.Equals(expectedWarning)));
             AssertPreviewValue(dsNeg.AstIdentifierGuid, long.MaxValue);
 
             Assert.IsNotNull(dsMul);
             Assert.AreEqual(ElementState.Warning, dsMul.State);
-            Assert.AreEqual(expectedWarning, dsMul.ToolTipText);
+            Assert.IsTrue(dsMul.Infos.Any(x => x.Message.Equals(expectedWarning)));
             AssertPreviewValue(dsMul.AstIdentifierGuid, -2);
 
             Assert.IsNotNull(mathFactorial);
             Assert.AreEqual(ElementState.Warning, mathFactorial.State);
-            StringAssert.EndsWith("The return value of Math.Factorial is out of range.", mathFactorial.ToolTipText);
+            Assert.IsTrue(mathFactorial.Infos.Any(x => x.Message.EndsWith("The return value of Math.Factorial is out of range.")));
             AssertPreviewValue(mathFactorial.AstIdentifierGuid, null);
 
             Assert.IsNotNull(mathAbs);
             Assert.AreEqual(ElementState.Warning, mathAbs.State);
-            StringAssert.EndsWith("Negating the minimum value of a twos complement number is invalid.", mathAbs.ToolTipText);
+            Assert.IsTrue(mathAbs.Infos.Any(x => x.Message.EndsWith("Negating the minimum value of a twos complement number is invalid.")));
             AssertPreviewValue(mathAbs.AstIdentifierGuid, null);
 
             Assert.IsNotNull(mathFloor);
             Assert.AreEqual(ElementState.Warning, mathFloor.State);
-            Assert.AreEqual(expectedWarning, mathFloor.ToolTipText);
+            Assert.IsTrue(mathFloor.Infos.Any(x => x.Message.Equals(expectedWarning)));
             AssertPreviewValue(mathFloor.AstIdentifierGuid, long.MinValue);
 
             Assert.IsNotNull(mathCeiling);
             Assert.AreEqual(ElementState.Warning, mathCeiling.State);
-            Assert.AreEqual(expectedWarning, mathCeiling.ToolTipText);
+            Assert.IsTrue(mathCeiling.Infos.Any(x => x.Message.Equals(expectedWarning)));
             AssertPreviewValue(mathCeiling.AstIdentifierGuid, long.MinValue);
         }
 
@@ -1774,8 +1779,8 @@ var06 = g;
             Assert.AreEqual(mirrorData.Data, null);
 
             // Assert that node throws type mismatch warning
-            Assert.IsTrue(codeBlockNodeOne.ToolTipText.Contains(
-                ProtoCore.Properties.Resources.kConvertNonConvertibleTypes));
+            Assert.IsTrue(codeBlockNodeOne.Infos.Any(x => x.Message.Contains(
+                ProtoCore.Properties.Resources.kConvertNonConvertibleTypes)));
         }
 
         [Test]
@@ -1795,8 +1800,8 @@ var06 = g;
             Assert.AreEqual(null, node.CachedValue.Data);
 
             // Assert that node throws type mismatch warning
-            Assert.IsTrue(node.ToolTipText.Contains(
-                ProtoCore.Properties.Resources.kConvertNonConvertibleTypes));
+            Assert.IsTrue(node.Infos.Any(x => x.Message.Contains(
+                ProtoCore.Properties.Resources.kConvertNonConvertibleTypes)));
         }
 
         [Test]
@@ -1812,8 +1817,8 @@ var06 = g;
             var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
                 ("eff3e874-cfc3-455c-8275-741ab5b42ebd");
 
-            Assert.IsTrue(node1.ToolTipText.Contains(
-                "Method 'DSCore.IO.CSV.WriteToFile' has been deprecated, please use method 'DSOffice.Data.ExportCSV' instead"));
+            Assert.IsTrue(node1.Infos.Any(x => x.Message.Contains(
+                "Method 'DSCore.IO.CSV.WriteToFile' has been deprecated, please use method 'DSOffice.Data.ExportCSV' instead")));
         }
 
         [Test]
@@ -1835,8 +1840,8 @@ var06 = g;
             RunCurrentModel();
 
             Assert.IsTrue(cbn.IsInErrorState);
-            Assert.IsTrue(cbn.ToolTipText.Contains(
-                ProtoCore.Properties.Resources.DeprecatedListInitializationSyntax));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Contains(
+                ProtoCore.Properties.Resources.DeprecatedListInitializationSyntax)));
         }
 
         #endregion
@@ -1888,13 +1893,13 @@ var06 = g;
             var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
                 ("9e2c84e6-b9b8-4bdf-b82e-868b2436b865");
 
-            Assert.IsTrue(string.IsNullOrEmpty(node1.ToolTipText));
-            Assert.IsTrue(string.IsNullOrEmpty(node2.ToolTipText));
+            Assert.IsTrue(node1.Infos.Count == 0);
+            Assert.IsTrue(node2.Infos.Count == 0);
 
             BeginRun();
 
-            Assert.IsTrue(string.IsNullOrEmpty(node1.ToolTipText));
-            Assert.IsTrue(string.IsNullOrEmpty(node2.ToolTipText));
+            Assert.IsTrue(node1.Infos.Count == 0);
+            Assert.IsTrue(node2.Infos.Count == 0);
         }
 
         #endregion

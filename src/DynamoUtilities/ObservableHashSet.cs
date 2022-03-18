@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dynamo.Utilities
 {
@@ -13,13 +14,27 @@ namespace Dynamo.Utilities
         public void Add(T item)
         {
             set.Add(item);
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add));
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         public void RemoveWhere(Predicate<T> match)
         {
             set.RemoveWhere(match);
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove));
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        public bool Any(Func<T, bool> match)
+        {
+            return set.Any(match);
+        }
+
+        public void AddRange(IEnumerable<T> range)
+        {
+            foreach (var item in range)
+            {
+                set.Add(item);
+            }
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         public int Count

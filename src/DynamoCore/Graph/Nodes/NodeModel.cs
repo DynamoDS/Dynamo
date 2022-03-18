@@ -385,6 +385,7 @@ namespace Dynamo.Graph.Nodes
         ///     Text that is displayed as this Node's tooltip.
         /// </summary>
         [JsonIgnore]
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
         public string ToolTipText
         {
             get { return toolTipText; }
@@ -1612,7 +1613,7 @@ namespace Dynamo.Graph.Nodes
 
         private void ClearTooltipText()
         {
-            ToolTipText = "";
+            //ToolTipText = "";
             infos.RemoveWhere(x => x.State == ElementState.Warning || x.State == ElementState.Error);
         }
 
@@ -1754,7 +1755,7 @@ namespace Dynamo.Graph.Nodes
             State = ElementState.Error;
             infos.Add(new Info(p, ElementState.Error));
 
-            ToolTipText = p;
+            //ToolTipText = p;
         }
 
         /// <summary>
@@ -1773,19 +1774,21 @@ namespace Dynamo.Graph.Nodes
                 {
                     persistentWarning += string.IsNullOrEmpty(persistentWarning) ? p : $"\n{p}";
                     var texts = persistentWarning.Split(new[] { "\n" }, StringSplitOptions.None);
+                    var infoList = new List<Info>();
                     foreach (var text in texts)
                     {
-                        infos.Add(new Info(text, State));
+                        infoList.Add(new Info(text, State));
                     }
+                    infos.AddRange(infoList);
                 }
-                ToolTipText = persistentWarning;
+                //ToolTipText = persistentWarning;
             }
             else
             {
                 State = ElementState.Warning;
                 infos.Add(new Info(p, State));
 
-                ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.IsNullOrEmpty(p) ? persistentWarning : $"{persistentWarning}{Environment.NewLine}{p}";
+                //ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.IsNullOrEmpty(p) ? persistentWarning : $"{persistentWarning}{Environment.NewLine}{p}";
             }
         }
 
@@ -1797,8 +1800,9 @@ namespace Dynamo.Graph.Nodes
         public void NotifyAstBuildBroken(string p)
         {
             State = ElementState.AstBuildBroken;
-            ToolTipText = p;
             infos.Add(new Info(p, ElementState.AstBuildBroken));
+
+            //ToolTipText = p;
         }
 
         #endregion

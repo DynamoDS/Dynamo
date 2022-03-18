@@ -771,6 +771,7 @@ namespace Dynamo.ViewModels
             logic.OutPorts.CollectionChanged += outports_collectionChanged;
 
             logic.PropertyChanged += logic_PropertyChanged;
+            logic.Infos.CollectionChanged += Infos_CollectionChanged;
 
             DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
@@ -806,6 +807,11 @@ namespace Dynamo.ViewModels
             logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
 
             logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsVisible)));
+        }
+
+        private void Infos_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateBubbleContent();
         }
 
 
@@ -872,6 +878,7 @@ namespace Dynamo.ViewModels
             NodeModel.PropertyChanged -= logic_PropertyChanged;
             NodeModel.InPorts.CollectionChanged -= inports_collectionChanged;
             NodeModel.OutPorts.CollectionChanged -= outports_collectionChanged;
+            NodeModel.Infos.CollectionChanged -= Infos_CollectionChanged;
 
             DynamoViewModel.Model.PropertyChanged -= Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged -= DebugSettings_PropertyChanged;

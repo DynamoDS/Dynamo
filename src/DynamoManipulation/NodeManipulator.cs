@@ -622,7 +622,6 @@ namespace Dynamo.Manipulation
                 {
                     packages.Add(item.GetDrawables());
                 }
-                throw new Exception();
             }
             catch (Exception e)
             {
