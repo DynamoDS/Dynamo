@@ -1792,7 +1792,7 @@ namespace Dynamo.ViewModels
         private void InternalSaveAs(string path, SaveContext saveContext, bool isBackup = false)
         {
             try
-            {                
+            {
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
 
                 // If the current workspace is a CustomNodeWorkspaceModel, then call the save method on it.
