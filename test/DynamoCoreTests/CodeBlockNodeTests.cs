@@ -1438,42 +1438,45 @@ var06 = g;
 
             Assert.IsNotNull(dsSum);
             Assert.AreEqual(ElementState.Warning, dsSum.State);
-            Assert.IsTrue(dsSum.Infos.Any(x => x.Message.Equals(expectedWarning)));
+            Assert.IsTrue(dsSum.Infos.Any(x => x.Message.Equals(expectedWarning) && x.State == ElementState.Warning));
             AssertPreviewValue(dsSum.AstIdentifierGuid, -2);
 
             Assert.IsNotNull(dsSub);
             Assert.AreEqual(ElementState.Warning, dsSub.State);
-            Assert.IsTrue(dsSub.Infos.Any(x => x.Message.Equals(expectedWarning)));
+            Assert.IsTrue(dsSub.Infos.Any(x => x.Message.Equals(expectedWarning) && x.State == ElementState.Warning));
             AssertPreviewValue(dsSub.AstIdentifierGuid, 2);
 
             Assert.IsNotNull(dsNeg);
             Assert.AreEqual(ElementState.Warning, dsNeg.State);
-            Assert.IsTrue(dsNeg.Infos.Any(x => x.Message.Equals(expectedWarning)));
+            Assert.IsTrue(dsNeg.Infos.Any(x => x.Message.Equals(expectedWarning) && x.State == ElementState.Warning));
             AssertPreviewValue(dsNeg.AstIdentifierGuid, long.MaxValue);
 
             Assert.IsNotNull(dsMul);
             Assert.AreEqual(ElementState.Warning, dsMul.State);
-            Assert.IsTrue(dsMul.Infos.Any(x => x.Message.Equals(expectedWarning)));
+            Assert.IsTrue(dsMul.Infos.Any(x => x.Message.Equals(expectedWarning) && x.State == ElementState.Warning));
             AssertPreviewValue(dsMul.AstIdentifierGuid, -2);
 
             Assert.IsNotNull(mathFactorial);
             Assert.AreEqual(ElementState.Warning, mathFactorial.State);
-            Assert.IsTrue(mathFactorial.Infos.Any(x => x.Message.EndsWith("The return value of Math.Factorial is out of range.")));
+            Assert.IsTrue(mathFactorial.Infos.Any(x => x.Message.EndsWith("The return value of Math.Factorial is out of range.")
+             && x.State == ElementState.Warning));
             AssertPreviewValue(mathFactorial.AstIdentifierGuid, null);
 
             Assert.IsNotNull(mathAbs);
             Assert.AreEqual(ElementState.Warning, mathAbs.State);
-            Assert.IsTrue(mathAbs.Infos.Any(x => x.Message.EndsWith("Negating the minimum value of a twos complement number is invalid.")));
+            Assert.IsTrue(mathAbs.Infos.Any(x => x.Message.EndsWith("Negating the minimum value of a twos complement number is invalid.")
+            && x.State == ElementState.Warning));
             AssertPreviewValue(mathAbs.AstIdentifierGuid, null);
 
             Assert.IsNotNull(mathFloor);
             Assert.AreEqual(ElementState.Warning, mathFloor.State);
-            Assert.IsTrue(mathFloor.Infos.Any(x => x.Message.Equals(expectedWarning)));
+            Assert.IsTrue(mathFloor.Infos.Any(x => x.Message.Equals(expectedWarning)
+             && x.State == ElementState.Warning));
             AssertPreviewValue(mathFloor.AstIdentifierGuid, long.MinValue);
 
             Assert.IsNotNull(mathCeiling);
             Assert.AreEqual(ElementState.Warning, mathCeiling.State);
-            Assert.IsTrue(mathCeiling.Infos.Any(x => x.Message.Equals(expectedWarning)));
+            Assert.IsTrue(mathCeiling.Infos.Any(x => x.Message.Equals(expectedWarning) && x.State == ElementState.Warning));
             AssertPreviewValue(mathCeiling.AstIdentifierGuid, long.MinValue);
         }
 
