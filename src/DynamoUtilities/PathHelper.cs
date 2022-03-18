@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Security.AccessControl;
 using System.Xml;
 using Newtonsoft.Json;
@@ -49,6 +50,9 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="filePath">File path</param>
         /// <returns></returns>
+#if NET5_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         public static bool IsReadOnlyPath(string filePath)
         {
             if (IsValidPath(filePath))
@@ -68,13 +72,19 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="folderPath">Folder path</param>
         /// <returns></returns>
+#if NET5_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         public static bool HasWritePermissionOnDir(string folderPath)
         {
             try
             {
                 var writeAllow = false;
                 var writeDeny = false;
-                var accessControlList = Directory.GetAccessControl(folderPath);
+                DirectoryInfo dInfo = new DirectoryInfo(folderPath);
+                if (dInfo == null)
+                    return false;
+                var accessControlList = dInfo.GetAccessControl(AccessControlSections.All);
                 if (accessControlList == null)
                     return false;
                 var accessRules = accessControlList.GetAccessRules(true, true,

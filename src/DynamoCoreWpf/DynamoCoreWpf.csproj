@@ -11,6 +11,7 @@
     <DocumentationFile>$(OutputPath)\DynamoCoreWpf.XML</DocumentationFile>
     <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
+    <UILib>true</UILib>
   </PropertyGroup>
   <ItemGroup>
 	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
@@ -22,6 +23,7 @@
 	<PackageReference Include="HelixToolkit" Version="2.17.0" />
 	<PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
 	<PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
+  <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
 	<PackageReference Include="SharpDX" Version="4.2.0" />
 	<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" >
 	  <IncludeAssets>none</IncludeAssets>
