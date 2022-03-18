@@ -12,5 +12,7 @@
     <AssemblyName>DynamoServices</AssemblyName>
     <DocumentationFile>$(OutputPath)\DynamoServices.XML</DocumentationFile>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <BaseIntermediateOutputPath>int\$(TargetFramework)\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(TargetFramework)\</IntermediateOutputPath>
   </PropertyGroup>
 </Project>

@@ -8,7 +8,6 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> 
     <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\$(Platform)\$(Configuration)</OutputPath>
-    <BaseIntermediateOutputPath>int\</BaseIntermediateOutputPath>
     <NunitPath Condition=" '$(NunitPath)' == '' ">$(SolutionDir)..\extern\NUnit</NunitPath>
     <SharpDXDirectXVersion>DirectX11</SharpDXDirectXVersion>
     <ErrorReport>prompt</ErrorReport>
@@ -17,6 +16,7 @@
     <UICulture>en-US</UICulture>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <TestProjectDefaults Condition="$(MSBuildProjectDirectory.Contains('test'))">true</TestProjectDefaults>
     <TestProjectDefaults Condition=" '$(TestProjectDefaults)' == '' ">false</TestProjectDefaults>
     <NoWarn>MSB3539</NoWarn><!--The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
@@ -36,7 +36,7 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('NET48'))">
-      <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('NET50'))">
     <TargetFramework>net50</TargetFramework>
@@ -45,6 +45,10 @@
     <TargetFrameworks>net50-windows</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>int\$(TargetFramework)\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(TargetFramework)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="obj\**" />
