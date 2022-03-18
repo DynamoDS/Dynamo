@@ -104,6 +104,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\DeprecatedNode.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Resources\MissingNode.png" />
   </ItemGroup>
   <ItemGroup>
