@@ -1615,11 +1615,6 @@ namespace Dynamo.Graph.Nodes
             infos.RemoveWhere(x => x.State == ElementState.Warning || x.State == ElementState.Error);
         }
 
-        private void ClearPersistentWarning()
-        {
-            infos.RemoveWhere(x => x.State == ElementState.PersistentWarning);
-        }
-
         /// <summary>
         /// Clears the errors/warnings that are generated when running the graph,
         /// the State will be set to ElementState.Dead.
@@ -1627,7 +1622,7 @@ namespace Dynamo.Graph.Nodes
         public virtual void ClearErrorsAndWarnings()
         {
             State = ElementState.Dead;
-            ClearPersistentWarning();
+            infos.RemoveWhere(x => x.State == ElementState.PersistentWarning);
 
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTransientWarningsAndErrors();
