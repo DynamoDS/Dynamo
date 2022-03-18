@@ -74,7 +74,6 @@ namespace Dynamo.Graph.Nodes
         private string toolTipText = string.Empty;
         private readonly ObservableHashSet<Info> infos = new ObservableHashSet<Info>();
         private string description;
-        private string persistentWarning = string.Empty;
 
         ///A flag indicating whether the node has been explicitly frozen.
         internal bool isFrozenExplicitly;
@@ -1618,7 +1617,6 @@ namespace Dynamo.Graph.Nodes
 
         private void ClearPersistentWarning()
         {
-            persistentWarning = String.Empty;
             infos.RemoveWhere(x => x.State == ElementState.PersistentWarning);
         }
 
@@ -1664,7 +1662,7 @@ namespace Dynamo.Graph.Nodes
             });
             if (cond)
             {
-                if (!string.IsNullOrEmpty(persistentWarning))
+                if (Infos.Any(x => x.State == ElementState.PersistentWarning))
                 {
                     // Still have persistent warnings then switch to the PersistentWarning state
                     State = ElementState.PersistentWarning;
@@ -1729,7 +1727,7 @@ namespace Dynamo.Graph.Nodes
 
             if (State == ElementState.PersistentWarning) return;
 
-            if (!string.IsNullOrEmpty(persistentWarning))
+            if (Infos.Any(x => x.State == ElementState.PersistentWarning))
             {
                 State = ElementState.PersistentWarning;
                 return;
@@ -1766,10 +1764,9 @@ namespace Dynamo.Graph.Nodes
             if (isPersistent)
             {
                 State = ElementState.PersistentWarning;
-                if (!string.Equals(persistentWarning, p))
+                if(!Infos.Any(x => x.Message.Equals(p) && x.State == ElementState.PersistentWarning))
                 {
-                    persistentWarning += string.IsNullOrEmpty(persistentWarning) ? p : $"\n{p}";
-                    var texts = persistentWarning.Split(new[] { "\n" }, StringSplitOptions.None);
+                    var texts = p.Split(new[] { "\n" }, StringSplitOptions.None);
                     var infoList = new List<Info>();
                     foreach (var text in texts)
                     {
