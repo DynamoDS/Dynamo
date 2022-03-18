@@ -236,7 +236,7 @@ for modname,mod in sys.modules.copy().items():
 
 ");
                 }
-                Analytics.TrackEvent(
+                Dynamo.Logging.Analytics.TrackEvent(
                    Dynamo.Logging.Actions.Start,
                    Dynamo.Logging.Categories.PythonOperations,
                    "CPythonReset");
@@ -665,7 +665,7 @@ sys.stdout = DynamoStdOut({0})
             if (EvaluationStarted != null)
             {
                 EvaluationStarted(code, bindingValues, (n, v) => { scope.Set(n, InputMarshaler.Marshal(v).ToPython()); });
-                Analytics.TrackEvent(
+                Dynamo.Logging.Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Start,
                     Dynamo.Logging.Categories.PythonOperations,
                     "CPythonEvaluation");
@@ -695,7 +695,7 @@ sys.stdout = DynamoStdOut({0})
                     code, bindingValues, (n) => {
                         return OutputMarshaler.Marshal(scope.Get(n));
                     });
-                Analytics.TrackEvent(
+                Dynamo.Logging.Analytics.TrackEvent(
                     Dynamo.Logging.Actions.End,
                     Dynamo.Logging.Categories.PythonOperations,
                     "CPythonEvaluation");

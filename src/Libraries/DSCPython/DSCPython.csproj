@@ -10,14 +10,14 @@
     <AssemblyName>DSCPython</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Python.Included, Version=2.5.1.2374, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Python.Included">
       <HintPath>..\..\..\extern\Python\Python.Included.dll</HintPath>
     </Reference>
-    <Reference Include="Python.Runtime, Version=2.5.1.2374, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Python.Runtime">
       <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>

@@ -27,6 +27,19 @@ namespace DSOffice
 
     internal static class ExcelInterop
     {
+#if NET5_0_OR_GREATER
+        [DllImport("oleaut32.dll", PreserveSig = false)]
+        static extern void GetActiveObject(
+            ref Guid rclsid,
+            IntPtr pvReserved,
+            [MarshalAs(UnmanagedType.IUnknown)] out Object ppunk);
+
+        [DllImport("ole32.dll")]
+        static extern int CLSIDFromProgID(
+            [MarshalAs(UnmanagedType.LPWStr)] string lpszProgID,
+            out Guid pclsid);
+#endif
+
         private static Microsoft.Office.Interop.Excel.Application _app;
         public static Microsoft.Office.Interop.Excel.Application App
         {
@@ -61,7 +74,17 @@ namespace DSOffice
 
             try
             {
+#if NET5_0_OR_GREATER
+                Guid clsid;
+                CLSIDFromProgID("Excel.Application", out clsid);
+
+                object obj;
+                GetActiveObject(ref clsid, IntPtr.Zero, out obj);
+
+                excel = obj as Microsoft.Office.Interop.Excel.Application;
+#else
                 excel = (Microsoft.Office.Interop.Excel.Application)Marshal.GetActiveObject("Excel.Application");
+#endif
             }
             catch (COMException e)
             {
@@ -341,7 +364,7 @@ namespace DSOffice
     [IsVisibleInDynamoLibrary(false)]
     public class WorkSheet
     {
-        #region Helper methods
+#region Helper methods
 
         private static object[][] ConvertToJaggedArray(object[,] input, bool convertToString = false)
         {
@@ -447,7 +470,7 @@ namespace DSOffice
             return output;
         }
 
-        #endregion
+#endregion
         /// <summary>
         /// Returns data from given worksheet (GetDataFromExcelWorksheet node)
         /// </summary>
@@ -540,8 +563,8 @@ namespace DSOffice
             if (rangeData == null)
                 return this;
 
-            var c1 = (Range)ws.Cells[startRow + 1, startColumn + 1];
-            var c2 = (Range)ws.Cells[startRow + numRows, startColumn + numColumns];
+            var c1 = (Microsoft.Office.Interop.Excel.Range)ws.Cells[startRow + 1, startColumn + 1];
+            var c2 = (Microsoft.Office.Interop.Excel.Range)ws.Cells[startRow + numRows, startColumn + numColumns];
             var range = ws.Range[c1, c2];
             if(writeAsString)
                 range.NumberFormat = "@";
