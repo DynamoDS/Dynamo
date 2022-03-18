@@ -352,7 +352,7 @@ namespace Dynamo.Graph.Nodes
             set
             {
                 if (value != ElementState.Error && value != ElementState.AstBuildBroken)
-                    ClearTooltipText();
+                    ClearTransientWarningsAndErrors();
 
                 // Check before settings and raising
                 // a notification.
@@ -1611,9 +1611,8 @@ namespace Dynamo.Graph.Nodes
 
         #region UI Framework
 
-        private void ClearTooltipText()
+        private void ClearTransientWarningsAndErrors()
         {
-            //ToolTipText = "";
             infos.RemoveWhere(x => x.State == ElementState.Warning || x.State == ElementState.Error);
         }
 
@@ -1633,7 +1632,7 @@ namespace Dynamo.Graph.Nodes
             ClearPersistentWarning();
 
             SetNodeStateBasedOnConnectionAndDefaults();
-            ClearTooltipText();
+            ClearTransientWarningsAndErrors();
             OnNodeMessagesClearing();
         }
 
@@ -1669,7 +1668,6 @@ namespace Dynamo.Graph.Nodes
                 {
                     // Still have persistent warnings then switch to the PersistentWarning state
                     State = ElementState.PersistentWarning;
-                    //ToolTipText = persistentWarning;
                 }
                 else
                 {
@@ -1754,8 +1752,6 @@ namespace Dynamo.Graph.Nodes
         {
             State = ElementState.Error;
             infos.Add(new Info(p, ElementState.Error));
-
-            //ToolTipText = p;
         }
 
         /// <summary>
@@ -1781,14 +1777,11 @@ namespace Dynamo.Graph.Nodes
                     }
                     infos.AddRange(infoList);
                 }
-                //ToolTipText = persistentWarning;
             }
             else
             {
                 State = ElementState.Warning;
                 infos.Add(new Info(p, State));
-
-                //ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.IsNullOrEmpty(p) ? persistentWarning : $"{persistentWarning}{Environment.NewLine}{p}";
             }
         }
 
@@ -1801,8 +1794,6 @@ namespace Dynamo.Graph.Nodes
         {
             State = ElementState.AstBuildBroken;
             infos.Add(new Info(p, ElementState.AstBuildBroken));
-
-            //ToolTipText = p;
         }
 
         #endregion
