@@ -29,7 +29,7 @@ using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 
 namespace Dynamo.Graph.Nodes
 {
-    internal struct Info
+    internal class Info
     {
         public string Message;
         public Nodes.ElementState State;
@@ -43,8 +43,11 @@ namespace Dynamo.Graph.Nodes
         {
             if (other == null) return false;
 
-            var otherInfo = (Info)other;
-            return Message == otherInfo.Message && State == otherInfo.State;
+            if (other is Info otherInfo)
+            {
+                return Message == otherInfo.Message && State == otherInfo.State;
+            }
+            return false;
         }
 
         public override int GetHashCode()
