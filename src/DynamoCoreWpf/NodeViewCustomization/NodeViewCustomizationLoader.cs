@@ -51,8 +51,8 @@ namespace Dynamo.Wpf
         private static IEnumerable<Type> GetCustomizationTypes(Assembly assem)
         {
             var customizerType = typeof(INodeViewCustomization<>);
-            var customizerImps = assem.GetTypes().Where(t => !t.IsAbstract && 
-                TypeExtensions.ImplementsGeneric(customizerType, t));
+            var customizerImps = assem.GetTypes().Where(t => !t.IsAbstract &&
+                Dynamo.Utilities.TypeExtensions.ImplementsGeneric(customizerType, t));
             return customizerImps;
         }
 

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using System.Reflection;
 using System.IO;
 using System.Configuration;
+#if NET5_0_OR_GREATER
+using ForgeUnitsCLR = Autodesk.ForgeUnits;
+using SchemasCLR = Autodesk.ForgeUnits;
+#endif
 
 namespace DynamoUnits
 {
@@ -49,7 +52,11 @@ namespace DynamoUnits
 
             try
             {
+#if NET5_0_OR_GREATER
+                unitsEngine = ForgeUnitsCLR.ForgeUnits.CreateUnitsEngine();
+#else
                 unitsEngine = new ForgeUnitsCLR.UnitsEngine();
+#endif
                 SchemasCLR.SchemaUtility.addDefinitionsFromFolder(SchemaDirectory, unitsEngine);
                 unitsEngine.resolveSchemas();
             }
@@ -68,7 +75,11 @@ namespace DynamoUnits
         {
             try
             {
+#if NET5_0_OR_GREATER
+                unitsEngine = ForgeUnitsCLR.ForgeUnits.CreateUnitsEngine();
+#else
                 unitsEngine = new ForgeUnitsCLR.UnitsEngine();
+#endif
                 SchemasCLR.SchemaUtility.addDefinitionsFromFolder(testSchemaDir, unitsEngine);
                 unitsEngine.resolveSchemas();
             }

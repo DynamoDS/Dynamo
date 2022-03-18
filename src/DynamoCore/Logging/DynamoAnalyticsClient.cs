@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using Analytics.NET.Google;
 using Analytics.NET.ADP;
+#if NET48
+using Analytics.NET.Google;
+#endif
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
 using Dynamo.Interfaces;
@@ -179,6 +181,7 @@ namespace Dynamo.Logging
             product = new ProductInfo() { Id = "DYN", Name = hostName, VersionString = appversion, AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
         }
 
+#if NET48
         private void RegisterGATracker(Service service)
         {
             //Some clients such as Revit may allow start/close Dynamo multiple times
@@ -189,6 +192,7 @@ namespace Dynamo.Logging
                 service.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
             }
         }
+#endif
 
         private void RegisterADPTracker(Service service)
         {
@@ -215,11 +219,11 @@ namespace Dynamo.Logging
 
                 // Use separate functions to avoid loading the tracker dlls if they are not opted in (as an extra safety measure).
                 // ADP will be loaded because opt-in/opt-out is handled/serialized exclusively by the ADP module.
-
+#if NET48
                 // Register Google Tracker only if the user is opted in.
                 if (preferences.IsAnalyticsReportingApproved)
                     RegisterGATracker(service);
-
+#endif
                 // Register ADP Tracker only if the user is opted in.
                 if (preferences.IsADPAnalyticsReportingApproved)
                     RegisterADPTracker(service);

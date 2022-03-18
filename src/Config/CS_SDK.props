@@ -20,8 +20,6 @@
     <TestProjectDefaults Condition="$(MSBuildProjectDirectory.Contains('test'))">true</TestProjectDefaults>
     <TestProjectDefaults Condition=" '$(TestProjectDefaults)' == '' ">false</TestProjectDefaults>
     <NoWarn>MSB3539</NoWarn><!--The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
-     <!--This is used to set the framework version for icon resource dll generation (lookup of system.drawing.dll)-->
-    <ResourceGeneration_FrameworkVersion>v4.8</ResourceGeneration_FrameworkVersion>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
@@ -55,6 +53,9 @@
     <EmbeddedResource Remove="obj\**" />
     <None Remove="obj\**" />
     <None Remove="*.resources" />
+    <Compile Remove="int\**" />
+    <EmbeddedResource Remove="int\**" />
+    <None Remove="int\**" />
   </ItemGroup>
   <ItemGroup>
     <Compile Condition="'$(ProjectName)'!='AssemblyInfoGenerator'" Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
@@ -103,5 +104,18 @@
     <Copy SourceFiles="@(XMLContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)" Condition="Exists('%(FullPath)')" />
     <Copy SourceFiles="@(PDBContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)" Condition="Exists('%(FullPath)')" />
     <Copy SourceFiles="@(DLLContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)$(Local_CopyToSubdirectory)" Condition="Exists('%(FullPath)')" />
+  </Target>
+  <Target Name="ResolveSateliteResDeps" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
+    <!-- Get System.Drawing.dll -->
+    <PropertyGroup Condition=" '$(TargetFramework)' == 'net48' ">
+      <ResourceGeneration_FrameworkVersion >v4.8</ResourceGeneration_FrameworkVersion>
+    </PropertyGroup>
+    <GetReferenceAssemblyPaths Condition=" '$(TargetFramework)' == 'net48' " TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
+      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    </GetReferenceAssemblyPaths>
+    <PropertyGroup>
+      <SystemDrawingDllPath Condition=" '$(TargetFramework)' == 'net48' ">$(FrameworkAssembliesPath)System.Drawing.dll</SystemDrawingDllPath>
+      <SystemDrawingDllPath Condition=" '$(TargetFramework)' == 'net50' ">$(PkgSystem_Drawing_Common)\lib\netcoreapp3.1\System.Drawing.Common.dll</SystemDrawingDllPath>
+    </PropertyGroup>
   </Target>
 </Project>

@@ -9,6 +9,7 @@
     <RootNamespace>UnitsUI</RootNamespace>
     <AssemblyName>UnitsUI</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
+    <UILib>true</UILib>
   </PropertyGroup>
   <ItemDefinitionGroup>
 	<ReferenceCopyLocalPaths>
