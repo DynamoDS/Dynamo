@@ -1665,7 +1665,6 @@ namespace Dynamo.Graph.Nodes
         {
             infos.RemoveWhere(x => x.State == ElementState.Info);
             State = ElementState.Dead;
-            ClearTooltipText();
             OnNodeInfoMessagesClearing();
         }
 
