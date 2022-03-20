@@ -266,7 +266,7 @@ namespace Dynamo.WorkspaceDependency
             {
                 var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
                 DownloadSpecifiedPackageAndRefresh(info);
-                Analytics.TrackEvent(Actions.DownloadNew, Categories.WorkspaceReferencesOperations);
+                Dynamo.Logging.Analytics.TrackEvent(Actions.DownloadNew, Categories.WorkspaceReferencesOperations);
             }
             catch (Exception ex)
             {
@@ -297,7 +297,7 @@ namespace Dynamo.WorkspaceDependency
             {
                 var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
                 UpdateWorkspaceToUseInstalledPackage(info);
-                Analytics.TrackEvent(Actions.KeepOld, Categories.WorkspaceReferencesOperations, info.Name);
+                Dynamo.Logging.Analytics.TrackEvent(Actions.KeepOld, Categories.WorkspaceReferencesOperations, info.Name);
             }
             catch (Exception ex)
             {
@@ -469,6 +469,16 @@ namespace Dynamo.WorkspaceDependency
     /// </summary>
     public class DependencyRow
     {
+#if NET5_0_OR_GREATER
+        private struct MimeMapping
+        {
+            internal static string GetMimeMapping(string fileName)
+            {
+                return MimeTypes.GetMimeType(fileName);
+            }
+        }
+#endif
+
         internal DependencyInfo DependencyInfo { get; private set; }
 
         internal DependencyRow(DependencyInfo localDefinitionInfo)

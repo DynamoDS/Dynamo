@@ -251,7 +251,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         {
             if (eventName == "Search" || eventName == "Filter-Categories" || eventName == "Search-NodeAdded")
             {
-                Analytics.LogPiiInfo(eventName, data);
+                Dynamo.Logging.Analytics.LogPiiInfo(eventName, data);
             }
         }
 

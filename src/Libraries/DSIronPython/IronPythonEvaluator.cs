@@ -346,7 +346,7 @@ sys.stdout = DynamoStdOut({0})
             if (EvaluationStarted != null)
             {
                 EvaluationStarted(code, bindingValues, (n, v) => { scope.SetVariable(n, InputMarshaler.Marshal(v)); });
-                Analytics.TrackEvent(
+                Dynamo.Logging.Analytics.TrackEvent(
                     Dynamo.Logging.Actions.End,
                     Dynamo.Logging.Categories.PythonOperations,
                     "IronPythonEvaluation");
@@ -376,7 +376,7 @@ sys.stdout = DynamoStdOut({0})
                 EvaluationFinished( isSuccessful ? Dynamo.PythonServices.EvaluationState.Success : Dynamo.PythonServices.EvaluationState.Failed, 
                     code, bindingValues, (n) => { return OutputMarshaler.Marshal(scope.GetVariable(n)); });
 
-                Analytics.TrackEvent(
+                Dynamo.Logging.Analytics.TrackEvent(
                     Dynamo.Logging.Actions.End,
                     Dynamo.Logging.Categories.PythonOperations,
                     "IronPythonEvaluation");

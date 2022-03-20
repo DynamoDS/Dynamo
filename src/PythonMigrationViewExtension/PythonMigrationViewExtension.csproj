@@ -1,4 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UILib>true</UILib>
+  </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -8,16 +11,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.PythonMigration</RootNamespace>
     <AssemblyName>PythonMigrationViewExtension</AssemblyName>
+    <EnableDefaultPageItems>False</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DiffPlex" Version="1.6.3" CopyMetaData="true"/>
-	  <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
-    <Reference Include="PresentationCore">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PresentationFramework">
-      <Private>False</Private>
-    </Reference>
+    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <Reference Include="Python.Included, Version=2.5.1.2374, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Python\Python.Included.dll</HintPath>
@@ -26,6 +24,14 @@
     <Reference Include="Python.Runtime, Version=2.5.1.2374, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Python\Python.Runtime.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net50orAbove' ">
+    <Reference Include="PresentationCore">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PresentationFramework">
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Windows.Forms">

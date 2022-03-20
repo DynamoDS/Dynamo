@@ -1,4 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+  <PropertyGroup>
+    <UILib>true</UILib>
+  </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -9,23 +12,29 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.LibraryUI</RootNamespace>
     <AssemblyName>LibraryViewExtension</AssemblyName>
-	<OutputPath>bin\$(Configuration)\</OutputPath>
+	  <OutputPath>bin\$(Configuration)\</OutputPath>
+    <EnableDefaultPageItems>False</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Handlers\GetPackageResourceHandler.cs" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net48' ">
+    	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net50orAbove' ">
+    	<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="cef.redist.x64" Version="3.3325.1758" />
-	<PackageReference Include="cef.redist.x86" Version="3.3325.1758" />
-	<PackageReference Include="CefSharp.Common" Version="65.0.1">
-	  <GeneratePathProperty>true</GeneratePathProperty>
-	</PackageReference>
-	<PackageReference Include="CefSharp.Wpf" Version="65.0.1">
-	  <GeneratePathProperty>true</GeneratePathProperty>
-	</PackageReference>
-	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
-	<ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj" />
-	<ProjectReference Include="..\DynamoCore\DynamoCore.csproj" />
+	  <PackageReference Include="cef.redist.x64" Version="3.3325.1758" />
+	  <PackageReference Include="cef.redist.x86" Version="3.3325.1758" />
+	  <PackageReference Include="CefSharp.Common" Version="65.0.1">
+	    <GeneratePathProperty>true</GeneratePathProperty>
+	  </PackageReference>
+	  <PackageReference Include="CefSharp.Wpf" Version="65.0.1">
+	    <GeneratePathProperty>true</GeneratePathProperty>
+	  </PackageReference>
+	  <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj" />
+	  <ProjectReference Include="..\DynamoCore\DynamoCore.csproj" />
     <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
       <Name>DynamoPackages</Name>

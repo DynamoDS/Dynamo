@@ -20,7 +20,11 @@ namespace DynamoSandbox
 
             //Include Dynamo Core path in System Path variable for helix to load properly.
             UpdateSystemPathForProcess();
+            InitializeDynamo(args);
+        }
 
+        private static void InitializeDynamo(string[] args)
+        {
             var setup = new DynamoCoreSetup(args);
             var app = new Application();
             setup.RunApplication(app);
@@ -43,10 +47,6 @@ namespace DynamoSandbox
 
             try
             {
-                assemblyPath = Path.Combine(DynamoCorePath, assemblyName);
-                if (File.Exists(assemblyPath))
-                    return Assembly.LoadFrom(assemblyPath);
-
                 var assemblyLocation = Assembly.GetExecutingAssembly().Location;
                 var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
 

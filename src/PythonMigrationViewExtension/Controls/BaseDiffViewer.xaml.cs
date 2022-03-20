@@ -55,7 +55,7 @@ namespace Dynamo.PythonMigration.Controls
             ViewModel.ChangeCode();
             this.Close();
             // Record if changes are accepted and if there are proposed changes
-            Analytics.TrackEvent(
+            Dynamo.Logging.Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Migration,
                 Dynamo.Logging.Categories.PythonOperations,
                 "Accept",
@@ -65,7 +65,7 @@ namespace Dynamo.PythonMigration.Controls
         private void OnRejectButtonClicked(object sender, RoutedEventArgs e)
         {
             this.Close();
-            Analytics.TrackEvent(
+            Dynamo.Logging.Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Migration,
                 Dynamo.Logging.Categories.PythonOperations,
                 "Reject",
