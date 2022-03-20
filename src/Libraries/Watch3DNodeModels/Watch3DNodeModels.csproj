@@ -17,7 +17,8 @@
 	</ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="8.0.3" Condition=" '$(TargetFrameworkId)' == 'net48' " />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" Condition=" '$(TargetFrameworkId)' == 'net50orAbove' " />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">

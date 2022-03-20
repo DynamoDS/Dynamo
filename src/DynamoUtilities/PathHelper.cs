@@ -62,7 +62,7 @@ namespace DynamoUtilities
                 // We have no cross platform Directory access writes APIs.
                 bool hasWritePermissionOnDir = !OperatingSystem.IsWindows() || HasWritePermissionOnDir(Finfo.Directory.ToString());
 #else
-                bool hasWritePermissionOnDir = HasWritePermissionOnDir(Finfo.Directory.ToString();
+                bool hasWritePermissionOnDir = HasWritePermissionOnDir(Finfo.Directory.ToString());
 #endif
                 return Finfo.IsReadOnly || !hasWritePermissionOnDir;
             }
@@ -75,14 +75,16 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="folderPath">Folder path</param>
         /// <returns></returns>
+#if NET5_0_OR_GREATER
         [SupportedOSPlatform("windows")]
+#endif
         public static bool HasWritePermissionOnDir(string folderPath)
         {
             try
             {
                 var writeAllow = false;
                 var writeDeny = false;
-                DirectoryInfo dInfo = new(folderPath);
+                DirectoryInfo dInfo = new DirectoryInfo(folderPath);
                 if (dInfo == null)
                     return false;
                 var accessControlList = dInfo.GetAccessControl(AccessControlSections.All);

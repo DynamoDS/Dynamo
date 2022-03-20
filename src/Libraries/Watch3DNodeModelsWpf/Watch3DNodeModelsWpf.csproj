@@ -1,4 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UILib>true</UILib>
+  </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -18,6 +21,14 @@
 		  <DestinationSubDirectory>..\</DestinationSubDirectory>
 	  </ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net48' ">
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" CopyMetaData="true" />
     <PackageReference Include="HelixToolkit" Version="2.17.0" CopyPDB="true" />
@@ -34,12 +45,6 @@
       <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">

@@ -9,7 +9,10 @@
     <RootNamespace>DynamoShapeManager</RootNamespace>
     <AssemblyName>DynamoShapeManager</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-	<Reference Include="System.Configuration" />
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net48' ">
+	  <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net50orAbove' ">
+	  <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
 </Project>

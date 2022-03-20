@@ -9,7 +9,11 @@
     <RootNamespace>DynamoInstallDetective</RootNamespace>
     <AssemblyName>DynamoInstallDetective</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-	<Reference Include="System.Configuration" />
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net48' ">
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net50orAbove' ">
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
   </ItemGroup>
 </Project>

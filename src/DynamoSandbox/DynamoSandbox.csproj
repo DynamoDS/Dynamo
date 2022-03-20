@@ -1,4 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UILib>true</UILib>
+  </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -10,17 +13,18 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.DynamoSandbox</RootNamespace>
     <AssemblyName>DynamoSandbox</AssemblyName>
+    <UseAppHost>true</UseAppHost>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <!-- Specify runtimeIdentifier to get around error NETSDK1047: Assets file 'obj\project.assets.json' doesn't have a target for 'net48/win7-x64'-->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <EnableDefaultPageItems>False</EnableDefaultPageItems>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>logo_square_32x32.ico</ApplicationIcon>
+    <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
+    <StartupObject>DynamoSandbox.Program</StartupObject>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-    </Reference>
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net48' ">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Configuration" />
@@ -28,6 +32,11 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoApplications\DynamoApplications.csproj">

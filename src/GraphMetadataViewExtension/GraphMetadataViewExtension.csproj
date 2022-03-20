@@ -9,14 +9,16 @@
     <RootNamespace>Dynamo.GraphMetadata</RootNamespace>
     <AssemblyName>GraphMetadataViewExtension</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-    </Reference>
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net48' ">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">

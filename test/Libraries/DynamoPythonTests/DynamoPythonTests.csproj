@@ -12,7 +12,7 @@
     <AssemblyName>DynamoPythonTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
+    <PackageReference Include="AvalonEdit" Version="6.1.3.50" />
     <PackageReference Include="NUnit" Version="2.6.3" />
     <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7984" />
     <PackageReference Include="DynamicLanguageRuntime" Version="1.2.2" />

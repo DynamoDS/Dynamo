@@ -11,18 +11,20 @@
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
- 	<ReferenceCopyLocalPaths>
-		<!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
-		<DestinationSubDirectory>..\</DestinationSubDirectory>
-	</ReferenceCopyLocalPaths>
+ 	  <ReferenceCopyLocalPaths>
+		  <!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
+		  <DestinationSubDirectory>..\</DestinationSubDirectory>
+	  </ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
   <ItemGroup>
-	<PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
-	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+    <PackageReference Include="AvalonEdit" Version="6.1.3.50" />
+    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFrameworkId)' == 'net48' ">
     <Reference Include="PresentationCore">
       <Private>False</Private>
     </Reference>

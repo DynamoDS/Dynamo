@@ -37,7 +37,7 @@ namespace DynamoSandbox
 
             if (cmdLineArgs.DisableAnalytics)
             {
-                Analytics.DisableAnalytics = true;
+                Dynamo.Logging.Analytics.DisableAnalytics = true;
             }
 
             commandFilePath = cmdLineArgs.CommandFilePath;
@@ -97,7 +97,7 @@ namespace DynamoSandbox
 #endif
 
                     DynamoModel.IsCrashing = true;
-                    Analytics.TrackException(e, true);
+                    Dynamo.Logging.Analytics.TrackException(e, true);
 
                     if (viewModel != null)
                     {
@@ -144,7 +144,7 @@ namespace DynamoSandbox
         void OnDynamoViewLoaded(object sender, RoutedEventArgs e)
         {
             CloseMigrationWindow();
-            Analytics.TrackStartupTime("DynamoSandbox", startupTimer.Elapsed);
+            Dynamo.Logging.Analytics.TrackStartupTime("DynamoSandbox", startupTimer.Elapsed);
         }
 
         private void CloseMigrationWindow()

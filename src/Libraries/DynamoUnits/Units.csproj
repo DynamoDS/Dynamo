@@ -21,6 +21,7 @@
     <Content Include="DynamoUnits_DynamoCustomization.xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7984" />
     <PackageReference Include="ForgeUnits.NET" Version="3.2.2" />
     <PackageReference Include="ForgeUnits.Schemas" Version="1.0.0" GeneratePathProperty="true" />
   </ItemGroup>

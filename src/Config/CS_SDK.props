@@ -22,6 +22,8 @@
     <NoWarn>MSB3539</NoWarn><!--The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DebugSymbols>true</DebugSymbols>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <UseAppHost>false</UseAppHost>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <DebugType>full</DebugType>
@@ -39,7 +41,6 @@
   </PropertyGroup>
     <PropertyGroup Condition="$(Platform.Contains('NET60'))" >
     <TargetFramework>net60</TargetFramework>
-    <TargetFrameworkId>net60orAbove</TargetFrameworkId>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('NET50'))" >
     <TargetFramework>net50</TargetFramework>
@@ -53,6 +54,9 @@
   <PropertyGroup>
     <BaseIntermediateOutputPath>int\$(TargetFramework)\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>obj\$(TargetFramework)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFrameworkId)' == 'net50orAbove'">
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="obj\**" />

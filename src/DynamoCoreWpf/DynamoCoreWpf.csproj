@@ -45,7 +45,7 @@
 	  <PackageReference Include="HelixToolkit" Version="2.17.0" />
 	  <PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
 	  <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
-    <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
+    <PackageReference Include="AvalonEdit" Version="6.1.3.50" CopyXML="true" />
 	  <PackageReference Include="SharpDX" Version="4.2.0" />
 	  <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0">
 	    <IncludeAssets>none</IncludeAssets>
