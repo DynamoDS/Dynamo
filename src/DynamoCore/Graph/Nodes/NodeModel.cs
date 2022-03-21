@@ -29,7 +29,7 @@ using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 
 namespace Dynamo.Graph.Nodes
 {
-    internal struct Info
+    internal class Info
     {
         public string Message;
         public Nodes.ElementState State;
@@ -37,6 +37,33 @@ namespace Dynamo.Graph.Nodes
         {
             Message = message;
             State =  state;
+        }
+
+        public override bool Equals(object other)
+        {
+            if (other == null) return false;
+
+            if (other is Info otherInfo)
+            {
+                return Message == otherInfo.Message && State == otherInfo.State;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 23 + Message == null ? 0 : Message.GetHashCode();
+                hash = hash * 23 + State.GetHashCode();
+                return hash;
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"State: {State}, Message: {Message}";
         }
     }
 
@@ -52,10 +79,8 @@ namespace Dynamo.Graph.Nodes
         private bool canUpdatePeriodically;
         private string name;
         private ElementState state;
-        private string toolTipText = string.Empty;
-        private HashSet<Info> infos = new HashSet<Info>();
+        private readonly ObservableHashSet<Info> infos = new ObservableHashSet<Info>();
         private string description;
-        private string persistentWarning = string.Empty;
 
         ///A flag indicating whether the node has been explicitly frozen.
         internal bool isFrozenExplicitly;
@@ -333,14 +358,14 @@ namespace Dynamo.Graph.Nodes
             set
             {
                 if (value != ElementState.Error && value != ElementState.AstBuildBroken)
-                    ClearTooltipText();
+                    ClearTransientWarningsAndErrors();
 
                 // Check before settings and raising
                 // a notification.
                 if (state == value) return;
 
                 state = value;
-                RaisePropertyChanged("State");
+                RaisePropertyChanged(nameof(State));
             }
         }
 
@@ -366,12 +391,20 @@ namespace Dynamo.Graph.Nodes
         ///     Text that is displayed as this Node's tooltip.
         /// </summary>
         [JsonIgnore]
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
         public string ToolTipText
         {
-            get { return toolTipText; }
+            get 
+            {
+                var builder = new System.Text.StringBuilder();
+                foreach(var info in Infos)
+                {
+                    builder.AppendLine(info.ToString());
+                }
+                return builder.ToString();
+            }
             set
             {
-                toolTipText = value;
                 RaisePropertyChanged(nameof(ToolTipText));
             }
         }
@@ -379,7 +412,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Collection of warnings, errors and info items applied to the NodeModel.
         /// </summary>
-        internal HashSet<Info> Infos
+        internal ObservableHashSet<Info> Infos
         {
             get { return infos; }
         }
@@ -1591,16 +1624,9 @@ namespace Dynamo.Graph.Nodes
 
         #region UI Framework
 
-        private void ClearTooltipText()
+        private void ClearTransientWarningsAndErrors()
         {
-            ToolTipText = "";
             infos.RemoveWhere(x => x.State == ElementState.Warning || x.State == ElementState.Error);
-        }
-
-        private void ClearPersistentWarning()
-        {
-            persistentWarning = String.Empty;
-            infos.RemoveWhere(x => x.State == ElementState.PersistentWarning);
         }
 
         /// <summary>
@@ -1610,10 +1636,10 @@ namespace Dynamo.Graph.Nodes
         public virtual void ClearErrorsAndWarnings()
         {
             State = ElementState.Dead;
-            ClearPersistentWarning();
+            infos.RemoveWhere(x => x.State == ElementState.PersistentWarning);
 
             SetNodeStateBasedOnConnectionAndDefaults();
-            ClearTooltipText();
+            ClearTransientWarningsAndErrors();
             OnNodeMessagesClearing();
         }
 
@@ -1645,11 +1671,10 @@ namespace Dynamo.Graph.Nodes
             });
             if (cond)
             {
-                if (!string.IsNullOrEmpty(persistentWarning))
+                if (Infos.Any(x => x.State == ElementState.PersistentWarning))
                 {
                     // Still have persistent warnings then switch to the PersistentWarning state
                     State = ElementState.PersistentWarning;
-                    ToolTipText = persistentWarning;
                 }
                 else
                 {
@@ -1711,7 +1736,7 @@ namespace Dynamo.Graph.Nodes
 
             if (State == ElementState.PersistentWarning) return;
 
-            if (!string.IsNullOrEmpty(persistentWarning))
+            if (Infos.Any(x => x.State == ElementState.PersistentWarning))
             {
                 State = ElementState.PersistentWarning;
                 return;
@@ -1734,8 +1759,6 @@ namespace Dynamo.Graph.Nodes
         {
             State = ElementState.Error;
             infos.Add(new Info(p, ElementState.Error));
-
-            ToolTipText = p;
         }
 
         /// <summary>
@@ -1750,23 +1773,21 @@ namespace Dynamo.Graph.Nodes
             if (isPersistent)
             {
                 State = ElementState.PersistentWarning;
-                if (!string.Equals(persistentWarning, p))
+                if(!Infos.Any(x => x.Message.Equals(p) && x.State == ElementState.PersistentWarning))
                 {
-                    persistentWarning += string.IsNullOrEmpty(persistentWarning) ? p : $"\n{p}";
-                    var texts = persistentWarning.Split(new[] { "\n" }, StringSplitOptions.None);
+                    var texts = p.Split(new[] { "\n" }, StringSplitOptions.None);
+                    var infoList = new List<Info>();
                     foreach (var text in texts)
                     {
-                        infos.Add(new Info(text, State));
+                        infoList.Add(new Info(text, State));
                     }
+                    infos.AddRange(infoList);
                 }
-                ToolTipText = persistentWarning;
             }
             else
             {
                 State = ElementState.Warning;
                 infos.Add(new Info(p, State));
-
-                ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.IsNullOrEmpty(p) ? persistentWarning : $"{persistentWarning}{Environment.NewLine}{p}";
             }
         }
 
@@ -1778,7 +1799,6 @@ namespace Dynamo.Graph.Nodes
         public void NotifyAstBuildBroken(string p)
         {
             State = ElementState.AstBuildBroken;
-            ToolTipText = p;
             infos.Add(new Info(p, ElementState.AstBuildBroken));
         }
 
