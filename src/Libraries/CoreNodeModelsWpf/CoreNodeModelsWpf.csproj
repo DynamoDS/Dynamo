@@ -104,6 +104,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\DeprecatedNode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\MissingNode.png" />
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

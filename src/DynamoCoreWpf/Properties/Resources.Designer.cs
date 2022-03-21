@@ -3011,6 +3011,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string GroupStylesCancelButtonText {
+            get {
+                return ResourceManager.GetString("GroupStylesCancelButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string GroupStylesSaveButtonText {
+            get {
+                return ResourceManager.GetString("GroupStylesSaveButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide Classic Node Library.
         /// </summary>
         public static string HideClassicNodeLibrary {
