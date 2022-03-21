@@ -376,6 +376,32 @@ namespace DynamoCoreWpfTests
              var temp = (sender as NodeViewModel).Name;
         }
 
+        /// <summary>
+        /// Check if elements are correctly displayed/collapsed on zoom level change 
+        /// Current zoom level is 0.4 (hard-coded in multiple Converters
+        /// </summary>
+        [Test]
+        public void ZoomChangeVisibilityTest()
+        {
+            // Arrange
+            Open(@"UI\ZoomNodeColorStates.dyn");
+
+            NodeView nodeViewWarningWarningFrozenHidden = NodeViewWithGuid(Guid.Parse("f0df914c7d4249ffa34301ebf548e490").ToString());
+
+            // Get a reference to the current workspace
+            NodeViewModel nodeViewModel = (nodeViewWarningWarningFrozenHidden.DataContext as NodeViewModel);
+            WorkspaceViewModel wvm = nodeViewModel.WorkspaceViewModel as WorkspaceViewModel;
+
+            // Zoom out, less than 0.4
+            wvm.Zoom = 0.3;
+            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Visible);   // The Grid containing the Glyphs
+            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Visible);  // The Color State Border overlay
+
+            // Zoom in, more than 0.4
+            wvm.Zoom = 0.6;
+            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Collapsed);
+            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Collapsed);  
+        }
 
         /// <summary>
         /// Tests the GetWarningColor method to ensure that the node's WarningBar displays
