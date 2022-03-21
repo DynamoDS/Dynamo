@@ -60,6 +60,11 @@ namespace Dynamo.Graph.Nodes
                 return hash;
             }
         }
+
+        public override string ToString()
+        {
+            return $"State: {State}, Message: {Message}";
+        }
     }
 
     public abstract class NodeModel : ModelBase, IRenderPackageSource<NodeModel>, IDisposable
@@ -74,7 +79,6 @@ namespace Dynamo.Graph.Nodes
         private bool canUpdatePeriodically;
         private string name;
         private ElementState state;
-        private string toolTipText = string.Empty;
         private readonly ObservableHashSet<Info> infos = new ObservableHashSet<Info>();
         private string description;
 
@@ -390,10 +394,17 @@ namespace Dynamo.Graph.Nodes
         [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
         public string ToolTipText
         {
-            get { return toolTipText; }
+            get 
+            {
+                var builder = new System.Text.StringBuilder();
+                foreach(var info in Infos)
+                {
+                    builder.Append(info.ToString() + "\n");
+                }
+                return builder.ToString();
+            }
             set
             {
-                toolTipText = value;
                 RaisePropertyChanged(nameof(ToolTipText));
             }
         }

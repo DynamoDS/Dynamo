@@ -9,18 +9,23 @@ namespace Dynamo.Utilities
     {
         private readonly HashSet<T> set = new HashSet<T>();
 
+        /// <summary>
+        /// Event raised when items are added or removed from the hash set. 
+        /// Currently, it is possible for listeners to detect if items are added vs. removed, 
+        /// however, removed items cannot be accessed from the NotifyCollectionChangedEventArgs argument.
+        /// </summary>
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
         public void Add(T item)
         {
             set.Add(item);
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
         }
 
         public void RemoveWhere(Predicate<T> match)
         {
             set.RemoveWhere(match);
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, null));
         }
 
         public bool Any(Func<T, bool> match)
@@ -34,7 +39,7 @@ namespace Dynamo.Utilities
             {
                 set.Add(item);
             }
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, range));
         }
 
         public int Count
