@@ -10,7 +10,7 @@ namespace Dynamo.Selection
     internal class DynamoSelection : NotificationObject
     {
         private static DynamoSelection _instance;
-        private SmartCollection<ISelectable> selection = new SmartCollection<ISelectable>();
+        private SmartCollection<ISelectable> selection = new SmartCollection<ISelectable>();        
 
         public static DynamoSelection Instance
         {
@@ -95,7 +95,8 @@ namespace Dynamo.Selection
         {
             if (ClearSelectionDisabled) return;
             
-            Instance.Selection.ToList().ForEach(x=>x.Deselect());
+            Instance.Selection.ToList().ForEach(x=>x.Deselect());            
+
             Instance.Selection.Reset(new List<ISelectable>());
         }
     }
