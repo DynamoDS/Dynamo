@@ -132,8 +132,9 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(windowSettings.Height, 321);
             Assert.AreEqual(windowSettings.Width, 654);
             Assert.AreEqual(windowSettings.Status, WindowStatus.Maximized);
-            Assert.AreEqual(settings.GroupStyleItemsList.Count, 1);
-            var styleItemsList = settings.GroupStyleItemsList[0];
+            // 5 styles in total, 4 default ones plus the one added in test
+            Assert.AreEqual(settings.GroupStyleItemsList.Count, 5);
+            var styleItemsList = settings.GroupStyleItemsList[4];
             Assert.AreEqual(styleItemsList.Name, "TestGroup");
             Assert.AreEqual(styleItemsList.HexColorString, "000000");
         }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows;
 using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.Properties;
@@ -390,16 +391,17 @@ namespace Dynamo.ViewModels
             if (Directory.Exists(Model.RootDirectory))
             {
                 Process.Start(Model.RootDirectory);
+                Analytics.TrackEvent(Actions.Open, Categories.PackageManagerOperations, $"{Model?.Name}");
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show(Wpf.Properties.Resources.PackageNotExisted, Wpf.Properties.Resources.DirectoryNotFound, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                MessageBoxService.Show(Wpf.Properties.Resources.PackageNotExisted, Wpf.Properties.Resources.DirectoryNotFound, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void Deprecate()
         {
-            var res = MessageBox.Show(String.Format(Resources.MessageToDeprecatePackage, this.Model.Name),
+            var res = MessageBoxService.Show(String.Format(Resources.MessageToDeprecatePackage, this.Model.Name),
                                       Resources.DeprecatingPackageMessageBoxTitle, 
                                       MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
@@ -415,7 +417,7 @@ namespace Dynamo.ViewModels
 
         private void Undeprecate()
         {
-            var res = MessageBox.Show(String.Format(Resources.MessageToUndeprecatePackage, this.Model.Name),
+            var res = MessageBoxService.Show(String.Format(Resources.MessageToUndeprecatePackage, this.Model.Name),
                                       Resources.UndeprecatingPackageMessageBoxTitle, 
                                       MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;

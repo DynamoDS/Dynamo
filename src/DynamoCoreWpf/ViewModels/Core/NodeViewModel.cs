@@ -117,6 +117,7 @@ namespace Dynamo.ViewModels
         public InfoBubbleViewModel ErrorBubble { get; set; }
 
         [JsonIgnore]
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
         public string ToolTipText
         {
             get { return nodeLogic.ToolTipText; }
@@ -822,6 +823,7 @@ namespace Dynamo.ViewModels
             logic.OutPorts.CollectionChanged += outports_collectionChanged;
 
             logic.PropertyChanged += logic_PropertyChanged;
+            logic.Infos.CollectionChanged += Infos_CollectionChanged;
 
             DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
@@ -859,6 +861,11 @@ namespace Dynamo.ViewModels
             logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsVisible)));
         }
 
+        private void Infos_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateBubbleContent();
+        }
+
 
         /// <summary>
         /// Updates whether the Warning Bar is visible or not and whether the node's
@@ -881,7 +888,11 @@ namespace Dynamo.ViewModels
         {
             // Because errors are evaluated before the graph/node executes, we need to ensure 
             // errors aren't being dismissed when the graph runs.
-            if (nodeLogic.State == ElementState.Error || ErrorBubble == null) return;
+            // Persistent warnings should also not be dismissed when a graph runs as they can include:
+            // 1. Compile-time warnings in CBNs
+            // 2. Obsolete nodes with warnings
+            // 3. Dummy or unresolved nodes
+            if (nodeLogic.State == ElementState.Error || nodeLogic.State == ElementState.PersistentWarning || ErrorBubble == null) return;
 
             if (DynamoViewModel.UIDispatcher != null)
             {
@@ -919,6 +930,7 @@ namespace Dynamo.ViewModels
             NodeModel.PropertyChanged -= logic_PropertyChanged;
             NodeModel.InPorts.CollectionChanged -= inports_collectionChanged;
             NodeModel.OutPorts.CollectionChanged -= outports_collectionChanged;
+            NodeModel.Infos.CollectionChanged -= Infos_CollectionChanged;
 
             DynamoViewModel.Model.PropertyChanged -= Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged -= DebugSettings_PropertyChanged;
@@ -1077,7 +1089,7 @@ namespace Dynamo.ViewModels
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
                     break;
-                case "ToolTipText":
+                case nameof(NodeModel.ToolTipText):
                     UpdateBubbleContent();
                     // TODO Update preview bubble visibility to false
                     break;
@@ -1338,8 +1350,18 @@ namespace Dynamo.ViewModels
         {
             if (DynamoViewModel == null) return;
 
-            bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning;
-            if (!NodeModel.WasInvolvedInExecution && !hasErrorOrWarning) return;
+            bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning;
+
+            // Persistent warnings should continue to be displayed even if nodes are not involved in an execution as they can include:
+            // 1. Compile-time warnings in CBNs
+            // 2. Obsolete nodes with warnings
+            // 3. Dummy or unresolved nodes
+            if (NodeModel.State != ElementState.PersistentWarning && !NodeModel.IsInErrorState)
+            {
+                if (!NodeModel.WasInvolvedInExecution || !hasErrorOrWarning) return;
+            }
+
+            if (NodeModel.Infos.Count == 0) return;
 
             if (ErrorBubble == null) BuildErrorBubble();
 
@@ -1348,34 +1370,47 @@ namespace Dynamo.ViewModels
             var topLeft = new Point(NodeModel.X, NodeModel.Y);
             var botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
 
+            const InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
+            var packets = new List<InfoBubbleDataPacket>(NodeModel.Infos.Count);
+            foreach (var info in NodeModel.Infos)
+            {
+                var infoStyle = info.State == ElementState.Error ? InfoBubbleViewModel.Style.Error : InfoBubbleViewModel.Style.Warning;
+                var data = new InfoBubbleDataPacket(infoStyle, topLeft, botRight, info.Message, connectingDirection);
+                packets.Add(data);
+            }
             InfoBubbleViewModel.Style style = NodeModel.State == ElementState.Error
                 ? InfoBubbleViewModel.Style.Error
                 : InfoBubbleViewModel.Style.Warning;
 
-            // NOTE!: If tooltip is not cached here, it will be cleared once the dispatcher is invoked below
-            string content = NodeModel.ToolTipText;
-            if (string.IsNullOrWhiteSpace(content)) return;
-            const InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
-            var data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-
-            ErrorBubble.UpdateContentCommand.Execute(data);
+            ErrorBubble.InfoBubbleStyle = style;
 
             // If running Dynamo with UI, use dispatcher, otherwise not
             if (DynamoViewModel.UIDispatcher != null)
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
-                    ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
+                    foreach (var data in packets)
+                    {
+                        if (!ErrorBubble.NodeMessages.Contains(data))
+                        {
+                            ErrorBubble.NodeMessages.Add(data);
+                        }
+                    }
                     HandleColorOverlayChange();
                 });
             }
             else
             {
-                ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
+                foreach (var data in packets)
+                {
+                    if (!ErrorBubble.NodeMessages.Contains(data))
+                    {
+                        ErrorBubble.NodeMessages.Add(data);
+                    }
+                }
                 HandleColorOverlayChange();
             }
-            
-            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
+            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);            
         }
 
         private void UpdateErrorBubblePosition()

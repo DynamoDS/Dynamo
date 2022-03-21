@@ -33,6 +33,7 @@
             <controls:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter"/>
             <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter"/>
             <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter"/>
+            <controls:InverseBoolToVisibilityConverter  x:Key="InverseBoolToVisibilityConverter "/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
 
@@ -55,7 +56,7 @@
                                     <RowDefinition Height="*"></RowDefinition>
                                 </Grid.RowDefinitions>
                                 <Label Name="groupNameLabel"
-                                        Content="{Binding GroupName}"
+                                        Content="{Binding Name}"
                                         HorizontalAlignment="Left"
                                         Grid.Row="0"
                                         Margin="5,0,0,0"
@@ -79,6 +80,7 @@
                                     Margin="0,0,8,0"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
+                                    Visibility="{Binding Path=IsDefault, Converter={StaticResource InverseBoolToVisibilityConverter}}"
                                     Click="RemoveStyle_Click"
                                     Style="{StaticResource FlatIconButtonStyle}"
                                     Width="20"
@@ -548,9 +550,10 @@
                                                 Grid.Row="0"
                                                 Margin="0,10,0,10"
                                                 Click="AddStyleButton_Click"
+                                                IsEnabled="{Binding IsEnabledAddStyleButton}"
                                                 Content="{x:Static p:Resources.AddStyleButton}" />
                                         <Border x:Name="AddStyleBorder"
-                                                Visibility="Collapsed"
+                                                Visibility="{Binding IsVisibleAddStyleBorder, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                 CornerRadius="4" 
                                                 HorizontalAlignment="Left"
                                                 Height="100"
@@ -567,12 +570,13 @@
                                                           CaretBrush="{StaticResource PreferencesWindowButtonColor}"
                                                           VerticalAlignment="Center"
                                                           HorizontalAlignment ="Left"
+                                                          PreviewKeyDown="groupNameBox_PreviewKeyDown"
                                                           Style="{StaticResource TextBoxWaterMarkStyle}"
                                                           Grid.Row="0"
                                                           Margin="10"
                                                           Height="25"
                                                           Width="300"
-                                                          Text="{Binding AddStyleControl.GroupName}"
+                                                          Text="{Binding AddStyleControl.Name}"
                                                           Tag="{x:Static p:Resources.PreferencesViewVisualSettingsGroupStyleInput}"/>
                                                 <Grid Grid.Row="1"
                                                       Margin="10,0,10,0"
@@ -586,7 +590,7 @@
                                                             Grid.Column="0">
                                                         <Button x:Name="buttonColorPicker"
                                                                 Style="{StaticResource ButtonColorPickerStyle}"
-                                                                Background="{Binding AddStyleControl.HexColorString}" 
+                                                                Background="{Binding AddStyleControl.HexColorString, Converter={StaticResource StringToBrushColorConverter}}"
                                                                 Click="ButtonColorPicker_Click"
                                                                 Width="25" 
                                                                 Height="15"/>
@@ -601,19 +605,22 @@
                                                             <ColumnDefinition Width="*"></ColumnDefinition>
                                                         </Grid.ColumnDefinitions>
                                                         <Button x:Name="AddStyle_SaveButton" 
-                                                            Style="{StaticResource OutlinedButtonStyle}"
-                                                            Grid.Column="0"
-                                                            HorizontalAlignment="Right"
-                                                            Click="AddStyle_SaveButton_Click"
-                                                            Width="50"
-                                                            Height="30">Save</Button>
+                                                                Style="{StaticResource OutlinedButtonStyle}"
+                                                                Grid.Column="0"
+                                                                HorizontalAlignment="Right"
+                                                                IsEnabled="{Binding IsSaveButtonEnabled}"
+                                                                Click="AddStyle_SaveButton_Click"
+                                                                Content="{x:Static p:Resources.GroupStylesSaveButtonText}"
+                                                                Width="50"
+                                                                Height="30"/>
                                                         <Button x:Name="AddStyle_CancelButton" 
-                                                            Style="{StaticResource OutlinedButtonStyle}"
-                                                            Grid.Column="1"
-                                                            HorizontalAlignment="Right"
-                                                            Click="AddStyle_CancelButton_Click"
-                                                            Width="50"
-                                                            Height="30">Cancel</Button>
+                                                                Style="{StaticResource OutlinedButtonStyle}"
+                                                                Grid.Column="1"
+                                                                HorizontalAlignment="Right"
+                                                                Click="AddStyle_CancelButton_Click"
+                                                                Content="{x:Static p:Resources.GroupStylesCancelButtonText}"
+                                                                Width="50"
+                                                                Height="30"/>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>

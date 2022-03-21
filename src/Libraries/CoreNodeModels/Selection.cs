@@ -43,7 +43,9 @@ namespace CoreNodeModels
                 {
                     Id = this.GUID,
                     Name = this.Name,
-                    Type = NodeInputTypes.hostSelection,
+                    //because selection makes more sense than defaulting to number...
+                    Type = NodeInputTypes.selectionInput,
+                    Type2 = NodeInputTypes.hostSelection,
                     Description = this.Description,
                     Value = string.Join(",", this.SelectionIdentifier.ToArray())
                 };  

@@ -13,6 +13,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using System.Linq;
 using Dynamo.DynamoSandbox.Properties;
+using Dynamo.Wpf.Utilities;
 
 namespace DynamoSandbox
 {
@@ -138,7 +139,7 @@ namespace DynamoSandbox
 
         private void ASMPreloadFailureHandler(string failureMessage)
         {
-            MessageBox.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBoxService.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         void OnDynamoViewLoaded(object sender, RoutedEventArgs e)

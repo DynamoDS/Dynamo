@@ -14,6 +14,7 @@ using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 
 namespace Dynamo.WorkspaceDependency
@@ -80,7 +81,7 @@ namespace Dynamo.WorkspaceDependency
             catch (Exception ex)
             {
                 String message = Dynamo.WorkspaceDependency.Properties.Resources.ProvideFeedbackError + "\n\n" + ex.Message;
-                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBoxService.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -152,7 +153,6 @@ namespace Dynamo.WorkspaceDependency
                             info.Path = customNodeInfo.Path;
                         }
                     }
-
                     info.Size = PathHelper.GetFileSize(info.Path);
                 }
                 catch (Exception ex)
@@ -160,12 +160,12 @@ namespace Dynamo.WorkspaceDependency
                     dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
                 }
 
-                HasDependencyIssue = info.Path == null;
+                HasDependencyIssue = string.IsNullOrEmpty(info.Path);
             }
 
             foreach (DependencyInfo info in externalFiles)
             {
-                HasDependencyIssue = info.Path == null;
+                HasDependencyIssue = string.IsNullOrEmpty(info.Path);
             }
 
             var pythonPackageDependencies = ws.OnRequestPackageDependencies();
