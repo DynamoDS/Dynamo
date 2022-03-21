@@ -560,9 +560,9 @@
                 CornerRadius="8,8,0,0"
                 IsHitTestVisible="False"
                 Opacity="{Binding Path=DataContext.Zoom, 
-                            RelativeSource={RelativeSource FindAncestor, 
-                            AncestorType={x:Type controls:WorkspaceView}}, 
-                            Converter={StaticResource ZoomToOpacityConverter}}"
+                                  RelativeSource={RelativeSource FindAncestor, 
+                                  AncestorType={x:Type controls:WorkspaceView}}, 
+                                  Converter={StaticResource ZoomToOpacityConverter}}"
                 Style="{StaticResource SZoomFadeOutPreview}"
                 Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -577,7 +577,11 @@
                 CornerRadius="8,8,0,0"
                 IsHitTestVisible="False"
                 Opacity="0.5"
-                Style="{StaticResource SZoomFadeInPreview}" />
+                Style="{StaticResource SZoomFadeInPreview}"
+                Visibility="{Binding Path=DataContext.Zoom, 
+                                     RelativeSource={RelativeSource FindAncestor, 
+                                     AncestorType={x:Type controls:WorkspaceView}}, 
+                                     Converter={StaticResource ZoomToVisibilityCollapsedConverter}}" />
 
         <!-- Grid containing the State overlay Glyphs in Zoomed Out state -->
         <Grid Name="zoomGlyphsGrid"
@@ -589,7 +593,11 @@
                     IsHitTestVisible="False"
                     Margin="0 5 0 0"
                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                    Style="{StaticResource SZoomFadeInFrameworkElement}"
+                    Style="{StaticResource SZoomFadeInFrameworkElement}"                    
+                    Visibility="{Binding Path=DataContext.Zoom, 
+                                         RelativeSource={RelativeSource FindAncestor, 
+                                         AncestorType={x:Type controls:WorkspaceView}}, 
+                                         Converter={StaticResource ZoomToVisibilityCollapsedConverter}}" 
                     MinWidth="48">
             <Grid.RowDefinitions>
                 <RowDefinition Height="{Binding ImgGlyphThreeSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />

@@ -1623,6 +1623,27 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Hides (collapses) if the zoom level is larger than the designated value
+    /// </summary>
+    public class ZoomToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            double number = (double)System.Convert.ChangeType(value, typeof(double));
+
+            if (number > 0.4)
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;    
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class PortNameToWidthConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
