@@ -469,5 +469,45 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewWarningBarErrorFrozenHidden.ViewModel.IsVisible, false);
             Assert.AreEqual(nodeViewWarningBarErrorFrozenHidden.ViewModel.GetBorderColor().ToString(), errorBrush.ToString());
         }
+
+        /// <summary>
+        /// Assert node color border to check if colors correspond
+        /// to the correct node state for PreviewOff/Frozen/Info/Warning/Error states
+        /// </summary>
+        [Test]
+        public void ZoomNodeGlyphStatesCheck()
+        {
+            // Arrange
+            Open(@"UI\ZoomNodeColorStates.dyn");
+
+            // Get node views for all possible glyph usages
+            NodeView nodeViewNoState = NodeViewWithGuid(Guid.Parse("a7fe5cbc2ec44870b6f554c82d299b78").ToString());
+            NodeView nodeViewFrozen = NodeViewWithGuid(Guid.Parse("75de711c7ac644e7b91cf7639273acb7").ToString());
+            NodeView nodeViewHiddenFrozen = NodeViewWithGuid(Guid.Parse("02c8cd1be4ca481ba8645bc9460c7c65").ToString());
+            NodeView nodeViewWarningWarningFrozenHidden = NodeViewWithGuid(Guid.Parse("f0df914c7d4249ffa34301ebf548e490").ToString());
+
+            // Get a reference to the current workspace per node
+            NodeViewModel nodeViewModelNoState = (nodeViewNoState.DataContext as NodeViewModel);
+            NodeViewModel nodeViewModelFrozen = (nodeViewFrozen.DataContext as NodeViewModel);
+            NodeViewModel nodeViewModelHiddenFrozen = (nodeViewHiddenFrozen.DataContext as NodeViewModel);
+            NodeViewModel nodeViewModelWarningWarningFrozenHidden = (nodeViewWarningWarningFrozenHidden.DataContext as NodeViewModel);
+
+            // If no states are present, all glyphs should be null
+            Assert.AreEqual(nodeViewModelNoState.ImgGlyphOneSource, null);
+            Assert.AreEqual(nodeViewModelNoState.ImgGlyphTwoSource, null);
+            Assert.AreEqual(nodeViewModelNoState.ImgGlyphThreeSource, null);
+            // Only the first glyph should have a value, and it should be frozen
+            Assert.AreEqual(nodeViewModelFrozen.ImgGlyphOneSource.Split('/').Last(), "frozen-64px.png");
+            Assert.AreEqual(nodeViewModelFrozen.ImgGlyphTwoSource, null);
+            Assert.AreEqual(nodeViewModelFrozen.ImgGlyphThreeSource, null);
+            // Only the last glyph should be null, the first two will have values
+            Assert.AreEqual(nodeViewModelHiddenFrozen.ImgGlyphOneSource.Split('/').Last(), "frozen-64px.png");
+            Assert.AreEqual(nodeViewModelHiddenFrozen.ImgGlyphTwoSource.Split('/').Last(), "hidden-64px.png");
+            Assert.AreEqual(nodeViewModelHiddenFrozen.ImgGlyphThreeSource, null);
+            // All the glyphs should have values
+            Assert.AreEqual(nodeViewModelWarningWarningFrozenHidden.ImgGlyphOneSource.Split('/').Last(), "frozen-64px.png");
+            Assert.AreEqual(nodeViewModelWarningWarningFrozenHidden.ImgGlyphTwoSource.Split('/').Last(), "hidden-64px.png");
+            Assert.AreEqual(nodeViewModelWarningWarningFrozenHidden.ImgGlyphThreeSource.Split('/').Last(), "alert-64px.png");
+        }
     }
 }
