@@ -399,7 +399,7 @@ namespace Dynamo.Graph.Nodes
                 var builder = new System.Text.StringBuilder();
                 foreach(var info in Infos)
                 {
-                    builder.Append(info.ToString() + "\n");
+                    builder.AppendLine(info.ToString());
                 }
                 return builder.ToString();
             }
