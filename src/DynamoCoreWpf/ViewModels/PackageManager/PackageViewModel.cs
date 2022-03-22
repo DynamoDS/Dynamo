@@ -395,7 +395,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show(Wpf.Properties.Resources.PackageNotExisted, Wpf.Properties.Resources.DirectoryNotFound, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                MessageBoxService.Show(Wpf.Properties.Resources.PackageNotExisted, Wpf.Properties.Resources.DirectoryNotFound, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

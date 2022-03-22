@@ -703,11 +703,15 @@ namespace Dynamo.Engine.NodeToCode
 
                     if (!nodes.Contains(inputNode) || !(inputNode is CodeBlockNodeModel))
                     {
-                        string inputVar = inputNode.GetAstIdentifierForOutputIndex(portIndex).Value;
-                        inputMap[inputVar] = string.Empty;
+                        var inAstId = inputNode.GetAstIdentifierForOutputIndex(portIndex);
+                        if (inAstId != null)
+                        {
+                            string inputVar = inAstId.Value;
+                            inputMap[inputVar] = string.Empty;
 
-                        ProtoCore.Type type = inputNode.GetTypeHintForOutput(portIndex);
-                        typeHintMap[inputVar] = type;
+                            ProtoCore.Type type = inputNode.GetTypeHintForOutput(portIndex);
+                            typeHintMap[inputVar] = type;
+                        }
                     }
                 }
 
@@ -719,28 +723,37 @@ namespace Dynamo.Engine.NodeToCode
                 {
                     for (int i = 0; i < thisCBN.OutPorts.Count; ++i)
                     {
-                        var mappedInputVar = thisCBN.GetAstIdentifierForOutputIndex(i).Value;
-                        var originalVar = thisCBN.GetRawAstIdentifierForOutputIndex(i).Value;
+                        var outAstId = thisCBN.GetAstIdentifierForOutputIndex(i);
+                        var rawAstId = thisCBN.GetRawAstIdentifierForOutputIndex(i);
+                        if (outAstId != null && rawAstId != null)
+                        {
+                            var mappedInputVar = outAstId.Value;
+                            var originalVar = rawAstId.Value;
 
-                        renamingMap[mappedInputVar] = originalVar;
-                        var key = String.Format("{0}%{1}", originalVar, thisCBN.GUID);
-                        renamingMap[key] = mappedInputVar;
+                            renamingMap[mappedInputVar] = originalVar;
+                            var key = String.Format("{0}%{1}", originalVar, thisCBN.GUID);
+                            renamingMap[key] = mappedInputVar;
 
-                        outputMap[mappedInputVar] = originalVar;
+                            outputMap[mappedInputVar] = originalVar;
 
-                        ProtoCore.Type type = thisCBN.GetTypeHintForOutput(i);
-                        typeHintMap[mappedInputVar] = type;
+                            ProtoCore.Type type = thisCBN.GetTypeHintForOutput(i);
+                            typeHintMap[mappedInputVar] = type;
+                        }
                     }
                 }
                 else
                 {
                     for (int i = 0; i < node.OutPorts.Count; ++i)
                     {
-                        var inputVar = node.GetAstIdentifierForOutputIndex(i).Value;
-                        outputMap[inputVar] = string.Empty;
+                        var outAstId = node.GetAstIdentifierForOutputIndex(i);
+                        if (outAstId != null)
+                        {
+                            var inputVar = outAstId.Value;
+                            outputMap[inputVar] = string.Empty;
 
-                        ProtoCore.Type type = node.GetTypeHintForOutput(i);
-                        typeHintMap[inputVar] = type;
+                            ProtoCore.Type type = node.GetTypeHintForOutput(i);
+                            typeHintMap[inputVar] = type;
+                        }
                     }
 
                     var previewVar = node.AstIdentifierForPreview.Value;

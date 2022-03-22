@@ -1620,7 +1620,7 @@ namespace Dynamo.ViewModels
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
                     }
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
-                    System.Windows.MessageBox.Show(errorMsgString);
+                    MessageBoxService.Show(errorMsgString, string.Empty, MessageBoxButton.OK, MessageBoxImage.None);
                 }
                 else
                 {
@@ -1870,7 +1870,7 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(ex.StackTrace);
 
                 if (ex is IOException || ex is UnauthorizedAccessException)
-                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                    MessageBoxService.Show(ex.Message, string.Empty, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

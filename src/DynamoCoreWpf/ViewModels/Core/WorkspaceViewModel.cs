@@ -899,7 +899,12 @@ namespace Dynamo.ViewModels
 
         internal bool CanNodeToCode(object parameters)
         {
-            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
+            var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>();
+            if (!nodeModels.Any() || nodeModels.Any(x => x.IsInErrorState))
+            {
+                return false;
+            }
+            return true;
         }
 
         internal void SelectInRegion(Rect2D region, bool isCrossSelect)

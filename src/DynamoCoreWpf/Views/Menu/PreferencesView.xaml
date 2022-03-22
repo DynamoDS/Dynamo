@@ -33,6 +33,7 @@
             <controls:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter"/>
             <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter"/>
             <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter"/>
+            <controls:InverseBoolToVisibilityConverter  x:Key="InverseBoolToVisibilityConverter "/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
 
@@ -79,6 +80,7 @@
                                     Margin="0,0,8,0"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
+                                    Visibility="{Binding Path=IsDefault, Converter={StaticResource InverseBoolToVisibilityConverter}}"
                                     Click="RemoveStyle_Click"
                                     Style="{StaticResource FlatIconButtonStyle}"
                                     Width="20"
@@ -608,15 +610,17 @@
                                                                 HorizontalAlignment="Right"
                                                                 IsEnabled="{Binding IsSaveButtonEnabled}"
                                                                 Click="AddStyle_SaveButton_Click"
+                                                                Content="{x:Static p:Resources.GroupStylesSaveButtonText}"
                                                                 Width="50"
-                                                                Height="30">Save</Button>
+                                                                Height="30"/>
                                                         <Button x:Name="AddStyle_CancelButton" 
                                                                 Style="{StaticResource OutlinedButtonStyle}"
                                                                 Grid.Column="1"
                                                                 HorizontalAlignment="Right"
                                                                 Click="AddStyle_CancelButton_Click"
+                                                                Content="{x:Static p:Resources.GroupStylesCancelButtonText}"
                                                                 Width="50"
-                                                                Height="30">Cancel</Button>
+                                                                Height="30"/>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>

@@ -14,6 +14,7 @@ using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 
 namespace Dynamo.WorkspaceDependency
@@ -80,7 +81,7 @@ namespace Dynamo.WorkspaceDependency
             catch (Exception ex)
             {
                 String message = Dynamo.WorkspaceDependency.Properties.Resources.ProvideFeedbackError + "\n\n" + ex.Message;
-                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBoxService.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
