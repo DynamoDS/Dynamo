@@ -90,7 +90,7 @@ namespace Dynamo.Tests
             NodeModel nodeModel;
             CurrentDynamoModel.NodeFactory.CreateNodeFromTypeName("CoreNodeModels.Input.DoubleInput", out nodeModel);
 
-            annotationModel.AddToSelectedModels(nodeModel, true);
+            annotationModel.AddToTargetAnnotationModel(nodeModel, true);
 
             Assert.IsFalse(annotationModel.Nodes.Contains(nodeModel));
         }
@@ -128,8 +128,8 @@ namespace Dynamo.Tests
             node2.X = node2Posistion.X;
             node2.Y = node2Posistion.Y;
 
-            annotationModel.AddToSelectedModels(node1);
-            annotationModel.AddToSelectedModels(node2);
+            annotationModel.AddToTargetAnnotationModel(node1);
+            annotationModel.AddToTargetAnnotationModel(node2);
 
             // Assert
             Assert.That(annotationModel.Width == annotationModel.Rect.Width);
@@ -150,7 +150,7 @@ namespace Dynamo.Tests
             var nodeCollection = new List<NodeModel>() { new DummyNode() };
             var newGroup = new AnnotationModel(nodeCollection, new List<NoteModel>());
 
-            annotationModel.AddToSelectedModels(newGroup);
+            annotationModel.AddToTargetAnnotationModel(newGroup);
 
             // Assert
             Assert.That(annotationModel.Nodes.OfType<AnnotationModel>().Any());
@@ -161,6 +161,13 @@ namespace Dynamo.Tests
         [Test]
         public void UndoAddAnnotationModelsToAnnotaionModel()
         {
+            // Make sure the parent group is not empty, otherwise undo in test will not work
+            // This does not happen when launching Dynamo with UI because from UI, it is not possible
+            // to create an empty annotation yet
+            annotationModel.AddToTargetAnnotationModel(new DummyNode());
+            // Baseline
+            Assert.AreEqual(0, annotationModel.Nodes.OfType<AnnotationModel>().Count());
+
             // Create two groups as candidates
             var nodeCollection = new List<NodeModel>() { new DummyNode() };
             var nodeCollection2 = new List<NodeModel>() { new DummyNode() };
@@ -169,22 +176,19 @@ namespace Dynamo.Tests
             CurrentDynamoModel.CurrentWorkspace.AddAnnotation(newGroup);
             CurrentDynamoModel.CurrentWorkspace.AddAnnotation(newGroup2);
 
-            // Baseline
-            Assert.AreEqual(annotationModel.Nodes.OfType<AnnotationModel>().Count(), 0);
-
             CurrentDynamoModel.ExecuteCommand(
                 new DynCmd.AddGroupToGroupCommand(
                     new List<Guid>() { newGroup.GUID, newGroup2.GUID },
                     annotationModel.GUID));
 
             // Assert
-            Assert.AreEqual(annotationModel.Nodes.OfType<AnnotationModel>().Count(), 2);
+            Assert.AreEqual(2, annotationModel.Nodes.OfType<AnnotationModel>().Count());
             Assert.That(CurrentDynamoModel.CurrentWorkspace.CanUndo);
 
             // Check undo result
             // Undo selecting the host group
             CurrentDynamoModel.CurrentWorkspace.Undo();
-            Assert.AreEqual(annotationModel.Nodes.OfType<AnnotationModel>().Count(), 0);
+            Assert.AreEqual(0, annotationModel.Nodes.OfType<AnnotationModel>().Count());
         }
 
 
@@ -194,7 +198,7 @@ namespace Dynamo.Tests
             // Arrange
             // we need to add something to the group
             // otherwise it wont trigger an update
-            annotationModel.AddToSelectedModels(new DummyNode());
+            annotationModel.AddToTargetAnnotationModel(new DummyNode());
 
             var initialWidth = annotationModel.Width;
             var initialHeight = annotationModel.Height;

@@ -685,16 +685,13 @@ namespace Dynamo.Graph.Annotations
         }
 
         /// <summary>
-        /// This is called when a model is deleted from a group
-        /// and UNDO is clicked.
+        /// This is called when a model is added to or deleted from a group.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <param name="checkOverlap"> checkoverlap determines whether the selected model is 
         /// completely inside that group</param>
-        internal void AddToSelectedModels(ModelBase model, bool checkOverlap = false)
+        internal void AddToTargetAnnotationModel(ModelBase model, bool checkOverlap = false)
         {
-            //if (model.BelongsToGroup) return;
-
             var list = this.Nodes.ToList();
             if (model.GUID == this.GUID) return;
             if (list.Where(x => x.GUID == model.GUID).Any()) return;

@@ -437,7 +437,7 @@ namespace Dynamo.ViewModels
                 {
                     if (!(model is AnnotationModel))
                     {
-                        this.AnnotationModel.AddToSelectedModels(model, true);
+                        this.AnnotationModel.AddToTargetAnnotationModel(model, true);
                     }
                 }
                 Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Node");
