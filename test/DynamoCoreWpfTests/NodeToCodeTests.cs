@@ -49,7 +49,6 @@ namespace DynamoCoreWpfTests
 
             cbn.SetCodeContent("yy; !", model.CurrentWorkspace.ElementResolver);
 
-            DynamoSelection.Instance.Selection.Add(numberNode1);
             DynamoSelection.Instance.Selection.Add(cbn);
 
             Assert.IsFalse(ViewModel.CurrentSpaceViewModel.NodeToCodeCommand.CanExecute(null));
