@@ -6,6 +6,7 @@ using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using NUnit.Framework;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
@@ -155,6 +156,35 @@ namespace Dynamo.Tests
             Assert.That(annotationModel.Nodes.OfType<AnnotationModel>().Any());
             Assert.That(annotationModel.Nodes.Select(x=>x.GUID).Contains(newGroup.GUID));
             Assert.That(annotationModel.Nodes.Count() == groupedModelsBefore.Count() + 1);
+        }
+
+        [Test]
+        public void UndoAddAnnotationModelsToAnnotaionModel()
+        {
+            // Create two groups as candidates
+            var nodeCollection = new List<NodeModel>() { new DummyNode() };
+            var nodeCollection2 = new List<NodeModel>() { new DummyNode() };
+            var newGroup = new AnnotationModel(nodeCollection, new List<NoteModel>());
+            var newGroup2 = new AnnotationModel(nodeCollection2, new List<NoteModel>());
+            CurrentDynamoModel.CurrentWorkspace.AddAnnotation(newGroup);
+            CurrentDynamoModel.CurrentWorkspace.AddAnnotation(newGroup2);
+
+            // Baseline
+            Assert.AreEqual(annotationModel.Nodes.OfType<AnnotationModel>().Count(), 0);
+
+            CurrentDynamoModel.ExecuteCommand(
+                new DynCmd.AddGroupToGroupCommand(
+                    new List<Guid>() { newGroup.GUID, newGroup2.GUID },
+                    annotationModel.GUID));
+
+            // Assert
+            Assert.AreEqual(annotationModel.Nodes.OfType<AnnotationModel>().Count(), 2);
+            Assert.That(CurrentDynamoModel.CurrentWorkspace.CanUndo);
+
+            // Check undo result
+            // Undo selecting the host group
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+            Assert.AreEqual(annotationModel.Nodes.OfType<AnnotationModel>().Count(), 0);
         }
 
 

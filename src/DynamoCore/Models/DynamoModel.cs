@@ -2247,12 +2247,12 @@ namespace Dynamo.Models
             var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
             if (selectedGroup is null) return;
 
-            using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
+            var modelsToModify = new List<ModelBase>() { selectedGroup }.Union(modelsToAdd);
+            WorkspaceModel.RecordModelsForModification(modelsToAdd, CurrentWorkspace.UndoRecorder);
+            foreach (var model in modelsToAdd)
             {
-                foreach (var model in modelsToAdd)
-                {
-                    selectedGroup.AddToSelectedModels(model);
-                }
+                //CurrentWorkspace.UndoRecorder.RecordModificationForUndo(model);
+                selectedGroup.AddToSelectedModels(model);
             }
         }
 
