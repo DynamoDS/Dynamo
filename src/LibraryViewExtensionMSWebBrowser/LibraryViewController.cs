@@ -384,8 +384,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             // provide a valid base in the embedded context.
             // __webpack_require__.b is the url webpack passes to URL constructors. 
             libminstring = libminstring.Replace("__webpack_require__.b=document.baseURI||self.location.href", "__webpack_require__.b = 'http://localhost'");
-            //if dev build.
-            libminstring = libminstring.Replace("__webpack_require__.b = document.baseURI || self.location.href", "__webpack_require__.b = 'http://localhost'");
 
 
             using (var reader = new StreamReader(stream))

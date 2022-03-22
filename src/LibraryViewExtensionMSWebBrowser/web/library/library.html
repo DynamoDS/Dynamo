@@ -155,10 +155,11 @@ window.external.notify(JSON.stringify({"func":"logtoconsole","data":error.toStri
         );
 
         function replaceImages() {
-/*
-            var allimages = document.getElementsByTagName("img");
 
-            allimages.forEach(function (element) {
+            var allimages = document.getElementsByTagName("img");
+            for(var j = 0; j < allimages.length; j++){
+                
+                var element = allimages[j];
                 currentImage = element;
                 var src = element.src
                 if (element.orgSrc != null) {
@@ -166,13 +167,11 @@ window.external.notify(JSON.stringify({"func":"logtoconsole","data":error.toStri
                 }
                 //the icon is already set - bail.
                 if (src.startsWith("data:image")) {
-                    return;
+                    continue;
                 }
                 //request the icon from the extension.
                 window.external.GetBase64StringFromPath(src);
-               
-            });
-*/
+            }
         }
 
         function completeReplaceImages(base64String) {
