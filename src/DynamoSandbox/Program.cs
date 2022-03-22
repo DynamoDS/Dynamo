@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dynamo.Wpf.Utilities;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -124,7 +125,7 @@ namespace DynamoSandbox
             // Hard-coding the strings in English, since in order to access the
             // Resources files we would need prior resolution to Dynamo Core itself
             if (MessageBoxResult.OK ==
-                MessageBox.Show(
+                MessageBoxService.Show(
                     string.Format(
                         "Dynamo Sandbox {0} is not able to find an installation of " +
                         "Dynamo Core version {0} or higher.\n\nWould you like to download the " +

@@ -145,7 +145,7 @@ namespace Dynamo.Scheduler
                     node.WasRenderPackageUpdatedAfterExecution = false;
                     if (node.State == ElementState.Warning)
                     {
-                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.State)))
+                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
                         {
                             node.ClearErrorsAndWarnings();
                         }

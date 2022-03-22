@@ -117,6 +117,7 @@ namespace Dynamo.ViewModels
         public InfoBubbleViewModel ErrorBubble { get; set; }
 
         [JsonIgnore]
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
         public string ToolTipText
         {
             get { return nodeLogic.ToolTipText; }
@@ -770,6 +771,7 @@ namespace Dynamo.ViewModels
             logic.OutPorts.CollectionChanged += outports_collectionChanged;
 
             logic.PropertyChanged += logic_PropertyChanged;
+            logic.Infos.CollectionChanged += Infos_CollectionChanged;
 
             DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
@@ -806,6 +808,11 @@ namespace Dynamo.ViewModels
             logic.NodeInfoMessagesClearing += Logic_NodeInfoMessagesClearing;
 
             logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsVisible)));
+        }
+
+        private void Infos_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateBubbleContent();
         }
 
 
@@ -902,6 +909,7 @@ namespace Dynamo.ViewModels
             NodeModel.PropertyChanged -= logic_PropertyChanged;
             NodeModel.InPorts.CollectionChanged -= inports_collectionChanged;
             NodeModel.OutPorts.CollectionChanged -= outports_collectionChanged;
+            NodeModel.Infos.CollectionChanged -= Infos_CollectionChanged;
 
             DynamoViewModel.Model.PropertyChanged -= Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged -= DebugSettings_PropertyChanged;
@@ -1061,7 +1069,7 @@ namespace Dynamo.ViewModels
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
                     break;
-                case "ToolTipText":
+                case nameof(NodeModel.ToolTipText):
                     UpdateBubbleContent();
                     // TODO Update preview bubble visibility to false
                     break;
@@ -1238,7 +1246,7 @@ namespace Dynamo.ViewModels
                 if (!NodeModel.WasInvolvedInExecution || !hasErrorOrWarning) return;
             }
 
-            if (!NodeModel.Infos.Any()) return;
+            if (NodeModel.Infos.Count == 0) return;
 
             if (ErrorBubble == null) BuildErrorBubble();
 
