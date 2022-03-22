@@ -47,7 +47,6 @@ namespace Dynamo.UI.Controls
             if (Application.Current != null)
             {
                 Application.Current.Deactivated -= currentApplicationDeactivated;
-                HomeWorkspaceModel.WorkspaceClosed -= this.CloseAutoCompletion;
             }
         }
 
