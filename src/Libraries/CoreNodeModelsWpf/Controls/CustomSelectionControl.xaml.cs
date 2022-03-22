@@ -55,23 +55,5 @@ namespace CoreNodeModelsWpf.Controls
                 }
             }
         }
-
-
-        private static void CollectChildrenOfType<T>(DependencyObject dependencyObj, List<T> children) where T : DependencyObject
-        {
-            if (dependencyObj == null)
-                return;
-
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(dependencyObj); i++)
-            {
-                var child = VisualTreeHelper.GetChild(dependencyObj, i);
-
-                var result = child as T;
-                if (result != null)
-                    children.Add(result);
-                else
-                    CollectChildrenOfType<T>(child, children);
-            }
-        }
     }
 }
