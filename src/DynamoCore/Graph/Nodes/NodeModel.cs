@@ -179,7 +179,6 @@ namespace Dynamo.Graph.Nodes
             NodeInfoMessagesClearing?.Invoke(this);
         }
 
-
         internal void OnNodeExecutionBegin()
         {
             NodeExecutionBegin?.Invoke(this);
