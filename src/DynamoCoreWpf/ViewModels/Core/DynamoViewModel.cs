@@ -1340,12 +1340,9 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
             //Check for multiple groups - Delete the group and not the nodes.
-            var Guids = new List<Guid>();
-            foreach(var targetGroup in DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Where(x => x.GUID != hostGroupId))
-            {
-                Guids.Add(targetGroup.GUID);
-            }
-            var command = new DynamoModel.AddGroupToGroupCommand(Guids, hostGroupId);
+            var command = new DynamoModel.AddGroupToGroupCommand(
+                DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Where(x => x.GUID != hostGroupId).Select(x => x.GUID),
+                hostGroupId);
             this.ExecuteCommand(command);
         }
 

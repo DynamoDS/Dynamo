@@ -2255,7 +2255,6 @@ namespace Dynamo.Models
             WorkspaceModel.RecordModelsForModification(modelsToModify, CurrentWorkspace.UndoRecorder);
             foreach (var model in modelsToAdd)
             {
-                //CurrentWorkspace.UndoRecorder.RecordModificationForUndo(model);
                 selectedGroup.AddToTargetAnnotationModel(model);
             }
         }
