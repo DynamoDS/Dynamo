@@ -1249,18 +1249,20 @@ namespace Dynamo.ViewModels
 
             const InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
             var packets = new List<InfoBubbleDataPacket>(NodeModel.Infos.Count);
+
             foreach (var info in NodeModel.Infos)
             {
-                var infoStyle = info.State == ElementState.Error ? InfoBubbleViewModel.Style.Error : InfoBubbleViewModel.Style.Warning;
-                infoStyle = info.State == ElementState.Info ? InfoBubbleViewModel.Style.Info : infoStyle;
+                var infoStyle = info.State == ElementState.Info ? InfoBubbleViewModel.Style.Info : InfoBubbleViewModel.Style.None;
+                infoStyle = info.State == ElementState.Warning ? InfoBubbleViewModel.Style.Warning : infoStyle;
+                infoStyle = info.State == ElementState.Error ? InfoBubbleViewModel.Style.Error : infoStyle;
+
                 var data = new InfoBubbleDataPacket(infoStyle, topLeft, botRight, info.Message, connectingDirection);
                 packets.Add(data);
             }
-            InfoBubbleViewModel.Style style = NodeModel.State == ElementState.Error
-                ? InfoBubbleViewModel.Style.Error
-                : InfoBubbleViewModel.Style.Warning;
 
-            style = NodeModel.State == ElementState.Info ? InfoBubbleViewModel.Style.Info : style;
+            InfoBubbleViewModel.Style style = NodeModel.State == ElementState.Info ? InfoBubbleViewModel.Style.Info : InfoBubbleViewModel.Style.None;
+            style = NodeModel.State == ElementState.Warning ? InfoBubbleViewModel.Style.Warning : style;
+            style = NodeModel.State == ElementState.Error ? InfoBubbleViewModel.Style.Error : style;
 
             ErrorBubble.InfoBubbleStyle = style;
 

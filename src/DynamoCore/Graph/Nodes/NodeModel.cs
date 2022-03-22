@@ -1638,7 +1638,6 @@ namespace Dynamo.Graph.Nodes
         public virtual void ClearInfoMessages()
         {
             infos.RemoveWhere(x => x.State == ElementState.Info);
-            State = ElementState.Dead;
             OnNodeInfoMessagesClearing();
         }
 
@@ -1771,8 +1770,6 @@ namespace Dynamo.Graph.Nodes
         {
             State = ElementState.Info;
             infos.Add(new Info(p, ElementState.Info));
-
-            ToolTipText = p;
         }
 
         /// <summary>
