@@ -911,7 +911,7 @@ namespace Dynamo.ViewModels
         /// <param name="scaleFactor"></param>
         private void UpdateGeoScaleRadioButtonSelected(int scaleFactor)
         {
-            optionsGeometryScale.EnumProperty = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
+            ScaleSize = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
         }
 
         /// <summary>
@@ -1164,6 +1164,7 @@ namespace Dynamo.ViewModels
     public class GeometryScalingOptions
     {
         //The Enum values can be Small, Medium, Large or Extra Large
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
         public GeometryScaleSize EnumProperty { get; set; }
 
         /// <summary>
