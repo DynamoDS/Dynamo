@@ -32,6 +32,7 @@ namespace DynamoCoreWpfTests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("ProtoGeometry.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("FFITarget.dll");
@@ -441,6 +442,37 @@ namespace DynamoCoreWpfTests
                 var nView = NodeViewWithGuid(node.GUID.ToString());
                 Assert.AreEqual(2, nView.ViewModel.ErrorBubble.NodeMessages.Count);
             }
+        }
+
+        [Test]
+        public void InfoBubble_ShowsWarningOnNode2Code()
+        {
+            Open(@"core\watch\infobubble_warning_on_n2c.dyn");
+
+            Dynamo.Selection.DynamoSelection.Instance.Selection.AddRange(Model.CurrentWorkspace.Nodes);
+
+            ViewModel.CurrentSpaceViewModel.NodeToCodeCommand.Execute(null);
+
+            DispatcherUtil.DoEvents();
+
+            var nodes = Model.CurrentWorkspace.Nodes;
+            Assert.AreEqual(1, nodes.Count());
+
+            var nView = NodeViewWithGuid(nodes.ElementAt(0).GUID.ToString());
+            var msgs = nView.ViewModel.ErrorBubble.NodeMessages;
+            Assert.IsTrue(msgs.Any());
+            Assert.IsTrue(msgs[0].Message.Contains("You cannot define a variable more than once."));
+        }
+
+        [Test]
+        public void InfoBubble_ShowsWarningOnObsoleteZeroTouchNode()
+        {
+            Open(@"core\watch\obsolete_zero_touch_node.dyn");
+
+            var nodeView = NodeViewWithGuid("cb146e7e-22ad-4e96-bfe4-5e506d3669d1");
+
+            Assert.AreEqual(1, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+            Assert.IsTrue(nodeView.ViewModel.ErrorBubble.NodeMessages[0].Message.Contains("Obsolete"));
         }
 
         [Test]
