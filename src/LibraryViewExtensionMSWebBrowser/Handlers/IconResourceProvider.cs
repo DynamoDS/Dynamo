@@ -265,7 +265,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
                 reader.Dispose();
             }
 
-            else if (extension.ToLower().Contains("ttf") || extension.ToLower().Contains("woff"))
+            else if (extension.ToLower().Contains("ttf") || extension.ToLower().Contains("woff") || extension.ToLower().Contains("eot"))
             {
                 var reader = new BinaryReader(stream);
                 var fontBytes = reader.ReadBytes((int)stream.Length);

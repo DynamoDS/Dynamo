@@ -109,7 +109,13 @@
     <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
     <!-- The main library view component -->
     <script>
+try{
         LIBPLACEHOLDER
+}
+catch(error)
+{
+window.external.notify(JSON.stringify({"func":"logtoconsole","data":error.toString()+error.stack}));
+}
     </script>
 
     <script>
@@ -149,6 +155,7 @@
         );
 
         function replaceImages() {
+/*
             var allimages = document.getElementsByTagName("img");
 
             allimages.forEach(function (element) {
@@ -165,6 +172,7 @@
                 window.external.GetBase64StringFromPath(src);
                
             });
+*/
         }
 
         function completeReplaceImages(base64String) {

@@ -98,6 +98,11 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                     var data = simpleRPCPayload["data"] as string;
                     controller.CreateNode(data);
                 }
+                if (funcName == "logtoconsole")
+                {
+                    var data = simpleRPCPayload["data"] as string;
+                    MessageBox.Show(data);
+                }
                 else if (funcName == "showNodeTooltip")
                 {
                     var data = (simpleRPCPayload["data"] as JArray).Children();
@@ -287,14 +292,20 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         private string ReplaceUrlWithBase64Image(string html, string minifiedURL, bool magicreplace = true)
         {
             var ext = string.Empty;
+            var magicstringprod = "__webpack_require__.p+";
+
             // this depends on librariejs minification producing the same results - 
             // longterm this is fragile. We should intercept these requests and handle them instead.
             if (magicreplace)
             {
-                minifiedURL = $"n.p+\"{minifiedURL}\"";
+                minifiedURL = $"{magicstringprod}\"{minifiedURL}\"";
             }
-            var searchString = minifiedURL.Replace("n.p+", @"./dist").Replace("\"", "");
+            var searchString = minifiedURL.Replace(magicstringprod, @"./dist/").Replace("\"", "");
             var base64 = iconProvider.GetResourceAsString(searchString, out ext);
+            if (string.IsNullOrEmpty(base64))
+            {
+                throw new Exception($"could not find resource {searchString}");
+            }
             //replace some urls to svg icons with base64 data.
             if (ext == "svg")
             {
@@ -316,27 +327,27 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         //list of resources which have paths embedded directly into the source.
         private readonly Tuple<string, bool>[] dynamicResourcePaths = new Tuple<string, bool>[]
         {
-           Tuple.Create("/resources/ArtifaktElement-Bold.woff",true),
-           Tuple.Create("/resources/ArtifaktElement-Regular.woff",true),
-           Tuple.Create("/resources/bin.svg",true),
-           Tuple.Create("/resources/default-icon.svg",true),
-           Tuple.Create("/resources/fontawesome-webfont.eot",true),
-           Tuple.Create("/resources/fontawesome-webfont.ttf",true),
-           Tuple.Create("/resources/fontawesome-webfont.woff2",true),
-           Tuple.Create("/resources/fontawesome-webfont.woff",true),
-           Tuple.Create("/resources/library-action.svg",true),
-           Tuple.Create("/resources/library-create.svg",true),
-           Tuple.Create("/resources/library-query.svg",true),
-           Tuple.Create("/resources/indent-arrow-category-down.svg",true),
-           Tuple.Create("/resources/indent-arrow-category-right.svg",true),
-           Tuple.Create("/resources/indent-arrow-down.svg",true),
-           Tuple.Create("/resources/indent-arrow-right.svg",true),
-           Tuple.Create("/resources/plus-symbol.svg",true),
-           Tuple.Create("/resources/search-detailed.svg",true),
-           Tuple.Create("/resources/search-filter.svg",true),
-           Tuple.Create("/resources/search-filter-selected.svg",true),
-           Tuple.Create("/resources/search-icon.svg",true),
-           Tuple.Create("/resources/search-icon-clear.svg",true)
+           Tuple.Create("resources/ArtifaktElement-Bold.woff",true),
+           Tuple.Create("resources/ArtifaktElement-Regular.woff",true),
+           Tuple.Create("resources/bin.svg",true),
+           Tuple.Create("resources/default-icon.svg",true),
+           Tuple.Create("resources/fontawesome-webfont.eot",true),
+           Tuple.Create("resources/fontawesome-webfont.ttf",true),
+           Tuple.Create("resources/fontawesome-webfont.woff2",true),
+           Tuple.Create("resources/fontawesome-webfont.woff",true),
+           Tuple.Create("resources/library-action.svg",true),
+           Tuple.Create("resources/library-create.svg",true),
+           Tuple.Create("resources/library-query.svg",true),
+           Tuple.Create("resources/indent-arrow-category-down.svg",true),
+           Tuple.Create("resources/indent-arrow-category-right.svg",true),
+           Tuple.Create("resources/indent-arrow-down.svg",true),
+           Tuple.Create("resources/indent-arrow-right.svg",true),
+           Tuple.Create("resources/plus-symbol.svg",true),
+           Tuple.Create("resources/search-detailed.svg",true),
+           Tuple.Create("resources/search-filter.svg",true),
+           Tuple.Create("resources/search-filter-selected.svg",true),
+           Tuple.Create("resources/search-icon.svg",true),
+           Tuple.Create("resources/search-icon-clear.svg",true)
         };
 
         /// <summary>
@@ -368,6 +379,14 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                     libminstring = ReplaceUrlWithBase64Image(libminstring, path.Item1, path.Item2);
                 });
             }
+
+            // because webpack now uses URL objects for file assets, and the URL constructor expects a valid base url, we need to 
+            // provide a valid base in the embedded context.
+            // __webpack_require__.b is the url webpack passes to URL constructors. 
+            libminstring = libminstring.Replace("__webpack_require__.b=document.baseURI||self.location.href", "__webpack_require__.b = 'http://localhost'");
+            //if dev build.
+            libminstring = libminstring.Replace("__webpack_require__.b = document.baseURI || self.location.href", "__webpack_require__.b = 'http://localhost'");
+
 
             using (var reader = new StreamReader(stream))
             {
