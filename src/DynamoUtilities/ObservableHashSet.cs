@@ -12,7 +12,6 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Event raised when items are added or removed from the hash set. 
         /// Currently, it is possible for listeners to detect if items are added vs. removed, 
-        /// however, removed items cannot be accessed from the NotifyCollectionChangedEventArgs argument.
         /// </summary>
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
@@ -24,8 +23,16 @@ namespace Dynamo.Utilities
 
         public void RemoveWhere(Predicate<T> match)
         {
-            set.RemoveWhere(match);
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, null));
+            List<T> removedObjs = new List<T>();
+            foreach(var item in set.ToArray())
+            {
+                if (match(item))
+                {
+                    removedObjs.Add(item);
+                    set.Remove(item);
+                }
+            }
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, removedObjs));
         }
 
         public bool Any(Func<T, bool> match)
