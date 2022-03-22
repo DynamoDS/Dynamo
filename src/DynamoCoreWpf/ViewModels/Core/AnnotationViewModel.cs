@@ -175,9 +175,6 @@ namespace Dynamo.ViewModels
         }
 
         [JsonIgnore]
-        internal GroupStyleItem CurrentGroupStyleSelected { get; set; }
-
-        [JsonIgnore]
         public IEnumerable<ModelBase> Nodes
         {
             get { return annotationModel.Nodes; }
@@ -978,14 +975,6 @@ namespace Dynamo.ViewModels
         {
             if (itemEntryParameter == null) return;
 
-            var groupStyleItems = GroupStyleList.OfType<GroupStyleItem>();
-            groupStyleItems.Where(c => !c.Name.Equals(itemEntryParameter.Name)).ToList().ForEach(cc =>
-            {
-                cc.IsChecked = false;
-            });
-
-            itemEntryParameter.IsChecked = true;
-            CurrentGroupStyleSelected = itemEntryParameter;
             Background = (Color)ColorConverter.ConvertFromString("#"+itemEntryParameter.HexColorString);
 
             WorkspaceViewModel.HasUnsavedChanges = true;
@@ -1020,17 +1009,9 @@ namespace Dynamo.ViewModels
         internal void ReloadGroupStyles()
         {
             if (preferencesStyleItemsList == null) return;
-            var currentSelectedGroupStyle = groupStyleList.OfType<GroupStyleItem>().Where(style => style.IsChecked == true).FirstOrDefault();
             groupStyleList.Clear();
 
             LoadGroupStylesFromPreferences(preferencesStyleItemsList);
-            if (currentSelectedGroupStyle == null) return;
-
-            var currentCustomGroupStyles = groupStyleList.OfType<GroupStyleItem>();
-            var selectedGroupStyle = currentCustomGroupStyles.Where(style => style.Name.Equals(currentSelectedGroupStyle.Name)).FirstOrDefault();
-
-            if (selectedGroupStyle == null) return;
-            selectedGroupStyle.IsChecked = true;  
         }
 
         /// <summary>
