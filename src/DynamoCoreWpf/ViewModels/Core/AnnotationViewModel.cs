@@ -1136,7 +1136,6 @@ namespace Dynamo.ViewModels
 
         private void OnModelAddedToGroup(object sender, EventArgs e)
         {
-            Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Group");
             RaisePropertyChanged(nameof(ZIndex));
         }
 
@@ -1172,6 +1171,7 @@ namespace Dynamo.ViewModels
 
                 AddToCutGeometryDictionary(groupViewModel);
             }
+            WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
         private void RemoveKeyFromCutGeometryDictionary(string groupGuid)
