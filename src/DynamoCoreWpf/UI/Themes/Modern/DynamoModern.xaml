@@ -651,54 +651,51 @@
         </Setter>
     </Style>
 
-    <Style x:Key="InputStyle" TargetType="TextBox">
+    <Style x:Key="InputStyle" TargetType="{x:Type TextBox}">
         <Setter Property="Margin" Value="0,0,0,12" />
         <Setter Property="MinWidth" Value="62px" />
-        <Setter Property="Cursor" Value="IBeam" />
+        <Setter Property="CaretBrush" Value="{StaticResource PrimaryCharcoal200Brush}" />
+        <Setter Property="Padding" Value="10,12,10,8"/>
+        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}"/>
+        <Setter Property="FontSize" Value="12px" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="TextBox">
+                <ControlTemplate TargetType="{x:Type TextBox}">
                     <Grid>
-                        <TextBox x:Name="InputTextBox"
-                                         Padding="10,12,10,8"
-                                         Background="#353535"
-                                         BorderBrush="Transparent"
-                                         BorderThickness="1"
-                                         FontFamily="{StaticResource ArtifaktElementRegular}"
-                                         FontSize="12px"
-                                         Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                         MaxLength="{TemplateBinding MaxLength}"
-                                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
-                                         Tag="{TemplateBinding Tag}"
-                                         TextWrapping="Wrap" />
-                        <TextBlock x:Name="WatermarkLabel"
-                                           Padding="13,13,10,8"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontSize="12px"
-                                           Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                           IsHitTestVisible="False"
-                                           Opacity="0.5"
-                                           Text="{TemplateBinding Tag}">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Text, ElementName=InputTextBox}" Value="">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                        <Border 
+                            Background="#353535"
+                            BorderBrush="Transparent"                            
+                            BorderThickness="1"
+                            />
+                        <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
+                        <Label  x:Name="WaterMarkLabel"
+                                Padding="13,13,10,8"
+                                Content="{TemplateBinding Tag}" 
+                                VerticalAlignment="Center"
+                                Visibility="Collapsed"
+                                FontFamily="{StaticResource ArtifaktElementRegular}"
+                                FontSize="12px"
+                                Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                IsHitTestVisible="False"
+                                Opacity="0.5"/>
                     </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Text" Value=""/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Visibility" TargetName="WaterMarkLabel" Value="Visible"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="False">
-                <Setter Property="BorderBrush" Value="{StaticResource DarkMidGreyBrush}" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="LabelStyle" TargetType="TextBlock">
