@@ -156,6 +156,58 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void UndoEdditedTitleGroup()
+        {
+            //Add a Node
+            var model = CurrentDynamoModel;
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            Guid groupid = Guid.NewGuid();
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 1);
+            Assert.AreNotEqual(0, annotation.Width);
+            Assert.AreEqual(string.Empty, annotation.AnnotationText);
+
+            DynamoSelection.Instance.Selection.Add(annotation);
+
+            //Update the Annotation Text
+            model.ExecuteCommand(
+                    new DynCmd.UpdateModelValueCommand(
+                        Guid.Empty, annotation.GUID, "TextBlockText",
+                        "This is a unit test"));
+
+            Assert.AreEqual("This is a unit test", annotation.AnnotationText);
+            Assert.AreEqual(3, DynamoSelection.Instance.Selection.Count());
+
+            //Deselects the group
+            model.ExecuteCommand(
+                    new DynCmd.SelectModelCommand(Guid.Empty, Utilities.ModifierKeys.None));
+
+            //Undo Selection
+            model.CurrentWorkspace.Undo();
+            Assert.IsFalse(DynamoSelection.Instance.Selection.Any());
+            Assert.AreEqual("This is a unit test", annotation.AnnotationText);
+
+            //Undo Title text
+            model.CurrentWorkspace.Undo();
+            Assert.AreEqual(string.Empty, annotation.AnnotationText);
+
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void UndoAModelDeleteShouldGetTheModelInThatGroup()
         {
             //Add a Node

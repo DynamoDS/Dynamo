@@ -159,7 +159,7 @@
                            HorizontalContentAlignment="Center"
                            VerticalContentAlignment="Center"
                            HorizontalAlignment="Center"
-                           MaxWidth="60"
+                           MaxWidth="80"
                            Grid.Column="1"/>
 
                     <Button x:Name="NextButton"

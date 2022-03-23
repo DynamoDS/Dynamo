@@ -453,39 +453,7 @@ namespace Dynamo.Nodes
             var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItem;
             if (groupStyleItemSelected == null) return;
 
-            //Means that no GroupStyle (Default, Custom) has been selected then the clicked one will be selected
-            if (ViewModel.CurrentGroupStyleSelected == null)
-            {
-                ViewModel.UpdateGroupStyle(groupStyleItemSelected);
-                return;
-            }           
-
-            //Means that the user clicked over a MenuItem that is already selected, when we need uncheck it if is not a Default Style
-            if (groupStyleItemSelected != ViewModel.CurrentGroupStyleSelected && groupStyleItemSelected.IsChecked == false)
-            {
-                ViewModel.UpdateGroupStyle(groupStyleItemSelected);
-                return;
-            }
-            
-            //Means that the GroupStyle selected is not a Default Style and is already checked
-            if (ViewModel.CurrentGroupStyleSelected.IsChecked == true && !groupStyleItemSelected.IsDefault)
-            {
-                var groupStyleItems = ViewModel.GroupStyleList.OfType<GroupStyleItem>();
-                var firstDefaultGroupStyle = groupStyleItems.Where(item => item.IsDefault == true).FirstOrDefault();
-                ViewModel.UpdateGroupStyle(firstDefaultGroupStyle);
-                return;
-            }
-        }
-
-        private void GroupStyleCheckmark_Checked(object sender, RoutedEventArgs e)
-        {
-            var menuItemSelected = sender as MenuItem;
-            if (menuItemSelected == null) return;
-
-            var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItem;
-            if (groupStyleItemSelected == null) return;
-
-            ViewModel.CurrentGroupStyleSelected = groupStyleItemSelected;
+            ViewModel.UpdateGroupStyle(groupStyleItemSelected);                
         }
 
         /// <summary>
