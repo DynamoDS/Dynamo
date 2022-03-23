@@ -341,7 +341,8 @@ namespace Dynamo.ViewModels
         private static string GetInputNames(NodeModel node)
         {
             var inputNames = node.InPorts.Select(x => x.Name).ToArray();
-            return string.Join(",", inputNames);
+            // Match https://github.com/DynamoDS/Dynamo/blame/master/src/DynamoCore/Search/SearchElements/ZeroTouchSearchElement.cs#L51 
+            return string.Join(", ", inputNames);
         }
     }
 

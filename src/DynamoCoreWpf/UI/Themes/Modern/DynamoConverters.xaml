@@ -89,10 +89,14 @@
     <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
     <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter" />
+    <controls:EmptyToVisibilityCollapsedConverter x:Key="EmptyToVisibilityCollapsedConverter"/>
+    <controls:EmptyToZeroLengthConverter x:Key="EmptyToZeroLengthConverter"/>
     <controls:NavigationToOpacityConverter x:Key="NavigationToOpacityConverter" />
     <controls:ViewButtonClipRectConverter x:Key="ViewButtonClipRectConverter" />
     <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter" />
+    <controls:ZoomToOpacityConverter x:Key="ZoomToOpacityConverter" />
     <controls:ZoomToBooleanConverter x:Key="ZoomToBooleanConverter" />
+    <controls:ZoomToVisibilityCollapsedConverter x:Key="ZoomToVisibilityCollapsedConverter" />
     <controls:PortNameToWidthConverter x:Key="PortNameToWidthConverter" />
     <controls:TooltipLengthTruncater x:Key="TooltipLengthTruncater" />
     <controls:TabSizeConverter x:Key="TabSizeConverter" />

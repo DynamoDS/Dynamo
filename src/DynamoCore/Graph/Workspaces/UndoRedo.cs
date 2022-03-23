@@ -509,7 +509,7 @@ namespace Dynamo.Graph.Workspaces
                     //this note "was" in a group
                     if (annotation.DeletedModelBases.Any(m => m.GUID == noteModel.GUID))
                     {
-                        annotation.AddToSelectedModels(noteModel);
+                        annotation.AddToTargetAnnotationModel(noteModel);
                     }
                 }
             }
@@ -548,7 +548,7 @@ namespace Dynamo.Graph.Workspaces
                     //this node "was" in a group
                     if (annotation.DeletedModelBases.Any(m => m.GUID == nodeModel.GUID))
                     {
-                        annotation.AddToSelectedModels(nodeModel);
+                        annotation.AddToTargetAnnotationModel(nodeModel);
                     }
                 }
             }

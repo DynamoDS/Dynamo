@@ -1200,7 +1200,7 @@ namespace Dynamo.Controls
             }
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
-            var result = Wpf.Utilities.MessageBoxService.Show(this, dialogText,
+            var result = MessageBoxService.Show(this, dialogText,
                 Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle,
                 buttons, MessageBoxImage.Question);
 

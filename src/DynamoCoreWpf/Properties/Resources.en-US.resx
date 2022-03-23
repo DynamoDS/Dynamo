@@ -3049,4 +3049,10 @@ To install the latest version of a package, click Install. \n
   <data name="ContextPinToNodeTooltip" xml:space="preserve">
     <value>Select a node to pin to this note.</value>
   </data>
+  <data name="GroupStylesCancelButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="GroupStylesSaveButtonText" xml:space="preserve">
+    <value>Save</value>
+  </data>
 </root>

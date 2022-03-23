@@ -11,6 +11,7 @@ using Dynamo.Models;
 using Dynamo.PythonServices;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.Windows;
 using PythonNodeModels;
 using PythonNodeModelsWpf.Controls;
@@ -111,7 +112,7 @@ namespace PythonNodeModelsWpf
         {
             if (editWindow != null)
             {
-                var res = MessageBox.Show(
+                var res = MessageBoxService.Show(
                     String.Format(
                         PythonNodeModels.Properties.Resources.DeletingPythonNodeWithOpenEditorMessage, 
                         this.pythonNodeModel.Name),

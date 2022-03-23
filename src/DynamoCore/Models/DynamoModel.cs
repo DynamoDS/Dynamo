@@ -1761,7 +1761,7 @@ namespace Dynamo.Models
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return false;
+                throw e;
             }
         }
 
@@ -2230,22 +2230,32 @@ namespace Dynamo.Models
                 foreach (var model in modelsToAdd)
                 {
                     CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
-                    selectedGroup.AddToSelectedModels(model);
+                    selectedGroup.AddToTargetAnnotationModel(model);
                 }
             }
 
         }
 
-        internal void AddGroupToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid)
+        /// <summary>
+        /// Add a list of annotations to the host group on model level.
+        /// </summary>
+        /// <param name="modelsToAdd">List of annotation models.</param>
+        /// <param name="hostGroupGuid">Host annotation guid.</param>
+        internal void AddGroupsToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid)
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
             var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
             if (selectedGroup is null) return;
 
+            var modelsToModify = new List<ModelBase>();
+            modelsToModify.AddRange(modelsToAdd);
+            modelsToModify.Add(selectedGroup);
+
+            // Mark the parent group and groups to add all for undo recorder
+            WorkspaceModel.RecordModelsForModification(modelsToModify, CurrentWorkspace.UndoRecorder);
             foreach (var model in modelsToAdd)
             {
-                CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
-                selectedGroup.AddToSelectedModels(model);
+                selectedGroup.AddToTargetAnnotationModel(model);
             }
         }
 
