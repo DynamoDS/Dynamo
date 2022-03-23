@@ -1643,8 +1643,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Clears the errors/warnings that are generated when running the graph,
-        /// the State will be set to ElementState.Dead.
+        /// Clears the errors/warnings that are generated when running the graph
         /// </summary>
         public virtual void ClearErrorsAndWarnings()
         {
