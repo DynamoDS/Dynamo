@@ -2428,7 +2428,7 @@ namespace Dynamo.Models
 
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoModel.AddGroupToGroupImpl(this);
+                dynamoModel.AddGroupsToGroupImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
