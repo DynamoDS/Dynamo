@@ -2373,6 +2373,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("isSelectedOutput", IsSetAsOutput.ToString());
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
             helper.SetAttribute("isPinned", PreviewPinned);
+            helper.SetAttribute(nameof(IsSelected), IsSelected);
 
             var portIndexTuples = inPorts.Select((port, index) => new { port, index });
 
@@ -2434,6 +2435,8 @@ namespace Dynamo.Graph.Nodes
             IsSetAsOutput = helper.ReadBoolean("isSelectedOutput", false);
             IsFrozen = helper.ReadBoolean("IsFrozen", false);
             PreviewPinned = helper.ReadBoolean("isPinned", false);
+            IsSelected = helper.ReadBoolean(nameof(IsSelected), IsSelected);
+
 
             var portInfoProcessed = new HashSet<int>();
 
