@@ -30,18 +30,19 @@ using Dynamo.Visualization;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
+using HelixToolkit.SharpDX.Core;
+using HelixToolkit.SharpDX.Core.Utilities;
+using HelixToolkit.SharpDX.Core.Shaders;
 using HelixToolkit.Wpf.SharpDX;
-using HelixToolkit.Wpf.SharpDX.Shaders;
-using HelixToolkit.Wpf.SharpDX.Utilities;
 using Newtonsoft.Json;
 using SharpDX;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
-using MeshBuilder = HelixToolkit.Wpf.SharpDX.MeshBuilder;
-using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
+using MeshBuilder = HelixToolkit.SharpDX.Core.MeshBuilder;
+using MeshGeometry3D = HelixToolkit.SharpDX.Core.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
-using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
+using TextInfo = HelixToolkit.SharpDX.Core.TextInfo;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -141,6 +142,23 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
     public class HelixWatch3DViewModel : DefaultWatch3DViewModel
     {
+        private sealed class NVOptimusEnabler
+        {
+            static NVOptimusEnabler()
+            {
+                try
+                {
+                    NativeMethods.LoadNvApi64();
+                }
+                catch { } // will always fail since 'fake' entry point doesn't exists
+            }
+        };
+
+        private static class NativeMethods
+        {
+            [System.Runtime.InteropServices.DllImport("nvapi64.dll", EntryPoint = "fake")]
+            internal static extern int LoadNvApi64();
+        }
         #region private members
 
         private double lightAzimuthDegrees = 45.0;

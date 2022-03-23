@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using Dynamo.Graph.Nodes;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using HelixToolkit.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
 using Point = System.Windows.Point;

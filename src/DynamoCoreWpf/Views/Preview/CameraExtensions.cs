@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media.Media3D;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using HelixToolkit.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
 using OrthographicCamera = HelixToolkit.Wpf.SharpDX.OrthographicCamera;
