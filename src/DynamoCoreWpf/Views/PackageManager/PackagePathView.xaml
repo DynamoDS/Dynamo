@@ -39,8 +39,7 @@
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
-                        Style="{StaticResource FlatIconButtonStyle}">
-                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/up_16_16.png" Width="15" Height="15"></Image>
+                        Style="{StaticResource UpButtonStyle}">
                         <Button.ToolTip>
                             <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipUp}" Style="{StaticResource GenericToolTipLight}"/>
                         </Button.ToolTip>
@@ -54,11 +53,10 @@
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
                          Background="{StaticResource PreferencesWindowBackgroundColor}"
-                         Style="{StaticResource FlatIconButtonStyle}">
+                         Style="{StaticResource DownButtonStyle}">
                         <Button.ToolTip>
                             <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipDown}" Style="{StaticResource GenericToolTipLight}"/>
                         </Button.ToolTip>
-                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/down_16_16.png" Width="15" Height="15"></Image>
                     </Button>
                     <!--the path text-->
                     <TextBlock x:Name="PathTextBlock" Style="{StaticResource DarkTextBlock}" 
@@ -79,11 +77,10 @@
                          CommandParameter="{Binding}"
                          ToolTipService.ShowOnDisabled="True"
                          Background="{StaticResource PreferencesWindowBackgroundColor}"
-                         Style="{StaticResource FlatIconButtonStyle}">
+                         Style="{StaticResource FolderButtonStyle}">
                         <Button.ToolTip>
                             <ToolTip Content="{x:Static p:Resources.PackagePathUpdatePathTooltip}" Style="{StaticResource GenericToolTipLight}"/>
                         </Button.ToolTip>
-                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/folder_16_16.png" Width="15" Height="15"></Image>
                     </Button>
                     <!--the delete path button-->
                     <Button x:Name="DeletePathButton"
@@ -94,11 +91,10 @@
                         CommandParameter="{Binding}"
                         ToolTipService.ShowOnDisabled="True"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
-                        Style="{StaticResource FlatIconButtonStyle}">
+                        Style="{StaticResource CloseButtonStyle}">
                         <Button.ToolTip>
                             <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipMinus}" Style="{StaticResource GenericToolTipLight}"/>
                         </Button.ToolTip>
-                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/close_16_16.png" Width="15" Height="15"></Image>
                     </Button>
                 </Grid>
                 <!--this trigger fades out paths when they are disabled-->
