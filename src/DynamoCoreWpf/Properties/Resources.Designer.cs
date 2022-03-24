@@ -502,7 +502,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add To Group.
+        ///   Looks up a localized string similar to Add Node To Group.
         /// </summary>
         public static string ContextAddGroupFromSelection {
             get {
@@ -750,6 +750,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextPinToNode {
             get {
                 return ResourceManager.GetString("ContextPinToNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a node to pin to this note..
+        /// </summary>
+        public static string ContextPinToNodeTooltip {
+            get {
+                return ResourceManager.GetString("ContextPinToNodeTooltip", resourceCulture);
             }
         }
         
@@ -2921,7 +2930,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Group to Group.
+        ///   Looks up a localized string similar to Add Group to This Group.
         /// </summary>
         public static string GroupContextMenuAddGroupToGroup {
             get {
@@ -2989,6 +2998,33 @@ namespace Dynamo.Wpf.Properties {
         public static string GroupNameDefaultText {
             get {
                 return ResourceManager.GetString("GroupNameDefaultText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group Style.
+        /// </summary>
+        public static string GroupStyleContextAnnotation {
+            get {
+                return ResourceManager.GetString("GroupStyleContextAnnotation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string GroupStylesCancelButtonText {
+            get {
+                return ResourceManager.GetString("GroupStylesCancelButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string GroupStylesSaveButtonText {
+            get {
+                return ResourceManager.GetString("GroupStylesSaveButtonText", resourceCulture);
             }
         }
         
@@ -5703,6 +5739,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Style name already in use.
+        /// </summary>
+        public static string PreferencesViewAlreadyExistingStyleWarning {
+            get {
+                return ResourceManager.GetString("PreferencesViewAlreadyExistingStyleWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default Python Engine.
         /// </summary>
         public static string PreferencesViewDefaultPythonEngine {
@@ -5726,6 +5771,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewDisableCustomPackages {
             get {
                 return ResourceManager.GetString("PreferencesViewDisableCustomPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid name.
+        /// </summary>
+        public static string PreferencesViewEmptyStyleWarning {
+            get {
+                return ResourceManager.GetString("PreferencesViewEmptyStyleWarning", resourceCulture);
             }
         }
         
@@ -5915,15 +5969,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewShowWhitespaceInPythonEditor {
             get {
                 return ResourceManager.GetString("PreferencesViewShowWhitespaceInPythonEditor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Style name already in use.
-        /// </summary>
-        public static string PreferencesViewStyleWarning {
-            get {
-                return ResourceManager.GetString("PreferencesViewStyleWarning", resourceCulture);
             }
         }
         

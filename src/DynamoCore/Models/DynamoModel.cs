@@ -601,7 +601,7 @@ namespace Dynamo.Models
             if (preferences is PreferenceSettings settings)
             {
                 PreferenceSettings = settings;
-                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;             
             }
 
             if (config is DefaultStartConfiguration defaultStartConfiguration)
@@ -1648,6 +1648,18 @@ namespace Dynamo.Models
         #region save/load
 
         /// <summary>
+        /// Opens a Dynamo workspace from a Json string.
+        /// </summary>
+        /// <param name="fileContents">Json file content</param>
+        /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// execution mode specified in the file and set manual mode</param>
+        public void OpenFileFromJson(string fileContents, bool forceManualExecutionMode = false)
+        {
+            OpenJsonFileFromPath(fileContents, "", forceManualExecutionMode);
+            return;
+        }
+
+        /// <summary>
         /// Opens a Dynamo workspace from a path to a file on disk.
         /// </summary>
         /// <param name="filePath">Path to file</param>
@@ -1749,7 +1761,7 @@ namespace Dynamo.Models
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return false;
+                throw e;
             }
         }
 
@@ -1852,7 +1864,10 @@ namespace Dynamo.Models
           bool forceManualExecutionMode,
           out WorkspaceModel workspace)
         {
-            CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filePath), IsTestMode);
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filePath), IsTestMode);
+            }            
 
             var currentHomeSpace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             currentHomeSpace.UndefineCBNFunctionDefinitions();
@@ -1870,7 +1885,7 @@ namespace Dynamo.Models
                 CustomNodeManager,
                 this.LinterManager);
 
-            workspace.FileName = filePath;
+            workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
 
             // NOTE: This is to handle the case of opening a JSON file that does not have a version string
@@ -1886,6 +1901,11 @@ namespace Dynamo.Models
                 homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
 
                 homeWorkspace.ReCompileCodeBlockNodesForFunctionDefinitions();
+
+                if (string.IsNullOrEmpty(workspace.FileName))
+                {
+                    workspace.HasUnsavedChanges = true;
+                }
 
                 RunType runType;
                 if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)
@@ -2210,22 +2230,32 @@ namespace Dynamo.Models
                 foreach (var model in modelsToAdd)
                 {
                     CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
-                    selectedGroup.AddToSelectedModels(model);
+                    selectedGroup.AddToTargetAnnotationModel(model);
                 }
             }
 
         }
 
-        internal void AddGroupToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid)
+        /// <summary>
+        /// Add a list of annotations to the host group on model level.
+        /// </summary>
+        /// <param name="modelsToAdd">List of annotation models.</param>
+        /// <param name="hostGroupGuid">Host annotation guid.</param>
+        internal void AddGroupsToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid)
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
             var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
             if (selectedGroup is null) return;
 
+            var modelsToModify = new List<ModelBase>();
+            modelsToModify.AddRange(modelsToAdd);
+            modelsToModify.Add(selectedGroup);
+
+            // Mark the parent group and groups to add all for undo recorder
+            WorkspaceModel.RecordModelsForModification(modelsToModify, CurrentWorkspace.UndoRecorder);
             foreach (var model in modelsToAdd)
             {
-                CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
-                selectedGroup.AddToSelectedModels(model);
+                selectedGroup.AddToTargetAnnotationModel(model);
             }
         }
 

@@ -315,7 +315,7 @@ namespace Dynamo.Tests
             var elementResolver = CurrentDynamoModel.CurrentWorkspace.ElementResolver;
             codeBlockNode.SetCodeContent("--", elementResolver); // Invalid numeric value.
             Assert.AreEqual(ElementState.Error, codeBlockNode.State);
-            Assert.IsNotEmpty(codeBlockNode.ToolTipText); // Error tooltip text.
+            Assert.IsTrue(codeBlockNode.Infos.Any(x => x.State == ElementState.Error)); 
 
             // Ensure the number node is not selected now.
             Assert.AreEqual(false, codeBlockNode.IsSelected);
@@ -324,18 +324,18 @@ namespace Dynamo.Tests
             CurrentDynamoModel.AddToSelection(codeBlockNode);
             Assert.AreEqual(true, codeBlockNode.IsSelected);
             Assert.AreEqual(ElementState.Error, codeBlockNode.State);
-            Assert.IsNotEmpty(codeBlockNode.ToolTipText); // Error tooltip text.
+            Assert.IsTrue(codeBlockNode.Infos.Any(x => x.State == ElementState.Error));
 
             // Deselect the node and ensure its error state isn't cleared.
             DynamoSelection.Instance.Selection.Remove(codeBlockNode);
             Assert.AreEqual(false, codeBlockNode.IsSelected);
             Assert.AreEqual(ElementState.Error, codeBlockNode.State);
-            Assert.IsNotEmpty(codeBlockNode.ToolTipText); // Error tooltip text.
+            Assert.IsTrue(codeBlockNode.Infos.Any(x => x.State == ElementState.Error));
 
             // Update to valid numeric value, should cause the node to be active.
             codeBlockNode.SetCodeContent("1234;", elementResolver);
             Assert.AreEqual(ElementState.Active, codeBlockNode.State);
-            Assert.IsEmpty(codeBlockNode.ToolTipText); // Error tooltip is gone.
+            Assert.IsTrue(codeBlockNode.Infos.Count == 0); // Error tooltip is gone.
         }
 
         [Test]

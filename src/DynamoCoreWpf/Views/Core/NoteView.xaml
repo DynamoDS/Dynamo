@@ -73,7 +73,7 @@
                           Command="{Binding Path=PinToNodeCommand}"
                           ToolTipService.ShowOnDisabled="True">
                     <MenuItem.ToolTip>
-                        <ToolTip Content="Select a node to pin to this note" Style="{StaticResource GenericToolTipLight}"/>
+                        <ToolTip Content="{x:Static p:Resources.ContextPinToNodeTooltip}" Style="{StaticResource GenericToolTipLight}"/>
                     </MenuItem.ToolTip>
                 </MenuItem>
                 <MenuItem Name="UnpinToNode"

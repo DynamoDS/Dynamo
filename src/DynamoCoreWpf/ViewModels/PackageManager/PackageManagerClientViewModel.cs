@@ -301,7 +301,7 @@ namespace Dynamo.ViewModels
                 }
             }
             
-            MessageBox.Show(Resources.MessageSelectSymbolNotFound, 
+            MessageBoxService.Show(Resources.MessageSelectSymbolNotFound, 
                     Resources.SelectionErrorMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Question);
         }
@@ -366,7 +366,7 @@ namespace Dynamo.ViewModels
 
             if (!nodeList.Any())
             {
-                MessageBox.Show(Resources.MessageSelectAtLeastOneNode,
+                MessageBoxService.Show(Resources.MessageSelectAtLeastOneNode,
                    Resources.SelectionErrorMessageBoxTitle,
                    MessageBoxButton.OK, MessageBoxImage.Question);
                 return;
@@ -387,7 +387,7 @@ namespace Dynamo.ViewModels
                         continue;
                     }
                 }
-                MessageBox.Show(Resources.MessageGettingNodeError, 
+                MessageBoxService.Show(Resources.MessageGettingNodeError, 
                     Resources.SelectionErrorMessageBoxTitle, 
                     MessageBoxButton.OK, MessageBoxImage.Question);
             }
@@ -486,7 +486,7 @@ namespace Dynamo.ViewModels
             }
             catch
             {
-                MessageBox.Show(
+                MessageBoxService.Show(
                     string.Format(Resources.MessagePackageVersionNotFound, packageInfo.Version.ToString(), packageInfo.Name),
                     Resources.PackageDownloadErrorMessageBoxTitle,
                     MessageBoxButton.OK,
@@ -926,7 +926,7 @@ namespace Dynamo.ViewModels
                         }
                         catch
                         {
-                            MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage,
+                            MessageBoxService.Show(String.Format(Resources.MessageFailToUninstallPackage,
                                 DynamoViewModel.BrandingResourceProvider.ProductName,
                                 packageDownloadHandle.Name),
                                 Resources.DeleteFailureMessageBoxTitle,

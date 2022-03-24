@@ -9,6 +9,7 @@ using Dynamo.Interfaces;
 using Dynamo.PythonMigration.Controls;
 using Dynamo.PythonMigration.Differ;
 using Dynamo.PythonServices;
+using Dynamo.Wpf.Utilities;
 using Python.Runtime;
 using PythonNodeModels;
 
@@ -119,7 +120,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             if (!Models.DynamoModel.IsTestMode)
             {
                 var message = string.Format(Properties.Resources.PythonMigrationBackupFileCreatedMessage, path);
-                MessageBox.Show(message);
+                MessageBoxService.Show(message, string.Empty, MessageBoxButton.OK, MessageBoxImage.None);
             }
         }
 
