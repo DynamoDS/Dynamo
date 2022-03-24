@@ -1117,6 +1117,7 @@ namespace Dynamo.ViewModels
 
         private void OnModelAddedToGroup(object sender, EventArgs e)
         {
+            Analytics.TrackEvent(Actions.AddedTo Categories.GroupOperations, "Group");
             RaisePropertyChanged(nameof(ZIndex));
         }
 
