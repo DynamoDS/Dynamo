@@ -1616,7 +1616,7 @@ namespace Dynamo.ViewModels
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
                     }
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
-                    MessageBoxService.Show(errorMsgString, commandString, MessageBoxButton.OK, MessageBoxImage.None);
+                    MessageBoxService.Show(errorMsgString, commandString, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
