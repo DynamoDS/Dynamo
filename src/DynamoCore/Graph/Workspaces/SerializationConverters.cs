@@ -507,7 +507,18 @@ namespace Dynamo.Graph.Workspaces
             var inputsToken = obj["Inputs"];
             if (inputsToken != null)
             {
-                var inputs = inputsToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
+                var inputs = inputsToken.ToArray().Select(x =>
+                {
+                    try
+                    { return x.ToObject<NodeInputData>(); }
+                    catch (Exception ex)
+                    {
+                        engine?.AsLogger().Log(ex);
+                        return null;
+                    }
+                    //dump nulls
+                }).Where(x => !(x is null)).ToList();
+
                 // Use the inputs to set the correct properties on the nodes.
                 foreach (var inputData in inputs)
                 {
@@ -588,6 +599,7 @@ namespace Dynamo.Graph.Workspaces
             IEnumerable<INodeLibraryDependencyInfo> workspaceReferences;
             var nodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
             var nodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+            var externalFiles = new List<INodeLibraryDependencyInfo>();
 
             if (obj[NodeLibraryDependenciesPropString] != null)
             {
@@ -604,9 +616,13 @@ namespace Dynamo.Graph.Workspaces
                 {
                     nodeLibraryDependencies.Add(depInfo);
                 }
-                else if (depInfo is LocalDefinitionInfo) 
+                else if (depInfo is DependencyInfo && (depInfo.ReferenceType == ReferenceType.ZeroTouch || depInfo.ReferenceType == ReferenceType.DYFFile))
                 {
                     nodeLocalDefinitions.Add(depInfo);
+                }
+                else if (depInfo is DependencyInfo && depInfo.ReferenceType == ReferenceType.External)
+                {
+                    externalFiles.Add(depInfo);
                 }
             }
 
@@ -693,6 +709,7 @@ namespace Dynamo.Graph.Workspaces
 
             ws.NodeLibraryDependencies = nodeLibraryDependencies;
             ws.NodeLocalDefinitions = nodeLocalDefinitions;
+            ws.ExternalFiles = externalFiles;
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
 
@@ -844,7 +861,31 @@ namespace Dynamo.Graph.Workspaces
             writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
 
             IEnumerable<INodeLibraryDependencyInfo> referencesList = ws.NodeLibraryDependencies;
-            referencesList = referencesList.Concat(ws.NodeLocalDefinitions);
+            referencesList = referencesList.Concat(ws.NodeLocalDefinitions).Concat(ws.ExternalFiles);
+            foreach (INodeLibraryDependencyInfo item in referencesList) 
+            {
+                string refName = string.Empty;
+                string refExtension = System.IO.Path.GetExtension(item.Name);
+
+                Actions refType = Actions.ExternalReferences;
+                if (item.ReferenceType == ReferenceType.Package)
+                {
+                    refName = item.Name + (item.Version != null ? " " + item.Version.ToString(3) : null);
+                    refType = Actions.PackageReferences;
+                }
+                else if (item.ReferenceType == ReferenceType.ZeroTouch || item.ReferenceType == ReferenceType.DYFFile || item.ReferenceType == ReferenceType.NodeModel || item.ReferenceType == ReferenceType.DSFile)
+                {
+                    refName = refExtension;
+                    refType = Actions.LocalReferences;
+                }
+                else 
+                {
+                    refName = refExtension;
+                }
+
+                Logging.Analytics.TrackEvent(refType, Categories.WorkspaceReferences, refName);
+            }
+
             serializer.Serialize(writer, referencesList);
 
             if (!isCustomNode && ws is HomeWorkspaceModel hws)
@@ -1088,14 +1129,17 @@ namespace Dynamo.Graph.Workspaces
                     depInfo = new PackageDependencyInfo(name, version);
                     break;
                 case ReferenceType.DYFFile:
-                    depInfo = new LocalDefinitionInfo(name, ReferenceType.DYFFile);
+                    depInfo = new DependencyInfo(name, ReferenceType.DYFFile);
 
                     break;
                 case ReferenceType.ZeroTouch:
-                    depInfo = new LocalDefinitionInfo(name, ReferenceType.ZeroTouch);
+                    depInfo = new DependencyInfo(name, ReferenceType.ZeroTouch);
+                    break;
+                case ReferenceType.External:
+                    depInfo = new DependencyInfo(name, ReferenceType.External);
                     break;
                 default:
-                    depInfo = new LocalDefinitionInfo(name);
+                    depInfo = new DependencyInfo(name);
                     break;
             }
 

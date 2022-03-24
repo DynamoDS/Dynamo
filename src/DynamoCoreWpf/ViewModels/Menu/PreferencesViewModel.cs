@@ -5,6 +5,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.PythonServices;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using System;
@@ -15,7 +16,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -64,10 +64,14 @@ namespace Dynamo.ViewModels
         private HomeWorkspaceModel homeSpace;
         private DynamoViewModel dynamoViewModel;
         private bool isWarningEnabled;
+        private string currentWarningMessage;
+        private bool isSaveButtonEnabled = true;
         private GeometryScalingOptions optionsGeometryScale = null;
 
         private InstalledPackagesViewModel installedPackagesViewModel;
         private string selectedPackagePathForInstall;
+        private bool isVisibleAddStyleBorder;
+        private bool isEnabledAddStyleButton;
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -424,8 +428,11 @@ namespace Dynamo.ViewModels
         public void AddStyle(StyleItem style)
         {
             StyleItemsList.Add(style);
+            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { HexColorString = style.HexColorString, Name = style.Name, IsDefault = style.IsDefault });
             RaisePropertyChanged(nameof(StyleItemsList));
         }
+
+      
 
         /// <summary>
         /// This flag will be in true when the Style that user is trying to add already exists (otherwise will be false - Default)
@@ -440,6 +447,38 @@ namespace Dynamo.ViewModels
             {
                 isWarningEnabled = value;
                 RaisePropertyChanged(nameof(IsWarningEnabled));
+            }
+        }
+
+        /// <summary>
+        /// This property will hold the warning message that has to be shown in the warning icon next to the TextBox
+        /// </summary>
+        public string CurrentWarningMessage
+        {
+            get
+            {
+                return currentWarningMessage;
+            }
+            set
+            {
+                currentWarningMessage = value;
+                RaisePropertyChanged(nameof(CurrentWarningMessage));
+            }
+        }
+
+        /// <summary>
+        /// This property describes if the SaveButton will be enabled or not (when trying to save a new Style).
+        /// </summary>
+        public bool IsSaveButtonEnabled
+        {
+            get
+            {
+                return isSaveButtonEnabled;
+            }
+            set
+            {
+                isSaveButtonEnabled = value;
+                RaisePropertyChanged(nameof(IsSaveButtonEnabled));
             }
         }
 
@@ -556,6 +595,38 @@ namespace Dynamo.ViewModels
                 preferenceSettings.ShowCodeBlockLineNumber = value;
                 showCodeBlockLineNumber = value;
                 RaisePropertyChanged(nameof(ShowCodeBlockLineNumber));
+            }
+        }
+
+        /// <summary>
+        /// This property will make Visible or Collapse the AddStyle Border defined in the GroupStyles section
+        /// </summary>
+        public bool IsVisibleAddStyleBorder 
+        {
+            get
+            {
+                return isVisibleAddStyleBorder;
+            } 
+            set
+            {
+                isVisibleAddStyleBorder = value;
+                RaisePropertyChanged(nameof(IsVisibleAddStyleBorder));
+            }
+        }
+
+        /// <summary>
+        /// This property will Enable or Disable the AddStyle button defined in the GroupStyles section
+        /// </summary>
+        public bool IsEnabledAddStyleButton 
+        {
+            get
+            {
+                return isEnabledAddStyleButton;
+            }
+            set
+            {
+                isEnabledAddStyleButton = value;
+                RaisePropertyChanged(nameof(IsEnabledAddStyleButton));
             }
         }
         #endregion
@@ -701,53 +772,14 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Gets the different Python Engine versions availables from PythonNodeModels.dll
-        /// </summary>
-        /// <returns>Strings array with the different names</returns>
-        private string[] GetPythonEngineOptions()
-        {
-            try
-            {
-                var enumType = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(s =>
-                    {
-                        try
-                        {
-                            return s.GetTypes();
-                        }
-                        catch (ReflectionTypeLoadException)
-                        {
-                            return new Type[0];
-                        }
-                    }).FirstOrDefault(t => t.FullName.Equals("PythonNodeModels.PythonEngineVersion"));
-
-                return Enum.GetNames(enumType);
-            }
-            catch
-            {
-                return Array.Empty<string>();
-            }
-        }
-
         private void AddPythonEnginesOptions()
         {
-            var pythonEngineOptions = GetPythonEngineOptions();
-            if (pythonEngineOptions.Length != 0)
+            var options = new ObservableCollection<string> { Res.DefaultPythonEngineNone };
+            foreach (var item in PythonEngineManager.Instance.AvailableEngines)
             {
-                foreach (var option in pythonEngineOptions)
-                {
-                    if (option != "Unspecified")
-                    {
-                        PythonEnginesList.Add(option);
-                    }
-                }
+                options.Add(item.Name);
             }
-            else
-            {
-                PythonEnginesList.Add("IronPython2");
-                PythonEnginesList.Add("CPython3");
-            }
+            PythonEnginesList = options;
         }
         #endregion
 
@@ -769,15 +801,15 @@ namespace Dynamo.ViewModels
             this.installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
                 dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
 
-            PythonEnginesList = new ObservableCollection<string>();
-            PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
+            // Scan for engines
             AddPythonEnginesOptions();
+
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
             //Sets SelectedPythonEngine.
             //If the setting is empty it corresponds to the default python engine
-            _ = preferenceSettings.DefaultPythonEngine == string.Empty ? 
-                SelectedPythonEngine = Res.DefaultPythonEngineNone : 
-                SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
+            var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
+            SelectedPythonEngine  = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
 
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
@@ -804,10 +836,10 @@ namespace Dynamo.ViewModels
             //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;
 
-            StyleItemsList = new ObservableCollection<StyleItem>();
+            StyleItemsList = LoadStyles(preferenceSettings.GroupStyleItemsList);
           
             //When pressing the "Add Style" button some controls will be shown with some values by default so later they can be populated by the user
-            AddStyleControl = new StyleItem() { GroupName = "", HexColorString = "#" + GetRandomHexStringColor() };
+            AddStyleControl = new StyleItem() { Name = string.Empty, HexColorString = GetRandomHexStringColor() };
 
             //This piece of code will populate all the description text for the RadioButtons in the Geometry Scaling section.
             optionsGeometryScale = new GeometryScalingOptions();
@@ -836,7 +868,7 @@ namespace Dynamo.ViewModels
             //create a packagePathsViewModel we'll use to interact with the package search paths list.
             var loadPackagesParams = new LoadPackageParams
             {
-                Preferences = preferenceSettings,
+                Preferences = preferenceSettings
             };
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
@@ -845,6 +877,22 @@ namespace Dynamo.ViewModels
             WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
 
             PropertyChanged += Model_PropertyChanged;
+
+        }
+
+        /// <summary>
+        /// This method loads the group styles defined by the user and stored in the xml file
+        /// </summary>
+        /// <param name="styleItemsList"></param>
+        /// <returns></returns>
+        private ObservableCollection<StyleItem> LoadStyles(IEnumerable<Configuration.StyleItem> styleItemsList)
+        {
+            ObservableCollection<StyleItem> styles = new ObservableCollection<StyleItem>();
+            foreach (var style in styleItemsList)
+            {
+                styles.Add(new StyleItem { Name = style.Name, HexColorString = style.HexColorString, IsDefault = style.IsDefault });
+            }
+            return styles;
         }
 
         /// <summary>
@@ -863,7 +911,7 @@ namespace Dynamo.ViewModels
         /// <param name="scaleFactor"></param>
         private void UpdateGeoScaleRadioButtonSelected(int scaleFactor)
         {
-            optionsGeometryScale.EnumProperty = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
+            ScaleSize = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
         }
 
         /// <summary>
@@ -873,8 +921,8 @@ namespace Dynamo.ViewModels
         {
             PropertyChanged -= Model_PropertyChanged;
             WorkspaceEvents.WorkspaceSettingsChanged -= PreferencesViewModel_WorkspaceSettingsChanged;
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= PythonEnginesChanged;
         }
-
 
         /// <summary>
         /// Listen for changes to the custom package paths and update package paths for install accordingly
@@ -1047,8 +1095,12 @@ namespace Dynamo.ViewModels
         /// <param name="groupName"></param>
         internal void RemoveStyleEntry(string groupName)
         {
-            StyleItem itemToRemove = (from item in StyleItemsList where item.GroupName.Equals(groupName) select item).FirstOrDefault();
+            StyleItem itemToRemove = (from item in StyleItemsList where item.Name.Equals(groupName) select item).FirstOrDefault();
             StyleItemsList.Remove(itemToRemove);
+
+            GroupStyleItem itemToRemovePreferences = preferenceSettings.GroupStyleItemsList.FirstOrDefault(x => x.Name.Equals(groupName));
+            preferenceSettings.GroupStyleItemsList.Remove(itemToRemovePreferences);
+            
             UpdateSavedChangesLabel();
         }
 
@@ -1059,7 +1111,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         internal bool ValidateExistingStyle(StyleItem item1)
         {
-            return StyleItemsList.Where(x => x.GroupName.Equals(item1.GroupName)).Any();
+            return StyleItemsList.Where(x => x.Name.Equals(item1.Name)).Any();
         }
 
         /// <summary>
@@ -1067,9 +1119,23 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void ResetAddStyleControl()
         {
-            AddStyleControl.GroupName = String.Empty;
-            AddStyleControl.HexColorString = "#" + GetRandomHexStringColor();
+            IsEnabledAddStyleButton = true;
+            IsSaveButtonEnabled = true;
+            AddStyleControl.Name = String.Empty;
+            AddStyleControl.HexColorString = GetRandomHexStringColor();
             IsWarningEnabled = false;
+            IsVisibleAddStyleBorder = false;          
+        }
+
+        /// <summary>
+        /// This method will enable the warning icon next to the GroupName TextBox and other buttons needed
+        /// </summary>
+        /// <param name="warningMessage">Message that will be displayed when the mouse is over the warning</param>
+        internal void EnableGroupStyleWarningState(string warningMessage)
+        {
+            CurrentWarningMessage = warningMessage;
+            IsWarningEnabled = true;
+            IsSaveButtonEnabled = false;
         }
 
         /// <summary>
@@ -1082,39 +1148,12 @@ namespace Dynamo.ViewModels
             Color color = Color.FromArgb(255, (byte)r.Next(), (byte)r.Next(), (byte)r.Next());
             return ColorTranslator.ToHtml(color).Replace("#", "");
         }
-    }
 
-    /// <summary>
-    /// This Class will act as a container for each of the StyleItems in the Styles list located in in the Visual Settings -> Group Styles section
-    /// </summary>
-    public class StyleItem : ViewModelBase
-    {
-        private string groupName;
-        private string hexColorString;
-
-        /// <summary>
-        /// This property will containt the Group Name thas was added by the user when creating a new Style
-        /// </summary>
-        public string GroupName
+        private void PythonEnginesChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            get { return groupName; }
-            set
+            if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                groupName = value;
-                RaisePropertyChanged(nameof(GroupName));
-            }
-        }
-
-        /// <summary>
-        /// This property represents a color in a hexadecimal representation (with the # character at the beginning of the string)
-        /// </summary>
-        public string HexColorString
-        {
-            get { return hexColorString; }
-            set
-            {
-                hexColorString = value;
-                RaisePropertyChanged(nameof(HexColorString));
+                AddPythonEnginesOptions();
             }
         }
     }
@@ -1125,6 +1164,7 @@ namespace Dynamo.ViewModels
     public class GeometryScalingOptions
     {
         //The Enum values can be Small, Medium, Large or Extra Large
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
         public GeometryScaleSize EnumProperty { get; set; }
 
         /// <summary>

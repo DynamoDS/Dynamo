@@ -613,8 +613,8 @@ namespace Dynamo.ViewModels
                     var element = sender as IInputElement;
                     mouseDownPos = e.GetPosition(element);
 
-                    // We'll see if there is any node being clicked on. If so, 
-                    // then the state machine should initiate a drag operation.
+                    // Check if there is any Dynamo Element (e.g. node, note, group) being clicked on. If so, 
+                    // then the state machine should initiate a drag operation if user keeps dragging the mouse .
                     if (null != GetSelectableFromPoint(mouseDownPos))
                     {
                         InitiateDragSequence();
@@ -692,6 +692,18 @@ namespace Dynamo.ViewModels
 
                     if (dropGroup != null)
                     {
+                        // If groups are being dragged store them here
+                        var dragedGroups = DynamoSelection.Instance.Selection
+                            .OfType<AnnotationModel>()
+                            .ToList();
+
+                        // We do not want to add dragged groups content twice
+                        // so we filter it out here.
+                        var modelsToAdd = DynamoSelection.Instance.Selection
+                            .OfType<ModelBase>()
+                            .Except(dragedGroups.SelectMany(x => x.Nodes))
+                            .ToList();
+
                         // AddModelsToGroupModelCommand adds models to the selected group
                         // therefor we add the dropGroup to the selection before calling
                         // the command.
@@ -710,10 +722,19 @@ namespace Dynamo.ViewModels
                                 .ForEach(x => x.Deselect());
                         }
 
-                        foreach (var item in DynamoSelection.Instance.Selection.OfType<ModelBase>())
+                        foreach (var item in modelsToAdd)
                         {
                             if (item == dropGroup.AnnotationModel) continue;
 
+                            // If the item is a group and the hovered group
+                            // is not a nested group, we add it to the dropGroup
+                            if (item is AnnotationModel && 
+                                !owningWorkspace.Model.Annotations.ContainsModel(dropGroup.AnnotationModel))
+                            {
+                                owningWorkspace.DynamoViewModel.AddGroupToGroupModelCommand.Execute(dropGroup.AnnotationModel.GUID);
+                                continue;
+                            }
+                                
                             owningWorkspace.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
                         }
                         dropGroup.NodeHoveringState = false;
@@ -804,29 +825,46 @@ namespace Dynamo.ViewModels
                     // Update the dragged nodes (note: this isn't recorded).
                     owningWorkspace.UpdateDraggedSelection(mouseCursor.AsDynamoType());
 
-                    if (DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any()) return false;
+                    var draggedGroups = DynamoSelection.Instance.Selection.OfType<AnnotationModel>();
 
                     // Here we check if the mouse cursor is inside any Annotation groups
                     var dropGroups = owningWorkspace.Annotations
-                        .Where(x => x.IsExpanded && x.AnnotationModel.Rect.Contains(mouseCursor.X, mouseCursor.Y));
+                        .Where(x =>
+                        !draggedGroups.Select(a => a.GUID).Contains(x.AnnotationModel.GUID) &&
+                        x.IsExpanded &&
+                        x.AnnotationModel.Rect.Contains(mouseCursor.X, mouseCursor.Y));
 
                     // In scenarios where there are nested groups, the above will return both
                     // the nested group and the parent group, as the mouse coursor will be inside
                     // both of there rects. In these cases we want to get group that is nested
                     // inside the parent group.
-                    var dropGroup = dropGroups.FirstOrDefault(x => !x.AnnotationModel.HasNestedGroups) ?? dropGroups.FirstOrDefault();
+                    var dropGroup = dropGroups
+                        .FirstOrDefault(x => !x.AnnotationModel.HasNestedGroups) ?? dropGroups.FirstOrDefault();
+
 
                     // If the dropGroup is null or any of the selected items is already in the dropGroup,
                     // we disable the drop border by setting NodeHoveringState to false
-                    if (dropGroup is null ||
-                        DynamoSelection.Instance.Selection
+                    var draggedModels = DynamoSelection.Instance.Selection
                         .OfType<ModelBase>()
+                        .Except(draggedGroups.SelectMany(x => x.Nodes));
+
+                    if (dropGroup is null ||
+                        draggedModels
                         .Any(x => owningWorkspace.Model.Annotations.ContainsModel(x)))
                     {
                         owningWorkspace.Annotations
                             .Where(x => x.NodeHoveringState)
                             .ToList()
                             .ForEach(x => x.NodeHoveringState = false);
+                    }
+
+                    // If we are dragging groups over a group that is already nested
+                    // we return as we cant have more than one nested layer
+                    else if (draggedGroups.Any() && 
+                        owningWorkspace.Model.Annotations.ContainsModel(dropGroup.AnnotationModel) ||
+                        draggedGroups.Any(x=>x.HasNestedGroups))
+                    {
+                        return false; // Mouse event not handled.
                     }
 
                     // If the dropGroups NodeHoveringState is set to false
@@ -845,6 +883,15 @@ namespace Dynamo.ViewModels
                             .ToList()
                             .ForEach(x => x.NodeHoveringState = false);
 
+                        // If the dropGroup belongs to another group
+                        // we need to check if the parent group is collapsed
+                        // if it is we dont want to be able to add new
+                        // models to the drop group.
+                        var parentGroup = owningWorkspace.Annotations
+                            .Where(x => x.AnnotationModel.ContainsModel(dropGroup.AnnotationModel))
+                            .FirstOrDefault();
+                        if (parentGroup != null && !parentGroup.IsExpanded) return false;
+                        
                         dropGroup.NodeHoveringState = true;
                     }
 
@@ -1006,6 +1053,22 @@ namespace Dynamo.ViewModels
                 if (this.currentState != State.None)
                     throw new InvalidOperationException();
 
+                // Before setting the drag state,
+                // Alt + left click triggers removal of group node or note belongs to
+                if (Keyboard.IsKeyDown(Key.LeftAlt) && !DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any())
+                {
+                    foreach (var model in DynamoSelection.Instance.Selection.OfType<ModelBase>())
+                    {
+                        var parentGroup = owningWorkspace.Annotations
+                            .Where(x => x.AnnotationModel.ContainsModel(model))
+                            .FirstOrDefault();
+                        if (parentGroup != null)
+                        {
+                            owningWorkspace.DynamoViewModel.UngroupModelCommand.Execute(null);
+                        }
+                    }
+                }
+
                 SetCurrentState(State.DragSetup);
             }
 
@@ -1049,8 +1112,7 @@ namespace Dynamo.ViewModels
 
                 // Update the selection box and make it visible 
                 // but with an initial dimension of zero.
-                SelectionBoxUpdateArgs args = null;
-                args = new SelectionBoxUpdateArgs(mouseDownPos.X, mouseDownPos.Y, 0, 0);
+                SelectionBoxUpdateArgs args = new SelectionBoxUpdateArgs(mouseDownPos.X, mouseDownPos.Y, 0, 0);
                 args.SetVisibility(Visibility.Visible);
 
                 this.owningWorkspace.OnRequestSelectionBoxUpdate(this, args);

@@ -21,6 +21,11 @@ namespace DynamoWPFCLI
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
 
+                if (cmdLineArgs.DisableAnalytics)
+                {
+                    Dynamo.Logging.Analytics.DisableAnalytics = true;
+                }
+
                 if (cmdLineArgs.KeepAlive)
                 {
                     var thread = new Thread(() => RunKeepAlive(cmdLineArgs));

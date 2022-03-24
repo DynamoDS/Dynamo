@@ -1,0 +1,155 @@
+{
+  "Uuid": "82afa68f-d33a-4140-866f-e18f959a038e",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "WarningError",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "null;",
+      "Id": "27d877e250ab49dfbcf5d37e7781e1cf",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "45fe501819ed442fa9c281b3ed12e755",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DesignScript.Builtin.Dictionary.ByKeysValues@string[],var[]..[]",
+      "Id": "67b46c3fb60f49d7a8cfbb9cc4a03450",
+      "Inputs": [
+        {
+          "Id": "ecc049b5a68f438cb224ee359c6e2dd0",
+          "Name": "keys",
+          "Description": "Keys of dictionary\n\nstring[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "433bb3fe09c54545b4572c867cbca06a",
+          "Name": "values",
+          "Description": "Values of dictionary\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e469c57af5d74f04a89132df4d16c92d",
+          "Name": "dictionary",
+          "Description": "Dictionary from keys and values",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Longest",
+      "Description": "Produces a Dictionary with the supplied keys and values. The number of entries is the shorter of keys or values.\n\nDictionary.ByKeysValues (keys: string[], values: var[]..[]): Dictionary"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "45fe501819ed442fa9c281b3ed12e755",
+      "End": "433bb3fe09c54545b4572c867cbca06a",
+      "Id": "3d0ff43d84c44d10b9bdbe2a01146a36",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "45fe501819ed442fa9c281b3ed12e755",
+      "End": "ecc049b5a68f438cb224ee359c6e2dd0",
+      "Id": "c4d7e311d83346cf9c7c99f24277f22e",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.14.0.3986",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "27d877e250ab49dfbcf5d37e7781e1cf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 323.5,
+        "Y": 240.0
+      },
+      {
+        "Name": "Dictionary.ByKeysValues",
+        "ShowGeometry": true,
+        "Id": "67b46c3fb60f49d7a8cfbb9cc4a03450",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 676.5,
+        "Y": 269.0
+      }
+    ],
+    "Annotations": [],
+    "X": -182.66388525850004,
+    "Y": -98.1486609280874,
+    "Zoom": 1.0792537289518349
+  }
+}

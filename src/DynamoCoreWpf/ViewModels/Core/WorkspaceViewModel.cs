@@ -162,11 +162,23 @@ namespace Dynamo.ViewModels
             RequestShowInCanvasSearch?.Invoke(flag);
         }
 
+        internal event Action<object> RequestHideAllPopup;
+        private void OnRequestHideAllPopup(object param)
+        {
+            RequestHideAllPopup?.Invoke(param);
+        }
+
         internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
+        internal event Action<ShowHideFlags, PortViewModel> RequestPortContextMenu;
 
         internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag)
         {
             RequestNodeAutoCompleteSearch?.Invoke(flag);
+        }
+
+        internal void OnRequestPortContextMenu(ShowHideFlags flag, PortViewModel viewModel)
+        {
+            RequestPortContextMenu?.Invoke(flag, viewModel);
         }
 
         #endregion
@@ -415,6 +427,8 @@ namespace Dynamo.ViewModels
 
         [JsonIgnore]
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
+
+        
 
         #endregion
 
@@ -756,8 +770,7 @@ namespace Dynamo.ViewModels
                 Nodes.Add(nodeViewModel);
             }
             Errors.Add(nodeViewModel.ErrorBubble);
-            nodeViewModel.UpdateBubbleContent();
-
+            
             PostNodeChangeActions();
         }
 
@@ -854,6 +867,7 @@ namespace Dynamo.ViewModels
             DynamoSelection.Instance.ClearSelection();
             Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
             Notes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.Model));
+            Annotations.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.AnnotationModel));
         }
 
         internal bool CanSelectAll(object parameter)
@@ -885,7 +899,12 @@ namespace Dynamo.ViewModels
 
         internal bool CanNodeToCode(object parameters)
         {
-            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
+            var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>();
+            if (!nodeModels.Any() || nodeModels.Any(x => x.IsInErrorState))
+            {
+                return false;
+            }
+            return true;
         }
 
         internal void SelectInRegion(Rect2D region, bool isCrossSelect)
@@ -898,7 +917,7 @@ namespace Dynamo.ViewModels
 
             foreach (var n in childlessModels)
             {
-                if (IsInRegion(region, n, fullyEnclosed))
+                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed)
                 {
                     selection.AddUnique(n);
                 }
@@ -910,16 +929,26 @@ namespace Dynamo.ViewModels
 
             foreach (var n in Model.Annotations)
             {
-                if (IsInRegion(region, n, fullyEnclosed))
+                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed)
                 {
                     selection.AddUnique(n);
                     // if annotation is selected its children should be added to selection too
                     foreach (var m in n.Nodes)
                     {
+                        if (m is AnnotationModel nestedGroup)
+                        {
+                            foreach (var model in nestedGroup.Nodes)
+                            {
+                                selection.AddUnique(model);
+                            }
+                        }
                         selection.AddUnique(m);
                     }
                 }
-                else if (n.IsSelected)
+                // only remove current selection if ClearSelectionDisabled flag is false
+                // This prevents group getting removed when user press shift to add more groups
+                else if (n.IsSelected && !Model.Annotations.ContainsModel(n)
+                    && !DynamoSelection.Instance.ClearSelectionDisabled)
                 {
                     selection.Remove(n);
                 }
@@ -1504,6 +1533,7 @@ namespace Dynamo.ViewModels
             return foundModels;
         }
 
+        
     }
 
     public class ViewModelEventArgs : EventArgs

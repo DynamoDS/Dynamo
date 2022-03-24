@@ -8,6 +8,7 @@ using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
+using Dynamo.Models;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
@@ -31,6 +32,7 @@ namespace DynamoCoreWpfTests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("ProtoGeometry.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("FFITarget.dll");
@@ -170,7 +172,7 @@ namespace DynamoCoreWpfTests
                 nodeView.PreviewControl.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
                 { RoutedEvent = Mouse.MouseEnterEvent });
             });
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();            
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
@@ -392,6 +394,256 @@ namespace DynamoCoreWpfTests
             // open preview bubble
             RaiseMouseEnterOnNode(nodeView);
             Assert.IsFalse(nodeView.PreviewControl.IsHidden, "Preview bubble for color range should be shown");
+        }
+
+        [Test]
+        public void InfoBubble_AvoidDuplicatedWarningMessages()
+        {
+            Open(@"core\watch\WatchDuplicatedWarningMessages.dyn");
+            var nodeView = NodeViewWithGuid("67b46c3f-b60f-49d7-a8cf-bb9cc4a03450");
+
+            Assert.AreEqual(1, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+
+            var selectNodeCommand =
+             new DynamoModel.SelectModelCommand(nodeView.ViewModel.Id.ToString(), System.Windows.Input.ModifierKeys.None.AsDynamoType());
+
+            Model.ExecuteCommand(selectNodeCommand);
+
+            Model.Copy();
+            Model.Paste();
+
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(1, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+        }
+
+        [Test]
+        public void InfoBubble_ShowsWarningOnCopyPastedCBN()
+        {
+            Open(@"core\watch\ShowsWarningOnCopyPastedCBN.dyn");
+            var nodeView = NodeViewWithGuid("686892b3-ea1d-4a1a-9c50-a891eb4479f6");
+
+            Assert.AreEqual(2, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+
+            var selectNodeCommand =
+             new DynamoModel.SelectModelCommand(nodeView.ViewModel.Id.ToString(), System.Windows.Input.ModifierKeys.None.AsDynamoType());
+
+            Model.ExecuteCommand(selectNodeCommand);
+
+            Model.Copy();
+            Model.Paste();
+
+            DispatcherUtil.DoEvents();
+
+            var nodes = Model.CurrentWorkspace.Nodes;
+            Assert.AreEqual(2, nodes.Count());
+            foreach (var node in nodes)
+            {
+                var nView = NodeViewWithGuid(node.GUID.ToString());
+                Assert.AreEqual(2, nView.ViewModel.ErrorBubble.NodeMessages.Count);
+            }
+        }
+
+        [Test]
+        public void InfoBubble_ShowsWarningOnNode2Code()
+        {
+            Open(@"core\watch\infobubble_warning_on_n2c.dyn");
+
+            Dynamo.Selection.DynamoSelection.Instance.Selection.AddRange(Model.CurrentWorkspace.Nodes);
+
+            ViewModel.CurrentSpaceViewModel.NodeToCodeCommand.Execute(null);
+
+            DispatcherUtil.DoEvents();
+
+            var nodes = Model.CurrentWorkspace.Nodes;
+            Assert.AreEqual(1, nodes.Count());
+
+            var nView = NodeViewWithGuid(nodes.ElementAt(0).GUID.ToString());
+            var msgs = nView.ViewModel.ErrorBubble.NodeMessages;
+            Assert.IsTrue(msgs.Any());
+            Assert.IsTrue(msgs[0].Message.Contains("You cannot define a variable more than once."));
+        }
+
+        [Test]
+        public void InfoBubble_ShowsWarningOnDupVariableInCodeBlock()
+        {
+            Open(@"core\watch\cbn_dup_variable_open_file.dyn");
+
+            var nodeView = NodeViewWithGuid("2bea01fa-1534-4101-9b11-e6000cd17045");
+
+            Assert.AreEqual(2, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+            Assert.IsTrue(nodeView.ViewModel.ErrorBubble.NodeMessages[0].Message.Contains("You cannot define a variable more than once."));
+        }
+
+        [Test]
+        public void InfoBubble_ShowsWarningOnObsoleteZeroTouchNode()
+        {
+            Open(@"core\watch\obsolete_zero_touch_node.dyn");
+
+            var nodeView = NodeViewWithGuid("cb146e7e-22ad-4e96-bfe4-5e506d3669d1");
+
+            Assert.AreEqual(1, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+            Assert.IsTrue(nodeView.ViewModel.ErrorBubble.NodeMessages[0].Message.Contains("Obsolete"));
+        }
+
+        [Test]
+        public void InfoBubble_ShowsWarningErrorCBN()
+        {
+            Open(@"core\watch\ShowsWarningOnCopyPastedCBN.dyn");
+            var guid = "686892b3-ea1d-4a1a-9c50-a891eb4479f6";
+            var nodeView = NodeViewWithGuid(guid);
+
+            Assert.AreEqual(2, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+
+            var cbnGuid = Guid.Parse(guid);
+            var command = new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, cbnGuid, "Code", @"a=0;
+                                               a="";
+                                               b=0..1;
+                                               c=b[2];
+                                               %$#^$@;");
+            Model.ExecuteCommand(command);
+
+            var msgs = nodeView.ViewModel.ErrorBubble.NodeMessages;
+            Assert.AreEqual(3, msgs.Count);
+            var warnings = msgs.Where(x => x.Style == Dynamo.ViewModels.InfoBubbleViewModel.Style.Warning);
+            Assert.AreEqual(2, warnings.Count());
+
+            var errors = msgs.Where(x => x.Style == Dynamo.ViewModels.InfoBubbleViewModel.Style.Error);
+            Assert.AreEqual(1, errors.Count());
+        }
+
+        [Test]
+        public void InfoBubble_ShowsWarningError_CopyPastedCBN()
+        {
+            Open(@"core\watch\ShowsWarningOnCopyPastedCBN.dyn");
+            var guid = "686892b3-ea1d-4a1a-9c50-a891eb4479f6";
+            var nodeView = NodeViewWithGuid(guid);
+
+            Assert.AreEqual(2, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+
+            var cbnGuid = Guid.Parse(guid);
+            var command = new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, cbnGuid, "Code", @"a=0;
+                                               a="";
+                                               b=0..1;
+                                               c=b[2];
+                                               %$#^$@;");
+            Model.ExecuteCommand(command);
+
+            var selectNodeCommand =
+             new DynamoModel.SelectModelCommand(nodeView.ViewModel.Id.ToString(), System.Windows.Input.ModifierKeys.None.AsDynamoType());
+
+            Model.ExecuteCommand(selectNodeCommand);
+
+            Model.Copy();
+            Model.Paste();
+
+            DispatcherUtil.DoEvents();
+
+            var nodes = Model.CurrentWorkspace.Nodes;
+            Assert.AreEqual(2, nodes.Count());
+
+            var msgs = nodeView.ViewModel.ErrorBubble.NodeMessages;
+            Assert.AreEqual(3, msgs.Count);
+            var warnings = msgs.Where(x => x.Style == Dynamo.ViewModels.InfoBubbleViewModel.Style.Warning);
+            Assert.AreEqual(2, warnings.Count());
+
+            var errors = msgs.Where(x => x.Style == Dynamo.ViewModels.InfoBubbleViewModel.Style.Error);
+            Assert.AreEqual(1, errors.Count());
+
+            var copy = nodes.Where(n => n.GUID.ToString() != guid).FirstOrDefault();
+            nodeView = NodeViewWithGuid(copy.GUID.ToString());
+            msgs = nodeView.ViewModel.ErrorBubble.NodeMessages;
+            Assert.AreEqual(1, msgs.Count);
+
+            errors = msgs.Where(x => x.Style == Dynamo.ViewModels.InfoBubbleViewModel.Style.Error);
+            Assert.AreEqual(1, errors.Count());
+        }
+
+        [Test]
+        public void InfoBubble_ShowsError_CopyPastedCBN_UndoRedo()
+        {
+            Open(@"core\watch\ShowsWarningOnCopyPastedCBN.dyn");
+            var guid = "686892b3-ea1d-4a1a-9c50-a891eb4479f6";
+            var nodeView = NodeViewWithGuid(guid);
+
+            Assert.AreEqual(2, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+
+            var cbnGuid = Guid.Parse(guid);
+            var command = new Dynamo.Models.DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, cbnGuid, "Code", @"a=0;
+                                               a="";
+                                               b=0..1;
+                                               c=b[2];
+                                               %$#^$@;");
+            Model.ExecuteCommand(command);
+
+            var selectNodeCommand =
+             new DynamoModel.SelectModelCommand(nodeView.ViewModel.Id.ToString(), System.Windows.Input.ModifierKeys.None.AsDynamoType());
+
+            Model.ExecuteCommand(selectNodeCommand);
+
+            Model.Copy();
+            Model.Paste();
+
+            var undoCommand = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
+            Model.ExecuteCommand(undoCommand);
+
+            var redoCommand = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Redo);
+            Model.ExecuteCommand(redoCommand);
+
+            DispatcherUtil.DoEvents();
+
+            var nodes = Model.CurrentWorkspace.Nodes;
+            Assert.AreEqual(2, nodes.Count());
+
+            var msgs = nodeView.ViewModel.ErrorBubble.NodeMessages;
+            Assert.AreEqual(3, msgs.Count);
+            var warnings = msgs.Where(x => x.Style == Dynamo.ViewModels.InfoBubbleViewModel.Style.Warning);
+            Assert.AreEqual(2, warnings.Count());
+
+            var errors = msgs.Where(x => x.Style == Dynamo.ViewModels.InfoBubbleViewModel.Style.Error);
+            Assert.AreEqual(1, errors.Count());
+
+            var copy = nodes.Where(n => n.GUID.ToString() != guid).FirstOrDefault();
+            nodeView = NodeViewWithGuid(copy.GUID.ToString());
+            msgs = nodeView.ViewModel.ErrorBubble.NodeMessages;
+            Assert.AreEqual(1, msgs.Count);
+
+            errors = msgs.Where(x => x.Style == Dynamo.ViewModels.InfoBubbleViewModel.Style.Error);
+            Assert.AreEqual(1, errors.Count());
+        }
+
+        [Test]
+        public void InfoBubble_ShowsWarningOnDummyNodes()
+        {
+            Open(@"core\watch\selectbycat.dyn");
+
+            var nodes = Model.CurrentWorkspace.Nodes;
+            Assert.AreEqual(4, nodes.Count());
+            foreach (var node in nodes)
+            {
+                var nView = NodeViewWithGuid(node.GUID.ToString());
+                var msgs = nView.ViewModel.ErrorBubble.NodeMessages;
+                Assert.AreEqual(1, msgs.Count());
+                Assert.AreEqual(Dynamo.ViewModels.InfoBubbleViewModel.Style.Warning, msgs[0].Style);
+                Assert.True(msgs[0].Message.Contains("cannot be resolved."));
+            }
+        }
+
+        [Test]
+        public void InfoBubble_ShowsWarningOnDeprecatedNode()
+        {
+            Open(@"core\watch\obsolete_if_node.dyn");
+
+            var node = Model.CurrentWorkspace.Nodes.FirstOrDefault();
+            Assert.AreEqual(ElementState.Warning, node.State);
+
+            var nView = NodeViewWithGuid(node.GUID.ToString());
+            var msgs = nView.ViewModel.ErrorBubble.NodeMessages;
+            Assert.AreEqual(2, msgs.Count());
+            Assert.AreEqual(Dynamo.ViewModels.InfoBubbleViewModel.Style.Warning, msgs[0].Style);
         }
 
         [Test]

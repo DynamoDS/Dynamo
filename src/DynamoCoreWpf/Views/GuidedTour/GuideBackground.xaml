@@ -13,23 +13,46 @@
                 <Path.Data>
                     <!--Combines two geometries using the exclude combine mode.-->
                     <CombinedGeometry GeometryCombineMode="Exclude">
+                        <!--This Geometry will draw (rectangle) the dark overlay-->
                         <CombinedGeometry.Geometry1>
-                            <RectangleGeometry Rect="{Binding WindowsRect}"  />
+                            <RectangleGeometry Rect="{Binding OverlayRect}"  />
                         </CombinedGeometry.Geometry1>
+                        <!--This Geometry will cut(exclude) a rectangle from the dark overlay-->
                         <CombinedGeometry.Geometry2>
-                            <RectangleGeometry Rect="{Binding HoleRect}"/>
+                            <RectangleGeometry Rect="{Binding CutOffBackgroundArea.CutOffRect}"/>
                         </CombinedGeometry.Geometry2>
                     </CombinedGeometry>
                 </Path.Data>
             </Path>
 
-            <Path Name="HolePath" Stroke="Black" StrokeThickness="2" Fill="Transparent" Opacity="1">
-                <Path.Data>
-                    <RectangleGeometry Rect="{Binding HoleRect}" RadiusX="1" RadiusY="1"/>
-                </Path.Data>
-            </Path>
+            <!--This Rectangle will draw a highlight rectangle (border) over a specific element (higligthing a control)-->
+            <Rectangle x:Name="GuideHighlightRectangle"
+                       Fill="Transparent"
+                       Canvas.Top="{Binding HighlightBackgroundArea.HighlightRectCanvasTop}"
+                       Canvas.Left="{Binding HighlightBackgroundArea.HighlightRectCanvasLeft}"
+                       Width="{Binding HighlightBackgroundArea.HighlightRectWidth}"
+                       Height="{Binding HighlightBackgroundArea.HighlightRectHeight}"
+                       StrokeThickness="2">
+                <Rectangle.Effect>
+                    <BlurEffect Radius="1.0"
+                                KernelType="Box"/>
+                </Rectangle.Effect>
+                <!--When the Rectangle is Loaded we will be showing a glow increasing a decreasing using the BlurEffect-->
+                <Rectangle.Triggers>
+                    <EventTrigger RoutedEvent="Rectangle.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation  Storyboard.TargetName="GuideHighlightRectangle"
+                                                  Storyboard.TargetProperty="(Effect).Radius"
+                                                  From="0.0" To="4.0" 
+                                                  Duration="0:0:1" 
+                                                  AutoReverse="True" 
+                                                  RepeatBehavior="Forever" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Rectangle.Triggers>
+            </Rectangle>
         </Canvas>
     </Grid>
-
-
 </UserControl>

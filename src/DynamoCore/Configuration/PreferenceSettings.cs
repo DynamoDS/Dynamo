@@ -7,6 +7,7 @@ using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Properties;
 
 namespace Dynamo.Configuration
 {
@@ -74,9 +75,10 @@ namespace Dynamo.Configuration
         /// Indicates whether ADP analytics reporting is approved or not.
         /// </summary>
         [XmlIgnore]
+        [Obsolete("Setter is obsolete - ADP consent should not be set directly, it should be set using the consent dialog.")]
         public bool IsADPAnalyticsReportingApproved { 
             get { return Logging.AnalyticsService.IsADPOptedIn; }
-            set { Logging.AnalyticsService.IsADPOptedIn = value; } 
+            set { throw new Exception("do not use"); } 
         }
         #endregion
 
@@ -446,6 +448,12 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool ShowRunPreview { get; set; }
 
+
+        /// <summary>
+        /// Stores the group styles added in the preference settings
+        /// </summary>
+        public List<GroupStyleItem> GroupStyleItemsList { get; set; }
+
         /// <summary>
         /// Limits the size of the tags used by the SearchDictionary
         /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value 
@@ -460,6 +468,22 @@ namespace Dynamo.Configuration
         { 
             get { return NodeSearchTagSizeLimitValue; } 
             set { NodeSearchTagSizeLimitValue = value; } 
+        }
+
+        /// <summary>
+        /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
+        /// This static property is not serialized and is assigned IronPythonResolveTargetVersion's value 
+        /// if found at deserialize time.
+        /// </summary>
+        internal static Version IronPythonResolveVersion = new Version(2, 4, 0);
+
+        /// <summary>
+        /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
+        /// </summary>
+        public string IronPythonResolveTargetVersion
+        {
+            get { return IronPythonResolveVersion.ToString(); }
+            set { IronPythonResolveVersion = Version.TryParse(value, out Version newVal) ? newVal : IronPythonResolveVersion; }
         }
         #endregion
 
@@ -509,7 +533,10 @@ namespace Dynamo.Configuration
             EnableNodeAutoComplete = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
+            GroupStyleItemsList = new List<GroupStyleItem>();
 
+            //Add the default group styles
+            AddDefaultStyles();
         }
 
         /// <summary>
@@ -582,11 +609,26 @@ namespace Dynamo.Configuration
                 }
             }
             catch (Exception) { }
-
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
+            settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
-
             return settings;
+        }
+
+        /// <summary>
+        /// This method will add the Defaul GroupStyles that are shown in the Preferences panel
+        /// </summary>
+        public void AddDefaultStyles()
+        {
+            var defaultGroupStylesList = GroupStyleItemsList.Where(style => style.IsDefault == true);
+            //Just in case the Default profiles have not been added then are added.
+            if (defaultGroupStylesList != null && defaultGroupStylesList.Count() == 0)
+            {              
+                GroupStyleItemsList.Add(new GroupStyleItem() { Name = Resources.GroupStyleDefaultActions, HexColorString = Resources.GroupStyleDefaultActionsColor, IsDefault = true });
+                GroupStyleItemsList.Add(new GroupStyleItem() { Name = Resources.GroupStyleDefaultInputs, HexColorString = Resources.GroupStyleDefaultInputsColor, IsDefault = true });
+                GroupStyleItemsList.Add(new GroupStyleItem() { Name = Resources.GroupStyleDefaultOutputs, HexColorString = Resources.GroupStyleDefaultOutputsColor, IsDefault = true });
+                GroupStyleItemsList.Add(new GroupStyleItem() { Name = Resources.GroupStyleDefaultReview, HexColorString = Resources.GroupStyleDefaultReviewColor, IsDefault = true });
+            }
         }
 
         /// <summary>

@@ -724,7 +724,7 @@ import(""FFITarget.dll"");
                         //Received A=3;
                         ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("A", 3);
+            thisTest.Verify("A", 2);
         }
 
         [Test]
@@ -1139,7 +1139,7 @@ import(""FFITarget.dll"");
             thisTest.Verify("c1", false);
             thisTest.Verify("d", true);
             thisTest.Verify("e", true);
-            thisTest.Verify("e1", null);
+            thisTest.Verify("e1", false);
         }
 
         [Test]
@@ -1253,18 +1253,6 @@ import(""FFITarget.dll"");
                 a:string='1';";
             thisTest.RunScriptSource(code, "1467227 -Sprint 26 - 3329 char not convertible to string ");
             thisTest.Verify("a", "1");
-        }
-
-        [Test]
-        [Category("Type System")]
-        public void TS35_nullTobool_1467231()
-        {
-            string code =
-                @"
-                a:bool=null;";
-            thisTest.RunScriptSource(code);
-            //Assert.Fail("1467231 - Sprint 26 - Rev 3393 null to bool conversion should not be allowed ");
-            thisTest.Verify("a", null);
         }
 
         [Test]
@@ -1408,7 +1396,7 @@ import(""FFITarget.dll"");
                 @"
                 a:bool=null;";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("a", null);
+            thisTest.Verify("a", false);
         }
 
         [Test]
@@ -1425,7 +1413,7 @@ import(""FFITarget.dll"");
                 c=test(a);"; //expected :true, received : null
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            thisTest.Verify("c", null);
+            thisTest.Verify("c", false);
         }
 
         [Test]
@@ -1489,7 +1477,7 @@ import(""FFITarget.dll"");
             thisTest.Verify("c", null);
             thisTest.Verify("d", null);
             thisTest.Verify("e", null);
-            thisTest.Verify("f", null);
+            thisTest.Verify("f", false);
             thisTest.Verify("g", null);
         }
 
@@ -1539,7 +1527,7 @@ import(""FFITarget.dll"");
             thisTest.Verify("c", new object[] { "a", "b", "c" });
             thisTest.Verify("d", new object[] { 'c', 'd', 'e' });
             thisTest.Verify("e1", new object[] { 1, 1, 1 });
-            thisTest.Verify("f", new object[] { true, false, null });
+            thisTest.Verify("f", new object[] { true, false, false });
             thisTest.Verify("g", new object[] { null, null, null });
         }
 
@@ -1784,7 +1772,7 @@ import(""FFITarget.dll"");
             thisTest.Verify("d", new object[] { true });
             thisTest.Verify("e", new object[] { true });
             thisTest.Verify("f", new object[] { true });
-            thisTest.Verify("g", null);
+            thisTest.Verify("g", new object[] { false });
         }
 
         [Test]
@@ -2589,7 +2577,7 @@ import(""FFITarget.dll"");
             thisTest.Verify("c", new object[] { true });
             thisTest.Verify("d", new object[] { true });
             thisTest.Verify("e", new object[] { false });
-            thisTest.Verify("f", null);
+            thisTest.Verify("f", new object[] { false });
         }
 
         [Test]
@@ -2815,7 +2803,7 @@ import(""FFITarget.dll"");
             thisTest.Verify("b", null);
             thisTest.Verify("c", null);
             thisTest.Verify("d", null);
-            thisTest.Verify("e", null);
+            thisTest.Verify("e", new object[] { false });
             thisTest.Verify("g", null);
         }
 
@@ -3034,7 +3022,7 @@ import(""FFITarget.dll"");
             thisTest.Verify("v", new object[] { true });
             thisTest.Verify("w", new object[] { true });
             thisTest.Verify("x", new object[] { true });
-            thisTest.Verify("z", null);
+            thisTest.Verify("z", new object[] { false });
         }
 
         [Test]
@@ -3800,7 +3788,7 @@ import(""FFITarget.dll"");
             thisTest.Verify("d", new object[] { true, new object[] { true } });
             thisTest.Verify("e", new object[] { true, new object[] { true } });
             thisTest.Verify("f", new object[] { true, new object[] { true } });
-            thisTest.Verify("g", null);
+            thisTest.Verify("g", new object[] { false, new object[] { false } });
         }
 
 
@@ -4154,7 +4142,7 @@ import(""FFITarget.dll"");
             TestFrameWork.Verify(mirror, "e", new object[] { new object[] { true } });
             TestFrameWork.Verify(mirror, "f1", new object[] { new object[] { true } });
             TestFrameWork.Verify(mirror, "h", new object[] { new object[] { true } });
-            TestFrameWork.Verify(mirror, "i", new object[] { null });
+            TestFrameWork.Verify(mirror, "i", new object[] { new object[] { false } });
         }
 
         [Test]
@@ -5110,9 +5098,9 @@ e = foo([5]);
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { true, true, true, true, true, true });
             TestFrameWork.Verify(mirror, "b", new object[] { true, true, true, true, true, true, true });
-            TestFrameWork.Verify(mirror, "c", new object[] { true, true, true, true, true, true, true, null });
-            TestFrameWork.Verify(mirror, "d", new object[] { true, true, true, true, true, true, null });
-            TestFrameWork.Verify(mirror, "e", new object[] { null, true, true, true, true, true, true });
+            TestFrameWork.Verify(mirror, "c", new object[] { true, true, true, true, true, true, true, false });
+            TestFrameWork.Verify(mirror, "d", new object[] { true, true, true, true, true, true, false });
+            TestFrameWork.Verify(mirror, "e", new object[] { false, true, true, true, true, true, true });
         }
 
         [Test]
@@ -5566,7 +5554,7 @@ import(""FFITarget.dll"");
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", false);
-            TestFrameWork.Verify(mirror, "b", null);
+            TestFrameWork.Verify(mirror, "b", true);
             TestFrameWork.Verify(mirror, "c", false);
             TestFrameWork.Verify(mirror, "d", true);
             TestFrameWork.Verify(mirror, "e", true);

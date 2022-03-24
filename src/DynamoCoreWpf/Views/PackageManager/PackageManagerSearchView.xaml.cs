@@ -7,6 +7,7 @@ using Dynamo.Logging;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 using Button = System.Windows.Controls.Button;
 
@@ -19,14 +20,28 @@ namespace Dynamo.PackageManager.UI
     {
         public PackageManagerSearchViewModel ViewModel { get;  }
         
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="pm"></param>
         public PackageManagerSearchView(PackageManagerSearchViewModel pm)
         {
             ViewModel = pm;
             this.DataContext = ViewModel;
+            pm.PackageManagerClientViewModel.Owner = this;
             InitializeComponent();
             ViewModel.RegisterTransientHandlers();
             ViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+            ViewModel.RequestDisableTextSearch += ViewModel_RequestDisableTextSearch;
             Logging.Analytics.TrackScreenView("PackageManager");
+        }
+
+        private void ViewModel_RequestDisableTextSearch(object sender, PackagePathEventArgs e)
+        {
+            this.searchTextBox.IsEnabled = false;
+            this.clearSearchTextBox.IsEnabled = false;
+            this.filterResultsButton.IsEnabled = false;
+            this.sortResultsButton.IsEnabled = false;
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -34,8 +49,11 @@ namespace Dynamo.PackageManager.UI
             var viewModel = DataContext as PackageManagerSearchViewModel;
 
             ViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
+            ViewModel.RequestDisableTextSearch -= ViewModel_RequestDisableTextSearch;
             viewModel.UnregisterTransientHandlers();
-
+            
+            // Clears the search text so that the 'Please Wait' prompt appears next time this dialog is opened.
+            viewModel.SearchText = string.Empty;
             Owner.Focus();
             base.OnClosing(e);
         }
@@ -127,11 +145,11 @@ namespace Dynamo.PackageManager.UI
             else
             {
                 string errorMessage = string.Format(Wpf.Properties.Resources.PackageFolderNotAccessible, initialPath);
-                System.Windows.Forms.MessageBox.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxService.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void PreferencesPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        private void PackageManagerSearchView_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //Drag functionality when the TitleBar is clicked with the left button and dragged to another place
             if (e.ChangedButton == MouseButton.Left)
@@ -164,7 +182,10 @@ namespace Dynamo.PackageManager.UI
         /// <param name="e"></param>
         private void ViewDetailsButton_OnClick(object sender, RoutedEventArgs e)
         {
-            this.ViewModel.ViewPackageDetailsCommand.Execute(null);
+            if (!(sender is Button button)) return;
+            if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
+
+            ViewModel.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
         }
 
         /// <summary>

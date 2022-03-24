@@ -1,0 +1,191 @@
+{
+  "Uuid": "84e01bd6-b64f-4527-92b0-375c2a7717ff",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "TestStringGetNumber_normal",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.String.GetNumber@string",
+      "Id": "33960a2650b247138bde4a36cf455051",
+      "Inputs": [
+        {
+          "Id": "f3793d65381448f2863375f6f938f231",
+          "Name": "string",
+          "Description": "String to be get\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8ce1e5327029458c852d68a1c3b962d2",
+          "Name": "str",
+          "Description": "number get in string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get Number In String\n\nString.GetNumber (string: string): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "09c8d5ba431a442e886fe234922c6e3c",
+      "Inputs": [
+        {
+          "Id": "54d51b27c7aa4b34bd66bb7bf7812500",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2629f11162bf48c8a103bb6e675d1919",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"test123521test\";",
+      "Id": "e90a23e6127e4b3aa3fd4ec11a2cc43a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "34435430976a44459a8fc8e0c8f9946f",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "8ce1e5327029458c852d68a1c3b962d2",
+      "End": "54d51b27c7aa4b34bd66bb7bf7812500",
+      "Id": "58cb7905921d4897b7abbdd83cad85bf",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "34435430976a44459a8fc8e0c8f9946f",
+      "End": "f3793d65381448f2863375f6f938f231",
+      "Id": "0c25384360314e7a9cd5b0f4a03d9e74",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "1.10",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.0.3197",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "String.GetNumber",
+        "Id": "33960a2650b247138bde4a36cf455051",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 364.0,
+        "Y": 330.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "09c8d5ba431a442e886fe234922c6e3c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 654.92355114259954,
+        "Y": 385.97804004352759
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e90a23e6127e4b3aa3fd4ec11a2cc43a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 49.0,
+        "Y": 367.0
+      }
+    ],
+    "Annotations": [],
+    "X": -14.232848285531475,
+    "Y": -158.11358593217108,
+    "Zoom": 1.3076413563671876
+  }
+}

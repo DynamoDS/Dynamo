@@ -37,7 +37,6 @@ using Dynamo.Selection;
 using Dynamo.Updates;
 using Dynamo.Utilities;
 using DynamoServices;
-using DynamoUnits;
 using Greg;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -47,6 +46,7 @@ using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
+using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Models
@@ -376,7 +376,6 @@ namespace Dynamo.Models
         public AuthenticationManager AuthenticationManager { get; set; }
 
         internal static string DefaultPythonEngine { get; private set; }
-        private bool disableADP;
         #endregion
 
         #region initialization and disposal
@@ -507,9 +506,11 @@ namespace Dynamo.Models
             /// Default Python script engine
             /// </summary>
             public string DefaultPythonEngine { get; set; }
+
             /// <summary>
             /// Disables ADP for the entire process for the lifetime of the process.
             /// </summary>
+            [Obsolete("This property is no longer used and will be removed in Dynamo 3.0 - please use Dynamo.Logging.Analytics.DisableAnalytics instead.")]
             public bool DisableADP { get; set; }
 
             /// <summary>
@@ -559,8 +560,6 @@ namespace Dynamo.Models
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
                 // TODO: This fact should probably be revisited in 3.0.
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
-                disableADP = defaultStartConfig.DisableADP;
-
             }
 
             ClipBoard = new ObservableCollection<ModelBase>();
@@ -602,7 +601,7 @@ namespace Dynamo.Models
             if (preferences is PreferenceSettings settings)
             {
                 PreferenceSettings = settings;
-                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;             
             }
 
             if (config is DefaultStartConfiguration defaultStartConfiguration)
@@ -644,18 +643,10 @@ namespace Dynamo.Models
                 // Do nothing for now
             }
 
-            // these configuration options are incompatible, one requires loading ADP binaries
-            // the other depends on not loading those same binaries.
-
-            if (areAnalyticsDisabledFromConfig && disableADP)
-            {
-                throw new ConfigurationErrorsException("Incompatible configuration: could not start Dynamo with both [Analytics disabled] and [ADP disabled] config options enabled");
-            }
-
             // If user skipped analytics from assembly config, do not try to launch the analytics client
-            if (!areAnalyticsDisabledFromConfig)
+            if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
             {
-                InitializeAnalyticsService();
+                AnalyticsService.Start(this, IsHeadless, IsTestMode);
             }
 
             if (!IsTestMode && PreferenceSettings.IsFirstRun)
@@ -821,7 +812,7 @@ namespace Dynamo.Models
             Logger.Log(string.Format("Dynamo -- Build {0}",
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
-            InitializeNodeLibrary(PreferenceSettings);
+            InitializeNodeLibrary();
 
             if (extensions.Any())
             {
@@ -1133,6 +1124,7 @@ namespace Dynamo.Models
                         long end = e.Task.ExecutionEndTime.TickCount;
                         var executionTimeSpan = new TimeSpan(end - start);
 
+                        //don't attempt to send these events unless GA is active or ADP will actually record these events.
                         if (Logging.Analytics.ReportingAnalytics)
                         {
                             if (updateTask.ModifiedNodes != null && updateTask.ModifiedNodes.Any())
@@ -1327,7 +1319,21 @@ namespace Dynamo.Models
             SearchModel.Add(outputSearchElement);
         }
 
-        private void InitializeNodeLibrary(IPreferences preferences)
+        internal static bool IsDisabledPath(string packagesDirectory, IPreferences preferences)
+        {
+            if (!(preferences is IDisablePackageLoadingPreferences disablePrefs)) return false;
+
+            var isACustomPackageDirectory = preferences.CustomPackageFolders.Where(x => packagesDirectory.StartsWith(x)).Any();
+
+            return
+            //if this directory is the builtin packages location
+            //and loading from there is disabled, don't scan the directory.
+            (disablePrefs.DisableBuiltinPackages && packagesDirectory == Core.PathManager.BuiltinPackagesDirectory)
+            //or if custom package directories are disabled, and this is a custom package directory, don't scan.
+            || (disablePrefs.DisableCustomPackageLocations && isACustomPackageDirectory);
+        }
+
+        private void InitializeNodeLibrary()
         {
             // Initialize all nodes inside of this assembly.
             InitializeIncludedNodes();
@@ -1354,6 +1360,21 @@ namespace Dynamo.Models
             // Load local custom nodes and locally imported libraries
             foreach (var path in pathManager.DefinitionDirectories)
             {
+                DirectoryInfo parentPath;
+                try
+                {
+                    parentPath = Directory.GetParent(path);
+                }
+                catch (ArgumentException)
+                {
+                    parentPath = null;
+                }
+                var pathName = parentPath != null ? parentPath.FullName : path;
+                if (IsDisabledPath(pathName, PreferenceSettings))
+                {
+                    continue;
+                }
+                
                 // NOTE: extension will only be null if path is null
                 string extension = null;
                 try
@@ -1440,11 +1461,6 @@ namespace Dynamo.Models
             }
         }
 
-        private void InitializeAnalyticsService()
-        {
-            AnalyticsService.Start(this, disableADP, IsHeadless, IsTestMode);
-        }
-
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)
         {
             if (preferences != null) // If there is preference settings provided...
@@ -1471,7 +1487,7 @@ namespace Dynamo.Models
 
         private static void InitializePreferences(IPreferences preferences)
         {
-            BaseUnit.NumberFormat = preferences.NumberFormat;
+            DynamoUnits.Display.PrecisionFormat = preferences.NumberFormat;
 
             var settings = preferences as PreferenceSettings;
             if (settings != null)
@@ -1492,7 +1508,7 @@ namespace Dynamo.Models
             switch (e.PropertyName)
             {
                 case "NumberFormat":
-                    BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
+                    DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
                     break;
             }
         }
@@ -1632,6 +1648,18 @@ namespace Dynamo.Models
         #region save/load
 
         /// <summary>
+        /// Opens a Dynamo workspace from a Json string.
+        /// </summary>
+        /// <param name="fileContents">Json file content</param>
+        /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// execution mode specified in the file and set manual mode</param>
+        public void OpenFileFromJson(string fileContents, bool forceManualExecutionMode = false)
+        {
+            OpenJsonFileFromPath(fileContents, "", forceManualExecutionMode);
+            return;
+        }
+
+        /// <summary>
         /// Opens a Dynamo workspace from a path to a file on disk.
         /// </summary>
         /// <param name="filePath">Path to file</param>
@@ -1733,7 +1761,7 @@ namespace Dynamo.Models
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return false;
+                throw e;
             }
         }
 
@@ -1836,7 +1864,10 @@ namespace Dynamo.Models
           bool forceManualExecutionMode,
           out WorkspaceModel workspace)
         {
-            CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filePath), IsTestMode);
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filePath), IsTestMode);
+            }            
 
             var currentHomeSpace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             currentHomeSpace.UndefineCBNFunctionDefinitions();
@@ -1854,7 +1885,7 @@ namespace Dynamo.Models
                 CustomNodeManager,
                 this.LinterManager);
 
-            workspace.FileName = filePath;
+            workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
 
             // NOTE: This is to handle the case of opening a JSON file that does not have a version string
@@ -1870,6 +1901,11 @@ namespace Dynamo.Models
                 homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
 
                 homeWorkspace.ReCompileCodeBlockNodesForFunctionDefinitions();
+
+                if (string.IsNullOrEmpty(workspace.FileName))
+                {
+                    workspace.HasUnsavedChanges = true;
+                }
 
                 RunType runType;
                 if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)
@@ -2093,7 +2129,10 @@ namespace Dynamo.Models
                 return;
 
             //Check for empty group
-            var annotations = Workspaces.SelectMany(ws => ws.Annotations);
+            var annotations = Workspaces
+                .SelectMany(ws => ws.Annotations)
+                .OrderBy(x => x.HasNestedGroups);
+
             foreach (var annotation in annotations)
             {
                 //record the annotation before the models in it are deleted.
@@ -2102,7 +2141,8 @@ namespace Dynamo.Models
                     //If there is only one model, then deleting that model should delete the group. In that case, do not record
                     //the group for modification. Until we have one model in a group, group should be recorded for modification
                     //otherwise, undo operation cannot get the group back.
-                    if (annotation.Nodes.Count() > 1 && annotation.Nodes.Where(x => x.GUID == model.GUID).Any())
+                    if (annotation.Nodes.Count() > 1 && 
+                        annotation.Nodes.Where(x => x.GUID == model.GUID).Any())
                     {
                         CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                     }
@@ -2176,14 +2216,13 @@ namespace Dynamo.Models
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
             var selectedGroups = workspaceAnnotations
-                .Where(x => x.IsSelected);
+                .Where(x => x.IsSelected && x.IsExpanded);
 
             // If multiple groups are selected, chances are that we
             // have a group that contains a nested group.
             // If this is the case we want to make sure that we add the
             // node to the parent folder.
-            var selectedGroup = selectedGroups.Count() > 1 ?
-                selectedGroups.FirstOrDefault(x => x.HasNestedGroups) :
+            var selectedGroup = selectedGroups.FirstOrDefault(x => x.HasNestedGroups) ??
                 selectedGroups.FirstOrDefault();
 
             if (selectedGroup != null)
@@ -2191,22 +2230,32 @@ namespace Dynamo.Models
                 foreach (var model in modelsToAdd)
                 {
                     CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
-                    selectedGroup.AddToSelectedModels(model);
+                    selectedGroup.AddToTargetAnnotationModel(model);
                 }
             }
 
         }
 
-        internal void AddGroupToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid)
+        /// <summary>
+        /// Add a list of annotations to the host group on model level.
+        /// </summary>
+        /// <param name="modelsToAdd">List of annotation models.</param>
+        /// <param name="hostGroupGuid">Host annotation guid.</param>
+        internal void AddGroupsToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid)
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
             var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
             if (selectedGroup is null) return;
 
+            var modelsToModify = new List<ModelBase>();
+            modelsToModify.AddRange(modelsToAdd);
+            modelsToModify.Add(selectedGroup);
+
+            // Mark the parent group and groups to add all for undo recorder
+            WorkspaceModel.RecordModelsForModification(modelsToModify, CurrentWorkspace.UndoRecorder);
             foreach (var model in modelsToAdd)
             {
-                CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
-                selectedGroup.AddToSelectedModels(model);
+                selectedGroup.AddToTargetAnnotationModel(model);
             }
         }
 
@@ -2442,8 +2491,7 @@ namespace Dynamo.Models
             // or does not belong to a group here.
             // We handle creation of nested groups when creating the
             // parent group.
-            var annotations = ClipBoard.OfType<AnnotationModel>()
-                .Where(x=>x.HasNestedGroups || !currentWorkspace.Annotations.ContainsModel(x));
+            var annotations = ClipBoard.OfType<AnnotationModel>();
 
             var xmlDoc = new XmlDocument();
 
@@ -2557,8 +2605,13 @@ namespace Dynamo.Models
                 //so adding the group after nodes / notes are added to workspace.
                 //select only those nodes that are part of a group.
                 var newAnnotations = new List<AnnotationModel>();
-                foreach (var annotation in annotations)
+                foreach (var annotation in annotations.OrderByDescending(a => a.HasNestedGroups)) 
                 {
+                    if (modelLookup.ContainsKey(annotation.GUID))
+                    {
+                        continue;
+                    }
+
                     // If this group has nested group we need to create them first
                     if (annotation.HasNestedGroups)
                     {

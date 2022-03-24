@@ -1,10 +1,15 @@
-﻿using NUnit.Framework;
+﻿using Dynamo.Utilities;
+using NUnit.Framework;
 using ProtoTestFx.TD;
+using System;
+using System.IO;
+using System.Reflection;
 
 namespace ProtoTest
 {
     abstract class ProtoTestBase
     {
+        private AssemblyHelper assemblyHelper;
         protected ProtoCore.Core core;
         protected ProtoCore.RuntimeCore runtimeCore;
         protected TestFrameWork thisTest = new TestFrameWork();
@@ -18,6 +23,19 @@ namespace ProtoTest
 
             // This is set when a test is executed 
             runtimeCore = null;
+
+            if (assemblyHelper == null)
+            {
+                var assemblyPath = Assembly.GetExecutingAssembly().Location;
+                var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
+                var resolutionPaths = new[]
+                {
+                    // These tests need "CoreNodeModels.dll" under "nodes" folder.
+                    Path.Combine(moduleRootFolder, "nodes")
+                };
+                assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
+                AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
+            }
         }
 
         private void CleanupRuntimeCore()
@@ -33,6 +51,10 @@ namespace ProtoTest
         public virtual void TearDown()
         {
             CleanupRuntimeCore();
+            if (assemblyHelper != null)
+            {
+                AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
+            }
             thisTest.CleanUp();
         }
     }
