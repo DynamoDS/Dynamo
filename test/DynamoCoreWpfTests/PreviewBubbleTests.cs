@@ -465,6 +465,17 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void InfoBubble_ShowsWarningOnDupVariableInCodeBlock()
+        {
+            Open(@"core\watch\cbn_dup_variable_open_file.dyn");
+
+            var nodeView = NodeViewWithGuid("2bea01fa-1534-4101-9b11-e6000cd17045");
+
+            Assert.AreEqual(2, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
+            Assert.IsTrue(nodeView.ViewModel.ErrorBubble.NodeMessages[0].Message.Contains("You cannot define a variable more than once."));
+        }
+
+        [Test]
         public void InfoBubble_ShowsWarningOnObsoleteZeroTouchNode()
         {
             Open(@"core\watch\obsolete_zero_touch_node.dyn");
