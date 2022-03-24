@@ -319,10 +319,8 @@
                         <Style x:Key="GroupStyleItemStyle" TargetType="{x:Type MenuItem}">
                             <Setter Property="MenuItem.IsChecked"
                                     Value="{Binding IsChecked}"/>
-                                <EventSetter Event="Click" 
+                            <EventSetter Event="Click" 
                                              Handler="GroupStyleCheckmark_Click"/>
-                                <EventSetter Event="Checked" 
-                                             Handler="GroupStyleCheckmark_Checked"/>
                             <Setter Property="MenuItem.Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type MenuItem}">
@@ -330,15 +328,6 @@
                                                     Orientation="Horizontal"
                                                     MinWidth="150"
                                                     Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
-                                            <Label x:Name="GroupStyleCheckmark"
-                                                   HorizontalAlignment="Left"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalContentAlignment="Center"
-                                                   VerticalContentAlignment="Center"
-                                                   Content="✓"
-                                                   FontSize="14px"
-                                                   Foreground="White"
-                                                   Visibility="{Binding Path=IsChecked,Converter={StaticResource BooleanToVisibilityConverter}}" />
                                             <Label x:Name="buttonColorPicker"
                                                    Margin="5,0,5,0"
                                                    FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -367,6 +356,31 @@
                             </Setter>
                         </Style>
                     </MenuItem.Resources>
+                </MenuItem>
+                <MenuItem Name="ColorMenuItem" Header="Color">
+                    <ListBox ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
+                             SelectionChanged="OnNodeColorSelectionChanged"
+                             Height="Auto"
+                             Style="{StaticResource ColorSelectorListBox}">
+                        <ListBox.Items>
+                            <Rectangle Fill="#d4b6db" />
+                            <Rectangle Fill="#ffb8d8" />
+                            <Rectangle Fill="#ffc999" />
+                            <Rectangle Fill="#e8f7ad" />
+                            <Rectangle Fill="#b9f9e1" />
+                            <Rectangle Fill="#a4e1ff" />
+                            <Rectangle Fill="#b5b5b5" />
+                            <Rectangle Fill="#FFFFFF" />
+                            <Rectangle Fill="#bb87c6" />
+                            <Rectangle Fill="#ff7bac" />
+                            <Rectangle Fill="#ffaa45" />
+                            <Rectangle Fill="#c1d676" />
+                            <Rectangle Fill="#71c6a8" />
+                            <Rectangle Fill="#48b9ff" />
+                            <Rectangle Fill="#848484" />
+                            <Rectangle Fill="#d8d8d8" />
+                        </ListBox.Items>
+                    </ListBox>
                 </MenuItem>
                 <MenuItem Name="ChangeSize" Header="{x:Static p:Resources.GroupContextMenuFont}">
                     <MenuItem Name="FontSize0"
@@ -416,29 +430,6 @@
                               IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=96}" />
 
                 </MenuItem>
-                <ListBox ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
-                         SelectionChanged="OnNodeColorSelectionChanged"
-                         Height="Auto"
-                         Style="{StaticResource ColorSelectorListBox}">
-                    <ListBox.Items>
-                        <Rectangle Fill="#d4b6db" />
-                        <Rectangle Fill="#ffb8d8" />
-                        <Rectangle Fill="#ffc999" />
-                        <Rectangle Fill="#e8f7ad" />
-                        <Rectangle Fill="#b9f9e1" />
-                        <Rectangle Fill="#a4e1ff" />
-                        <Rectangle Fill="#b5b5b5" />
-                        <Rectangle Fill="#FFFFFF" />
-                        <Rectangle Fill="#bb87c6" />
-                        <Rectangle Fill="#ff7bac" />
-                        <Rectangle Fill="#ffaa45" />
-                        <Rectangle Fill="#c1d676" />
-                        <Rectangle Fill="#71c6a8" />
-                        <Rectangle Fill="#48b9ff" />
-                        <Rectangle Fill="#848484" />
-                        <Rectangle Fill="#d8d8d8" />
-                    </ListBox.Items>
-                </ListBox>
             </ContextMenu>
         </Grid.ContextMenu>
 

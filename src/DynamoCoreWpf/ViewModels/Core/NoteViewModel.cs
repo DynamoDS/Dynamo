@@ -303,7 +303,7 @@ namespace Dynamo.ViewModels
 
             if (nodeGroup != null)
             {
-                nodeGroup.AnnotationModel.AddToSelectedModels(this.Model);
+                nodeGroup.AnnotationModel.AddToTargetAnnotationModel(this.Model);
             }
 
             Model.PinnedNode = nodeToPin;

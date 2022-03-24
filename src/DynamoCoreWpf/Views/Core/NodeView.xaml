@@ -5,6 +5,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:controls="clr-namespace:Dynamo.Views"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -414,10 +415,23 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Canvas.ZIndex="4"
+                    Style="{StaticResource SZoomFadeOutFrameworkElement}"
                     FlowDirection="LeftToRight"
                     Orientation="Horizontal">
-            <Grid x:Name="HiddenEyeGlyph" Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}">
-                <Image Width="16px"
+            <Grid x:Name="FrozenGlyph" 
+                  Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
+                <Image x:Name="FrozenImage"
+                       Width="16px"
+                       Height="16px"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Source="/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"
+                       Stretch="UniformToFill" />
+            </Grid>
+            <Grid x:Name="HiddenEyeGlyph" 
+                  Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, Mode=OneWay}">
+                <Image x:Name="HiddenEyeImage"
+                       Width="16px"
                        Height="16px"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
@@ -535,18 +549,98 @@
                 IsHitTestVisible="False"
                 SnapsToDevicePixels="True" />
 
-        <!--  Displays when the node is Frozen/Warning/Error state  -->
-        <Border Name="nodeColorOverlay"
+        <!--  Displays when the node is Frozen/Warning/Error state and Zoom is above 0.4 -->
+        <Border Name="nodeColorOverlayZoomIn"
                 Grid.Row="1"
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
                 Margin="-8"
                 Background="{StaticResource NodeFrozenOverlayColor}"
-                Canvas.ZIndex="7"
+                Canvas.ZIndex="6"
+                CornerRadius="8,8,0,0"
+                IsHitTestVisible="False"
+                Opacity="{Binding Path=DataContext.Zoom, 
+                                  RelativeSource={RelativeSource FindAncestor, 
+                                  AncestorType={x:Type controls:WorkspaceView}}, 
+                                  Converter={StaticResource ZoomToOpacityConverter}}"
+                Style="{StaticResource SZoomFadeOutPreview}"
+                Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <!--  Displays when the node is Frozen/Warning/Error state and Zoom is below 0.4 -->
+        <Border Name="nodeColorOverlayZoomOut"
+                Grid.Row="1"
+                Grid.RowSpan="4"
+                Grid.ColumnSpan="3"
+                Margin="-8"
+                Background="{Binding NodeOverlayColor, UpdateSourceTrigger=PropertyChanged}"
+                Canvas.ZIndex="6"
                 CornerRadius="8,8,0,0"
                 IsHitTestVisible="False"
                 Opacity="0.5"
-                Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                Style="{StaticResource SZoomFadeInPreview}"
+                Visibility="{Binding Path=DataContext.Zoom, 
+                                     RelativeSource={RelativeSource FindAncestor, 
+                                     AncestorType={x:Type controls:WorkspaceView}}, 
+                                     Converter={StaticResource ZoomToVisibilityCollapsedConverter}}" />
+
+        <!-- Grid containing the State overlay Glyphs in Zoomed Out state -->
+        <Grid Name="zoomGlyphsGrid"
+                    Grid.Row="0"
+                    Grid.RowSpan="4"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Canvas.ZIndex="7" 
+                    IsHitTestVisible="False"
+                    Margin="0 5 0 0"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                    Style="{StaticResource SZoomFadeInFrameworkElement}"                    
+                    Visibility="{Binding Path=DataContext.Zoom, 
+                                         RelativeSource={RelativeSource FindAncestor, 
+                                         AncestorType={x:Type controls:WorkspaceView}}, 
+                                         Converter={StaticResource ZoomToVisibilityCollapsedConverter}}" 
+                    MinWidth="48">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="{Binding ImgGlyphThreeSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <UniformGrid  Grid.Row="0"
+                          Margin="0 10 0 -10"
+                          Columns="1" Rows="1" Name="ZoomGlyphRowZero" 
+                          HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                          Visibility="{Binding ImgGlyphThreeSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}">
+                <Image Stretch="Uniform"  HorizontalAlignment="Center" VerticalAlignment="Bottom" 
+                       x:Name="ZoomStateImgOne"
+                       Width="64"
+                       Source="{Binding ImgGlyphThreeSource, UpdateSourceTrigger=PropertyChanged}"
+                       Visibility="{Binding ImgGlyphThreeSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+            </UniformGrid>
+            <Grid Grid.Row="1" 
+                  Margin="0 0 0 0"
+                  Name="ZoomGlyphRowOne" 
+                  HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{Binding ImgGlyphOneSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                    <ColumnDefinition Width="{Binding ImgGlyphTwoSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0"
+                       x:Name="ZoomStateImgTwo"
+                       Stretch="Uniform" 
+                       HorizontalAlignment="Left" VerticalAlignment="Center"
+                       Margin="5 0 "
+                       Width="64"
+                       Source="{Binding ImgGlyphOneSource, UpdateSourceTrigger=PropertyChanged}"
+                       Visibility="{Binding ImgGlyphOneSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                <Image Grid.Column="1"
+                       x:Name="ZoomStateImgThree"
+                       Stretch="Uniform"  
+                       HorizontalAlignment="Right" VerticalAlignment="Center" 
+                       Margin="5 0"
+                       Width="64"
+                       Source="{Binding ImgGlyphTwoSource, UpdateSourceTrigger=PropertyChanged}"
+                       Visibility="{Binding ImgGlyphTwoSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </Grid>
+
 
         <!--  Displays when the node is selected  -->
         <Border Name="selectionBorder"

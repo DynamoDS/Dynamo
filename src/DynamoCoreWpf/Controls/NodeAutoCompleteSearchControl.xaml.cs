@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -38,6 +39,7 @@ namespace Dynamo.UI.Controls
                 Application.Current.Deactivated += currentApplicationDeactivated;
             }
             Unloaded += NodeAutoCompleteSearchControl_Unloaded;
+            HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
         }
 
         private void NodeAutoCompleteSearchControl_Unloaded(object sender, RoutedEventArgs e)
@@ -277,6 +279,11 @@ namespace Dynamo.UI.Controls
         }
 
         internal void CloseAutocompletionWindow(object sender, RoutedEventArgs e)
+        {
+            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+        }
+
+        internal void CloseAutoCompletion()
         {
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
         }
