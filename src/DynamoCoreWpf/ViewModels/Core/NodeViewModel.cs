@@ -1412,11 +1412,10 @@ namespace Dynamo.ViewModels
                 var data = new InfoBubbleDataPacket(infoStyle, topLeft, botRight, info.Message, connectingDirection);
                 packets.Add(data);
             }
-            InfoBubbleViewModel.Style style = NodeModel.State == ElementState.Error
-                ? InfoBubbleViewModel.Style.Error
-                : InfoBubbleViewModel.Style.Warning;
 
-            style = NodeModel.State == ElementState.Info ? InfoBubbleViewModel.Style.Info : style;
+            InfoBubbleViewModel.Style style = NodeModel.State == ElementState.Info ? InfoBubbleViewModel.Style.Info : InfoBubbleViewModel.Style.None;
+            style = NodeModel.State == ElementState.Warning ? InfoBubbleViewModel.Style.Warning : style;
+            style = NodeModel.State == ElementState.Error ? InfoBubbleViewModel.Style.Error : style;
 
             ErrorBubble.InfoBubbleStyle = style;
 
