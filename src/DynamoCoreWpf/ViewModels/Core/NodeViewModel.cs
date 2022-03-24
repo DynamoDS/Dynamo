@@ -849,16 +849,10 @@ namespace Dynamo.ViewModels
             {
                 ImageSource = imgSource;
             }
-            
-            if(nodeLogic.State == ElementState.Error)
-            {
-                BuildErrorBubble();
-                UpdateBubbleContent();
-            }
-            
             logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
 
             logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsVisible)));
+            UpdateBubbleContent();
         }
 
         private void Infos_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
