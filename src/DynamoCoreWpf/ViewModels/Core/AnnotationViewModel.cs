@@ -1153,6 +1153,7 @@ namespace Dynamo.ViewModels
 
                 AddToCutGeometryDictionary(groupViewModel);
             }
+            WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
         private void RemoveKeyFromCutGeometryDictionary(string groupGuid)

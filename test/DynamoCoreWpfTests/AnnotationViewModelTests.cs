@@ -862,11 +862,27 @@ namespace DynamoCoreWpfTests
                 DynamoSelection.Instance.Selection.Contains(group2ViewModel.AnnotationModel)
                 );
 
+            //Assert HasUnsavedChanges is false
+            Assert.AreEqual(false, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
+
             group1ViewModel.AddGroupToGroupCommand.Execute(null);
 
             // Assert
             Assert.That(group1ContentBefore.Count != group1ViewModel.Nodes.Count());
             Assert.That(group1ViewModel.Nodes.Contains(group2ViewModel.AnnotationModel));
+
+            //Assert HasUnsavedChanges is true
+            Assert.AreEqual(true, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
+
+            ViewModel.CurrentSpaceViewModel.Save(ViewModel.CurrentSpaceViewModel.FileName);
+
+            //Assert HasUnsavedChanges is false
+            Assert.AreEqual(false, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
+
+            ViewModel.CurrentSpace.Undo();
+
+            //Assert HasUnsavedChanges is true
+            Assert.AreEqual(true, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
         }
 
         [Test]
