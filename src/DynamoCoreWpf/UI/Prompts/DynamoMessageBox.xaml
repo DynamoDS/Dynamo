@@ -29,7 +29,7 @@
         <Border Name="MainBorder"
                 Background="White"
                 CornerRadius="4 "
-                BorderThickness="1">
+                BorderThickness="4">
             <Border.Effect>
                 <DropShadowEffect Color="#000" ShadowDepth="0" Opacity="0.25" BlurRadius="10.0" />
             </Border.Effect>
