@@ -542,10 +542,8 @@
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
                                         <Button x:Name="AddStyleButton"
-                                                Style="{StaticResource FlatButtonStyle}" 
+                                                Style="{StaticResource SolidButtonStyleSmaller}" 
                                                 HorizontalAlignment="Left"                                             
-                                                Width="100"
-                                                Height="25"
                                                 Grid.Row="0"
                                                 Margin="0,10,0,10"
                                                 Click="AddStyleButton_Click"
