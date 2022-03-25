@@ -916,12 +916,12 @@ namespace Dynamo.ViewModels
         {
             if (ErrorBubble == null) return;
 
+            var itemsToRemove = ErrorBubble.NodeMessages.Where(x => x.Style == InfoBubbleViewModel.Style.Info).ToList();
+
             if (DynamoViewModel.UIDispatcher != null)
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
-                    var itemsToRemove = ErrorBubble.NodeMessages.Where(x => x.Style == InfoBubbleViewModel.Style.Info).ToList();
-
                     foreach (var itemToRemove in itemsToRemove)
                     {
                         ErrorBubble.NodeMessages.Remove(itemToRemove);
@@ -930,7 +930,6 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                var itemsToRemove = ErrorBubble.NodeMessages.Where(x => x.Style == InfoBubbleViewModel.Style.Info).ToList();
                 foreach (var itemToRemove in itemsToRemove)
                 {
                     ErrorBubble.NodeMessages.Remove(itemToRemove);
@@ -1250,6 +1249,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         internal SolidColorBrush GetWarningColor()
         {
+            // If the WarningBar color is already set to error, just return it as we don't want to override it with warning or info color.
             if (WarningBarColor == errorColor)
             {
                 return errorColor;
