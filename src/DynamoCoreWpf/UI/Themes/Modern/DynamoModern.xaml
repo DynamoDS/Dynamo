@@ -2811,7 +2811,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+    <!--This style is similar than SolidButtonStyle (used in several buttons in the PreferencesView), the only changes are in a Border.Height, TextBlock.FontSize and the Background color triggered when the Button is disabled. I think the FontSize/Height is smaller due that the AddStyle button is in a smaller space than the other buttons (based in the Figma design).-->
     <Style x:Key="SolidButtonStyleSmaller" TargetType="Button">
         <Setter Property="BorderBrush" Value="{StaticResource PreferencesWindowButtonColor}" />
         <Setter Property="Foreground" Value="White" />
