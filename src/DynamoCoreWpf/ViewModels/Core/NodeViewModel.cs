@@ -1250,6 +1250,15 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         internal SolidColorBrush GetWarningColor()
         {
+            if (WarningBarColor == errorColor)
+            {
+                return errorColor;
+            }
+            else if (WarningBarColor == warningColor)
+            {
+                return warningColor;
+            }
+
             if (nodeLogic.IsInErrorState)
             {
                 return errorColor;
@@ -1405,17 +1414,37 @@ namespace Dynamo.ViewModels
 
             const InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
             var packets = new List<InfoBubbleDataPacket>(NodeModel.Infos.Count);
+
+            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.None;
+            int styleRank = int.MaxValue;
+
             foreach (var info in NodeModel.Infos)
             {
                 var infoStyle = info.State == ElementState.Error ? InfoBubbleViewModel.Style.Error : InfoBubbleViewModel.Style.Warning;
                 infoStyle = info.State == ElementState.Info ? InfoBubbleViewModel.Style.Info : infoStyle;
+
+                // Set the info bubble style based on the heirarchy of node messages style. 1) Error 2) Warning 3) Info.
+                if (infoStyle == InfoBubbleViewModel.Style.Info && styleRank > 3)
+                {
+                    style = InfoBubbleViewModel.Style.Info;
+                    styleRank = 3;
+                }
+                
+                if (infoStyle == InfoBubbleViewModel.Style.Warning && styleRank > 2)
+                {
+                    style = InfoBubbleViewModel.Style.Warning;
+                    styleRank = 2;
+                }
+
+                if (infoStyle == InfoBubbleViewModel.Style.Error)
+                {
+                    style = InfoBubbleViewModel.Style.Error;
+                    styleRank = 1;
+                }
+
                 var data = new InfoBubbleDataPacket(infoStyle, topLeft, botRight, info.Message, connectingDirection);
                 packets.Add(data);
             }
-
-            InfoBubbleViewModel.Style style = NodeModel.State == ElementState.Info ? InfoBubbleViewModel.Style.Info : InfoBubbleViewModel.Style.None;
-            style = NodeModel.State == ElementState.Warning ? InfoBubbleViewModel.Style.Warning : style;
-            style = NodeModel.State == ElementState.Error ? InfoBubbleViewModel.Style.Error : style;
 
             ErrorBubble.InfoBubbleStyle = style;
 
