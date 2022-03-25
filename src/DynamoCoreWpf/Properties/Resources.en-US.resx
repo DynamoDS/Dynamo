@@ -3038,7 +3038,7 @@ To install the latest version of a package, click Install. \n
     <value>Unpin this note from the node</value>
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
-    <value>Group Name</value>
+    <value>Style Name</value>
   </data>
   <data name="PreferencesViewEmptyStyleWarning" xml:space="preserve">
     <value>Please enter a valid name</value>
