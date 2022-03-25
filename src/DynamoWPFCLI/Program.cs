@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Threading;
 using Dynamo.Applications;
-using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using static System.Windows.Threading.Dispatcher;
 
