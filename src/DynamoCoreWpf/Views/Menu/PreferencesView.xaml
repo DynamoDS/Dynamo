@@ -315,7 +315,6 @@
                                       IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Scale}"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGeoScaling}">
                                         <StackPanel x:Name="GeometryScalingRadiosPanel"
-                                            DataContext="{Binding OptionsGeometryScale}"
                                             Width="380"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Top">
@@ -324,7 +323,7 @@
                                                 MinWidth="80"
                                                 Margin="3,10,0,0"
                                                 Checked="Geometry_Scaling_Checked"
-                                                IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Small}}"
+                                                IsChecked="{Binding ScaleSize, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Small}}"
                                                 Style="{StaticResource GeometryScaleRadioButtons}"
                                                 Content="{x:Static p:Resources.ScalingSmallButton}"/>
                                             <TextBlock x:Name="RadioSmallDesc"
@@ -335,7 +334,7 @@
                                                  GroupName="GeometryScaling"
                                                  Margin="3,10,0,0"
                                                  MinWidth="80"
-                                                 IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Medium}}"
+                                                 IsChecked="{Binding ScaleSize, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Medium}}"
                                                  Checked="Geometry_Scaling_Checked"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingMediumButton}"/>
@@ -348,7 +347,7 @@
                                                  MinWidth="80"
                                                  Margin="3,10,0,0"
                                                  Checked="Geometry_Scaling_Checked"
-                                                 IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Large}}"
+                                                 IsChecked="{Binding ScaleSize, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Large}}"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingLargeButton}"/>
                                             <TextBlock  x:Name="RadioLargeDesc"
@@ -360,7 +359,7 @@
                                                  MinWidth="80"
                                                  Margin="3,10,0,0"
                                                  Checked="Geometry_Scaling_Checked"
-                                                 IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.ExtraLarge}}"
+                                                 IsChecked="{Binding ScaleSize, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.ExtraLarge}}"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingExtraLargeButton}"/>
                                             <TextBlock  x:Name="RadioExtraLargeDesc"
@@ -543,10 +542,8 @@
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
                                         <Button x:Name="AddStyleButton"
-                                                Style="{StaticResource FlatButtonStyle}" 
+                                                Style="{StaticResource SolidButtonStyleSmaller}" 
                                                 HorizontalAlignment="Left"                                             
-                                                Width="100"
-                                                Height="25"
                                                 Grid.Row="0"
                                                 Margin="0,10,0,10"
                                                 Click="AddStyleButton_Click"

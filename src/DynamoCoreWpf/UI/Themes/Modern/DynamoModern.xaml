@@ -519,6 +519,110 @@
         </Style.Triggers>
     </Style>
 
+    <!--  Zoom fade-in preview  -->
+    <Style x:Key="SZoomFadeInPreview" TargetType="{x:Type Border}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.0"
+                                             Duration="0:0:0.5" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.5"
+                                             Duration="0:0:0.5" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Zoom fade-in preview  -->
+    <Style x:Key="SZoomFadeOutPreview" TargetType="{x:Type Border}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.5"
+                                             Duration="0:0:0.5" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.0"
+                                             Duration="0:0:0.5" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Zoom fade-out framework element  -->
+    <Style x:Key="SZoomFadeOutFrameworkElement" TargetType="{x:Type FrameworkElement}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="1.0"
+                                             Duration="0:0:0.2" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.0"
+                                             Duration="0:0:0.2" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Zoom fade-in framework element  -->
+    <Style x:Key="SZoomFadeInFrameworkElement" TargetType="{x:Type FrameworkElement}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.0"
+                                             Duration="0:0:0.2" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="1.0"
+                                             Duration="0:0:0.2" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="TextButtonStyle" TargetType="Button">
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="Cursor" Value="Hand" />
@@ -547,54 +651,51 @@
         </Setter>
     </Style>
 
-    <Style x:Key="InputStyle" TargetType="TextBox">
+    <Style x:Key="InputStyle" TargetType="{x:Type TextBox}">
         <Setter Property="Margin" Value="0,0,0,12" />
         <Setter Property="MinWidth" Value="62px" />
-        <Setter Property="Cursor" Value="IBeam" />
+        <Setter Property="CaretBrush" Value="{StaticResource PrimaryCharcoal200Brush}" />
+        <Setter Property="Padding" Value="10,12,10,8"/>
+        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}"/>
+        <Setter Property="FontSize" Value="12px" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="TextBox">
+                <ControlTemplate TargetType="{x:Type TextBox}">
                     <Grid>
-                        <TextBox x:Name="InputTextBox"
-                                         Padding="10,12,10,8"
-                                         Background="#353535"
-                                         BorderBrush="Transparent"
-                                         BorderThickness="1"
-                                         FontFamily="{StaticResource ArtifaktElementRegular}"
-                                         FontSize="12px"
-                                         Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                         MaxLength="{TemplateBinding MaxLength}"
-                                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
-                                         Tag="{TemplateBinding Tag}"
-                                         TextWrapping="Wrap" />
-                        <TextBlock x:Name="WatermarkLabel"
-                                           Padding="13,13,10,8"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontSize="12px"
-                                           Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                           IsHitTestVisible="False"
-                                           Opacity="0.5"
-                                           Text="{TemplateBinding Tag}">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Text, ElementName=InputTextBox}" Value="">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                        <Border 
+                            Background="#353535"
+                            BorderBrush="Transparent"                            
+                            BorderThickness="1"
+                            />
+                        <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
+                        <Label  x:Name="WaterMarkLabel"
+                                Padding="13,13,10,8"
+                                Content="{TemplateBinding Tag}" 
+                                VerticalAlignment="Center"
+                                Visibility="Collapsed"
+                                FontFamily="{StaticResource ArtifaktElementRegular}"
+                                FontSize="12px"
+                                Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                IsHitTestVisible="False"
+                                Opacity="0.5"/>
                     </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Text" Value=""/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Visibility" TargetName="WaterMarkLabel" Value="Visible"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="False">
-                <Setter Property="BorderBrush" Value="{StaticResource DarkMidGreyBrush}" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="LabelStyle" TargetType="TextBlock">
@@ -2683,6 +2784,78 @@
         </Setter>
     </Style>
 
+    <Style x:Key="DownButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="downIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/down_16_16.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="downIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/down-hover-16px.png" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="UpButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="upIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/up_16_16.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="upIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/up-hover-16px.png" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="FolderButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="folderIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/folder_16_16.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="folderIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/folder-hover-16px.png" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MenuButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="menuIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/menu_16_16.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="menuIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/menu-hover-16px.png" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="CtaButtonStyle" TargetType="Button">
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -2791,6 +2964,68 @@
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Opacity" Value="0.9" />
                             <Setter TargetName="mousePressedBorder" Property="Visibility " Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--This style is similar than SolidButtonStyle (used in several buttons in the PreferencesView), the only changes are in a Border.Height, TextBlock.FontSize and the Background color triggered when the Button is disabled. I think the FontSize/Height is smaller due that the AddStyle button is in a smaller space than the other buttons (based in the Figma design).-->
+    <Style x:Key="SolidButtonStyleSmaller" TargetType="Button">
+        <Setter Property="BorderBrush" Value="{StaticResource PreferencesWindowButtonColor}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource PreferencesWindowButtonColor}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="15,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="mouseOverBorder"
+                                Margin="2"
+                                BorderThickness="2"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                Visibility="Hidden"
+                                CornerRadius="2"/>
+                        <Border x:Name="mousePressedBorder"
+                                Margin="0"
+                                BorderThickness="4"
+                                Visibility="Hidden"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="4"/>
+                        <Border x:Name="border"
+                                Margin="4"
+                                Height="24px"
+                                Width="78"
+                                Padding="8,0,8,0"
+                                BorderThickness="1"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="2">
+                            <TextBlock x:Name="textBlock"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="12px"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       Text="{TemplateBinding Content}" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.9" />
+                            <Setter TargetName="mouseOverBorder" Property="Visibility " Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.9" />
+                            <Setter TargetName="mousePressedBorder" Property="Visibility " Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#0696D7" />
+                            <Setter TargetName="border" Property="Opacity" Value="0.6" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -3781,46 +4016,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
-
-    <!--  This Style will be used in the button for adding a Style in the "Group Styles" section  -->
-    <Style x:Key="FlatButtonStyle" TargetType="Button">
-        <Setter Property="Foreground" Value="{StaticResource Blue300Brush}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border x:Name="ButtonBorder"
-                            Background="Transparent"
-                            BorderBrush="#E0E0E0"
-                            CornerRadius="4">
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <ContentPresenter />
-                        </TextBlock>
-                    </Border>
-                    <!--  Following the Autodesk Hig Standards some colors of the button will be changed according to the event  -->
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="1" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2" />
-                        </Trigger>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#A2D4EB" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <!--  When the mouse is over the button the cursor will change to a hand  -->
-            <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="Cursor" Value="Hand" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Foreground" Value="#BBBBBB" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <SolidColorBrush x:Key="Button.Outline.MouseOver.Border"

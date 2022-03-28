@@ -13,6 +13,13 @@
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="UI\Images\NodeStates\alert-64px.png" />
+    <None Remove="UI\Images\NodeStates\error-64px.png" />
+    <None Remove="UI\Images\NodeStates\frozen-64px.png" />
+    <None Remove="UI\Images\NodeStates\hidden-64px.png" />
+    <None Remove="UI\Images\NodeStates\info-64px.png" />
+  </ItemGroup>
+  <ItemGroup>
 	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
 	<PackageReference Include="Greg" Version="2.1.8012.31283" />
 	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
@@ -741,6 +748,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\closetab_normal.png" />
+    <Resource Include="UI\Images\NodeStates\alert-64px.png" />
+    <Resource Include="UI\Images\NodeStates\error-64px.png" />
+    <Resource Include="UI\Images\NodeStates\frozen-64px.png" />
+    <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
+    <Resource Include="UI\Images\NodeStates\info-64px.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\whiteclosetab.png" />
@@ -1482,7 +1494,6 @@
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
   </ItemGroup>
-  <ItemGroup />
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
   </Target>
