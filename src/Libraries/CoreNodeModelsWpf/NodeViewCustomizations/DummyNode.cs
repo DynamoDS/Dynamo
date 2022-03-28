@@ -1,4 +1,5 @@
 using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -24,12 +25,26 @@ namespace CoreNodeModelsWpf.Nodes
                 Width = 66.0,
                 Height = 66.0,
                 Stretch = Stretch.UniformToFill,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
                 Source = new BitmapImage(new Uri(src, UriKind.Relative))
             };
             RenderOptions.SetBitmapScalingMode(dummyNodeImage, BitmapScalingMode.HighQuality);
 
             nodeView.inputGrid.Children.Add(dummyNodeImage);
             model.Warning(model.GetDescription(), true);
+
+            UIElement child = nodeView.grid.FindName("zoomGlyphsGrid") as UIElement;
+            nodeView.grid.Children.Remove(child);
+
+            child = nodeView.grid.FindName("nodeColorOverlayZoomIn") as UIElement;
+            nodeView.grid.Children.Remove(child);
+
+            child = nodeView.grid.FindName("nodeBorder") as UIElement;
+            nodeView.grid.Children.Remove(child);
+
+            child = nodeView.grid.FindName("GlyphStackPanel") as UIElement;
+            nodeView.grid.Children.Remove(child);
         }
 
         public void Dispose()
