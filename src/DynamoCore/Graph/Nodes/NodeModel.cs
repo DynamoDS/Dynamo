@@ -2519,11 +2519,6 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        private void RemoveFromSelectionList()
-        {
-            
-        }
-
         #endregion
 
         #region Dirty Management
