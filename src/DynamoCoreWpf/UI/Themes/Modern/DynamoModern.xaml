@@ -2927,7 +2927,6 @@
                         <Border x:Name="border"
                                 Margin="4"
                                 Height="24px"
-                                Width="78"
                                 Padding="8,0,8,0"
                                 BorderThickness="1"
                                 BorderBrush="{TemplateBinding BorderBrush}"
@@ -3966,8 +3965,14 @@
                             BorderBrush="{StaticResource Button.Outline.Default.Border}"
                             CornerRadius="2">
                         <Grid Background="Transparent">
-                            <Rectangle Stroke="#FFFFFF" RadiusX="2" RadiusY="2" Opacity="0.5" StrokeThickness="1"></Rectangle>
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Rectangle Stroke="#FFFFFF" 
+                                       RadiusX="2" 
+                                       RadiusY="2" 
+                                       Opacity="0.5" 
+                                       StrokeThickness="1"/>
+                            <TextBlock HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center" 
+                                       Padding="10,0,10,0">
                                 <ContentPresenter />
                             </TextBlock>
                         </Grid>

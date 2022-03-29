@@ -580,7 +580,7 @@
                                                       Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*"></ColumnDefinition>
-                                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
                                                     </Grid.ColumnDefinitions>
                                                     <StackPanel Orientation="Horizontal"
                                                             Height="30"
@@ -596,7 +596,7 @@
                                                                 Content="{Binding Background, ElementName=buttonColorPicker, Converter={StaticResource BrushColorToStringConverter}}"
                                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                                     </StackPanel>
-                                                    <Grid  Grid.Column="1" Margin="20,0,10,0">
+                                                    <Grid  Grid.Column="1">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="*"></ColumnDefinition>
                                                             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -608,7 +608,6 @@
                                                                 IsEnabled="{Binding IsSaveButtonEnabled}"
                                                                 Click="AddStyle_SaveButton_Click"
                                                                 Content="{x:Static p:Resources.GroupStylesSaveButtonText}"
-                                                                Width="50"
                                                                 Height="30"/>
                                                         <Button x:Name="AddStyle_CancelButton" 
                                                                 Style="{StaticResource OutlinedButtonStyle}"
@@ -616,7 +615,6 @@
                                                                 HorizontalAlignment="Right"
                                                                 Click="AddStyle_CancelButton_Click"
                                                                 Content="{x:Static p:Resources.GroupStylesCancelButtonText}"
-                                                                Width="50"
                                                                 Height="30"/>
                                                     </Grid>
                                                 </Grid>
