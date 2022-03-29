@@ -39,7 +39,6 @@
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
-                        ToolTipService.ShowOnDisabled="True"
                         Style="{StaticResource UpButtonStyle}">
                         <Button.ToolTip>
                             <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipUp}" Style="{StaticResource GenericToolTipLight}"/>
@@ -54,7 +53,6 @@
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
                          Background="{StaticResource PreferencesWindowBackgroundColor}"
-                         ToolTipService.ShowOnDisabled="True"
                          Style="{StaticResource DownButtonStyle}">
                         <Button.ToolTip>
                             <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipDown}" Style="{StaticResource GenericToolTipLight}"/>
