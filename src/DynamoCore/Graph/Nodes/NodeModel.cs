@@ -2437,6 +2437,10 @@ namespace Dynamo.Graph.Nodes
             PreviewPinned = helper.ReadBoolean("isPinned", false);
             IsSelected = helper.ReadBoolean(nameof(IsSelected), IsSelected);
 
+            if (IsSelected)
+                DynamoSelection.Instance.Selection.Add(this);
+            else
+                DynamoSelection.Instance.Selection.Remove(this);
 
             var portInfoProcessed = new HashSet<int>();
 
