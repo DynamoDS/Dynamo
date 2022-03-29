@@ -307,7 +307,7 @@
                                         <Border Height="1"
                                                 Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
                                             <Border Height="1"
-                                                    Width="129"
+                                                    MaxWidth="150"
                                                     Background="{StaticResource NodeContextMenuSeparatorColor}">
                                             </Border>
                                         </Border>
@@ -335,13 +335,14 @@
                                                    Background="{Binding HexColorString, Converter={StaticResource StringToBrushColorConverter}}" 
                                                    Width="15" 
                                                    Height="15"/>
-                                            <Label Name="GroupStyleLabelName"
-                                                   Content ="{Binding Name}"
-                                                   Margin="5,0,5,0"
-                                                   Foreground="{StaticResource NodeContextMenuForeground}"
-                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                   FontSize="14px"
-                                                   FontWeight="Medium"/>
+                                            <TextBlock Text="{Binding Name}" 
+                                                        TextTrimming="CharacterEllipsis"
+                                                        MaxWidth="129"
+                                                        Margin="5,0,5,0"
+                                                        Foreground="{StaticResource NodeContextMenuForeground}"
+                                                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                        FontSize="14px"
+                                                        FontWeight="Medium"/>
                                         </StackPanel>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
