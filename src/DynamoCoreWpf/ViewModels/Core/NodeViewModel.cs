@@ -1249,16 +1249,6 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         internal SolidColorBrush GetWarningColor()
         {
-            // If the WarningBar color is already set to error, just return it as we don't want to override it with warning or info color.
-            if (WarningBarColor == errorColor)
-            {
-                return errorColor;
-            }
-            else if (WarningBarColor == warningColor)
-            {
-                return warningColor;
-            }
-
             if (nodeLogic.IsInErrorState)
             {
                 return errorColor;
