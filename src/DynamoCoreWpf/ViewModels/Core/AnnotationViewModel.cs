@@ -494,7 +494,6 @@ namespace Dynamo.ViewModels
                         AddToCutGeometryDictionary(groupViewModel);
                     }
                 }
-                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Group");
             }
         }
 
