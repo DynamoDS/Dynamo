@@ -34,17 +34,10 @@ namespace CoreNodeModelsWpf.Nodes
             nodeView.inputGrid.Children.Add(dummyNodeImage);
             model.Warning(model.GetDescription(), true);
 
-            UIElement child = nodeView.grid.FindName("zoomGlyphsGrid") as UIElement;
-            nodeView.grid.Children.Remove(child);
-
-            child = nodeView.grid.FindName("nodeColorOverlayZoomIn") as UIElement;
-            nodeView.grid.Children.Remove(child);
-
-            child = nodeView.grid.FindName("nodeBorder") as UIElement;
-            nodeView.grid.Children.Remove(child);
-
-            child = nodeView.grid.FindName("GlyphStackPanel") as UIElement;
-            nodeView.grid.Children.Remove(child);
+            // Grid containing the State overlay Glyphs in Zoomed Out state
+            // Remove so only the 'paperclip' icon appears 
+            UIElement child = nodeView.grid.FindName("zoomGlyphsGrid") as UIElement;    
+            if (child != null) nodeView.grid.Children.Remove(child);
         }
 
         public void Dispose()
