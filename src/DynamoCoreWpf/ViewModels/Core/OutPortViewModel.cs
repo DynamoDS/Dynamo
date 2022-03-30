@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.ComponentModel;
+using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
 using Dynamo.UI.Commands;
@@ -13,6 +15,11 @@ namespace Dynamo.ViewModels
         private DelegateCommand breakConnectionsCommand;
         private DelegateCommand hideConnectionsCommand;
         private DelegateCommand portMouseLeftButtonOnContextCommand;
+
+        private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
+        private static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+        private static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
+        private static SolidColorBrush PortValueMarkerGrey = new SolidColorBrush(Color.FromRgb(153, 153, 153));
 
         private bool showContextMenu;
         private bool areConnectorsHidden;
@@ -98,6 +105,20 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Sets the color of the small rectangular marker on each input port.
+        /// </summary>
+        public SolidColorBrush PortValueMarkerColor
+        {
+            get => portValueMarkerColor;
+            set
+            {
+                portValueMarkerColor = value;
+                RaisePropertyChanged(nameof(PortValueMarkerColor));
+            }
+        }
+      
+
+        /// <summary>
         /// Takes care of the multiple UI concerns when dealing with the Unhide/Hide Wires button
         /// on the output port's context menu.
         /// </summary>
@@ -117,7 +138,31 @@ namespace Dynamo.ViewModels
 
         public OutPortViewModel(NodeViewModel node, PortModel port) :base(node, port)
         {
+            port.PropertyChanged += PortPropertyChanged;
+
             RefreshHideWiresState();
+        }
+
+        private void PortPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(UsingDefaultValue):
+                    RefreshPortColors();
+                    break;
+                case nameof(IsConnected):
+                    RefreshInputPorts();
+                    break;
+            }
+        }
+
+        private void RefreshInputPorts()
+        {
+            foreach (var portViewModel in node.InPorts)
+            {
+                var inPort = (InPortViewModel)portViewModel;
+                inPort.RefreshInputPortsByOutputConnectionChanged(port.IsConnected);
+            }
         }
 
         internal override PortViewModel CreateProxyPortViewModel(PortModel portModel)
@@ -227,6 +272,18 @@ namespace Dynamo.ViewModels
         private void OnMouseLeftButtonDownOnContext(object parameter)
         {
             ShowContextMenu = true;
+        }
+
+        protected override void RefreshPortColors()
+        {            
+            if (node.NodeModel.IsPartiallyApplied)
+            {
+                portValueMarkerColor = PortValueMarkerGrey;
+            }
+            else
+            {
+                portValueMarkerColor = PortValueMarkerBlue;
+            }
         }
     }
 }
