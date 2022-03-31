@@ -192,7 +192,7 @@ namespace Dynamo.Wpf.Views
                 viewModel.EnableGroupStyleWarningState(Res.PreferencesViewEmptyStyleWarning);
             }
             //Means that the Style name to be created already exists
-            else if (viewModel.ValidateExistingStyle(newItem))
+            else if (viewModel.ValidateStyleName(newItem))
             {
                 viewModel.EnableGroupStyleWarningState(Res.PreferencesViewAlreadyExistingStyleWarning);
             }
