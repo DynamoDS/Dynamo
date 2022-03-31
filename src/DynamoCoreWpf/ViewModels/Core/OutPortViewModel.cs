@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
+using Dynamo.UI;
 using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
@@ -16,15 +17,16 @@ namespace Dynamo.ViewModels
         private DelegateCommand hideConnectionsCommand;
         private DelegateCommand portMouseLeftButtonOnContextCommand;
 
-        private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
-        private static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-        private static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
-        private static SolidColorBrush PortValueMarkerGrey = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+        private SolidColorBrush portValueMarkerColor;
+
+        private SolidColorBrush PortValueMarkerBlue;
+        private SolidColorBrush PortValueMarkerGrey;
 
         private bool showContextMenu;
         private bool areConnectorsHidden;
         private string showHideWiresButtonContent = "";
         private bool hideWiresButtonEnabled;
+        private bool portDefaultValueMarkerVisible;
 
         /// <summary>
         /// Sets the condensed styling on Code Block output ports.
@@ -116,7 +118,18 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(PortValueMarkerColor));
             }
         }
-      
+
+
+        public bool PortDefaultValueMarkerVisible 
+        {
+            get => portDefaultValueMarkerVisible;
+            set
+            {
+                portDefaultValueMarkerVisible = value;
+                RaisePropertyChanged(nameof(PortDefaultValueMarkerVisible));
+            }
+        }
+
 
         /// <summary>
         /// Takes care of the multiple UI concerns when dealing with the Unhide/Hide Wires button
@@ -140,7 +153,18 @@ namespace Dynamo.ViewModels
         {
             port.PropertyChanged += PortPropertyChanged;
 
+            var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
+            
+            PortValueMarkerBlue = (SolidColorBrush)resourceDictionary["PortValueMarkerBlue"];
+            PortValueMarkerGrey = (SolidColorBrush)resourceDictionary["PortValueMarkerGrey"];
+
             RefreshHideWiresState();
+        }
+
+        public override void Dispose()
+        {
+            port.PropertyChanged -= PortPropertyChanged;
+            base.Dispose();
         }
 
         private void PortPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -269,6 +293,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+
         private void OnMouseLeftButtonDownOnContext(object parameter)
         {
             ShowContextMenu = true;
@@ -278,11 +303,12 @@ namespace Dynamo.ViewModels
         {            
             if (node.NodeModel.IsPartiallyApplied)
             {
+                PortDefaultValueMarkerVisible = true;
                 portValueMarkerColor = PortValueMarkerGrey;
             }
             else
             {
-                portValueMarkerColor = PortValueMarkerBlue;
+                PortDefaultValueMarkerVisible = false;
             }
         }
     }

@@ -103,6 +103,7 @@
                        VerticalAlignment="Center"
                        Fill="{Binding PortValueMarkerColor, UpdateSourceTrigger=PropertyChanged}"
                        IsHitTestVisible="False"
+                       Visibility="{Binding PortDefaultValueMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                        SnapsToDevicePixels="True" />
        
             <!--  Grid containing the Port Name TextBox  -->

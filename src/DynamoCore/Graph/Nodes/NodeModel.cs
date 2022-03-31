@@ -891,7 +891,7 @@ namespace Dynamo.Graph.Nodes
         ///     Are all the outputs of this node connected?
         /// </summary>
         [JsonIgnore]
-        public bool AllOutputsConnected
+        public bool AreAllOutputsConnected
         {
             get { return outPorts.All(p => p.IsConnected); }
         }
