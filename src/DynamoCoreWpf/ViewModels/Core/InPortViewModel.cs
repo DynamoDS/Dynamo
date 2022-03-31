@@ -147,14 +147,8 @@ namespace Dynamo.ViewModels
 
         public InPortViewModel(NodeViewModel node, PortModel port) : base(node, port)
         {
-            port.PropertyChanged += PortPropertyChanged;
-            
+            port.PropertyChanged += PortPropertyChanged;            
             RefreshPortDefaultValueMarkerVisible();
-        }
-
-        private void OutPorts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            
         }
 
         public override void Dispose()
@@ -332,7 +326,7 @@ namespace Dynamo.ViewModels
             // Port isn't connected and has no default value (or isn't using it)
             else
             {
-                PortValueMarkerColor = port.IsConnected ? PortValueMarkerBlue: PortValueMarkerRed;
+                PortValueMarkerColor = port.IsConnected ? PortValueMarkerBlue : PortValueMarkerRed;
                 PortBackgroundColor = PortBackgroundColorDefault;
                 PortBorderBrushColor = PortBorderBrushColorDefault;
             }
