@@ -147,7 +147,7 @@ namespace Dynamo.ViewModels
 
         public InPortViewModel(NodeViewModel node, PortModel port) : base(node, port)
         {
-            port.PropertyChanged += PortPropertyChanged;            
+            port.PropertyChanged += PortPropertyChanged;
             RefreshPortDefaultValueMarkerVisible();
         }
 
