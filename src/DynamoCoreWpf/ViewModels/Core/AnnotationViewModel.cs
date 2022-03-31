@@ -494,7 +494,6 @@ namespace Dynamo.ViewModels
                         AddToCutGeometryDictionary(groupViewModel);
                     }
                 }
-                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Group");
             }
         }
 
@@ -1153,6 +1152,7 @@ namespace Dynamo.ViewModels
 
                 AddToCutGeometryDictionary(groupViewModel);
             }
+            WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
         private void RemoveKeyFromCutGeometryDictionary(string groupGuid)

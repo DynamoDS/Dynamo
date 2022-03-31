@@ -148,11 +148,13 @@
 
     <!--  Bubble preview  -->
     <SolidColorBrush x:Key="BubblePreviewBorderColor" Color="#aaaaaa" />
-    <SolidColorBrush x:Key="UnpinnedIconForegroundColor" Color="#808080" />
+    <SolidColorBrush x:Key="UnpinnedIconForegroundColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="PinnedIconForegroundColor" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="UnpinnedIconBackgroundColor" Color="White" />
-    <SolidColorBrush x:Key="PinnedIconBackgroundColor" Color="#FF5E5C5A" />
-    <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#c6c6c6" />
+    <SolidColorBrush x:Key="UnpinnedIconBackgroundColor" Color="#6AC0E7" />
+    <SolidColorBrush x:Key="PinnedIconBackgroundColor" Color="#666666" />
+    <Color x:Key="PinnedIconBackgroundColorAnimation">#666666</Color>
+    <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#6AC0E7" />
+    <SolidColorBrush x:Key="PinnedIconHoverBorderBrushColor" Color="#38ABDF" />
 
     <!--  Port color  -->
     <SolidColorBrush x:Key="PortKeepListStructureBackground" Color="#537E91" />

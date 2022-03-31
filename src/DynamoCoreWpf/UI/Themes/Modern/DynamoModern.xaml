@@ -2691,6 +2691,93 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/close_blue.png" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DownButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="downIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/down_16_16.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="downIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/down-hover-16px.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="UpButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="upIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/up_16_16.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="upIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/up-hover-16px.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="FolderButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="folderIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/folder_16_16.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="folderIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/folder-hover-16px.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MenuButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="menuIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/menu_16_16.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="menuIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/menu-hover-16px.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -2805,6 +2892,67 @@
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Opacity" Value="0.9" />
                             <Setter TargetName="mousePressedBorder" Property="Visibility " Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--This style is similar than SolidButtonStyle (used in several buttons in the PreferencesView), the only changes are in a Border.Height, TextBlock.FontSize and the Background color triggered when the Button is disabled. I think the FontSize/Height is smaller due that the AddStyle button is in a smaller space than the other buttons (based in the Figma design).-->
+    <Style x:Key="SolidButtonStyleSmaller" TargetType="Button">
+        <Setter Property="BorderBrush" Value="{StaticResource PreferencesWindowButtonColor}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource PreferencesWindowButtonColor}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="15,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="mouseOverBorder"
+                                Margin="2"
+                                BorderThickness="2"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                Visibility="Hidden"
+                                CornerRadius="2"/>
+                        <Border x:Name="mousePressedBorder"
+                                Margin="0"
+                                BorderThickness="4"
+                                Visibility="Hidden"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="4"/>
+                        <Border x:Name="border"
+                                Margin="4"
+                                Height="24px"
+                                Padding="8,0,8,0"
+                                BorderThickness="1"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="2">
+                            <TextBlock x:Name="textBlock"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="12px"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       Text="{TemplateBinding Content}" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.9" />
+                            <Setter TargetName="mouseOverBorder" Property="Visibility " Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.9" />
+                            <Setter TargetName="mousePressedBorder" Property="Visibility " Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#0696D7" />
+                            <Setter TargetName="border" Property="Opacity" Value="0.6" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -3797,46 +3945,6 @@
         </Setter>
     </Style>
 
-    <!--  This Style will be used in the button for adding a Style in the "Group Styles" section  -->
-    <Style x:Key="FlatButtonStyle" TargetType="Button">
-        <Setter Property="Foreground" Value="{StaticResource Blue300Brush}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border x:Name="ButtonBorder"
-                            Background="Transparent"
-                            BorderBrush="#E0E0E0"
-                            CornerRadius="4">
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <ContentPresenter />
-                        </TextBlock>
-                    </Border>
-                    <!--  Following the Autodesk Hig Standards some colors of the button will be changed according to the event  -->
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="1" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2" />
-                        </Trigger>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#A2D4EB" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <!--  When the mouse is over the button the cursor will change to a hand  -->
-            <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="Cursor" Value="Hand" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Foreground" Value="#BBBBBB" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
     <SolidColorBrush x:Key="Button.Outline.MouseOver.Border"
                      Opacity="0.15"
                      Color="#FFFFFF" />
@@ -3857,8 +3965,14 @@
                             BorderBrush="{StaticResource Button.Outline.Default.Border}"
                             CornerRadius="2">
                         <Grid Background="Transparent">
-                            <Rectangle Stroke="#FFFFFF" RadiusX="2" RadiusY="2" Opacity="0.5" StrokeThickness="1"></Rectangle>
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Rectangle Stroke="#FFFFFF" 
+                                       RadiusX="2" 
+                                       RadiusY="2" 
+                                       Opacity="0.5" 
+                                       StrokeThickness="1"/>
+                            <TextBlock HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center" 
+                                       Padding="10,0,10,0">
                                 <ContentPresenter />
                             </TextBlock>
                         </Grid>

@@ -19,6 +19,8 @@ namespace Dynamo.PackageDetails
         private string packageVersionNumber;
         private string hosts;
         private string pythonVersion;
+        private string copyRightHolder;
+        private string copyRightYear;
         private List<string> packages;
         private bool canInstall;
         private string packageName;
@@ -81,6 +83,32 @@ namespace Dynamo.PackageDetails
         }
 
         /// <summary>
+        /// The Copyright holder
+        /// </summary>
+        public string CopyRightHolder
+        {
+            get => copyRightHolder;
+            set
+            {
+                copyRightHolder = value;
+                RaisePropertyChanged(nameof(CopyRightHolder));
+            }
+        }
+
+        /// <summary>
+        /// The Copyright Year
+        /// </summary>
+        public string CopyRightYear
+        {
+            get => copyRightYear;
+            set
+            {
+                copyRightYear = value;
+                RaisePropertyChanged(nameof(CopyRightYear));
+            }
+        }
+
+        /// <summary>
         /// The version of Python referenced in this package, if any
         /// </summary>
         public string PythonVersion
@@ -129,6 +157,8 @@ namespace Dynamo.PackageDetails
             this.PackageName = packageName;
             this.PackageVersion = packageVersion;
             this.PackageVersionNumber = PackageVersion.version;
+            this.CopyRightHolder = PackageVersion.copyright_holder;
+            this.CopyRightYear = PackageVersion.copyright_year;
             this.CanInstall = canInstall;
             
             // To avoid displaying package self-dependencies.

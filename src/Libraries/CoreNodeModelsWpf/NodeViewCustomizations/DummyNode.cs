@@ -1,4 +1,5 @@
 using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -24,12 +25,19 @@ namespace CoreNodeModelsWpf.Nodes
                 Width = 66.0,
                 Height = 66.0,
                 Stretch = Stretch.UniformToFill,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
                 Source = new BitmapImage(new Uri(src, UriKind.Relative))
             };
             RenderOptions.SetBitmapScalingMode(dummyNodeImage, BitmapScalingMode.HighQuality);
 
             nodeView.inputGrid.Children.Add(dummyNodeImage);
             model.Warning(model.GetDescription(), true);
+
+            // Grid containing the State overlay Glyphs in Zoomed Out state
+            // Remove so only the 'paperclip' icon appears 
+            UIElement child = nodeView.grid.FindName("zoomGlyphsGrid") as UIElement;    
+            if (child != null) nodeView.grid.Children.Remove(child);
         }
 
         public void Dispose()
