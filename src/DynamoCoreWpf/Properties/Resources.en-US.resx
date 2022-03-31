@@ -2863,6 +2863,14 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Python</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
   </data>
+  <data name="PackageDetailsCopyRightHolder" xml:space="preserve">
+    <value>Copyright Holder</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsCopyRightYear" xml:space="preserve">
+    <value>Copyright Year</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>Package</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>

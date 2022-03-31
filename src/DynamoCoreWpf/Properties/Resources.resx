@@ -1282,6 +1282,14 @@ You will get a chance to save your work.</value>
     <value>Python</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
   </data>
+  <data name="PackageDetailsCopyRightHolder" xml:space="preserve">
+    <value>Copyright Holder</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsCopyRightYear" xml:space="preserve">
+    <value>Copyright Year</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>Package</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
