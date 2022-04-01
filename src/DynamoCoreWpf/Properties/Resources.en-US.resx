@@ -3063,28 +3063,4 @@ To install the latest version of a package, click Install. \n
   <data name="GroupStylesSaveButtonText" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="GroupStyleDefaultActions" xml:space="preserve">
-    <value>Actions</value>
-  </data>
-  <data name="GroupStyleDefaultActionsColor" xml:space="preserve">
-    <value>B9F9E1</value>
-  </data>
-  <data name="GroupStyleDefaultInputs" xml:space="preserve">
-    <value>Inputs</value>
-  </data>
-  <data name="GroupStyleDefaultInputsColor" xml:space="preserve">
-    <value>FFB8D8</value>
-  </data>
-  <data name="GroupStyleDefaultOutputs" xml:space="preserve">
-    <value>Outputs</value>
-  </data>
-  <data name="GroupStyleDefaultOutputsColor" xml:space="preserve">
-    <value>FFC999</value>
-  </data>
-  <data name="GroupStyleDefaultReview" xml:space="preserve">
-    <value>Review</value>
-  </data>
-  <data name="GroupStyleDefaultReviewColor" xml:space="preserve">
-    <value>A4E1FF</value>
-  </data>
 </root>

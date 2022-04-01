@@ -7,7 +7,6 @@ using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Properties;
 
 namespace Dynamo.Configuration
 {
@@ -591,6 +590,7 @@ namespace Dynamo.Configuration
         /// </returns>
         public static PreferenceSettings Load(string filePath)
         {
+            // Constructor will be called anyway in either condition below so no need to initialize now.
             PreferenceSettings settings = null;
 
             if (String.IsNullOrEmpty(filePath) || (!File.Exists(filePath)))
@@ -619,7 +619,7 @@ namespace Dynamo.Configuration
         /// <returns></returns>
         internal bool AddNewStyle(GroupStyleItem item)
         {
-            if (!GroupStyleItemsList.Any(x => x.Guid == item.Guid))
+            if (!GroupStyleItemsList.Any(x => x.Name == item.Name))
             {
                 GroupStyleItemsList.Add(item);
                 return true;

@@ -1,4 +1,12 @@
-﻿using Dynamo.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Events;
 using Dynamo.Graph.Workspaces;
@@ -7,16 +15,7 @@ using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PythonServices;
 using Dynamo.Utilities;
-using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.Core.Converters;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -428,7 +427,6 @@ namespace Dynamo.ViewModels
         public void AddStyle(StyleItem style)
         {
             preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { 
-                Guid = new Guid(),
                 HexColorString = style.HexColorString, 
                 Name = style.Name, 
                 IsDefault = style.IsDefault
@@ -845,9 +843,9 @@ namespace Dynamo.ViewModels
             //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;
 
-            // Initialize group styles
-            LoadStyles();
-          
+            // Initialize group styles with default and non-default GroupStyleItems
+            StyleItemsList = GroupStyleItem.DefaultGroupStyleItems.AddRange(preferenceSettings.GroupStyleItemsList.Where(style => style.IsDefault != true)).ToObservableCollection();
+
             //When pressing the "Add Style" button some controls will be shown with some values by default so later they can be populated by the user
             AddStyleControl = new StyleItem() { Name = string.Empty, HexColorString = GetRandomHexStringColor() };
 
@@ -897,19 +895,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         private void LoadStyles()
         {
-            // Add the Default GroupStyles that are shown in the Preferences panel.
-            var defaultGroupStylesList = preferenceSettings.GroupStyleItemsList.Where(style => style.IsDefault == true);
-            // Just in case the Default profiles have not been added then are added.
-            if (!defaultGroupStylesList.Any())
-            {
-                preferenceSettings.AddNewStyle(new GroupStyleItem() { Name = Resources.GroupStyleDefaultActions, HexColorString = Resources.GroupStyleDefaultActionsColor, IsDefault = true });
-                preferenceSettings.AddNewStyle(new GroupStyleItem() { Name = Resources.GroupStyleDefaultInputs, HexColorString = Resources.GroupStyleDefaultInputsColor, IsDefault = true });
-                preferenceSettings.AddNewStyle(new GroupStyleItem() { Name = Resources.GroupStyleDefaultOutputs, HexColorString = Resources.GroupStyleDefaultOutputsColor, IsDefault = true });
-                preferenceSettings.AddNewStyle(new GroupStyleItem() { Name = Resources.GroupStyleDefaultReview, HexColorString = Resources.GroupStyleDefaultReviewColor, IsDefault = true });
-            }
 
-            // Add non-default GroupStyles
-            StyleItemsList.AddRange(preferenceSettings.GroupStyleItemsList.Where(style => style.IsDefault != true));
         }
 
         /// <summary>
@@ -1122,7 +1108,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="item1"></param>
         /// <returns></returns>
-        internal bool ValidateStyleName(StyleItem item1)
+        internal bool IsStyleNameValid(StyleItem item1)
         {
             return StyleItemsList.Where(x => x.Name.Equals(item1.Name)).Any();
         }
@@ -1130,11 +1116,11 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// This method will check if the name of Style that is being created already exists in the Styles list
         /// </summary>
-        /// <param name="item1"></param>
+        /// <param name="item">target style to be checked</param>
         /// <returns></returns>
-        internal bool ValidateStyleGuid(StyleItem item1)
+        internal bool ValidateStyleGuid(StyleItem item)
         {
-            return StyleItemsList.Where(x => x.Guid.Equals(item1.Name)).Any();
+            return StyleItemsList.Where(x => x.Name.Equals(item.Name)).Any();
         }
 
         /// <summary>

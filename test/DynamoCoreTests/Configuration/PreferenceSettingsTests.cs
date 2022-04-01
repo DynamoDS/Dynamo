@@ -1,7 +1,7 @@
-﻿using Dynamo.Configuration;
+﻿using System.IO;
+using Dynamo.Configuration;
 using Dynamo.Models;
 using NUnit.Framework;
-using System.IO;
 
 namespace Dynamo.Tests.Configuration
 {
