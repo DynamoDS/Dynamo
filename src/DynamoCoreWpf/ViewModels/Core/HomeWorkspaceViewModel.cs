@@ -164,8 +164,9 @@ namespace Dynamo.Wpf.ViewModels.Core
             }
         
             bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
+            bool hasErrors = Model.Nodes.Any(n => n.State == ElementState.Error);
 
-            if (!hasWarnings)
+            if (!hasWarnings && !hasErrors)
             {
                 if (Model.ScaleFactorChanged)
                 {
@@ -176,7 +177,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                     SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunCompletedMessage);
                 }
             }
-            else
+            else if(hasWarnings && !hasErrors)
             {
                 if (Model.ScaleFactorChanged)
                 {
@@ -185,6 +186,17 @@ namespace Dynamo.Wpf.ViewModels.Core
                 else
                 {
                     SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage);
+                }
+            }
+            else
+            {
+                if (Model.ScaleFactorChanged)
+                {
+                    SetCurrentWarning(NotificationLevel.Error, Properties.Resources.RunCompletedWithScaleChangeAndErrorsMessage);
+                }
+                else
+                {
+                    SetCurrentWarning(NotificationLevel.Error, Properties.Resources.RunCompletedWithErrorsMessage);
                 }
             }
         }

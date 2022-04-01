@@ -3055,4 +3055,10 @@ To install the latest version of a package, click Install. \n
   <data name="GroupStylesSaveButtonText" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="RunCompletedWithErrorsMessage" xml:space="preserve">
+    <value>Run completed with errors.</value>
+  </data>
+  <data name="RunCompletedWithScaleChangeAndErrorsMessage" xml:space="preserve">
+    <value>Run completed with errors on setting new working range.</value>
+  </data>
 </root>
