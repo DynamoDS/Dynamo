@@ -423,7 +423,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Used to add styles to the StyleItemsListe while also update the saved changes label
         /// </summary>
-        /// <param name="style"></param>
+        /// <param name="style">style to be added</param>
         public void AddStyle(StyleItem style)
         {
             preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { 
@@ -890,15 +890,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// This method loads the group styles defined by the user and stored in the xml file
-        /// </summary>
-        /// <returns></returns>
-        private void LoadStyles()
-        {
-
-        }
-
-        /// <summary>
         /// This method will be executed every time the WorkspaceModel.ScaleFactor value is updated.
         /// </summary>
         /// <param name="args"></param>
@@ -1093,24 +1084,25 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// This method will remove the current Style selected from the Styles list
+        /// This method will remove the current Style selected from the Styles list by name
         /// </summary>
-        /// <param name="groupName"></param>
-        internal void RemoveStyleEntry(string groupName)
+        /// <param name="styleName"></param>
+        internal void RemoveStyleEntry(string styleName)
         {
-            GroupStyleItem itemToRemovePreferences = preferenceSettings.GroupStyleItemsList.FirstOrDefault(x => x.Name.Equals(groupName));
+            GroupStyleItem itemToRemovePreferences = preferenceSettings.GroupStyleItemsList.FirstOrDefault(x => x.Name.Equals(styleName));
             preferenceSettings.GroupStyleItemsList.Remove(itemToRemovePreferences);
+            RaisePropertyChanged(nameof(StyleItemsList));
             UpdateSavedChangesLabel();
         }
 
         /// <summary>
         /// This method will check if the name of Style that is being created already exists in the Styles list
         /// </summary>
-        /// <param name="item1"></param>
+        /// <param name="item">target style item to check</param>
         /// <returns></returns>
-        internal bool IsStyleNameValid(StyleItem item1)
+        internal bool IsStyleNameValid(StyleItem item)
         {
-            return StyleItemsList.Where(x => x.Name.Equals(item1.Name)).Any();
+            return StyleItemsList.Where(x => x.Name.Equals(item.Name)).Any();
         }
 
         /// <summary>

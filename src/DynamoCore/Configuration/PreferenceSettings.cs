@@ -613,21 +613,6 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Add single style item
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        internal bool AddNewStyle(GroupStyleItem item)
-        {
-            if (!GroupStyleItemsList.Any(x => x.Name == item.Name))
-            {
-                GroupStyleItemsList.Add(item);
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
         /// Returns the static Python template file path.
         /// When the file exists and is not empty, its contents are used to populate new Python Script nodes added to the Dynamo workspace.
         /// </summary>

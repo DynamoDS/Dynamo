@@ -834,9 +834,6 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="FileLoadFailureMessageBoxTitle" xml:space="preserve">
     <value>File load failure</value>
   </data>
-  <data name="ToolTipInputData" xml:space="preserve">
-    <value>Input Data</value>
-  </data>
   <data name="GroupStyleDefaultActions" xml:space="preserve">
     <value>Actions</value>
   </data>
@@ -860,5 +857,8 @@ This package likely contains an assembly that is blocked. You will need to load 
   </data>
   <data name="GroupStyleDefaultReviewColor" xml:space="preserve">
     <value>A4E1FF</value>
+  </data>
+  <data name="ToolTipInputData" xml:space="preserve">
+    <value>Input Data</value>
   </data>
 </root>
