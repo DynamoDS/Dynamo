@@ -36,8 +36,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid HorizontalAlignment="Stretch">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -82,8 +83,29 @@
             </TextBlock>
         </Border>
 
+        <ItemsControl x:Name="footerIconError"
+                      VerticalAlignment="Center"
+                      Grid.Column="1"
+                      ItemsSource="{Binding Path=HomeSpaceViewModel.FooterNotificationItems, UpdateSourceTrigger=PropertyChanged}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Style="{StaticResource FooterNotificationItemStyle}" CornerRadius="3">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Width="12" Source="{Binding NotificationImage}"/>
+                            <Label Content="{Binding NotificationCount}" FontSize="12" Padding="2" Foreground="{StaticResource PrimaryCharcoal200Brush}"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        
         <StackPanel Orientation="Horizontal"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Margin="30,0"

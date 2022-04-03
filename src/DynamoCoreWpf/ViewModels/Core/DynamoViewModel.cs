@@ -140,9 +140,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public WorkspaceViewModel HomeSpaceViewModel
+        public HomeWorkspaceViewModel HomeSpaceViewModel
         {
-            get { return Workspaces.FirstOrDefault(w => w.Model is HomeWorkspaceModel); }
+            get { return Workspaces.FirstOrDefault(w => w.Model is HomeWorkspaceModel) as HomeWorkspaceViewModel; }
         }
 
         public EngineController EngineController { get { return Model.EngineController; } }

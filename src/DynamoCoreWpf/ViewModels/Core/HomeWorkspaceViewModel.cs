@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
+using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -20,6 +22,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         private NotificationLevel curentNotificationLevel;
         private string currentNotificationMessage;
+        private ObservableCollection<FooterNotificationItem> footerNotificationItems;
 
         #endregion
 
@@ -55,6 +58,20 @@ namespace Dynamo.Wpf.ViewModels.Core
             }
         }
 
+        /// <summary>
+        /// Contains all footer notification item bindings
+        /// </summary>
+        [JsonIgnore]
+        public ObservableCollection<FooterNotificationItem> FooterNotificationItems
+        {
+            get { return footerNotificationItems; }
+            set
+            {
+                footerNotificationItems = value;
+                RaisePropertyChanged("FooterNotificationItems");
+            }
+        }
+
         public HomeWorkspaceViewModel(HomeWorkspaceModel model, DynamoViewModel dynamoViewModel)
             : base(model, dynamoViewModel)
         {
@@ -72,6 +89,8 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
 
             dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
+
+            footerNotificationItems = new ObservableCollection<FooterNotificationItem>();
         }
 
         void Model_ShutdownStarted(DynamoModel model)
@@ -199,6 +218,23 @@ namespace Dynamo.Wpf.ViewModels.Core
                     SetCurrentWarning(NotificationLevel.Error, Properties.Resources.RunCompletedWithErrorsMessage);
                 }
             }
+
+            SetFooterItems(hasWarnings, hasErrors);
+        }
+
+        /// <summary>
+        /// Updates the Info, Warning and Error footer notification items
+        /// </summary>
+        /// <param name="hasWarnings"></param>
+        /// <param name="hasErrors"></param>
+        private void SetFooterItems(bool hasWarnings, bool hasErrors)
+        {
+            List<FooterNotificationItem> footerItems = new List<FooterNotificationItem>(); //TODO : change to 3 when Info is implemented
+
+            footerItems.Add( new FooterNotificationItem() { NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Error), NotificationImage = "/DynamoCoreWpf;component/UI/Images/error.png" });
+            footerItems.Add( new FooterNotificationItem() { NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning), NotificationImage = "/DynamoCoreWpf;component/UI/Images/warning_16px.png" });
+
+            FooterNotificationItems = new ObservableCollection<FooterNotificationItem>( footerItems );
         }
 
         private void UpdateNodeInfoBubbleContent(EvaluationCompletedEventArgs evalargs)
@@ -314,5 +350,21 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             throw new NotImplementedException();
         }
+    }
+
+    /// <summary>
+    /// An object that contains information about the number of 
+    /// Info, Warning or Error Nodes after a Run 
+    /// </summary>
+    public class FooterNotificationItem : NotificationObject
+    {
+        /// <summary>
+        /// The number of Warnings, Errors or Info Nodes
+        /// </summary>
+        public int NotificationCount { get; set; }
+        /// <summary>
+        /// The glyph assocaited with this footer item
+        /// </summary>
+        public string NotificationImage { get; set; }
     }
 }

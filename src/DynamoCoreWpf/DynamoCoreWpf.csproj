@@ -18,6 +18,7 @@
     <None Remove="UI\Images\NodeStates\frozen-64px.png" />
     <None Remove="UI\Images\NodeStates\hidden-64px.png" />
     <None Remove="UI\Images\NodeStates\info-64px.png" />
+    <None Remove="UI\Images\warning_16px.png" />
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
@@ -753,6 +754,7 @@
     <Resource Include="UI\Images\NodeStates\frozen-64px.png" />
     <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
     <Resource Include="UI\Images\NodeStates\info-64px.png" />
+    <Resource Include="UI\Images\warning_16px.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\whiteclosetab.png" />
