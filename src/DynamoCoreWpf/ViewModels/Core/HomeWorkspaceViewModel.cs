@@ -302,9 +302,9 @@ namespace Dynamo.Wpf.ViewModels.Core
                 case NotificationLevel.Mild:
                     return new SolidColorBrush(Colors.Gray);
                 case NotificationLevel.Moderate:
-                    return new SolidColorBrush(Colors.Gold);
+                    return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FAA21B"));
                 case NotificationLevel.Error:
-                    return new SolidColorBrush(Colors.Tomato);
+                    return (SolidColorBrush)(new BrushConverter().ConvertFrom("#EB5555"));
                 default:
                     return new SolidColorBrush(Colors.Gray);
             }

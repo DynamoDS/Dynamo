@@ -6,6 +6,7 @@
              xmlns:core="clr-namespace:Dynamo.Wpf.ViewModels.Core"
              xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
              xmlns:converters="clr-namespace:Dynamo.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              d:DataContext="{d:DesignInstance Type=viewmodels:DynamoViewModel}"
              mc:Ignorable="d"
@@ -13,8 +14,26 @@
              d:DesignWidth="300">
 
     <UserControl.Resources>
-        <core:NotificationLevelToColorConverter x:Key="NotificationLevelToColorConverter"></core:NotificationLevelToColorConverter>
-        <converters:LinterIssueCountToVisibilityConverter x:Key="LinterIssueCountToVisibilityConverter" />
+        <ResourceDictionary>
+            <Style TargetType="{x:Type Border}" x:Key="FooterNotificationItemStyle">
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="CornerRadius" Value="4"/>
+                <Setter Property="Margin" Value="5 10 0 10"/>
+                <Setter Property="Padding" Value="5 0"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="UseLayoutRounding" Value="True"/>
+                <Setter Property="Height" Value="26"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Background" Value="{StaticResource DarkMidGreyBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource LightGreyBrush}"/>
+            </Style>
+            <core:NotificationLevelToColorConverter x:Key="NotificationLevelToColorConverter"></core:NotificationLevelToColorConverter>
+            <converters:LinterIssueCountToVisibilityConverter x:Key="LinterIssueCountToVisibilityConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid HorizontalAlignment="Stretch">
@@ -22,35 +41,47 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
-                   FontStyle="Italic"
-                   FontSize="12"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Stretch"
-                   TextAlignment="Right"
-                   TextTrimming="WordEllipsis"
-                   Margin="10"
-                   Foreground="{Binding Path=HomeSpaceViewModel.CurrentNotificationLevel, 
-                            Converter={StaticResource NotificationLevelToColorConverter}}">
-            <TextBlock.Triggers>
+
+        <!-- "Run completed with .." UI element -->
+        <Border Style="{StaticResource FooterNotificationItemStyle}"
+                Background="{StaticResource DarkMidGreyBrush}"
+                Visibility="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage, 
+                                NotifyOnTargetUpdated=True,
+                                Converter={StaticResource EmptyStringToCollapsedConverter}}"
+                BorderBrush="{Binding Path=HomeSpaceViewModel.CurrentNotificationLevel, 
+                                Converter={StaticResource NotificationLevelToColorConverter}}">
+            <!-- Animate the appearance and disapearance of the notification text element.
+            The element will pop in, stay on for 5 second, and fade out.
+            TO DO: Is that the desired behaviour? -->
+            <Border.Triggers>
                 <EventTrigger RoutedEvent="Binding.TargetUpdated">
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(TextBlock.Opacity)">
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Opacity)">
                                 <LinearDoubleKeyFrame Value="0"
-                                                      KeyTime="0:0:0" />
+                                                          KeyTime="0:0:0" />
                                 <LinearDoubleKeyFrame Value="1"
-                                                      KeyTime="0:0:0.35" />
+                                                          KeyTime="0:0:0.35" />
                                 <LinearDoubleKeyFrame Value="1"
-                                                      KeyTime="0:0:5" />
+                                                          KeyTime="0:0:5" />
                                 <LinearDoubleKeyFrame Value="0"
-                                                      KeyTime="0:0:5.35" />
+                                                          KeyTime="0:0:5.35" />
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
-            </TextBlock.Triggers>
-        </TextBlock>
+            </Border.Triggers>
+            <TextBlock Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
+                       FontStyle="Italic"
+                       FontSize="12"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Stretch"
+                       TextAlignment="Right"
+                       TextTrimming="WordEllipsis"
+                       Foreground="{StaticResource PrimaryCharcoal200Brush}">
+            </TextBlock>
+        </Border>
+
         <StackPanel Orientation="Horizontal"
                     Grid.Column="1"
                     HorizontalAlignment="Right"
