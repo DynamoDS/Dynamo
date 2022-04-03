@@ -353,6 +353,23 @@ namespace Dynamo.Wpf.ViewModels.Core
     }
 
     /// <summary>
+    /// Value converter from 0 to Visibility Colapsed
+    /// </summary>
+    public class ZeroToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if((int)value == 0)            
+                return System.Windows.Visibility.Collapsed;
+            return System.Windows.Visibility.Visible;            
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
     /// An object that contains information about the number of 
     /// Info, Warning or Error Nodes after a Run 
     /// </summary>

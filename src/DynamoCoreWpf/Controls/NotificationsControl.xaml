@@ -28,6 +28,7 @@
                 <Setter Property="BorderBrush" Value="{StaticResource LightGreyBrush}"/>
             </Style>
             <core:NotificationLevelToColorConverter x:Key="NotificationLevelToColorConverter"></core:NotificationLevelToColorConverter>
+            <core:ZeroToVisibilityCollapsedConverter x:Key="ZeroToVisibilityCollapsedConverter" />
             <converters:LinterIssueCountToVisibilityConverter x:Key="LinterIssueCountToVisibilityConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -92,7 +93,10 @@
                     <Border Style="{StaticResource FooterNotificationItemStyle}" CornerRadius="3">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <Image Width="12" Source="{Binding NotificationImage}"/>
-                            <Label Content="{Binding NotificationCount}" FontSize="12" Padding="2" Foreground="{StaticResource PrimaryCharcoal200Brush}"/>
+                            <Label Content="{Binding NotificationCount}" 
+                                   FontSize="12" Padding="2" 
+                                   Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                   Visibility="{Binding NotificationCount, Converter={StaticResource ZeroToVisibilityCollapsedConverter}}"/>
                         </StackPanel>
                     </Border>
                 </DataTemplate>
