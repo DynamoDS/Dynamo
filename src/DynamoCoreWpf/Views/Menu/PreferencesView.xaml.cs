@@ -316,5 +316,10 @@ namespace Dynamo.Wpf.Views
                 viewModel.IsWarningEnabled = false;
             }
         }
+
+        private void GroupStylesListBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            GroupStylesListBox.UnselectAll();
+        }
     }
 }
