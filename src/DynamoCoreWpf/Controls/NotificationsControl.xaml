@@ -73,7 +73,8 @@
                     </BeginStoryboard>
                 </EventTrigger>
             </Border.Triggers>
-            <TextBlock Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
+            <TextBlock x:Name="runNotificationTextBlock"
+                        Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
                        FontStyle="Italic"
                        FontSize="12"
                        VerticalAlignment="Center"
@@ -84,7 +85,7 @@
             </TextBlock>
         </Border>
 
-        <ItemsControl x:Name="footerIconError"
+        <ItemsControl x:Name="footerIconItemsControl"
                       VerticalAlignment="Center"
                       Grid.Column="1"
                       ItemsSource="{Binding Path=HomeSpaceViewModel.FooterNotificationItems, UpdateSourceTrigger=PropertyChanged}">
@@ -92,8 +93,9 @@
                 <DataTemplate>
                     <Border Style="{StaticResource FooterNotificationItemStyle}" CornerRadius="3">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Image Width="12" Source="{Binding NotificationImage}"/>
-                            <Label Content="{Binding NotificationCount}" 
+                            <Image x:Name="footerIconImage" Width="12" Source="{Binding NotificationImage}"/>
+                            <Label x:Name="footerIconText"
+                                   Content="{Binding NotificationCount}" 
                                    FontSize="12" Padding="2" 
                                    Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                    Visibility="{Binding NotificationCount, Converter={StaticResource ZeroToVisibilityCollapsedConverter}}"/>
