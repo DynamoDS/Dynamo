@@ -2948,6 +2948,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color.
+        /// </summary>
+        public static string GroupContextMenuColor {
+            get {
+                return ResourceManager.GetString("GroupContextMenuColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete Group.
         /// </summary>
         public static string GroupContextMenuDeleteGroup {
