@@ -322,6 +322,11 @@ namespace Dynamo.Applications
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
             config.StartInTestMode = CLImode ? true : false;
             config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
+            config.CLIMode = CLImode;
+            if (CLImode)
+            {
+                config.ProcessMode = TaskProcessMode.Synchronous;
+            }            
 
             var model = DynamoModel.Start(config);
             return model;
