@@ -379,6 +379,7 @@ namespace Dynamo.ViewModels
             {
                 case "ActiveConnector":
                     RaisePropertyChanged(nameof(IsHitTestVisible));
+                    RefreshPortColors();
                     break;
                 default:
                     break;
@@ -394,6 +395,7 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(State):
                     RaisePropertyChanged(nameof(State));
+                    RefreshPortColors();
                     break;
                 case nameof(ToolTipContent):
                     RaisePropertyChanged(nameof(ToolTipContent));
