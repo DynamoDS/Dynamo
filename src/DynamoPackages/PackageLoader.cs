@@ -249,7 +249,8 @@ namespace Dynamo.PackageManager
             List<Assembly> failedNodeLibs = new List<Assembly>();
             try
             {
-                bool fatalError = false;
+                List<Assembly> blockedAssemblies = new List<Assembly>();
+                var genericFatalError = false;
                 // Try to load node libraries from all assemblies
                 foreach (var assem in package.EnumerateAndLoadAssembliesInBinDirectory())
                 {
@@ -260,25 +261,30 @@ namespace Dynamo.PackageManager
                             OnRequestLoadNodeLibrary(assem.Assembly);
                             loadedNodeLibs.Add(assem.Assembly);
                         }
-                        catch (Exception ex)
+                        catch (LibraryLoadFailedException ex)
+                        {
+                            // Managed exception
+                            // We can still try to load other parts of the package
+                            Log(ex.GetType() + ": " + ex.Message);
+                        }
+                        catch (DynamoServices.AssemblyBlockedException)
+                        {
+                            blockedAssemblies.Add(assem.Assembly);
+                        }
+                        catch (Exception)
                         {
                             failedNodeLibs.Add(assem.Assembly);
-                            if (ex is LibraryLoadFailedException)
-                            {
-                                // Managed exception
-                                // We can still try to load other parts of the package
-                                Log(ex.GetType() + ": " + ex.Message);
-                            }
-                            else
-                            {
-                                // Everything else is considered fatal to the package loading operation.
-                                fatalError = true;
-                            }
+                            genericFatalError = true;
                         }
                     }
                 }
+                
+                if (blockedAssemblies.Count > 0)
+                {
+                    throw new Exception("The following assemblies are blocked : " + string.Join(", ", blockedAssemblies.Select(x => Path.GetFileName(x.Location))));
+                }
 
-                if (fatalError)
+                if (genericFatalError)
                 {
                     throw new Exception("Failed to load the following assemblies : " + string.Join(", ", failedNodeLibs.Select(x => Path.GetFileName(x.Location))));
                 }
@@ -312,8 +318,10 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                // Try to load any valid node libraries even if the package is in error state
-                PackagesLoaded?.Invoke(loadedNodeLibs);
+                try {
+                    // Try to load any valid node libraries even if the package is in error state
+                    PackagesLoaded?.Invoke(loadedNodeLibs);
+                } catch { }
 
                 package.LoadState.SetAsError(e.Message);
 
