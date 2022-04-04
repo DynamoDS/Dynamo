@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using Dynamo.Applications;
 using Dynamo.Models;
@@ -89,6 +90,12 @@ namespace DynamoWPFCLI
                         CanBeActivated = false
                     }
                 });
+
+            cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
+            {
+                ImportAssembly(model, path);
+            });
+
             return viewModel;
         }
 
@@ -107,6 +114,33 @@ namespace DynamoWPFCLI
             catch
             {
                 Console.WriteLine("Server is shutting down due to an error");
+            }
+        }
+
+        /// <summary>
+        /// Attempts to import an assembly as a node library from a given file path.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="path"></param>
+        private static void ImportAssembly(DynamoModel model, string path)
+        {
+            try
+            {
+                var filePath = new System.IO.FileInfo(path);
+                if (!filePath.Exists)
+                {
+                    Console.WriteLine($"could not find requested import library at path{path}");
+                }
+                else
+                {
+                    Console.WriteLine($"attempting to import assembly {path}");
+                    var assembly = System.Reflection.Assembly.LoadFile(path);
+                    model.LoadNodeLibrary(assembly, true);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"exception while trying to load assembly {path}: {e}");
             }
         }
 
