@@ -29,6 +29,7 @@ namespace DynamoWPFCLI
                 {
                     var thread = new Thread(() => RunKeepAlive(cmdLineArgs));
 
+                    thread.Name = "DynamoModelKeepAlive";
                     thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
 
