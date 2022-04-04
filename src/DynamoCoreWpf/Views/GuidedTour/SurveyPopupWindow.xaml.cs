@@ -17,16 +17,15 @@ namespace Dynamo.Wpf.Views.GuidedTour
         /// </summary>
         /// <param name="viewModel"></param>
         /// <param name="hInfo"></param>
-        public SurveyPopupWindow(SurveyPopupViewModel viewModel, HostControlInfo hInfo, GuidesManager guidesManager)
+        public SurveyPopupWindow(SurveyPopupViewModel viewModel, HostControlInfo hInfo)
         {
             InitializeComponent();
             if (viewModel != null)
                 surveyViewModel = viewModel;
 
 
-            this.guidesManager = guidesManager;
             DataContext = surveyViewModel;
-
+            
             //Setting the host over which the popup will appear and the placement mode
             PlacementTarget = hInfo.HostUIElement;
             Placement = hInfo.PopupPlacement;
@@ -49,7 +48,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             IsOpen = false;
             surveyViewModel.Step.OnStepClosed(surveyViewModel.Step.Name, surveyViewModel.Step.StepType);
-            guidesManager.LaunchTour("Packages");
+            surveyViewModel.Step.GuidesManager.LaunchTour("Onboarding");
         }
     }
 }

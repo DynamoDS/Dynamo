@@ -404,7 +404,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     };
                     break;
                 case Step.StepTypes.SURVEY:
-                    newStep = new Survey(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height, this)
+                    newStep = new Survey(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height)
                     {
                         Sequence = jsonStepInfo.Sequence,
                         ContentWidth = 300,
@@ -415,7 +415,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         {
                             FormattedText = formattedText,
                             Title = title
-                        }
+                        },
+                        GuidesManager = this
                     };
 
                     //Due that the RatingTextTitle property is just for Survey then we need to set the property using reflection

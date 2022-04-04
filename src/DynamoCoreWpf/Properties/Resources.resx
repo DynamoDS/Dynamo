@@ -3053,4 +3053,13 @@ To install the latest version of a package, click Install. \n
   <data name="OnboardingGuide" xml:space="preserve">
     <value>Onboarding</value>
   </data>
+  <data name="OnboardingGuideWelcomeTitle" xml:space="preserve">
+    <value>Get started with Dynamo</value>
+  </data>
+  <data name="OnboardingWorkspaceText" xml:space="preserve">
+    <value>This is the workspace, where you develop visual programs and preview the results.\n This graph shows the building blocks of Dynamo:\n Nodes perform operations, such as storing a number or creating geometry\n Wires connect nodes\n Together, nodes and wires form a set of instructions for processing data or building geometry.</value>
+  </data>
+  <data name="OnboardingWorkspaceTitle" xml:space="preserve">
+    <value>Workspace</value>
+  </data>
 </root>

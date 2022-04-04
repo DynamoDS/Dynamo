@@ -2414,7 +2414,14 @@ namespace Dynamo.Controls
 
         private void OnBoardingMenuGuide_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                dynamoViewModel.MainGuideManager.LaunchTour("Onboarding");
+            }
+            catch (Exception)
+            {
+                sidebarGrid.Visibility = Visibility.Visible;
+            }
         }
 
         public void Dispose()

@@ -13,20 +13,19 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         public bool IsRatingVisible { get; set; }
 
-        private GuidesManager GuidesManager { get; set; }
+        internal GuidesManager GuidesManager { get; set; }
 
-        public Survey(HostControlInfo host, double width, double height, GuidesManager guidesManager)
+        public Survey(HostControlInfo host, double width, double height)
             : base(host, width, height)
         {
             //In the Survey constructor we call the base constructor passing the host information and the popup width and height
-            GuidesManager = guidesManager;
         }
 
         protected override void CreatePopup()
         {
             var surveyPopupViewModel = new SurveyPopupViewModel(this);
 
-            stepUIPopup = new SurveyPopupWindow(surveyPopupViewModel, HostPopupInfo, GuidesManager);
+            stepUIPopup = new SurveyPopupWindow(surveyPopupViewModel, HostPopupInfo);
         }
     }
 }
