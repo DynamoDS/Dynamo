@@ -11,7 +11,7 @@ namespace DynamoWPFCLI
     internal class Program
     {
         [STAThread]
-        static internal void Main(string[] args)
+        internal static void Main(string[] args)
         {
 
             try
@@ -60,16 +60,21 @@ namespace DynamoWPFCLI
             }
         }
 
+        /// <summary>
+        /// Start Dynamo Model and ViewModel per cmdLineArgs parameters.
+        /// </summary>
+        /// <param name="cmdLineArgs"></param>
+        /// <returns></returns>
         private static DynamoViewModel StartupDaynamo(StartupUtils.CommandLineArguments cmdLineArgs)
         {
             DynamoModel model;
             if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
             {
-                model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath);
+                model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath, cmdLineArgs.AnalyticsInfo);
             }
             else
             {
-                model = Dynamo.Applications.StartupUtils.MakeModel(true);
+                model = Dynamo.Applications.StartupUtils.MakeModel(true, string.Empty, cmdLineArgs.AnalyticsInfo);
             }
 
             model.ShutdownCompleted += (m) => { ShutDown(); };
