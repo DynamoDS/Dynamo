@@ -358,7 +358,7 @@
                         </Style>
                     </MenuItem.Resources>
                 </MenuItem>
-                <MenuItem Name="ColorMenuItem" Header="Color">
+                <MenuItem Name="ColorMenuItem" Header="{x:Static p:Resources.GroupContextMenuColor}">
                     <ListBox ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
                              SelectionChanged="OnNodeColorSelectionChanged"
                              Height="Auto"
