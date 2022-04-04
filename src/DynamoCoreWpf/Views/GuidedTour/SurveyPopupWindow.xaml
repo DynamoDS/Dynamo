@@ -119,18 +119,38 @@
 
                     </Grid>
                 </Border>
-                <!--Link to Next Guide-->
+                <Grid Grid.Row="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="10"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock                           
+                            Grid.Column="1"
+                            Text="Next guide: "      
+                            FontSize="14px"
+                            TextAlignment="Right"                        
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            HorizontalAlignment="Right">
+                    </TextBlock>
+                    <Button Grid.Column="2" Click="GetStartedButton_Click"
+                            Content="Get Started"
+                            Style="{StaticResource TextButtonLink}">
+                    </Button>
+                </Grid>
+                
                 <!--For the first release this RichTextBox will be hidden-->
-                <localui:CustomRichTextBox x:Name="NextGuideRichTextBox" 
+                <!--<localui:CustomRichTextBox x:Name="NextGuideRichTextBox" 
                                            IsDocumentEnabled="True"       
                                            Visibility="Collapsed"
                                            Grid.Row="5"
                                            Width="150"
                                            HorizontalContentAlignment="Center"
-                                           HorizontalAlignment="Center"
+                                           HorizontalAlignment="Center"                                           
                                            CustomText="{Binding LinkNexGuide}"
                                            Style="{StaticResource CustomRichTextBoxStyle}">
-                </localui:CustomRichTextBox>
+                </localui:CustomRichTextBox>-->
             </Grid>
         </Grid>
     </Border>

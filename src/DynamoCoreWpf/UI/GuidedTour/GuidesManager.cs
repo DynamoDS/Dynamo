@@ -404,7 +404,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     };
                     break;
                 case Step.StepTypes.SURVEY:
-                    newStep = new Survey(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height)
+                    newStep = new Survey(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height, this)
                     {
                         Sequence = jsonStepInfo.Sequence,
                         ContentWidth = 300,

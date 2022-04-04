@@ -2412,6 +2412,11 @@ namespace Dynamo.Controls
             }
         }
 
+        private void OnBoardingMenuGuide_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         public void Dispose()
         {
             viewExtensionManager.Dispose();

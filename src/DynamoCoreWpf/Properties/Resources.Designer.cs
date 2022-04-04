@@ -4369,6 +4369,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Onboarding.
+        /// </summary>
+        public static string OnboardingGuide {
+            get {
+                return ResourceManager.GetString("OnboardingGuide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please, load assembly just one time.
         ///Next assemblies were loaded several times:
         ///.
