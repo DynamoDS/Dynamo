@@ -447,6 +447,12 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool ShowRunPreview { get; set; }
 
+
+        /// <summary>
+        /// Stores the group styles added in the preference settings
+        /// </summary>
+        public List<GroupStyleItem> GroupStyleItemsList { get; set; }
+
         /// <summary>
         /// Limits the size of the tags used by the SearchDictionary
         /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value 
@@ -526,7 +532,7 @@ namespace Dynamo.Configuration
             EnableNodeAutoComplete = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
-
+            GroupStyleItemsList = new List<GroupStyleItem>();
         }
 
         /// <summary>
@@ -575,7 +581,7 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// Loads PreferenceSettings from specified XML file if possible,
-        /// else initialises PreferenceSettings with default values.
+        /// else initializes PreferenceSettings with default values.
         /// </summary>
         /// <param name="filePath">Path of the XML File</param>
         /// <returns>
@@ -584,10 +590,11 @@ namespace Dynamo.Configuration
         /// </returns>
         public static PreferenceSettings Load(string filePath)
         {
-            var settings = new PreferenceSettings();
+            // Constructor will be called anyway in either condition below so no need to initialize now.
+            PreferenceSettings settings = null;
 
             if (String.IsNullOrEmpty(filePath) || (!File.Exists(filePath)))
-                return settings;
+                return new PreferenceSettings();
 
             try
             {
@@ -599,10 +606,9 @@ namespace Dynamo.Configuration
                 }
             }
             catch (Exception) { }
-
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
+            settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
-
             return settings;
         }
 

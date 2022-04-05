@@ -52,6 +52,13 @@ namespace Dynamo.Models
             //ClipBoard.Clear();
         }
 
+        protected virtual void OpenFileFromJsonImpl(OpenFileFromJsonCommand command)
+        {
+            string fileContents = command.FileContents;
+            bool forceManualMode = command.ForceManualExecutionMode;
+            OpenFileFromJson(fileContents, forceManualMode);
+        }
+
         private void RunCancelImpl(RunCancelCommand command)
         {
             var model = CurrentWorkspace as HomeWorkspaceModel;
@@ -243,19 +250,20 @@ namespace Dynamo.Models
             // Empty ModelGuid means clear selection.
             if (command.ModelGuid == Guid.Empty)
             {
-                DynamoSelection.Instance.ClearSelection();
+                ClearSelectionAndRecordUndo();                
                 return;
             }
 
             foreach (var guid in command.ModelGuids)
             {
                 var model = CurrentWorkspace.GetModelInternal(guid);
+
                 if (model == null) return;
 
                 if (!model.IsSelected)
                 {
                     if (!command.Modifiers.HasFlag(ModifierKeys.Shift) && command.ModelGuids.Count() == 1)
-                        DynamoSelection.Instance.ClearSelection();
+                        ClearSelectionAndRecordUndo();
 
                     DynamoSelection.Instance.Selection.AddUnique(model);
                 }
@@ -264,7 +272,23 @@ namespace Dynamo.Models
                     if (command.Modifiers.HasFlag(ModifierKeys.Shift))
                         DynamoSelection.Instance.Selection.Remove(model);
                 }
+
             }
+        }
+
+        private void ClearSelectionAndRecordUndo()
+        {
+            List<ModelBase> models = new List<ModelBase>();
+
+            foreach (var selection in DynamoSelection.Instance.Selection)
+            {
+                var modelBase = (ModelBase)selection;
+                models.Add(modelBase);
+            }
+
+            DynamoSelection.Instance.ClearSelection();
+
+            WorkspaceModel.RecordModelsForModification(models, CurrentWorkspace.UndoRecorder);
         }
 
         private void MakeConnectionImpl(MakeConnectionCommand command)
@@ -560,15 +584,16 @@ namespace Dynamo.Models
             AddToGroup(modelsToGroup);
         }
 
-        private void AddGroupToGroupImpl(AddGroupToGroupCommand command)
+        private void AddGroupsToGroupImpl(AddGroupToGroupCommand command)
         {
             if (command.ModelGuid == Guid.Empty) return;
 
+            // Getting all the annotation models from Guids
             var modelsToGroup = command.ModelGuids
                 .Select(guid => CurrentWorkspace.GetModelInternal(guid))
                 .ToList();
 
-            AddGroupToGroup(modelsToGroup, command.HostGroupGuid);
+            AddGroupsToGroup(modelsToGroup, command.HostGroupGuid);
         }
 
         private void UndoRedoImpl(UndoRedoCommand command)

@@ -3686,5 +3686,20 @@ e = c == c + 0.00001;
             thisTest.Verify("d", true);
             thisTest.Verify("e", false);
         }
+
+        [Test]
+        public void AssocUpdate_ImperativeBlock()
+        {
+            var code = @"
+c = v*b;
+b = 0..4;
+v = [Imperative]
+{
+	z = 3;
+	return z;
+};";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", new[] { 0, 3, 6, 9, 12 });
+        }
     }
 }

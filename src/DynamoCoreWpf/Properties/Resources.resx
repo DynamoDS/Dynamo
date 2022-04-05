@@ -191,7 +191,7 @@
     <comment>Context menu item</comment>
   </data>
   <data name="ContextAddGroupFromSelection" xml:space="preserve">
-    <value>Add To Group</value>
+    <value>Add Node To Group</value>
     <comment>Context menu item</comment>
   </data>
   <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
@@ -1211,19 +1211,19 @@ You will get a chance to save your work.</value>
     <value>Installed Packages</value>
   </data>
   <data name="LacingCrossProductToolTip" xml:space="preserve">
-    <value>For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3}.</value>
+    <value>For two lists [a,b,c][1,2,3] returns [a1,a2,a3][b1,b2,b3][c1,c2,c3].</value>
   </data>
   <data name="LacingDisabledToolTip" xml:space="preserve">
     <value>Argument lacing is disabled for this node.</value>
   </data>
   <data name="LacingFirstToolTip" xml:space="preserve">
-    <value>For two lists {a,b,c}{1,2,3} returns {a1}.</value>
+    <value>For two lists [a,b,c][1,2,3] returns {a1}.</value>
   </data>
   <data name="LacingLongestToolTip" xml:space="preserve">
-    <value>For two lists {a,b,c}{1,2} returns {a1,b2,c2}.</value>
+    <value>For two lists [a,b,c][1,2] returns [a1,b2,c2].</value>
   </data>
   <data name="LacingShortestToolTip" xml:space="preserve">
-    <value>For two lists {a,b,c}{1,2} returns {a1,b2}.</value>
+    <value>For two lists [a,b,c][1,2] returns [a1,b2].</value>
   </data>
   <data name="LibraryViewContextMenuEditNode" xml:space="preserve">
     <value>Edit...</value>
@@ -1280,6 +1280,14 @@ You will get a chance to save your work.</value>
   </data>
   <data name="PackageDetailsPython" xml:space="preserve">
     <value>Python</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsCopyRightHolder" xml:space="preserve">
+    <value>Copyright Holder</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsCopyRightYear" xml:space="preserve">
+    <value>Copyright Year</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
   </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
@@ -2584,7 +2592,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Render Precision</value>
     <comment>Expander Header Name</comment>
   </data>
-  <data name="PreferencesViewStyleWarning" xml:space="preserve">
+  <data name="PreferencesViewAlreadyExistingStyleWarning" xml:space="preserve">
     <value>Style name already in use</value>
   </data>
   <data name="PreferencesViewVisualSettingsDisplaySettings" xml:space="preserve">
@@ -2767,7 +2775,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>&lt;Double click here to edit group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
-    <value>Add Group to Group</value>
+    <value>Add Group to This Group</value>
   </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this guide later from the Help menu.</value>
@@ -3023,5 +3031,26 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="PackagesGuideInstallAPackageTitle" xml:space="preserve">
     <value>Install a package</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
+    <value>Style Name</value>
+  </data>
+  <data name="PreferencesViewEmptyStyleWarning" xml:space="preserve">
+    <value>Please enter a valid name</value>
+  </data>
+  <data name="GroupStyleContextAnnotation" xml:space="preserve">
+    <value>Group Style</value>
+  </data>
+  <data name="ContextPinToNodeTooltip" xml:space="preserve">
+    <value>Select a node to pin to this note.</value>
+  </data>
+  <data name="GroupStylesCancelButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="GroupStylesSaveButtonText" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="GroupContextMenuColor" xml:space="preserve">
+    <value>Color</value>
   </data>
 </root>

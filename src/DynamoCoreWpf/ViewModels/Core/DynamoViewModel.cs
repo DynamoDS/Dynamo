@@ -34,6 +34,7 @@ using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.UI.GuidedTour;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
@@ -52,7 +53,7 @@ namespace Dynamo.ViewModels
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
     {
         #region properties
-
+        public Window Owner { get; set; }
         private readonly DynamoModel model;
         private Point transformOrigin;
         private bool showStartPage = false;
@@ -173,6 +174,7 @@ namespace Dynamo.ViewModels
 
         private WorkspaceViewModel currentWorkspaceViewModel;
         private string filePath;
+        private string fileContents;
         /// <summary>
         /// The index in the collection of workspaces of the current workspace.
         /// This property is bound to the SelectedIndex property in the workspaces tab control
@@ -1195,8 +1197,8 @@ namespace Dynamo.ViewModels
         internal bool CanAddAnnotation(object parameter)
         {
             var groups = Model.CurrentWorkspace.Annotations;
-            //Create Group should be disabled when a group is selected
-            if (groups.Any(x => x.IsSelected))
+            // Create Group should be disabled when a group is among selection and come with nested group inside
+            if (groups.Any(x => x.IsSelected && x.HasNestedGroups))
             {
                 return false;
             }
@@ -1338,14 +1340,10 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
             //Check for multiple groups - Delete the group and not the nodes.
-            foreach (var annotationModel in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
-            {
-                if (!(annotationModel.GUID == hostGroupId))
-                {
-                    var command = new DynamoModel.AddGroupToGroupCommand(annotationModel.GUID, hostGroupId);
-                    this.ExecuteCommand(command);
-                }
-            }
+            var command = new DynamoModel.AddGroupToGroupCommand(
+                DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Where(x => x.GUID != hostGroupId).Select(x => x.GUID),
+                hostGroupId);
+            this.ExecuteCommand(command);
         }
 
         private void WorkspaceAdded(WorkspaceModel item)
@@ -1448,12 +1446,47 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Attempts to open a file using the Json content passed to OpenFromJsonCommand, but wraps
+        /// the call with a check to make sure no unsaved changes to the HomeWorkspace are lost.
+        /// </summary>
+        /// <param name="openFromJsonCommand"> <see cref="DynamoModel.OpenFileFromJsonCommand"/> </param>
+        private void OpenFromJsonIfSaved(object openCommand)
+        {
+            filePath = string.Empty;
+            fileContents = string.Empty;
+
+            var command = openCommand as DynamoModel.OpenFileFromJsonCommand;
+            if (command == null)
+            {
+                return;
+            }
+
+            if (HomeSpace != null && HomeSpace.HasUnsavedChanges)
+            {
+                if (AskUserToSaveWorkspaceOrCancel(HomeSpace))
+                {
+                    fileContents = command.FileContents;
+                    ExecuteCommand(command);
+                    ShowStartPage = false;
+                }
+            }
+            else
+            {
+                OpenFromJsonCommand.Execute(new Tuple<string, bool>(command.FileContents, command.ForceManualExecutionMode));
+                ShowStartPage = false;
+            }
+        }
+
+        /// <summary>
         /// Attempts to open a file using the passed open command, but wraps the call
         /// with a check to make sure no unsaved changes to the HomeWorkspace are lost.
         /// </summary>
         /// <param name="openCommand"> <see cref="DynamoModel.OpenFileCommand"/> </param>
         private void OpenIfSaved(object openCommand)
         {
+            fileContents = string.Empty;
+            filePath = string.Empty;
+
             var command = openCommand as DynamoModel.OpenFileCommand;
             if (command == null)
             {
@@ -1464,16 +1497,74 @@ namespace Dynamo.ViewModels
             {
                 if (AskUserToSaveWorkspaceOrCancel(HomeSpace))
                 {
-                    this.filePath = command.FilePath;
-                    this.ExecuteCommand(command);
-                    this.ShowStartPage = false;
+                    filePath = command.FilePath;                    
+                    ExecuteCommand(command);
+                    ShowStartPage = false;
                 }
             }
             else
             {
-                this.OpenCommand.Execute(new Tuple<string,bool>(command.FilePath, command.ForceManualExecutionMode));
-                this.ShowStartPage = false;
+                OpenCommand.Execute(new Tuple<string,bool>(command.FilePath, command.ForceManualExecutionMode));
+                ShowStartPage = false;
             }
+        }
+
+        /// <summary>
+        /// Open a definition or workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// For most cases, parameters variable refers to the Json content file to open
+        /// However, when this command is used in OpenFileDialog, the variable is
+        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// RunSetting of the workspace.
+        private void OpenFromJson(object parameters)
+        {
+            // try catch for exceptions thrown while opening files, say from a future version, 
+            // that can't be handled reliably
+            filePath = string.Empty;
+            fileContents = string.Empty;
+            bool forceManualMode = false;
+            try
+            {
+                var packedParams = parameters as Tuple<string, bool>;
+                if (packedParams != null)
+                {
+                    fileContents = packedParams.Item1;
+                    forceManualMode = packedParams.Item2;
+                }
+                else
+                {
+                    fileContents = parameters as string;
+                }
+                ExecuteCommand(new DynamoModel.OpenFileFromJsonCommand(fileContents, forceManualMode));
+            }
+            catch (Exception e)
+            {
+                if (!DynamoModel.IsTestMode)
+                {
+                    string commandString = String.Format(Resources.MessageErrorOpeningFileGeneral);
+                    string errorMsgString;
+                    if (e is Newtonsoft.Json.JsonReaderException)
+                    {
+                        errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, "Json file content");
+                    }
+                    else
+                    {
+                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, "Json file content");
+                    }
+                    model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
+                    MessageBoxService.Show(errorMsgString, 
+                        Properties.Resources.FileLoadFailureMessageBoxTitle, 
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Exclamation);
+                }
+                else
+                {
+                    throw (e);
+                }
+                return;
+            }
+            this.ShowStartPage = false; // Hide start page if there's one.
         }
 
         /// <summary>
@@ -1489,6 +1580,7 @@ namespace Dynamo.ViewModels
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
             filePath = string.Empty;
+            fileContents = string.Empty;
             bool forceManualMode = false; 
             try
             {
@@ -1524,7 +1616,7 @@ namespace Dynamo.ViewModels
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
                     }
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
-                    System.Windows.MessageBox.Show(errorMsgString);
+                    MessageBoxService.Show(errorMsgString, commandString, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
@@ -1541,17 +1633,27 @@ namespace Dynamo.ViewModels
             return PathHelper.IsValidPath(filePath);
         }
 
+        private bool CanOpenFromJson(object parameters)
+        {
+            string fileContents = parameters as string;
+            return PathHelper.isFileContentsValidJson(fileContents, out _);
+        }
+
         /// <summary>
         /// Read the contents of the file and set the view parameters for that current workspace
         /// </summary>
         private void model_ComputeModelDeserialized()
-        {
-            if (filePath == String.Empty) return;
-            string fileContents = File.ReadAllText(filePath);
+        {            
             try
             {
+                string fileContentsInUse = String.IsNullOrEmpty(filePath) ? fileContents : File.ReadAllText(filePath);
+                if (string.IsNullOrEmpty(fileContentsInUse))
+                {
+                    return;
+                }
+
                 // This call will fail in the case of an XML file
-                ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
+                ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContentsInUse);
 
                 Model.CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo);
                 Model.OnWorkspaceOpening(viewInfo);
@@ -1688,7 +1790,17 @@ namespace Dynamo.ViewModels
             try
             {
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
-                CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
+
+                // If the current workspace is a CustomNodeWorkspaceModel, then call the save method on it.
+                if (CurrentSpaceViewModel.Model is CustomNodeWorkspaceModel)
+                {
+                    CurrentSpaceViewModel.Model.Save(path, false, Model.EngineController);
+                }
+                else
+                {
+                    CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
+                }
+
                 if (!isBackup) AddToRecentFiles(path);
             }
             catch (Exception ex)
@@ -1697,7 +1809,7 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(ex.StackTrace);
 
                 if (ex is IOException || ex is UnauthorizedAccessException)
-                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                    MessageBoxService.Show(ex.Message, Resources.SaveConfirmationMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -1754,7 +1866,7 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(ex.StackTrace);
 
                 if (ex is IOException || ex is UnauthorizedAccessException)
-                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                    MessageBoxService.Show(ex.Message, string.Empty, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -27,7 +28,10 @@ namespace Dynamo.ViewModels
         // vertical offset accounts for the port margins
         private const int verticalOffset = 20;
         private const int portVerticalMidPoint = 17;
-        
+        private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
+        private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
+        private PreferenceSettings preferenceSettings;
+
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
         #region Properties
@@ -330,6 +334,22 @@ namespace Dynamo.ViewModels
             get => new GeometryCollection(GroupIdToCutGeometry.Values.Select(x => x));
         }
 
+        /// <summary>
+        /// This property will be used to populate the GroupStyle context menu (the one shown when clicking right over a Group)
+        /// </summary>
+        [JsonIgnore]
+        public ObservableCollection<Configuration.StyleItem> GroupStyleList
+        {
+            get
+            {
+                return groupStyleList;
+            }
+            set
+            {
+                groupStyleList = value;
+                RaisePropertyChanged(nameof(GroupStyleList));
+            }
+        }
         #endregion
 
         #region Commands
@@ -414,7 +434,7 @@ namespace Dynamo.ViewModels
                 {
                     if (!(model is AnnotationModel))
                     {
-                        this.AnnotationModel.AddToSelectedModels(model, true);
+                        this.AnnotationModel.AddToTargetAnnotationModel(model, true);
                     }
                 }
                 Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Node");
@@ -474,7 +494,6 @@ namespace Dynamo.ViewModels
                         AddToCutGeometryDictionary(groupViewModel);
                     }
                 }
-                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Group");
             }
         }
 
@@ -507,6 +526,7 @@ namespace Dynamo.ViewModels
         {
             annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;
+            this.preferenceSettings = WorkspaceViewModel.DynamoViewModel.PreferenceSettings;
             model.PropertyChanged += model_PropertyChanged;
             model.RemovedFromGroup += OnModelRemovedFromGroup;
             model.AddedToGroup += OnModelAddedToGroup;
@@ -542,6 +562,9 @@ namespace Dynamo.ViewModels
                 SetGroupOutPorts();
                 CollapseGroupContents(true);
             }
+            groupStyleList = new ObservableCollection<Configuration.StyleItem>();
+            //This will add the GroupStyles created in Preferences panel to the Group Style Context menu.
+            LoadGroupStylesFromPreferences(preferenceSettings.GroupStyleItemsList);
         }
 
         /// <summary>
@@ -944,6 +967,53 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// This method will be called by the ChangeGroupStyleCommand when a GroupStyle is selected from the ContextMenu
+        /// </summary>
+        /// <param name="itemEntryParameter">GroupStyle item selected</param>
+        internal void UpdateGroupStyle(GroupStyleItem itemEntryParameter)
+        {
+            if (itemEntryParameter == null) return;
+
+            Background = (Color)ColorConverter.ConvertFromString("#"+itemEntryParameter.HexColorString);
+
+            WorkspaceViewModel.HasUnsavedChanges = true;
+        }
+
+        /// <summary>
+        /// This method loads the group styles defined by the user and stored in the xml file
+        /// </summary>
+        /// <param name="styleItemsList"></param>
+        /// <returns></returns>
+        private void LoadGroupStylesFromPreferences(IEnumerable<Configuration.StyleItem> styleItemsList)
+        {
+            preferencesStyleItemsList = styleItemsList;
+
+            var defaultGroupStylesList = styleItemsList.Where(style => style.IsDefault == true);
+            var customGroupStylesList = styleItemsList.Where(style => style.IsDefault == false);
+
+            //Adds to the list the Default Group Styles created by Dynamo
+            groupStyleList.AddRange(defaultGroupStylesList);
+
+            //Adds the separator between the Default Group Styles and the Custom Group Styles
+            groupStyleList.Add(new GroupStyleSeparator());
+
+            //Adds to the list the Custom Group Styles created by the user
+            groupStyleList.AddRange(customGroupStylesList);
+        }
+
+        /// <summary>
+        /// This method will be executed when the MenuIte.SubmenuOpened event is executed
+        /// The purpose is adding to the GroupStyles ContextMenu the Styles added in the Preferences panel.
+        /// </summary>
+        internal void ReloadGroupStyles()
+        {
+            if (preferencesStyleItemsList == null) return;
+            groupStyleList.Clear();
+
+            LoadGroupStylesFromPreferences(preferencesStyleItemsList);
+        }
+
+        /// <summary>
         /// Selects this group and models within it.
         /// </summary>
         internal void SelectAll()
@@ -1082,6 +1152,7 @@ namespace Dynamo.ViewModels
 
                 AddToCutGeometryDictionary(groupViewModel);
             }
+            WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
         private void RemoveKeyFromCutGeometryDictionary(string groupGuid)

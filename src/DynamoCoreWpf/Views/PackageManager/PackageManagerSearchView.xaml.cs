@@ -7,6 +7,7 @@ using Dynamo.Logging;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 using Button = System.Windows.Controls.Button;
 
@@ -27,6 +28,7 @@ namespace Dynamo.PackageManager.UI
         {
             ViewModel = pm;
             this.DataContext = ViewModel;
+            pm.PackageManagerClientViewModel.Owner = this;
             InitializeComponent();
             ViewModel.RegisterTransientHandlers();
             ViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
@@ -143,7 +145,7 @@ namespace Dynamo.PackageManager.UI
             else
             {
                 string errorMessage = string.Format(Wpf.Properties.Resources.PackageFolderNotAccessible, initialPath);
-                System.Windows.Forms.MessageBox.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxService.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

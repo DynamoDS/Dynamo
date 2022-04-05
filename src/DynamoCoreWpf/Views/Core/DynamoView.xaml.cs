@@ -1200,7 +1200,7 @@ namespace Dynamo.Controls
             }
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
-            var result = System.Windows.MessageBox.Show(this, dialogText,
+            var result = MessageBoxService.Show(this, dialogText,
                 Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle,
                 buttons, MessageBoxImage.Question);
 
@@ -1212,14 +1212,14 @@ namespace Dynamo.Controls
                 else
                     e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
             }
-            else if (result == MessageBoxResult.Cancel)
+            else if (result == MessageBoxResult.No)
             {
-                //return false;
-                e.Success = false;
+                //return true;
+                e.Success = true;
             }
             else
             {
-                e.Success = true;
+                e.Success = false;
             }
         }
 
@@ -2366,7 +2366,7 @@ namespace Dynamo.Controls
         private void Window_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             //if original sender was scroll bar(i.e Thumb) don't close the popup.
-            if(!(e.OriginalSource is Thumb))
+            if(!(e.OriginalSource is Thumb) && !(e.OriginalSource is TextBox))
             {
                 HidePopupWhenWindowDeactivated(sender);
             }

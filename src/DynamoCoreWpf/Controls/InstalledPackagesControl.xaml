@@ -109,7 +109,7 @@
                                                     </TextBlock.ToolTip>
                                                 </TextBlock>
                                                 <TextBlock Text="{Binding Path=Model.VersionName}"
-                                                               MinWidth="50"
+                                                               MinWidth="70"
                                                                FontSize="11"
                                                                Foreground="{StaticResource PreferencesWindowFontColor}"></TextBlock>
                                                 <Grid Height="18"
@@ -139,8 +139,7 @@
                                                                 Width="16"
                                                                 Height="16"
                                                                 Margin="0,0,10,0"
-                                                                Style="{StaticResource FlatIconButtonStyle}">
-                                                    <Image Source="/DynamoCoreWpf;component/UI/Images/menu_16_16.png"/>
+                                                                Style="{StaticResource MenuButtonStyle}">
                                                     <Button.ContextMenu>
                                                         <ContextMenu Style="{StaticResource ContextMenuNoLeftColumnStyle}">
                                                             <MenuItem Name="GoToRoot"

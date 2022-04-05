@@ -47,3 +47,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("SystemTestServices")]
 [assembly: InternalsVisibleTo("DynamoManipulation")]
 [assembly: InternalsVisibleTo("IronPythonTests")]
+[assembly: TypeForwardedTo(typeof(Dynamo.Scheduler.Disposable))]
