@@ -2849,6 +2849,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Get Started.
+        /// </summary>
+        public static string GetStartedLinkText {
+            get {
+                return ResourceManager.GetString("GetStartedLinkText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Getting Started.
         /// </summary>
         public static string GettingStartedMenuItem {
@@ -4059,6 +4068,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NameNeedMoreCharacters {
             get {
                 return ResourceManager.GetString("NameNeedMoreCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next guide: .
+        /// </summary>
+        public static string NextGuideText {
+            get {
+                return ResourceManager.GetString("NextGuideText", resourceCulture);
             }
         }
         

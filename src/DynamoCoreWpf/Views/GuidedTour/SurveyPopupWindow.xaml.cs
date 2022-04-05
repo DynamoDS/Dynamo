@@ -10,7 +10,6 @@ namespace Dynamo.Wpf.Views.GuidedTour
     public partial class SurveyPopupWindow : Popup
     {
         private readonly SurveyPopupViewModel surveyViewModel;
-        private readonly GuidesManager guidesManager;
 
         /// <summary>
         /// Constructor
@@ -48,7 +47,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             IsOpen = false;
             surveyViewModel.Step.OnStepClosed(surveyViewModel.Step.Name, surveyViewModel.Step.StepType);
-            surveyViewModel.Step.GuidesManager.LaunchTour("Onboarding");
+            surveyViewModel.Step.GuidesManager.LaunchTour(Dynamo.Controls.DynamoView.OnboardingGuideName);
         }
     }
 }

@@ -3062,4 +3062,10 @@ To install the latest version of a package, click Install. \n
   <data name="OnboardingWorkspaceTitle" xml:space="preserve">
     <value>Workspace</value>
   </data>
+  <data name="GetStartedLinkText" xml:space="preserve">
+    <value>Get Started</value>
+  </data>
+  <data name="NextGuideText" xml:space="preserve">
+    <value>Next guide: </value>
+  </data>
 </root>
