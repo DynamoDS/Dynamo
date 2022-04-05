@@ -278,7 +278,13 @@ namespace Dynamo.PackageManager
                         }
                     }
                 }
-                
+
+                if (loadedNodeLibs.Count > 0)
+                {
+                    // Try to load any valid node libraries regardless package state
+                    PackagesLoaded?.Invoke(loadedNodeLibs);
+                }
+
                 if (blockedAssemblies.Count > 0)
                 {
                     throw new Exception("The following assemblies are blocked : " + string.Join(", ", blockedAssemblies.Select(x => Path.GetFileName(x.Location))));
@@ -311,18 +317,12 @@ namespace Dynamo.PackageManager
 
                 package.SetAsLoaded();
                 PackgeLoaded?.Invoke(package);
-                PackagesLoaded?.Invoke(loadedNodeLibs);
 
                 PythonServices.PythonEngineManager.Instance.
                     LoadPythonEngine(package.LoadedAssemblies.Select(x => x.Assembly));
             }
             catch (Exception e)
             {
-                try {
-                    // Try to load any valid node libraries even if the package is in error state
-                    PackagesLoaded?.Invoke(loadedNodeLibs);
-                } catch { }
-
                 package.LoadState.SetAsError(e.Message);
 
                 if (e is CustomNodePackageLoadException ce)
