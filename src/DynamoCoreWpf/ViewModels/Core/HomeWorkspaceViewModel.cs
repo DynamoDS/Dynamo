@@ -67,8 +67,9 @@ namespace Dynamo.Wpf.ViewModels.Core
             get { return footerNotificationItems; }
             set
             {
+                if (footerNotificationItems == value) return;
                 footerNotificationItems = value;
-                RaisePropertyChanged("FooterNotificationItems");
+                RaisePropertyChanged(nameof(FooterNotificationItems));
             }
         }
 
@@ -90,7 +91,20 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
 
-            footerNotificationItems = new ObservableCollection<FooterNotificationItem>();
+            SetupFooterNotificationItems();
+        }
+
+        /// <summary>
+        /// Setup the initial collection of FooterNotificationItems
+        /// </summary>
+        private void SetupFooterNotificationItems()
+        {
+            FooterNotificationItem [] footerItems = new FooterNotificationItem[2]; //TODO : change to 3 when Info is implemented
+
+            footerItems[0] = new FooterNotificationItem() { NotificationCount = 0, NotificationImage = "/DynamoCoreWpf;component/UI/Images/error.png" };
+            footerItems[1] = new FooterNotificationItem() { NotificationCount = 0, NotificationImage = "/DynamoCoreWpf;component/UI/Images/warning_16px.png" };
+
+            footerNotificationItems = new ObservableCollection<FooterNotificationItem>(footerItems);
         }
 
         void Model_ShutdownStarted(DynamoModel model)
@@ -219,7 +233,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                 }
             }
 
-            SetFooterItems(hasWarnings, hasErrors);
+            UpdateFooterItems(hasWarnings, hasErrors);
         }
 
         /// <summary>
@@ -227,14 +241,16 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         /// <param name="hasWarnings"></param>
         /// <param name="hasErrors"></param>
-        private void SetFooterItems(bool hasWarnings, bool hasErrors)
+        private void UpdateFooterItems(bool hasWarnings, bool hasErrors)
         {
-            List<FooterNotificationItem> footerItems = new List<FooterNotificationItem>(); //TODO : change to 3 when Info is implemented
-
-            footerItems.Add( new FooterNotificationItem() { NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Error), NotificationImage = "/DynamoCoreWpf;component/UI/Images/error.png" });
-            footerItems.Add( new FooterNotificationItem() { NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning), NotificationImage = "/DynamoCoreWpf;component/UI/Images/warning_16px.png" });
-
-            FooterNotificationItems = new ObservableCollection<FooterNotificationItem>( footerItems );
+            if (hasErrors)
+                FooterNotificationItems[0].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Error);
+            else
+                if(FooterNotificationItems[0].NotificationCount != 0) FooterNotificationItems[0].NotificationCount = 0;
+            if (hasWarnings)
+                FooterNotificationItems[1].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
+            else
+                if (FooterNotificationItems[1].NotificationCount != 0) FooterNotificationItems[1].NotificationCount = 0;
         }
 
         private void UpdateNodeInfoBubbleContent(EvaluationCompletedEventArgs evalargs)
