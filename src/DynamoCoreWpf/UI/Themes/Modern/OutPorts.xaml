@@ -20,6 +20,7 @@
               IsHitTestVisible="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Name="PortNameColumn" Width="*" />
+                <ColumnDefinition Name="ValueMarkerColumn" Width="5px" />
                 <ColumnDefinition Name="PortSnappingColumn" Width="25px" />
             </Grid.ColumnDefinitions>
 
@@ -51,8 +52,9 @@
 
             <!--  Transparent rectangle used for port snapping, overhangs the edge of the port  -->
             <Rectangle Grid.Column="0"
-                       Grid.ColumnSpan="2"
+                       x:Name="PortSnapping"
                        Margin="-25,0,0,0"
+                       Grid.ColumnSpan="7"
                        Canvas.ZIndex="1"
                        Fill="Transparent"
                        IsHitTestVisible="{Binding IsHitTestVisible}"
@@ -70,6 +72,7 @@
             <!--  Sets the port background color  -->
             <Border x:Name="PortBackgroundBorder"
                     Grid.Column="0"
+                    Grid.ColumnSpan="2"
                     SnapsToDevicePixels="True">
                 <Border.Style>
                     <Style TargetType="Border">
@@ -93,6 +96,16 @@
                 </Border.Style>
             </Border>
 
+            <!--  A small marker on the left of the port, indicating whether it's been honored  -->
+            <Rectangle x:Name="PortValueMarker"
+                       Grid.Column="1"
+                       Height="27px"
+                       VerticalAlignment="Center"
+                       Fill="{Binding PortValueMarkerColor, UpdateSourceTrigger=PropertyChanged}"
+                       IsHitTestVisible="False"
+                       Visibility="{Binding PortDefaultValueMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                       SnapsToDevicePixels="True" />
+       
             <!--  Grid containing the Port Name TextBox  -->
             <Grid Name="PortNameGrid"
                   Grid.Column="0"

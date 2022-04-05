@@ -626,4 +626,7 @@ Default value: {0}</value>
   <data name="CustomSelectionSearchTags" xml:space="preserve">
       <value>dropdown;custom;custom dropdown;enum;custom enum</value>
   </data>
+  <data name="IntegerSliderInfoMessage" xml:space="preserve">
+    <value>The value entered is not in the int64 range.</value>
+  </data>
 </root>

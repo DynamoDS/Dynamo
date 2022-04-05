@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.UI;
 using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
@@ -17,10 +19,13 @@ namespace Dynamo.ViewModels
 
         private bool showUseLevelMenu;
 
-        private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
+        private SolidColorBrush portValueMarkerColor;
+
         private bool portDefaultValueMarkerVisible;
-        private static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-        private static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
+
+        private SolidColorBrush PortValueMarkerBlue;
+        private SolidColorBrush PortValueMarkerRed;
+        private SolidColorBrush PortValueMarkerGrey;
 
         private static readonly SolidColorBrush PortBackgroundColorKeepListStructure = new SolidColorBrush(Color.FromRgb(83, 126, 145));
         private static readonly SolidColorBrush PortBorderBrushColorKeepListStructure = new SolidColorBrush(Color.FromRgb(168, 181, 187));
@@ -146,6 +151,13 @@ namespace Dynamo.ViewModels
         public InPortViewModel(NodeViewModel node, PortModel port) : base(node, port)
         {
             port.PropertyChanged += PortPropertyChanged;
+
+            var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
+
+            PortValueMarkerBlue = (SolidColorBrush)resourceDictionary["PortValueMarkerBlue"];
+            PortValueMarkerGrey = (SolidColorBrush)resourceDictionary["PortValueMarkerGrey"];
+            PortValueMarkerRed = (SolidColorBrush)resourceDictionary["PortValueMarkerRed"];
+
             RefreshPortDefaultValueMarkerVisible();
         }
 
@@ -156,7 +168,7 @@ namespace Dynamo.ViewModels
         }
 
         internal override PortViewModel CreateProxyPortViewModel(PortModel portModel)
-        {
+        {            
             portModel.IsProxyPort = true;
             return new InPortViewModel(node, portModel);
         }
@@ -269,6 +281,43 @@ namespace Dynamo.ViewModels
         /// Handles the logic for updating the PortBackgroundColor and PortBackgroundBrushColor
         /// </summary>
         protected override void RefreshPortColors()
+        {
+            //Is in function state
+            if (node.NodeModel.IsPartiallyApplied)
+            {
+                if (node.NodeModel.AreAllOutputsConnected)
+                {
+                    PortValueMarkerColor = PortValueMarkerGrey;
+                    PortBackgroundColor = PortBackgroundColorDefault;
+                    PortBorderBrushColor = PortBorderBrushColorDefault;
+                }
+                else
+                {
+                    SetupDefaultPortColorValues();
+                }
+            }
+            else
+            {
+                SetupDefaultPortColorValues();
+            }
+        }
+
+        internal void RefreshInputPortsByOutputConnectionChanged(bool isOutputConnected)
+        {
+            if (node.NodeModel.IsPartiallyApplied)
+            {
+                if (isOutputConnected)
+                {
+                    PortValueMarkerColor = PortValueMarkerGrey;
+                }
+                else 
+                {
+                    SetupDefaultPortColorValues();
+                }
+            }
+        }
+
+        private void SetupDefaultPortColorValues()
         {
             // Special case for keeping list structure visual appearance
             if (port.UseLevels && port.KeepListStructure && port.IsConnected)

@@ -7,7 +7,6 @@ using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Properties;
 
 namespace Dynamo.Configuration
 {
@@ -534,9 +533,6 @@ namespace Dynamo.Configuration
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
-
-            //Add the default group styles
-            AddDefaultStyles();
         }
 
         /// <summary>
@@ -585,7 +581,7 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// Loads PreferenceSettings from specified XML file if possible,
-        /// else initialises PreferenceSettings with default values.
+        /// else initializes PreferenceSettings with default values.
         /// </summary>
         /// <param name="filePath">Path of the XML File</param>
         /// <returns>
@@ -594,10 +590,11 @@ namespace Dynamo.Configuration
         /// </returns>
         public static PreferenceSettings Load(string filePath)
         {
-            var settings = new PreferenceSettings();
+            // Constructor will be called anyway in either condition below so no need to initialize now.
+            PreferenceSettings settings = null;
 
             if (String.IsNullOrEmpty(filePath) || (!File.Exists(filePath)))
-                return settings;
+                return new PreferenceSettings();
 
             try
             {
@@ -613,22 +610,6 @@ namespace Dynamo.Configuration
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
             return settings;
-        }
-
-        /// <summary>
-        /// This method will add the Defaul GroupStyles that are shown in the Preferences panel
-        /// </summary>
-        public void AddDefaultStyles()
-        {
-            var defaultGroupStylesList = GroupStyleItemsList.Where(style => style.IsDefault == true);
-            //Just in case the Default profiles have not been added then are added.
-            if (defaultGroupStylesList != null && defaultGroupStylesList.Count() == 0)
-            {              
-                GroupStyleItemsList.Add(new GroupStyleItem() { Name = Resources.GroupStyleDefaultActions, HexColorString = Resources.GroupStyleDefaultActionsColor, IsDefault = true });
-                GroupStyleItemsList.Add(new GroupStyleItem() { Name = Resources.GroupStyleDefaultInputs, HexColorString = Resources.GroupStyleDefaultInputsColor, IsDefault = true });
-                GroupStyleItemsList.Add(new GroupStyleItem() { Name = Resources.GroupStyleDefaultOutputs, HexColorString = Resources.GroupStyleDefaultOutputsColor, IsDefault = true });
-                GroupStyleItemsList.Add(new GroupStyleItem() { Name = Resources.GroupStyleDefaultReview, HexColorString = Resources.GroupStyleDefaultReviewColor, IsDefault = true });
-            }
         }
 
         /// <summary>

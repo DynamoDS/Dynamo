@@ -192,7 +192,7 @@ namespace Dynamo.Wpf.Views
                 viewModel.EnableGroupStyleWarningState(Res.PreferencesViewEmptyStyleWarning);
             }
             //Means that the Style name to be created already exists
-            else if (viewModel.ValidateExistingStyle(newItem))
+            else if (viewModel.IsStyleNameValid(newItem))
             {
                 viewModel.EnableGroupStyleWarningState(Res.PreferencesViewAlreadyExistingStyleWarning);
             }
@@ -315,6 +315,11 @@ namespace Dynamo.Wpf.Views
                 viewModel.CurrentWarningMessage = string.Empty;
                 viewModel.IsWarningEnabled = false;
             }
+        }
+
+        private void GroupStylesListBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            GroupStylesListBox.UnselectAll();
         }
     }
 }

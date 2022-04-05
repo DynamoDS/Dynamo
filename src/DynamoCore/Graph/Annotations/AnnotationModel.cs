@@ -6,6 +6,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Properties;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -646,7 +647,12 @@ namespace Dynamo.Graph.Annotations
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
-            this.IsSelected = helper.ReadBoolean(nameof(IsSelected), false);
+            this.IsSelected = helper.ReadBoolean(nameof(IsSelected), false);            
+
+            if (IsSelected)
+                DynamoSelection.Instance.Selection.Add(this);
+            else
+                DynamoSelection.Instance.Selection.Remove(this);
 
             //Deserialize Selected models
             if (element.HasChildNodes)
