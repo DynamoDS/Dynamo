@@ -250,7 +250,6 @@ namespace Dynamo.PackageManager
             try
             {
                 List<Assembly> blockedAssemblies = new List<Assembly>();
-                var genericFatalError = false;
                 // Try to load node libraries from all assemblies
                 foreach (var assem in package.EnumerateAndLoadAssembliesInBinDirectory())
                 {
@@ -274,7 +273,6 @@ namespace Dynamo.PackageManager
                         catch (Exception)
                         {
                             failedNodeLibs.Add(assem.Assembly);
-                            genericFatalError = true;
                         }
                     }
                 }
@@ -290,7 +288,8 @@ namespace Dynamo.PackageManager
                     throw new Exception("The following assemblies are blocked : " + string.Join(", ", blockedAssemblies.Select(x => Path.GetFileName(x.Location))));
                 }
 
-                if (genericFatalError)
+                // Generic fatal error
+                if (failedNodeLibs.Count > 0)
                 {
                     throw new Exception("Failed to load the following assemblies : " + string.Join(", ", failedNodeLibs.Select(x => Path.GetFileName(x.Location))));
                 }
