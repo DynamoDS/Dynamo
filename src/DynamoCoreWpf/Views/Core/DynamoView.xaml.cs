@@ -1212,14 +1212,14 @@ namespace Dynamo.Controls
                 else
                     e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
             }
-            else if (result == MessageBoxResult.Cancel)
+            else if (result == MessageBoxResult.No)
             {
-                //return false;
-                e.Success = false;
+                //return true;
+                e.Success = true;
             }
             else
             {
-                e.Success = true;
+                e.Success = false;
             }
         }
 

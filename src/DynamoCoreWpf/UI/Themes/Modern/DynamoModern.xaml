@@ -2691,6 +2691,9 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/close_blue.png" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -2708,6 +2711,9 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="downIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/down-hover-16px.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -2727,6 +2733,9 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="upIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/up-hover-16px.png" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -2745,6 +2754,9 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="folderIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/folder-hover-16px.png" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -2762,6 +2774,9 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="menuIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/menu-hover-16px.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -2912,7 +2927,6 @@
                         <Border x:Name="border"
                                 Margin="4"
                                 Height="24px"
-                                Width="78"
                                 Padding="8,0,8,0"
                                 BorderThickness="1"
                                 BorderBrush="{TemplateBinding BorderBrush}"
@@ -3183,7 +3197,8 @@
     <Style x:Key="ContextMenuItemStyle" TargetType="{x:Type MenuItem}">
         <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
         <Setter Property="Height" Value="Auto" />
-        <Setter Property="Width" Value="240" />
+        <Setter Property="MinWidth" Value="250" />
+        <Setter Property="Width" Value="Auto" />
         <Setter Property="Padding" Value="20,0,0,0" />
         <Setter Property="Template">
             <Setter.Value>
@@ -3951,8 +3966,14 @@
                             BorderBrush="{StaticResource Button.Outline.Default.Border}"
                             CornerRadius="2">
                         <Grid Background="Transparent">
-                            <Rectangle Stroke="#FFFFFF" RadiusX="2" RadiusY="2" Opacity="0.5" StrokeThickness="1"></Rectangle>
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Rectangle Stroke="#FFFFFF" 
+                                       RadiusX="2" 
+                                       RadiusY="2" 
+                                       Opacity="0.5" 
+                                       StrokeThickness="1"/>
+                            <TextBlock HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center" 
+                                       Padding="10,0,10,0">
                                 <ContentPresenter />
                             </TextBlock>
                         </Grid>
@@ -4515,6 +4536,69 @@
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
                         </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <SolidColorBrush x:Key="BorderBrushMouseOver" Color="#FFFFFF" Opacity="0.15"/>
+
+    <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
+        <Setter Property="Focusable" Value="{Binding Path=IsDefault, Converter={StaticResource InverseBooleanConverter}}"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Grid Margin="0,0,10,10"
+                                  MinWidth="186"
+                                  MinHeight="67">
+                        <Border x:Name="mouseOverBorder"
+                                        Margin="2"
+                                        BorderThickness="2"
+                                        BorderBrush="{StaticResource BorderBrushMouseOver}"
+                                        Visibility="Hidden"
+                                        CornerRadius="2"/>
+                        <Border x:Name="mousePressedBorder"
+                                        Margin="0"
+                                        BorderThickness="4"
+                                        Visibility="Hidden"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        Background="Transparent"
+                                        CornerRadius="4"/>
+                        <Border Name="selectedItemBorder"
+                                        Margin="4"
+                                        Background="Transparent"
+                                        SnapsToDevicePixels="true">
+                        </Border>
+                        <ContentPresenter/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" 
+                                         Value="True">
+                            <Setter Property="BorderBrush" 
+                                            TargetName="selectedItemBorder" 
+                                            Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="BorderThickness"
+                                            TargetName="selectedItemBorder"
+                                            Value="2"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" 
+                                                   Value="True"/>
+                                <Condition Property="Focusable"
+                                                   Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter TargetName="selectedItemBorder" 
+                                                Property="Opacity" 
+                                                Value="0.9" />
+                                <Setter TargetName="mouseOverBorder" 
+                                                Property="Visibility" 
+                                                Value="Visible" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

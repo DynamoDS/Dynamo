@@ -797,6 +797,80 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void CheckEmptySelectionListAfterUndos()
+        {
+            //Add a Node
+            var model = GetModel();
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            Guid groupid = Guid.NewGuid();
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 1);
+            Assert.AreNotEqual(0, annotation.Width);
+            Assert.AreEqual(string.Empty, annotation.AnnotationText);
+
+            //Update the Annotation Text
+            model.ExecuteCommand(
+                    new DynamoModel.UpdateModelValueCommand(
+                        Guid.Empty, annotation.GUID, "TextBlockText",
+                        "This is a unit test"));
+
+            var annotationCenterPoint = new Point2D(addNode.CenterX, addNode.CenterY);
+
+            //Deselects the group
+            ViewModel.ExecuteCommand(
+                    new DynamoModel.SelectModelCommand(Guid.Empty, Dynamo.Utilities.ModifierKeys.None));
+
+            //Selects the group
+            DynamoSelection.Instance.Selection.Add(addNode);
+            ViewModel.ExecuteCommand(
+             new DynamoModel.DragSelectionCommand(annotationCenterPoint, DynamoModel.DragSelectionCommand.Operation.BeginDrag));
+
+            //Deselects the group
+            ViewModel.ExecuteCommand(
+                    new DynamoModel.SelectModelCommand(Guid.Empty, Dynamo.Utilities.ModifierKeys.None));
+
+            //Selects the group
+            DynamoSelection.Instance.Selection.Add(addNode);
+            ViewModel.ExecuteCommand(
+              new DynamoModel.DragSelectionCommand(annotationCenterPoint, DynamoModel.DragSelectionCommand.Operation.BeginDrag));
+
+            //Deselects the group
+            ViewModel.ExecuteCommand(
+                    new DynamoModel.SelectModelCommand(Guid.Empty, Dynamo.Utilities.ModifierKeys.None));
+
+            model.CurrentWorkspace.Undo();
+            model.CurrentWorkspace.Undo();
+
+            Assert.IsTrue(DynamoSelection.Instance.Selection.Any(x => x.IsSelected));
+            Assert.IsTrue(model.CurrentWorkspace.Nodes.Any(x => x.IsSelected));
+
+            model.CurrentWorkspace.Undo();
+            model.CurrentWorkspace.Undo();
+            model.CurrentWorkspace.Undo();
+            model.CurrentWorkspace.Undo();
+
+            //Deselects the group
+            ViewModel.ExecuteCommand(
+                 new DynamoModel.SelectModelCommand(Guid.Empty, Dynamo.Utilities.ModifierKeys.None));
+
+            Assert.IsFalse(model.CurrentWorkspace.Nodes.Any(x => x.IsSelected));
+            Assert.IsFalse(DynamoSelection.Instance.Selection.Any(x => x.IsSelected));
+        }
+
+        [Test]
         public void TestOpeningMalformedAnnotation()
         {
             OpenModel("core\\MalformedGroup.dyn");

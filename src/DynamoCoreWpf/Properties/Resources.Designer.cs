@@ -2948,6 +2948,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color.
+        /// </summary>
+        public static string GroupContextMenuColor {
+            get {
+                return ResourceManager.GetString("GroupContextMenuColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete Group.
         /// </summary>
         public static string GroupContextMenuDeleteGroup {
@@ -4479,6 +4488,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copyright Holder.
+        /// </summary>
+        public static string PackageDetailsCopyRightHolder {
+            get {
+                return ResourceManager.GetString("PackageDetailsCopyRightHolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copyright Year.
+        /// </summary>
+        public static string PackageDetailsCopyRightYear {
+            get {
+                return ResourceManager.GetString("PackageDetailsCopyRightYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DESCRIPTION.
         /// </summary>
         public static string PackageDetailsDescription {
@@ -6000,7 +6027,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group Name.
+        ///   Looks up a localized string similar to Style Name.
         /// </summary>
         public static string PreferencesViewVisualSettingsGroupStyleInput {
             get {

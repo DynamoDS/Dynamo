@@ -2863,6 +2863,14 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Python</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
   </data>
+  <data name="PackageDetailsCopyRightHolder" xml:space="preserve">
+    <value>Copyright Holder</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsCopyRightYear" xml:space="preserve">
+    <value>Copyright Year</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>Package</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
@@ -3038,7 +3046,7 @@ To install the latest version of a package, click Install. \n
     <value>Unpin this note from the node</value>
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
-    <value>Group Name</value>
+    <value>Style Name</value>
   </data>
   <data name="PreferencesViewEmptyStyleWarning" xml:space="preserve">
     <value>Please enter a valid name</value>
@@ -3060,5 +3068,7 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="RunCompletedWithScaleChangeAndErrorsMessage" xml:space="preserve">
     <value>Run completed with errors on setting new working range.</value>
+  <data name="GroupContextMenuColor" xml:space="preserve">
+    <value>Color</value>
   </data>
 </root>

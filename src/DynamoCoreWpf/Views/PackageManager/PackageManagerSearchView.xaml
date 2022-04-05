@@ -185,7 +185,8 @@
                     <!--  When clicked, the sort button displays a ContextMenu of options to the user  -->
                     <Button.ContextMenu>
                         <ContextMenu
-                            Width="180"
+                            MinWidth="180"
+                            Width="Auto"
                             Background="{StaticResource NodeContextMenuBackground}"
                             Style="{StaticResource ContextMenuStyle}">
 
