@@ -321,22 +321,22 @@ namespace Dynamo.PackageManager
                 PythonServices.PythonEngineManager.Instance.
                     LoadPythonEngine(package.LoadedAssemblies.Select(x => x.Assembly));
             }
+            catch (CustomNodePackageLoadException e)
+            {
+                Package originalPackage =
+                    localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.InstalledPath);
+                OnConflictingPackageLoaded(originalPackage, package);
+
+                package.LoadState.SetAsError(e.Message);
+            }
             catch (Exception e)
             {
-                package.LoadState.SetAsError(e.Message);
-
-                if (e is CustomNodePackageLoadException ce)
-                {
-                    Package originalPackage =
-                        localPackages.FirstOrDefault(x => x.CustomNodeDirectory == ce.InstalledPath);
-                    OnConflictingPackageLoaded(originalPackage, package);
-                }
-                else if (e is DynamoServices.AssemblyBlockedException)
+                if (e is DynamoServices.AssemblyBlockedException)
                 {
                     var failureMessage = string.Format(Properties.Resources.PackageLoadFailureForBlockedAssembly, e.Message);
                     DynamoServices.LoadLibraryEvents.OnLoadLibraryFailure(failureMessage, Properties.Resources.LibraryLoadFailureMessageBoxTitle);
                 }
-
+                package.LoadState.SetAsError(e.Message);
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
             }
