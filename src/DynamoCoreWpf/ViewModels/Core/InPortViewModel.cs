@@ -19,13 +19,13 @@ namespace Dynamo.ViewModels
 
         private bool showUseLevelMenu;
 
-        private SolidColorBrush portValueMarkerColor;
+        private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
 
         private bool portDefaultValueMarkerVisible;
 
-        private SolidColorBrush PortValueMarkerBlue;
-        private SolidColorBrush PortValueMarkerRed;
-        private SolidColorBrush PortValueMarkerGrey;
+        private static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+        private static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
+        private static SolidColorBrush PortValueMarkerGrey = new SolidColorBrush(Color.FromRgb(153, 153, 153));        
 
         private static readonly SolidColorBrush PortBackgroundColorKeepListStructure = new SolidColorBrush(Color.FromRgb(83, 126, 145));
         private static readonly SolidColorBrush PortBorderBrushColorKeepListStructure = new SolidColorBrush(Color.FromRgb(168, 181, 187));
@@ -151,12 +151,6 @@ namespace Dynamo.ViewModels
         public InPortViewModel(NodeViewModel node, PortModel port) : base(node, port)
         {
             port.PropertyChanged += PortPropertyChanged;
-
-            var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
-
-            PortValueMarkerBlue = (SolidColorBrush)resourceDictionary["PortValueMarkerBlue"];
-            PortValueMarkerGrey = (SolidColorBrush)resourceDictionary["PortValueMarkerGrey"];
-            PortValueMarkerRed = (SolidColorBrush)resourceDictionary["PortValueMarkerRed"];
 
             RefreshPortDefaultValueMarkerVisible();
         }
