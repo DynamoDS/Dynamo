@@ -17,10 +17,9 @@ namespace Dynamo.ViewModels
         private DelegateCommand hideConnectionsCommand;
         private DelegateCommand portMouseLeftButtonOnContextCommand;
 
-        private SolidColorBrush portValueMarkerColor;
+        private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
 
-        private SolidColorBrush PortValueMarkerBlue;
-        private SolidColorBrush PortValueMarkerGrey;
+        private static SolidColorBrush PortValueMarkerGrey = new SolidColorBrush(Color.FromRgb(153, 153, 153));
 
         private bool showContextMenu;
         private bool areConnectorsHidden;
@@ -152,11 +151,6 @@ namespace Dynamo.ViewModels
         public OutPortViewModel(NodeViewModel node, PortModel port) :base(node, port)
         {
             port.PropertyChanged += PortPropertyChanged;
-
-            var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
-            
-            PortValueMarkerBlue = (SolidColorBrush)resourceDictionary["PortValueMarkerBlue"];
-            PortValueMarkerGrey = (SolidColorBrush)resourceDictionary["PortValueMarkerGrey"];
 
             RefreshHideWiresState();
         }
