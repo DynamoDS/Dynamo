@@ -369,6 +369,11 @@ namespace Dynamo.Logging
         /// View event, when user wants to see some information
         /// </summary>
         View,
+
+        /// <summary>
+        /// Show event, when user wants to view Documentation.
+        /// </summary>
+        ViewDocumentation,
     }
 
     /// <summary>

@@ -888,6 +888,15 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        ///     Are all the outputs of this node connected?
+        /// </summary>
+        [JsonIgnore]
+        public bool AreAllOutputsConnected
+        {
+            get { return outPorts.All(p => p.IsConnected); }
+        }
+
+        /// <summary>
         ///     Returns the description from type information
         /// </summary>
         /// <returns>The value or "No description provided"</returns>

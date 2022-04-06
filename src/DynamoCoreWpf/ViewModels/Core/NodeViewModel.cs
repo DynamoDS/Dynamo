@@ -1479,7 +1479,7 @@ namespace Dynamo.ViewModels
             //helpDialog.Show();
 
             OnRequestShowNodeHelp(this, new NodeDialogEventArgs(NodeModel));
-            Analytics.TrackEvent(Actions.Show, Categories.NodeContextMenuOperations, "Help");
+            Analytics.TrackEvent(Actions.ViewDocumentation, Categories.NodeContextMenuOperations, NodeModel.Name);
         }
 
         private bool CanShowHelp(object parameter)

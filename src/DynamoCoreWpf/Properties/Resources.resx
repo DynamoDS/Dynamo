@@ -3068,4 +3068,7 @@ To install the latest version of a package, click Install. \n
   <data name="NextGuideText" xml:space="preserve">
     <value>Next guide: </value>
   </data>
+  <data name="GroupContextMenuColor" xml:space="preserve">
+    <value>Color</value>
+  </data>
 </root>
