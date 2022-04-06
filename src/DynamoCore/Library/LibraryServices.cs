@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Exceptions;
@@ -17,6 +18,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using ProtoFFI;
+using MethodAttributes = ProtoCore.AST.AssociativeAST.MethodAttributes;
 using Operator = ProtoCore.DSASM.Operator;
 
 namespace Dynamo.Engine
@@ -46,12 +48,6 @@ namespace Dynamo.Engine
         /// Returns core which is used for parsing code and loading libraries
         /// </summary>
         public ProtoCore.Core LibraryManagementCore { get; private set; }
-        private ProtoCore.Core liveRunnerCore = null;
-
-        internal void SetLiveCore(ProtoCore.Core core)
-        {
-            liveRunnerCore = core;
-        }
 
         private class UpgradeHint
         {
@@ -72,20 +68,6 @@ namespace Dynamo.Engine
         private readonly Dictionary<string, UpgradeHint> priorNameHints =
             new Dictionary<string, UpgradeHint>();
         
-        /// <summary>
-        /// Copy properties from the liveCore
-        /// The properties to copy are only those used by the library core
-        /// </summary>
-        internal void UpdateLibraryCoreData()
-        {
-            // If a liverunner core is provided, sync the library core data
-            if (liveRunnerCore != null)
-            {
-                LibraryManagementCore.ProcTable = new ProtoCore.DSASM.ProcedureTable(liveRunnerCore.ProcTable);
-                LibraryManagementCore.ClassTable = new ProtoCore.DSASM.ClassTable(liveRunnerCore.ClassTable);
-            }
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="LibraryServices"/> class.
         /// </summary>
@@ -111,6 +93,34 @@ namespace Dynamo.Engine
             PopulateOperators();
             PopulatePreloadLibraries();
             LibraryLoadFailed += new EventHandler<LibraryLoadFailedEventArgs>(LibraryLoadFailureHandler);
+
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+        }
+
+        private Assembly ResolveAssembly(object sender, ResolveEventArgs args)
+        {
+            var assemblyName = new AssemblyName(args.Name).Name + ".dll";
+            var assemblyPath = assemblyName;
+            try
+            {
+                if (pathManager.ResolveLibraryPath(ref assemblyPath))
+                {
+                    return Assembly.LoadFrom(assemblyPath);
+                }
+
+                foreach (var packagesDirectory in pathManager.PackagesDirectories)
+                {
+                    assemblyPath = Path.Combine(packagesDirectory, assemblyName);
+                    if (File.Exists(assemblyPath))
+                        return Assembly.LoadFrom(assemblyPath);
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("The location of the assembly, {0} could not be resolved for loading.", assemblyName), ex);
+            }
         }
 
         /// <summary>
@@ -121,6 +131,8 @@ namespace Dynamo.Engine
             builtinFunctionGroups.Clear();
             importedFunctionGroups.Clear();
             importedLibraries.Clear();
+
+            AppDomain.CurrentDomain.AssemblyResolve -= ResolveAssembly;
         }
         
         /// <summary>
@@ -167,6 +179,7 @@ namespace Dynamo.Engine
         {
             LibraryLoadFailedException ex = new LibraryLoadFailedException(args.LibraryPath, args.Reason);
             Log(ex.Message, WarningLevel.Moderate);
+            Log(ex);
 
             // NOTE: We do not want to throw an exception here if the failure was due
             // to a missing library that was explicitly (attempted to be) loaded
@@ -292,7 +305,7 @@ namespace Dynamo.Engine
             return splitted[splitted.Length - 2] + "." + splitted[splitted.Length - 1];
         }
 
-        internal string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
+        internal string GetFunctionSignatureFromFunctionSignatureHint(string functionSignature)
         {
             // if the hint is explicit, we can simply return the mapped function
             if (priorNameHints.ContainsKey(functionSignature))
@@ -521,7 +534,7 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="library">The library to be loaded</param>
         /// <param name="isExplicitlyImportedLib">Indicates if the library has been imported using the "File | ImportLibrary" command</param>
-        internal bool ImportLibrary(string library, bool isExplicitlyImportedLib = false)
+        internal bool LoadNodeLibrary(string library, bool isExplicitlyImportedLib)
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -563,14 +576,23 @@ namespace Dynamo.Engine
             {
                 DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
 
-                var functionTable = LibraryManagementCore.CodeBlockList[0].procedureTable;
+                ProcedureTable functionTable = null;
+                int functionNumber = 0;
+                if (LibraryManagementCore.CodeBlockList.Any())
+                {
+                    functionTable = LibraryManagementCore.CodeBlockList[0].procedureTable;
+                    functionNumber = functionTable.Procedures.Count;
+                }
                 var classTable = LibraryManagementCore.ClassTable;
-
-                int functionNumber = functionTable.Procedures.Count;
                 int classNumber = classTable.ClassNodes.Count;
 
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
 
+                if(functionTable == null)
+                {
+                    functionTable = LibraryManagementCore.CodeBlockList[0].procedureTable;
+                    functionNumber = functionTable.Procedures.Count;
+                }
 
                 if (LibraryManagementCore.BuildStatus.ErrorCount > 0)
                 {
@@ -579,7 +601,7 @@ namespace Dynamo.Engine
                     foreach (ErrorEntry error in LibraryManagementCore.BuildStatus.Errors)
                     {
                         Log(error.Message, WarningLevel.Moderate);
-                        errorMessage += error.Message + "\n";
+                        errorMessage += Environment.NewLine + error.Message;
                     }
 
                     throw new Exception(errorMessage);
@@ -599,18 +621,28 @@ namespace Dynamo.Engine
                     ImportProcedure(library, globalFunction);
                 }
             }
+            catch (DynamoServices.AssemblyBlockedException e)
+            {
+                // This exception is caught upstream after displaying a failed load library warning to the user.
+                throw e;
+            }
             catch (Exception e)
             {
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message,
                     throwOnFailure: !isExplicitlyImportedLib));
                 return false;
             }
-
-            OnLibraryLoaded(new LibraryLoadedEventArgs(library));
-
-            // After a library is loaded, update the library core data with the liveRunner core data
-            UpdateLibraryCoreData();
+            if (!importedLibraries.Contains(library))
+            {
+                importedLibraries.Add(library);
+            }
             return true;
+        }
+
+        internal void ImportLibrary(string library, bool isExplicitlyImportedLib = false)
+        {
+            LoadNodeLibrary(library, isExplicitlyImportedLib);
+            OnLibrariesImported(new LibraryLoadedEventArgs(new List<string> {library}));
         }
 
 
@@ -874,7 +906,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Polulate preloaded libraries.
+        ///     Populate preloaded libraries.
         /// </summary>
         private void PopulatePreloadLibraries()
         {
@@ -1070,7 +1102,10 @@ namespace Dynamo.Engine
             if (pathManager.PackagesDirectories.Any(
                 directory => library.StartsWith(directory)))
             {
-                packagedLibraries.Add(library);
+                if (!packagedLibraries.Contains(library))
+                {
+                    packagedLibraries.Add(library);
+                }
             }
 
             EventHandler<LibraryLoadingEventArgs> handler = LibraryLoading;
@@ -1085,13 +1120,13 @@ namespace Dynamo.Engine
                 handler(this, e);
         }
 
-        private void OnLibraryLoaded(LibraryLoadedEventArgs e)
+        internal void OnLibrariesImported(LibraryLoadedEventArgs e)
         {
-            importedLibraries.Add(e.LibraryPath);
-
-            EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
+            var handler = LibraryLoaded;
             if (handler != null)
+            {
                 handler(this, e);
+            }
         }
 
         public static class Categories
@@ -1133,12 +1168,26 @@ namespace Dynamo.Engine
 
         public class LibraryLoadedEventArgs : EventArgs
         {
+            // TODO: Remove in 3.0
+            [Obsolete("This constructor is obsolete. Use constructor that accepts collection of library paths instead.")]
             public LibraryLoadedEventArgs(string libraryPath)
             {
                 LibraryPath = libraryPath;
             }
 
-            public string LibraryPath { get; private set; }
+            public LibraryLoadedEventArgs(IEnumerable<string> libraryPaths)
+            {
+                LibraryPaths = libraryPaths;
+            }
+
+            // TODO: Remove in 3.0
+            [Obsolete("This property is obsolete. Use property LibraryPaths that returns collection of paths instead.")]
+            public string LibraryPath { get; }
+
+            /// <summary>
+            /// Paths to libraries that are loaded. 
+            /// </summary>
+            public IEnumerable<string> LibraryPaths { get; }
         }
 
         public class LibraryLoadingEventArgs : EventArgs
@@ -1151,7 +1200,7 @@ namespace Dynamo.Engine
             public string LibraryPath { get; private set; }
         }
 
-        private class LibraryPathComparer : IEqualityComparer<string>
+        internal class LibraryPathComparer : IEqualityComparer<string>
         {
             public bool Equals(string path1, string path2)
             {

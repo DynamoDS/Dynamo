@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -18,11 +22,10 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
 {
-    public partial class SearchViewModel : NotificationObject
+    public partial class SearchViewModel : ViewModelBase
     {
         #region events
 
@@ -34,10 +37,16 @@ namespace Dynamo.ViewModels
         }
 
         public event EventHandler SearchTextChanged;
+
+        /// <summary>
+        /// Invokes the SearchTextChanged event handler and executes the SearchCommand
+        /// </summary>
         public void OnSearchTextChanged(object sender, EventArgs e)
         {
             if (SearchTextChanged != null)
                 SearchTextChanged(this, e);
+
+            SearchCommand?.Execute(null);
         }
 
         #endregion
@@ -62,13 +71,13 @@ namespace Dynamo.ViewModels
             set { browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
         }
 
+        private string searchText;
         /// <summary>
         ///     SearchText property
         /// </summary>
         /// <value>
         ///     This is the core UI for Dynamo, primarily used for logging.
         /// </value>
-        private string searchText;
         public string SearchText
         {
             get { return searchText; }
@@ -86,7 +95,7 @@ namespace Dynamo.ViewModels
         ///     SearchIconAlignment property
         /// </summary>
         /// <value>
-        ///     This is used for aligment search icon and text.
+        ///     This is used for alignment search icon and text.
         /// </value>
         private HorizontalAlignment searchIconAlignment;
         public HorizontalAlignment SearchIconAlignment
@@ -175,7 +184,7 @@ namespace Dynamo.ViewModels
             set
             {
                 filteredResults = ToggleSelect(value);
-                RaisePropertyChanged("FilteredResults");
+                RaisePropertyChanged(nameof(FilteredResults));
             }
         }
 
@@ -205,12 +214,10 @@ namespace Dynamo.ViewModels
                 }
                 strBuilder.Append(", ");
             }
-
-            Analytics.LogPiiInfo("Filter-categories", strBuilder.ToString().Trim());
         }
 
         /// <summary>
-        /// Unselects all items and selectes the first one.
+        /// Unselects all items and selects the first one.
         /// </summary>
         internal IEnumerable<NodeSearchElementViewModel> ToggleSelect(IEnumerable<NodeSearchElementViewModel> items)
         {
@@ -283,7 +290,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         public NodeSearchElementViewModel FindViewModelForNode(string nodeName)
         {
-            var result = dynamoViewModel.Model.SearchModel.SearchEntries.Where(e => {
+            var result = Model.SearchEntries.Where(e => {
                 if (e.CreationName.Equals(nodeName))
                 {
                     return true;
@@ -300,7 +307,7 @@ namespace Dynamo.ViewModels
         }
 
         public NodeSearchModel Model { get; private set; }
-        private readonly DynamoViewModel dynamoViewModel;
+        internal readonly DynamoViewModel dynamoViewModel;
 
         /// <summary>
         /// Class name, that has been clicked in library search view.
@@ -324,11 +331,30 @@ namespace Dynamo.ViewModels
             InitializeCore();
         }
 
-        // Just for tests.
+        // Just for tests. Please refer to LibraryTests.cs
         internal SearchViewModel(NodeSearchModel model)
         {
             Model = model;
             InitializeCore();
+        }
+
+        /// <summary>
+        /// Dispose function
+        /// </summary>
+        public override void Dispose()
+        {
+            foreach (var cate in LibraryRootCategories)
+            {
+                cate.DisposeTree();
+            }
+            foreach (var cate in BrowserRootCategories)
+            {
+                cate.DisposeTree();
+            }
+            Model.EntryUpdated -= UpdateEntry;
+            Model.EntryRemoved -= RemoveEntry;
+
+            base.Dispose();
         }
 
         private void InitializeCore()
@@ -360,9 +386,6 @@ namespace Dynamo.ViewModels
 
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
-
-            //TASK : MAGN 8159 - Do not Expand Geometry by Default.
-            //ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY_CATEGORY, true);
         }
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
@@ -387,6 +410,10 @@ namespace Dynamo.ViewModels
                 };
 
                 rootCat.RequestReturnFocusToSearch += OnRequestFocusSearch;
+                // Since all the root categories will be new RootNodeCategoryViewModel objects,
+                // we should dispose the old ones. Since they are still watching for subcategories'
+                // property changes, they will never be garbage collected.
+                cat.Dispose();
                 return rootCat;
             });
 
@@ -744,7 +771,7 @@ namespace Dynamo.ViewModels
             // package the category names in dyf is different from what we show it 
             // on the tree view. so when you click on the category to populate it 
             // triggers an update to category name. on the same instance when you uninstall
-            // and insall the clockwork package, the categories are named correctly but 
+            // and install the clockwork package, the categories are named correctly but 
             // every install triggers an update that gives a duplicate entry. so check if the
             // entry is already added (specific to browse).
             if (category.Entries.All(x => x.FullName != entry.FullName))
@@ -753,7 +780,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
+        internal void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
         {
             var warehouse = iconServices.GetForAssembly(e.IconAssembly, e.UseAdditionalResolutionPaths);
             ImageSource icon = null;
@@ -769,13 +796,6 @@ namespace Dynamo.ViewModels
         {
             return string.IsNullOrEmpty(path) ? addition :
                 path + Configurations.CategoryDelimiterString + addition;
-        }
-
-        internal void ChangeRootCategoryExpandState(string categoryName, bool isExpanded)
-        {
-            var category = LibraryRootCategories.FirstOrDefault(cat => cat.Name == categoryName);
-            if (category != null && category.IsExpanded != isExpanded)
-                category.IsExpanded = isExpanded;
         }
 
         #endregion
@@ -805,8 +825,6 @@ namespace Dynamo.ViewModels
         {
             if (Visible != true)
                 return;
-
-            Analytics.LogPiiInfo("Search", query);
 
             // if the search query is empty, go back to the default treeview
             if (string.IsNullOrEmpty(query))
@@ -854,13 +872,14 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Performs a search using the given string as query.
+        ///     Performs a search using the given string as query and subset, if provided.
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        internal IEnumerable<NodeSearchElementViewModel> Search(string search)
+        /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>
+        internal IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
         {
-            var foundNodes = Model.Search(search);
+            var foundNodes = Model.Search(search, 0, subset);
             return foundNodes.Select(MakeNodeSearchElementVM);
         }
 
@@ -885,7 +904,7 @@ namespace Dynamo.ViewModels
             var elementVM = element != null
                 ? new CustomNodeSearchElementViewModel(element, this)
                 : new NodeSearchElementViewModel(entry, this);
-
+            //TODO lookout for leak.
             elementVM.RequestBitmapSource += SearchViewModelRequestBitmapSource;
             return elementVM;
         }
@@ -1167,6 +1186,48 @@ namespace Dynamo.ViewModels
                     break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Attempts to find the node's icon, which is the same as its type name plus a Postfix, such as '.Small'.
+        /// </summary>
+        /// <returns>An ImageSource object pointing to the icon image for the NodeViewModel</returns>
+        internal bool TryGetNodeIcon(NodeViewModel nodeViewModel, out ImageSource iconSource)
+        {
+            string nodeTypeName;
+            string assemblyLocation;
+
+            switch (nodeViewModel.NodeModel)
+            {
+                // For ZeroTouch nodes
+                case DSFunction dsFunction:
+                    FunctionDescriptor functionDescriptor = dsFunction.Controller.Definition;
+                    assemblyLocation = functionDescriptor.Assembly;
+                    nodeTypeName = Graph.Nodes.Utilities.GetFunctionDescriptorIconName(functionDescriptor);
+                    break;
+                // For DSVarArgFunctions like String.Concat
+                case DSVarArgFunction dsVarArgFunction:
+                    nodeTypeName = dsVarArgFunction.Controller.Definition.QualifiedName;
+                    assemblyLocation = dsVarArgFunction.Controller.Definition.Assembly;
+                    break;
+                // For NodeModel nodes
+                case NodeModel nodeModel:
+                    nodeTypeName = nodeModel.GetType().FullName;
+                    assemblyLocation = nodeModel.GetType().Assembly.Location;
+                    break;
+                default:
+                    nodeTypeName = "";
+                    assemblyLocation = "";
+                    break;
+            }
+
+            iconSource = null;
+
+            IconWarehouse currentWarehouse = iconServices.GetForAssembly(assemblyLocation);
+            if (currentWarehouse is null) return false;
+
+            iconSource = currentWarehouse.LoadIconInternal(nodeTypeName + Configurations.SmallIconPostfix);
+            return !(iconSource is null);
         }
 
         #endregion

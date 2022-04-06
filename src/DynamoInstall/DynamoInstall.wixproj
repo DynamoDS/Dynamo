@@ -75,7 +75,7 @@
     </CreateProperty>
     <Exec Command="rd /s /q $(DYNAMO_HARVEST_PATH)" />
     <Exec Command="robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int -XD Revit_2016 -XD Revit_2017 -XD Revit_2018 -XD samples -XD gallery -XD 0.8" IgnoreExitCode="true" />
-    <Exec Command="$(DYNAMO_BASE_PATH)\tools\install\Extra\InstallerSpec.exe $(DYNAMO_HARVEST_PATH) $(DYNAMO_HARVEST_PATH)\InstallSpec.xml" IgnoreExitCode="true" />
+    <Exec Command="$(DYNAMO_BASE_PATH)\tools\install\Extra\InstallerSpec.exe $(DYNAMO_HARVEST_PATH) $(DYNAMO_HARVEST_PATH)\InstallSpec.xml /f:$(DYNAMO_BASE_PATH)\tools\install\Extra\additional-files-to-sign.txt" IgnoreExitCode="false" />
     <Exec Condition="Exists('$(MSBuildProjectDirectory)\Digital_Sign.bat')" Command="$(MSBuildProjectDirectory)\Digital_Sign.bat $(DYNAMO_HARVEST_PATH)\binariestosign.txt" IgnoreExitCode="false" />
     
     <!-- Copy README file to install folder -->

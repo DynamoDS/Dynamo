@@ -4,10 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-
 using Dynamo.Configuration;
 using Dynamo.Controls;
-using Dynamo.Graph;
+using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -36,6 +35,8 @@ namespace SystemTestServices
         protected string workingDirectory;
         private Preloader preloader;
         private AssemblyResolver assemblyResolver;
+        // Some tests override the static property PathManager.BuiltinPackagesDirectory, so we need a way to reset it after each test.
+        private string originalBuiltinPackagesDirectory;
 
         #region protected properties
 
@@ -66,7 +67,9 @@ namespace SystemTestServices
             if (assemblyResolver == null)
             {
                 assemblyResolver = new AssemblyResolver();
-                assemblyResolver.Setup(testConfig.DynamoCorePath);
+                assemblyResolver.Setup(testConfig.DynamoCorePath, new [] {
+                    Path.Combine(testConfig.DynamoCorePath, "nodes")
+                });
             }
 
             SetupCore();
@@ -80,6 +83,9 @@ namespace SystemTestServices
 
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+
+            // Store a copy of the PathManager.BuiltinPackagesDirectory so that we can reset it after each DynamoModelTest
+            originalBuiltinPackagesDirectory = originalBuiltinPackagesDirectory ?? PathManager.BuiltinPackagesDirectory;
 
             StartDynamo(testConfig);
         }
@@ -123,6 +129,7 @@ namespace SystemTestServices
                 assemblyResolver = null;
             }
 
+            PathManager.BuiltinPackagesDirectory = originalBuiltinPackagesDirectory;
             try
             {
                 var directory = new DirectoryInfo(TempFolder);
@@ -382,6 +389,17 @@ namespace SystemTestServices
             Assert.IsNotNull(mirror);
             var classInfo = mirror.GetData().Class;
             Assert.AreEqual(classInfo.ClassName, className);
+        }
+
+        /// <summary>
+        /// Get loaded instance(s) of a view extension type.
+        /// Returns null if no view extensions of the provided type are loaded
+        /// </summary>
+        /// <typeparam name="T">A type which implements IViewExtension</typeparam>
+        /// <returns></returns>
+        public IEnumerable<T> GetViewExtensionsByType<T>()
+        {
+            return View.viewExtensionManager.ViewExtensions.OfType<T>();
         }
 
         #endregion

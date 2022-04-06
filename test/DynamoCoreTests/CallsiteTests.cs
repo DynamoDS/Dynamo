@@ -1,17 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using CoreNodeModels.Input;
 using Dynamo.Engine;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using FFITarget;
 using NUnit.Framework;
-using Dynamo.Graph.Nodes;
 using static ProtoCore.CallSite;
-using System.Diagnostics;
 
 namespace Dynamo.Tests
 {
@@ -122,7 +124,7 @@ namespace Dynamo.Tests
 
             CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(3);
 
-            var traceNode = ws.Nodes.Where(n=>n is DSFunction).FirstOrDefault(f=>f.Name == "TraceExampleWrapper.ByString");
+            var traceNode = ws.Nodes.Where(n => n is DSFunction).FirstOrDefault(f => f.Name == "TraceExampleWrapper.ByString");
             Assert.NotNull(traceNode);
 
             ws.RemoveAndDisposeNode(traceNode);
@@ -133,7 +135,7 @@ namespace Dynamo.Tests
         [Test]
         public void Callsite_RunWithTraceDataFromUnresolvedNodes_DoesNotCrash()
         {
-            var ws = Open<HomeWorkspaceModel>(SampleDirectory, @"en-US\Geometry", "Geometry_Surfaces.dyn");
+            var ws = Open<HomeWorkspaceModel>(SampleDirectory, @"en-US\Revit", "Revit_GeometryCreation_Surfaces.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(42, ws.Nodes.Count());
@@ -163,6 +165,156 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("c760af7e-042c-4722-a834-3445bf41f549", 2);
             AssertPreviewValue("5f277520-13aa-4833-aa82-b17a822e6d8c", 3);
+        }
+
+        // This test dyn contains a manually edited callsite data with modified function scopes that do not exist
+        // this ensures function scope is not used during trace reconciliation for custom nodes.
+
+        [Test]
+        public void Callsite_ElementBinding_CustomNodes()
+        {
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_modified.dyn");
+            CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(0);
+            Assert.AreEqual(6, ws.Nodes.Count());
+            var dummyNodes = ws.Nodes.OfType<DummyNode>();
+            Assert.AreEqual(0, dummyNodes.Count());
+            Assert.IsFalse(ws.Nodes.OfType<Function>().First().IsInErrorState);
+
+            BeginRun();
+            AssertPreviewValue("da39dbe5f59649b18c2fb6ca54acba7b", 1234567899);
+            AssertPreviewValue("2366239164a9441a8c4dcd981d9cf542", 2);
+            AssertPreviewValue("342f96575f8942c890867d88495fb0db", 3);
+
+        }
+
+        // This test dyn contains a manually edited callsite data with modified function scopes that do not exist
+        // this ensures function scope is not used during trace reconciliation for custom nodes.
+
+        [Test]
+        public void Callsite_ElementBinding_CustomNodes_multiple()
+        {
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_modified_multiple.dyn");
+            CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(0);
+            Assert.AreEqual(9, ws.Nodes.Count());
+            var dummyNodes = ws.Nodes.OfType<DummyNode>();
+            Assert.AreEqual(0, dummyNodes.Count());
+            Assert.IsFalse(ws.Nodes.OfType<Function>().First().IsInErrorState);
+
+            BeginRun();
+            AssertPreviewValue("da39dbe5f59649b18c2fb6ca54acba7b", 111111);
+            AssertPreviewValue("2366239164a9441a8c4dcd981d9cf542", 222222);
+            AssertPreviewValue("8cfce012280342f3bd688520d68a7f66", 333333);
+            AssertPreviewValue("08448232ee094aad8280e9a99ed44f46", 444444);
+        }
+
+        [Test]
+        public void Callsite_ElementBinding_CustomNodes_ShouldReturnUniqueIds()
+        {
+            WrapperObject.ResetNextID();
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_replication.dyn");
+            BeginRun();
+            AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", Enumerable.Range(1, 6).ToList());
+        }
+
+        [Test]
+        public void Single_CallSite_Should_Rebind()
+        {
+
+            WrapperObject.ResetNextID();
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "single_callsite.dyn");
+            //assert there is only one callsite
+            Assert.AreEqual(1, this.CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeData.CallsiteCache.Keys.Count);
+            var callsite = this.CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeData.CallsiteCache.FirstOrDefault().Value;
+            Assert.AreEqual(1, callsite.invokeCount);
+            var traceid = Guid.Parse("08278f9e8ae64c72b86313e04cdde709");
+            var traceNode = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == traceid).FirstOrDefault();
+            var firstresult = (traceNode.CachedValue.Data as WrapperObject).ID;
+
+            //run the graph again.
+            ws.Nodes.OfType<CodeBlockNodeModel>().First().SetCodeContent("2", ws.ElementResolver);
+            Assert.AreEqual(1, this.CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeData.CallsiteCache.Keys.Count);
+            Assert.AreEqual(1, callsite.invokeCount);
+            var secondResult = (traceNode.CachedValue.Data as WrapperObject).ID;
+            Assert.AreEqual(firstresult,secondResult);
+
+        }
+
+        [Test]
+        public void Callsite_ElementBinding_CustomNodes2dReplication_ShouldReturnUniqueIds()
+        {
+            WrapperObject.ResetNextID();
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_replication2d.dyn");
+            BeginRun();
+            AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", new int[][] {
+               new int[] {1},
+               new int[] {2,3 },
+               new int[]{4,5,6 },
+               new int[]{7,8,9,10 },
+               new int[]{11,12,13,14,15 },
+               new int[]{16,17,18,19,20,21 }
+            });
+        }
+
+        [Test]
+        public void Callsite_ElementBinding_CustomNodes_MultipleRunsShouldResetInvocationCount()
+        {
+            WrapperObject.ResetNextID();
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_replication.dyn");
+            BeginRun();
+            AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", Enumerable.Range(1, 6).ToList());
+            
+            //grab the inner callsite inside the custom node
+            var callsite = this.CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeData.CallsiteCache.
+                Where(kv => kv.Key.Contains("WrapperObject")).FirstOrDefault().Value;
+            //should have executed 6 times
+            Assert.AreEqual(callsite.invokeCount, 6);
+
+            //force a re execution and if binding succeeds then data should be unchanged.
+            ws.Nodes.OfType<CodeBlockNodeModel>().First().SetCodeContent("5..10", ws.ElementResolver);
+            AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", Enumerable.Range(1, 6).ToList());
+            //count should have been reset and invoked 6 more times
+            Assert.AreEqual(callsite.invokeCount,6);
+        }
+
+        [Test]
+        [Category("TechDebt")]
+        public void Callsite_ElementBinding_Functions_UniqueIds_ForReplicationOfInnerAndOuterFunction()
+        {
+            WrapperObject.ResetNextID();
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "func_nested_replication.dyn");
+            BeginRun();
+            AssertPreviewValue("22e0f3229b314aa48914e8f6b925872c", Enumerable.Range(1, 3).ToList());
+            // this node currently rebinds to its inner callsites so there are repeated values being returned.
+            // it's not clear this behavior is correct, but it matches expected results with zeroTouch nodes nested in
+            // other zero touch nodes which access trace. This test is created to note the current behavior and to 
+            // alert us if it changes.
+            AssertPreviewValue("74cd0ca6d4964ec2b500fbe96139d28c", new int[][] {
+               new int[] {4},
+               new int[] {4,5 },
+               new int[]{4,5,6 },
+               new int[]{4,5,6,7 }
+            });
+            /*
+            AssertPreviewValue("74cd0ca6d4964ec2b500fbe96139d28c", new int[][] {
+               new int[] {4},
+               new int[] {5,6 },
+               new int[]{7,8,9 },
+               new int[]{10,11,12,13 }
+            });
+            */
+        }
+
+        //TODO add previous test with multiple executions
+
+       
+
+        [Test]
+        public void Callsite_ElementBinding_ShouldReturnUniqueIds()
+        {
+            WrapperObject.ResetNextID();
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "nonNestedWorking_replication.dyn");
+            BeginRun();
+            AssertPreviewValue("a74679f905fc4883bb017851d94ac074", Enumerable.Range(1, 6).ToList());
         }
 
         [Test]

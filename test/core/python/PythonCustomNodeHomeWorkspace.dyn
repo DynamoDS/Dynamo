@@ -1,0 +1,263 @@
+{
+  "Uuid": "c858978f-0411-4a88-a690-160622d6d562",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "PythonCustomNodeHomeWorkspace",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 89.300000000000011,
+      "Id": "7122f1ba29ac4efabf075856fdd4dbfa",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "baa777f60cc548398ad31dc92cc6e0c8",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "9a9fb65f6d8943f289168911c0de4e36",
+      "Inputs": [
+        {
+          "Id": "624a10003c78444f9bd526194c0a1eee",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a625b42d31814b3889d1b2618097bf06",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "3302f6ec-a2b9-4013-a5cd-d6b5059f4a6f",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "7375e2b07aec4d2a9cfabaa0dfc4c439",
+      "Inputs": [
+        {
+          "Id": "f05dfc34b490497c87f5ff9f8b569429",
+          "Name": "IN",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b10b5c2eba9940f2acd5d503f5c73e4d",
+          "Name": "OUT",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "d73c65af12dd4c2b9ae87dfe9c0e74f7",
+      "Inputs": [
+        {
+          "Id": "3983604404ed40ab951eb4ffdb8c0266",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "47aaf3b9b32f4494af7ec37a60588f58",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "ad7f8950-a02c-4dae-872e-3754d8c354f3",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "83c2b47d81e14226a93941f1e47dc47d",
+      "Inputs": [
+        {
+          "Id": "96cf17bafee74ff48f7160dc99462291",
+          "Name": "IN",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "abf4e348caa54e93886d47190834caa1",
+          "Name": "OUT",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "test python in a custom node"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "baa777f60cc548398ad31dc92cc6e0c8",
+      "End": "f05dfc34b490497c87f5ff9f8b569429",
+      "Id": "58340a6a159044c6b82285bbfe6cdc50"
+    },
+    {
+      "Start": "baa777f60cc548398ad31dc92cc6e0c8",
+      "End": "96cf17bafee74ff48f7160dc99462291",
+      "Id": "cecbf41d8fce461192a5b711a3bf18f1"
+    },
+    {
+      "Start": "b10b5c2eba9940f2acd5d503f5c73e4d",
+      "End": "3983604404ed40ab951eb4ffdb8c0266",
+      "Id": "e3ec06a493cc4bbbb37b387124d1ed99"
+    },
+    {
+      "Start": "abf4e348caa54e93886d47190834caa1",
+      "End": "624a10003c78444f9bd526194c0a1eee",
+      "Id": "0d0a6d47f85e40b896beaa0987077f80"
+    }
+  ],
+  "Dependencies": [
+    "3302f6ec-a2b9-4013-a5cd-d6b5059f4a6f",
+    "ad7f8950-a02c-4dae-872e-3754d8c354f3"
+  ],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.8.0.1775",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "7122f1ba29ac4efabf075856fdd4dbfa",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 329.99999999999977,
+        "Y": 389.6
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "9a9fb65f6d8943f289168911c0de4e36",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1064.4,
+        "Y": 392.79999999999995
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "CNWithoutPythonNode",
+        "Id": "7375e2b07aec4d2a9cfabaa0dfc4c439",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 766.0,
+        "Y": 267.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "d73c65af12dd4c2b9ae87dfe9c0e74f7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1056.0,
+        "Y": 260.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "PythonCustomNodeTest",
+        "Id": "83c2b47d81e14226a93941f1e47dc47d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 772.0,
+        "Y": 433.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

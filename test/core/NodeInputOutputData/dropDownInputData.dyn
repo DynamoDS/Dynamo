@@ -1,0 +1,94 @@
+{
+  "Uuid": "62625e04-0f8c-43c2-9bbc-e2a946bf1fca",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "dropDownInputData",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "0092fd2bf446436c8d0e7cdf5c409dce",
+      "Name": "Drop Down Example",
+      "Type": "dropdownSelection",
+      "Value": "Tywin",
+      "Description": "An example drop down node.",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "SampleLibraryUI.Examples.DropDownExample, SampleLibraryUI",
+      "SelectedIndex": 0,
+      "SelectedString": "Tywin",
+      "NodeType": "ExtensionNode",
+      "Id": "0092fd2bf446436c8d0e7cdf5c409dce",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "099340bd4bbf46179ec0b2036eb9e1c5",
+          "Name": "item",
+          "Description": "The selected item",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "An example drop down node."
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Dynamo Samples",
+      "Version": "2.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "0092fd2bf446436c8d0e7cdf5c409dce"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.11.0.4483",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Drop Down Example",
+        "Id": "0092fd2bf446436c8d0e7cdf5c409dce",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 394.0,
+        "Y": 273.33333333333331
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

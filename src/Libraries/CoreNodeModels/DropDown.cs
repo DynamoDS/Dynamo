@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security;
 using System.Xml;
 using CoreNodeModels.Properties;
 using Dynamo.Graph;
@@ -62,13 +63,25 @@ namespace CoreNodeModels
                 RaisePropertyChanged("Items");
             }
         }
+
         public override NodeInputData InputData
         {
-            //TODO There is not yet an appropriate input type
-            //defined in the cogs graph schema to support dropdowns
-            //which return arbitrary objects at some index - implement this
-            //when that exists.
-            get { return null; }
+            //TODO extend cogs graph schema with new
+            //`NodeInputTypes.dropdownSelection` support.
+            get
+            {
+                return new NodeInputData
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+                    //because selection makes more sense than defaulting to number...
+                    Type = NodeInputTypes.selectionInput,
+                    Type2 = NodeInputTypes.dropdownSelection,
+                    Description = this.Description,
+                    Value = this.SelectedString,
+                    SelectedIndex = this.SelectedIndex
+                };
+            }
         }
 
         private int selectedIndex = -1;
@@ -164,7 +177,7 @@ namespace CoreNodeModels
             }
             else
             {
-                selectedString = selectedIndex > Items.Count - 1? String.Empty: GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
+                selectedString = selectedIndex > Items.Count - 1 ? String.Empty : GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
             }
         }
 
@@ -238,20 +251,30 @@ namespace CoreNodeModels
             return string.Format("{0}:{1}", index, XmlEscape(item.Name));
         }
 
+        /// <summary>
+        /// Escape string which could contain XML forbidden chars.
+        /// </summary>
+        /// <param name="unescaped"></param>
+        /// <returns></returns>
         protected static string XmlEscape(string unescaped)
         {
-            var doc = new XmlDocument();
-            XmlNode node = doc.CreateElement("root");
-            node.InnerText = unescaped;
-            return node.InnerXml;
+            // TODO: This function can be simplified in Dynamo 3.0
+            // since it is one line wrapper
+            return SecurityElement.Escape(unescaped);
         }
 
+        /// <summary>
+        /// Unescape string which could already be escaped before,
+        /// if there is no escaped special char, return as it is
+        /// if there is special char escaped, restore them.
+        /// </summary>
+        /// <param name="escaped"></param>
+        /// <returns></returns>
         protected static string XmlUnescape(string escaped)
         {
-            var doc = new XmlDocument();
-            XmlNode node = doc.CreateElement("root");
-            node.InnerXml = escaped;
-            return node.InnerText;
+            // TODO: This function can be simplified in Dynamo 3.0
+            // since it is one line wrapper
+            return System.Web.HttpUtility.HtmlDecode(escaped);
         }
 
         /// <summary>

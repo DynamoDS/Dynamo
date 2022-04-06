@@ -88,19 +88,22 @@ namespace DynamoInstallDetective
         /// info.</returns>
         public static IEnumerable FindMultipleProductInstallations(List<string> productSearchPatterns, string fileSearchPattern)
         {
-            var installs = new InstalledProducts();
-            // Look up products with ASM installed on user's computer
-            foreach (var productSearchPattern in productSearchPatterns)
+            using (RegUtils.StartCache())
             {
-                installs.LookUpAndInitProducts(new InstalledProductLookUp(productSearchPattern, fileSearchPattern));
-            }
+                var installs = new InstalledProducts();
+                // Look up products with ASM installed on user's computer
+                foreach (var productSearchPattern in productSearchPatterns)
+                {
+                    installs.LookUpAndInitProducts(new InstalledProductLookUp(productSearchPattern, fileSearchPattern));
+                }
 
-            return
-                installs.Products.Select(
-                    p =>
-                        new KeyValuePair<string, Tuple<int, int, int, int>>(
-                        p.InstallLocation,
-                        p.VersionInfo));
+                return
+                    installs.Products.Select(
+                        p =>
+                            new KeyValuePair<string, Tuple<int, int, int, int>>(
+                            p.InstallLocation,
+                            p.VersionInfo));
+            }
         }
     }
 }

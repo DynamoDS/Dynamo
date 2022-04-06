@@ -1,16 +1,13 @@
-﻿using Dynamo.Models;
-using Dynamo.Search.SearchElements;
-using Dynamo.UI;
-using Dynamo.Wpf.Services;
-
-using NUnit.Framework;
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Models;
+using Dynamo.Search.SearchElements;
+using Dynamo.Wpf.Services;
+using NUnit.Framework;
 
 namespace Dynamo.Tests
 {

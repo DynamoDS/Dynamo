@@ -1,0 +1,501 @@
+{
+  "Uuid": "2b2e99fa-e662-4e8f-8b11-859d04f1ba28",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "TSplinesSrf_to_Mesh",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ToMesh@int,double",
+      "Id": "070e1acdea6747a1a92987d6696c5e21",
+      "Inputs": [
+        {
+          "Id": "0d6ee2f8ad794027acc78be83fa4fa27",
+          "Name": "tSplineSurface",
+          "Description": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "46aa2fd992aa4f81aabb761570a1b581",
+          "Name": "minSegments",
+          "Description": "The minimum number of segments in each direction. At least one segment will always be produced.\n\nint\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "940c168f122e42a79064c91eea68163e",
+          "Name": "tolerance",
+          "Description": "Maximum allowed distance from the mesh to the surface. Setting to a zero or a negative value will disable its use\n\ndouble\nDefault value : 0.01",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9ff37fde391345b8bfe44ed0a3b080fc",
+          "Name": "Mesh",
+          "Description": "Mesh entity",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Convert t-spline surface to mesh. Mesh can have both triangles and quads.\n\nTSplineSurface.ToMesh (minSegments: int = 1, tolerance: double = 0.01): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double,int,int,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,bool",
+      "Id": "3483486d55874dc5969bb86e11ae5ab2",
+      "Inputs": [
+        {
+          "Id": "8f3106405e2446e08bd623c404b58c65",
+          "Name": "centerPoint",
+          "Description": "Center of a sphere\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d96b5506a9f945e9aafebfadc3397fa2",
+          "Name": "radius",
+          "Description": "Radius of a sphere\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f672d53c5d2943ceb3515bc85a3462ea",
+          "Name": "radiusSpans",
+          "Description": "Number of radial spans\n\nint\nDefault value : 8",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "652b501baa6743ccbf1c0cfc85798e97",
+          "Name": "heightSpans",
+          "Description": "Number of spans in height\n\nint\nDefault value : 4",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "14131a74b90d47cf9eab6588c262107e",
+          "Name": "symmetry",
+          "Description": "Symmetry options of a T-Spline Surface\n\nTSplineInitialSymmetry\nDefault value : Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByAxial(false, false, false)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "aab80ee89d9946968d42b23d6696607b",
+          "Name": "inSmoothMode",
+          "Description": "Show T-Spline Surface in box or smooth visualization\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a9178774efec44a1969090f6e2fe87d7",
+          "Name": "TSplineSurface",
+          "Description": "Spherical T-Spline Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a T-Spline Sphere cetered at the input Point, with given radius.\n\nTSplineSurface.BySphereCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1, radiusSpans: int = 8, heightSpans: int = 4, symmetry: TSplineInitialSymmetry = Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByAxial(false, false, false), inSmoothMode: bool = false): TSplineSurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "48b488ed4c12400680a676dab6422571",
+      "Inputs": [
+        {
+          "Id": "b472f489813e4c49bd03f98e4684b120",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8a7637e00c3f45a087e7db053dd996c7",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "eb900cf224d142cdb0306c36251b3971",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f31efd88fdf545f49f96252486996835",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "-20..20..10;",
+      "Id": "d0db3d5419b847c9b00662592775496d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ece005462ff44461ba8a204751098332",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "5;",
+      "Id": "4f6bcee9412445abb51970a36c3839cc",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b99e179338424432a6a658ecaea90d29",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.FaceIndices",
+      "Id": "4db26c9dbc784e83a209b67e57600d82",
+      "Inputs": [
+        {
+          "Id": "3808802005f1442d8dee81f3837016dd",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "abdbf4fa72f048669d1dfd2502260d61",
+          "Name": "IndexGroup[]",
+          "Description": "IndexGroup[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The vertex indices that make up each face in a counterclockwise fashion\n\nMesh.FaceIndices: IndexGroup[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.VertexNormals",
+      "Id": "5bc8220471cb4345b217e88ba7360adf",
+      "Inputs": [
+        {
+          "Id": "3336936136f64274972c33a088b0e8fc",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b7841cf2c215401787ff6f16f6ae0b23",
+          "Name": "Vector[]",
+          "Description": "Vector[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The normal vector at this vertex\n\nMesh.VertexNormals: Vector[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.VertexPositions",
+      "Id": "fd75765b6ccc451b97996c2d254b30a6",
+      "Inputs": [
+        {
+          "Id": "96e870beac404ef8a79fe9845d3c6b7c",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ea500ddc1cda4e32bc69ba5619d1ca7f",
+          "Name": "Point[]",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The positions of the vertices\n\nMesh.VertexPositions: Point[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": false,
+      "Id": "1639717fbbd9439a9f94235e1bc9da51",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "dc37c1c8e2ca47faa93134f8253bf507",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "9ff37fde391345b8bfe44ed0a3b080fc",
+      "End": "3808802005f1442d8dee81f3837016dd",
+      "Id": "37a3e1cf58e646a7b8794ebda774aedf"
+    },
+    {
+      "Start": "9ff37fde391345b8bfe44ed0a3b080fc",
+      "End": "3336936136f64274972c33a088b0e8fc",
+      "Id": "3eb9dca676264079992a5b58bc98f1a9"
+    },
+    {
+      "Start": "9ff37fde391345b8bfe44ed0a3b080fc",
+      "End": "96e870beac404ef8a79fe9845d3c6b7c",
+      "Id": "a7b5bd0c3c014cc3829879c26b7d089c"
+    },
+    {
+      "Start": "a9178774efec44a1969090f6e2fe87d7",
+      "End": "0d6ee2f8ad794027acc78be83fa4fa27",
+      "Id": "a41a4158f03c478585a94f8ef7c9bc6f"
+    },
+    {
+      "Start": "f31efd88fdf545f49f96252486996835",
+      "End": "8f3106405e2446e08bd623c404b58c65",
+      "Id": "b5f5eff08d1f458dac758d89da5440ab"
+    },
+    {
+      "Start": "ece005462ff44461ba8a204751098332",
+      "End": "b472f489813e4c49bd03f98e4684b120",
+      "Id": "df96b2105c064de6848a7cbdf7c4c2d7"
+    },
+    {
+      "Start": "ece005462ff44461ba8a204751098332",
+      "End": "8a7637e00c3f45a087e7db053dd996c7",
+      "Id": "d9c2372ddc8e40a3aebe8d030cd4e6cf"
+    },
+    {
+      "Start": "b99e179338424432a6a658ecaea90d29",
+      "End": "d96b5506a9f945e9aafebfadc3397fa2",
+      "Id": "f66b237f15bd4d42940b6c59d3311b7f"
+    },
+    {
+      "Start": "dc37c1c8e2ca47faa93134f8253bf507",
+      "End": "aab80ee89d9946968d42b23d6696607b",
+      "Id": "bf2bef01f1854f0a82d936f5e7169918"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.2.8095",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 6.7545468266924074,
+      "EyeY": 60.738231146977327,
+      "EyeZ": 12.5492951773682,
+      "LookX": -4.16654981146415,
+      "LookY": -65.353364526701881,
+      "LookZ": -12.777299206110621,
+      "UpX": -0.28322031930604319,
+      "UpY": 0.40673664307580426,
+      "UpZ": -0.86853414090156733
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "TSplineSurface.ToMesh",
+        "Id": "070e1acdea6747a1a92987d6696c5e21",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 753.64461807101975,
+        "Y": 196.67237632225226
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "TSplineSurface.BySphereCenterPointRadius",
+        "Id": "3483486d55874dc5969bb86e11ae5ab2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 423.21540829559592,
+        "Y": 197.04357838481451
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "48b488ed4c12400680a676dab6422571",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 236.41331295161888,
+        "Y": 88.5725330881112
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "d0db3d5419b847c9b00662592775496d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 74.059078960154977,
+        "Y": 108.44262788294361
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "4f6bcee9412445abb51970a36c3839cc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 313.67870829300409,
+        "Y": 226.83412898772605
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.FaceIndices",
+        "Id": "4db26c9dbc784e83a209b67e57600d82",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1057.9673890977579,
+        "Y": 111.68245108112755
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.VertexNormals",
+        "Id": "5bc8220471cb4345b217e88ba7360adf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1060.0637308323251,
+        "Y": 196.58429133108217
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.VertexPositions",
+        "Id": "fd75765b6ccc451b97996c2d254b30a6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1062.1600725668914,
+        "Y": 282.53430244832003
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "1639717fbbd9439a9f94235e1bc9da51",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 254.2322176954367,
+        "Y": 326.50731996144066
+      }
+    ],
+    "Annotations": [],
+    "X": 162.08018886169253,
+    "Y": 170.40055206035132,
+    "Zoom": 0.95978869958126622
+  }
+}

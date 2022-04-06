@@ -1,0 +1,89 @@
+{
+  "Uuid": "81c80660-ab7b-42f8-9200-38f52d340726",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "colorPaletteInputData",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "077b557dc47a44248e5fafd9d940bd92",
+      "Name": "Color Palette",
+      "Type": "color",
+      "Value": "{\"Red\":0,\"Blue\":0,\"Green\":0,\"Alpha\":255}",
+      "Description": "Select a Color from the palette",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 0,
+        "G": 0,
+        "B": 0,
+        "A": 255
+      },
+      "NodeType": "ColorInputNode",
+      "Id": "077b557dc47a44248e5fafd9d940bd92",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2130c500b455400caaf8d602477a2ac7",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.11.0.4483",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Color Palette",
+        "Id": "077b557dc47a44248e5fafd9d940bd92",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 288.66666666666663,
+        "Y": 246.66666666666669
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

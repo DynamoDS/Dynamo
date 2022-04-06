@@ -1,6 +1,4 @@
-using System;
 using NUnit.Framework;
-using ProtoCore.DSASM.Mirror;
 namespace ProtoTest
 {
     [TestFixture]

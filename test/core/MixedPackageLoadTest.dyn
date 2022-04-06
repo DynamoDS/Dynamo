@@ -1,0 +1,259 @@
+{
+  "Uuid": "5de47da2-537c-435c-9b86-4feb972e6120",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "MixedPackageLoadTest",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "10;\n1..10;",
+      "Id": "38ae70913e254d14adf3c264594cf725",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1376d96305374f4abac773eab819c05e",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3ab718217f28467d85d1c2b7cb23d573",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 10,
+      "MaximumValue": 20,
+      "MinimumValue": 0,
+      "StepValue": 1,
+      "Id": "30a6fc305d7f478e93e686d0d2bb78f1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "dc8c8ed0e2104c1cab545dc83f9dda4e",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "8b477455-b597-4e16-be61-e344051b56d4",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "576f11ed5837460d80f2e354d853de68",
+      "Inputs": [
+        {
+          "Id": "26fe17333d3e4ed4a9d1f6da36483fa7",
+          "Name": "x",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "20500c4c6677491ba48f3ceb59c536d1",
+          "Name": "radius",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2bbbb780bd0246809a7ac32a5ae21670",
+          "Name": "circle0",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ca0365cdf4d84534b8703c27185c4654",
+          "Name": "circle1",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FrogRiverOne.FrogRiverOne.Solution1@int,int[]",
+      "Id": "654bfcc3463e4950824336d4c9bd6126",
+      "Inputs": [
+        {
+          "Id": "da05f6bc3e274915bb1cec7b25862452",
+          "Name": "X",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4b1049796c8f4cd39096510b0e079bca",
+          "Name": "A",
+          "Description": "int[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f86dacbb56b841e0b66e8bba74d95413",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "FrogRiverOne.Solution1 (X: int, A: int[]): int"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "1376d96305374f4abac773eab819c05e",
+      "End": "20500c4c6677491ba48f3ceb59c536d1",
+      "Id": "66aa3309d6fc468194b41d175b65e57f"
+    },
+    {
+      "Start": "1376d96305374f4abac773eab819c05e",
+      "End": "da05f6bc3e274915bb1cec7b25862452",
+      "Id": "9b647df2d822437f97fb49c5aab0f689"
+    },
+    {
+      "Start": "3ab718217f28467d85d1c2b7cb23d573",
+      "End": "4b1049796c8f4cd39096510b0e079bca",
+      "Id": "8c532ce75a22478fbd96f2098afd6756"
+    },
+    {
+      "Start": "dc8c8ed0e2104c1cab545dc83f9dda4e",
+      "End": "26fe17333d3e4ed4a9d1f6da36483fa7",
+      "Id": "f167fe6b4db14ec9a0899a587e248faa"
+    }
+  ],
+  "Dependencies": [
+    "8b477455-b597-4e16-be61-e344051b56d4"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Mixed Package",
+      "Version": "1.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "576f11ed5837460d80f2e354d853de68",
+        "654bfcc3463e4950824336d4c9bd6126"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.7.0.8205",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "Id": "38ae70913e254d14adf3c264594cf725",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 129.0,
+        "Y": 235.0
+      },
+      {
+        "Id": "30a6fc305d7f478e93e686d0d2bb78f1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Integer Slider",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 40.096341734566749,
+        "Y": 83.903658265433251
+      },
+      {
+        "Id": "576f11ed5837460d80f2e354d853de68",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "circles",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 550.527436990749,
+        "Y": 70.281697555595883
+      },
+      {
+        "Id": "654bfcc3463e4950824336d4c9bd6126",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "FrogRiverOne.Solution1",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 548.246308382853,
+        "Y": 274.65700982254072
+      }
+    ],
+    "Annotations": [],
+    "X": 39.247342150078,
+    "Y": 15.763276765195258,
+    "Zoom": 0.95404292488281262
+  }
+}

@@ -1,15 +1,15 @@
-﻿using ProtoCore.AST;
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
-using ProtoCore.Namespace;
-using ProtoCore.Properties;
-using System;
+﻿using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ProtoCore.AST;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
+using ProtoCore.DSASM;
+using ProtoCore.Namespace;
+using ProtoCore.Properties;
 using ProtoCore.SyntaxAnalysis;
 
 namespace ProtoCore.Utils
@@ -126,32 +126,28 @@ namespace ProtoCore.Utils
 
         public void AppendParsedNodes(IEnumerable<AssociativeNode> parsedNodes)
         {
-            if (parsedNodes == null || !parsedNodes.Any())
-                return;
+            if (parsedNodes == null || !parsedNodes.Any()) return;
 
             this.parsedNodes.AddRange(parsedNodes);
         }
 
         public void AppendErrors(IEnumerable<ProtoCore.BuildData.ErrorEntry> errors)
         {
-            if (errors == null || (errors.Count() <= 0))
-                return;
+            if (errors == null || !errors.Any()) return;
 
             this.errors.AddRange(errors);
         }
 
         public void AppendWarnings(IEnumerable<ProtoCore.BuildData.WarningEntry> warnings)
         {
-            if (warnings == null || !warnings.Any())
-                return;
+            if (warnings == null || !warnings.Any()) return;
 
             this.warnings.AddRange(warnings);
         }
 
         public void AppendComments(IEnumerable<AssociativeNode> commentNodes)
         {
-            if (commentNodes == null || !commentNodes.Any())
-                return;
+            if (commentNodes == null || !commentNodes.Any()) return;
 
             this.commentNodes.AddRange(commentNodes);
         }
@@ -220,7 +216,10 @@ namespace ProtoCore.Utils
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.WriteLine(ex.ToString());
+#endif
+
                 if (!(ex is ProtoCore.BuildHaltException))
                 {
                     throw ex;
@@ -263,17 +262,33 @@ namespace ProtoCore.Utils
             return status.ErrorCount == 0;
         }
 
+        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
         /// <summary>
         /// Pre-compiles DS code in code block node, 
         /// checks for syntax, converts non-assignments to assignments,
         /// stores list of AST nodes, errors and warnings
         /// Evaluates and stores list of unbound identifiers
         /// </summary>
-        /// <param name="priorNames"></param>
+        /// <param name="core"></param>
         /// <param name="parseParams"> container for compilation related parameters </param>
-        /// <param name="elementResolver"> classname resolver </param>
+        /// <param name="priorNames"></param>
         /// <returns> true if code compilation succeeds, false otherwise </returns>
         public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams, IDictionary<string, string> priorNames = null)
+        {
+            return PreCompileCodeBlock(core, parseParams, priorNames);
+        }
+
+        /// <summary>
+        /// Pre-compiles DS code in code block node, 
+        /// checks for syntax, converts non-assignments to assignments,
+        /// stores list of AST nodes, errors and warnings
+        /// Evaluates and stores list of unbound identifiers
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="parseParams"> container for compilation related parameters </param>
+        /// <param name="priorNames"></param>
+        /// <returns> true if code compilation succeeds, false otherwise </returns>
+        internal static bool PreCompileCodeBlock(Core core, ParseParam parseParams, IDictionary<string, string> priorNames = null)
         {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
@@ -282,7 +297,7 @@ namespace ProtoCore.Utils
             List<AssociativeNode> comments;
             ParseUserCode(core, parseParams.OriginalCode, postfixGuid, out astNodes, out comments);
             parseParams.AppendErrors(core.BuildStatus.Errors);
-            if (parseParams.Errors.Count() > 0)
+            if (parseParams.Errors.Any())
             {
                 return false;
             }
@@ -305,10 +320,10 @@ namespace ProtoCore.Utils
         {
             var unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
 
-            ProtoCore.BuildStatus buildStatus = null;
+            BuildStatus buildStatus = null;
             try
             {
-                int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
+                int blockId = Constants.kInvalidIndex;
                 
 
                 bool parsingPreloadFlag = core.IsParsingPreloadedAssembly;
@@ -318,14 +333,12 @@ namespace ProtoCore.Utils
 
                 core.ResetForPrecompilation();
 
-                var astNodes = parseParams.ParsedNodes;
-
                 // Lookup namespace resolution map in elementResolver to rewrite 
                 // partial classnames with their fully qualified names in ASTs
                 // before passing them for pre-compilation. If partial class is not found in map, 
                 // update Resolution map in elementResolver with fully resolved name from compiler.
                 var reWrittenNodes = ElementRewriter.RewriteElementNames(core.ClassTable,  
-                    parseParams.ElementResolver, astNodes, core.BuildStatus.LogSymbolConflictWarning);
+                    parseParams.ElementResolver, parseParams.ParsedNodes, core.BuildStatus.LogSymbolConflictWarning);
 
                 if (priorNames != null)
                 {
@@ -351,7 +364,7 @@ namespace ProtoCore.Utils
                 {
                     return false;
                 }
-                IEnumerable<BuildData.WarningEntry> warnings = buildStatus.Warnings;
+                IEnumerable<WarningEntry> warnings = buildStatus.Warnings;
 
                 // Get the unboundIdentifiers from the warnings
                 GetInputLines(parseParams.ParsedNodes, warnings, unboundIdentifiers);

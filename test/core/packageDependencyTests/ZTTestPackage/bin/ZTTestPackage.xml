@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ZTTestPackage</name>
+    </assembly>
+    <members>
+        <member name="T:ZTTestPackage.RRTestClass">
+            <summary>
+            Allow Rank Reduce test class
+            </summary>
+        </member>
+        <member name="P:ZTTestPackage.RRTestClass.SomeProperty_Reduce">
+            <summary>
+            Returns a rank-reduced property
+            </summary>
+        </member>
+        <member name="P:ZTTestPackage.RRTestClass.SomeProperty">
+            <summary>
+            Returns a property
+            </summary>
+        </member>
+    </members>
+</doc>

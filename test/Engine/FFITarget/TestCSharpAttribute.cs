@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Runtime;
 
 namespace FFITarget
 {
@@ -47,6 +43,12 @@ namespace FFITarget
         public void Test()
         {
 
+        }
+
+        [Obsolete]
+        public string Test2()
+        {
+            return "this node is obsolete.";
         }
     }
 }

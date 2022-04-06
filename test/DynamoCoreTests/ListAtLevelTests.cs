@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -76,6 +72,13 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(listTestFolder, "testdomlacing2.dyn");
             RunModel(testFilePath);
             AssertPreviewValue("ae89387d-77b8-49e2-b59a-26a4b0a2ae9b", new[] { new[] { "3a", "7b" }, new[] { "11c", "15c" } });
+        }
+        [Test]
+        public void TestUseListAtLevelOnFunctionCall()
+        {
+            string testFilePath = Path.Combine(listTestFolder, "testfunctioncall.dyn");
+            RunModel(testFilePath);
+            AssertPreviewValue("b3cd769e-0f9d-4b4f-ac86-53a07edaba24", new[] { new[] { new[] { 5, 6 } }, new[] { new[] { 5, 6 }, new[] { 7, 8 } }, new[] { new[] { 5, 6 }, new[] { 7, 8 } }, new[] { new[] { 5, 6 }, new[] { 7, 8 } } });
         }
     }
 }

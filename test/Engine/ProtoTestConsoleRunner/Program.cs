@@ -1,10 +1,9 @@
 using System;
-using ProtoCore;
-using ProtoScript.Runners;
-using ProtoCore.DSASM.Mirror;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using ProtoCore;
+using ProtoScript.Runners;
 
 namespace ProtoTestConsoleRunner
 {

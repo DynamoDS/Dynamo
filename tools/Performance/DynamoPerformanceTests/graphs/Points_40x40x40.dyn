@@ -1,0 +1,148 @@
+{
+  "Uuid": "26a7cb26-f1a8-45a2-b973-7dd2db5a083a",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Points_40x40x40",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..40;",
+      "Id": "a47b7ffaf3704765a05a0d0bd673ae99",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0121863fafa14bbe8bb4c2a88f3b1390",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "96421e4c3326432a8dcf9025d8e49550",
+      "Inputs": [
+        {
+          "Id": "e5a72146921042d7a1a3a2701132905e",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a8be726da2b14aa796a4307f81fc28ca",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5e7fb1d29b24454c932c1118d74d3a46",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0043f880472843b4af10f68fc64655ee",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "0121863fafa14bbe8bb4c2a88f3b1390",
+      "End": "e5a72146921042d7a1a3a2701132905e",
+      "Id": "ca3140bdee80446b9c116c1a7b3765a1"
+    },
+    {
+      "Start": "0121863fafa14bbe8bb4c2a88f3b1390",
+      "End": "a8be726da2b14aa796a4307f81fc28ca",
+      "Id": "87c3dceb4f3742bc92d053670f2216d3"
+    },
+    {
+      "Start": "0121863fafa14bbe8bb4c2a88f3b1390",
+      "End": "5e7fb1d29b24454c932c1118d74d3a46",
+      "Id": "932a04702461426e86c196e5ab593bc2"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.2.8095",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "a47b7ffaf3704765a05a0d0bd673ae99",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 134.0,
+        "Y": 187.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "96421e4c3326432a8dcf9025d8e49550",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 335.5,
+        "Y": 180.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

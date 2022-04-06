@@ -1,13 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
+using ProtoCore;
 using ProtoCore.DSASM;
 using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
-using ProtoCore.Utils;
-using ProtoCore;
 using ProtoFFI;
 using ProtoScript.Runners;
 
@@ -195,10 +190,15 @@ namespace ProtoTestFx
 
             for (int symTableIndex = 0; symTableIndex < rtcore1.DSExecutable.runtimeSymbols.Length; symTableIndex++)
             {
-                foreach (SymbolNode symNode in rtcore1.DSExecutable.runtimeSymbols[symTableIndex].symbolList.Values)
+                var rtc1Symbols = rtcore1.DSExecutable.runtimeSymbols[symTableIndex];
+                if (rtc1Symbols == null)
+                {
+                    continue;
+                }
+                foreach (SymbolNode symNode in rtc1Symbols.symbolList.Values)
                 {
 
-                    ExecutionMirror runExecMirror = new ExecutionMirror(rtcore1.CurrentExecutive.CurrentDSASMExec,rtcore1);
+                    ExecutionMirror runExecMirror = new ExecutionMirror(rtcore1.CurrentExecutive.CurrentDSASMExec, rtcore1);
                     ExecutionMirror debugExecMirror = new ExecutionMirror(rtcore2.CurrentExecutive.CurrentDSASMExec, rtcore2);
 
                     bool lookupOk = false;

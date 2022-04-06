@@ -13,7 +13,7 @@ namespace Dynamo.Graph
     /// <summary>
     /// SaveContext represents several contexts, in which node can be serialized/deserialized.
     /// </summary>
-    public enum SaveContext { File, Copy, Undo, Preset, None };
+    public enum SaveContext { [Obsolete("Use Save or SaveAs, instead of File")] File, Copy, Undo, Preset, None, Save, SaveAs };
 
     /// <summary>
     /// This class encapsulates the input parameters that need to be passed into nodes
@@ -73,6 +73,7 @@ namespace Dynamo.Graph
 
         private Guid guid;
         private bool isSelected;
+        private bool belongsToGroup;
         private double x;
         private double y;
         private double height = 100;

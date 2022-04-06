@@ -1,7 +1,6 @@
 using System;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
 {
@@ -287,7 +286,7 @@ c3;
             thisTest.Verify("f", 0);
             thisTest.Verify("c1", true);
             thisTest.Verify("c2", false);
-            thisTest.Verify("c3", null);
+            thisTest.Verify("c3", false);
         }
 
         [Test]
@@ -852,7 +851,7 @@ i=[Imperative]
 	return [a,b,c,d];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("i", new object[] {null, null, null, 3});
+            thisTest.Verify("i", new object[] { null, null, false, 4 });
 
         }
 

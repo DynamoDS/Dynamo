@@ -383,6 +383,7 @@ namespace ProtoCore.DSASM
         public const string kFunctionRangeExpression = "%generate_range";
         public const string kDotMethodName = "%dot";
         public const string kInlineConditionalMethodName = "%inlineconditional";
+        public const string kIfConditionalMethodName = "%conditionalIf";
         public const string kGetTypeMethodName = "%get_type";
         public const string kNodeAstFailed = "%nodeAstFailed";
         public const string kWatchResultVar = "watch_result_var";
@@ -395,6 +396,10 @@ namespace ProtoCore.DSASM
         public const string kDoubleUnderscores = "__";
         public const string kSingleUnderscore = "_";
         public const string kTempVarForTypedIdentifier = "%tTypedIdent";
+
+        internal const string kInClassDecl = "InClassDecl";
+        internal const string kInFunctionScope = "InFunctionScope";
+        internal const string kInstance = "Instance";
     }
 
     public enum MemoryRegion

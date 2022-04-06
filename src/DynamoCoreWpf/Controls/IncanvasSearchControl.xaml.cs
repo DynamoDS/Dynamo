@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
@@ -34,7 +35,7 @@ namespace Dynamo.UI.Controls
             {
                 Application.Current.Deactivated += currentApplicationDeactivated;
             }
-            Unloaded += InCanvasSearchControl_Unloaded; ;
+            Unloaded += InCanvasSearchControl_Unloaded;
 
         }
 
@@ -59,16 +60,6 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private void OnSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
-        {
-            BindingExpression binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
-            if (binding != null)
-                binding.UpdateSource();
-
-            if (ViewModel != null)
-                ViewModel.SearchCommand.Execute(null);
-        }
-
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var listBoxItem = sender as ListBoxItem;
@@ -85,7 +76,11 @@ namespace Dynamo.UI.Controls
             if (searchElement != null)
             {
                 searchElement.Position = ViewModel.InCanvasSearchPosition;
-                searchElement.ClickedCommand.Execute(null);
+                searchElement.ClickedCommand?.Execute(null);
+                Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Select,
+                Dynamo.Logging.Categories.InCanvasSearchOperations,
+                searchElement.FullName);
             }
         }
 
@@ -112,6 +107,10 @@ namespace Dynamo.UI.Controls
 
             // Select text in text box.
             SearchTextBox.SelectAll();
+
+            Analytics.TrackEvent(
+            Dynamo.Logging.Actions.Open,
+            Dynamo.Logging.Categories.InCanvasSearchOperations);
 
             // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
             // Call asynchronously focus, when textbox will be ready.

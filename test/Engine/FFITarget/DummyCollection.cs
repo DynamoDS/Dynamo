@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Autodesk.DesignScript.Runtime;
 
 namespace FFITarget
@@ -12,6 +10,11 @@ namespace FFITarget
         public static IList ReturnIList(IEnumerable<int> data)
         {
             return data.ToList();
+        }
+
+        public static IEnumerable ReturnIEnumerable(IEnumerable data)
+        {
+            return data;
         }
 
         public static IEnumerable<int> ReturnIEnumerableOfInt(IEnumerable<int> data)
@@ -149,6 +152,11 @@ namespace FFITarget
         public static IDictionary AcceptTypedDictionary(Dictionary<string, DummyCollection> dictionary)
         {
             return dictionary;
+        }
+
+        public static int[] MakeArray(params int[] values)
+        {
+            return values;
         }
     }
 }

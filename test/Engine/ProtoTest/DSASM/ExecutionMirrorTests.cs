@@ -1,7 +1,5 @@
 using System;
 using NUnit.Framework;
-using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
 namespace ProtoTest.Associative
 {
     class ExecutionMirrorTests : ProtoTestBase

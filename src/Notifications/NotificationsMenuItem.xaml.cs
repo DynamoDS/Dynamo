@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using Microsoft.Practices.Prism;
 
 namespace Dynamo.Notifications
 {
@@ -60,7 +61,8 @@ namespace Dynamo.Notifications
                 }
             };
 
-            this.notificationsModel.Notifications.CollectionChanged += NotificationsChangeHandler;
+            notificationsModel.Notifications.CollectionChanged += NotificationsChangeHandler;
+            notificationsModel.AddNotifications();
 
             // create a binding between the label and the count of notifications
             var binding = new Binding();

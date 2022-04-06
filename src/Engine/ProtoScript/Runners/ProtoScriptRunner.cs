@@ -1,9 +1,9 @@
 using System;
-using System.Text;
 using System.Collections.Generic;
+using System.Text;
+using ProtoCore.DSASM;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Utils;
-using ProtoCore.DSASM;
 
 namespace ProtoScript.Runners
 {

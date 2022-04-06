@@ -6,8 +6,8 @@ using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
-using Image = System.Windows.Controls.Image;
 using Dynamo.Wpf;
+using Image = System.Windows.Controls.Image;
 
 namespace CoreNodeModelsWpf.Nodes
 {

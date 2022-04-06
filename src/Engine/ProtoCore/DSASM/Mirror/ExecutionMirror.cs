@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using ProtoCore.Exceptions;
 using ProtoCore.Lang;
-using ProtoFFI;
-using ProtoCore.Utils;
 using ProtoCore.Runtime;
+using ProtoCore.Utils;
+using ProtoFFI;
 
 namespace ProtoCore.DSASM.Mirror
 {
@@ -32,7 +30,6 @@ namespace ProtoCore.DSASM.Mirror
         private readonly ProtoCore.RuntimeCore runtimeCore;
         public Executive MirrorTarget { get; private set; }
         private OutputFormatParameters formatParams;
-        private Dictionary<string, List<string>> propertyFilter;
 
         /// <summary>
         /// Create a mirror for a given executive
@@ -60,28 +57,33 @@ namespace ProtoCore.DSASM.Mirror
             {
                 return val.IntegerValue.ToString();
             }
-            else if (val.IsDouble)
+
+            if (val.IsDouble)
             {
                 return val.DoubleValue.ToString("F6");
             }
-            else if (val.IsNull)
+
+            if (val.IsNull)
             {
                 return "null";
             }
-            else if (val.IsPointer)
+
+            if (val.IsPointer)
             {
                 return GetClassTrace(val, heap, langblock, forPrint);
             }
-            else if (val.IsArray)
+
+            if (val.IsArray)
             {
                 HashSet<int> pointers = new HashSet<int> { val.ArrayPointer };
                 string arrTrace = GetArrayTrace(val, heap, langblock, pointers, forPrint);
                 if (forPrint)
-                    return "{" + arrTrace + "}";
-                else
-                    return "{ " + arrTrace + " }";
+                    return "[" + arrTrace + "]";
+
+                return "[ " + arrTrace + " ]";
             }
-            else if (val.IsFunctionPointer)
+
+            if (val.IsFunctionPointer)
             {
                 ProcedureNode procNode;
                 if (runtimeCore.DSExecutable.FuncPointerTable.TryGetFunction(val, runtimeCore, out procNode))
@@ -96,29 +98,30 @@ namespace ProtoCore.DSASM.Mirror
                 }
                 return "function: " + val.FunctionPointer.ToString();
             }
-            else if (val.IsBoolean)
+
+            if (val.IsBoolean)
             {
                 return val.BooleanValue ? "true" : "false";
             }
-            else if (val.IsString)
+
+            if (val.IsString)
             {
                 if (forPrint)
                     return heap.ToHeapObject<DSString>(val).Value;
-                else
-                    return "\"" + heap.ToHeapObject<DSString>(val).Value + "\"";
+
+                return "\"" + heap.ToHeapObject<DSString>(val).Value + "\"";
             }
-            else if (val.IsChar)
+
+            if (val.IsChar)
             {
                 Char character = Convert.ToChar(val.CharValue);
                 if (forPrint)
                     return character.ToString();
-                else
-                    return "'" + character + "'";
+
+                return "'" + character + "'";
             }
-            else
-            {
-                return "null"; // "Value not yet supported for tracing";
-            }
+
+            return "null"; // "Value not yet supported for tracing";
         }
 
         public string GetClassTrace(StackValue val, Heap heap, int langblock, bool forPrint)
@@ -212,21 +215,17 @@ namespace ProtoCore.DSASM.Mirror
         {
             if (pointers.Contains(ptr.ArrayPointer))
             {
-                return "{ ... }";
+                return "[ ... ]";
             }
-            else
-            {
-                pointers.Add(ptr.ArrayPointer);
 
-                if (forPrint)
-                {
-                    return "{" + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + "}";
-                }
-                else
-                {
-                    return "{ " + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + " }";
-                }
+            pointers.Add(ptr.ArrayPointer);
+
+            if (forPrint)
+            {
+                return "[" + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + "]";
             }
+
+            return "[ " + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + " ]";
         }
 
         private string GetArrayTrace(StackValue svArray, Heap heap, int langblock, HashSet<int> pointers, bool forPrint)
@@ -332,7 +331,8 @@ namespace ProtoCore.DSASM.Mirror
             }
             else
             {
-                CodeBlock searchBlock = runtimeCore.DSExecutable.CompleteCodeBlocks[block];
+                bool found = runtimeCore.DSExecutable.CompleteCodeBlockDict.TryGetValue(block, out CodeBlock searchBlock);
+                Validity.Assert(found, $"Could not find code block with codeBlockId {block}");
 
                 // To detal with the case that a language block defined in a function
                 //
@@ -718,10 +718,15 @@ namespace ProtoCore.DSASM.Mirror
 
             for (int block = startBlock; block < exe.runtimeSymbols.Length; block++)
             {
-                int index = exe.runtimeSymbols[block].IndexOf(name, Constants.kInvalidIndex, Constants.kGlobalScope);
+                var symbolTable = exe.runtimeSymbols[block];
+                if (symbolTable == null)
+                {
+                    continue;
+                }
+                int index = symbolTable.IndexOf(name, Constants.kInvalidIndex, Constants.kGlobalScope);
                 if (Constants.kInvalidIndex != index)
                 {
-                    SymbolNode symNode = exe.runtimeSymbols[block].symbolList[index];
+                    SymbolNode symNode = symbolTable.symbolList[index];
                     if (symNode.absoluteFunctionIndex == Constants.kGlobalScope)
                     {
                         return MirrorTarget.rmem.GetAtRelative(symNode.index);
@@ -738,11 +743,16 @@ namespace ProtoCore.DSASM.Mirror
 
             for (int block = startBlock; block < exe.runtimeSymbols.Length; block++)
             {
-                int index = exe.runtimeSymbols[block].IndexOf(name, classcope, Constants.kGlobalScope);
+                var symbolTable = exe.runtimeSymbols[block];
+                if (symbolTable == null)
+                {
+                    continue;
+                }
+                int index = symbolTable.IndexOf(name, classcope, Constants.kGlobalScope);
                 if (Constants.kInvalidIndex != index)
                 {
                     //Q(Luke): This seems to imply that the LHS is an array index?
-                    var symbol = exe.runtimeSymbols[block].symbolList[index];
+                    var symbol = symbolTable.symbolList[index];
                     return MirrorTarget.rmem.GetSymbolValue(symbol);
                 }
             }

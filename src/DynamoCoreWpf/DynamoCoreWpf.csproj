@@ -1,135 +1,75 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)/Config/CS.props" />
-    <Import Project="..\packages\SharpDX.2.6.3\build\SharpDX.targets" Condition="Exists('..\packages\SharpDX.2.6.3\build\SharpDX.targets')" />
-    <Import Project="..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets" Condition="Exists('..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets')" />
-    <Import Project="$(SolutionDir)/Config/Cleanup.targets" />
+    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Wpf</RootNamespace>
     <AssemblyName>DynamoCoreWpf</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>..\..\bin\AnyCPU\Debug\DynamoCoreWpf.XML</DocumentationFile>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>$(OutputPath)\DynamoCoreWpf.XML</DocumentationFile>
+    <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Cyotek.Drawing.BitmapFont, Version=1.0.2.0, Culture=neutral, PublicKeyToken=58daa28b0b2de221, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cyotek.Drawing.BitmapFont.1.0.2.0\lib\net20\Cyotek.Drawing.BitmapFont.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FontAwesome.WPF">
-      <HintPath>..\..\extern\FontAwesome\FontAwesome.WPF.dll</HintPath>
-    </Reference>
-    <Reference Include="Greg, Version=1.1.6913.31484, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.1.1.6913.31484\lib\net47\Greg.dll</HintPath>
-    </Reference>
-    <Reference Include="HelixToolkit, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.2015.1.629\lib\portable-net4+sl4+wp71+win8\HelixToolkit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="HelixToolkit.Wpf, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.Wpf.2015.1.629\lib\net45\HelixToolkit.Wpf.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.Wpf.SharpDX.2015.1.629\lib\net45\HelixToolkit.Wpf.SharpDX.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ICSharpCode.AvalonEdit, Version=4.3.1.9429, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+    <None Remove="UI\Images\NodeStates\alert-64px.png" />
+    <None Remove="UI\Images\NodeStates\error-64px.png" />
+    <None Remove="UI\Images\NodeStates\frozen-64px.png" />
+    <None Remove="UI\Images\NodeStates\hidden-64px.png" />
+    <None Remove="UI\Images\NodeStates\info-64px.png" />
+  </ItemGroup>
+  <ItemGroup>
+	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
+	<PackageReference Include="Greg" Version="2.1.8122.28281" />
+	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+	<PackageReference Include="RestSharp" Version="106.12.0" />
+	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" CopyXML="true" />
+	<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
+	<PackageReference Include="HelixToolkit" Version="2.17.0" />
+	<PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
+	<PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
+	<PackageReference Include="SharpDX" Version="4.2.0" />
+	<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0">
+	  <IncludeAssets>none</IncludeAssets>
+	</PackageReference>
+	<PackageReference Include="SharpDX.Direct2D1" Version="4.2.0">
+	  <IncludeAssets>none</IncludeAssets>
+	</PackageReference>
+	<PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
+	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
+	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
+	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
+    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
+      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoGeometry, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Y:\Dynamo\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.D3DCompiler">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.D3DCompiler.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.D3DCompiler, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL" />
-    <Reference Include="SharpDX.Direct2D1">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct2D1.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Direct2D1, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL" />
-    <Reference Include="SharpDX.Direct3D11, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Direct3D11.Effects, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.Effects.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Direct3D9, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D9.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.DXGI, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.DXGI.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Toolkit, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Toolkit.Graphics, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Graphics.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity">
-      <HintPath>..\..\extern\System.Windows.Interactivity\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
+      <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Commands\ConnectorPinCommands.cs" />
+    <Compile Include="Controls\NodeAutoCompleteSearchControl.xaml.cs">
+      <DependentUpon>NodeAutoCompleteSearchControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\InCanvasSearchControl.xaml.cs">
       <DependentUpon>InCanvasSearchControl.xaml</DependentUpon>
     </Compile>
@@ -145,6 +85,9 @@
     <Compile Include="Controls\NotificationsControl.xaml.cs">
       <DependentUpon>NotificationsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OutPortContextMenu.xaml.cs">
+      <DependentUpon>OutPortContextMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ParentMenuItem.cs" />
     <Compile Include="Controls\RunSettingsControl.xaml.cs">
       <DependentUpon>RunSettingsControl.xaml</DependentUpon>
@@ -157,7 +100,9 @@
     </Compile>
     <Compile Include="Controls\UseLevelPopup.cs" />
     <Compile Include="Controls\UseLevelSpinner.cs" />
+    <Compile Include="Extensions\ViewModelCommandExecutive.cs" />
     <Compile Include="Extensions\IViewExtension.cs" />
+    <Compile Include="Extensions\ViewExtensionBase.cs" />
     <Compile Include="Extensions\IViewExtensionLoader.cs" />
     <Compile Include="Extensions\IViewExtensionManager.cs" />
     <Compile Include="Extensions\MenuBarTypeExtensions.cs" />
@@ -168,8 +113,33 @@
     <Compile Include="Extensions\ViewLoadedParams.cs" />
     <Compile Include="Extensions\ViewExtensionDefinition.cs" />
     <Compile Include="Extensions\ViewStartupParams.cs" />
-    <Compile Include="Interfaces\ILibraryViewCustomization.cs" />
-    <Compile Include="Interfaces\LayoutSpecification.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
+    <Compile Include="UI\GuidedTour\CutOffArea.cs" />
+    <Compile Include="UI\GuidedTour\ExitGuide.cs" />
+    <Compile Include="UI\GuidedTour\Guide.cs" />
+    <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
+    <Compile Include="UI\GuidedTour\GuidesManager.cs" />
+    <Compile Include="UI\GuidedTour\GuidesValidationMethods.cs" />
+    <Compile Include="UI\GuidedTour\HightlightArea.cs" />
+    <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
+    <Compile Include="UI\GuidedTour\PreValidation.cs" />
+    <Compile Include="UI\GuidedTour\Step.cs" />
+    <Compile Include="UI\GuidedTour\StepUIAutomation.cs" />
+    <Compile Include="UI\GuidedTour\Survey.cs" />
+    <Compile Include="UI\GuidedTour\Tooltip.cs" />
+    <Compile Include="UI\GuidedTour\Welcome.cs" />
+    <Compile Include="UI\MouseBehaviour.cs" />
+    <Compile Include="UI\Prompts\DynamoMessageBox.xaml.cs">
+      <DependentUpon>DynamoMessageBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InPortContextMenu.xaml.cs">
+      <DependentUpon>InPortContextMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
@@ -183,11 +153,6 @@
     <Compile Include="UI\ClassObjectTemplateSelector.cs" />
     <Compile Include="UI\DraggedAdorner.cs" />
     <Compile Include="UI\HeaderTemplateSelector.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Resources.en-US.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -207,7 +172,10 @@
     </Compile>
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\CrashUtilities.cs" />
+    <Compile Include="Utilities\GroupStyleItemSelector.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
+    <Compile Include="Utilities\MessageBoxUtilities.cs" />
+    <Compile Include="Utilities\NodeContextMenuBuilder.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
@@ -277,29 +245,34 @@
     <Compile Include="UI\Prompts\GenericTaskDialog.xaml.cs">
       <DependentUpon>GenericTaskDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Prompts\NodeHelpPrompt.xaml.cs">
-      <DependentUpon>NodeHelpPrompt.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Prompts\UsageReportingAgreementPrompt.xaml.cs">
       <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Prompts\ChangeScaleFactorPrompt.xaml.cs">
-      <DependentUpon>ChangeScaleFactorPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="ViewModels\Core\AnnotationExtension.cs" />
     <Compile Include="ViewModels\Core\AnnotationViewModel.cs" />
     <Compile Include="Utilities\ResourceUtilities.cs" />
+    <Compile Include="ViewModels\Core\Converters\DynamoPythonScriptEditorTextOptions.cs" />
     <Compile Include="ViewModels\Core\Converters\SerializationConverters.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\Core\InPortViewModel.cs" />
+    <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
+    <Compile Include="ViewModels\GuidedTour\ExitGuideWindowViewModel.cs" />
+    <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
+    <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
+    <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\Preview\CompactBubbleViewModel.cs" />
+    <Compile Include="ViewModels\Preview\ConnectorAnchorViewModel.cs" />
+    <Compile Include="ViewModels\Preview\ConnectorContextMenuViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
+    <Compile Include="ViewModels\Search\NodeAutoCompleteSearchViewModel.cs" />
     <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\Core\StateMachine.cs" />
     <Compile Include="ViewModels\Search\ClassInformationViewModel.cs" />
@@ -310,19 +283,55 @@
     <Compile Include="ViewModels\Watch3D\DynamoGeometryModel3D.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoLineGeometryModel3D.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoPointGeometryModel3D.cs" />
+    <Compile Include="ViewModels\Watch3D\DynamoPointLineRenderCore.cs" />
+    <Compile Include="ViewModels\Watch3D\DynamoRenderCoreDataStore.cs" />
     <Compile Include="ViewModels\Watch3D\HelixWatch3DViewModel.cs" />
     <Compile Include="ViewModels\Watch3D\DefaultWatch3DViewModel.cs" />
     <Compile Include="ViewModels\Watch3D\IWatch3DViewModel.cs" />
+    <Compile Include="ViewModels\Core\ConnectorPinViewModel.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CodeBlocks\CodeBlockEditor.cs" />
+    <Compile Include="Views\Core\ConnectorAnchorView.xaml.cs">
+      <DependentUpon>ConnectorAnchorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Core\ConnectorContextMenuView.xaml.cs">
+      <DependentUpon>ConnectorContextMenuView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
+    <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
+      <DependentUpon>ConnectorPinView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Debug\DebugModesWindow.xaml.cs">
+      <DependentUpon>DebugModesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Gallery\GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\ExitGuideWindow.xaml.cs">
+      <DependentUpon>ExitGuideWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\WebBrowserWindow.xaml.cs">
+      <DependentUpon>WebBrowserWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\RealTimeInfoWindow.xaml.cs">
+      <DependentUpon>RealTimeInfoWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\GuideBackground.xaml.cs">
+      <DependentUpon>GuideBackground.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\PopupWindow.xaml.cs">
+      <DependentUpon>PopupWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\RatingControl.xaml.cs">
+      <DependentUpon>RatingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\SurveyPopupWindow.xaml.cs">
+      <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
@@ -334,7 +343,9 @@
     </Compile>
     <Compile Include="ViewModels\Watch3D\AttachedProperties.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoEffectsManager.cs" />
-    <Compile Include="ViewModels\Watch3D\DynamoRenderTechniquesManager.cs" />
+    <Compile Include="Views\Menu\PreferencesView.xaml.cs">
+      <DependentUpon>PreferencesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Preview\CameraExtensions.cs" />
     <Compile Include="Views\Preview\PreviewCompactView.xaml.cs">
       <DependentUpon>PreviewCompactView.xaml</DependentUpon>
@@ -356,9 +367,6 @@
     </Compile>
     <Compile Include="Views\Preview\InfoBubbleView.xaml.cs">
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PackageManager\InstalledPackagesView.xaml.cs">
-      <DependentUpon>InstalledPackagesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Search\LibraryView.xaml.cs">
       <DependentUpon>LibraryView.xaml</DependentUpon>
@@ -419,12 +427,91 @@
     <Compile Include="ViewModels\Preview\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\Preview\WatchViewModel.cs" />
     <Compile Include="ViewModels\Core\WorkspaceViewModel.cs" />
+    <Compile Include="Windows\ExtensionWindow.xaml.cs">
+      <DependentUpon>ExtensionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ModelessChildWindow.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\InstalledPackagesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\NodeAutoCompleteSearchControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <None Include="UI\Themes\Modern\InPorts.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Themes\Modern\OutPorts.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Page Include="Controls\OutPortContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Prompts\DynamoMessageBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\InPortContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GuidedTour\ExitGuideWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GuidedTour\WebBrowserWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Core\ConnectorContextMenuView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GuidedTour\RealTimeInfoWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GuidedTour\GuideBackground.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Core\ConnectorAnchorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GuidedTour\PopupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GuidedTour\RatingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GuidedTour\SurveyPopupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Core\ConnectorPinView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Menu\PreferencesView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ExtensionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -470,8 +557,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -482,7 +569,15 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
+    <None Include="UI\Fonts\Autodesk\Artifakt-Element-Bold.otf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\Autodesk\Artifakt-Element-Regular.otf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\CourierPrime-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="UI\Fonts\OpenSans-Bold.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -513,8 +608,15 @@
     <None Include="UI\Fonts\OpenSans-SemiboldItalic.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="ViewModels\Watch3D\Resources\_dynamo.bfx" />
-    <None Include="ViewModels\Watch3D\Shaders\CompileShaders.bat" />
+    <None Include="UI\Fonts\SourceCodePro-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\GuidedTour\dynamo_guides.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
+    <Resource Include="UI\Images\caret_up.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
@@ -646,6 +748,17 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\closetab_normal.png" />
+    <Resource Include="UI\Images\NodeStates\alert-64px.png" />
+    <Resource Include="UI\Images\NodeStates\error-64px.png" />
+    <Resource Include="UI\Images\NodeStates\frozen-64px.png" />
+    <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
+    <Resource Include="UI\Images\NodeStates\info-64px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\whiteclosetab.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\whiteinfotab.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\closewindow_hover.png" />
@@ -933,16 +1046,13 @@
     <Resource Include="UI\Images\StartPage\icon-dictionary.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\tabs_button_hover.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\tabs_button_normal.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Images\task_dialog_crash.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\task_dialog_future_file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\python-logo.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\task_dialog_obsolete_file.png" />
@@ -990,10 +1100,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Prompts\ChangeScaleFactorPrompt.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="UI\Prompts\FunctionNamePrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1001,12 +1107,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\Prompts\GenericTaskDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="UI\Prompts\NodeHelpPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1099,6 +1199,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\Debug\DebugModesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Gallery\GalleryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1138,12 +1242,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\Preview\InfoBubbleView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Views\PackageManager\InstalledPackagesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1224,6 +1322,11 @@
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Libraries\CoreNodeModels\CoreNodeModels.csproj">
+      <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
+      <Name>CoreNodeModels</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
       <Name>DesignScriptBuiltin</Name>
@@ -1235,6 +1338,11 @@
     <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
+      <Project>{8872CA17-C10D-43B9-8393-5C5A57065EB0}</Project>
+      <Name>PythonNodeModels</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
@@ -1280,33 +1388,113 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\max-default.png" />
+    <Resource Include="UI\Images\min-default.png" />
+    <Resource Include="UI\Images\minimize-hover.png" />
+    <Resource Include="UI\Images\minimize-hover-16px.png" />
+    <Resource Include="UI\Images\minimize-default-16px.png" />
+    <Resource Include="UI\Images\maximize-hover.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\PackageNodes.gif" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\successIcon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\filterIcon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\sortIcon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\SearchPackages.gif" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\searchPackages.html" />
+    <Resource Include="UI\Images\error-icon.png" />
+    <Resource Include="UI\Images\searchmagnifier.png" />
+    <Resource Include="UI\Images\info-grey.png" />
+    <Resource Include="UI\Images\remove - default.png" />
+    <Resource Include="UI\Images\close_blue.png" />
+    <Resource Include="UI\Images\close_grey.png" />
+    <Resource Include="UI\Images\Folder.png" />
+    <Resource Include="UI\Images\caret_down_grey_48px.png" />
+    <Resource Include="UI\Images\caret_up_grey_48px.png" />
+    <Resource Include="UI\Images\menu_grey_48px.png" />
+    <Resource Include="UI\Images\NodeIcon_placeholder.png" />
+    <Resource Include="UI\Images\custom-node.png" />
+    <Resource Include="UI\Images\image-icon-default.png" />
+    <Resource Include="UI\Images\image-icon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\DynamoPackages_1_1.png" />
+    <Resource Include="UI\Images\default_info_16px.png" />
+    <Resource Include="UI\Images\clock-icon.png" />
+    <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
+    <Resource Include="UI\Images\info_2.png" />
+    <Resource Include="UI\Images\alert_2.png" />
+    <Resource Include="UI\Images\pin_hidden_48_48.png" />
+    <Resource Include="UI\Images\pin_hover_48_48.png" />
+    <Resource Include="UI\Images\wire_anchor_48_48.png" />
+    <Resource Include="UI\Images\watch_hidden_48_48.png" />
+    <Resource Include="UI\Images\watch_hover_48_48.png" />
+    <Resource Include="UI\Images\checkmark - grey.png" />
+    <Resource Include="UI\Images\package_error.png" />
+    <Resource Include="UI\Images\icon-shape.png" />
+    <Resource Include="UI\Images\Progress circle.png" />
+    <Resource Include="UI\Images\Requirements - disabled.png" />
+    <Resource Include="UI\Images\View details - disabled.png" />
+    <Resource Include="UI\Images\Add - default.png" />
+    <Resource Include="UI\Images\Add - disabled.png" />
+    <Resource Include="UI\Images\Checkmark - menu selected.png" />
+    <Resource Include="UI\Images\Checkmark.png" />
+    <Resource Include="UI\Images\Circle close.png" />
+    <Resource Include="UI\Images\Copyright.png" />
+    <Resource Include="UI\Images\Date.png" />
+    <Resource Include="UI\Images\Download.png" />
+    <Resource Include="UI\Images\Favorite.png" />
+    <Resource Include="UI\Images\Filter.png" />
+    <Resource Include="UI\Images\Flag.png" />
+    <Resource Include="UI\Images\Profile.png" />
+    <Resource Include="UI\Images\Requirements.png" />
+    <Resource Include="UI\Images\Sort.png" />
+    <Resource Include="UI\Images\View details.png" />
+    <Resource Include="UI\Images\more-vertical_selected_16px.png" />
+    <Resource Include="UI\Images\pin_default_48_48.png" />
+    <Resource Include="UI\Images\pin_selected_48_48.png" />
+    <Resource Include="UI\Images\watch_default_48_48.png" />
+    <Resource Include="UI\Images\error.png" />
+    <Resource Include="UI\Images\warning.png" />
+    <Resource Include="UI\Images\info.png" />
+    <Resource Include="UI\Images\hidden.png" />
+    <Resource Include="UI\Images\default-node-icon.png" />
+    <Resource Include="UI\Images\more-vertical.png" />
+    <Resource Include="UI\Images\watch_hidden_16_16.png" />
+    <Resource Include="UI\Images\alert.png" />
+    <Resource Include="UI\Images\menu_16_16.png" />
+    <Resource Include="UI\Images\menu-hover-16px.png" />
+    <Resource Include="UI\Images\caret_down.png" />
+    <Resource Include="UI\Images\down-hover-16px.png" />
+    <Resource Include="UI\Images\down_16_16.png" />
+    <Resource Include="UI\Images\folder_16_16.png" />
+    <Resource Include="UI\Images\folder-hover-16px.png" />
+    <Resource Include="UI\Images\up_16_16.png" />
+    <Resource Include="UI\Images\up-hover-16px.png" />
+    <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\add_icon.png" />
+    <Resource Include="UI\Images\pin.png" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\PublishPackageDocumentation.html" />
+    <Resource Include="UI\Images\undock_hover.png" />
+    <Resource Include="UI\Images\undock_normal.png" />
+    <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\Common.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\CommonBuffers.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\DataStructs.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\psDynamoLine.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\psDynamoMesh.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\psDynamoPoint.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\vsDynamoMesh.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\vsDynamoPointLine.hlsl" />
     <Resource Include="UI\Images\bubble-arrow.png" />
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
-    <Content Include="ViewModels\Watch3D\Shaders\BillboardText.fx" />
-    <Content Include="ViewModels\Watch3D\Shaders\Common.fx" />
-    <Content Include="ViewModels\Watch3D\Shaders\Custom.fx" />
-    <Content Include="ViewModels\Watch3D\Shaders\Default.fx" />
-    <Content Include="ViewModels\Watch3D\Shaders\Lines.fx" />
-    <Content Include="ViewModels\Watch3D\Shaders\Material.fx" />
-    <Content Include="ViewModels\Watch3D\Shaders\Points.fx" />
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild">
+  <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
-  </Target>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\SharpDX.2.6.3\build\SharpDX.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SharpDX.2.6.3\build\SharpDX.targets'))" />
-    <Error Condition="!Exists('..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets'))" />
   </Target>
 </Project>

@@ -1,111 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config\CS.props" />
+    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8872CA17-C10D-43B9-8393-5C5A57065EB0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PythonNodeModels</RootNamespace>
     <AssemblyName>PythonNodeModels</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <OutputPath>$(OutputPath)\nodes\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)\nodes</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(OutputPath)\nodes</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ReferenceCopyLocalPaths>
+      <!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
+      <DestinationSubDirectory>..\</DestinationSubDirectory>
+	</ReferenceCopyLocalPaths>
+  </ItemDefinitionGroup>
   <ItemGroup>
-    <Reference Include="IronPython, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.8.1\lib\net45\IronPython.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="IronPython.Modules, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.8.1\lib\net45\IronPython.Modules.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="IronPython.SQLite, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.8.1\lib\net45\IronPython.SQLite.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="IronPython.Wpf, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.8.1\lib\net45\IronPython.Wpf.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Dynamic, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.Dynamic.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Scripting, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.Scripting.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Scripting.Metadata, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.Scripting.Metadata.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.CodeCoverage.Shim, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.VisualStudio.CodeCoverage.Shim.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>Properties\AssemblySharedInfo.cs</Link>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <DependentUpon>Resources.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Properties\Resources.en-US.Designer.cs">
-      <DependentUpon>Resources.en-US.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="PythonNode.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="PythonNodeModelsImages.resx" />
-    <EmbeddedResource Include="Properties\Resources.en-US.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
@@ -123,16 +35,33 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\DSIronPython\DSIronPython.csproj">
-      <Project>{9eef4f42-6b3b-4358-9a8a-c2701539a822}</Project>
-      <Name>DSIronPython</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <EmbeddedResource Include="Docs\PythonMigrationWarning.html" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Resources.en-US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.en-US.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Target Name="GenerateFiles" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get System.Drawing.dll -->
     <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
       <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />

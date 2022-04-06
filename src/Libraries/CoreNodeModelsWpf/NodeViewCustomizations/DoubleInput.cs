@@ -1,14 +1,13 @@
-using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using CoreNodeModels.Input;
+using CoreNodeModels.Properties;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Wpf;
-using CoreNodeModels.Properties;
 
 namespace CoreNodeModelsWpf.Nodes
 {
@@ -50,9 +49,8 @@ namespace CoreNodeModelsWpf.Nodes
             var tb = new DynamoTextBox(nodeModel.Value ?? "0.0")
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))  
+                VerticalAlignment = VerticalAlignment.Top,
+                MinWidth = 40
             };
 
             nodeView.inputGrid.Children.Add(tb);

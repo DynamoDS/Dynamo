@@ -30,7 +30,8 @@ namespace DynamoCLI
         private static XmlDocument RunCommandLineArgs(DynamoModel model, StartupUtils.CommandLineArguments cmdLineArgs)
         {
             var evalComplete = false;
-            if (string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
+
+            if (!cmdLineArgs.KeepAlive && string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
             {
                 return null;
             }
@@ -43,12 +44,31 @@ namespace DynamoCLI
             {
                 Console.WriteLine("geometryFilePath option is only available when running DynamoWPFCLI, not DynamoCLI");
             }
+            model.HostAnalyticsInfo = cmdLineArgs.AnalyticsInfo;
 
             cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
             {
                 ImportAssembly(model, path);
-
             });
+
+            // KeepAlive mode -- allow loaded extensions to control the process lifetime
+            // and issue commands until the extension calls model.Shutdown().
+            if (cmdLineArgs.KeepAlive)
+            {
+                bool running = true;
+
+                model.ShutdownCompleted += (m) =>
+                {
+                    running = false;
+                };
+
+                while (running)
+                {
+                    Thread.Sleep(3000);
+                }
+
+                return null;
+            }
 
             model.OpenFileFromPath(cmdLineArgs.OpenFilePath, true);
             Console.WriteLine("loaded file");
@@ -103,7 +123,7 @@ namespace DynamoCLI
                 {
                     Console.WriteLine($"attempting to import assembly {path}");
                     var assembly = System.Reflection.Assembly.LoadFile(path);
-                    model.LoadNodeLibrary(assembly);
+                    model.LoadNodeLibrary(assembly,true);
                 }
             }
             catch (Exception e)

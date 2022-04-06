@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
-using DynamoSandbox;
 using System.Text.RegularExpressions;
 using System.Xml;
-using Dynamo;
 using Dynamo.Applications;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Dynamo.Wpf.ViewModels.Watch3D;
-using System.Reflection;
+using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
@@ -86,6 +83,42 @@ namespace Dynamo.Tests
 
             runner.Run(CommandstringToArgs(commandstring));
             AssertPreviewValue("4c5889ac-7b91-4fb5-aaad-a2128b533279", 4.0);
+        }
+
+        [Test]
+        public void CanSetHostNameWithCommandLineRunner()
+        {
+            var openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
+            var hostName = "DynamoFormIt";
+            var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
+            string commandstring = $"/o {openpath} /hn {hostName}";
+
+            runner.Run(CommandstringToArgs(commandstring));
+            Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.HostName, "DynamoFormIt");
+        }
+
+        [Test]
+        public void CanSetParentIdWithCommandLineRunner()
+        {
+            var openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
+            var parentId = "RVT&2022&MUI64&22.0.2.392";
+            var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
+            string commandstring = $"/o {openpath} /pi {parentId}";
+
+            runner.Run(CommandstringToArgs(commandstring));
+            Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.ParentId, "RVT&2022&MUI64&22.0.2.392");
+        }
+
+        [Test]
+        public void CanSetSessionIdWithCommandLineRunner()
+        {
+            var openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
+            var sessionId = "ABCDEFG";
+            var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
+            string commandstring = $"/o {openpath} /si {sessionId}";
+
+            runner.Run(CommandstringToArgs(commandstring));
+            Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.SessionId, "ABCDEFG");
         }
 
         [Test]
@@ -188,7 +221,7 @@ namespace Dynamo.Tests
         //
         // DynamoWPFCLI Tests
         //
-        [Test]
+        [Test, RequiresSTA]
         public void CanOpenAndRunDynamoModelWithWPFCommandLineRunner()
         {
             string openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
@@ -211,7 +244,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("4c5889ac-7b91-4fb5-aaad-a2128b533279", 4.0);
         }
 
-        [Test]
+        [Test, RequiresSTA]
         public void CanOpenAndRunFileWihtListsCorrectlyToOutputFileFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simplelists.dyn");
@@ -228,7 +261,7 @@ namespace Dynamo.Tests
                 output);
         }
 
-        [Test]
+        [Test, RequiresSTA]
         public void CanOpenAndRunFileWithDictionaryCorrectlyToOutputFileFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simpleDict.dyn");
@@ -251,7 +284,7 @@ namespace Dynamo.Tests
                 }, output);
         }
 
-        [Test]
+        [Test, RequiresSTA]
         public void CanOpenAndRunFileWithCustomNodeAndOutputGeometryFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\GeometryTest.dyn");

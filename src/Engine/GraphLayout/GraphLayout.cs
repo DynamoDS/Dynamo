@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraphLayout
 {
@@ -416,7 +414,7 @@ namespace GraphLayout
                     }
                     else if (n.LeftEdges.Count > 0 && AnchorRightEdges.Count == 0)
                     {
-                        n.Y = prevY + 10;
+                        n.Y = prevY;
                         prevY = n.Y;
                         layerUpdated = true;
                     }
@@ -830,17 +828,17 @@ namespace GraphLayout
             OwnerGraph = ownerGraph;
 
             StartNode = OwnerGraph.FindNode(startId);
-            if (StartNode != null)
+            if(StartNode!= null)
             {
                 StartNode.RightEdges.Add(this);
-            }
+            }       
 
             EndNode = OwnerGraph.FindNode(endId);
             if (EndNode != null)
             {
                 EndNode.LeftEdges.Add(this);
             }
-
+                
             NodeStartOffsetY = startY - StartNode.Y;
             NodeEndOffsetY = endY - EndNode.Y;
         }

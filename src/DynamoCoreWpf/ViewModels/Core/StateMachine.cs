@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -129,6 +130,7 @@ namespace Dynamo.ViewModels
             // before they get updated by the drag operation.
             // 
             RecordSelectionForUndo();
+            draggedNodes.Clear();
             foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
             {
                 ILocatable locatable = selectable as ILocatable;
@@ -170,9 +172,7 @@ namespace Dynamo.ViewModels
         {
             bool isInPort = portType == PortType.Input;
 
-            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
-            if (node == null)
-                return;
+            if (!(Model.GetModelInternal(nodeId) is NodeModel node)) return;
             PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
 
             // Test if port already has a connection, if so grab it and begin connecting 
@@ -203,19 +203,27 @@ namespace Dynamo.ViewModels
         internal void BeginShiftReconnections(Guid nodeId, int portIndex, PortType portType)
         {
             if (portType == PortType.Input) return;
-
-            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
-            if (node == null) return;
+            if (!(Model.GetModelInternal(nodeId) is NodeModel node)) return;
 
             PortModel portModel = node.OutPorts[portIndex];
             if (portModel.Connectors.Count <= 0) return;
-            
-            var connectorsAr = new ConnectorViewModel[portModel.Connectors.Count];
-            for (int i = 0; i < portModel.Connectors.Count; i++)
+
+            // Try to obtain connectors for selected nodes
+            var selected = portModel.Connectors.Where(x => x.End.Owner.IsSelected).Select(y => y.End);
+
+            // If there are no selected nodes, obtain all the associated connectors
+            if (selected.Count() <= 0)
             {
-                var c = new ConnectorViewModel(this, portModel.Connectors[i].End);
+                selected = portModel.Connectors.Select(y => y.End);
+            }
+
+            var connectorsAr = new ConnectorViewModel[selected.Count()];
+            for (int i = 0; i < selected.Count(); i++)
+            {
+                var c = new ConnectorViewModel(this, selected.ElementAt(i));
                 connectorsAr[i] = c;
-             }
+            }
+
             this.SetActiveConnectors(connectorsAr);
             return;
         }
@@ -225,16 +233,14 @@ namespace Dynamo.ViewModels
             this.SetActiveConnectors(null);
         }
 
-        internal void EndAndStartCtrlConnection(Guid nodeId, int portIndex, PortType portType)
+        internal void BeginCreateConnections(Guid nodeId, int portIndex, PortType portType)
         {
             // Only handle ctrl connections if selected port is an input port
             if (firstStartPort == null || portType == PortType.Output) return; 
             this.SetActiveConnectors(null); // End the current connection
 
             // Then, start a new connection
-            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
-            if (node == null)
-                return;
+            if (!(Model.GetModelInternal(nodeId) is NodeModel)) return;
             try
             {
                 // Create an array containing a connector view model to begin drawing
@@ -565,8 +571,18 @@ namespace Dynamo.ViewModels
                         break;
                 }
 
+                var previousState = this.currentState;
                 owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(cursorToUse);
                 this.currentState = newState; // update state
+
+                if (previousState == State.PanMode || newState == State.PanMode)
+                {
+                    owningWorkspace.RaisePropertyChanged(nameof(IsPanning));
+                }
+                if (previousState == State.OrbitMode || newState == State.OrbitMode)
+                {
+                    owningWorkspace.RaisePropertyChanged(nameof(IsOrbiting));
+                }
             }
 
             #endregion
@@ -597,8 +613,8 @@ namespace Dynamo.ViewModels
                     var element = sender as IInputElement;
                     mouseDownPos = e.GetPosition(element);
 
-                    // We'll see if there is any node being clicked on. If so, 
-                    // then the state machine should initiate a drag operation.
+                    // Check if there is any Dynamo Element (e.g. node, note, group) being clicked on. If so, 
+                    // then the state machine should initiate a drag operation if user keeps dragging the mouse .
                     if (null != GetSelectableFromPoint(mouseDownPos))
                     {
                         InitiateDragSequence();
@@ -666,6 +682,64 @@ namespace Dynamo.ViewModels
                     var command = new DynCmd.DragSelectionCommand(mouseCursor.AsDynamoType(), operation);
 
                     owningWorkspace.DynamoViewModel.ExecuteCommand(command);
+
+                    // When mouse is released get any group with NodeHoveringState
+                    // set to true (this should only ever be one),
+                    // and add all ModelBase items in selection to that group
+                    var dropGroup = owningWorkspace.Annotations
+                        .Where(x => x.NodeHoveringState)
+                        .FirstOrDefault();
+
+                    if (dropGroup != null)
+                    {
+                        // If groups are being dragged store them here
+                        var dragedGroups = DynamoSelection.Instance.Selection
+                            .OfType<AnnotationModel>()
+                            .ToList();
+
+                        // We do not want to add dragged groups content twice
+                        // so we filter it out here.
+                        var modelsToAdd = DynamoSelection.Instance.Selection
+                            .OfType<ModelBase>()
+                            .Except(dragedGroups.SelectMany(x => x.Nodes))
+                            .ToList();
+
+                        // AddModelsToGroupModelCommand adds models to the selected group
+                        // therefor we add the dropGroup to the selection before calling
+                        // the command.
+                        DynamoSelection.Instance.Selection.AddUnique(dropGroup.AnnotationModel);
+
+                        // If the dropgroup has nested groups they will be marked as 
+                        // IsSelected when adding the dropgroup to the selection.
+                        // We need to unselect all nested groups before we try and add
+                        // the dragged node this group, if we dont do this we might
+                        // add the node to the wrong group.
+                        if (dropGroup.AnnotationModel.HasNestedGroups)
+                        {
+                            dropGroup.Nodes
+                                .OfType<AnnotationModel>()
+                                .ToList()
+                                .ForEach(x => x.Deselect());
+                        }
+
+                        foreach (var item in modelsToAdd)
+                        {
+                            if (item == dropGroup.AnnotationModel) continue;
+
+                            // If the item is a group and the hovered group
+                            // is not a nested group, we add it to the dropGroup
+                            if (item is AnnotationModel && 
+                                !owningWorkspace.Model.Annotations.ContainsModel(dropGroup.AnnotationModel))
+                            {
+                                owningWorkspace.DynamoViewModel.AddGroupToGroupModelCommand.Execute(dropGroup.AnnotationModel.GUID);
+                                continue;
+                            }
+                                
+                            owningWorkspace.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
+                        }
+                        dropGroup.NodeHoveringState = false;
+                        dropGroup.SelectAll();
+                    }
 
                     SetCurrentState(State.None); // Dragging operation ended.
                 }
@@ -750,6 +824,77 @@ namespace Dynamo.ViewModels
                 {
                     // Update the dragged nodes (note: this isn't recorded).
                     owningWorkspace.UpdateDraggedSelection(mouseCursor.AsDynamoType());
+
+                    var draggedGroups = DynamoSelection.Instance.Selection.OfType<AnnotationModel>();
+
+                    // Here we check if the mouse cursor is inside any Annotation groups
+                    var dropGroups = owningWorkspace.Annotations
+                        .Where(x =>
+                        !draggedGroups.Select(a => a.GUID).Contains(x.AnnotationModel.GUID) &&
+                        x.IsExpanded &&
+                        x.AnnotationModel.Rect.Contains(mouseCursor.X, mouseCursor.Y));
+
+                    // In scenarios where there are nested groups, the above will return both
+                    // the nested group and the parent group, as the mouse coursor will be inside
+                    // both of there rects. In these cases we want to get group that is nested
+                    // inside the parent group.
+                    var dropGroup = dropGroups
+                        .FirstOrDefault(x => !x.AnnotationModel.HasNestedGroups) ?? dropGroups.FirstOrDefault();
+
+
+                    // If the dropGroup is null or any of the selected items is already in the dropGroup,
+                    // we disable the drop border by setting NodeHoveringState to false
+                    var draggedModels = DynamoSelection.Instance.Selection
+                        .OfType<ModelBase>()
+                        .Except(draggedGroups.SelectMany(x => x.Nodes));
+
+                    if (dropGroup is null ||
+                        draggedModels
+                        .Any(x => owningWorkspace.Model.Annotations.ContainsModel(x)))
+                    {
+                        owningWorkspace.Annotations
+                            .Where(x => x.NodeHoveringState)
+                            .ToList()
+                            .ForEach(x => x.NodeHoveringState = false);
+                    }
+
+                    // If we are dragging groups over a group that is already nested
+                    // we return as we cant have more than one nested layer
+                    else if (draggedGroups.Any() && 
+                        owningWorkspace.Model.Annotations.ContainsModel(dropGroup.AnnotationModel) ||
+                        draggedGroups.Any(x=>x.HasNestedGroups))
+                    {
+                        return false; // Mouse event not handled.
+                    }
+
+                    // If the dropGroups NodeHoveringState is set to false
+                    // we need to set it to true for the drop border to be displayed.
+                    else if (!dropGroup.NodeHoveringState)
+                    {
+                        // make sure there are no other group
+                        // set to NodeHoveringState before setting
+                        // the current group.
+                        // If we dont do this there are scenarios where
+                        // two groups are very close and a node is dragged
+                        // quickly between the two where the hovering state
+                        // is not reset.
+                        owningWorkspace.Annotations
+                            .Where(x => x.NodeHoveringState)
+                            .ToList()
+                            .ForEach(x => x.NodeHoveringState = false);
+
+                        // If the dropGroup belongs to another group
+                        // we need to check if the parent group is collapsed
+                        // if it is we dont want to be able to add new
+                        // models to the drop group.
+                        var parentGroup = owningWorkspace.Annotations
+                            .Where(x => x.AnnotationModel.ContainsModel(dropGroup.AnnotationModel))
+                            .FirstOrDefault();
+                        if (parentGroup != null && !parentGroup.IsExpanded) return false;
+                        
+                        dropGroup.NodeHoveringState = true;
+                    }
+
                 }
 
                 return false; // Mouse event not handled.
@@ -777,6 +922,10 @@ namespace Dynamo.ViewModels
 
                 var portModel = portViewModel.PortModel;
 
+                // When the connect command is triggered, set portDisconnectedByConnectCommand flag based on the port connectors.
+                // If the current port has any connectors, then it will be disconnected. Otherwise a new connection will be made. 
+                portViewModel.inputPortDisconnectedByConnectCommand = portViewModel.PortType == PortType.Input && portModel.Connectors.Count > 0;
+
                 var workspaceViewModel = owningWorkspace.DynamoViewModel.CurrentSpaceViewModel;
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...
@@ -789,6 +938,11 @@ namespace Dynamo.ViewModels
                     {
                         multipleConnections = true;
                         mode = DynamoModel.MakeConnectionCommand.Mode.BeginShiftReconnections;
+                    }
+                    else if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        // If the control key is held down, check if there is a need to duplicate connections
+                        mode = DynamoModel.MakeConnectionCommand.Mode.BeginDuplicateConnection;
                     }
 
                     var command = new DynamoModel.MakeConnectionCommand(nodeId, portIndex, portModel.PortType, mode);
@@ -819,7 +973,7 @@ namespace Dynamo.ViewModels
                         }
                         else if (Keyboard.Modifiers == ModifierKeys.Control) // If the control key is held down
                         {
-                            mode = DynamoModel.MakeConnectionCommand.Mode.EndAndStartCtrlConnection;
+                            mode = DynamoModel.MakeConnectionCommand.Mode.BeginCreateConnections;
                             this.currentState = State.Connection; // Start a new connection
                             owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect); // Reassign the cursor
                         }
@@ -840,7 +994,8 @@ namespace Dynamo.ViewModels
                 var oldClipboardData = model.ClipBoard.ToList();
 
                 model.Copy();
-                if (model.ClipBoard.Any())
+                // Prevents Paste from being called when only ConnectorPins are selected.
+                if (!model.ClipBoard.All(m => m is ConnectorPinModel))
                 {
                     model.Paste(targetPoint, false);
                     owningWorkspace.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
@@ -866,12 +1021,13 @@ namespace Dynamo.ViewModels
 
             private void CancelWindowSelection()
             {
-                // visualization unpause
-                owningWorkspace.OnDragSelectionEnded(this, EventArgs.Empty);
-
-                SelectionBoxUpdateArgs args = null;
-                args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
-                this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+                if (owningWorkspace != null)
+                {
+                    // visualization unpause
+                    owningWorkspace.OnDragSelectionEnded(this, EventArgs.Empty);
+                    SelectionBoxUpdateArgs args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
+                    this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+                }
             }
 
             #endregion
@@ -882,8 +1038,7 @@ namespace Dynamo.ViewModels
             {
                 foreach (var selectable in DynamoSelection.Instance.Selection)
                 {
-                    var locatable = selectable as ILocatable;
-                    if (locatable == null || (!locatable.Rect.Contains(point.AsDynamoType())))
+                    if (!(selectable is ILocatable locatable) || (!locatable.Rect.Contains(point.AsDynamoType())))
                         continue;
 
                     return selectable;
@@ -897,6 +1052,22 @@ namespace Dynamo.ViewModels
                 // The state machine must be in idle state.
                 if (this.currentState != State.None)
                     throw new InvalidOperationException();
+
+                // Before setting the drag state,
+                // Alt + left click triggers removal of group node or note belongs to
+                if (Keyboard.IsKeyDown(Key.LeftAlt) && !DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any())
+                {
+                    foreach (var model in DynamoSelection.Instance.Selection.OfType<ModelBase>())
+                    {
+                        var parentGroup = owningWorkspace.Annotations
+                            .Where(x => x.AnnotationModel.ContainsModel(model))
+                            .FirstOrDefault();
+                        if (parentGroup != null)
+                        {
+                            owningWorkspace.DynamoViewModel.UngroupModelCommand.Execute(null);
+                        }
+                    }
+                }
 
                 SetCurrentState(State.DragSetup);
             }
@@ -941,11 +1112,10 @@ namespace Dynamo.ViewModels
 
                 // Update the selection box and make it visible 
                 // but with an initial dimension of zero.
-                SelectionBoxUpdateArgs args = null;
-                args = new SelectionBoxUpdateArgs(mouseDownPos.X, mouseDownPos.Y, 0, 0);
+                SelectionBoxUpdateArgs args = new SelectionBoxUpdateArgs(mouseDownPos.X, mouseDownPos.Y, 0, 0);
                 args.SetVisibility(Visibility.Visible);
 
-                this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+                this.owningWorkspace.OnRequestSelectionBoxUpdate(this, args);
 
                 SetCurrentState(State.WindowSelection);
             }

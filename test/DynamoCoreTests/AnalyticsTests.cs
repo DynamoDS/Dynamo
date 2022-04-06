@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
 using Dynamo.Configuration;
@@ -127,7 +123,6 @@ namespace Dynamo.Tests
     {
         protected Mock<TrackerFactory> factoryMoq;
         protected Mock<IEventTracker> trackerMoq;
-        protected Mock<ILogger> loggerMoq;
 
         protected const string factoryName = "DynamoAnalyticsTests";
 
@@ -146,11 +141,9 @@ namespace Dynamo.Tests
 
         private IAnalyticsSession MockAnalyticsSession()
         {
-            loggerMoq = new Mock<ILogger>();
             var session = new Mock<IAnalyticsSession>();
             session.Setup(s => s.UserId).Returns("DynamoTestUser");
             session.Setup(s => s.SessionId).Returns("UniqueSession");
-            session.Setup(s => s.Logger).Returns(loggerMoq.Object);
             session.Setup(s => s.Start(It.IsAny<DynamoModel>())).Callback(SetupServices);
             return session.Object;
         }
@@ -164,6 +157,11 @@ namespace Dynamo.Tests
             factoryMoq.Object.Register<AnalyticsEvent>(trackerMoq.Object);
 
             Service.Instance.Register(factoryMoq.Object);
+
+            Service.Instance.AddTrackerFactoryFilter(factoryName, () => {
+                return CurrentDynamoModel.PreferenceSettings.IsAnalyticsReportingApproved;
+                }
+            );
         }
 
         public override void Cleanup()
@@ -178,7 +176,6 @@ namespace Dynamo.Tests
             VerifyEventTracking(Times.Exactly(1));
             //1 ApplicationLifecycle Start + 3 for exception + 6 other events
             trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.AtLeast(10));
-            loggerMoq.Verify(l => l.Log(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
         }
 
         [Test]
@@ -195,9 +192,8 @@ namespace Dynamo.Tests
             dynamoSettings.IsAnalyticsReportingApproved = true;
             dynamoSettings.IsUsageReportingApproved = true;
 
-            //1 startup + 3 exception related events are tracked
-            trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.Exactly(6));
-            loggerMoq.Verify(l=>l.Log(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+            //1 startup + 2 analytics optin status events
+            trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.Exactly(3));
         }
 
         [Test]

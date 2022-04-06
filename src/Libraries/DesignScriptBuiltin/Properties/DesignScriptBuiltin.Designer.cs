@@ -19,7 +19,7 @@ namespace Builtin.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class DesignScriptBuiltin {
@@ -61,7 +61,7 @@ namespace Builtin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Index was out of range. If non-negative must be less than the size of the list..
+        ///   Looks up a localized string similar to Index was out of range. If non-negative must be less than the size of the list. href=kIndexOutOfRange.html.
         /// </summary>
         internal static string IndexOutOfRangeExceptionMessage {
             get {
@@ -70,7 +70,16 @@ namespace Builtin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Index was out of range. If non-negative must be less than the size of the string..
+        ///   Looks up a localized string similar to Cannot index into a null list, dictionary or string..
+        /// </summary>
+        internal static string NullReferenceExceptionMessage {
+            get {
+                return ResourceManager.GetString("NullReferenceExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Index was out of range. If non-negative must be less than the size of the string. href=kIndexOutOfRange.html.
         /// </summary>
         internal static string StringOverIndexingExceptionMessage {
             get {

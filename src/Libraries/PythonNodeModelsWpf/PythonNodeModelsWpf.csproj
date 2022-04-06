@@ -1,78 +1,26 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config\CS.props" />
+    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PythonNodeModelsWpf</RootNamespace>
     <AssemblyName>PythonNodeModelsWpf</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <OutputPath>$(OutputPath)\nodes\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)\nodes</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(OutputPath)\nodes</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+  <ItemDefinitionGroup>
+ 	<ReferenceCopyLocalPaths>
+		<!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
+		<DestinationSubDirectory>..\</DestinationSubDirectory>
+	</ReferenceCopyLocalPaths>
+  </ItemDefinitionGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.AvalonEdit">
-      <HintPath>..\..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="IronPython, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.8.1\lib\net45\IronPython.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="IronPython.Modules, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.8.1\lib\net45\IronPython.Modules.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="IronPython.SQLite, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.8.1\lib\net45\IronPython.SQLite.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="IronPython.Wpf, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.8.1\lib\net45\IronPython.Wpf.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Dynamic, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.Dynamic.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+	<PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
+	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Scripting, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.Scripting.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Scripting.Metadata, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.Scripting.Metadata.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.CodeCoverage.Shim, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.VisualStudio.CodeCoverage.Shim.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore">
@@ -81,23 +29,8 @@
     <Reference Include="PresentationFramework">
       <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>Properties\AssemblySharedInfo.cs</Link>
-    </Compile>
-    <Compile Include="IronPythonCompletionData.cs" />
-    <Compile Include="IronPythonCompletionProvider.cs" />
-    <Compile Include="PythonNode.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScriptEditorWindow.xaml.cs">
-      <DependentUpon>ScriptEditorWindow.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
@@ -120,11 +53,6 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\DSIronPython\DSIronPython.csproj">
-      <Project>{9eef4f42-6b3b-4358-9a8a-c2701539a822}</Project>
-      <Name>DSIronPython</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\PythonNodeModels\PythonNodeModels.csproj">
       <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
       <Name>PythonNodeModels</Name>
@@ -132,15 +60,25 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\ICSharpCode.PythonBinding.Resources.Python.xshd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\EngineLabel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ScriptEditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Resources\class.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\field.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\ICSharpCode.PythonBinding.Resources.Python.xshd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\method.png" />
@@ -155,13 +93,6 @@
     <EmbeddedResource Include="Resources\property.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ScriptEditorWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Resource Include="Resources\2to3Icon.png" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -35,7 +35,7 @@ namespace Dynamo.Session
         /// <returns>True if the file is found</returns>
         bool ResolveFilePath(ref string filepath);
     }
-
+    //TODO(DYN-2879) make this class static for Dynamo 3. Maybe an enum?
     /// <summary>
     /// List of possible session parameter keys to obtain the session parameters.
     /// </summary>
@@ -69,5 +69,17 @@ namespace Dynamo.Session
         /// The duration of an execution covered by an <see cref="IExecutionSession"/>
         /// </summary>
         public static readonly string LastExecutionDuration = "LastExecutionDuration";
+
+        /// <summary>
+        /// The current collection of packagepaths that Dynamo is loading packages from.
+        /// The Return value is IEnumerable
+        /// </summary>
+        public static readonly string PackagePaths = nameof(PackagePaths);
+
+        /// <summary>
+        /// The logger that logs to the Dynamo console.
+        /// The return value is an ILogger
+        /// </summary>
+        public static readonly string Logger = nameof(Logger);
     }
 }

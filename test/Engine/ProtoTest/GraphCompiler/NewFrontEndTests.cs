@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Namespace;
 using ProtoCore.Utils;
-using ProtoTestFx.TD;
 
 namespace ProtoTest.GraphCompiler
 {
@@ -24,7 +21,7 @@ namespace ProtoTest.GraphCompiler
             ElementResolver elementResolver = new ElementResolver();
             ParseParam parseParam = new ParseParam(Guid.NewGuid(), code, elementResolver);
             
-            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam));
+            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), parseParam));
             Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Count() > 0);
 
             var parsedNode = parseParam.ParsedNodes.ElementAt(0);
@@ -75,12 +72,31 @@ namespace ProtoTest.GraphCompiler
             ElementResolver elementResolver = new ElementResolver();
             ParseParam parseParam = new ParseParam(Guid.NewGuid(), code, elementResolver);
 
-            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam));
+            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), parseParam));
             Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Any());
 
             var inputIdentifier = parseParam.UnboundIdentifiers;
             Assert.AreEqual(1, inputIdentifier.Count);
             Assert.AreEqual("a", inputIdentifier.ElementAt(0).Value);
+        }
+
+        [Test]
+        public void TestUnboundIdentifierInBinaryExpression()
+        {
+            var binaryExpressions = new[] { "x==-0.5;", "x>0.5;", "x<-1;", "x!=1;", "x<=\"a\";", "x>='a';", "x==true;", "x!=false;", "x==null;" };
+
+            foreach (var expression in binaryExpressions)
+            {
+                ElementResolver elementResolver = new ElementResolver();
+                ParseParam parseParam = new ParseParam(Guid.NewGuid(), expression, elementResolver);
+
+                Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), parseParam));
+                Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Any());
+
+                var inputIdentifier = parseParam.UnboundIdentifiers;
+                Assert.AreEqual(1, inputIdentifier.Count);
+                Assert.AreEqual("x", inputIdentifier.ElementAt(0).Value);
+            }
         }
     }
 }

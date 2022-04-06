@@ -159,16 +159,25 @@ namespace ProtoCore
 
         public FunctionTable FunctionTable { get; private set; }
 
-#endregion
+        #endregion
 
-        // This flag is set true when we call GraphUtilities.PreloadAssembly to load libraries in Graph UI
+        /// <summary>
+        /// This flag is set true when we call GraphUtilities.PreloadAssembly to load libraries.
+        /// </summary>
         public bool IsParsingPreloadedAssembly { get; set; }
+
+        /// <summary>
+        /// This flag is set true when we recompile CBNs after function definitions are compiled.
+        /// </summary>
+        internal bool IsCodeBlockNodeFirstPass { get; set; }
         
         // THe ImportModuleHandler owned by the temporary core used in Graph UI precompilation
         // needed to detect if the same assembly is not being imported more than once
         public ImportModuleHandler ImportHandler { get; set; }
-        
-        // This is set to true when the temporary core is used for precompilation of CBN's in GraphUI
+
+        /// <summary>
+        /// This is set to true when the temporary core is used for precompilation of CBN's.
+        /// </summary>
         public bool IsParsingCodeBlockNode { get; set; }
 
         // This is the AST node list of default imported libraries needed for Graph Compiler
@@ -214,7 +223,13 @@ namespace ProtoCore
         public List<CodeBlock> CodeBlockList { get; set; }
         // The Complete Code Block list contains all the code blocks
         // unlike the codeblocklist which only stores the outer most code blocks
-        public List<CodeBlock> CompleteCodeBlockList { get; set; }
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
+        public List<CodeBlock> CompleteCodeBlockList
+        {
+            get { return CompleteCodeBlockDict.Select(x => x.Value).ToList(); }
+            set { value.ForEach(x => CompleteCodeBlockDict.Add(x.codeBlockId, x)); }
+        }
+        internal SortedDictionary<int, CodeBlock> CompleteCodeBlockDict { get; set; }
 
         /// <summary>
         /// ForLoopBlockIndex tracks the current number of new for loop blocks created at compile time for every new compile phase
@@ -309,53 +324,59 @@ namespace ProtoCore
             // Update the functiond definition in the codeblocks
             int hash = CoreUtils.GetFunctionHash(functionDef);
 
-            ProcedureNode procNode = null;
+            List<ProcedureNode> procNodes = null;
 
             foreach (CodeBlock block in CodeBlockList)
             {
                 // Update the current function definition in the current block
-                procNode = block.procedureTable.Procedures.FirstOrDefault(p => p.HashID == hash);
-                int index = procNode == null ? Constants.kInvalidIndex: procNode.ID; 
-                if (Constants.kInvalidIndex == index)
-                    continue;
-
-                procNode.IsActive = false;
-
-                // Remove staled graph nodes
-                var graph = block.instrStream.dependencyGraph;
-                graph.GraphList.RemoveAll(g => g.classIndex == ClassIndex && 
-                                               g.procIndex == index);
-                graph.RemoveNodesFromScope(Constants.kGlobalScope, index);
-
-                // Make a copy of all symbols defined in this function
-                var localSymbols = block.symbolTable.symbolList.Values
-                                        .Where(n => 
-                                                n.classScope == Constants.kGlobalScope 
-                                             && n.functionIndex == index)
-                                        .ToList();
-
-                foreach (var symbol in localSymbols)
+                procNodes = block.procedureTable.Procedures.Where(p => p.HashID == hash).ToList();
+                foreach (var procNode in procNodes)
                 {
-                    block.symbolTable.UndefineSymbol(symbol);
-                }
+                    int index = procNode == null ? Constants.kInvalidIndex : procNode.ID;
+                    if (Constants.kInvalidIndex == index)
+                        continue;
 
+                    procNode.IsActive = false;
+
+
+                    // Remove staled graph nodes
+                    var graph = block.instrStream.dependencyGraph;
+                    graph.GraphList.RemoveAll(g => g.classIndex == ClassIndex &&
+                                                   g.procIndex == index);
+                    graph.RemoveNodesFromScope(Constants.kGlobalScope, index);
+
+                    // Make a copy of all symbols defined in this function
+                    var localSymbols = block.symbolTable.symbolList.Values
+                                            .Where(n =>
+                                                    n.classScope == Constants.kGlobalScope
+                                                 && n.functionIndex == index)
+                                            .ToList();
+
+                    foreach (var symbol in localSymbols)
+                    {
+                        block.symbolTable.UndefineSymbol(symbol);
+                    }
+                }
                 break;
             }
-
-            if (null != procNode)
+            foreach (var procNode in procNodes)
             {
-                // Remove codeblock defined in procNode from CodeBlockList and CompleteCodeBlockList
-                foreach (int cbID in procNode.ChildCodeBlocks)
+                if (null != procNode)
                 {
-                    CompleteCodeBlockList.RemoveAll(x => x.codeBlockId == cbID);
-
-                    foreach (CodeBlock cb in CodeBlockList)
+                    // Remove codeblock defined in procNode from CodeBlockList and CompleteCodeBlockList
+                    foreach (int cbID in procNode.ChildCodeBlocks)
                     {
-                        cb.children.RemoveAll(x => x.codeBlockId == cbID);
+                        CompleteCodeBlockDict.Remove(cbID);
+
+                        foreach (CodeBlock cb in CodeBlockList)
+                        {
+                            cb.children.RemoveAll(x => x.codeBlockId == cbID);
+                        }
                     }
                 }
             }
 
+            if (DSExecutable == null) return;
 
             // Update the function definition in global function tables
             foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in DSExecutable.FunctionTable.GlobalFuncTable)
@@ -438,7 +459,7 @@ namespace ProtoCore
             CodeBlockIndex = 0;
             RuntimeTableIndex = 0;
             CodeBlockList = new List<CodeBlock>();
-            CompleteCodeBlockList = new List<CodeBlock>();
+            CompleteCodeBlockDict = new SortedDictionary<int, CodeBlock>();
             CallsiteGuidMap = new Dictionary<Guid, int>();
 
             AssocNode = null;
@@ -717,9 +738,7 @@ namespace ProtoCore
             // Create the code block list data
             DSExecutable.CodeBlocks = new List<CodeBlock>();
             DSExecutable.CodeBlocks.AddRange(CodeBlockList);
-            DSExecutable.CompleteCodeBlocks = new List<CodeBlock>();
-            DSExecutable.CompleteCodeBlocks.AddRange(CompleteCodeBlockList);
-
+            DSExecutable.CompleteCodeBlockDict = new SortedDictionary<int, CodeBlock>(CompleteCodeBlockDict);
 
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
@@ -727,7 +746,7 @@ namespace ProtoCore
             // The TypeSystem is a record of all primitive and compiler generated types
             DSExecutable.TypeSystem = TypeSystem;
 
-            RuntimeTableIndex = CompleteCodeBlockList.Count;
+            RuntimeTableIndex = GetRuntimeTableSize();
 
 
             // Build the runtime symbols
@@ -760,6 +779,30 @@ namespace ProtoCore
             DSExecutable.Configurations = Configurations;
             DSExecutable.CodeToLocation = CodeToLocation;
             DSExecutable.CurrentDSFileName = CurrentDSFileName;           
+        }
+
+        /// <summary>
+        /// Gets the size to be used for runtime tables of symbols, procedures and instruction streams.
+        /// Note: since blocks are stored consecutively but may have gaps due to procedures being deleted,
+        /// this is based on largest id rather than amount of blocks.
+        /// </summary>
+        internal int GetRuntimeTableSize()
+        {
+            // Due to the way this list is constructed, the largest id is the one of the last block.
+            var lastBlock = CompleteCodeBlockDict.LastOrDefault().Value;
+            // If there are no code blocks yet, then the required size for tables is 0.
+            // This happens when the first code block is being created and its id is being generated.
+            if (lastBlock == null)
+            {
+                return 0;
+            }
+
+            // If the last block has children, then its last child has the largest id.
+            if (lastBlock.children.Count > 0)
+            {
+                lastBlock = lastBlock.children.Last();
+            }
+            return lastBlock.codeBlockId + 1;
         }
 
         public string GenerateTempVar()

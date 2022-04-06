@@ -110,6 +110,21 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// This method assumes an undo-redo action group already exists
+        /// and records in it models that are modified.
+        /// </summary>
+        /// <param name="models"></param>
+        internal void RecordModelsForModification(List<ModelBase> models)
+        {
+            if (null == UndoRecorder) return;
+
+            if (!ShouldProceedWithRecording(models)) return;
+
+            foreach (var model in models)
+                UndoRecorder.RecordModificationForUndo(model);
+        }
+
         internal static void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models, UndoRedoRecorder recorder)
         {
             if (null == recorder)
@@ -185,6 +200,7 @@ namespace Dynamo.Graph.Workspaces
             // to are deleted. We will have to delete the connectors first
             // before
 
+            using (BeginDelayedGraphExecution())// Delayed execution
             using (undoRecorder.BeginActionGroup()) // Start a new action group.
             {
                 foreach (var model in models)
@@ -197,6 +213,19 @@ namespace Dynamo.Graph.Workspaces
                     }
                     else if (model is AnnotationModel)
                     {
+                        // If the AnnotationModel is nested
+                        // we should record the modifications 
+                        // to the parent in this ActionGroup
+                        // to ensure that a single Undo will
+                        // revert everything.
+                        var parentGroup = this.Annotations
+                            .FirstOrDefault(x => x.ContainsModel(model));
+
+                        if (parentGroup != null)
+                        {
+                            undoRecorder.RecordModificationForUndo(parentGroup);
+                        }
+
                         undoRecorder.RecordDeletionForUndo(model);
                         RemoveAnnotation(model as AnnotationModel);
                     }
@@ -226,8 +255,18 @@ namespace Dynamo.Graph.Workspaces
                         // the Enumerator in this "foreach" to become invalid.
                         foreach (var conn in node.AllConnectors.ToList())
                         {
-                            conn.Delete();
+                            if (conn.ConnectorPinModels.Count > 0)
+                            {
+                                foreach (var connectorPin in conn.ConnectorPinModels.ToList())
+                                {
+                                    undoRecorder.RecordDeletionForUndo(connectorPin);
+                                    var matchingConnector = Connectors.FirstOrDefault(c => c.GUID == connectorPin.ConnectorId);
+                                    if (matchingConnector is null) return;
+                                    matchingConnector.ConnectorPinModels.Remove(connectorPin);
+                                }
+                            }
                             undoRecorder.RecordDeletionForUndo(conn);
+                            conn.Delete();
                         }
 
                         node.RaisesModificationEvents = silentFlag;
@@ -237,14 +276,29 @@ namespace Dynamo.Graph.Workspaces
 
                         RemoveAndDisposeNode(node);
                     }
-                    else if (model is ConnectorModel)
+                    else if (model is ConnectorModel connector)
                     {
-                        undoRecorder.RecordDeletionForUndo(model);
+                        undoRecorder.RecordDeletionForUndo(connector);
+                        if (connector.ConnectorPinModels.Count > 0)
+                        {
+                            foreach (var connectorPin in connector.ConnectorPinModels.ToList())
+                            {
+                                undoRecorder.RecordDeletionForUndo(connectorPin);
+                                var matchingConnector = Connectors.FirstOrDefault(c => c.GUID == connectorPin.ConnectorId);
+                                if (matchingConnector is null) return;
+                                matchingConnector.ConnectorPinModels.Remove(connectorPin);
+                            }
+                        }
+                    }
+                    else if (model is ConnectorPinModel connectorPinModel)
+                    {
+                        undoRecorder.RecordDeletionForUndo(connectorPinModel);
+                        var matchingConnector = Connectors.FirstOrDefault(c => c.GUID == connectorPinModel.ConnectorId);
+                        if (matchingConnector is null) return;
+                        matchingConnector.ConnectorPinModels.Remove(connectorPinModel);
+                        HasUnsavedChanges = true;
                     }
                 }
-
-                RequestRun();
-
             } // Conclude the deletion.
         }
 
@@ -321,8 +375,37 @@ namespace Dynamo.Graph.Workspaces
                 var connector = model as ConnectorModel;
                 connector.Delete();
             }
+            else if (model is ConnectorPinModel connectorPin)
+            {
+                ///The equivalent of 'deleting' a connectorPin
+                var matchingConnector = Connectors.FirstOrDefault(connector => connector.GUID == connectorPin.ConnectorId);
+                if (matchingConnector is null)
+                {
+                    return;
+                }
+                matchingConnector.ConnectorPinModels.Remove(connectorPin);
+            }
             else if (model is NodeModel)
             {
+                var node = model as NodeModel;
+                // Note that AllConnectors is duplicated as a separate list
+                // by calling its "ToList" method. This is the because the
+                // "Connectors.Remove" will modify "AllConnectors", causing
+                // the Enumerator in this "foreach" to become invalid.
+                foreach (var conn in node.AllConnectors.ToList())
+                {
+                    if (conn.ConnectorPinModels.Count > 0)
+                    {
+                        foreach (var connPin in conn.ConnectorPinModels.ToList())
+                        {
+                            var matchingConnector = Connectors.FirstOrDefault(c => c.GUID == connPin.ConnectorId);
+                            if (matchingConnector is null) return;
+                            matchingConnector.ConnectorPinModels.Remove(connPin);
+                        }
+                    }
+                    conn.Delete();
+                }
+
                 RemoveAndDisposeNode(model as NodeModel);
             }
             else if(model == null)
@@ -407,6 +490,14 @@ namespace Dynamo.Graph.Workspaces
                     OnConnectorAdded(connector); // Update view-model and view.
                 }
             }
+            else if (typeName.Contains(nameof(ConnectorPinModel)))
+            {
+                var connectorPin = NodeGraph.LoadPinFromXml(modelData);
+                var matchingConnector = Connectors.FirstOrDefault(c => c.GUID == connectorPin.ConnectorId);
+                if (matchingConnector is null) return;
+
+                matchingConnector.AddPin(connectorPin);
+            }
             else if (typeName.Contains("NoteModel"))
             {
                 var noteModel = NodeGraph.LoadNoteFromXml(modelData);
@@ -418,7 +509,7 @@ namespace Dynamo.Graph.Workspaces
                     //this note "was" in a group
                     if (annotation.DeletedModelBases.Any(m => m.GUID == noteModel.GUID))
                     {
-                        annotation.AddToSelectedModels(noteModel);
+                        annotation.AddToTargetAnnotationModel(noteModel);
                     }
                 }
             }
@@ -457,7 +548,7 @@ namespace Dynamo.Graph.Workspaces
                     //this node "was" in a group
                     if (annotation.DeletedModelBases.Any(m => m.GUID == nodeModel.GUID))
                     {
-                        annotation.AddToSelectedModels(nodeModel);
+                        annotation.AddToTargetAnnotationModel(nodeModel);
                     }
                 }
             }
@@ -504,6 +595,18 @@ namespace Dynamo.Graph.Workspaces
                 ?? (Notes.FirstOrDefault(note => note.GUID == modelGuid)
                 ?? Annotations.FirstOrDefault(annotation => annotation.GUID == modelGuid) as ModelBase
                 ?? Presets.FirstOrDefault(preset => preset.GUID == modelGuid) as ModelBase);
+
+            if(foundModel is null)
+            {
+                foreach(var connector in Connectors)
+                {
+                    foreach(var pin in connector.ConnectorPinModels)
+                    {
+                        if (pin.GUID == modelGuid)
+                            return pin as ModelBase;
+                    }
+                }
+            }
 
             return foundModel;
         }

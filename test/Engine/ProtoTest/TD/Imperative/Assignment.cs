@@ -1,7 +1,6 @@
 using System;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Imperative
 {
@@ -277,7 +276,7 @@ i = [Imperative]
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            var arr = new object[] {3, 0, true, false, null};
+            var arr = new object[] {3, 0, true, false, false};
             thisTest.Verify("i", arr);
         }
 
@@ -926,7 +925,7 @@ d = [Imperative]
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("d", 0);
+            thisTest.Verify("d", 1);
 
         }
 

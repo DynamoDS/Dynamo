@@ -1,6 +1,5 @@
-﻿using System.IO;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using CoreNodeModels.Input;
@@ -20,7 +19,7 @@ namespace Dynamo.Tests
             libraries.Add("ProtoGeometry.dll"); // Required for Surface.
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");   // Required for built-in nodes.
-            libraries.Add("DSIronPython.dll");  // Required for Python tests.
+            libraries.Add("DSCPython.dll");  // Required for Python tests.
             libraries.Add("FunctionObject.ds"); // Required for partially applied nodes.
             libraries.Add("BuiltIn.ds");
             base.GetLibrariesToPreload(libraries);

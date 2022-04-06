@@ -1,0 +1,61 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="190" Y="167" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>0be4c94a-da23-4178-9f52-cb612062dcec</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="0be4c94a-da23-4178-9f52-cb612062dcec" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="98" y="136" isVisible="true" lacing="Disabled" isSelectedInput="False" isSelectedOutput="False" IsFrozen="false" isPinned="false" CodeText="&quot;abc&quot;;" ShouldFocus="false">
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="&quot;abc&quot;" WorkspaceGuid="b3fe6494-214a-4f04-8dd8-88aa6778e7a8">
+    <ModelGuid>0be4c94a-da23-4178-9f52-cb612062dcec</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectInRegionCommand X="319" Y="225" Width="1" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="320" Y="225" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>42001c91-7faa-43a5-9978-eea5e0a2bd0c</ModelGuid>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction guid="42001c91-7faa-43a5-9978-eea5e0a2bd0c" type="Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction" nickname="String.Concat" x="320" y="225" isVisible="true" lacing="Auto" isSelectedInput="False" isSelectedOutput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.String.Concat@string[]" inputcount="1">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="146" Y="331" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>4aa6ef10-0a0a-414c-8a47-b059b02d05af</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="4aa6ef10-0a0a-414c-8a47-b059b02d05af" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="54" y="300" isVisible="true" lacing="Disabled" isSelectedInput="False" isSelectedOutput="False" IsFrozen="false" isPinned="false" CodeText="&quot;12345&quot;;" ShouldFocus="false">
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="&quot;12345&quot;" WorkspaceGuid="b3fe6494-214a-4f04-8dd8-88aa6778e7a8">
+    <ModelGuid>4aa6ef10-0a0a-414c-8a47-b059b02d05af</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectInRegionCommand X="146" Y="331" Width="0" Height="0" IsCrossSelection="false" />
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>0be4c94a-da23-4178-9f52-cb612062dcec</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>42001c91-7faa-43a5-9978-eea5e0a2bd0c</ModelGuid>
+  </MakeConnectionCommand>
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>4aa6ef10-0a0a-414c-8a47-b059b02d05af</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>42001c91-7faa-43a5-9978-eea5e0a2bd0c</ModelGuid>
+  </MakeConnectionCommand>
+  <PausePlaybackCommand Tag="SecondRun" PauseDurationInMs="20" />
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>0be4c94a-da23-4178-9f52-cb612062dcec</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>42001c91-7faa-43a5-9978-eea5e0a2bd0c</ModelGuid>
+  </MakeConnectionCommand>
+  <PausePlaybackCommand Tag="ThirdRun" PauseDurationInMs="20" />
+</Commands>

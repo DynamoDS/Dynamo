@@ -11,6 +11,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Properties;
 using DynamoUtilities;
+using Dynamo.Models;
 
 namespace Dynamo.Core
 {
@@ -72,6 +73,7 @@ namespace Dynamo.Core
         private readonly string commonDataDir;
 
         private readonly string commonDefinitions;
+        private readonly string commonPackages;
         private readonly string logDirectory;
         private readonly string samplesDirectory;
         private readonly string backupDirectory;
@@ -85,6 +87,7 @@ namespace Dynamo.Core
         private readonly HashSet<string> preloadedLibraries;
         private readonly HashSet<string> extensionsDirectories;
         private readonly HashSet<string> viewExtensionsDirectories;
+        private readonly IPathResolver pathResolver;
 
         #endregion
 
@@ -92,7 +95,49 @@ namespace Dynamo.Core
 
         private IEnumerable<string> RootDirectories
         {
-            get { return Preferences != null ? Preferences.CustomPackageFolders : rootDirectories; }
+            get 
+            { 
+                return Preferences != null ? 
+                    Preferences.CustomPackageFolders.Select(path => path == DynamoModel.BuiltInPackagesToken ? BuiltinPackagesDirectory : path) 
+                    : rootDirectories;
+            }
+        }
+
+        private const string builtinPackagesDirName = @"Built-In Packages";
+        private static string builtinPackagesDirectory = null;
+
+        //Todo in Dynamo 3.0, Add this to the IPathManager interface
+        /// <summary>
+        /// The Built-In Packages directory is located in the same directory as the DynamoCore.dll
+        /// Property should only be set during testing. During testing, keep in mind that previous tests
+        /// may have altered this static property, and it may need to be restored.
+        /// </summary>
+        internal static string BuiltinPackagesDirectory
+        {
+            get
+            {
+                if (builtinPackagesDirectory == null)
+                {
+                    builtinPackagesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(PathManager)).Location), builtinPackagesDirName, @"Packages");
+                }
+                return builtinPackagesDirectory;
+            }
+            set
+            {
+                if (builtinPackagesDirectory != value)
+                {
+                    builtinPackagesDirectory = value;
+                }
+            }
+        }
+
+        //Todo in Dynamo 3.0, Add this to the IPathManager interface
+        /// <summary>
+        /// The local directory that contains package directory created by all users.
+        /// </summary>
+        internal string CommonPackageDirectory
+        {
+            get { return commonPackages; }
         }
 
         #region IPathManager Interface Implementation
@@ -119,7 +164,14 @@ namespace Dynamo.Core
 
         public string DefaultUserDefinitions
         {
-            get { return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); }
+            get 
+            {
+                if (Preferences is PreferenceSettings preferences)
+                {
+                    return TransformPath(preferences.SelectedPackagePathForInstall, DefinitionsDirectoryName);
+                }
+                return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); 
+            }
         }
 
         public IEnumerable<string> DefinitionDirectories
@@ -137,9 +189,21 @@ namespace Dynamo.Core
             get { return logDirectory; }
         }
 
+        /// <summary>
+        /// Default directory where new packages are downloaded to.
+        /// This directory path is user configurable and if set to something other than the default,
+        /// the currently selected path can be obtained from preference settings.
+        /// </summary>
         public string DefaultPackagesDirectory
         {
-            get { return TransformPath(RootDirectories.First(), PackagesDirectoryName); }
+            get
+            {
+                if (Preferences is PreferenceSettings preferences)
+                {
+                    return TransformPath(preferences.SelectedPackagePathForInstall, PackagesDirectoryName);
+                }
+                return TransformPath(RootDirectories.First(), PackagesDirectoryName);
+            }
         }
 
         public IEnumerable<string> PackagesDirectories
@@ -284,7 +348,7 @@ namespace Dynamo.Core
         internal PathManager(PathManagerParams pathManagerParams)
         {
             var corePath = pathManagerParams.CorePath;
-            var pathResolver = pathManagerParams.PathResolver;
+            pathResolver = pathManagerParams.PathResolver;
 
             if (string.IsNullOrEmpty(corePath) || !Directory.Exists(corePath))
             {
@@ -328,7 +392,7 @@ namespace Dynamo.Core
             }
 
             // Current user specific directories.
-            userDataDir = GetUserDataFolder(pathResolver);
+            userDataDir = GetUserDataFolder();
 
             // When running as a headless process, put the logs directory in a consistent
             // location that doesn't change every time the version number changes.
@@ -341,9 +405,10 @@ namespace Dynamo.Core
             backupDirectory = Path.Combine(userDataDirNoVersion, BackupDirectoryName);
 
             // Common directories.
-            commonDataDir = GetCommonDataFolder(pathResolver);
+            commonDataDir = GetCommonDataFolder();
 
             commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
+            commonPackages = Path.Combine(commonDataDir, PackagesDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
             var galleryDirectory = GetGalleryDirectory(commonDataDir);
             galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
@@ -357,7 +422,7 @@ namespace Dynamo.Core
 
             preloadedLibraries = new HashSet<string>();
             additionalResolutionPaths = new HashSet<string>();
-            LoadPathsFromResolver(pathResolver);
+            LoadPathsFromResolver();
         }
 
         /// <summary>
@@ -390,6 +455,7 @@ namespace Dynamo.Core
             // Common data folders for all users.
             exceptions.Add(PathHelper.CreateFolderIfNotExist(commonDataDir));
             exceptions.Add(PathHelper.CreateFolderIfNotExist(commonDefinitions));
+            exceptions.Add(PathHelper.CreateFolderIfNotExist(commonPackages));
 
             exceptions.RemoveAll(x => x == null); // Remove all null entries.
         }
@@ -447,7 +513,7 @@ namespace Dynamo.Core
 
         #region Private Class Helper Methods
 
-        private void LoadPathsFromResolver(IPathResolver pathResolver)
+        private void LoadPathsFromResolver()
         {
             if (pathResolver == null) // No optional path resolver is specified...
                 return;
@@ -477,7 +543,7 @@ namespace Dynamo.Core
             }
         }
 
-        internal string GetUserDataFolder(IPathResolver pathResolver = null)
+        internal string GetUserDataFolder()
         {
             if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.UserDataRootFolder))
                 return GetDynamoDataFolder(pathResolver.UserDataRootFolder);
@@ -489,7 +555,7 @@ namespace Dynamo.Core
             return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
         }
 
-        private string GetCommonDataFolder(IPathResolver pathResolver)
+        private string GetCommonDataFolder()
         {
             if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.CommonDataRootFolder))
                 return GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
@@ -503,7 +569,7 @@ namespace Dynamo.Core
             return Path.Combine(folder,
                 String.Format("{0}.{1}", majorFileVersion, minorFileVersion));
         }
-
+        
         // This method is used to get the locations of packages folder or custom
         // nodes folder given the root path. This is necessary because the packages
         // may be in the root folder or in a packages subfolder of the root folder.
@@ -543,7 +609,7 @@ namespace Dynamo.Core
                 dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
             }
 
-            var uiCulture = CultureInfo.CurrentUICulture.ToString();
+            var uiCulture = CultureInfo.CurrentUICulture.Name;
             var sampleDirectory = Path.Combine(dataRootDirectory, SamplesDirectoryName, uiCulture);
 
             // If the localized samples directory does not exist then fall back 
@@ -582,7 +648,7 @@ namespace Dynamo.Core
                 commonDataDir = Directory.GetParent(versionedDirectory).FullName;
             }
 
-            var uiCulture = CultureInfo.CurrentUICulture.ToString();
+            var uiCulture = CultureInfo.CurrentUICulture.Name;
             var galleryDirectory = Path.Combine(commonDataDir, GalleryDirectoryName, uiCulture);
 
             // If the localized gallery directory does not exist then fall back 

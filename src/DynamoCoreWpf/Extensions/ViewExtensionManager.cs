@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Dynamo.Extensions;
 using Dynamo.Logging;
 
 namespace Dynamo.Wpf.Extensions
@@ -29,6 +30,7 @@ namespace Dynamo.Wpf.Extensions
     internal class ViewExtensionManager : IViewExtensionManager, ILogSource
     {
         private readonly List<IViewExtension> viewExtensions = new List<IViewExtension>();
+        private readonly List<IExtensionStorageAccess> storageAccessViewExtensions = new List<IExtensionStorageAccess>();
         private readonly ViewExtensionLoader viewExtensionLoader = new ViewExtensionLoader();
 
         public ViewExtensionManager()
@@ -38,11 +40,19 @@ namespace Dynamo.Wpf.Extensions
             this.ExtensionRemoved += UnsubscribeViewExtension;
         }
 
+        /// <summary>
+        /// Creates ViewExtensionManager with directories which require package certificate verification.
+        /// </summary>
+        public ViewExtensionManager(IEnumerable<string> directoriesToVerify) : this()
+        {
+            this.viewExtensionLoader.DirectoriesToVerifyCertificates.AddRange(directoriesToVerify);
+        }
+
         private void RequestAddViewExtensionHandler(IViewExtension viewExtension)
         {
             if (viewExtension is IViewExtension)
             {
-                this.Add(viewExtension as IViewExtension);
+                this.Add(viewExtension);
             }
         }
         private IViewExtension RequestLoadViewExtensionHandler(string extensionPath)
@@ -86,10 +96,22 @@ namespace Dynamo.Wpf.Extensions
             {
                 viewExtensions.Add(extension);
                 Log(fullName + " view extension is added");
+                // Inform view extension author and consumer that the view extension does not come 
+                // with a consistent UniqueId. This may result in unexpected Dynamo behavior.
+                if (extension.UniqueId != extension.UniqueId)
+                {
+                    Log("Inconsistent UniqueId for " + extension.Name + " view extension. This may result in unexpected Dynamo behavior.");
+                }
 
                 if (ExtensionAdded != null)
                 {
                     ExtensionAdded(extension);
+                }
+
+                if (extension is IExtensionStorageAccess storageAccess &&
+                    storageAccessViewExtensions.Find(x=> (x as IViewExtension).UniqueId == extension.UniqueId) is null)
+                {
+                    storageAccessViewExtensions.Add(storageAccess);
                 }
             }
             else
@@ -117,6 +139,12 @@ namespace Dynamo.Wpf.Extensions
                 Log(fullName + " extension cannot be disposed properly: " + ex.Message);
             }
 
+            if (extension is IExtensionStorageAccess storageAccess &&
+                storageAccessViewExtensions.Contains(storageAccess))
+            {
+                storageAccessViewExtensions.Remove(storageAccess);
+            }
+
             Log(fullName + " extension is removed");
             if (ExtensionRemoved != null)
             {
@@ -129,6 +157,14 @@ namespace Dynamo.Wpf.Extensions
             get { return viewExtensions; }
         }
 
+        /// <summary>
+        /// Returns the collection of registered extensions implementing IExtensionStorageAccess
+        /// </summary>
+        public IEnumerable<IExtensionStorageAccess> StorageAccessViewExtensions
+        {
+            get { return storageAccessViewExtensions; }
+        }
+
         public event Action<IViewExtension> ExtensionAdded;
 
         public event Action<IViewExtension> ExtensionRemoved;
@@ -136,7 +172,19 @@ namespace Dynamo.Wpf.Extensions
 
         public void Dispose()
         {
+            foreach (var ext in ViewExtensions)
+            {
+                try
+                {
+                    ext.Dispose();
+                }
+                catch (Exception exc)
+                {
+                    Log($"{ext.Name} :  {exc.Message} during dispose");
+                }
+            }
             viewExtensions.Clear();
+            storageAccessViewExtensions.Clear();
             viewExtensionLoader.MessageLogged -= Log;
         }
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Runtime;
+﻿using Autodesk.DesignScript.Runtime;
 
 namespace FFITarget
 {
@@ -11,7 +6,7 @@ namespace FFITarget
     {
         public static ElementResolverTarget Create()
         {
-            return null;
+            return new ElementResolverTarget();
         }
 
         public static ElementResolverTarget Create(ElementResolverTarget target)
@@ -20,6 +15,8 @@ namespace FFITarget
         }
 
         public static ElementResolverTarget StaticProperty { get; set; }
+
+        public static ElementResolverTarget StaticProperty2 { get; set; }
 
         public ElementResolverTarget Property { get; set; }
 
@@ -37,6 +34,14 @@ namespace FFITarget
             [DefaultArgumentAttribute("ElementResolverTarget.Create().StaticProperty")] ElementResolverTarget ert)
         {
             return 999;
+        }
+
+        public static int StaticMethod2(
+            [DefaultArgumentAttribute(
+                "FFITarget.ElementResolverTarget.StaticProperty.StaticProperty2.Method(FFITarget.ElementResolverTarget.Create())"
+                )] ElementResolverTarget ert)
+        {
+            return 1999;
         }
     }
 

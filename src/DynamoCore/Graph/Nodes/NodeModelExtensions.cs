@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using ProtoCore.Mirror;
 
@@ -62,6 +63,34 @@ namespace Dynamo.Graph.Nodes
             return gathered;
         }
 
+        /// <summary>
+        /// Get all downstream nodes of a node model
+        /// </summary>
+        /// <param name="node"> Node model to get downstream nodes of </param>
+        /// <param name="gathered"> List to recursively gather downstream nodes, set to an empty list to start </param>
+        /// <returns></returns>
+        internal static IEnumerable<NodeModel> AllDownstreamNodes(this NodeModel node, List<NodeModel> gathered)
+        {
+            if (node == null)
+            {
+                return new List<NodeModel>();
+            }
+
+            var downstream = node.OutPorts.SelectMany(p => p.Connectors.Select(c => c.End.Owner));
+
+            foreach (var n in downstream.Where(n => !gathered.Contains(n)))
+            {
+                gathered.Add(n);
+            }
+
+            foreach (var n in downstream)
+            {
+                n.AllDownstreamNodes(gathered);
+            }
+
+            return gathered;
+        }
+
         internal static bool IsUpstreamOf(this NodeModel node, NodeModel otherNode)
         {
             var gathered = new List<NodeModel>();
@@ -72,9 +101,12 @@ namespace Dynamo.Graph.Nodes
 
         internal static List<IGraphicItem> GeneratedGraphicItems(this NodeModel node, EngineController engineController)
         {
-            var ids = node.GetAllOutportAstIdentifiers();
-
             var results = new List<IGraphicItem>();
+            if (node is null || engineController is null)
+            {
+                return results;
+            }
+            var ids = node.GetAllOutportAstIdentifiers();
 
             foreach (var id in ids)
             {
@@ -90,9 +122,30 @@ namespace Dynamo.Graph.Nodes
             return results;
         }
 
+        /// <summary>
+        /// Getting the original name before graph author renamed the node
+        /// </summary>
+        /// <param name="node">target NodeModel</param>
+        /// <returns>Original node name as string</returns>
         internal static string GetOriginalName(this NodeModel node)
         {
             if (node == null) return string.Empty;
+            // For dummy node, return the current name so that does not appear to be renamed
+            if (node is DummyNode)
+            {
+                return node.Name;
+            }
+            if (node.IsCustomFunction)
+            {
+                // If the custom node is not loaded, return the current name so that does not appear to be renamed
+                if ((node as Function).State == ElementState.Error && (node as Function).Definition.IsProxy)
+                {
+                    return node.Name;
+                }
+                // If the custom node is loaded, return original name as usual
+                var customNodeFunction = node as Function;
+                return customNodeFunction?.Definition.DisplayName;
+            }
 
             var function = node as DSFunctionBase;
             if (function != null)

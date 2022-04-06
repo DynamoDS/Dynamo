@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
 using ProtoTestFx.TD;
-using ProtoTestFx;
 namespace ProtoTest.TD.Associative
 {
     class Replication : ProtoTestBase
@@ -2016,7 +2014,7 @@ list1 = [ true, null, a1, 0, 0.0, 1.5, 0.5, -1 ];
 list2 = !list1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { false, null, null, true, true, false, false, false };
+            Object[] v1 = new Object[] { false, true, true, true, true, false, false, false };
             thisTest.Verify("list2", v1);
         }
 
@@ -2030,7 +2028,7 @@ list1 = [ [ true, null], 0, 1 ];
 list2 = !list1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { new Object[] { false, null }, true, false };
+            Object[] v1 = new Object[] { new Object[] { false, true }, true, false };
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
             thisTest.Verify("list2", v1);
         }
@@ -2574,6 +2572,34 @@ test3 = a1.X[0][0];
         }
 
         [Test]
+        [Category("Replication")]
+        public void DotOperationShouldIdentifyTheTypeOfArraysWithSomeEmptyItems()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+a = TestObjectA.TestObjectA(1);
+array1 = [[],[a]];
+test1 = array1.a;
+array2 = [[a],[]];
+test2 = array2.a;
+array3 = [[[[]]],[[[],[]],[[],[a]]]];
+test3 = array3.a;
+";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("test1", new object[] { new object[0], new object[] { 1 } });
+            thisTest.Verify("test2", new object[] { new object[] { 1 }, new object[0] });
+            thisTest.Verify("test3", new object[] {
+                new object[] { new object[] { new object[0] } },
+                new object[]
+                {
+                    new object[] { new object[0], new object[0] },
+                    new object[] { new object[0], new object[] { 1 } }
+                }
+            });
+        }
+
+        [Test]
         public void T67_Defect_1460965_ExpressionInParenthesis01()
         {
             string code = @"
@@ -2665,7 +2691,6 @@ test = a1.X;
         }
 
         [Test]
-        [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_8()
         {
             String code =
@@ -4926,7 +4951,153 @@ r = cond<1L> ? vs1<1L> : vs2<1L>;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", new object[] { 2, 5, 7 });
         }
-    }
 
+        // This tests the case 2 block in the computeFeps method (CallSite.cs)
+        [Test]
+        public void TestReplicationWithEmptyListInNestedLists()
+        {
+            string code = @"import(""FFITarget.dll""); 
+pt = DummyPoint2D.ByCoordinates(0,0);
+l = [[],[pt]];
+px1 = DummyPoint2D.X(l);
+pt = DummyPoint2D.ByCoordinates(0,0);
+l2 = [[pt],[]];
+px2 = DummyPoint2D.X(l2);
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("px1", new object[] { new object[] { }, new object[] { 0 } });
+            thisTest.Verify("px2", new object[] { new object[] { 0 }, new object[] { } });
+        }
+
+        [Test]
+        public void TestReplicationWithNestedEmptyLists()
+        {
+            string code =
+@"
+def foo( x:var[] )
+{
+    return x;
+}
+
+a = [[],[]];
+b = [[1],[]];
+c = [[],[1]];
+d = [null,[]];
+out1 = foo(a);
+out2 = foo(b);
+out3 = foo(c);
+out4 = foo(d);
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("out1", new object[] { new object[] { }, new object[] { } });
+            thisTest.Verify("out2", new object[] { new object[] { 1 }, new object[] { } });
+            thisTest.Verify("out3", new object[] { new object[] { }, new object[] { 1 } });
+            thisTest.Verify("out4", new object[] { null, new object[] { } });
+        }
+
+        // This tests the case 4 block in the computeFeps method (CallSite.cs)
+        [Test]
+        public void TestReplicationWithNullElementInNestedLists()
+        {
+            string code = @"import(""FFITarget.dll""); 
+pt = DummyPoint2D.ByCoordinates(0,0);
+l = [null,[pt]];
+px1 = DummyPoint2D.X(l);
+pt = DummyPoint2D.ByCoordinates(0,0);
+l2 = [[pt],null];
+px2 = DummyPoint2D.X(l2);
+";
+
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("px1", new object[] { null, new object[] { 0 } });
+            thisTest.Verify("px2", new object[] { new object[] { 0 }, null });
+        }
+
+        // This tests the case:6 block in the computeFeps method (CallSite.cs)
+        // input example for case 6: l4 and l5 lists. 
+        [Test]
+        public void TestReplicationWithArraysOfDifferentRanks()
+        {
+            string code = @"import(""FFITarget.dll"");
+t1 = [1, [2]];
+t2 = t1 + 5;
+pt = DummyPoint2D.ByCoordinates(0,0);
+l1 = [[[pt]],[pt]];
+px1 = DummyPoint2D.X(l1);
+l2 = [[pt],[[pt]]];
+px2 = DummyPoint2D.X(l2);
+l3 = [[null],[[pt]]];
+px3 = DummyPoint2D.X(l3);
+l4 = [3.3,[pt],[[pt]]];
+px4 = DummyPoint2D.X(l4);
+l5 = [""test"",[[pt]],[pt]];
+px5 = DummyPoint2D.X(l5);
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("t2", new object[] { 6, new object[] { 7 } });
+            thisTest.Verify("px1", new object[] { new object[] { new object[] { 0 } }, new object[] { 0 } });
+            thisTest.Verify("px2", new object[] { new object[] { 0 }, new object[] { new object[] { 0 } } });
+            thisTest.Verify("px3", new object[] { new object[] { null }, new object[] { new object[] { 0 } } });
+            thisTest.Verify("px4", new object[] { null, new object[] { 0 }, new object[] { new object[] { 0 } } });
+            thisTest.Verify("px5", new object[] { null, new object[] { new object[] { 0 } }, new object[] { 0 } });
+        }
+
+        // This tests the case 4 block (with type conversion) in the computeFeps method (CallSite.cs)
+        [Test]
+        public void TestReplicationWithMixedOptionTypeConversion()
+        {
+            string code = @"
+def foo ( a : double[], b :double[] )
+{
+    return = Count(a) + Count(b);
+}
+a = [ 1, 2 ];
+b = [[3, 4], [5,9]];
+c = b[[0.1,1.1]][0..1];
+test = foo (c, a[0..1]);";
+
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("c", new object[] {new[] {3, 4}, new[] {5, 9}});
+            thisTest.Verify("test", new[] {4, 4});
+        }
+
+        // This tests the case 2 block in the computeFeps method (CallSite.cs)
+        [Test]
+        public void TestReplicationWithMixedOptionExactMatch()
+        {
+            string code = @"
+def foo ( a : double[], b :double[] )
+{
+    return = Count(a) + Count(b);
+}
+a = [ 1, 2 ];
+b = [[3, 4], [5,9]];
+c = b[[0,1]][0..1];
+test = foo (c,a[0..1]);";
+
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("c", new object[] { new[] { 3, 4 }, new[] { 5, 9 } });
+            thisTest.Verify("test", new[] { 4, 4 });
+        }
+
+        // This tests the case 6 block in the computeFeps method (CallSite.cs)
+        [Test]
+        public void TestReplicationWithNonConvertibles()
+        {
+            string code = @"
+def foo ( a : double[], b :double[] )
+{
+    return = Count(a) + Count(b);
+}
+a = [ 1, 2 ];
+b = [[3, 4], [5,9]];
+c = b[[true,0]][0..1]; // [[b[true][0], b[true, 1]], [b[0,0], b[0,1]]] => [null, [3, 4]]
+test = foo (c, a[0..1]);	";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("c", new object[] { null, new[] { 3, 4 } });
+            thisTest.Verify("test", new[] { 3, 4 });
+
+        }
+    }
 }
 

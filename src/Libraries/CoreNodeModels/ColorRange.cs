@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-
-using DSCore;
-using CoreNodeModels.Properties;
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Mirror;
 using System.Globalization;
-
+using System.Linq;
+using CoreNodeModels.Properties;
+using DSCore;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Mirror;
 
 namespace CoreNodeModels
 {
@@ -22,13 +20,13 @@ namespace CoreNodeModels
     [NodeSearchTags("ColorRangeSearchTags", typeof(Resources))]
 
     [InPortNames("colors", "indices", "value")]
-    [InPortTypes("Color[]", "double[]", "double")]
+    [InPortTypes("DSCore.Color[]", "double[]", "double")]
     [InPortDescriptions(typeof(Resources),
         "ColorRangePortDataColorsToolTip",
         "ColorRangePortDataIndicesToolTip",
         "ColorRangePortDataValueToolTip")]
     [OutPortNames("color")]
-    [OutPortTypes("Color")]
+    [OutPortTypes("DSCore.Color")]
     [OutPortDescriptions(typeof(Resources),
         "ColorRangePortDataResultToolTip")]
     [AlsoKnownAs("DSCoreNodesUI.ColorRange")]

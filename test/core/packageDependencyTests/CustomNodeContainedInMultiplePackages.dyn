@@ -1,0 +1,146 @@
+{
+  "Uuid": "d790c1df-1de2-4169-8ba6-f94aba302d00",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "CustomNodeContainedInMultiplePackages",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "6d1e3caa-780d-40fd-a045-766b3170235d",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "d87512f7f69e433d86c729bac18bcfef",
+      "Inputs": [
+        {
+          "Id": "3c91c143924b4674a8ec69cd2a5abbe0",
+          "Name": "dbl",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f57c76bb48284d04b23691a2ab331ff2",
+          "Name": "precision",
+          "Description": "double\nDefault value : 1 (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8e4f0e26cb42499cbef595a15fe3d93d",
+          "Name": "dbl",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Rounds a number *down* to a specified precision"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0;",
+      "Id": "afea8607558642f2814af462fac7f302",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "76a96f87412c4cfeb0ab28913843ad18",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "76a96f87412c4cfeb0ab28913843ad18",
+      "End": "3c91c143924b4674a8ec69cd2a5abbe0",
+      "Id": "ccec16c48557422ab7b5e4c7616ca38d"
+    },
+    {
+      "Start": "76a96f87412c4cfeb0ab28913843ad18",
+      "End": "f57c76bb48284d04b23691a2ab331ff2",
+      "Id": "61598895a0e84a6283cdca0c64faaad4"
+    }
+  ],
+  "Dependencies": [
+    "6d1e3caa-780d-40fd-a045-766b3170235d"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Clockwork for Dynamo 2.x",
+      "Version": "2.1.2",
+      "Nodes": [
+        "d87512f7f69e433d86c729bac18bcfef"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.3.0.5367",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Rounding.Floor+",
+        "Id": "d87512f7f69e433d86c729bac18bcfef",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 262.0,
+        "Y": 203.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "afea8607558642f2814af462fac7f302",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 147.0,
+        "Y": 217.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

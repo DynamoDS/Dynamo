@@ -63,6 +63,11 @@ namespace Dynamo.Scheduler
                 if (graphSyncData == null)
                     return false;
 
+                if (engineController.ProfilingSession != null)
+                {
+                    engineController.ProfilingSession.UnregisterDeletedNodes(workspace.Nodes);
+                }
+
                 // We clear dirty flags before executing the task. If we clear
                 // flags after the execution of task, for example in
                 // AsyncTask.Completed or in HandleTaskCompletionCore(), as both
@@ -134,13 +139,17 @@ namespace Dynamo.Scheduler
                         executedNodes.Add(node);
                     }
                 }
-
                 foreach (var node in executedNodes)
                 {
                     node.WasInvolvedInExecution = true;
                     node.WasRenderPackageUpdatedAfterExecution = false;
                     if (node.State == ElementState.Warning)
-                        node.ClearErrorsAndWarnings();
+                    {
+                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                        {
+                            node.ClearErrorsAndWarnings();
+                        }
+                    }
                 }
 
                 engineController.RemoveRecordedAstGuidsForSession(graphSyncData.SessionID);
@@ -152,7 +161,7 @@ namespace Dynamo.Scheduler
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        private bool Contains(UpdateGraphAsyncTask other)
+        private bool CanReplace(UpdateGraphAsyncTask other)
         {
             // Be more conservative here. Not only check ModifiedNodes, but
             // also check *all* nodes in graph sync data. For example, consider
@@ -170,9 +179,18 @@ namespace Dynamo.Scheduler
             else if (other.graphSyncData == null)
                 return true;
 
-            return other.graphSyncData.AddedNodeIDs.All(graphSyncData.AddedNodeIDs.Contains) &&
+            // Merging additions and removals can make the changeSetComputer internal state get corrupted.
+            // Imagine a sequence of queued tasks with changes like these: +A | -A | +AB
+            // Imagine a new task with change -A, ending up with the following sequence: -A | +A | -A | +AB
+            // While the merge routine would simplify this sequence to: -A | +A | +AB
+            // That creates an inconsistent sequence of changes where subtree A is added when it already exists!
+            // Modifications are not susceptible to this problem. Imagine ~A incoming with sequence: +A | -A | ~A | +AB
+            // The resulting sequence is: ~A | +A | -A | +AB, which is valid.
+            // Because modifications do not create or remove entries in the changeSetComputer internal state,
+            // if we remove one from anywhere in the sequence we remain consistent.
+            return other.graphSyncData.AddedNodeIDs.Count() == 0 &&
                    other.graphSyncData.ModifiedNodeIDs.All(graphSyncData.ModifiedNodeIDs.Contains) &&
-                   other.graphSyncData.DeletedNodeIDs.All(graphSyncData.DeletedNodeIDs.Contains);
+                   other.graphSyncData.DeletedNodeIDs.Count() == 0;
         }
 
         private bool IsScheduledAfter(UpdateGraphAsyncTask other)
@@ -183,12 +201,13 @@ namespace Dynamo.Scheduler
         protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
         {
             var theOtherTask = otherTask as UpdateGraphAsyncTask;
+
             if (theOtherTask == null)
                 return base.CanMergeWithCore(otherTask);
 
-            if (theOtherTask.IsScheduledAfter(this) && theOtherTask.Contains(this))
+            if (theOtherTask.IsScheduledAfter(this) && theOtherTask.CanReplace(this))
                 return TaskMergeInstruction.KeepOther;
-            else if (this.IsScheduledAfter(theOtherTask) && this.Contains(theOtherTask))
+            else if (this.IsScheduledAfter(theOtherTask) && this.CanReplace(theOtherTask))
                 return TaskMergeInstruction.KeepThis;
             else
                 return TaskMergeInstruction.KeepBoth;

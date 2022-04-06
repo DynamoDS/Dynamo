@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-
+using System.Reflection;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoShapeManager;
 using NUnit.Framework;
-
-using System.Reflection;
-using System.IO;
-using Dynamo.Wpf.ViewModels.Watch3D;
 using TestServices;
 
 namespace Dynamo.Tests
@@ -135,6 +133,8 @@ namespace Dynamo.Tests
                     DynamoModel = model,
                     Watch3DViewModel = new DefaultWatch3DViewModel(null, watch3DViewParams)
                 });
+
+            Assert.AreEqual(ViewModel.Model.State, DynamoModel.DynamoModelState.StartedUIless);
 
             this.ViewModel.RequestUserSaveWorkflow += RequestUserSaveWorkflow;
         }

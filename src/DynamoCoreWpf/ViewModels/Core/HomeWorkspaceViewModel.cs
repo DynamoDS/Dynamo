@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -91,10 +92,22 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         private void hwm_SetNodeDeltaState(object sender, DeltaComputeStateEventArgs e)
         {
-            var nodeGuids = e.NodeGuidList;
+            // Using Nodes here is not thread safe, as nodes can be added/removed by the UI thread midway.
+            // Dispatching this to the UI thread would help to avoid concurrency issues but has caveats.
+            // When Dynamo is shutting down, a deadlock situation can occur, where each thread waits on the other.
+            // Moreover, tight periodic runs can create situations where we cannot safely check if we are shutting down.
+            // In summary, even if locking may be more costly, it is the safer approach.
+            lock (Nodes)
+            {
+                UpdateNodesDeltaState(e.NodeGuidList, e.GraphExecuted);
+            }
+        }
+
+        private void UpdateNodesDeltaState(List<Guid> nodeGuids, bool graphExecuted)
+        {
             // if runsettings is manual, and if the graph is not executed, then turing on showrunpreview 
             //should turn on showexectionpreview on every node.
-            if (nodeGuids.Count == 0 && !e.GraphExecuted)
+            if (nodeGuids.Count == 0 && !graphExecuted)
             {
                 foreach (var nodeModel in Nodes)
                 {
@@ -104,7 +117,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             //if the graph is executed then set the node preview to false , provided
             // there is no error on that node.
-            if (nodeGuids.Count == 0 && e.GraphExecuted)
+            if (nodeGuids.Count == 0 && graphExecuted)
             {
                 foreach (var nodeViewModel in Nodes)
                 {
@@ -113,7 +126,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                         nodeViewModel.ShowExecutionPreview = false;
                         nodeViewModel.IsNodeAddedRecently = false;
                     }
-                }                
+                }
             }
 
             foreach (Guid t in nodeGuids)
@@ -132,11 +145,24 @@ namespace Dynamo.Wpf.ViewModels.Core
             {
                 if (nodes.ShowExecutionPreview)
                     nodes.ShowExecutionPreview = nodes.DynamoViewModel.ShowRunPreview;
-            }           
+            }
         }
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.BeginInvoke(new Action(() =>
+                {
+                    UpdateNodeInfoBubbleContent(e);
+                }));
+            }
+            else
+            {
+                //just call it directly 
+                UpdateNodeInfoBubbleContent(e);
+            }
+        
             bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
 
             if (!hasWarnings)
@@ -160,6 +186,19 @@ namespace Dynamo.Wpf.ViewModels.Core
                 {
                     SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage);
                 }
+            }
+        }
+
+        private void UpdateNodeInfoBubbleContent(EvaluationCompletedEventArgs evalargs)
+        {
+            if (evalargs.MessageKeys == null) return;
+
+            foreach (var messageID in evalargs.MessageKeys)
+            {
+                var node = Nodes.FirstOrDefault(n => n.Id == messageID);
+                if (node == null) continue;
+
+                node.UpdateBubbleContent();
             }
         }
 
@@ -222,6 +261,9 @@ namespace Dynamo.Wpf.ViewModels.Core
             return true;
         }
 
+        /// <summary>
+        /// Object dispose function
+        /// </summary>
         public override void Dispose()
         {
             base.Dispose();
@@ -230,6 +272,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.EvaluationCompleted -= hwm_EvaluationCompleted;
             hwm.SetNodeDeltaState -= hwm_SetNodeDeltaState;
             RunSettingsViewModel.PropertyChanged -= RunSettingsViewModel_PropertyChanged;
+            RunSettingsViewModel.Dispose();
             RunSettingsViewModel = null;
             DynamoViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
         }

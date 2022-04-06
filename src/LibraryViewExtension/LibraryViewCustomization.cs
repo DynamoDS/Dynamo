@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Wpf.Interfaces;
+using Dynamo.Interfaces;
 
 namespace Dynamo.LibraryUI
 {

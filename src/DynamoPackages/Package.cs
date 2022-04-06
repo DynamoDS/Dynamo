@@ -4,19 +4,16 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
 using Dynamo.Core;
-using Dynamo.Engine;
-using Dynamo.Graph;
+using Dynamo.Exceptions;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Utilities;
 using Greg.Requests;
-using Dynamo.Logging;
-
 using Newtonsoft.Json;
 using String = System.String;
 
@@ -31,6 +28,76 @@ namespace Dynamo.PackageManager
         {
             get { return Assembly.GetName().Name; }
         }
+    }
+
+    /// <summary>
+    /// Describes a package's load state
+    /// </summary>
+    public class PackageLoadState
+    {
+        /// <summary>
+        /// The current load state of a package
+        /// </summary>
+        public enum StateTypes
+        {
+            /// <summary>
+            /// Invalid state. The initial state for every package, before it is interpreted by Dynamo
+            /// </summary>
+            None,
+            /// <summary>
+            /// The package is fully loaded and is ready to be used
+            /// </summary>
+            Loaded,
+            /// <summary>
+            /// The package is not loaded in Dynamo and not deleted from package locations
+            /// </summary>
+            Unloaded,
+            /// <summary>
+            /// The package was not loaded in Dynamo because of an error. See the Error property for more information
+            /// </summary>
+            Error
+        }
+
+        /// <summary>
+        /// The scheduled load state of a package
+        /// </summary>
+        public enum ScheduledTypes
+        {
+            /// <summary>
+            /// Invalid scheduled state. The initial state for every package, before it is interpreted by Dynamo
+            /// </summary>
+            None,
+            /// <summary>
+            /// The package is scheduled to be unloaded. After the next Dynamo restart, the package will be in an Unloaded state
+            /// </summary>
+            ScheduledForUnload,
+            /// <summary>
+            /// The package is scheduled to be deleted. After the next Dynamo restart, the package will deleted from the package locations
+            /// </summary>
+            ScheduledForDeletion
+        }
+
+        private string errorMessage;
+        private ScheduledTypes scheduledState = ScheduledTypes.None;
+        private StateTypes state = StateTypes.None;// Default to None type.
+
+        internal void SetAsLoaded() { state = StateTypes.Loaded; errorMessage = ""; }
+        internal void SetAsError(string msg = "") { state = StateTypes.Error; errorMessage = msg; }
+        internal void SetAsUnloaded() { state = StateTypes.Unloaded; errorMessage = ""; }
+        internal void ResetState() { state = StateTypes.None; }
+
+        internal void SetScheduledForDeletion() { scheduledState = ScheduledTypes.ScheduledForDeletion; }
+        internal void SetScheduledForUnload() { scheduledState = ScheduledTypes.ScheduledForUnload; }
+        internal void ResetScheduledState() { scheduledState = ScheduledTypes.None; }
+
+        // The current load state of the Package.
+        public StateTypes State { get { return state; } }
+
+        // The scheduled (or desired) state of the Package.
+        public ScheduledTypes ScheduledState { get { return scheduledState; } }
+        
+        // The error message associated with the current State of the Package. Valid only if the State is of type StateTypes.Error
+        public string ErrorMessage { get { return errorMessage; } }
     }
 
     public class Package : NotificationObject, ILogSource
@@ -56,7 +123,20 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(RootDirectory, "extra"); }
         }
 
-        public bool Loaded { get; internal set; }
+        /// <summary>
+        /// Directory path to where node documentation markdown files should be placed.
+        /// </summary>
+        public string NodeDocumentaionDirectory
+        {
+            get { return Path.Combine(RootDirectory, "doc"); }
+        }
+
+        [Obsolete("This property will be removed in 3.0. Please use the LoadState property instead.")]
+        public bool Loaded {
+            get {
+                return LoadState.State == PackageLoadState.StateTypes.Loaded;
+            }
+        }
 
         private bool typesVisibleInManager;
         public bool TypesVisibleInManager
@@ -95,12 +175,33 @@ namespace Dynamo.PackageManager
         private IEnumerable<string> _keywords = new List<string>();
         public IEnumerable<string> Keywords { get { return _keywords; } set { _keywords = value; RaisePropertyChanged("Keywords"); } }
 
-        private bool markedForUninstall;
+        private IEnumerable<string> hostDependencies = new List<string>();
+        /// <summary>
+        /// Package Host Dependencies, e.g. specifying "Revit" in the list means this package can be guaranteed to work in this host environment only
+        /// </summary>
+        public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
+
+        private string copyrightHolder = "";
+        public string CopyrightHolder { get { return copyrightHolder; } set { copyrightHolder = value; RaisePropertyChanged("CopyrightHolder"); } }
+
+        private string copyrightYear = "";
+        public string CopyrightYear { get { return copyrightYear; } set { copyrightYear = value; RaisePropertyChanged("CopyrightYear"); } }
+
+        internal bool BuiltInPackage
+        {
+            get { return RootDirectory.StartsWith(PathManager.BuiltinPackagesDirectory); }
+        }
+
+        [Obsolete("This property will be removed in Dynamo 3.0. Use LoadState.ScheduledState instead")]
         public bool MarkedForUninstall
         {
-            get { return markedForUninstall; }
-            private set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
+            get {
+                return BuiltInPackage ? LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload :
+                  LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion;
+            }
         }
+
+        public PackageLoadState LoadState = new PackageLoadState();
 
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
@@ -136,6 +237,11 @@ namespace Dynamo.PackageManager
         ///     changes to the package, but instead reflects how the package was formed.
         /// </summary>
         public PackageUploadRequestBody Header { get; internal set; }
+
+        /// <summary>
+        /// Is set to true if the Package is located in a directory that requires certificate verification of its node library dlls.
+        /// </summary>
+        internal bool RequiresSignedEntryPoints { get; set; }
 
         #endregion
 
@@ -182,6 +288,9 @@ namespace Dynamo.PackageManager
                     Contents = body.contents,
                     SiteUrl = body.site_url,
                     RepositoryUrl = body.repository_url,
+                    HostDependencies = body.host_dependencies,
+                    CopyrightHolder = body.copyright_holder,
+                    CopyrightYear = body.copyright_year,
                     Header = body
                 };
                 
@@ -248,10 +357,12 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     Enumerates all assemblies in the package
+        ///     Enumerates all assemblies in the package. This method currently has the side effect that it will
+        ///     load all binaries in the package bin folder unless the package is loaded from a special package path
+        ///     I.E. Builtin Packages.
         /// </summary>
         /// <returns>The list of all node library assemblies</returns>
-        internal IEnumerable<PackageAssembly> EnumerateAssembliesInBinDirectory()
+        internal IEnumerable<PackageAssembly> EnumerateAndLoadAssembliesInBinDirectory()
         {
             var assemblies = new List<PackageAssembly>();
 
@@ -262,24 +373,33 @@ namespace Dynamo.PackageManager
             // In earlier packages, this field could be null, which is correctly handled by IsNodeLibrary
             var nodeLibraries = Header.node_libraries;
             
-            foreach (var assemFile in (new System.IO.DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
+            foreach (var assemFile in new DirectoryInfo(BinaryDirectory).EnumerateFiles("*.dll"))
             {
                 Assembly assem;
-
-                // dll files may be un-managed, skip those
-                var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
-                if (result)
+                //TODO when can we make this false. 3.0?
+                bool shouldLoadFile = true;
+                if (this.RequiresSignedEntryPoints)
                 {
-                    // IsNodeLibrary may fail, we store the warnings here and then show
-                    IList<ILogMessage> warnings = new List<ILogMessage>();
+                    shouldLoadFile = IsFileSpecifiedInPackageJsonManifest(nodeLibraries, assemFile.Name, BinaryDirectory);
+                }
 
-                    assemblies.Add(new PackageAssembly()
+                if (shouldLoadFile)
+                {
+                    // dll files may be un-managed, skip those
+                    var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
+                    if (result)
                     {
-                        Assembly = assem,
-                        IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings)
-                    });
+                        // IsNodeLibrary may fail, we store the warnings here and then show
+                        IList<ILogMessage> warnings = new List<ILogMessage>();
 
-                    warnings.ToList().ForEach(this.Log);
+                        assemblies.Add(new PackageAssembly()
+                        {
+                            Assembly = assem,
+                            IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings)
+                        });
+
+                        warnings.ToList().ForEach(this.Log);
+                    }
                 }
             }
 
@@ -289,6 +409,34 @@ namespace Dynamo.PackageManager
             }
 
             return assemblies;
+        }
+
+        /// <summary>
+        /// Checks if a specific file is specified in the Node Libraries section of the package manifest json.
+        /// </summary>
+        /// <param name="nodeLibraries">node libraries defined in package manifest json.</param>
+        /// <param name="filename">filename of dll file to check</param>
+        /// <param name="path">path of the packages</param>
+        /// <returns></returns>
+        private static bool IsFileSpecifiedInPackageJsonManifest(IEnumerable<string> nodeLibraries, string filename, string path)
+        {
+            foreach (var nodeLibraryAssembly in nodeLibraries)
+            {
+                try
+                {
+                    var name = new AssemblyName(nodeLibraryAssembly).Name + ".dll";
+                    if (name == filename)
+                    {
+                        return true;
+                    }
+                }
+                catch
+                {
+                    throw new LibraryLoadFailedException(path, Resources.IncorrectlyFormattedNodeLibraryWarning);
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -306,7 +454,7 @@ namespace Dynamo.PackageManager
             {
                 throw new ArgumentNullException("name");
             }
-
+            //TODO I'm guessing this was added for legacy or handbuilt packages - all assemblies are treated as node libraries
             if (nodeLibraryFullNames == null)
             {
                 return true;
@@ -340,9 +488,12 @@ namespace Dynamo.PackageManager
             return Directory.EnumerateFiles(RootDirectory, "*", SearchOption.AllDirectories).Any(s => s == path);
         }
 
+        // Checks if the package is used in the Dynamo model.
+        // The check does not take into account the package load state.
         internal bool InUse(DynamoModel dynamoModel)
         {
-            return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || IsCustomNodeFromPackageInUse(dynamoModel)) && Loaded;
+            return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || 
+                IsCustomNodeFromPackageInUse(dynamoModel));
         }
 
         private bool IsCustomNodeFromPackageInUse(DynamoModel dynamoModel)
@@ -368,20 +519,71 @@ namespace Dynamo.PackageManager
                     .Any(guids.Contains);
         }
 
+        /// <summary>
+        /// Marks built-in package for unload.
+        /// Any other custom package will be marked for deletion.
+        /// </summary>
+        /// <param name="prefs"></param>
         internal void MarkForUninstall(IPreferences prefs)
         {
-            MarkedForUninstall = true;
+            if (BuiltInPackage) 
+            {
+                Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name } {versionName} marked to be unloaded");
+                LoadState.SetScheduledForUnload();
+            } 
+            else
+            {
+                LoadState.SetScheduledForDeletion();
+            }
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
             {
                 prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
             }
+            RaisePropertyChanged(nameof(LoadState));
         }
 
+        /// <summary>
+        /// Resets scheduled state to 'None' for given package.
+        /// Custom package will no longer be uninstalled.
+        /// Package load state will remain unaffected.
+        /// </summary>
+        /// <param name="prefs"></param>
         internal void UnmarkForUninstall(IPreferences prefs)
         {
-            MarkedForUninstall = false;
+            LoadState.ResetScheduledState();
+
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
+            RaisePropertyChanged(nameof(LoadState));
+        }
+
+        /// <summary>
+        /// Marks any given package for unload.
+        /// The package will not be marked for deletion.
+        /// </summary>
+        /// <param name="prefs"></param>
+        internal void MarkForUnload()
+        {
+            LoadState.SetScheduledForUnload();
+            RaisePropertyChanged(nameof(LoadState));
+        }
+
+        /// <summary>
+        /// Resets scheduled state to 'None' for given package.
+        /// Package will no longer be unloaded.
+        /// Package load state will remain unaffected.
+        /// </summary>
+        /// <param name="prefs"></param>
+        internal void UnmarkForUnload()
+        {
+            LoadState.ResetScheduledState();
+            RaisePropertyChanged(nameof(LoadState));
+        }
+
+        internal void SetAsLoaded()
+        {
+            LoadState.SetAsLoaded();
+            RaisePropertyChanged(nameof(LoadState));
         }
 
         internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
@@ -395,8 +597,23 @@ namespace Dynamo.PackageManager
             try
             {
                 LoadedCustomNodes.ToList().ForEach(x => customNodeManager.Remove(x.FunctionId));
-                packageLoader.Remove(this);
-                Directory.Delete(RootDirectory, true);
+                if (BuiltInPackage)
+                {
+                    LoadState.SetAsUnloaded();
+                    Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name } {versionName} set unloaded");
+
+                    RaisePropertyChanged(nameof(LoadState));
+
+                    if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
+                    {
+                        prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
+                    }
+                }
+                else
+                {
+                    packageLoader.Remove(this);
+                    Directory.Delete(RootDirectory, true);
+                }
             }
             catch (Exception e)
             {
@@ -410,8 +627,15 @@ namespace Dynamo.PackageManager
         {
             LoadedCustomNodes.Clear();
 
-            foreach (var x in customNodeManager.AddUninitializedCustomNodesInPath(CustomNodeDirectory, isTestMode))
+            var reloadedCustomNodes = customNodeManager.AddUninitializedCustomNodesInPath(
+                CustomNodeDirectory,
+                isTestMode,
+                new PackageInfo(Name, new Version(versionName)));
+
+            foreach (var x in reloadedCustomNodes)
+            {
                 LoadedCustomNodes.Add(x);
+            }
         }
 
         public event Action<ILogMessage> MessageLogged;

@@ -1,25 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
-
+using Autodesk.DesignScript.Runtime;
+using CoreNodeModels.Properties;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-
-using System.Runtime.CompilerServices;
-
-using ProtoCore.AST.AssociativeAST;
-using CoreNodeModels.Properties;
-
-using DSColor = DSCore.Color;
-
-using Autodesk.DesignScript.Runtime;
-using Dynamo.Graph.Workspaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.IO;
+using ProtoCore.AST.AssociativeAST;
+using DSColor = DSCore.Color;
 
 namespace CoreNodeModels.Input
 {
@@ -29,7 +20,7 @@ namespace CoreNodeModels.Input
     [NodeSearchTags("ColorUISearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     [OutPortNames("Color")]
-    [OutPortTypes("Color")]
+    [OutPortTypes("DSCore.Color")]
     [OutPortDescriptions("Selected Color.")]
     public class ColorPalette : NodeModel
     {
@@ -69,6 +60,7 @@ namespace CoreNodeModels.Input
                     Name = this.Name,
 
                     Type = NodeInputTypes.colorInput,
+                    Type2 = NodeInputTypes.colorInput,
                     Description = this.Description,
                     Value = JsonConvert.SerializeObject(colorObj),
                 };
@@ -177,15 +169,6 @@ namespace CoreNodeModels.Input
                     new Func<int, int, int, int, DSColor>(DSColor.ByARGB), new List<AssociativeNode> { av, ar, ag, ab });
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), colorNode) };
-        }
-
-        /// <summary>
-        ///     Indicates whether node is input node. 
-        ///     Used to bind visibility of UI for user selection.
-        /// </summary>
-        public override bool IsInputNode
-        {
-            get { return false; }
         }
     }
 }

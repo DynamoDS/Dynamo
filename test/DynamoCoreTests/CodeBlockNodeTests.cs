@@ -3,23 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreNodeModels;
-using DesignScript.Builtin;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
+using Dynamo.Properties;
+using Dynamo.Scheduler;
 using NUnit.Framework;
-
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
-
 using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.Models;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Properties;
 
 namespace Dynamo.Tests
 {
@@ -214,6 +212,108 @@ b = c[w][x][y][z];";
 
         [Test]
         [Category("UnitTests")]
+        public void TestFunctionDefaultParameters()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            var guid = codeBlockNode.GUID.ToString();
+
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1){return = x;}test();");
+            AssertPreviewValue(guid, 1);
+
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
+            AssertPreviewValue(guid, 3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionSingleDefaultParameter()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1){return = x;}test();");
+            AssertPreviewValue(codeBlockNode.GUID.ToString(), 1);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionTwoDefaultParameters()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
+            AssertPreviewValue(codeBlockNode.GUID.ToString(), 3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionThreeDefaultParameters()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1, y:int= 2, z:int= 3){return = x + y + z;}test();");
+            AssertPreviewValue(codeBlockNode.GUID.ToString(), 6);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionOneArgumentOneDefaultParameter()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int, y:int= 2){return = x + y;}test(1);");
+            AssertPreviewValue(codeBlockNode.GUID.ToString(), 3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionMultipleBlocksDefaultParameters()
+        {
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, "def test1(x:int = 1, y:int= 2){return = x + y;}test1();");
+            var codeBlockNode2 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode2, "def test2(x, y = 2, z = 3){return = x + y + z;}test2(1);");
+
+            AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
+            AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CallingInstanceMethodStaticallyWithoutInstanceDoesNotCrash()
+        {
+            TaskStateChangedEventHandler evaluationDidNotFailHandler =
+                (DynamoScheduler sender, TaskStateChangedEventArgs args) =>
+                {
+                    Assert.AreNotEqual(TaskStateChangedEventArgs.State.ExecutionFailed, args.CurrentState);
+                };
+            try
+            {
+                CurrentDynamoModel.Scheduler.TaskStateChanged += evaluationDidNotFailHandler;
+                var codeBlockNode = CreateCodeBlockNode();
+                UpdateCodeBlockNodeContent(codeBlockNode, "Curve.Patch();");
+                Assert.AreEqual(ElementState.Warning, codeBlockNode.State);
+                Assert.IsTrue(codeBlockNode.Infos.Any(x => x.Message.Equals("Failed to obtain this object for 'Curve.Patch'")));
+            }
+            finally
+            {
+                CurrentDynamoModel.Scheduler.TaskStateChanged -= evaluationDidNotFailHandler;
+            }
+        }
+
+        // Note: DYN-1684 - This test is expected to fail due to the functions being indeterminate
+        //       We will need to figure out a way to test this once error handling is implemented
+        //[Test]
+        //[Category("UnitTests")]
+        //public void TestIndeterminateFunctionDefaultParameters()
+        //{
+        //    // Note that both code blocks contain functions called "test" that are indeterminate
+        //    var codeBlockNode1 = CreateCodeBlockNode();
+        //    UpdateCodeBlockNodeContent(codeBlockNode1, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
+        //    var codeBlockNode2 = CreateCodeBlockNode();
+        //    UpdateCodeBlockNodeContent(codeBlockNode2, "def test(x, y = 2, z = 3){return = x + y + z;}test(1);");
+
+        //    AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
+        //    AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
+        //}
+
+        [Test]
+        [Category("UnitTests")]
         public void TestVarRedefinitionInFunctionDef()
         {
             string openPath = Path.Combine(TestDirectory,
@@ -224,7 +324,7 @@ b = c[w][x][y][z];";
             var guid = "bbf7919d-d578-4b54-90b1-7df8f01483c6";
             var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
                 Guid.Parse(guid));
-            
+
 
             Assert.IsNotNull(cbn);
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
@@ -235,6 +335,217 @@ b = c[w][x][y][z];";
             Assert.AreEqual(1, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.AllConnectors.Count());
             AssertPreviewValue(guid, 3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_NoWarning_WithFunctionDef()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunctionerror.dyn");
+            OpenModelInManualMode(openPath);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.IsTrue(cbn.Infos.Count == 0);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ImperativeFunctionCall_NoWarning_WithFunctionDef()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunctionerror_imperative.dyn");
+            OpenModelInManualMode(openPath);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.True(cbn.Infos.Count == 0);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_ThrowsWarning_WithoutFunctionDef()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunction_nodefn.dyn");
+            OpenModelInManualMode(openPath);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+            Assert.AreEqual(1, cbn.Infos.Count);
+            Assert.True(cbn.Infos.Any(x => x.State == ElementState.PersistentWarning));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ImperativeFunctionCall_ThrowsWarning_WithoutFunctionDef()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunction_nodefn_imperative.dyn");
+            OpenModelInManualMode(openPath);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+            Assert.AreEqual(1, cbn.Infos.Count);
+            Assert.True(cbn.Infos.Any(x => x.State == ElementState.PersistentWarning));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_ThrowsWarning_WithFunctionDefMarkedInactive()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunctionerror.dyn");
+            OpenModel(openPath);
+            
+            openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunction_nodefn.dyn");
+            OpenModelInManualMode(openPath);
+
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+            Assert.AreEqual(1, cbn.Infos.Count);
+            Assert.True(cbn.Infos.Any(x => x.State == ElementState.PersistentWarning));
+
+            var core = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
+            var procedureNodes = core.CodeBlockList[0].procedureTable.Procedures;
+            var procNode = procedureNodes.Where(x => x.Name == "testfunc").FirstOrDefault();
+
+            Assert.NotNull(procNode);
+            Assert.False(procNode.IsActive);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ImperativeFunctionCall_ThrowsWarning_WithFunctionDefMarkedInactive()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunctionerror.dyn");
+            OpenModel(openPath);
+
+            openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunction_nodefn_imperative.dyn");
+            OpenModelInManualMode(openPath);
+
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+            Assert.AreEqual(1, cbn.Infos.Count);
+            Assert.True(cbn.Infos.Any(x => x.State == ElementState.PersistentWarning));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCallCBN_AfterFunctionDef_NoWarning()
+        {
+            var cbn1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(cbn1, "def test(x:int = 1, y:int= 2){return = x + y;}");
+
+            var cbn2 = CreateCodeBlockNode();
+
+            (CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel).RunSettings = 
+                new RunSettings(RunType.Manual, RunSettings.DefaultRunPeriod);
+            UpdateCodeBlockNodeContent(cbn2, "test();");
+
+            Assert.AreEqual(ElementState.Active, cbn2.State);
+            Assert.AreEqual(0, cbn2.Infos.Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCallCBN_NoFunctionDef_Warning()
+        {
+            var cbn1 = CreateCodeBlockNode();
+
+            (CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel).RunSettings =
+                new RunSettings(RunType.Manual, RunSettings.DefaultRunPeriod);
+            UpdateCodeBlockNodeContent(cbn1, "test();");
+
+            Assert.AreEqual(ElementState.PersistentWarning, cbn1.State);
+            Assert.AreEqual(1, cbn1.Infos.Count);
+            Assert.True(cbn1.Infos.Any(x => x.State == ElementState.PersistentWarning));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestOutputPortUpdateWithFunctionDef()
+        {
+            var cbn = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(cbn, 
+                "def foo ( a : double[], b :double[] )" +
+                "{" +
+                    "return = Count(a) + Count(b);" +
+                "}" + 
+                "a = [ 1, 2 ];" +
+                "b = [3, 4, 5];" +
+                "test = foo (a, b);"
+                );
+
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.CodeStatements.Any());
+
+            Assert.AreEqual(0, cbn.InPorts.Count);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.AllConnectors.Count());
+            AssertPreviewValue(cbn.GUID.ToString(), 5);
+
+           UpdateCodeBlockNodeContent(cbn, "def foo ( a : double[], b :double[] )" +
+                                           "{" +
+                                           "return = Count(a) + Count(b);" +
+                                           "}" +
+                                           "a = [ 1, 2 ];");
+           Assert.IsNotNull(cbn);
+
+           Assert.AreEqual(2, cbn.CodeStatements.Count());
+
+           Assert.AreEqual(0, cbn.InPorts.Count);
+           Assert.AreEqual(1, cbn.OutPorts.Count);
+           Assert.AreEqual(0, cbn.AllConnectors.Count());
+
+           UpdateCodeBlockNodeContent(cbn, "def foo ( a : double[], b :double[] )" +
+                                           "{" +
+                                           "return = Count(a) + Count(b);" +
+                                           "}");
+           Assert.IsNotNull(cbn);
+
+           Assert.AreEqual(1, cbn.CodeStatements.Count());
+
+           Assert.AreEqual(0, cbn.InPorts.Count);
+           Assert.AreEqual(0, cbn.OutPorts.Count);
+           Assert.AreEqual(0, cbn.AllConnectors.Count());
         }
 
         [Test]
@@ -1104,7 +1415,95 @@ var06 = g;
             int outportBrokenNodeCount = helloBrokenNode.OutPorts.Count;
             Assert.IsFalse(outportCount > 0);
         }
-        
+
+        /// <summary>
+        /// Tests a variety of DS operations and builtin nodes that can result in an
+        /// integer overflow.
+        /// </summary>
+        [Test]
+        public void IntegerOverflow()
+        {
+            OpenModel(Path.Combine(TestDirectory, @"core\dsevaluation\Overflow.dyn"));
+
+            var dsSum = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "DS Sum Overflow");
+            var dsSub = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "DS Sub Overflow");
+            var dsNeg = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "DS Neg Overflow");
+            var dsMul = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "DS Mul Overflow");
+            var mathFactorial = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Math.Factorial Overflow");
+            var mathAbs = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Math.Abs Overflow");
+            var mathFloor = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Math.Floor Overflow");
+            var mathCeiling = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Math.Ceiling Overflow");
+
+            var expectedWarning = "The operation resulted in an integer overflow. Its result may be unexpected.href=IntegerOverflow.html";
+
+            Assert.IsNotNull(dsSum);
+            Assert.AreEqual(ElementState.Warning, dsSum.State);
+            Assert.IsTrue(dsSum.Infos.Any(x => x.Message.Equals(expectedWarning) && x.State == ElementState.Warning));
+            AssertPreviewValue(dsSum.AstIdentifierGuid, -2);
+
+            Assert.IsNotNull(dsSub);
+            Assert.AreEqual(ElementState.Warning, dsSub.State);
+            Assert.IsTrue(dsSub.Infos.Any(x => x.Message.Equals(expectedWarning) && x.State == ElementState.Warning));
+            AssertPreviewValue(dsSub.AstIdentifierGuid, 2);
+
+            Assert.IsNotNull(dsNeg);
+            Assert.AreEqual(ElementState.Warning, dsNeg.State);
+            Assert.IsTrue(dsNeg.Infos.Any(x => x.Message.Equals(expectedWarning) && x.State == ElementState.Warning));
+            AssertPreviewValue(dsNeg.AstIdentifierGuid, long.MaxValue);
+
+            Assert.IsNotNull(dsMul);
+            Assert.AreEqual(ElementState.Warning, dsMul.State);
+            Assert.IsTrue(dsMul.Infos.Any(x => x.Message.Equals(expectedWarning) && x.State == ElementState.Warning));
+            AssertPreviewValue(dsMul.AstIdentifierGuid, -2);
+
+            Assert.IsNotNull(mathFactorial);
+            Assert.AreEqual(ElementState.Warning, mathFactorial.State);
+            Assert.IsTrue(mathFactorial.Infos.Any(x => x.Message.EndsWith("The return value of Math.Factorial is out of range.")
+             && x.State == ElementState.Warning));
+            AssertPreviewValue(mathFactorial.AstIdentifierGuid, null);
+
+            Assert.IsNotNull(mathAbs);
+            Assert.AreEqual(ElementState.Warning, mathAbs.State);
+            Assert.IsTrue(mathAbs.Infos.Any(x => x.Message.EndsWith("Negating the minimum value of a twos complement number is invalid.")
+            && x.State == ElementState.Warning));
+            AssertPreviewValue(mathAbs.AstIdentifierGuid, null);
+
+            Assert.IsNotNull(mathFloor);
+            Assert.AreEqual(ElementState.Warning, mathFloor.State);
+            Assert.IsTrue(mathFloor.Infos.Any(x => x.Message.Equals(expectedWarning)
+             && x.State == ElementState.Warning));
+            AssertPreviewValue(mathFloor.AstIdentifierGuid, long.MinValue);
+
+            Assert.IsNotNull(mathCeiling);
+            Assert.AreEqual(ElementState.Warning, mathCeiling.State);
+            Assert.IsTrue(mathCeiling.Infos.Any(x => x.Message.Equals(expectedWarning) && x.State == ElementState.Warning));
+            AssertPreviewValue(mathCeiling.AstIdentifierGuid, long.MinValue);
+        }
+
+        [Test]
+        public void NestedLangBlock_MultipleLevels()
+        {
+            OpenModel(Path.Combine(TestDirectory, @"core\dsevaluation\Nested_Language_Blocks.dyn"));
+
+            var cbn1 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block1");
+            var cbn2 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block2");
+            var cbn3 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block3");
+            var cbn4 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block4");
+            var cbn5 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block5");
+            var cbn6 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block6");
+            var cbn7 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block7");
+            var cbn8 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block8");
+
+            AssertPreviewValue(cbn1.AstIdentifierGuid, new object[] { new[] { 0, 3, 6, 9, 12 }, 2.2 });
+            AssertPreviewValue(cbn2.AstIdentifierGuid, new object[] { new[] { 0, 1.5, 3, 4.5, 6 }, 2 });
+            AssertPreviewValue(cbn3.AstIdentifierGuid,  new[] { 0, 3, 6, 9, 12 });
+            AssertPreviewValue(cbn4.AstIdentifierGuid, new object[] { new[] { 0, 3, 6, 9, 12 }, 2 });
+            AssertPreviewValue(cbn5.AstIdentifierGuid, 13);
+            AssertPreviewValue(cbn6.AstIdentifierGuid, new[] { 323, 210, 325 });
+            AssertPreviewValue(cbn7.AstIdentifierGuid, new object[] { new[] { 0, 2, 4, 6, 8 }, 2.2 });
+            AssertPreviewValue(cbn8.AstIdentifierGuid, new object[] { new[] { 0, 2, 4, 6, 8 }, 2.2 });
+        }
+
         #region CodeBlockUtils Specific Tests
         [Test]
         [Category("UnitTests")]
@@ -1383,8 +1782,8 @@ var06 = g;
             Assert.AreEqual(mirrorData.Data, null);
 
             // Assert that node throws type mismatch warning
-            Assert.IsTrue(codeBlockNodeOne.ToolTipText.Contains(
-                ProtoCore.Properties.Resources.kConvertNonConvertibleTypes));
+            Assert.IsTrue(codeBlockNodeOne.Infos.Any(x => x.Message.Contains(
+                ProtoCore.Properties.Resources.kConvertNonConvertibleTypes)));
         }
 
         [Test]
@@ -1404,8 +1803,8 @@ var06 = g;
             Assert.AreEqual(null, node.CachedValue.Data);
 
             // Assert that node throws type mismatch warning
-            Assert.IsTrue(node.ToolTipText.Contains(
-                ProtoCore.Properties.Resources.kConvertNonConvertibleTypes));
+            Assert.IsTrue(node.Infos.Any(x => x.Message.Contains(
+                ProtoCore.Properties.Resources.kConvertNonConvertibleTypes)));
         }
 
         [Test]
@@ -1421,8 +1820,8 @@ var06 = g;
             var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
                 ("eff3e874-cfc3-455c-8275-741ab5b42ebd");
 
-            Assert.IsTrue(node1.ToolTipText.Contains(
-                "Method 'DSCore.IO.CSV.WriteToFile' has been deprecated, please use method 'DSOffice.Data.ExportCSV' instead"));
+            Assert.IsTrue(node1.Infos.Any(x => x.Message.Contains(
+                "Method 'DSCore.IO.CSV.WriteToFile' has been deprecated, please use method 'DSOffice.Data.ExportCSV' instead")));
         }
 
         [Test]
@@ -1444,8 +1843,8 @@ var06 = g;
             RunCurrentModel();
 
             Assert.IsTrue(cbn.IsInErrorState);
-            Assert.IsTrue(cbn.ToolTipText.Contains(
-                ProtoCore.Properties.Resources.DeprecatedListInitializationSyntax));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Contains(
+                ProtoCore.Properties.Resources.DeprecatedListInitializationSyntax)));
         }
 
         #endregion
@@ -1497,13 +1896,13 @@ var06 = g;
             var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
                 ("9e2c84e6-b9b8-4bdf-b82e-868b2436b865");
 
-            Assert.IsTrue(string.IsNullOrEmpty(node1.ToolTipText));
-            Assert.IsTrue(string.IsNullOrEmpty(node2.ToolTipText));
+            Assert.IsTrue(node1.Infos.Count == 0);
+            Assert.IsTrue(node2.Infos.Count == 0);
 
             BeginRun();
 
-            Assert.IsTrue(string.IsNullOrEmpty(node1.ToolTipText));
-            Assert.IsTrue(string.IsNullOrEmpty(node2.ToolTipText));
+            Assert.IsTrue(node1.Infos.Count == 0);
+            Assert.IsTrue(node2.Infos.Count == 0);
         }
 
         #endregion
@@ -1525,6 +1924,7 @@ var06 = g;
             var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, cbn.GUID, "Code", value);
             CurrentDynamoModel.ExecuteCommand(command);
         }
+
     }
 
     [TestFixture]
@@ -1729,7 +2129,7 @@ var06 = g;
 
             var members = type.GetMembers();
 
-            var expected = new[] { "AddWithValueContainer", "CodeCompletionClass", "IsEqualTo", "OverloadedAdd", "StaticFunction", "StaticProp"};
+            var expected = new[] { "AddWithValueContainer", "ClassProperty", "CodeCompletionClass", "IntVal", "IsEqualTo", "OverloadedAdd", "StaticFunction", "StaticProp"};
             AssertCompletions(members, expected);
         }
 
@@ -1885,6 +2285,27 @@ var06 = g;
 
         [Test]
         [Category("UnitTests")]
+        public void TestPropertySignatureCompletion()
+        {
+            string ffiTargetClass = "ClassFunctionality";
+            string functionName = "IntVal";
+
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string code = "";
+            var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, ffiTargetClass);
+
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Text);
+            }
+            Assert.AreEqual("IntVal : int (this : ClassFunctionality)", overloads.ElementAt(0).Stub);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestMethodSignatureCompletion()
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
@@ -1999,6 +2420,24 @@ var06 = g;
 
         [Test]
         [Category("UnitTests")]
+        public void TestCompletionWithGlobalClassWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            string code = "Dupt";
+            var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
+
+            // Expected 3 completion items
+            Assert.AreEqual(3, completions.Count());
+
+            string[] expectedValues = {"DupTargetTest", "A.DupTargetTest", "FFITarget.B.DupTargetTest"};
+            var expected = expectedValues.OrderBy(x => x);
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestMethodKeywordCompletionWhenTyping()
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
@@ -2020,7 +2459,7 @@ var06 = g;
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
             var completions = codeCompletionServices.GetCompletionsOnType("", "CodeCompletionClass");
-            Assert.AreEqual(6, completions.Count());
+            Assert.AreEqual(8, completions.Count());
         }
 
         [Test]
@@ -2030,6 +2469,44 @@ var06 = g;
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
             var completions = codeCompletionServices.GetCompletionsOnType("x : CodeCompletionClass", "x");
             Assert.AreEqual(5, completions.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionOnDerivedTypeReturnsBaseType()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            var completions = codeCompletionServices.GetCompletionsOnType("", "DupTargetTest").ToList();
+            Assert.AreEqual(4, completions.Count);
+            Assert.AreEqual("DupTargetTest", completions[0].Text);
+            Assert.AreEqual("Bar", completions[1].Text);
+            Assert.AreEqual("Foo", completions[2].Text);
+            Assert.AreEqual("Prop", completions[3].Text);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionOnDerivedTypeReturnsNonHiddenBaseMethods()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            var completions = codeCompletionServices.GetCompletionsOnType("", "FFITarget.HidesMethodFromClassA").ToList();
+            Assert.AreEqual(4, completions.Count);
+            Assert.AreEqual("HidesMethodFromClassA", completions[0].Text);
+            Assert.AreEqual("Baz", completions[1].Text);
+            Assert.AreEqual("Bar", completions[2].Text);
+            Assert.AreEqual("Foo", completions[3].Text);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionOnBaseTypeReturnsOnlyBaseType()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            var completions = codeCompletionServices.GetCompletionsOnType("", "FFITarget.C.B.DupTargetTest").ToList();
+            Assert.AreEqual(3, completions.Count);
+            Assert.AreEqual("DupTargetTest", completions[0].Text);
+            Assert.AreEqual("Foo", completions[1].Text);
+            Assert.AreEqual("Prop", completions[2].Text);
         }
 
         [Test]
@@ -2068,7 +2545,7 @@ var06 = g;
             // Expected 1 completion items
             Assert.AreEqual(1, completions.Count());
 
-            string[] expected = { "AnotherClassWithNameConflict" };
+            string[] expected = { "FirstNamespace.AnotherClassWithNameConflict" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);

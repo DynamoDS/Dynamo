@@ -1,0 +1,325 @@
+{
+  "Uuid": "6b2be57e-3f4b-4e3a-af98-e12d2831b86f",
+  "IsCustomNode": true,
+  "Category": "testCat",
+  "Description": "",
+  "Name": "cusTest",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Autodesk.DesignScript.Geometry.Geometry": {
+        "Key": "Autodesk.DesignScript.Geometry.Geometry",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Autodesk.DesignScript.Geometry.Rotate": {
+        "Key": "Autodesk.DesignScript.Geometry.Geometry",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Autodesk.DesignScript.Geometry": {
+        "Key": "Autodesk.DesignScript.Geometry.Geometry",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Autodesk.DesignScript.Geometry.Geometry.Rotate": {
+        "Key": "Autodesk.DesignScript.Geometry.Geometry",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Autodesk.DesignScript.Curve": {
+        "Key": "Autodesk.DesignScript.Geometry.Curve",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "DSCore.Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.BoundingBox",
+      "Id": "7f60edd865ad49628281066a15c2b72f",
+      "Inputs": [
+        {
+          "Id": "a999a9367a6b48d083a3a1d2dc53a64a",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f0253e8cfdea4fc2b3c1ad16ff48553b",
+          "Name": "BoundingBox",
+          "Description": "BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the BoundingBox containing the given piece of Geometry\n\nGeometry.BoundingBox: BoundingBox"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "BoundingBox",
+      "Id": "7cf7b04f4b5846db8e0b0a3423f66700",
+      "Inputs": [
+        {
+          "Id": "cef5917f98d14967ba20b5d709a83ff1",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "geo",
+        "TypeName": "Autodesk.DesignScript.Geometry.Geometry",
+        "TypeRank": 0,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "fe3e5b6ac20540ff98b4515bbfc2f00f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2c07384efdad4658bab700de4f078bea",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "Color",
+      "Id": "2bd17fe4a9234d60be2d299952f92fd3",
+      "Inputs": [
+        {
+          "Id": "d2fad19e4a3b42b9ad3e2b3e74b3e682",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "color",
+        "TypeName": "DSCore.Color",
+        "TypeRank": 0,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "e5c305d1ff484b3f8cd307b105463991",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "da5b6c538938482a90c2647abafe3ee6",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Color.Add@DSCore.Color,DSCore.Color",
+      "Id": "d91486340c474ddaa7f2982ff30aa06b",
+      "Inputs": [
+        {
+          "Id": "58876b058aab4bb7877d54d79b9f4966",
+          "Name": "color",
+          "Description": "A color to add\n\nColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8157d15fa40a4b28913fe6292c88e7fe",
+          "Name": "otherColor",
+          "Description": "Other color to add\n\nColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0e7227f8220d45f58051ded25ab9bef7",
+          "Name": "color",
+          "Description": "Color result from addition of two colors",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Construct a color by combining the ARGB values of two existing colors.\n\nColor.Add (color: Color, otherColor: Color): Color"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f0253e8cfdea4fc2b3c1ad16ff48553b",
+      "End": "cef5917f98d14967ba20b5d709a83ff1",
+      "Id": "6d092f67dd6d4bf69f46469e4c1b0d9d"
+    },
+    {
+      "Start": "2c07384efdad4658bab700de4f078bea",
+      "End": "a999a9367a6b48d083a3a1d2dc53a64a",
+      "Id": "74b128cefa314c63ab20f9d3126e2289"
+    },
+    {
+      "Start": "da5b6c538938482a90c2647abafe3ee6",
+      "End": "58876b058aab4bb7877d54d79b9f4966",
+      "Id": "bc8fc756615846739ae41af16fddb547"
+    },
+    {
+      "Start": "da5b6c538938482a90c2647abafe3ee6",
+      "End": "8157d15fa40a4b28913fe6292c88e7fe",
+      "Id": "412276ca132b462c8540fd6de5d9f1a0"
+    },
+    {
+      "Start": "0e7227f8220d45f58051ded25ab9bef7",
+      "End": "d2fad19e4a3b42b9ad3e2b3e74b3e682",
+      "Id": "d80ea3b182be471b871decee693f569f"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Author": "None provided",
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.4836",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Geometry.BoundingBox",
+        "Id": "7f60edd865ad49628281066a15c2b72f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 238.0,
+        "Y": 175.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "7cf7b04f4b5846db8e0b0a3423f66700",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 438.5,
+        "Y": 272.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "fe3e5b6ac20540ff98b4515bbfc2f00f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 20.0,
+        "Y": 102.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "2bd17fe4a9234d60be2d299952f92fd3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 586.5,
+        "Y": 506.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "e5c305d1ff484b3f8cd307b105463991",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 55.5,
+        "Y": 342.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Color.Add",
+        "Id": "d91486340c474ddaa7f2982ff30aa06b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 308.0,
+        "Y": 380.75
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

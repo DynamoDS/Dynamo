@@ -1,0 +1,219 @@
+{
+  "Uuid": "9c0f5d9a-a576-4b5f-aa96-16f23aa368aa",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Replication_EmptySublist",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "df2498cfab9345f1bb3bfd3fd42cd653",
+      "Inputs": [
+        {
+          "Id": "50b1f75d8a854befa457046a85747d9d",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "43eb9b355d8a4bdea7276fbaedb4828d",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "19be5e49d0d7492989c8cd79cc9d3a83",
+          "Name": "Circle",
+          "Description": "Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[[],[c]];",
+      "Id": "b9dec880d99347eb8a203783f54763e6",
+      "Inputs": [
+        {
+          "Id": "e3f6c33c1c4b4d9eb4a509850b52c012",
+          "Name": "c",
+          "Description": "c",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "55be01e999744b6ca58a7746392f0577",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.Length",
+      "Id": "1b247af2b1c046fb9f8e3e27761ab5a9",
+      "Inputs": [
+        {
+          "Id": "712c13099e37492a844b47c3a1e8504c",
+          "Name": "curve",
+          "Description": "Autodesk.DesignScript.Geometry.Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0d62cb30877046c5be43b16840e5324d",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The total arc length of the curve\n\nCurve.Length: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1;",
+      "Id": "4e5fd6ff80424a76be530e526ac61e2e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f9dec461f0f840a8be36545aa9b1cf87",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "19be5e49d0d7492989c8cd79cc9d3a83",
+      "End": "e3f6c33c1c4b4d9eb4a509850b52c012",
+      "Id": "c45bddf5cf9140b296c504fadda5e175"
+    },
+    {
+      "Start": "55be01e999744b6ca58a7746392f0577",
+      "End": "712c13099e37492a844b47c3a1e8504c",
+      "Id": "14764c78659d4889a1ec09fcdb007b67"
+    },
+    {
+      "Start": "f9dec461f0f840a8be36545aa9b1cf87",
+      "End": "43eb9b355d8a4bdea7276fbaedb4828d",
+      "Id": "1d0ce757a57c4b0f965e72d228fe2eb5"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.3.0.4347",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Circle.ByCenterPointRadius",
+        "Id": "df2498cfab9345f1bb3bfd3fd42cd653",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 257.0,
+        "Y": 158.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "b9dec880d99347eb8a203783f54763e6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 600.0,
+        "Y": 181.8
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Curve.Length",
+        "Id": "1b247af2b1c046fb9f8e3e27761ab5a9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 874.0,
+        "Y": 244.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "4e5fd6ff80424a76be530e526ac61e2e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 65.0,
+        "Y": 203.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

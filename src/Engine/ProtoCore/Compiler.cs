@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-using ProtoCore.DSASM;
-
 namespace ProtoCore
 {
-	public abstract class Compiler
+    public abstract class Compiler
 	{
         protected Core core;
 

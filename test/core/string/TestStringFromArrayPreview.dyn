@@ -1,0 +1,163 @@
+{
+  "Uuid": "45732322-5b7c-4527-a7ff-2181708d3c04",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "TestStringFromArrayPreview",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.FromArray, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "c27d9e0545f74aac8f53a9e485e0f9c0",
+      "Inputs": [
+        {
+          "Id": "cc0b8d6aed9043de91272235e6ab2e50",
+          "Name": "arr",
+          "Description": "The array of object to be serialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5144a5cf722c4b3da19b0708be143915",
+          "Name": "str",
+          "Description": "String representation of the array",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Convert an array to a string representation."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1..3;",
+      "Id": "012e48cbf12d4277a4ee77c990ec7a68",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "df33ca4c55604de7b54b25db444d8c2d",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "4b6c7485022c4593ad15d280b5e99e8f",
+      "Inputs": [
+        {
+          "Id": "cc5f61300a9a40b79d66da1579621edc",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f0db4981f30a468bbb33fb9d80199b95",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "5144a5cf722c4b3da19b0708be143915",
+      "End": "cc5f61300a9a40b79d66da1579621edc",
+      "Id": "0c116fd047bc42d4a799794b440ed7f5"
+    },
+    {
+      "Start": "df33ca4c55604de7b54b25db444d8c2d",
+      "End": "cc0b8d6aed9043de91272235e6ab2e50",
+      "Id": "ab70c2af1de74281a6d72fafd1bbe615"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.3.0.5120",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "String from Array",
+        "Id": "c27d9e0545f74aac8f53a9e485e0f9c0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 312.0,
+        "Y": 277.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "012e48cbf12d4277a4ee77c990ec7a68",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 140.944987691755,
+        "Y": 257.13603825373787
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "4b6c7485022c4593ad15d280b5e99e8f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 575.06925997450526,
+        "Y": 281.66155265378586
+      }
+    ],
+    "Annotations": [],
+    "X": -204.58864212035053,
+    "Y": -151.3218837569633,
+    "Zoom": 1.4425890929331346
+  }
+}

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 using MIConvexHull;

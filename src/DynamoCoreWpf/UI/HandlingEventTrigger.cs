@@ -1,8 +1,10 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace Dynamo.UI.Views
 {
-    public class HandlingEventTrigger : System.Windows.Interactivity.EventTrigger
+    [Obsolete("For internal use only, do not reference outside DynamoCoreWpf")]
+    public class HandlingEventTrigger : Dynamo.Microsoft.Xaml.Behaviors.EventTrigger
     {
         protected override void OnEvent(System.EventArgs eventArgs)
         {

@@ -13,6 +13,7 @@ namespace Dynamo.Interfaces
         /// Collection of pairs [BackgroundPreviewName;isActive]
         /// </summary>
         List<BackgroundPreviewActiveState> BackgroundPreviews { get; set; }
+
         /// <summary>
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
@@ -53,12 +54,18 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// Indicates whether usage reporting is approved or not.
         /// </summary>
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
         bool IsUsageReportingApproved { get; set; }
 
         /// <summary>
-        /// Indicates whether analytics reporting is approved or not.
+        /// Indicates whether Google analytics reporting is approved or not.
         /// </summary>
         bool IsAnalyticsReportingApproved { get; set; }
+
+        /// <summary>
+        /// Indicates whether ADP analytics reporting is approved or not.
+        /// </summary>
+        bool IsADPAnalyticsReportingApproved { get; set; }
 
         /// <summary>
         /// Indicates first run
@@ -102,7 +109,7 @@ namespace Dynamo.Interfaces
 
         /// <summary>
         /// Returns list of packages used by the Package Manager to determine
-        /// which packages are marked for deletion.
+        /// which packages are scheduled to be deleted or scheduled to be unloaded.
         /// </summary>
         List<string> PackageDirectoriesToUninstall { get; set; }
 
@@ -145,6 +152,34 @@ namespace Dynamo.Interfaces
         /// <param name="name">Background preview name</param>
         /// <param name="value">Active state to set</param>
         void SetIsBackgroundPreviewActive(string name, bool value);
+    }
+
+    /// <summary>
+    /// Temporary interface to avoid breaking changes.
+    /// TODO: Merge with IPreferences for 3.0 (DYN-1699)
+    /// </summary>
+    public interface IRenderPrecisionPreference
+    {
+        ///<summary>
+        ///Indicate which render precision will be used
+        ///</summary>
+        int RenderPrecision { get; set; }
+    }
+
+    /// <summary>
+    /// Temporary interface to avoid breaking changes.
+    /// TODO: Merge with IPreferences for 3.0 (DYN-1699)
+    /// </summary>
+    internal interface IDisablePackageLoadingPreferences
+    {
+        /// <summary>
+        /// If enabled Dynamo Built-In Packages will not be loaded.
+        /// </summary>
+        bool DisableBuiltinPackages { get; set; }
+        /// <summary>
+        /// If enabled user's custom package locations will not be loaded.
+        /// </summary>
+        bool DisableCustomPackageLocations { get; set; }
     }
 
     /// <summary>

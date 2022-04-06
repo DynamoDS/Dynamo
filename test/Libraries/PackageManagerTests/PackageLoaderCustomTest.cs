@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Dynamo.Configuration;
-using Dynamo.PackageManager;
 using NUnit.Framework;
 
 namespace Dynamo.PackageManager.Tests
@@ -13,7 +11,8 @@ namespace Dynamo.PackageManager.Tests
         [SetUp]
         public override void Setup()
         {
-            base.Setup();
+            SetupDirectories();
+
             var settings = new PreferenceSettings();
             var parentFolder = Path.Combine(TestDirectory, "pkgs", "multiple_locations");
             settings.CustomPackageFolders = new List<string>
@@ -40,45 +39,36 @@ namespace Dynamo.PackageManager.Tests
         {
             var loader = GetPackageLoader();
             
-            Assert.AreEqual(loader.DefaultPackagesDirectory,
-                Path.Combine(TestDirectory, "pkgs", "multiple_locations", "folder1", "packages"));
+            var expectedLoadedPackageNum = 0;
+            foreach(var pkg in loader.LocalPackages)
+            {
+                if(pkg.Name == "Custom Rounding" || pkg.Name == "GetHighest")
+                {
+                    expectedLoadedPackageNum++;
+                }
+            }
+            Assert.AreEqual(2, expectedLoadedPackageNum);
 
-            Assert.AreEqual(2, loader.LocalPackages.Count());
+            var targetPkg = loader.LocalPackages.Where(x=>x.Name == "Custom Rounding").FirstOrDefault();
 
-            var pkg = loader.LocalPackages.ElementAt(0);
-
-            Assert.AreEqual("CAAD_RWTH", pkg.Group);
-            Assert.AreEqual("Custom Rounding", pkg.Name);
-            Assert.AreEqual("0.1.4", pkg.VersionName);
-            Assert.AreEqual("This collection of nodes allows rounding, rounding up and rounding down to a specified precision.", pkg.Description);
+            Assert.AreEqual("CAAD_RWTH", targetPkg.Group);
+            Assert.AreEqual("0.1.4", targetPkg.VersionName);
+            Assert.AreEqual("This collection of nodes allows rounding, rounding up and rounding down to a specified precision.", targetPkg.Description);
             Assert.AreEqual("Round Up To Precision - Rounds a number *up* to a specified precision, Round Down To Precision - "
-                + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", pkg.Contents);
-            Assert.AreEqual("0.5.2.10107", pkg.EngineVersion);
+                + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", targetPkg.Contents);
+            Assert.AreEqual("0.5.2.10107", targetPkg.EngineVersion);
 
-            Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
+            Assert.AreEqual(3, targetPkg.LoadedCustomNodes.Count);
 
-            var nextPkg = loader.LocalPackages.ElementAt(1);
+            var nextPkg = loader.LocalPackages.Where(x => x.Name == "GetHighest").FirstOrDefault();
 
             Assert.AreEqual("CAAD_RWTH", nextPkg.Group);
-            Assert.AreEqual("GetHighest", nextPkg.Name);
             Assert.AreEqual("0.1.2", nextPkg.VersionName);
             Assert.AreEqual("Gets the highest value from a list", nextPkg.Description);
             Assert.AreEqual("Get Highest - Gets the highest value from a list", nextPkg.Contents);
             Assert.AreEqual("0.5.2.10107", nextPkg.EngineVersion);
 
             Assert.AreEqual(1, nextPkg.LoadedCustomNodes.Count);
-        }
-
-        private PackageLoader GetPackageLoader()
-        {
-            var extensions = CurrentDynamoModel.ExtensionManager.Extensions.OfType<PackageManagerExtension>();
-            Assert.IsNotNull(extensions);
-            Assert.AreNotEqual(0, extensions.Count());
-
-            var packageLoader = extensions.First().PackageLoader;
-            Assert.IsNotNull(packageLoader);
-
-            return packageLoader;
         }
     }
 }

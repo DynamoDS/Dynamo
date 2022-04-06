@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Dynamo.Core;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Prompts;
@@ -45,8 +46,10 @@ namespace Dynamo.Services
         /// </summary>
         public bool IsUsageReportingApproved
         {
-            get {
+            get
+            {
                 return !DynamoModel.IsTestMode
+                    && !Analytics.DisableAnalytics
                     && (dynamoViewModel != null
                         && dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved);
             }
@@ -93,6 +96,11 @@ namespace Dynamo.Services
                 if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
+                if (Analytics.DisableAnalytics)
+                {
+                    return false;
+                }
+
                 if (dynamoViewModel.Model != null)
                     return dynamoViewModel.Model.PreferenceSettings.IsAnalyticsReportingApproved;
 
@@ -101,6 +109,11 @@ namespace Dynamo.Services
 
             private set
             {
+                if (Analytics.DisableAnalytics)
+                {
+                    return;// Do not override anything when DisableAnalytics is on
+                }
+
                 dynamoViewModel.Model.PreferenceSettings.IsAnalyticsReportingApproved = value;
                 RaisePropertyChanged("IsAnalyticsReportingApproved");
                 var path = dynamoViewModel.Model.PathManager.PreferenceFilePath;
@@ -138,8 +151,6 @@ namespace Dynamo.Services
 
         public UsageReportingManager()
         {
-            ToggleIsUsageReportingApprovedCommand = new DelegateCommand(
-                ToggleIsUsageReportingApproved, p => true);
             ToggleIsAnalyticsReportingApprovedCommand = new DelegateCommand(
                 ToggleIsAnalyticsReportingApproved, p => true);
         }
@@ -148,19 +159,18 @@ namespace Dynamo.Services
         {
             resourceProvider = resource;
             // First run of Dynamo
-            if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun)
+            if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun
+                && !dynamoViewModel.HideReportOptions
+                && !Analytics.DisableAnalytics
+                && !DynamoModel.IsTestMode)
             {
-                FirstRun = false;
-
-                //Analytics enable by defaultwa
-                IsAnalyticsReportingApproved = true;
-
                 //Prompt user for detailed reporting
-                if (!DynamoModel.IsTestMode)
-                    ShowUsageReportingPrompt(ownerWindow);
+                ShowUsageReportingPrompt(ownerWindow);
             }
+            FirstRun = false;
         }
 
+        [Obsolete("Function will be removed in Dynamo 3.0, please set IsUsageReportingApproved.")]
         public void ToggleIsUsageReportingApproved(object parameter)
         {
             var ownerWindow = parameter as Window;
@@ -193,27 +203,25 @@ namespace Dynamo.Services
                 throw new InvalidOperationException(
                     "DynamoView must be supplied for this command");
             }
-
-            // If reporting is not currently enabled, then the user should be 
-            // shown the agreement dialog (on which he/she can choose to accept 
-            // or reject the reporting). If the reporting is currently enabled,
-            // then set it to false (user chooses not to accept the reporting).
-            // 
-            if (IsAnalyticsReportingApproved)
-            {
-                IsAnalyticsReportingApproved = false;
-            }
-            else
-            {
-                ShowUsageReportingPrompt(ownerWindow);
-            }
+            ShowUsageReportingPrompt(ownerWindow);
         }
 
+        /// <summary>
+        /// Setting UsageReportingAgreement. Please notice 
+        /// that IsUsageReportingApproved is dominated by 
+        /// IsAnalyticsReportingApproved.
+        /// </summary>
+        /// <param name="approved"></param>
+        [Obsolete("Function will be removed in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
         public void SetUsageReportingAgreement(bool approved)
         {
-            IsUsageReportingApproved = approved;
+            IsUsageReportingApproved = approved && IsAnalyticsReportingApproved;
         }
 
+        /// <summary>
+        /// Setting AnalyticsReportingAgreement.
+        /// </summary>
+        /// <param name="approved"></param>
         public void SetAnalyticsReportingAgreement(bool approved)
         {
             IsAnalyticsReportingApproved = approved;
@@ -244,8 +252,8 @@ namespace Dynamo.Services
 
         void UsageReportingPromptLoaded(object sender, RoutedEventArgs e)
         {
-                DynamoModel.OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                            SettingsMigrationEventArgs.EventStatusType.End));           
+            DynamoModel.OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                        SettingsMigrationEventArgs.EventStatusType.End));
         }
     }
 }

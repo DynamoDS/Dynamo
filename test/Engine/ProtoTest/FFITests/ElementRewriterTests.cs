@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -524,6 +523,30 @@ namespace ProtoTest.FFITests
 
             Assert.AreEqual("p : Autodesk.DS.Geometry.Point", newNodes.ElementAt(0).ToString());
         }
+
+        [Test]
+        public void LookupResolvedName_AfterAddingHiddenClass_DoNotRewriteAst()
+        {
+            const string code = @"import (""FFITarget.dll"");";
+            var mirror = thisTest.RunScriptSource(code);
+
+            var core = thisTest.GetTestCore();
+
+            // Call method on class hidden in library.
+            var astNodes = CoreUtils.BuildASTList(core, "p = C.DupTargetTest.DupTargetTest();");
+
+            var elementResolver = new ElementResolver();
+
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
+
+            // Assert for fully resolved name of hidden class returned from ElementRewriter
+            Assert.AreEqual("p = FFITarget.C.B.DupTargetTest.DupTargetTest();\n", newNodes.ElementAt(0).ToString());
+
+            // Assert that element resolver does not hold namespace mapping for hidden class.
+            KeyValuePair<string, string> resolvedName;
+            Assert.IsFalse(elementResolver.ResolutionMap.TryGetValue("FFITarget.C.B.DupTargetTest", out resolvedName));
+        }
+
 
         [Test]
         public void LookupResolvedName_ForGlobalFunction_RewriteAst()

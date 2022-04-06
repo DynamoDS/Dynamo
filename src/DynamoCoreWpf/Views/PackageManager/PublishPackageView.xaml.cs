@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Navigation;
+using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using DynamoUtilities;
@@ -11,22 +15,34 @@ namespace Dynamo.PackageManager
     /// </summary>
     public partial class PublishPackageView : Window
     {
-        public PublishPackageView(PublishPackageViewModel packageViewModel)
+        /// <summary>
+        /// Internal reference of PublishPackageViewModel
+        /// </summary>
+        public PublishPackageViewModel PublishPackageViewModel { get; }
+
+        public PublishPackageView(PublishPackageViewModel publishPackageViewModel)
         {
-            this.DataContext = packageViewModel;
-            packageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
+            DataContext = publishPackageViewModel;
+            PublishPackageViewModel = publishPackageViewModel;
+            publishPackageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
 
             InitializeComponent();
 
-            Title = string.Format(Wpf.Properties.Resources.PublishPackageViewTitle,
-                packageViewModel.DynamoViewModel.BrandingResourceProvider.ProductName);
-            packageViewModel.RequestShowFolderBrowserDialog += OnRequestShowFolderBrowserDialog;
+            Title = string.Format
+            (
+                Wpf.Properties.Resources.PublishPackageViewTitle,
+                publishPackageViewModel.DynamoViewModel.BrandingResourceProvider.ProductName
+            );
+
+            publishPackageViewModel.RequestShowFolderBrowserDialog += OnRequestShowFolderBrowserDialog;
             Logging.Analytics.TrackScreenView("PackageManager");
+            this.packageNameInput.Focus();
         }
 
         private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)
         {
             this.Dispatcher.BeginInvoke((Action) (Close));
+            PublishPackageViewModel.PublishSuccess -= PackageViewModelOnPublishSuccess;
         }
 
         private void OnRequestShowFolderBrowserDialog(object sender, PackagePathEventArgs e)
@@ -54,6 +70,71 @@ namespace Dynamo.PackageManager
             }
 
         }
-    }
 
+        private void HostEntry_CheckStateChanged(object sender, RoutedEventArgs e)
+        {
+            PublishPackageViewModel.SelectedHosts.Clear();
+            PublishPackageViewModel.SelectedHostsString = string.Empty;
+            foreach (var host in PublishPackageViewModel.KnownHosts)
+            {
+                if (host.IsSelected)
+                {
+                    PublishPackageViewModel.SelectedHosts.Add(host.HostName);
+                    PublishPackageViewModel.SelectedHostsString += host.HostName + ", ";
+                }
+            }
+            // Format string since it will be displayed
+            PublishPackageViewModel.SelectedHostsString = PublishPackageViewModel.SelectedHostsString.Trim().TrimEnd(',');
+        }
+
+        private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
+        {
+            PublishPackageViewModel.DynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.PublishPackageMoreInfoFile, UriKind.Relative)));
+        }
+
+        /// <summary>
+        /// When the user clicks the close button on this window, closes the window.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Dynamo.Logging.Analytics.TrackEvent(
+                Actions.Close,
+                Categories.PackageManagerOperations);
+
+            PublishPackageViewModel.RequestShowFolderBrowserDialog -= OnRequestShowFolderBrowserDialog;
+
+            Close();
+        }
+
+        /// <summary>
+        /// Allows for the dragging of this custom-styled window. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PublishPackageView_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // Drag functionality when the TitleBar is clicked with the left button and dragged to another place
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                this.DragMove();
+                Dynamo.Logging.Analytics.TrackEvent(
+                    Actions.Move,
+                    Categories.PackageManagerOperations);
+            }
+        }
+
+        /// <summary>
+        /// Navigates to a predefined URL in the user's default browser.
+        /// Currently used to make the MIT license text a clickable link.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
+    }
 }

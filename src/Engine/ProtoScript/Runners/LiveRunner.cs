@@ -1,19 +1,17 @@
 using System;
-using System.IO;
-using System.Text;
 using System.Collections.Generic;
-using ProtoCore.DSASM.Mirror;
-using System.Diagnostics;
-using ProtoCore.Utils;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using ProtoCore;
-using System.ComponentModel;
-using System.Threading;
-using ProtoFFI;
 using ProtoCore.AssociativeGraph;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Mirror;
-using System.Linq;
 using ProtoCore.DSASM;
+using ProtoCore.Mirror;
+using ProtoCore.Utils;
+using ProtoFFI;
+using Dynamo.Utilities;
+using System.IO;
 
 namespace ProtoScript.Runners
 {
@@ -219,6 +217,7 @@ namespace ProtoScript.Runners
         private void ApplyChangeSetDeleted(ChangeSetData changeSet)
         {
             DeactivateGraphnodes(changeSet.DeletedBinaryExprASTNodes);
+            ReActivateGraphNodesInCycle(changeSet.DeletedBinaryExprASTNodes);
             UndefineFunctions(changeSet.DeletedFunctionDefASTNodes);
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(runtimeCore, changeSet.DeletedFunctionDefASTNodes);
         }
@@ -229,8 +228,7 @@ namespace ProtoScript.Runners
 
             DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
 
-            // Set new value for modified ASTs
-            SetValueForModifiedNodes(changeSet.ModifiedNodesForRuntimeSetValue);
+            ReActivateGraphNodesInCycle(changeSet.RemovedBinaryNodesFromModification);
 
             // Undefine a function that was removed 
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
@@ -258,6 +256,43 @@ namespace ProtoScript.Runners
                 if (!changeSet.ContainsDeltaAST)
                 {
                     runtimeCore.SetStartPC(firstDirtyNode.updateBlock.startpc);
+                }
+            }
+        }
+
+        private void ReActivateGraphNodesInCycle(List<AssociativeNode> nodeList)
+        {
+            if (nodeList == null || !nodeList.Any()) return;
+
+            var assocGraph = core.DSExecutable.instrStreamList[0].dependencyGraph;
+            var graphNodes = assocGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kInvalidIndex);
+
+            foreach (var node in nodeList)
+            {
+                var bNode = node as BinaryExpressionNode;
+
+                var identifier = bNode?.LeftNode as IdentifierNode;
+                if (identifier == null) continue;
+
+                var rootNodes = new List<GraphNode>();
+                foreach(var gNode in graphNodes)
+                {
+                    if(identifier.Value == gNode.updateNodeRefList[0].nodeList[0].symbol.name)
+                    {
+                        rootNodes.Add(gNode);
+                    }
+                }
+
+                foreach (var rootNode in rootNodes)
+                {
+                    // Walk the dependency graph for the rootNode and clear cycles from dependent graph nodes.
+                    var guids = rootNode.ClearCycles(graphNodes);
+
+                    // Clear warnings for all graphnodes participating in cycle.
+                    foreach (var id in guids)
+                    {
+                        core.BuildStatus.ClearWarningsForGraph(id);
+                    }
                 }
             }
         }
@@ -381,8 +416,10 @@ namespace ProtoScript.Runners
 
                     // Remove from the global codeblocks
                     core.CodeBlockList.RemoveAll(x => x.guid == bnode.guid);// && x.AstID == bnode.OriginalAstID);
+
                     // Remove from the runtime codeblocks
-                    core.CompleteCodeBlockList.RemoveAll(x => x.guid == bnode.guid);// && x.AstID == bnode.OriginalAstID);
+                    var keysToRemove = core.CompleteCodeBlockDict.Where(x => x.Value.guid == bnode.guid).Select(x => x.Key).ToList();
+                    keysToRemove.ForEach(key => core.CompleteCodeBlockDict.Remove(key));
                 }
             }
         }
@@ -817,7 +854,6 @@ namespace ProtoScript.Runners
             return deltaAstList;
         }
 
-
         public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData)
         {
             csData = new ChangeSetData();
@@ -1046,7 +1082,8 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Creates a list of null assignment statements where the lhs is retrieved from an ast list
+        /// Creates a list of null assignment statements where the lhs is retrieved from an ast list.
+        /// Any expressions which are not assignments are not modified.
         /// </summary>
         /// <param name="astList"></param>
         /// <returns></returns>
@@ -1062,7 +1099,7 @@ namespace ProtoScript.Runners
             while (workingStack.Any())
             {
                 var bNode = workingStack.Pop() as BinaryExpressionNode;
-                if (bNode == null)
+                if (bNode == null || bNode.Optr != Operator.assign)
                 {
                     continue;
                 }
@@ -1111,6 +1148,52 @@ namespace ProtoScript.Runners
 
     public partial class LiveRunner : ILiveRunner, IDisposable
     {
+        internal class DebugByteCodeMode : IDisposable
+        {
+            private TextWriter oldAsmOutput;
+            private bool oldDumpByteCode;
+            private bool oldVerbose;
+            private ExecutionMode oldExecutionMode;
+
+            private Core core;
+
+            internal DebugByteCodeMode(Core core)
+            {
+                // Setup the log file location
+                var logFolder = Path.Combine(Directory.GetCurrentDirectory(), "ByteCodeLogs");
+                Directory.CreateDirectory(logFolder);
+                var newWriter = File.CreateText(Path.Combine(logFolder, DateTime.Now.ToString("yyyy-MM-ddTHH-mm-ss-fff") + ".log"));
+
+                // Store the old values
+                oldAsmOutput = core.AsmOutput;
+                oldDumpByteCode = core.Options.DumpByteCode;
+                oldExecutionMode = core.Options.ExecutionMode;
+                oldVerbose = core.Options.Verbose;
+
+                // Set the overrides that enable byte code logging
+                core.AsmOutput = newWriter;
+                core.Options.DumpByteCode = true;
+                core.Options.Verbose = true;
+                core.Options.ExecutionMode = ExecutionMode.Serial;
+
+                this.core = core;
+            }
+
+            public void Dispose()
+            {
+                // Close the current writer and restore old settings
+                if (core != null)
+                {
+                    core.AsmOutput?.Close();
+
+                    core.AsmOutput = oldAsmOutput;
+                    core.Options.Verbose = oldVerbose;
+                    core.Options.ExecutionMode = oldExecutionMode;
+                    core.Options.DumpByteCode = oldDumpByteCode;
+                }
+            }
+        }
+
         /// <summary>
         /// These are configuration parameters passed by host application to be 
         /// consumed by geometry library and persistent manager implementation. 
@@ -1166,10 +1249,6 @@ namespace ProtoScript.Runners
             get
             {
                 return runnerCore;
-            }
-            private set
-            {
-                runnerCore = value;
             }
         }
 
@@ -1245,7 +1324,8 @@ namespace ProtoScript.Runners
                 ExecutionMode = ExecutionMode.Serial
             };
 
-            runnerCore = new ProtoCore.Core(coreOptions);
+            runnerCore = new Core(coreOptions);
+
             runnerCore.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(runnerCore));
             runnerCore.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(runnerCore));
 
@@ -1367,6 +1447,7 @@ namespace ProtoScript.Runners
         /// This api needs to be called by a command line REPL for each DS command/expression entered to be executed
         /// </summary>
         /// <param name="code"></param>
+        [Obsolete("No longer used. Remove in 3.0")]
         public void UpdateCmdLineInterpreter(string code)
         {
             lock (mutexObject)
@@ -1446,21 +1527,13 @@ namespace ProtoScript.Runners
         private void PostExecution()
         {
             ApplyUpdate();
-            HandleWarnings();
-        }
-
-        /// <summary>
-        /// Handle warnings that will be reported to the frontend
-        /// </summary>
-        private void HandleWarnings()
-        {
-            SuppressResovledUnboundVariableWarnings();
+            SuppressResolvedUnboundVariableWarnings();
         }
 
         /// <summary>
         /// Removes all warnings that were initially unbound variables but were resolved at runtime
         /// </summary>
-        private void SuppressResovledUnboundVariableWarnings()
+        private void SuppressResolvedUnboundVariableWarnings()
         {
             runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runnerCore.DSExecutable.UpdatedSymbols);
 
@@ -1563,20 +1636,24 @@ namespace ProtoScript.Runners
                 return;
             }
 
-            // Get AST list that need to be executed
-            var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
-
-            // Prior to execution, apply state modifications to the VM given the delta AST's
-            bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
-            changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
-            if (finalDeltaAstList.Any() || anyForcedExecutedNodes || changeSetComputer.csData.ModifiedNodesForRuntimeSetValue.Any())
+            using (DebugModes.IsEnabled("DumpByteCode") ? new DebugByteCodeMode(runnerCore) : null)
             {
-                CompileAndExecuteForDeltaExecution(finalDeltaAstList);
-            }
+                // Get AST list that need to be executed
+                var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
 
-            var guids = runtimeCore.ExecutedAstGuids.ToList();
-            executedAstGuids[syncData.SessionID] = guids;
-            runtimeCore.RemoveExecutedAstGuids();
+                // Prior to execution, apply state modifications to the VM given the delta AST's
+                bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
+                changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
+
+                if (finalDeltaAstList.Any() || anyForcedExecutedNodes)
+                {
+                    CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+                }
+
+                var guids = runtimeCore.ExecutedAstGuids.ToList();
+                executedAstGuids[syncData.SessionID] = guids;
+                runtimeCore.RemoveExecutedAstGuids();
+            }
         }
 
         private void SynchronizeInternal(string code)
@@ -1630,27 +1707,30 @@ namespace ProtoScript.Runners
         /// <param name="syncData"></param>
         public void ResetVMAndResyncGraph(IEnumerable<string> libraries)
         {
-            // Reset VM
-            ReInitializeLiveRunner();
-
-            if (!libraries.Any())
+            lock (mutexObject)
             {
-                return;
+                // Reset VM. This needs to be in mutex context as it turns DSExecutable null.
+                ReInitializeLiveRunner();
+
+                if (!libraries.Any())
+                {
+                    return;
+                }
+
+                // generate import node for each library in input list
+                List<AssociativeNode> importNodes = new List<AssociativeNode>();
+                foreach (string lib in libraries)
+                {
+                    ProtoCore.AST.AssociativeAST.ImportNode importNode = new ProtoCore.AST.AssociativeAST.ImportNode();
+                    importNode.ModuleName = lib;
+
+                    importNodes.Add(importNode);
+                }
+                ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
+                string code = codeGen.GenerateCode();
+
+                SynchronizeInternal(code);
             }
-
-            // generate import node for each library in input list
-            List<AssociativeNode> importNodes = new List<AssociativeNode>();
-            foreach (string lib in libraries)
-            {
-                ProtoCore.AST.AssociativeAST.ImportNode importNode = new ProtoCore.AST.AssociativeAST.ImportNode();
-                importNode.ModuleName = lib;
-
-                importNodes.Add(importNode);
-            }
-            ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
-            string code = codeGen.GenerateCode();
-
-            UpdateCmdLineInterpreter(code);
         }
 
         /// <summary>

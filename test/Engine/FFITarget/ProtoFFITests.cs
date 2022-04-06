@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Autodesk.DesignScript.Runtime;
 
 namespace FFITarget
@@ -424,6 +423,14 @@ namespace FFITarget
             return x.GetValue();
         }
 
+        /// <summary>
+        /// Return nested dictionary.
+        /// </summary>
+        /// <returns name="col">column</returns>
+        /// <returns name="dict">dictionary</returns>
+        /// <returns name="num">number</returns>
+        /// <returns name="wt">weight</returns>
+        /// <returns name="ok">okay</returns>
         [MultiReturn("color", "dict", "nums", "weight", "ok")]
         public Dictionary<string, object> ReturnNestedDictionary()
         {
@@ -965,6 +972,14 @@ namespace FFITarget
     {
         public class Point
         {
+            [IsVisibleInDynamoLibrary(false)]
+            public Point()
+            {
+                dX = 0;
+                dY = 0;
+                dZ = 0;
+            }
+
             public static Point XYZ(double x, double y, double z)
             {
                 var p = new Point { dX = x, dY = y, dZ = z };
@@ -979,6 +994,25 @@ namespace FFITarget
             public double dX { get; set; }
             public double dY { get; set; }
             public double dZ { get; set; }
+
+            [IsVisibleInDynamoLibrary(false)]
+            public override bool Equals(object obj)
+            {
+                if (obj == null) return false;
+
+                if (GetType() != obj.GetType()) return false;
+
+                var other = obj as Point;
+                if (dX == other.dX && dY == other.dY && dZ == other.dZ) return true;
+
+                return false;
+            }
+
+            [IsVisibleInDynamoLibrary(false)]
+            public override int GetHashCode()
+            {
+                return dX.GetHashCode() ^ dY.GetHashCode() ^ dZ.GetHashCode();
+            }
         }
     }
 

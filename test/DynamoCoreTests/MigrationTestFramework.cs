@@ -1,5 +1,5 @@
-﻿using System.IO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 
@@ -17,6 +17,7 @@ namespace Dynamo.Tests
             libraries.Add("DSOffice.dll");
             libraries.Add("FunctionObject.ds");
             libraries.Add("BuiltIn.ds");
+            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -67,10 +68,6 @@ namespace Dynamo.Tests
 
             return testParameters;
         }
-
-        #region Private Helper Methods
-
-
-        #endregion
+        
     }
 }

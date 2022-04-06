@@ -9,6 +9,7 @@
 *.so
 bin/
 obj/
+int/
 packages/
 
 #find -type d -name bin -exec git rm -r {} \;
@@ -64,6 +65,7 @@ Dynamo.sln.DotSettings
 *.sdf
 *.backup
 *.pdf
+*.dgml
 
 #ASM
 extern/DynamoAsm/
@@ -96,3 +98,4 @@ src/TestResults
 test/core/customast/test.txt
 test/core/files/test.png
 test/core/migration/writetext.txt
+logo.png

@@ -9,12 +9,24 @@ namespace DynamoCLI
         [STAThread]
         static internal void Main(string[] args)
         {
-
             try
             {
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
-                var model = StartupUtils.MakeModel(true);
+                if (cmdLineArgs.DisableAnalytics)
+                {
+                    Dynamo.Logging.Analytics.DisableAnalytics = true;
+                }
+
+                DynamoModel model;
+                if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
+                {
+                    model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath);
+                }
+                else
+                {
+                    model = Dynamo.Applications.StartupUtils.MakeModel(true);
+                }
                 var runner = new CommandLineRunner(model);
                 runner.Run(cmdLineArgs);
                 

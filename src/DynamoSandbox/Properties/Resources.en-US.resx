@@ -117,6 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SandboxBuildsPageDialogMessage" xml:space="preserve">
+    <value>Goto the Dynamo builds wiki site({0}) for more information.</value>
+    <comment>message directing user to wiki page</comment>
+  </data>
+  <data name="SandboxCrashMessage" xml:space="preserve">
+    <value>Could not start DynamoSandbox, unhandled exception.</value>
+  </data>
   <data name="SettingsMigrationDialogMessage" xml:space="preserve">
     <value>Migrating Settings ...</value>
     <comment>Settings migration dialog message prompt</comment>

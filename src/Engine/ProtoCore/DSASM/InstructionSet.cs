@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using ProtoCore.Utils;
 using System.Linq;
-using Operand = ProtoCore.DSASM.StackValue;
 using ProtoCore.Exceptions;
+using ProtoCore.Utils;
+using Operand = ProtoCore.DSASM.StackValue;
 
 namespace ProtoCore.DSASM
 {
@@ -1014,7 +1014,7 @@ namespace ProtoCore.DSASM
                     return BuildBoolean(opdata != 0);
 
                 case AddressType.Null:
-                    return StackValue.Null; 
+                    return BuildBoolean(false); 
 
                 case AddressType.Double:
                     bool b = !Double.IsNaN(DoubleValue) && !DoubleValue.Equals(0.0);

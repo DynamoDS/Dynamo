@@ -17,6 +17,7 @@ using CoreNodeModels.Input;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf;
+using Dynamo.PackageManager;
 
 namespace Dynamo.Tests
 {
@@ -228,7 +229,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
 
             var newPath = GetNewFileNameOnTempPath("dyf");
             def.Save(newPath);
@@ -274,7 +275,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
 
             foreach (var i in Enumerable.Range(0, 10))
             {
@@ -333,7 +334,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
 
             var newPath = GetNewFileNameOnTempPath("dyf");
             def.Save(newPath);
@@ -402,7 +403,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
 
             var newPath = GetNewFileNameOnTempPath("dyf");
             def.Save(newPath);
@@ -575,6 +576,44 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void CanSaveDifferentTargetWorkspace()
+        {
+            // get empty workspace
+            var dynamoModel = ViewModel.Model;
+            Assert.IsNotNull(dynamoModel.CurrentWorkspace);
+            Assert.AreEqual("Home", ViewModel.Model.CurrentWorkspace.Name);
+
+            // get file path and name of file
+            var filePath = GetNewFileNameOnTempPath("dyn");
+            var fileName = Path.GetFileName(filePath);
+            string extension = Path.GetExtension(filePath);
+            if (extension == ".dyn" || extension == ".dyf")
+            {
+                fileName = Path.GetFileNameWithoutExtension(filePath);
+            }
+
+            // Open a dyf which making the current workspace become custom node workspace
+            var originalDyf = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
+            ViewModel.Model.OpenFileFromPath(originalDyf);
+
+            // save Home workspace
+            ViewModel.SaveAs(ViewModel.Workspaces[0].Model.Guid, filePath);
+
+            // save custom node workspace
+            var dyfFilePath = GetNewFileNameOnTempPath("dyf");
+            ViewModel.SaveAs(ViewModel.Workspaces[1].Model.Guid, dyfFilePath);
+
+            // Open the serialized files to verify
+            ViewModel.Model.OpenFileFromPath(filePath);
+            // Home workspace name should be file name
+            Assert.AreEqual(fileName, ViewModel.Model.CurrentWorkspace.Name);
+
+            ViewModel.Model.OpenFileFromPath(dyfFilePath);
+            Assert.AreEqual("Constant2", ViewModel.Model.CurrentWorkspace.Name);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void BackUpSaveDoesNotChangeName()
         {
             // get empty workspace
@@ -666,7 +705,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
             Assert.IsFalse(def.HasUnsavedChanges);
 
             var node = new DSFunction(dynamoModel.LibraryServices.GetFunctionDescriptor("+"));
@@ -813,10 +852,10 @@ namespace Dynamo.Tests
             // Set file path
             workspace.FileName = GetNewFileNameOnTempPath("dyf");
             // search common base name
-            ViewModel.SearchViewModel.Visible = true;
-            ViewModel.SearchViewModel.SearchAndUpdateResults("Cool");
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Visible = true;
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Cool");
             // results are correct
-            Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredResults.Count());
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count());
 
             var newCustNodeInstance = dynamoModel.CustomNodeManager.CreateCustomNodeInstance(initialId);
             dynamoModel.CurrentWorkspace.AddAndRegisterNode(newCustNodeInstance, false);
@@ -852,7 +891,7 @@ namespace Dynamo.Tests
             var customNodeWorkspace = dynamoModel.CurrentWorkspace;
 
             var initialId = new Guid("6aecda57-7679-4afb-aa02-05a75cc3433e");
-            var newCustNodeInstance = dynamoModel.CustomNodeManager.CreateCustomNodeInstance(initialId);
+            var newCustNodeInstance = dynamoModel.CustomNodeManager.CreateCustomNodeInstance(initialId, null, true);
             // Switch HomeWorkspace and place custom node on it
             dynamoModel.CurrentWorkspace = dynamoModel.Workspaces.First();
             dynamoModel.CurrentWorkspace.AddAndRegisterNode(newCustNodeInstance, false);
@@ -902,6 +941,7 @@ namespace Dynamo.Tests
             nodeWorkspace.Save(newPath);
 
             var newDef = nodeWorkspace.CustomNodeDefinition;
+            Assert.AreNotEqual(oldId, newDef.FunctionId);
         }
 
         [Test]
@@ -968,14 +1008,14 @@ namespace Dynamo.Tests
 
             var newId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
-            ViewModel.SearchViewModel.Visible = true;
-            ViewModel.SearchViewModel.SearchAndUpdateResults("Constant2");
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Visible = true;
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Constant2");
             Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.NumElements);
 
-            Assert.AreEqual(2, ViewModel.SearchViewModel.FilteredResults.Count());
+            Assert.AreEqual(2, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count());
 
-            var res1 = ViewModel.SearchViewModel.FilteredResults.ElementAt(0);
-            var res2 = ViewModel.SearchViewModel.FilteredResults.ElementAt(1);
+            var res1 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(0);
+            var res2 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(1);
 
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res1);
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res2);
@@ -1070,20 +1110,20 @@ namespace Dynamo.Tests
             Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.NumElements);
 
             // search for refactored node
-            ViewModel.SearchViewModel.Visible = true;
-            ViewModel.SearchViewModel.SearchAndUpdateResults("TheNoodle");
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Visible = true;
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("TheNoodle");
 
             // results are correct
-            Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredResults.Count());
-            var node3 = (CustomNodeSearchElement)ViewModel.SearchViewModel.FilteredResults.ElementAt(0).Model;
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count());
+            var node3 = (CustomNodeSearchElement)ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(0).Model;
             Assert.AreEqual(newId, node3.ID);
 
             // search for un-refactored node
-            ViewModel.SearchViewModel.SearchAndUpdateResults("Constant2");
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Constant2");
 
             // results are correct
-            Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredResults.Count());
-            var node4 = (CustomNodeSearchElement)ViewModel.SearchViewModel.FilteredResults.ElementAt(0).Model;
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count());
+            var node4 = (CustomNodeSearchElement)ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(0).Model;
             Assert.AreEqual(oldId, node4.ID);
 
         }
@@ -1125,14 +1165,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.NumElements);
 
             // search common base name
-            ViewModel.SearchViewModel.Visible = true;
-            ViewModel.SearchViewModel.SearchAndUpdateResults("Constant2");
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Visible = true;
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Constant2");
 
             // results are correct
-            Assert.AreEqual(2, ViewModel.SearchViewModel.FilteredResults.Count());
+            Assert.AreEqual(2, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count());
 
-            var res1 = ViewModel.SearchViewModel.FilteredResults.ElementAt(0);
-            var res2 = ViewModel.SearchViewModel.FilteredResults.ElementAt(1);
+            var res1 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(0);
+            var res2 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(1);
 
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res1);
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res2);
@@ -1152,7 +1192,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
             var workspace = (CustomNodeWorkspaceModel)def;
 
             var listGuids = new List<Guid>();
@@ -1203,9 +1243,9 @@ namespace Dynamo.Tests
             var nodeName = "Foo";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
             var workspace = (CustomNodeWorkspaceModel)def;
-            ViewModel.SearchViewModel.Visible = true;
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Visible = true;
 
             for (var i = 0; i < 10; i++)
             {
@@ -1217,11 +1257,11 @@ namespace Dynamo.Tests
                 Assert.AreEqual(newName, workspace.Name);
 
                 // Verify new name is searchable
-                ViewModel.SearchViewModel.SearchAndUpdateResults(newName);
-                Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredResults.Count());
+                ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults(newName);
+                Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count());
 
                 // Verify search element's name is new name
-                var res = ViewModel.SearchViewModel.FilteredResults.First();
+                var res = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.First();
                 Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res);
                 Assert.AreEqual(res.Name, newName);
 
@@ -1246,7 +1286,7 @@ namespace Dynamo.Tests
             var nodeName = Guid.NewGuid().ToString();
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
 
             var tempPath1 = Path.Combine(TempFolder, nodeName + ".dyf");
 
@@ -1265,6 +1305,59 @@ namespace Dynamo.Tests
             var count = dynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().Where(
                             x => string.CompareOrdinal(x.Name, nodeName) == 0).Count();
             Assert.AreEqual(count, 2);
+        }
+
+        [Test]
+        public void CustomNodeBelongingToPackageCanBeModifiedAndReopenedWithoutError()
+        {
+
+            // load package A
+            // place custom node instance belonging to package A in homeworkspace
+            // modify custom node
+            // save custom node to same path
+            // close custom node
+            // open custom node
+            // assert instances changed their number of output ports.
+            var packageDirectory = Path.Combine(TestDirectory, "pkgs", "PackageThatWillBeModified");
+            var loader = this.ViewModel.Model.GetPackageManagerExtension().PackageLoader;
+
+           var package= Package.FromDirectory(packageDirectory, this.ViewModel.Model.Logger);
+            loader.LoadPackages(new Package[] { package });
+
+            //assert that package has been loaded.
+            var foundPackage = loader.LocalPackages.Where(x => x.Name == "PackageThatWillBeModified").FirstOrDefault();
+            Assert.IsNotNull(package);
+            Assert.IsTrue(package.Loaded);
+            //find our custom node
+            var customNodeInfo = this.ViewModel.Model.CustomNodeManager.NodeInfos.Where(x => x.Value.Name == "ANodeToModify").FirstOrDefault();
+            Assert.IsNotNull(customNodeInfo);
+
+            //place an instance.
+            var customNodeInstance = this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(customNodeInfo.Key);
+            var oldNumPorts = customNodeInstance.OutPorts.Count();
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(customNodeInstance);
+            Assert.AreEqual(1, this.ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>().Count());
+
+            // open the custom node
+            ViewModel.GoToWorkspaceCommand.Execute(customNodeInfo.Key);
+
+            //add a new output node
+            Assert.IsAssignableFrom(typeof(CustomNodeWorkspaceModel), this.ViewModel.Model.CurrentWorkspace);
+            var newoutput = new Output();
+            newoutput.Symbol = "anewoutput";
+            this.ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(newoutput);
+
+            //save the node, update the nodeInfo
+            this.ViewModel.Model.CurrentWorkspace.Save(customNodeInfo.Value.Path);
+
+            //swtich back to the home workspace
+            ViewModel.Model.ExecuteCommand(new DynamoModel.SwitchTabCommand(0));
+            Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), this.ViewModel.Model.CurrentWorkspace);
+
+            var nodeInstance = this.ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>().FirstOrDefault();
+            Assert.AreEqual(oldNumPorts+1, nodeInstance.OutPorts.Count());
+            Assert.IsTrue(nodeInstance.OutPorts.LastOrDefault().Name.StartsWith("anewoutput"));
+
         }
         #endregion
     }

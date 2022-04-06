@@ -169,9 +169,15 @@ namespace ProtoCore.Namespace
             if (matchingClasses.Length == 1)
             {
                 resolvedName = matchingClasses[0];
-                var assemblyName = CoreUtils.GetAssemblyFromClassName(classTable, resolvedName);
 
-                elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
+                var classNode = classTable.ClassNodes.FirstOrDefault(x => x.Name == resolvedName);
+                var isHiddenInLibrary = classNode.ClassAttributes?.HiddenInLibrary ?? false;
+                // Do not add a hidden class to element resolver.
+                if (!isHiddenInLibrary)
+                {
+                    var assemblyName = CoreUtils.GetAssemblyFromClassName(classTable, resolvedName);
+                    elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
+                }
             }
             else if (matchingClasses.Length > 1)
             {

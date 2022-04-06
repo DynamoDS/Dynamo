@@ -1,4 +1,10 @@
-﻿using CoreNodeModels;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using CoreNodeModels;
 using DesignScript.Builtin;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -10,12 +16,6 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
 
 namespace Dynamo.Tests
 {
@@ -998,6 +998,39 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void UpdateCBNInCustomNodeDef_DoesNotCrash()
+        {
+            var basePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
+
+            OpenModel(Path.Combine(basePath, "cbn_customnode_crash.dyn"));
+
+            // Assert custom node instance executes successfully
+            AssertPreviewValue("12d33f2a354a4e65ac06a3c783a7e679", "this is a custom node");
+
+            var customWorkspace = CurrentDynamoModel.CustomNodeManager.LoadedWorkspaces.FirstOrDefault(x => x != null);
+
+            // Navigate to custom node workspace
+            CurrentDynamoModel.AddWorkspace(customWorkspace);
+
+            // Extract cbn from custom node WS
+            var cbn = customWorkspace.Nodes.FirstOrDefault(x => x is CodeBlockNodeModel) as CodeBlockNodeModel;
+
+            // Edit CBN in custom node definition to introduce syntax error,
+            // update custom node definition and re-execute 
+            Assert.DoesNotThrow(() =>
+            {
+                CurrentDynamoModel.ExecuteCommand(
+                    new DynamoModel.UpdateModelValueCommand(
+                        customWorkspace.Guid,
+                        cbn.GUID,
+                        "Code",
+                        "1...10"));
+            });
+
+            AssertPreviewValue("12d33f2a-354a-4e65-ac06-a3c783a7e679", null);
+        }
+
+        [Test]
         public void TestGroupsOnCustomNodes()
         {
             string openPath = Path.Combine(TestDirectory, @"core\collapse\collapse.dyn");
@@ -1208,7 +1241,7 @@ namespace Dynamo.Tests
             const string nodeName = "someCustomNode";
             const string catName1 = "CatName1";
 
-            var cnworkspace = CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName1, "a node with an input with comments");
+            var cnworkspace = CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName1, "a node with an input with comments", null);
             var inputNode = new Symbol();
             inputNode.InputSymbol = "/* a new and better comment*/" + Environment.NewLine + "inputName: string = \"a def string\"";
             cnworkspace.AddAndRegisterNode(inputNode);
@@ -1374,6 +1407,21 @@ namespace Dynamo.Tests
             Assert.IsTrue(functionNode.State == ElementState.PersistentWarning);
             // Despite the invalid input symbol, the custom node should still execute and return the correct value
             AssertPreviewValue("f91658aeafe84cbaa39d370dec283b53", 8.0);
+        }
+
+        [Test]
+        public void LooseCustomNodeShouldNotHavePackageInfoOrPackageMember()
+        {
+            //load any loose custom node
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\invalidInputName.dyn");
+
+            OpenModel(dynFilePath);
+        var functionNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>().First();
+
+            var nodeInfo =CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.Name == "invalidInputName").FirstOrDefault();
+            Assert.IsNotNull(nodeInfo.Value);
+            Assert.IsFalse(nodeInfo.Value.IsPackageMember);
+            Assert.IsNull(nodeInfo.Value.PackageInfo);
         }
     }
 }

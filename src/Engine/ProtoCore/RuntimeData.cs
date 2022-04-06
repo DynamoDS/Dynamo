@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ProtoCore.AssociativeGraph;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
@@ -25,28 +26,45 @@ namespace ProtoCore
 
       
         private Dictionary<Guid, List<CallSite.RawTraceData>> uiNodeToSerializedDataMap = null;
+
+        private static readonly string identifierPattern = @"([a-zA-Z-_@0-9]+)";
+        private static readonly string indexPattern = @"([-+]?\d+)";
+        private static readonly string callsiteIDPattern =
+            identifierPattern +
+            Constants.kInClassDecl + indexPattern +
+            Constants.kSingleUnderscore + Constants.kInFunctionScope + indexPattern +
+            Constants.kSingleUnderscore + Constants.kInstance + indexPattern +
+            identifierPattern;
+        private static readonly string joinPattern = ';' + callsiteIDPattern;
+        private static readonly string fullCallsiteID = callsiteIDPattern + string.Format("({0})*", joinPattern);
+
+        /// <summary>
+        /// Map from callsite id to callsite.
+        /// </summary>
         public IDictionary<string, CallSite> CallsiteCache { get; set; }
         /// <summary>		
         /// Map from a callsite's guid to a graph UI node. 		
         /// </summary>
-        public Dictionary<Guid, Guid> CallSiteToNodeMap { get; private set; }
- 		 
- #endregion
+        public Dictionary<Guid, Guid> CallSiteToNodeMap { get; }
+        /// <summary>		
+        /// Map from a graph UI node to callsite identifiers. 		
+        /// </summary>
+        internal Dictionary<Guid, List<CallSite>> NodeToCallsiteObjectMap { get; }
+        
+#endregion
 
         public RuntimeData()
         {
             CallsiteCache = new Dictionary<string, CallSite>();
             CallSiteToNodeMap = new Dictionary<Guid, Guid>();
+            NodeToCallsiteObjectMap = new Dictionary<Guid, List<CallSite>>();
         }
 
-      
 
         /// <summary>
         /// Retrieves an existing instance of a callsite associated with a UID
         /// It creates a new callsite if non was found
         /// </summary>
-        /// <param name="core"></param>
-        /// <param name="uid"></param>
         /// <returns></returns>
         public CallSite GetCallSite(int classScope, string methodName, Executable executable, RuntimeCore runtimeCore)
         {
@@ -104,6 +122,15 @@ namespace ProtoCore
 
                 CallsiteCache[callsiteID] = csInstance;
                 CallSiteToNodeMap[csInstance.CallSiteID] = topGraphNode.guid;
+                List<CallSite> callsites;
+                if (NodeToCallsiteObjectMap.TryGetValue(topGraphNode.guid, out callsites))
+                {
+                    callsites.Add(csInstance);
+                }
+                else
+                {
+                    NodeToCallsiteObjectMap[topGraphNode.guid] = new List<CallSite>() { csInstance };
+                }
             }
 
             if (graphNode != null && !CoreUtils.IsDisposeMethod(methodName))
@@ -118,8 +145,15 @@ namespace ProtoCore
             return csInstance;
         }
 
-        public Dictionary<Guid, List<CallSite>>
-        GetCallsitesForNodes(IEnumerable<Guid> nodeGuids, Executable executable)
+        /// <summary>
+        /// This API is used by host integrations such as for Revit and C3D.
+        /// It is used to get the trace data list for all nodes binding to elements in the host.
+        /// </summary>
+        /// <param name="nodeGuids"></param>
+        /// <param name="executable"></param>
+        /// <returns></returns>
+        public Dictionary<Guid, List<CallSite>> GetCallsitesForNodes(
+            IEnumerable<Guid> nodeGuids, Executable executable)
         {
             if (nodeGuids == null)
                 throw new ArgumentNullException("nodeGuids");
@@ -129,41 +163,17 @@ namespace ProtoCore
             if (!nodeGuids.Any()) // Nothing to persist now.
                 return nodeMap;
 
-            // Attempt to get the list of graph node if one exists.
-            IEnumerable<GraphNode> graphNodes = null;
-            {
-                if (executable != null)
-                {
-                    var stream = executable.instrStreamList;
-                    if (stream != null && (stream.Length > 0))
-                    {
-                        var graph = stream[0].dependencyGraph;
-                        if (graph != null)
-                            graphNodes = graph.GraphList;
-                    }
-                }
-
-
-                if (graphNodes == null) // No execution has taken place.
-                    return nodeMap;
-            }
-
+            List<CallSite> callsites;
             foreach (Guid nodeGuid in nodeGuids)
             {
-                // Get a list of GraphNode objects that correspond to this node.
-                var matchingGraphNodes = graphNodes.Where(gn => gn.guid == nodeGuid);
-
-                if (!matchingGraphNodes.Any())
-                    continue;
-
-                // Get all callsites that match the graph node ids.
-                var matchingCallSites = (from cs in CallsiteCache
-                                         from gn in matchingGraphNodes
-                                         where string.Equals(cs.Key, gn.CallsiteIdentifier)
-                                         select cs.Value);
-
-                // Append each callsite element under node element.
-                nodeMap[nodeGuid] = matchingCallSites.ToList();
+                if (NodeToCallsiteObjectMap.TryGetValue(nodeGuid, out callsites))
+                {
+                    nodeMap[nodeGuid] = callsites;
+                }
+                else
+                {
+                    nodeMap[nodeGuid] = new List<CallSite>();
+                }
             }
 
             return nodeMap;
@@ -289,7 +299,7 @@ namespace ProtoCore
 
         /// <summary>
         /// Call this method to pop the top-most serialized callsite trace data.
-        /// Note that this call only pops off a signle callsite trace data 
+        /// Note that this call only pops off a single callsite trace data 
         /// belonging to a given UI node denoted by the given node guid.
         /// </summary>
         /// <param name="nodeGuid">The Guid of a given UI node whose top-most 
@@ -320,7 +330,7 @@ namespace ProtoCore
             {
                 for (int i = 0; i < callsiteDataList.Count; i++)
                 {
-                    if (callsiteDataList[i].ID == callsiteID)
+                    if (DoCallSiteIDsMatch(callsiteID, callsiteDataList[i].ID))
                     {
                         callsiteTraceData = callsiteDataList[i].Data;
                         callsiteDataList.RemoveAt(i);
@@ -344,10 +354,45 @@ namespace ProtoCore
             {
                 return GetAndRemoveTraceDataForNode(nodeGuid, string.Empty);
             }
-            else
+
+            return callsiteTraceData;
+        }
+
+        private static bool DoCallSiteIDsMatch(string compilerGenerated, string deserialized)
+        {
+            if (compilerGenerated == deserialized) return true;
+
+            var matches1 = Regex.Match(compilerGenerated, fullCallsiteID);
+            var matches2 = Regex.Match(deserialized, fullCallsiteID);
+
+            if (matches1.Groups.Count != matches2.Groups.Count) return false;
+
+            // If both group counts match, they should number 12 in all.
+            // We should ignore checking for the 1st, 7th, and 10th group specifically
+            // as per the Regex pattern (for fullCallsiteID) since that group includes the function scope
+            // that can vary for custom nodes or DS functions that make nested calls to
+            // host element creation methods.
+            //Groups
+            //0: full string
+            //1: function id
+            //2: global class index
+            //3: global function
+            //4: function call id
+            //5: outer node instance guid
+            //6: name,global class index, funcscope,instance,guid,
+            //7: name,
+            //8: global class index,
+            //9: function scope,
+            //10: instance,
+            //11: node instance guid
+            for (int i = 0; i < matches1.Groups.Count; i++)
             {
-                return callsiteTraceData;
+                if (i == 0 || i == 6 || i == 9) continue;
+
+                if (matches1.Groups[i].Value != matches2.Groups[i].Value) return false;
             }
+
+            return true;
         }
 
         #endregion // Trace Data Serialization Methods/Members

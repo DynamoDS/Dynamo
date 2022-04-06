@@ -1,8 +1,6 @@
 using System;
-using NUnit.Framework;
 using System.Collections.Generic;
-using Autodesk.DesignScript.Runtime;
-using System.Collections;
+using NUnit.Framework;
 namespace ProtoFFITests
 {
     public class CSFFIDataMarshalingTest : FFITestSetup

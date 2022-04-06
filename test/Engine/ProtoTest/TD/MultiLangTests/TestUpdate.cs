@@ -1,8 +1,6 @@
 using System;
-using System.IO;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
     class TestUpdate : ProtoTestBase

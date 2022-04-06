@@ -1,6 +1,7 @@
 ﻿using Dynamo.Interfaces;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
+using Dynamo.Configuration;
 using Dynamo.Wpf.Rendering;
 
 namespace Dynamo.Wpf.ViewModels
@@ -42,12 +43,25 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        // TODO: Simplify this constructor once IPreferences and IRenderPrecisionPreference have been consolidated in 3.0 (DYN-1699)
         public RenderPackageFactoryViewModel(IPreferences preferenceSettings)
         {
-            this.factory = new HelixRenderPackageFactory()
+            var ps = preferenceSettings as PreferenceSettings;
+            if (ps != null)
             {
-                TessellationParameters = { ShowEdges = preferenceSettings.ShowEdges }
-            };
+                this.factory = new HelixRenderPackageFactory()
+                {
+                    TessellationParameters = { ShowEdges = ps.ShowEdges, MaxTessellationDivisions = ps.RenderPrecision }
+                };
+            }
+            else
+            {
+                this.factory = new HelixRenderPackageFactory()
+                {
+                    TessellationParameters = { ShowEdges = preferenceSettings.ShowEdges}
+                };
+            }
+            
         }
     }
 }

@@ -1,0 +1,94 @@
+{
+  "Uuid": "f29dd3b4-8458-4bb0-9f3c-5df1999b5e15",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "OneDependentNode_NodeModel",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "SampleLibraryUI.Examples.ButtonCustomNodeModel, SampleLibraryUI",
+      "ButtonText": "Default Button Text",
+      "WindowText": "Default Window Text",
+      "NodeType": "ExtensionNode",
+      "Id": "63906f9b2271499781f67e39f94c9177",
+      "Inputs": [
+        {
+          "Id": "d49495e7220f4ce88904a0b298415181",
+          "Name": "inputString",
+          "Description": "a string value displayed on our button",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "010b7f0a9f5942a48de7a9d0b1ad7fda",
+          "Name": "button value",
+          "Description": "returns the string value displayed on our button",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "165ea937adf34c5f9d463384a735c955",
+          "Name": "window value",
+          "Description": "returns the string value displayed in our window when button is pressed",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A sample UI node which displays custom UI."
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.3.0.5204",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Button Custom Node Model",
+        "Id": "63906f9b2271499781f67e39f94c9177",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 303.25,
+        "Y": 342.5
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

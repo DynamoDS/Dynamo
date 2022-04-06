@@ -1,12 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using System.Collections.Generic;
-using Dynamo.Utilities;
 using Newtonsoft.Json;
-using System.Globalization;
 
 namespace CoreNodeModels.Input
 {
@@ -50,6 +48,7 @@ namespace CoreNodeModels.Input
                     //use the <T> type to convert to the correct nodeTypeString defined by
                     //the schema
                     Type = NodeInputData.getNodeInputTypeFromType(typeof(T)),
+                    Type2 = NodeInputData.getNodeInputTypeFromType(typeof(T)),
                     Description = this.Description,
                     Value = Value.ToString(),
                 };
@@ -63,7 +62,6 @@ namespace CoreNodeModels.Input
 
         protected BasicInteractive(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            Type type = typeof(T);
         }
 
         protected BasicInteractive()
@@ -99,8 +97,10 @@ namespace CoreNodeModels.Input
         {
             base.DeserializeCore(nodeElement, context); // Base implementation must be called
 
-            foreach (XmlNode subNode in nodeElement.ChildNodes.Cast<XmlNode>()
-                .Where(subNode => subNode.Name.Equals(typeof(T).FullName)))
+            var subNodes = nodeElement.ChildNodes.Cast<XmlNode>()
+                .Where(subNode => subNode.Name.Equals(typeof(T).FullName));
+
+            foreach (XmlNode subNode in subNodes)
             {
                 var attrs = subNode.Attributes;
 

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using ProtoCore.DSASM;
@@ -8,7 +7,7 @@ using ProtoCore.Utils;
 
 namespace ProtoCore
 {
-	public abstract class FunctionEndPoint
+    public abstract class FunctionEndPoint
 	{
 	    public int ClassOwnerIndex {
             get;

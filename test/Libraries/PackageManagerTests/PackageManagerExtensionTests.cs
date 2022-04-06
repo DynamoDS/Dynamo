@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using NUnit.Framework;
+﻿using System.IO;
+using System.Linq;
 using Dynamo.Extensions;
-using System.IO;
+using NUnit.Framework;
 
 namespace Dynamo.PackageManager.Tests
 {

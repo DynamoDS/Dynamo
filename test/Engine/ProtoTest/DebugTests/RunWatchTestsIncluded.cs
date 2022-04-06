@@ -1,8 +1,4 @@
-using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 using NUnit.Framework;
 using ProtoTestFx;
 namespace ProtoTest.DebugTests

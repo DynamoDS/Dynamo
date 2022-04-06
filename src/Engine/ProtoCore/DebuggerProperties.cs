@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using ProtoCore.AssociativeGraph;
 using ProtoCore.CodeModel;
 using ProtoCore.DSASM;
@@ -30,9 +28,12 @@ namespace ProtoCore
             public int delme;
             public ConsoleEventSink()
             {
+#if DEBUG
+                
                 BeginDocument += Console.WriteLine;
                 EndDocument += Console.WriteLine;
                 PrintMessage += Console.WriteLine;
+#endif
             }
         }
     }

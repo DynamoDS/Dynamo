@@ -2,9 +2,9 @@
 using System.Linq;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
-using ProtoCore.AST.AssociativeAST;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels
 {
@@ -12,6 +12,7 @@ namespace CoreNodeModels
     [NodeDescription("ListCreateDescription", typeof(Resources))]
     [NodeSearchTags("ListCreateSearchTags", typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
+    [OutPortTypes("List")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.CreateList", "List.Create")]
     public class CreateList : VariableInputNode

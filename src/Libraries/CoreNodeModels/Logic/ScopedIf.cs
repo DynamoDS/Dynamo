@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
-using Dynamo.Engine.CodeGeneration;
 using CoreNodeModels.Properties;
+using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
-
 using CodeBlockNode = ProtoCore.AST.AssociativeAST.CodeBlockNode;
 using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
-using Newtonsoft.Json;
 
 namespace CoreNodeModels.Logic
 {
@@ -46,26 +44,6 @@ namespace CoreNodeModels.Logic
             var astNodes = allAstNodes.SelectMany(t => t.Item2).ToList();
             astNodes.Add(AstFactory.BuildReturnStatement(inputAstNodes[branch]));
             return astNodes;
-        }
-
-        private void SanityCheck()
-        {
-            // condition branch
-            var condNodes = GetInScopeNodesForInport(0, false, true, true).Where(n => !(n is Symbol));
-            var trueNodes = new HashSet<NodeModel>(GetInScopeNodesForInport(1, false).Where(n => !(n is Symbol)));
-            var falseNodes = new HashSet<NodeModel>(GetInScopeNodesForInport(2, false).Where(n => !(n is Symbol)));
-
-            trueNodes.IntersectWith(condNodes);
-            falseNodes.IntersectWith(condNodes);
-            trueNodes.UnionWith(falseNodes);
-
-            if (trueNodes.Any())
-            {
-                foreach (var node in trueNodes)
-                {
-                    node.Error("A node cann't be both in condition and true/false branches of IF node");
-                }
-            }
         }
 
         /// <summary>

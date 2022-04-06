@@ -1,0 +1,84 @@
+{
+  "Uuid": "6b11e76c-b00c-4300-a7a6-44b5e369c268",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "CustomRenderExample",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Examples.CustomRenderExample.Create",
+      "Id": "a0a49dec368841ef9f140858fef31188",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e751ff6164b4415ca6561fca14fbfa9a",
+          "Name": "CustomRenderExample",
+          "Description": "CustomRenderExample",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "CustomRenderExample.Create ( ): CustomRenderExample"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Dynamo Samples",
+      "Version": "2.0.1",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "a0a49dec368841ef9f140858fef31188"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.5.0.5915",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "CustomRenderExample.Create",
+        "Id": "a0a49dec368841ef9f140858fef31188",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 151.5,
+        "Y": 210.5
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

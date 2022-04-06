@@ -1,8 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
-using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -11,16 +9,16 @@ namespace Dynamo.Tests
     {
         [Test]
         [Category("UnitTests")]
-        public void WhenStartingDynamoInputAndOutputNodesAreMissingFromSearch()
+        public void WhenStartingDynamoInputAndOutputNodesAreNolongerMissingFromSearch()
         {
             Assert.IsAssignableFrom( typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace );
 
             // search and results are correct
-            ViewModel.SearchViewModel.SearchAndUpdateResults("Input");
-            Assert.AreEqual(0, ViewModel.SearchViewModel.FilteredResults.Count(x => x.Model.Name == "Input"));
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Input");
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == "Input"));
 
-            ViewModel.SearchViewModel.SearchAndUpdateResults("Output");
-            Assert.AreEqual(0, ViewModel.SearchViewModel.FilteredResults.Count(x => x.Model.Name == "Output"));
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Output");
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == "Output"));
         }
 
         [Test]
@@ -40,11 +38,11 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.Name, "Home");
 
             // search and results are correct
-            ViewModel.SearchViewModel.SearchAndUpdateResults("Input");
-            Assert.AreEqual(0, ViewModel.SearchViewModel.FilteredResults.Count(x => x.Model.Name == "Input"));
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Input");
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == "Input"));
 
-            ViewModel.SearchViewModel.SearchAndUpdateResults("Output");
-            Assert.AreEqual(0, ViewModel.SearchViewModel.FilteredResults.Count(x => x.Model.Name == "Output"));
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Output");
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == "Output"));
         }
 
         [Test]

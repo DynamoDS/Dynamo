@@ -1,5 +1,6 @@
 ﻿using Dynamo.Properties;
 using Dynamo.Utilities;
+using System;
 
 namespace Dynamo.Configuration
 {
@@ -38,11 +39,13 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Maximum width of Watch Node
         /// </summary>
+        [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
         public static readonly double MaxWatchNodeWidth = 280.0;
 
         /// <summary>
         /// Maximum height of Watch Node
         /// </summary>
+        [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
         public static readonly double MaxWatchNodeHeight = 310.0;
 
         #endregion
@@ -106,7 +109,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Generic Constants
         /// </summary>
-        public static readonly double PortHeightInPixels = 26;
+        public static readonly double PortHeightInPixels = 34;
 
         /// <summary>
         /// Canvas Control
@@ -129,7 +132,13 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Default width of tab
         /// </summary>
-        public static readonly int TabDefaultWidth = 250;
+        public static readonly int TabDefaultWidth = 225;
+
+        /// <summary>
+        /// Minimum width of tab in the extensions side bar
+        /// </summary>
+        public static readonly int ExtensionsSideBarTabMinWidth = 150;
+
         #endregion
 
         #region Information Bubble
@@ -232,9 +241,15 @@ namespace Dynamo.Configuration
         #region CodeBlockNode
 
         /// <summary>
-        ///     Default height of CodeBlock's port
+        ///     Default height of CodeBlock's port. Now obsolete.
+        ///     Inputs height are set in the normal way, outputs height is set to CodeBlockOutputPortHeightInPixels
         /// </summary>
-        public static readonly double CodeBlockPortHeightInPixels = 17.573333333333336;
+        [Obsolete] public static readonly double CodeBlockPortHeightInPixels = 17.573333333333336;
+
+        /// <summary>
+        ///     Code Block outputs have a condensed port height
+        /// </summary>
+        public static readonly double CodeBlockOutputPortHeightInPixels = 16.345;
 
         /// <summary>
         ///     Maximal port name length of CodeBlock
@@ -275,8 +290,8 @@ namespace Dynamo.Configuration
 
         #region Preview Control Settings
 
-        internal static readonly double MaxExpandedPreviewWidth = MaxWatchNodeWidth;
-        internal static readonly double MaxExpandedPreviewHeight = MaxWatchNodeHeight;
+        internal static readonly double MaxExpandedPreviewWidth = 280.0;
+        internal static readonly double MaxExpandedPreviewHeight = 310.0;
         internal static readonly double MaxCondensedPreviewWidth = 280.0;
         internal static readonly double MaxCondensedPreviewHeight = 64.0;
         internal static readonly double DefCondensedContentWidth = 33.0;

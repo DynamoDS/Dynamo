@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using Dynamo.Core;
-using Dynamo.Utilities;
 using Dynamo.Graph;
+using Dynamo.Utilities;
 using NUnit.Framework;
 
 namespace Dynamo.Tests

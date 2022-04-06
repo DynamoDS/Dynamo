@@ -12,23 +12,21 @@ namespace Dynamo.ViewModels
     {
         #region Private Delegate Command Data Members
 
-        private DelegateCommand _hideCommand;
-        private DelegateCommand _setCurrentOffsetCommand;
-        private DelegateCommand _nodeFromSelectionCommand;
-        private DelegateCommand _setZoomCommand;
-        private DelegateCommand _resetFitViewToggleCommand;
-        private DelegateCommand _findByIdCommand;
-        private DelegateCommand _alignSelectedCommand;
-        private DelegateCommand _setArgumentLacingCommand;
-        private DelegateCommand _findNodesFromSelectionCommand;
-        private DelegateCommand _selectAllCommand;
-        private DelegateCommand _graphAutoLayoutCommand;
-        private DelegateCommand _pauseVisualizationManagerUpdateCommand;
-        private DelegateCommand _unpauseVisualizationManagerUpdateCommand;
-        private DelegateCommand _showHideAllGeometryPreviewCommand;
-        private DelegateCommand _showInCanvasSearchCommand;
-        private DelegateCommand _pasteCommand;
-        private DelegateCommand _computeRunStateCommand;
+        private DelegateCommand hideCommand;
+        private DelegateCommand setCurrentOffsetCommand;
+        private DelegateCommand nodeFromSelectionCommand;
+        private DelegateCommand setZoomCommand;
+        private DelegateCommand resetFitViewToggleCommand;
+        private DelegateCommand findByIdCommand;
+        private DelegateCommand alignSelectedCommand;
+        private DelegateCommand setArgumentLacingCommand;
+        private DelegateCommand findNodesFromSelectionCommand;
+        private DelegateCommand selectAllCommand;
+        private DelegateCommand graphAutoLayoutCommand;
+        private DelegateCommand showHideAllGeometryPreviewCommand;
+        private DelegateCommand showInCanvasSearchCommand;
+        private DelegateCommand pasteCommand;
+        private DelegateCommand hideAllPopupCommand;
 
         #endregion
 
@@ -43,7 +41,7 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public DelegateCommand PasteCommand
         {
-            get { return _pasteCommand ?? (_pasteCommand = new DelegateCommand(Paste, DynamoViewModel.CanPaste)); }
+            get { return pasteCommand ?? (pasteCommand = new DelegateCommand(Paste, DynamoViewModel.CanPaste)); }
         }
 
         [JsonIgnore]
@@ -51,9 +49,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if(_selectAllCommand == null)
-                    _selectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
-                return _selectAllCommand;
+                if(selectAllCommand == null)
+                    selectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
+                return selectAllCommand;
             }
         }
 
@@ -61,8 +59,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand GraphAutoLayoutCommand
         {
             get {
-                return _graphAutoLayoutCommand
-                    ?? (_graphAutoLayoutCommand =
+                return graphAutoLayoutCommand
+                    ?? (graphAutoLayoutCommand =
                         new DelegateCommand(DoGraphAutoLayout, CanDoGraphAutoLayout));
             }
         }
@@ -86,10 +84,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if(_hideCommand == null)
-                    _hideCommand = new DelegateCommand(Hide, CanHide);
+                if(hideCommand == null)
+                    hideCommand = new DelegateCommand(Hide, CanHide);
 
-                return _hideCommand;
+                return hideCommand;
             }
         }
 
@@ -98,10 +96,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if(_setCurrentOffsetCommand == null)
-                    _setCurrentOffsetCommand = new DelegateCommand(SetCurrentOffset, CanSetCurrentOffset);
+                if(setCurrentOffsetCommand == null)
+                    setCurrentOffsetCommand = new DelegateCommand(SetCurrentOffset, CanSetCurrentOffset);
 
-                return _setCurrentOffsetCommand;
+                return setCurrentOffsetCommand;
             }
         }
 
@@ -110,10 +108,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if(_nodeFromSelectionCommand == null)
-                    _nodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
+                if(nodeFromSelectionCommand == null)
+                    nodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
 
-                return _nodeFromSelectionCommand;
+                return nodeFromSelectionCommand;
             }
         }
 
@@ -122,9 +120,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if(_setZoomCommand == null)
-                    _setZoomCommand = new DelegateCommand(SetZoom, CanSetZoom);
-                return _setZoomCommand;
+                if(setZoomCommand == null)
+                    setZoomCommand = new DelegateCommand(SetZoom, CanSetZoom);
+                return setZoomCommand;
             }
         }
 
@@ -133,9 +131,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_resetFitViewToggleCommand == null)
-                    _resetFitViewToggleCommand = new DelegateCommand(ResetFitViewToggle, CanResetFitViewToggle);
-                return _resetFitViewToggleCommand;
+                if (resetFitViewToggleCommand == null)
+                    resetFitViewToggleCommand = new DelegateCommand(ResetFitViewToggle, CanResetFitViewToggle);
+                return resetFitViewToggleCommand;
             }
         }
 
@@ -144,10 +142,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if(_findByIdCommand == null)
-                    _findByIdCommand = new DelegateCommand(FindById, CanFindById);
+                if(findByIdCommand == null)
+                    findByIdCommand = new DelegateCommand(FindById, CanFindById);
 
-                return _findByIdCommand;
+                return findByIdCommand;
             }
         }
 
@@ -156,10 +154,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if(_alignSelectedCommand == null)
-                    _alignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected);
+                if(alignSelectedCommand == null)
+                    alignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected);
 
-                return _alignSelectedCommand;
+                return alignSelectedCommand;
             }
         }
 
@@ -168,13 +166,13 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_setArgumentLacingCommand == null)
+                if (setArgumentLacingCommand == null)
                 {
-                    _setArgumentLacingCommand = new DelegateCommand(
+                    setArgumentLacingCommand = new DelegateCommand(
                         SetArgumentLacing, p => HasSelection);
                 }
 
-                return _setArgumentLacingCommand;
+                return setArgumentLacingCommand;
             }
         }
 
@@ -183,10 +181,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if(_findNodesFromSelectionCommand == null)
-                    _findNodesFromSelectionCommand = new DelegateCommand(FindNodesFromSelection, CanFindNodesFromSelection);
+                if(findNodesFromSelectionCommand == null)
+                    findNodesFromSelectionCommand = new DelegateCommand(FindNodesFromSelection, CanFindNodesFromSelection);
 
-                return _findNodesFromSelectionCommand;
+                return findNodesFromSelectionCommand;
             }
         }
 
@@ -195,13 +193,13 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_showHideAllGeometryPreviewCommand == null)
+                if (showHideAllGeometryPreviewCommand == null)
                 {
-                    _showHideAllGeometryPreviewCommand = new DelegateCommand(
+                    showHideAllGeometryPreviewCommand = new DelegateCommand(
                         ShowHideAllGeometryPreview);
                 }
 
-                return _showHideAllGeometryPreviewCommand;
+                return showHideAllGeometryPreviewCommand;
             }
         }
 
@@ -211,13 +209,27 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_showInCanvasSearchCommand == null)
-                    _showInCanvasSearchCommand = new DelegateCommand(OnRequestShowInCanvasSearch);
+                if (showInCanvasSearchCommand == null)
+                    showInCanvasSearchCommand = new DelegateCommand(OnRequestShowInCanvasSearch);
 
-                return _showInCanvasSearchCommand;
+                return showInCanvasSearchCommand;
             }
         }
 
+        /// <summary>
+        /// View Command to hide all popup in special cases
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand HideAllPopupCommand
+        {
+            get
+            {
+                if (hideAllPopupCommand == null)
+                    hideAllPopupCommand = new DelegateCommand(OnRequestHideAllPopup);
+
+                return hideAllPopupCommand;
+            }
+        }
         #endregion
 
         #region Properties for Command Data Binding

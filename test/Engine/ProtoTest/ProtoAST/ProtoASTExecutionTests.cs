@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
-using ProtoTest.TD;
-using ProtoScript.Runners;
-using ProtoTestFx.TD;
 
 namespace ProtoTest.ProtoAST
 {

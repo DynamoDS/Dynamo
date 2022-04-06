@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace Dynamo.Library
 {
@@ -11,5 +12,8 @@ namespace Dynamo.Library
         /// Loads node's library
         /// </summary>
         void LoadNodeLibrary(Assembly library);
+
+        //TODO: Add LoadPackages to interface in 3.0
+        //void LoadPackages(IEnumerable<Assembly> assemblies);
     }
 }

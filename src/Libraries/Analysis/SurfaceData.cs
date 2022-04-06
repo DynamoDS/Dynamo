@@ -5,7 +5,6 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 
 namespace Analysis
 {
@@ -109,39 +108,6 @@ namespace Analysis
             }
 
             return new SurfaceData(surface, uvs, values);
-        }
-
-        #region private methods
-
-        /// <summary>
-        /// Cull calculation locations that aren't within 1e-6 of the surface.
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerable<UV> CullCalculationLocations(Surface surface, IEnumerable<UV> calculationLocations)
-        {
-            var pts = new List<UV>();
-
-            foreach (var uv in calculationLocations)
-            {
-                var pt = surface.PointAtParameter(uv.U, uv.V);
-                var dist = pt.DistanceTo(surface);
-                if (dist < 1e-6 && dist > -1e-6)
-                {
-                    pts.Add(uv);
-                }
-            }
-
-            return pts;
-        }
-
-        #endregion
-
-        private static void DebugTime(Stopwatch sw, string message)
-        {
-            sw.Stop();
-            Debug.WriteLine("{0}:{1}", sw.Elapsed, message);
-            sw.Reset();
-            sw.Start();
         }
 
         /// <summary>

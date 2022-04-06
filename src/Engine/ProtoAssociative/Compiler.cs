@@ -57,7 +57,6 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    //if not null, Compile has been called from DfsTraverse. No parsing is needed. 
                     if (codeBlockNode == null)
                     {
                         var parseResult = ParserUtils.ParseWithCore(langBlock.Code, core);
@@ -67,6 +66,7 @@ namespace ProtoAssociative
                     }
                     else
                     {
+                        //if codeBlockNode is not null, Compile has been called from DfsTraverse. No parsing is needed. 
                         if (!core.builtInsLoaded)
                         {
                             // Load the built-in methods manually

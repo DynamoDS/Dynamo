@@ -1,8 +1,8 @@
 ﻿using System.IO;
-using NUnit.Framework;
 using Dynamo.Tests;
+using NUnit.Framework;
 
-namespace DynamoCoreWpfTests 
+namespace DynamoCoreWpfTests
 {
     class ExecutionIntervalTests : DynamoViewModelUnitTest
     {

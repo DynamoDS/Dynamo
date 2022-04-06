@@ -5,7 +5,9 @@ using System.Runtime.Serialization;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
+using Dynamo.Engine.Profiling;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Scheduler;
 using ProtoCore.AST.AssociativeAST;
@@ -35,6 +37,11 @@ namespace Dynamo.Engine
         /// This event is fired when a node has been compiled.
         /// </summary>
         public event AstBuiltEventHandler AstBuilt;
+
+        /// <summary>
+        /// The event notifies client that the VMLibraries have been reset and the VM is now ready to run the new code. 
+        /// </summary>
+        internal static event Action VMLibrariesReset;
 
         /// <summary>
         /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
@@ -104,6 +111,19 @@ namespace Dynamo.Engine
             get { return codeCompletionServices; }
         }
 
+        internal ProfilingSession ProfilingSession
+        {
+            get { return astBuilder.ProfilingSession; }
+        }
+
+        /// <summary>
+        /// Returns information about time spent compiling and executing nodes.                                                 
+        /// </summary>
+        public IProfilingExecutionTimeData ExecutionTimeData
+        {
+            get { return ProfilingSession.ProfilingData; }
+        }
+
         /// <summary>
         /// A property defining whether the EngineController has been disposed or not.
         /// This is a conservative field, as there should only be one owner of a valid
@@ -122,6 +142,7 @@ namespace Dynamo.Engine
             this.libraryServices = libraryServices;
             libraryServices.LibraryLoaded += LibraryLoaded;
             CompilationServices = new CompilationServices(libraryServices);
+            codeCompletionServices = new CodeCompletionServices(libraryServices.LibraryManagementCore);
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
 
@@ -145,6 +166,33 @@ namespace Dynamo.Engine
 
             liveRunnerServices.Dispose();
             codeCompletionServices = null;
+        }
+
+        /// <summary>
+        /// Enables or disables profiling depending on the given argument
+        /// </summary>
+        /// <param name="enable">Indicates enabling or disabling of profiling.</param>
+        /// <param name="workspace">The workspace to enable or disable profiling for.</param>
+        /// <param name="nodes">The list of nodes to enable or disable profiling for.</param>
+        public void EnableProfiling(bool enable, HomeWorkspaceModel workspace, IEnumerable<NodeModel> nodes)
+        {
+            Validity.Assert(workspace != null, "Workspace cannot be null");
+            Validity.Assert(nodes != null, "Node list cannot be null");
+
+            if (enable)
+            {
+                if (astBuilder.ProfilingSession == null)
+                {
+                    astBuilder.ProfilingSession = new ProfilingSession();
+                }
+            }
+            else
+            {
+                astBuilder.ProfilingSession.Dispose();
+                astBuilder.ProfilingSession = null;
+            }
+
+            workspace.MarkNodesAsModifiedAndRequestRun(nodes, true);
         }
 
         #region Function Groups
@@ -220,7 +268,6 @@ namespace Dynamo.Engine
 
             return graphSyncDataQueue.Dequeue();
         }
-
 
         /// <summary>
         ///  This is called on the main thread from PreviewGraphSyncData
@@ -475,10 +522,7 @@ namespace Dynamo.Engine
         {
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
 
-            // The LiveRunner core is newly instantiated whenever a new library is imported
-            // due to which a new instance of CodeCompletionServices needs to be created with the new Core
-            codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
-            libraryServices.SetLiveCore(LiveRunnerCore);
+            VMLibrariesReset?.Invoke();
         }
 
         /// <summary>
@@ -486,7 +530,16 @@ namespace Dynamo.Engine
         /// </summary>
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
-            OnLibraryLoaded();
+            if (e.LibraryPaths.Any())
+            {
+                OnLibraryLoaded();
+            }
+        }
+
+        internal event EventHandler RequestCustomNodeRegistration;
+        internal void OnRequestCustomNodeRegistration()
+        {
+            RequestCustomNodeRegistration?.Invoke(this, EventArgs.Empty);
         }
 
         #region Implement IAstNodeContainer interface
@@ -573,6 +626,7 @@ namespace Dynamo.Engine
             priorNames = libraryServices.GetPriorNames();
         }
 
+        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
         /// <summary>
         /// Pre-compiles Design script code in code block node.
         /// </summary>
@@ -580,7 +634,17 @@ namespace Dynamo.Engine
         /// <returns>true if code compilation succeeds, false otherwise</returns>
         public bool PreCompileCodeBlock(ref ParseParam parseParams)
         {
-            return CompilerUtils.PreCompileCodeBlock(compilationCore, ref parseParams, priorNames);
+            return CompilerUtils.PreCompileCodeBlock(compilationCore, parseParams, priorNames);
+        }
+
+        /// <summary>
+        /// Pre-compiles Design script code in code block node.
+        /// </summary>
+        /// <param name="parseParams">Container for compilation related parameters</param>
+        /// <returns>true if code compilation succeeds, false otherwise</returns>
+        internal bool PreCompileCodeBlock(ParseParam parseParams)
+        {
+            return CompilerUtils.PreCompileCodeBlock(compilationCore, parseParams, priorNames);
         }
     }
 

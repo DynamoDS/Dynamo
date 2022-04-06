@@ -5,6 +5,7 @@ using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Core
 {
@@ -349,7 +350,7 @@ namespace Dynamo.Core
             XmlElement newGroup = document.CreateElement(ActionGroup);
 
             // As we iterate through each child node under "actionGroup", 
-            // occassionally we may want to appand that child node under 
+            // occasionally we may want to append that child node under 
             // "newGroup". This action causes the child node to be removed, and 
             // "actionGroup.ChildNodes" to drop by one. This means that 
             // "actionGroup.ChildNodes" to be non-constant, something the loop 
@@ -358,6 +359,7 @@ namespace Dynamo.Core
             // 
             var actions = actionGroup.ChildNodes.Cast<XmlNode>().ToList();
 
+            using ((undoClient as WorkspaceModel)?.BeginDelayedGraphExecution())
             // In undo scenario, user actions are undone in the reversed order 
             // that they were done (due to inter-dependencies among components).
             // 
@@ -387,7 +389,6 @@ namespace Dynamo.Core
                         ModelBase toBeUpdated = undoClient.GetModelForElement(element);
                         if (toBeUpdated != null)
                         {
-
                             RecordActionInternal(newGroup, toBeUpdated, modelActionType);
                             undoClient.ReloadModel(element);
                         }
@@ -411,6 +412,7 @@ namespace Dynamo.Core
             // See "UndoActionGroup" above for details why this duplicate.
             var actions = actionGroup.ChildNodes.Cast<XmlNode>().ToList();
 
+            using ((undoClient as WorkspaceModel)?.BeginDelayedGraphExecution())
             // Redo operation is the reversed of undo operation, naturally.
             for (int index = actions.Count - 1; index >= 0; index--)
             {
@@ -471,6 +473,7 @@ namespace Dynamo.Core
             private readonly List<ModelBase> models;
             private readonly UndoRedoRecorder recorder;
             private readonly Dictionary<Guid, XmlElement> existingConnectors;
+            private readonly Dictionary<Guid, XmlElement> existingPins;
             private readonly Dictionary<Guid, ConnectorModel> remainingConnectors;
 
             public ModelModificationUndoHelper(UndoRedoRecorder recorder, ModelBase model)
@@ -484,6 +487,7 @@ namespace Dynamo.Core
 
                 this.models = new List<ModelBase>(models);
                 existingConnectors = new Dictionary<Guid, XmlElement>();
+                existingPins = new Dictionary<Guid, XmlElement>();
                 remainingConnectors = new Dictionary<Guid, ConnectorModel>();
 
                 var allConnectors = new List<ConnectorModel>();
@@ -511,6 +515,14 @@ namespace Dynamo.Core
                         recorder.document, SaveContext.Undo);
 
                     existingConnectors[connectorModel.GUID] = element;
+
+                    foreach(var connectorPin in connectorModel.ConnectorPinModels)
+                    {
+                        var pinElement = connectorPin.Serialize(
+                        recorder.document, SaveContext.Undo);
+
+                        existingPins[connectorPin.GUID] = pinElement;
+                    }
                 }
             }
 

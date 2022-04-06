@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Windows.Input;
-using System.Windows.Media.Media3D;
-using Autodesk.DesignScript.Geometry;
+﻿using Autodesk.DesignScript.Geometry;
 using CoreNodeModels.Input;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
@@ -15,6 +8,13 @@ using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Windows.Input;
+using System.Windows.Media.Media3D;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Vector = Autodesk.DesignScript.Geometry.Vector;
 
@@ -42,8 +42,12 @@ namespace Dynamo.Manipulation
         private const double NewNodeOffsetX = 350;
         private const double NewNodeOffsetY = 50;
         private bool active;
-
+        private string warning = string.Empty;
+        private Point originBeforeMove;// The manipulator position before the user moves the gizmo
+        private Point originAfterMove;// The manipulator position after the user moves the gizmo
         protected const double gizmoScale = 1.2;
+        protected readonly int ROUND_UP_PARAM = 3;
+        protected readonly double MIN_OFFSET_VAL = 0.001;
 
         #region properties
 
@@ -88,6 +92,31 @@ namespace Dynamo.Manipulation
         }
 
         internal Point3D? CameraPosition { get; private set; }
+        
+        // This is null for each new manipulator that is initialized.
+        private bool? isValidNode;
+
+        /// <summary>
+        /// This property is true if the cached value of the manipulator node is non-null.
+        /// It caches its value so that it doesn't have to repeatedly query the node value.
+        /// NOTE: There could be edge cases where the node value could become null while the
+        /// manipulator is being moved, etc. These cases will not be caught and the boolean
+        /// value returned would be true even though it should change to false. This case could
+        /// lead to a potential crash and is yet to be addressed.
+        /// </summary>
+        private bool IsValidNode
+        {
+            get 
+            {
+                if (isValidNode == null)
+                {
+                    isValidNode = !IsNodeNull(Node.CachedValue);
+                }
+
+                return (bool) isValidNode;
+            }
+           
+        }
 
         #endregion
 
@@ -154,8 +183,14 @@ namespace Dynamo.Manipulation
         /// <param name="mouseButtonEventArgs"></param>
         protected virtual void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
-            
+            if (!IsValidNode) return;
+
             active = UpdatePosition();
+            if (Origin != null )
+            {
+                originBeforeMove = Point.ByCoordinates(Origin.X, Origin.Y, Origin.Z);
+                originAfterMove = Point.ByCoordinates(Origin.X, Origin.Y, Origin.Z);
+            }
 
             GizmoInAction = null; //Reset Drag.
 
@@ -195,6 +230,20 @@ namespace Dynamo.Manipulation
         {
             GizmoInAction = null;
 
+            if (originBeforeMove != null && originAfterMove != null)
+            {
+                var inputNodesToManipulate = InputNodesToUpdateAfterMove(Vector.ByTwoPoints(originBeforeMove, originAfterMove));
+                foreach (var (inputNode, amount) in inputNodesToManipulate)
+                {
+                    if (inputNode == null) continue;
+
+                    if (Math.Abs(amount) < MIN_OFFSET_VAL) continue;
+
+                    dynamic uiNode = inputNode;
+                    uiNode.Value = Math.Round(amount, ROUND_UP_PARAM);
+                }
+            }
+
             //Update gizmo graphics after every camera view change
             var gizmos = GetGizmos(false);
             foreach (var gizmo in gizmos)
@@ -223,6 +272,13 @@ namespace Dynamo.Manipulation
 
             var offset = GizmoInAction.GetOffset(clickRay.GetOriginPoint(), clickRay.GetDirectionVector());
             if (offset.Length < 0.01) return;
+
+            if (originAfterMove != null)
+            {
+                var offsetPos = originAfterMove.Add(offset);
+                originAfterMove.Dispose();
+                originAfterMove = offsetPos;
+            }
 
             // Update input nodes attached to manipulator node 
             // Doing this triggers a graph update on scheduler thread
@@ -316,6 +372,16 @@ namespace Dynamo.Manipulation
                 manipulate = true;
             }
             return manipulate;
+        }
+
+        /// <summary>
+        /// Retrieves a list of InputNodes that need to be updated after the manipulator is moved. This method is called when MouseUp is triggered.
+        /// </summary>
+        /// <param name="offset">The offset vector with which the manipulator was moved by the user. This param is calculated as the vector between (Origin at MouseDown) and (Origin at MouseUp)</param>
+        /// <returns>A list of InputNodes and the new values that needs to be set to the corresponding input nodes</returns>
+        protected virtual List<(NodeModel inputNode, double amount)> InputNodesToUpdateAfterMove(Vector offset)
+        {
+            return new List<(NodeModel, double)>();
         }
 
         /// <summary>
@@ -430,7 +496,7 @@ namespace Dynamo.Manipulation
 
             // This check is required as for some reason LibG fails to load, geometry nodes are null
             // and we must return immediately before proceeding with further calls to ProtoGeometry
-            if (IsNodeValueNull()) return packages;
+            if (IsNodeNull(Node.CachedValue)) return packages;
 
             AssignInputNodes();
             
@@ -521,7 +587,21 @@ namespace Dynamo.Manipulation
         {
             Dispose(true);
 
-            Node.ClearErrorsAndWarnings();
+            // We only show the manipulator warning while the manipulator is alive.
+            // When the owner Node is deselected and the manipulator is disposed,
+            // we cleanup the manipulator warning from the owner Node.
+            // See PR 7623 for more details
+            if (!string.IsNullOrEmpty(warning))
+            {
+                Node.ClearTransientWarning(warning);
+            }
+
+            if (originBeforeMove != null)
+                originBeforeMove.Dispose();
+     
+            if (originAfterMove != null)
+                originAfterMove.Dispose();
+
             DeleteGizmos();
             DetachHandlers();
         }
@@ -533,7 +613,7 @@ namespace Dynamo.Manipulation
         public RenderPackageCache BuildRenderPackage()
         {
             Debug.Assert(IsMainThread());
-
+            warning = string.Empty;
             var packages = new RenderPackageCache();
             try
             {
@@ -545,22 +625,24 @@ namespace Dynamo.Manipulation
             }
             catch (Exception e)
             {
-                Node.Warning(Properties.Resources.DirectManipulationError +": " + e.Message);
+                warning = Properties.Resources.DirectManipulationError + ": " + e.Message;
+                Node.Warning(warning);
             }
-
             return packages;
         }
 
+        #endregion
+
         /// <summary>
         /// Checks if manipulator is enabled or not. Manipulator is enabled 
-        /// only if node is not frozen or not setup as partially applied function 
+        /// only if node is not frozen, its preview visible and value non-null. 
         /// </summary>
         /// <returns>True if enabled and can be manipulated.</returns>
         public bool IsEnabled()
         {
             if (Node.IsFrozen || !Node.IsVisible) return false;
 
-            if (IsNodeValueNull())
+            if (!IsValidNode)
             {
                 return false;
             }
@@ -568,11 +650,28 @@ namespace Dynamo.Manipulation
             return active;
         }
 
+        // TODO: Remove in 3.0
+        [Obsolete("This method will be removed in 3.0 and will no longer be available as a public API.")]
         public bool IsNodeValueNull()
         {
-            return Node.CachedValue == null || Node.CachedValue.IsNull;
+            return IsNodeNull(Node.CachedValue);
         }
-        #endregion
+
+        private static bool IsNodeNull(MirrorData data)
+        {
+            if (data == null || data.IsNull) return true;
+            
+            if (data.IsCollection)
+            {
+                var elements = data.GetElements();
+                foreach (var element in elements)
+                {
+                    if (IsNodeNull(element)) return true;
+                }
+            }
+
+            return false;
+        }
     }
 
 

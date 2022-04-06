@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ProtoCore.DSASM
+﻿namespace ProtoCore.DSASM
 {
     interface IExecutive
     {

@@ -1,24 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Text;
 using System.Linq;
 using ProtoCore.AssociativeGraph;
-using ProtoCore.AssociativeEngine;
-using ProtoCore.AST;
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.BuildData;
-using ProtoCore.CodeModel;
-using ProtoCore.DebugServices;
 using ProtoCore.DSASM;
 using ProtoCore.Lang;
 using ProtoCore.Lang.Replication;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
 using ProtoFFI;
-
-using StackFrame = ProtoCore.DSASM.StackFrame;
 
 namespace ProtoCore
 {
@@ -122,6 +112,7 @@ namespace ProtoCore
             SetProperties(compileCore.Options, compileCore.DSExecutable, compileCore.DebuggerProperties, null, compileCore.ExprInterpreterExe);
             RegisterDllTypes(compileCore.DllTypesToLoad);
             NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionBegin);
+            LastDispatchedCallSite = null;
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
@@ -233,6 +224,11 @@ namespace ProtoCore
 #endregion 
         
         private Dictionary<Guid, List<StackValue>> callsiteGCRoots = new Dictionary<Guid, List<StackValue>>();
+        /// <summary>
+        /// This field is used to keep track of the last dispatched callsite 
+        /// to detect when a different callsite is dispatched to.
+        /// </summary>
+        internal CallSite LastDispatchedCallSite;
 
         public IEnumerable<StackValue> CallSiteGCRoots
         {

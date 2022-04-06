@@ -7,8 +7,8 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Migration;
-using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels.Input
 {
@@ -50,6 +50,7 @@ namespace CoreNodeModels.Input
                     Id = this.GUID,
                     Name = this.Name,
                     Type = NodeInputTypes.numberInput,
+                    Type2 = NodeInputTypes.numberInput,
                     Description = this.Description,
                     Value = Value.ToString(CultureInfo.InvariantCulture),
 

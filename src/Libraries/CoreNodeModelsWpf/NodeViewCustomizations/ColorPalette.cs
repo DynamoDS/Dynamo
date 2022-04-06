@@ -1,19 +1,13 @@
 ﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Media;
+using CoreNodeModels.Input;
+using CoreNodeModelsWpf.Controls;
 using Dynamo.Controls;
 using Dynamo.Core;
-using Dynamo.Wpf;
-
-using CoreNodeModelsWpf.Controls;
-using CoreNodeModels.Input;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Wpf;
 using DSColor = DSCore.Color;
-using System.Windows.Data;
-using System.Windows.Controls;
-using Dynamo.Utilities;
-using System.Windows.Input;
-using System.Windows.Shapes;
-using System.Collections.Generic;
 
 namespace CoreNodeModelsWpf.Nodes
 {
@@ -37,6 +31,8 @@ namespace CoreNodeModelsWpf.Nodes
             colorPaletteNode = model;
             converter = new Converters.MediatoDSColorConverter();
             ColorPaletteUINode = new ColorPaletteUI();
+            ColorPaletteUINode.HorizontalAlignment = HorizontalAlignment.Left;
+            ColorPaletteUINode.VerticalAlignment = VerticalAlignment.Top;
             ColorPaletteUINode.xceedColorPickerControl.Closed += ColorPickerControl_Closed;
             colorPaletteNode.PropertyChanged += ColorPaletteNode_PropertyChanged;
             nodeView.ContentGrid.Children.Add(ColorPaletteUINode);

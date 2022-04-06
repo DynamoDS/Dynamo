@@ -1,15 +1,15 @@
 ﻿using System;
+using System.IO.Ports;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
-using System.IO.Ports;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Wpf;
 using Dynamo.Nodes.Properties;
+using Dynamo.Wpf;
 
 
 namespace Dynamo.Nodes

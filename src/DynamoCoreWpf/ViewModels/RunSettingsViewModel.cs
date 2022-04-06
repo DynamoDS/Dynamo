@@ -20,6 +20,7 @@ namespace Dynamo.Wpf.ViewModels
     public class RunTypeItem : NotificationObject
     {
         private bool enabled;
+        private bool isSelected;
 
         /// <summary>
         /// The enabled flag sets whether the RunType is selectablable
@@ -33,6 +34,19 @@ namespace Dynamo.Wpf.ViewModels
                 enabled = value;
                 RaisePropertyChanged("Enabled");
                 RaisePropertyChanged("ToolTipText");
+            }
+        }
+
+        /// <summary>
+        /// If this RunTypeItem is selected
+        /// </summary>
+        public bool IsSelected
+        {
+            get => isSelected;
+            internal set
+            {
+                isSelected = value;
+                RaisePropertyChanged(nameof(IsSelected));
             }
         }
 
@@ -81,12 +95,12 @@ namespace Dynamo.Wpf.ViewModels
     /// notifications as those notifications are raised when the value is set on the
     /// model.
     /// </summary>
-    public class RunSettingsViewModel : NotificationObject
+    public class RunSettingsViewModel : ViewModelBase
     {
         #region private members
 
         private bool debug = false;
-        private readonly HomeWorkspaceViewModel workspaceViewModel;
+        private HomeWorkspaceViewModel workspaceViewModel;
         private readonly DynamoViewModel dynamoViewModel;
         private RunTypeItem selectedRunTypeItem;
         private SynchronizationContext context;
@@ -182,6 +196,8 @@ namespace Dynamo.Wpf.ViewModels
             {
                 selectedRunTypeItem = value;
                 Model.RunType = selectedRunTypeItem.RunType;
+                RunTypeItems.ToList().ForEach(x => x.IsSelected = false);
+                selectedRunTypeItem.IsSelected = true;
             }
         }
 
@@ -198,7 +214,7 @@ namespace Dynamo.Wpf.ViewModels
 #if DEBUG
                 return Visibility.Visible;
 #else
-                return Visibility.Hidden;
+                return Visibility.Collapsed;
 #endif
             }
         }
@@ -215,7 +231,7 @@ namespace Dynamo.Wpf.ViewModels
 
         #endregion
 
-        #region constructors
+        #region constructors and dispose function
 
         public RunSettingsViewModel(RunSettings settings, HomeWorkspaceViewModel workspaceViewModel, DynamoViewModel dynamoViewModel)
         {
@@ -234,6 +250,15 @@ namespace Dynamo.Wpf.ViewModels
                 RunTypeItems.Add(new RunTypeItem(val));
             }
             ToggleRunTypeEnabled(RunType.Periodic, false);
+        }
+
+        /// <summary>
+        /// When switching workspace, this need to be called in HomeworkspaceViewModel dispose function
+        /// </summary>
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.workspaceViewModel = null;
         }
 
         #endregion
@@ -288,7 +313,6 @@ namespace Dynamo.Wpf.ViewModels
                 case RunType.Manual:                    
                     return;
                 case RunType.Automatic:
-                    dynamoViewModel.ShowRunPreview = false;
                     RunExpressionCommand.Execute(true);
                     return;
                 case RunType.Periodic:

@@ -3,7 +3,6 @@ using System.IO;
 using Dynamo;
 using Dynamo.Events;
 using Dynamo.Session;
-using Dynamo.Tests;
 using NUnit.Framework;
 
 namespace IntegrationTests

@@ -56,7 +56,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     public class DefaultWatch3DViewModel : NotificationObject, IWatch3DViewModel, IDisposable
     {
         protected readonly NodeModel watchModel;
-
         protected readonly IDynamoModel dynamoModel;
         protected readonly IScheduler scheduler;
         protected readonly IPreferences preferences;
@@ -79,7 +78,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// geometry updates. When set to False, the Watch3DView corresponding
         /// to this view model is not displayed.
         /// </summary>
-        public bool Active
+        public virtual bool Active
         {
             get { return active; }
             set
@@ -557,7 +556,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             RegisterPortEventHandlers(node);
         }
 
-        protected void UnregisterNodeEventHandlers(NodeModel node)
+        protected internal void UnregisterNodeEventHandlers(NodeModel node)
         {
             node.PropertyChanged -= OnNodePropertyChanged;
             node.RenderPackagesUpdated -= OnRenderPackagesUpdated;
@@ -732,7 +731,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         internal void TogglePan(object parameter)
         {
             CurrentSpaceViewModel.RequestTogglePanMode();
+            RefreshState();
+        }
 
+        internal void RefreshState()
+        {
             // Since panning and orbiting modes are exclusive from one another,
             // turning one on may turn the other off. This is the reason we must
             // raise property change for both at the same time to update visual.
@@ -749,13 +752,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void ToggleOrbit(object parameter)
         {
             CurrentSpaceViewModel.RequestToggleOrbitMode();
-
-            // Since panning and orbiting modes are exclusive from one another,
-            // turning one on may turn the other off. This is the reason we must
-            // raise property change for both at the same time to update visual.
-            RaisePropertyChanged("IsPanning");
-            RaisePropertyChanged("IsOrbiting");
-            RaisePropertyChanged("LeftClickCommand");
+            RefreshState();
         }
 
         private static bool CanToggleOrbit(object parameter)
@@ -800,6 +797,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void Dispose(bool disposing)
         {
+            // Nothing to do here.
         }
 
         public void Dispose()

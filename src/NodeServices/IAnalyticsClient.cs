@@ -56,6 +56,66 @@ namespace Dynamo.Logging
         /// Events Category related to DesignScript VM
         /// </summary>
         Engine,
+
+        /// <summary>
+        /// Events Category related to Node Auto-Complete
+        /// </summary>
+        NodeAutoCompleteOperations,
+
+        /// <summary>
+        /// Events Category related to In-Canvas search
+        /// </summary>
+        InCanvasSearchOperations,
+        
+        /// <summary>
+        /// Events Category related to Python operations
+        /// </summary>
+        PythonOperations,
+
+        /// <summary>
+        /// Events Category related to Extensions operations
+        /// </summary>
+        ExtensionOperations,
+
+        /// <summary>
+        /// Events Category related to View Extensions operations
+        /// </summary>
+        ViewExtensionOperations,
+
+        /// <summary>
+        /// Events Category related to package manager operations
+        /// </summary>
+        PackageManagerOperations,
+
+        /// <summary>
+        /// Events Category related to Note operations
+        /// </summary>
+        NoteOperations,
+
+        /// <summary>
+        /// Events Category related to Workspace References Operations
+        /// </summary>
+        WorkspaceReferencesOperations,
+
+        /// <summary>
+        /// Events Category related to saved Workspace References
+        /// </summary>
+        WorkspaceReferences,
+
+        /// <summary>
+        /// Events Category related to Groups
+        /// </summary>
+        GroupOperations,
+
+        /// <summary>
+        /// Events Category related to Node context menu
+        /// </summary>
+        NodeContextMenuOperations,
+
+        /// <summary>
+        /// Events Category related to connectors
+        /// </summary>
+        ConnectorOperations,
     }
 
     /// <summary>
@@ -84,7 +144,7 @@ namespace Dynamo.Logging
         Delete,
 
         /// <summary>
-        /// Move Event, such as Node move
+        /// Move Event, such as Node move, dialog move
         /// </summary>
         Move,
 
@@ -99,7 +159,7 @@ namespace Dynamo.Logging
         Open,
 
         /// <summary>
-        /// Close Event, such as Close workspace
+        /// Close Event, such as Close workspace, Close Python Editor
         /// </summary>
         Close,
 
@@ -114,7 +174,7 @@ namespace Dynamo.Logging
         Write,
 
         /// <summary>
-        /// Save Event, such as Save workspace
+        /// Save Event, such as Save workspace and save Python code
         /// </summary>
         Save,
 
@@ -134,9 +194,9 @@ namespace Dynamo.Logging
         EngineFailure,
 
         /// <summary>
-        /// Search Filter Button Clicked event
+        /// Filter event, e.g. when package filter is active
         /// </summary>
-        FilterButtonClicked,
+        Filter,
 
         /// <summary>
         /// Unresolved Node found event
@@ -152,6 +212,168 @@ namespace Dynamo.Logging
         /// Update Installed event
         /// </summary>
         Installed,
+        
+        /// <summary>
+        /// Select event, such as node auto-complete suggestion selection or in-canvas search selection
+        /// </summary>
+        Select,
+
+        /// <summary>
+        /// Migration event, such as Python migration or DYN migration
+        /// </summary>
+        Migration,
+
+        /// <summary>
+        /// Switch event, such as Python engine switch, dropdown node switch
+        /// </summary>
+        Switch,
+
+        /// <summary>
+        /// Run event, such as Python node run clicked, Graph run Clicked, generic node run during graph execution
+        /// </summary>
+        Run,
+
+        /// <summary>
+        /// Load event, such as extensions loaded, package loaded
+        /// </summary>
+        Load,
+
+        /// <summary>
+        /// Dock event, such as docking view extension
+        /// </summary>
+        Dock,
+
+        /// <summary>
+        /// Undock event, such as undocking view extension
+        /// </summary>
+        Undock,
+
+        /// <summary>
+        /// Rate event, such as rating guided tour
+        /// </summary>
+        Rate,
+
+        /// <summary>
+        /// Pin event, such as pinning a note to a node
+        /// </summary>
+        Pin,
+
+        /// <summary>
+        /// Unpin event, such as unpinning a note from a node
+        /// </summary>
+        Unpin,
+
+        /// <summary>
+        /// Download new event, such as downloading a new package in package reference section by user
+        /// </summary>
+        DownloadNew,
+
+        /// <summary>
+        /// KeepOld event, e.g. choosing to keep the old package in package reference section by user
+        /// </summary>
+        KeepOld,
+
+        /// <summary>
+        /// PackageReferences event, when a package reference is saved in a workspace
+        /// </summary>
+        PackageReferences,
+
+        /// <summary>
+        /// KeepOldPackage event, when a local reference is saved in a workspace
+        /// </summary>
+        LocalReferences,
+
+        /// <summary>
+        /// KeepOldPackage event, when an external reference is saved in a workspace
+        /// </summary>
+        ExternalReferences,
+
+        /// <summary>
+        /// Ungroup event, when an group is Ungrouped
+        /// </summary>
+        Ungroup,
+
+        /// <summary>
+        /// Expand event, when an group is Expanded
+        /// </summary>
+        Expanded,
+
+        /// <summary>
+        /// Collapse event, when an group is Collapsed
+        /// </summary>
+        Collapsed,
+
+        /// <summary>
+        /// AddedTo event, when a node is added to the group
+        /// </summary>
+        AddedTo,
+
+        /// <summary>
+        /// RemovedFrom event, when a node is removed from the group
+        /// </summary>
+        RemovedFrom,
+
+        /// <summary>
+        /// Preview event, when a node is Previewed
+        /// </summary>
+        Preview,
+
+        /// <summary>
+        /// Freeze event, when a node is Freezed
+        /// </summary>
+        Freeze,
+
+        /// <summary>
+        /// Rename event, when a node is Renamed
+        /// </summary>
+        Rename,
+
+        /// <summary>
+        /// Show event, when user wants to toggle display.
+        /// </summary>
+        Show,
+
+        /// <summary>
+        /// Set event, when user wants to set a property.
+        /// </summary>
+        Set,
+
+        /// <summary>
+        /// Dismiss event, e.g. to dismiss node alerts.
+        /// </summary>
+        Dismiss,
+
+        /// <summary>
+        /// Undismiss event, to show dismissed alerts.
+        /// </summary>
+        Undismiss,
+
+        /// <summary>
+        /// Break event, e.g. when a connection is broken by user choice
+        /// </summary>
+        Break,
+
+        /// <summary>
+        /// Hide event, e.g when a connection is hidden by user choice
+        /// </summary>
+        Hide,
+        /// <summary>
+        /// When a package conflict is encountered which involves at least one built-in package.
+        /// </summary>
+        BuiltInPackageConflict,
+        /// <summary>
+        /// Sort event, when user wants to sort some information
+        /// </summary>
+        Sort,
+        /// <summary>
+        /// View event, when user wants to see some information
+        /// </summary>
+        View,
+
+        /// <summary>
+        /// Show event, when user wants to view Documentation.
+        /// </summary>
+        ViewDocumentation,
     }
 
     /// <summary>
@@ -166,7 +388,7 @@ namespace Dynamo.Logging
         bool ReportingAnalytics { get; }
 
         /// <summary>
-        /// Cheks if detailed usage reporting is ON.
+        /// Checks if detailed usage reporting is ON.
         /// </summary>
         bool ReportingUsage { get; }
 

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using DynNodes = Dynamo.Nodes;
-using System.Xml;
 using System.IO;
+using System.Linq;
+using System.Xml;
 using Dynamo.Configuration;
-using ProtoCore.AST.AssociativeAST;
-using DynamoUtilities;
 using Dynamo.Engine;
+using DynamoUtilities;
+using NUnit.Framework;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Tests
 {
@@ -825,6 +823,15 @@ namespace Dynamo.Tests
                 InvalidNameError = true;
             }
             Assert.AreEqual(true, InvalidNameError);
+        }
+
+        //This test will check for the default name that is set for the workspace snapshot.
+        [Test]
+        public void GenerateSnapshotNameTest()
+        {
+            var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
+            var snapshotName = PathHelper.GetScreenCaptureNameFromPath(examplePath);
+            Assert.AreEqual(snapshotName, "Add_" + string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now));
         }
     }
 }

@@ -1,0 +1,208 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="398" Y="176.5" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>0ae467ef-f4d3-45a4-a12d-3cf37ce7999b</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="0ae467ef-f4d3-45a4-a12d-3cf37ce7999b" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="306" y="145" isVisible="true" lacing="Disabled" isSelectedInput="False" isSelectedOutput="False" IsFrozen="false" isPinned="false" CodeText="5;" ShouldFocus="false">
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="5" WorkspaceGuid="881916e6-f2cf-4a27-b993-a0bbd64d8214">
+    <ModelGuid>0ae467ef-f4d3-45a4-a12d-3cf37ce7999b</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="343" Y="295.5" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>4c9ed913-297f-47ce-8f29-2d681372fe17</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="4c9ed913-297f-47ce-8f29-2d681372fe17" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="300" y="257" isVisible="true" lacing="Disabled" isSelectedInput="False" isSelectedOutput="False" IsFrozen="false" isPinned="false" CodeText="10;" ShouldFocus="false">
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="10" WorkspaceGuid="881916e6-f2cf-4a27-b993-a0bbd64d8214">
+    <ModelGuid>4c9ed913-297f-47ce-8f29-2d681372fe17</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>4c9ed913-297f-47ce-8f29-2d681372fe17</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="285" Y="284.5" DragOperation="0" />
+  <DragSelectionCommand X="334" Y="277.5" DragOperation="1" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="582" Y="90.5" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>36a4604a-eb68-4e1c-a310-a53e4d2c96c3</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="36a4604a-eb68-4e1c-a310-a53e4d2c96c3" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="490" y="59" isVisible="true" lacing="Disabled" isSelectedInput="False" isSelectedOutput="False" IsFrozen="false" isPinned="false" CodeText="a;" ShouldFocus="false">
+      <PortInfo index="0" default="False" name="a" />
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="a" WorkspaceGuid="881916e6-f2cf-4a27-b993-a0bbd64d8214">
+    <ModelGuid>36a4604a-eb68-4e1c-a310-a53e4d2c96c3</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="537" Y="217.5" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>39842043-c189-4371-899c-5e1666e596ee</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="39842043-c189-4371-899c-5e1666e596ee" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="490" y="179" isVisible="true" lacing="Disabled" isSelectedInput="False" isSelectedOutput="False" IsFrozen="false" isPinned="false" CodeText="b;" ShouldFocus="false">
+      <PortInfo index="0" default="False" name="b" />
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="b" WorkspaceGuid="881916e6-f2cf-4a27-b993-a0bbd64d8214">
+    <ModelGuid>39842043-c189-4371-899c-5e1666e596ee</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectInRegionCommand X="738" Y="172.5" Width="1" Height="1" IsCrossSelection="true" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>39842043-c189-4371-899c-5e1666e596ee</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="479" Y="210.5" DragOperation="0" />
+  <DragSelectionCommand X="524" Y="203.5" DragOperation="1" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="528" Y="352.5" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>96007af3-534d-4581-bca8-4d053f7ec043</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="96007af3-534d-4581-bca8-4d053f7ec043" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="483" y="314" isVisible="true" lacing="Disabled" isSelectedInput="False" isSelectedOutput="False" IsFrozen="false" isPinned="false" CodeText="c;" ShouldFocus="false">
+      <PortInfo index="0" default="False" name="c" />
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="c" WorkspaceGuid="881916e6-f2cf-4a27-b993-a0bbd64d8214">
+    <ModelGuid>96007af3-534d-4581-bca8-4d053f7ec043</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectInRegionCommand X="712.5" Y="310.5" Width="7.5" Height="2" IsCrossSelection="true" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>96007af3-534d-4581-bca8-4d053f7ec043</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="481" Y="340.5" DragOperation="0" />
+  <DragSelectionCommand X="528" Y="333.5" DragOperation="1" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="702" Y="227.5" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>f62ddd73-f1f9-4a33-8c71-5506b23a8db5</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="f62ddd73-f1f9-4a33-8c71-5506b23a8db5" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="647" y="177" isVisible="true" lacing="Disabled" isSelectedInput="False" isSelectedOutput="False" IsFrozen="false" isPinned="false" CodeText="[a, b, c];" ShouldFocus="false">
+      <PortInfo index="0" default="False" name="a" />
+      <PortInfo index="1" default="False" name="b" />
+      <PortInfo index="2" default="False" name="c" />
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="[a, b, c];" WorkspaceGuid="881916e6-f2cf-4a27-b993-a0bbd64d8214">
+    <ModelGuid>f62ddd73-f1f9-4a33-8c71-5506b23a8db5</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectInRegionCommand X="875" Y="202.5" Width="0" Height="0" IsCrossSelection="false" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>f62ddd73-f1f9-4a33-8c71-5506b23a8db5</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="675" Y="212.5" DragOperation="0" />
+  <DragSelectionCommand X="712" Y="193.5" DragOperation="1" />
+  <CreateNodeCommand X="994" Y="331.5" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>e15ad50a-3cd5-4c34-85b4-82a21c786d46</ModelGuid>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="e15ad50a-3cd5-4c34-85b4-82a21c786d46" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Math.Sum" x="845" y="185.5" isVisible="true" lacing="Auto" isSelectedInput="False" isSelectedOutput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Math.Sum@double[]">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>e15ad50a-3cd5-4c34-85b4-82a21c786d46</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="1026" Y="349.5" DragOperation="0" />
+  <DragSelectionCommand X="877" Y="203.5" DragOperation="1" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>36a4604a-eb68-4e1c-a310-a53e4d2c96c3</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>f62ddd73-f1f9-4a33-8c71-5506b23a8db5</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>39842043-c189-4371-899c-5e1666e596ee</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="1" Type="0" ConnectionMode="1">
+    <ModelGuid>f62ddd73-f1f9-4a33-8c71-5506b23a8db5</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>96007af3-534d-4581-bca8-4d053f7ec043</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="2" Type="0" ConnectionMode="1">
+    <ModelGuid>f62ddd73-f1f9-4a33-8c71-5506b23a8db5</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>f62ddd73-f1f9-4a33-8c71-5506b23a8db5</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>e15ad50a-3cd5-4c34-85b4-82a21c786d46</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>0ae467ef-f4d3-45a4-a12d-3cf37ce7999b</ModelGuid>
+  </MakeConnectionCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>36a4604a-eb68-4e1c-a310-a53e4d2c96c3</ModelGuid>
+  </SelectModelCommand>
+  <MakeConnectionCommand PortIndex="-1" Type="0" ConnectionMode="5">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </MakeConnectionCommand>
+  <DragSelectionCommand X="492" Y="109.5" DragOperation="0" />
+  <DragSelectionCommand X="492" Y="109.5" DragOperation="1" />
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>0ae467ef-f4d3-45a4-a12d-3cf37ce7999b</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>36a4604a-eb68-4e1c-a310-a53e4d2c96c3</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>0ae467ef-f4d3-45a4-a12d-3cf37ce7999b</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>39842043-c189-4371-899c-5e1666e596ee</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>0ae467ef-f4d3-45a4-a12d-3cf37ce7999b</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>96007af3-534d-4581-bca8-4d053f7ec043</ModelGuid>
+  </MakeConnectionCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>36a4604a-eb68-4e1c-a310-a53e4d2c96c3</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="553" Y="122.5" DragOperation="0" />
+  <DragSelectionCommand X="553" Y="122.5" DragOperation="1" />
+  <SelectModelCommand Modifiers="4">
+    <ModelGuid>96007af3-534d-4581-bca8-4d053f7ec043</ModelGuid>
+  </SelectModelCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="2">
+    <ModelGuid>0ae467ef-f4d3-45a4-a12d-3cf37ce7999b</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="3">
+    <ModelGuid>4c9ed913-297f-47ce-8f29-2d681372fe17</ModelGuid>
+  </MakeConnectionCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+</Commands>

@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
+using Dynamo.PackageManager;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoCoreWpfTests;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    public class CrashReportingTests
+    public class CrashReportingTests : DynamoModelTestBase
     {
         // This is the stack trace produced by the known crash produced when 
         // opening the Core.Math sample, selecting all nodes and doing NodeToCode.
@@ -45,7 +44,13 @@ namespace Dynamo.Tests
             at System.Windows.Application.RunInternal(Window window)
             at DynamoSandbox.DynamoCoreSetup.RunApplication(Application app)";
 
+        // This are example packages names used to simulate loaded packages information
+        private string Packages = @"
+            - Package Example A
+            - Package Example B";
+
         [Test]
+        [Ignore("Test ignored because the web browser is not closed after the test execution")]
         public void CanReportBugWithNoContent()
         {
             // Create a crash report to submit
@@ -61,13 +66,14 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Ignore("Test ignored because the web browser is not closed after the test execution")]
         public void CanReportBugWithContent()
         {
             // Mock Dynamo version
             var dynamoVersion = "2.1.0";
 
             // Create a crash report to submit
-            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, StackTrace);
+            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, Packages);
             Assert.IsNotNullOrEmpty(crashReport);
 
             // Report a bug with a stack trace
@@ -78,10 +84,10 @@ namespace Dynamo.Tests
         public void StackTraceIncludedInReport()
         {
             // Mock Dynamo version
-            var dynamoVersion = "2.1.0";
+            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString();
 
             // Create a crash report to submit
-            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, StackTrace);
+            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, Packages);
             Assert.IsNotNullOrEmpty(crashReport);
 
             // Mock url for request
@@ -96,9 +102,75 @@ namespace Dynamo.Tests
 
             // Verify request contains the dynamoVersion
             Assert.True(decoded.Contains(dynamoVersion));
+            // Verify request contains the packages information
+            Assert.True(decoded.Contains(Packages));
 
+            // TODO - Can be re-added when stack traces are uploaded automatically (currently manual)
             // Verify request contains the stack trace
-            Assert.True(decoded.Contains(StackTrace));
+            // Assert.True(decoded.Contains(StackTrace));
+        }
+
+        [Test]
+        public void NullPackageLoader()
+        {
+            // Mock Dynamo version
+            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString();
+
+            //Get packages data from null package loader
+            var packagesData = Wpf.Utilities.CrashUtilities.PackagesToMakrdown(null);
+
+            // Create a crash report to submit
+            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, packagesData);
+            Assert.IsNotNullOrEmpty(crashReport);
+
+            // Mock url for request
+            string url = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(crashReport);
+            Assert.IsNotNullOrEmpty(url);
+
+            // Get body content from request
+            var query = "body=";
+            var startIndex = url.IndexOf(query) + query.Length;
+            var body = url.Substring(startIndex);
+            var decoded = Uri.UnescapeDataString(body);
+
+            var expectedString = "## What packages or external references (if any) were used?" + Environment.NewLine + "(Fill in here)";
+
+            // Verify request contains the packages information
+            Assert.True(decoded.Contains(expectedString));
+        }
+
+        [Test]
+        public void NoLoadedPackages()
+        {
+            // Mock Dynamo version
+            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString();
+
+            //Gets package loader
+            var packageLoader = CurrentDynamoModel.GetPackageManagerExtension()?.PackageLoader;
+            Assert.IsNotNull(packageLoader);
+            Assert.IsEmpty(packageLoader.LocalPackages);
+
+            //Get packages data from null package loader
+            var packagesData = Wpf.Utilities.CrashUtilities.PackagesToMakrdown(packageLoader);
+
+            // Create a crash report to submit
+            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, packagesData);
+            Assert.IsNotNullOrEmpty(crashReport);
+
+            // Mock url for request
+            string url = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(crashReport);
+            Assert.IsNotNullOrEmpty(url);
+
+            // Get body content from request
+            var query = "body=";
+            var startIndex = url.IndexOf(query) + query.Length;
+            var body = url.Substring(startIndex);
+            var decoded = Uri.UnescapeDataString(body);
+
+            var expectedString = "No loaded packages were found.";
+
+            // Verify request contains the packages information
+            Assert.True(decoded.Contains(expectedString));
         }
     }
 }

@@ -19,7 +19,7 @@ namespace DSOffice.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -70,7 +70,7 @@ namespace DSOffice.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Excel is not installed..
+        ///   Looks up a localized string similar to Excel is not installed. href=ExcelNotInstalled.html.
         /// </summary>
         internal static string ExcelNotInstalled {
             get {
@@ -93,6 +93,24 @@ namespace DSOffice.Properties {
         internal static string ReadObsolete {
             get {
                 return ResourceManager.GetString("ReadObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A workbook was not found in the provided path..
+        /// </summary>
+        internal static string WorkbookNotFound {
+            get {
+                return ResourceManager.GetString("WorkbookNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A worksheet with the provided name &apos;{0}&apos; was not found in the workbook..
+        /// </summary>
+        internal static string WorksheetNotFound {
+            get {
+                return ResourceManager.GetString("WorksheetNotFound", resourceCulture);
             }
         }
     }

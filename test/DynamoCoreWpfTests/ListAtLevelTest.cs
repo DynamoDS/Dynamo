@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
-using SystemTestServices;
-using System.IO;
-using Dynamo.Utilities;
+using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Shapes;
 using Dynamo.Controls;
-using Dynamo.ViewModels;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
-using System.Windows.Media;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using NUnit.Framework;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {
@@ -79,12 +79,15 @@ namespace DynamoCoreWpfTests
             Assert.NotNull(matchingNodeView);
 
             //when keeplist structure is on highlight should be blue
-            var rectangle = WpfUtilities.ChildrenOfType<Rectangle>(matchingNodeView).Where(x => x.Name == "highlightOverlay").FirstOrDefault();
-            Assert.NotNull(rectangle);
+            ItemsControl inputItemsControl = WpfUtilities.ChildrenOfType<ItemsControl>(matchingNodeView).Where(x => x.Name == "inputPortControl").FirstOrDefault();
+            Assert.NotNull(inputItemsControl);
+            
+            var portViewModel = inputItemsControl.ItemsSource.OfType<PortViewModel>().FirstOrDefault();
+            Assert.NotNull(portViewModel);
+            
+            var trueColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortKeepListStructureBackground"] as SolidColorBrush;
 
-            var trueColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["KeepListStructureHighlight"] as SolidColorBrush;
-
-            Assert.AreEqual(trueColor.Color, (rectangle.Fill as SolidColorBrush).Color);
+            Assert.AreEqual(trueColor.Color, portViewModel.PortBackgroundColor.Color);
 
             //when keeplist structure is on text should start with @@.
             var spinner = WpfUtilities.ChildrenOfType<UseLevelSpinner>(matchingNodeView).FirstOrDefault();

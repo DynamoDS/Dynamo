@@ -3,9 +3,9 @@ using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
-using ProtoCore.AST.AssociativeAST;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels.HigherOrder
 {
@@ -14,6 +14,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeDescription("ListMapDescription", typeof(Resources))]
     [NodeSearchTags("ListMapSearchTags",typeof(Resources))]
     [IsDesignScriptCompatible]
+    [OutPortTypes("List")]
     [AlsoKnownAs("DSCore.Map", "DSCoreNodesUI.HigherOrder.Map")]
     public class Map : NodeModel
     {
@@ -23,9 +24,9 @@ namespace CoreNodeModels.HigherOrder
         public Map()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("list", Resources.MapPortDataListToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("f(x)", Resources.MapPortDataFxToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("function", Resources.MapPortDataFxToolTip)));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("mapped", Resources.MapPortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.MapPortDataResultToolTip)));
 
             RegisterAllPorts();
         }
@@ -57,11 +58,11 @@ namespace CoreNodeModels.HigherOrder
 
         protected CombinatorNode() : this(3)
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("comb", Resources.CombinatorPortDataCombToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("combineFunction", Resources.CombinatorPortDataCombToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list0", Resources.PortDataListToolTip + " #0")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("list1", Resources.PortDataListToolTip + " #1")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list2", Resources.PortDataListToolTip + " #2")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("combined", Resources.CombinatorPortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.CombinatorPortDataResultToolTip)));
 
             RegisterAllPorts();
         }
@@ -73,12 +74,12 @@ namespace CoreNodeModels.HigherOrder
 
         protected override string GetInputName(int index)
         {
-            return "list" + index;
+            return "list" + (index-1);
         }
 
         protected override string GetInputTooltip(int index)
         {
-            return Resources.PortDataListToolTip + " #" + index;
+            return Resources.PortDataListToolTip + " #" + (index-1);
         }
 
         protected override void RemoveInput()
@@ -92,6 +93,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListCombineDescription", typeof(Resources))]
     [NodeSearchTags("ListCombineSearchTags", typeof(Resources))]
+    [OutPortTypes("List")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.Combine", "DSCoreNodesUI.HigherOrder.Combine")]
     public class Combine : CombinatorNode
@@ -270,6 +272,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListReduceDescription", typeof(Resources))]
     [NodeSearchTags("ListReduceSearchTags", typeof(Resources))]
+    [OutPortTypes("List")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.Reduce", "DSCoreNodesUI.HigherOrder.Reduce")]
     public class Reduce : VariableInputNode
@@ -281,11 +284,11 @@ namespace CoreNodeModels.HigherOrder
 
         public Reduce()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reductor", Resources.ReducePortDataReductorToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reduceFunction", Resources.ReducePortDataReductorToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("seed", Resources.ReducePortDataSeedToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list1", Resources.PortDataListToolTip + " #1")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list0", Resources.PortDataListToolTip + " #0")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("reduced", Resources.ReducePortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.ReducePortDataResultToolTip)));
 
             RegisterAllPorts();
         }
@@ -298,39 +301,14 @@ namespace CoreNodeModels.HigherOrder
             }
         }
 
-        protected override void AddInput()
-        {
-            base.AddInput();
-        }
-
-        private void UpdateReductorPort()
-        {
-            if (InPorts.Count > 6) 
-                reductorPort.Name = "f(x1, x2, ... xN, a)";
-            else
-            {
-                if (InPorts.Count == 3) 
-                    reductorPort.Name = "f(x, a)";
-                else
-                {
-                    reductorPort.Name = "f("
-                        + string.Join(
-                            ", ",
-                            Enumerable.Range(0, InPorts.Count - 2).Select(x => "x" + (x + 1)))
-                        + ", a)";
-                }
-            }
-            RegisterAllPorts();
-        }
-
         protected override string GetInputName(int index)
         {
-            return "list" + index;
+            return "list" + (index-1);
         }
 
         protected override string GetInputTooltip(int index)
         {
-            return Resources.PortDataListToolTip + " #" + index;
+            return Resources.PortDataListToolTip + " #" + (index-1);
         }
 
         protected override int GetInputIndex()
@@ -360,6 +338,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListScanDescription", typeof(Resources))]
     [NodeSearchTags("ListScanSearchTags", typeof(Resources))]
+    [OutPortTypes("List")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.ScanList", "DSCoreNodesUI.HigherOrder.ScanList")]
     public class ScanList : VariableInputNode
@@ -371,11 +350,11 @@ namespace CoreNodeModels.HigherOrder
 
         public ScanList()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reductor", Resources.ScanPortDataReductorToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reduceFunction", Resources.ScanPortDataReductorToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("seed", Resources.ScanPortDataSeedToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list1", Resources.PortDataListToolTip + " #1")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list0", Resources.PortDataListToolTip + " #0")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("scanned", Resources.ScanPortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.ScanPortDataResultToolTip)));
 
             RegisterAllPorts();
         }
@@ -388,39 +367,14 @@ namespace CoreNodeModels.HigherOrder
             }
         }
 
-        protected override void AddInput()
-        {
-            base.AddInput();
-        }
-
-        private void UpdateReductorPort()
-        {
-            if (InPorts.Count > 6)
-                reductorPort.Name = "f(x1, x2, ... xN, a)";
-            else
-            {
-                if (InPorts.Count == 3)
-                    reductorPort.Name = "f(x, a)";
-                else
-                {
-                    reductorPort.Name = "f("
-                        + string.Join(
-                            ", ",
-                            Enumerable.Range(0, InPorts.Count - 2).Select(x => "x" + (x + 1)))
-                        + ", a)";
-                }
-            }
-            RegisterAllPorts();
-        }
-
         protected override string GetInputName(int index)
         {
-            return "list" + index;
+            return "list" + (index-1);
         }
 
         protected override string GetInputTooltip(int index)
         {
-            return "List" + index;
+            return "List #" + (index-1);
         }
 
         protected override int GetInputIndex()
@@ -450,6 +404,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListFilterDescription", typeof(Resources))]
     [NodeSearchTags("ListFilterSearchTags", typeof(Resources))]
+    [OutPortTypes("List", "List")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.Filter", "DSCoreNodesUI.HigherOrder.Filter")]
     public class Filter : NodeModel
@@ -497,6 +452,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ReplaceByConditionDescription", typeof(Resources))]
     [NodeSearchTags("ReplaceByConditionSearchTags", typeof(Resources))]
+    [OutPortTypes("var[]..[]")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.Replace", "DSCoreNodesUI.HigherOrder.Replace")]
     public class Replace : NodeModel
@@ -510,7 +466,7 @@ namespace CoreNodeModels.HigherOrder
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("replaceWith", Resources.ReplacePortDataReplaceWithToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("condition", Resources.ReplacePortDataConditionToolTip)));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("var", Resources.ReplacePortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("var[]..[]", Resources.ReplacePortDataResultToolTip)));
 
             RegisterAllPorts();
         }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace FFITarget
 {
@@ -14,7 +11,7 @@ namespace FFITarget
         private int intVal;
         public int IntVal {
             get { return intVal; }
-            set { 
+            set {
                 this.intVal = value;
                 this.classProperty = new ValueContainer(intVal);
             }
@@ -22,7 +19,7 @@ namespace FFITarget
 
         public ClassFunctionality()
         {
-                
+
         }
 
         public ClassFunctionality(int intVal)
@@ -106,8 +103,8 @@ namespace FFITarget
         {
             StaticProp++;
         }
-        
-        
+
+
     }
 
     public class ValueContainer
@@ -119,7 +116,7 @@ namespace FFITarget
 
         public ValueContainer Square()
         {
-            return  new ValueContainer(SomeValue * SomeValue);
+            return new ValueContainer(SomeValue * SomeValue);
         }
 
         public int SomeValue { get; set; }
@@ -155,6 +152,18 @@ namespace FFITarget
 
         public void Dispose()
         {
+        }
+    }
+
+    public class ClassWithExceptionToString{
+
+        public static ClassWithExceptionToString Construct()
+        {
+            return new ClassWithExceptionToString();
+        }
+        public override string ToString()
+        {
+            throw new NotImplementedException();
         }
     }
 }

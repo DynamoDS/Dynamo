@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SystemTestServices;
 using System.Xml;
 using CoreNodeModels;
 using CoreNodeModels.Input;
@@ -11,6 +10,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.PackageManager;
 using NUnit.Framework;
 using PythonNodeModels;
+using SystemTestServices;
 
 namespace Dynamo.Tests
 {
@@ -25,6 +25,7 @@ namespace Dynamo.Tests
             libraries.Add("DSOffice.dll");
             libraries.Add("FunctionObject.ds");
             libraries.Add("BuiltIn.ds");
+            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -2251,17 +2252,17 @@ namespace Dynamo.Tests
         {
             // Define package loading reference paths
             var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
-            var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
+            var pkgDir = Path.Combine(dir, "pkgs\\MigrationTesting");
             var legacyGraph = Path.Combine(pkgDir, "extra\\LegacyPackageSampleGraph.dyn");
             var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
             var loader = pkgMan.PackageLoader;
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package which includes migrations
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
 
             // Assert expected package was loaded
-            Assert.AreEqual(pkg.Name, "Dynamo Samples");
+            Assert.AreEqual(pkg.Name, "MigrationTesting");
 
             // Load the legacy graph, which contains 4 ZeroTouch/NodeModel test cases that use
             // old class names than were renamed in the version of the package we are loading.
@@ -2270,6 +2271,19 @@ namespace Dynamo.Tests
 
             // Verify all 4 nodes exist in the workspace and were properly loaded/opened from above
             Assert.AreEqual(4, this.CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestZTNodeMigrationJSON_WithDifferentMethodNameAndParams()
+        {
+            var legacyGraph = Path.Combine(TestDirectory, "core","migration","TestMigrationFFIClass.dyn");
+            TestMigration(legacyGraph);
+
+            Assert.AreEqual(8, this.CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            AssertPreviewValue("408bd6b17f7f43b28a29175bf12fb01f", "hello");
+            AssertPreviewValue("013bd08a0f574e85b1d9676ba7004990", "migrated");
+            AssertPreviewValue("df483e75085340b2a8c359a59dc8ea7a", "migrated");
         }
         #endregion
 

@@ -1,0 +1,38 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="196" Y="101.6" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>4db46d47-7510-4836-979d-4048f9dfa25c</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="4db46d47-7510-4836-979d-4048f9dfa25c" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="104" y="70" isVisible="true" lacing="Disabled" isSelectedInput="False" isSelectedOutput="False" IsFrozen="false" isPinned="false" CodeText="def test1(x = 1)&#xA;{&#xA;};&#xA;&#xA;test1();" ShouldFocus="false">
+      <OutPortInfo LineIndex="4" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="def test1(x = 1)&#xD;&#xA;{&#xD;&#xA;};&#xD;&#xA;&#xD;&#xA;test1();" WorkspaceGuid="b083d17a-6387-4f83-9c3f-2043a50456ee">
+    <ModelGuid>4db46d47-7510-4836-979d-4048f9dfa25c</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="148.8" Y="273.6" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>ccdf5d90-dc7f-4ff9-afcd-a9b21972bc16</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="ccdf5d90-dc7f-4ff9-afcd-a9b21972bc16" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="56" y="242" isVisible="true" lacing="Disabled" isSelectedInput="False" isSelectedOutput="False" IsFrozen="false" isPinned="false" CodeText="def test2(x = 1)&#xA;{&#xA;};" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="def test2(x = 1)&#xD;&#xA;{&#xD;&#xA;};" WorkspaceGuid="b083d17a-6387-4f83-9c3f-2043a50456ee">
+    <ModelGuid>ccdf5d90-dc7f-4ff9-afcd-a9b21972bc16</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>4db46d47-7510-4836-979d-4048f9dfa25c</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="242.4" Y="99.2" DragOperation="0" />
+  <DragSelectionCommand X="242.4" Y="99.2" DragOperation="1" />
+  <DeleteModelCommand>
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </DeleteModelCommand>
+</Commands>

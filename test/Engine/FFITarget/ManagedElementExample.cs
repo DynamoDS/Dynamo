@@ -1,7 +1,7 @@
-﻿using DynamoServices;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using DynamoServices;
 
 namespace FFITarget
 {
@@ -181,6 +181,11 @@ namespace FFITarget
         private static int nextID = 0;
 
         private const string __TEMP_REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
+
+        public static void ResetNextID()
+        {
+            nextID = 0;
+        }
 
         public WrapperObject(int x)
         {

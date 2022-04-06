@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 
 using Analysis;
 
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
-using Dynamo;
-using Dynamo.Utilities;
-using DynamoShapeManager;
-using DynamoUtilities;
 
 using NUnit.Framework;
 

@@ -141,67 +141,70 @@ namespace Dynamo.Models
 
                 switch (element.Name)
                 {
-                    case "OpenFileCommand":
+                    case nameof(OpenFileCommand):
                         command = OpenFileCommand.DeserializeCore(element);
                         break;
-                    case "PausePlaybackCommand":
+                    case nameof(OpenFileFromJsonCommand):
+                        command = OpenFileFromJsonCommand.DeserializeCore(element);
+                        break;
+                    case nameof(PausePlaybackCommand):
                         command = PausePlaybackCommand.DeserializeCore(element);
                         break;
-                    case "RunCancelCommand":
+                    case nameof(RunCancelCommand):
                         command = RunCancelCommand.DeserializeCore(element);
                         break;
-                    case "CreateNodeCommand":
+                    case nameof(CreateNodeCommand):
                         command = CreateNodeCommand.DeserializeCore(element);
                         break;
-                    case "SelectModelCommand":
+                    case nameof(SelectModelCommand):
                         command = SelectModelCommand.DeserializeCore(element);
                         break;
-                    case "CreateNoteCommand":
+                    case nameof(CreateNoteCommand):
                         command = CreateNoteCommand.DeserializeCore(element);
                         break;
-                    case "SelectInRegionCommand":
+                    case nameof(SelectInRegionCommand):
                         command = SelectInRegionCommand.DeserializeCore(element);
                         break;
-                    case "DragSelectionCommand":
+                    case nameof(DragSelectionCommand):
                         command = DragSelectionCommand.DeserializeCore(element);
                         break;
-                    case "MakeConnectionCommand":
+                    case nameof(MakeConnectionCommand):
                         command = MakeConnectionCommand.DeserializeCore(element);
                         break;
-                    case "DeleteModelCommand":
+                    case nameof(DeleteModelCommand):
                         command = DeleteModelCommand.DeserializeCore(element);
                         break;
-                    case "UndoRedoCommand":
+                    case nameof(UndoRedoCommand):
                         command = UndoRedoCommand.DeserializeCore(element);
                         break;
-                    case "ModelEventCommand":
+                    case nameof(ModelEventCommand):
                         command = ModelEventCommand.DeserializeCore(element);
                         break;
-                    case "UpdateModelValueCommand":
+                    case nameof(UpdateModelValueCommand):
                         command = UpdateModelValueCommand.DeserializeCore(element);
                         break;
-                    case "ConvertNodesToCodeCommand":
+                    case nameof(ConvertNodesToCodeCommand):
                         command = ConvertNodesToCodeCommand.DeserializeCore(element);
                         break;
-                    case "CreateCustomNodeCommand":
+                    case nameof(CreateCustomNodeCommand):
                         command = CreateCustomNodeCommand.DeserializeCore(element);
                         break;
-                    case "SwitchTabCommand":
+                    case nameof(SwitchTabCommand):
                         command = SwitchTabCommand.DeserializeCore(element);
                         break;
-                    case "CreateAnnotationCommand":
+                    case nameof(CreateAnnotationCommand):
                         command = CreateAnnotationCommand.DeserializeCore(element);
                         break;
-                    case "UngroupModelCommand":
+                    case nameof(UngroupModelCommand):
                         command = UngroupModelCommand.DeserializeCore(element);
                         break;
-                    case "AddPresetCommand":
+                    case nameof(AddPresetCommand):
                         command = AddPresetCommand.DeserializeCore(element);
                         break;
-                    case "ApplyPresetCommand":
+                    case nameof(ApplyPresetCommand):
                         command = ApplyPresetCommand.DeserializeCore(element);
                         break;
-                    case "CreateAndConnectNodeCommand":
+                    case nameof(CreateAndConnectNodeCommand):
                         command = CreateAndConnectNodeCommand.DeserializeCore(element);
                         break;
                 }
@@ -547,6 +550,83 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// A command to open a file from Json content.
+        /// </summary>
+        [DataContract]
+        public class OpenFileFromJsonCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="fileContents">The Json content of a file.</param>
+            /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
+            public OpenFileFromJsonCommand(string fileContents, bool forceManualExecutionMode = false)
+            {
+                FileContents = fileContents;
+                ForceManualExecutionMode = forceManualExecutionMode;
+            }
+
+            internal static OpenFileFromJsonCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                string xmlFileContents = helper.ReadString("XmlFileContents");
+                return new OpenFileFromJsonCommand(xmlFileContents);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            [DataMember]
+            internal string FileContents { get; private set; }
+            internal bool ForceManualExecutionMode { get; private set; }
+            private DynamoModel dynamoModel;
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                this.dynamoModel = dynamoModel;
+                dynamoModel.OpenFileFromJsonImpl(this);
+            }
+
+            
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("XmlFileContents", FileContents);
+            }
+            
+
+            internal override void TrackAnalytics()
+            {
+                // Log file open action and the number of nodes in the opened workspace
+                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                    "In memory json file",
+                    Logging.Actions.Open,
+                    dynamoModel.CurrentWorkspace.Nodes.Count());
+
+                // If there are unresolved nodes in the opened workspace, log the node names and count
+                var unresolvedNodes = dynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+                if (unresolvedNodes != null && unresolvedNodes.Any())
+                {
+                    Dynamo.Logging.Analytics.TrackEvent(
+                        Logging.Actions.Unresolved,
+                        Logging.Categories.NodeOperations,
+                        unresolvedNodes.Select(n => string.Format("{0}:{1}", n.LegacyAssembly, n.LegacyFullName))
+                            .Aggregate((x, y) => string.Format("{0}, {1}", x, y)),
+                        unresolvedNodes.Count());
+                }
+            }
+
+            #endregion
+        }
+
+        /// <summary>
         /// A command used to execute or cancel execution.
         /// </summary>
         [DataContract]
@@ -641,8 +721,6 @@ namespace Dynamo.Models
         [DataContract]
         public class CreateNodeCommand : ModelBasedRecordableCommand
         {
-            #region Public Class Methods
-
             private void SetProperties(double x, double y, bool defaultPosition, bool transformCoordinates)
             {
                 X = x;
@@ -650,6 +728,8 @@ namespace Dynamo.Models
                 DefaultPosition = defaultPosition;
                 TransformCoordinates = transformCoordinates;
             }
+
+            #region Public Class Methods
 
             /// <summary>
             /// </summary>
@@ -786,7 +866,7 @@ namespace Dynamo.Models
 
                 if (Node != null)
                 {
-                    var nodeElement = Node.Serialize(element.OwnerDocument, SaveContext.File);
+                    var nodeElement = Node.Serialize(element.OwnerDocument, SaveContext.Save);
                     element.AppendChild(nodeElement);
                 }
                 else if (NodeXml != null)
@@ -817,6 +897,31 @@ namespace Dynamo.Models
         [DataContract]
         public class CreateAndConnectNodeCommand : ModelBasedRecordableCommand
         {
+            private readonly bool reuseUndoRedoGroup;
+
+            /// <summary>
+            /// Creates a new CreateAndConnectNodeCommand with the given inputs
+            /// </summary>
+            /// <param name="newNodeGuid"></param>
+            /// <param name="existingNodeGuid"></param>
+            /// <param name="newNodeName">The name of node to create</param>
+            /// <param name="outPortIndex"></param>
+            /// <param name="inPortIndex"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="createAsDownstreamNode">
+            /// new node to be created as downstream or upstream node wrt the existing node
+            /// </param>
+            /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
+            /// <param name="reuseUndoRedoGroup">Skip creating new undo action group and reuse existing one if true.</param>
+            internal CreateAndConnectNodeCommand(Guid newNodeGuid, Guid existingNodeGuid, string newNodeName,
+                int outPortIndex, int inPortIndex,
+                double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection, bool reuseUndoRedoGroup)
+                : this(newNodeGuid, existingNodeGuid, newNodeName, outPortIndex, inPortIndex,
+                    x, y, createAsDownstreamNode, addNewNodeToSelection)
+            {
+                this.reuseUndoRedoGroup = reuseUndoRedoGroup;
+            }
 
             #region Public Class Methods
 
@@ -879,7 +984,14 @@ namespace Dynamo.Models
 
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoModel.CreateAndConnectNodeImpl(this);
+                if (reuseUndoRedoGroup)
+                {
+                    dynamoModel.CreateAndConnectNodeImplWithUndoGroup(this);
+                }
+                else
+                {
+                    dynamoModel.CreateAndConnectNodeImpl(this);
+                }
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -1360,11 +1472,20 @@ namespace Dynamo.Models
                 /// <summary>
                 /// End and start control connections.
                 /// </summary>
+                [Obsolete("Replaced with BeginDuplicateConnection")]
                 EndAndStartCtrlConnection,
                 /// <summary>
                 /// Cancel connection.
                 /// </summary>
-                Cancel
+                Cancel,
+                /// <summary>
+                /// Begin duplicate connection.
+                /// </summary>
+                BeginDuplicateConnection,
+                /// <summary>
+                /// End current connection and create new connections.
+                /// </summary>
+                BeginCreateConnections
             }
 
             void setProperties(int portIndex, PortType portType, Mode mode)
@@ -1674,6 +1795,10 @@ namespace Dynamo.Models
         /// <summary>
         /// A command used to update the value of a property on a model object.
         /// </summary>
+        /// <exception cref="System.InvalidOperationException">This exception is 
+        /// thrown if the node model is not found in the workspace.</exception>
+        /// /// <exception cref="System.ArgumentNullException">This exception is 
+        /// thrown if the node model or list of node models passed is null or empty.</exception>
         [DataContract]
         public class UpdateModelValueCommand : ModelBasedRecordableCommand
         {
@@ -2015,6 +2140,7 @@ namespace Dynamo.Models
             /// <param name="x"></param>
             /// <param name="y"></param>
             /// <param name="defaultPosition"></param>
+            [Obsolete("Use method with annotationTitelText argument instead.")]
             public CreateAnnotationCommand(Guid annotationId, string annotationText,
                 double x, double y, bool defaultPosition)
                 : base(new List<Guid> { annotationId })
@@ -2029,13 +2155,43 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            ///
+            /// Recordable command to create a new AnnotationModel
+            /// </summary>
+            /// <param name="annotationId">Id of the new AnnotationModel</param>
+            /// <param name="annotationText">Header text</param>
+            /// <param name="annotationDescriptionText">Description text</param>
+            /// <param name="x">X location</param>
+            /// <param name="y">Y location</param>
+            /// <param name="defaultPosition">The default position</param>
+            public CreateAnnotationCommand(Guid annotationId, string annotationText, string annotationDescriptionText,
+                double x, double y, bool defaultPosition)
+                : base(new List<Guid> { annotationId })
+            {
+                if (string.IsNullOrEmpty(annotationText))
+                {
+                    annotationText = Resources.GroupNameDefaultText;
+                }
+                if (string.IsNullOrEmpty(annotationDescriptionText))
+                {
+                    annotationDescriptionText = Resources.GroupDefaultText;
+                }
+
+                AnnotationText = annotationText;
+                AnnotationDescriptionText = annotationDescriptionText;
+                X = x;
+                Y = y;
+                DefaultPosition = defaultPosition;
+            }
+
+            /// <summary>
+            /// Recordable command to create a new AnnotationModel
             /// </summary>
             /// <param name="annotationId"></param>
             /// <param name="annotationText"></param>
             /// <param name="x"></param>
             /// <param name="y"></param>
             /// <param name="defaultPosition"></param>
+            [Obsolete("Use method with annotationTitelText argument instead.")]
             public CreateAnnotationCommand(IEnumerable<Guid> annotationId, string annotationText,
                 double x, double y, bool defaultPosition)
                 : base(annotationId)
@@ -2044,6 +2200,35 @@ namespace Dynamo.Models
                     annotationText = Resources.GroupDefaultText;
 
                 AnnotationText = annotationText;
+                X = x;
+                Y = y;
+                DefaultPosition = defaultPosition;
+            }
+
+            /// <summary>
+            /// Recordable command to create a new AnnotationModel
+            /// </summary>
+            /// <param name="annotationId">Collection of ids</param>
+            /// <param name="annotationText">Header text</param>
+            /// <param name="annotationDescriptionText">Description text</param>
+            /// <param name="x">X location</param>
+            /// <param name="y">Y location</param>
+            /// <param name="defaultPosition">The default position</param>
+            public CreateAnnotationCommand(IEnumerable<Guid> annotationId, string annotationText,
+                string annotationDescriptionText, double x, double y, bool defaultPosition)
+                : base(annotationId)
+            {
+                if (string.IsNullOrEmpty(annotationText))
+                {
+                    annotationText = Resources.GroupNameDefaultText;
+                }
+                if (string.IsNullOrEmpty(annotationDescriptionText))
+                {
+                    annotationDescriptionText = Resources.GroupDefaultText;
+                }
+
+                AnnotationText = annotationText;
+                AnnotationDescriptionText = annotationDescriptionText;
                 X = x;
                 Y = y;
                 DefaultPosition = defaultPosition;
@@ -2065,6 +2250,7 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
+            internal string AnnotationDescriptionText { get; private set; }
             internal string AnnotationText { get; private set; }
             internal double X { get; private set; }
             internal double Y { get; private set; }
@@ -2184,6 +2370,65 @@ namespace Dynamo.Models
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
                 dynamoModel.AddToGroupImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                base.SerializeCore(element);
+            }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// A command to add a AnnotationModel object to a group.
+        /// </summary>
+        public class AddGroupToGroupCommand : ModelBasedRecordableCommand
+        {
+            /// <summary>
+            /// Id of the the group that should host
+            /// the other group.
+            /// </summary>
+            public Guid HostGroupGuid { get; set; }
+
+            [JsonConstructor]
+            public AddGroupToGroupCommand(string modelGuid, string hostModelGuid) : base(new[] { Guid.Parse(modelGuid) }) 
+            {
+                HostGroupGuid = Guid.Parse(hostModelGuid);
+            }
+
+            /// <summary>
+            /// Creates a command to add a AnnotationModel object to another AnnotationModel.
+            /// </summary>
+            /// <param name="modelGuid">The guid of the AnnotationModel to group</param>
+            /// <param name="hostModelGuid">The guid of the host AnnotationModel</param>
+            public AddGroupToGroupCommand(Guid modelGuid, Guid hostModelGuid) : base(new[] { modelGuid })
+            {
+                HostGroupGuid = hostModelGuid;
+            }
+
+            /// <summary>
+            /// Creates a command to add a AnnotationModel object to another AnnotationModel.
+            /// </summary>
+            /// <param name="modelGuid">The guid of the AnnotationModel to group</param>
+            /// <param name="hostModelGuid">The guid of the host AnnotationModel</param>
+            public AddGroupToGroupCommand(IEnumerable<Guid> modelGuid, Guid hostModelGuid) : base(modelGuid) 
+            {
+                HostGroupGuid = hostModelGuid;
+            }
+
+            internal static AddGroupToGroupCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                var modelGuids = DeserializeGuid(element, helper);
+                return new AddGroupToGroupCommand(modelGuids, Guid.Empty);
+            }
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.AddGroupsToGroupImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)

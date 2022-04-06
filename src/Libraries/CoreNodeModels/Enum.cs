@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
-using Dynamo.Utilities;
-using ProtoCore.AST.AssociativeAST;
-using Newtonsoft.Json;
 using Dynamo.Graph.Nodes;
+using Dynamo.Utilities;
+using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels
 {
@@ -70,8 +69,18 @@ namespace CoreNodeModels
             RegisterAllPorts();
         }
 
+        protected AllChildrenOfType(string outputName) : base(outputName)
+        {
+            RegisterAllPorts();
+        }
+
         [JsonConstructor]
         protected AllChildrenOfType(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(outputName, inPorts, outPorts)
+        {
+        }
+
+        [JsonConstructor]
+        protected AllChildrenOfType(string outputName, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(outputName, inPorts, outPorts)
         {
         }
 

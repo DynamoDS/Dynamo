@@ -1,0 +1,445 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Car-Script-bug-stripped-down",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Geometry": {
+        "Key": "Autodesk.DesignScript.Geometry.Geometry",
+        "Value": "ProtoGeometry.dll"
+      },
+      "List": {
+        "Key": "List",
+        "Value": "BuiltIn.ds"
+      },
+      "Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "DesignScriptBuiltin.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
+      "Id": "440a7815cbc14d8290365c96414f6331",
+      "Inputs": [
+        {
+          "Id": "37eb537b70b440458aceaaa784abe64f",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e5004f16fdec44c7aac0f57a2c288b36",
+          "Name": "xTranslation",
+          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e0a2a25fe6c8408b824f57f6593d269e",
+          "Name": "yTranslation",
+          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "93e12fec43ab4a01961cc00eac7beb5c",
+          "Name": "zTranslation",
+          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "12317bd809294b4789c92023f4e408e0",
+          "Name": "Geometry",
+          "Description": "Transformed Geometry.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.FilterByBoolMask@var[]..[],var[]..[]",
+      "Id": "6e08d9235b04421d914145aa040da7ea",
+      "Inputs": [
+        {
+          "Id": "2644b1e593f44ac6a4a25e7966079c8c",
+          "Name": "list",
+          "Description": "List to filter.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "313d94b8f8ad481f8447247a00c8518d",
+          "Name": "mask",
+          "Description": "List of booleans representing a mask.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0c38c5555dfe4c2da53f26b3eec64f15",
+          "Name": "in",
+          "Description": "Items whose mask index is true.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "23c4c08704114b09a88b83b2a635a5cd",
+          "Name": "out",
+          "Description": "Items whose mask index is false.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Filters a sequence by looking up corresponding indices in a separate list of booleans.\n\nList.FilterByBoolMask (list: var[]..[], mask: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "100;",
+      "Id": "7a81c2027d54422ab4fc4f6b35397772",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "25a07f2797234e53a680512384ca086f",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.DoesIntersect@Autodesk.DesignScript.Geometry.Geometry",
+      "Id": "e32bec0ac9734e5fa76916e5a8945e17",
+      "Inputs": [
+        {
+          "Id": "8d0ca9a9ec554c22b0095c2622ac222b",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "860b4f828e02429ba6b12699306be3cd",
+          "Name": "other",
+          "Description": "Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8d56ed247d004563a24d94ecc0c1c304",
+          "Name": "bool",
+          "Description": "bool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Determine if another Geometry object intersects with this one\n\nGeometry.DoesIntersect (other: Geometry): bool"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Users\\pratapa\\Documents\\Dynamo\\Issues\\dyn-2270\\New folder\\CurvesToIntersect.sat",
+      "InputValue": ".\\CurvesToIntersect.sat",
+      "NodeType": "ExtensionNode",
+      "Id": "d2ae8f10fff840d081440f76513c9b94",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c2edd7f79d4a43a6b8ae6561c40f24ea",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT@string",
+      "Id": "38e27560f8de431d9c436cbf4cd890bb",
+      "Inputs": [
+        {
+          "Id": "19375cf30c78488891aa8aae898096ee",
+          "Name": "filePath",
+          "Description": "Path to the SAT file\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9a77217d396e4023b038a03067058183",
+          "Name": "Geometry[]..[]",
+          "Description": "List of imported geometries",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports a SAT file and returns an array of imported geometries\n\nGeometry.ImportFromSAT (filePath: string): Geometry[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT@string",
+      "Id": "919ebf90f307428090d54cd7de1d4273",
+      "Inputs": [
+        {
+          "Id": "b16f887c1e2842debaee2ef2e979169c",
+          "Name": "filePath",
+          "Description": "Path to the SAT file\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9773ad82c2a246f09f7334aec6ea9898",
+          "Name": "Geometry[]..[]",
+          "Description": "List of imported geometries",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports a SAT file and returns an array of imported geometries\n\nGeometry.ImportFromSAT (filePath: string): Geometry[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Users\\pratapa\\Documents\\Dynamo\\Issues\\dyn-2270\\New folder\\SelectionSolid.sat",
+      "InputValue": ".\\SelectionSolid.sat",
+      "NodeType": "ExtensionNode",
+      "Id": "e5f34e050ee5481ea1b83a48fe910f53",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "df75fee68ccb441ca68dbbfe2c6e084f",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "0c38c5555dfe4c2da53f26b3eec64f15",
+      "End": "37eb537b70b440458aceaaa784abe64f",
+      "Id": "7247e62eb2c842009cb004f2ca042ead"
+    },
+    {
+      "Start": "25a07f2797234e53a680512384ca086f",
+      "End": "e5004f16fdec44c7aac0f57a2c288b36",
+      "Id": "9dea7604f4294458a65856d379b8ca83"
+    },
+    {
+      "Start": "8d56ed247d004563a24d94ecc0c1c304",
+      "End": "313d94b8f8ad481f8447247a00c8518d",
+      "Id": "1a031e3941fa419b95fa464b3944d6e5"
+    },
+    {
+      "Start": "c2edd7f79d4a43a6b8ae6561c40f24ea",
+      "End": "19375cf30c78488891aa8aae898096ee",
+      "Id": "1c24fce8774a4d76a04bbb51c2f7f355"
+    },
+    {
+      "Start": "9a77217d396e4023b038a03067058183",
+      "End": "860b4f828e02429ba6b12699306be3cd",
+      "Id": "a25621c95fc94a2cb1ec9b23a8f92725"
+    },
+    {
+      "Start": "9a77217d396e4023b038a03067058183",
+      "End": "2644b1e593f44ac6a4a25e7966079c8c",
+      "Id": "612bbb357dd648f1aa7cb3281431df10"
+    },
+    {
+      "Start": "9773ad82c2a246f09f7334aec6ea9898",
+      "End": "8d0ca9a9ec554c22b0095c2622ac222b",
+      "Id": "ffe27e868ecc451c86f3e2c1087d6ad7"
+    },
+    {
+      "Start": "df75fee68ccb441ca68dbbfe2c6e084f",
+      "End": "b16f887c1e2842debaee2ef2e979169c",
+      "Id": "4618cf0f9be54e93aa845fb93203e546"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 100.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.9.0.2796",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 85.42557782362843,
+      "EyeY": 540.06740980987672,
+      "EyeZ": 469.9799979188121,
+      "LookX": -35.42557782362843,
+      "LookY": -530.46900587921266,
+      "LookZ": -469.9799979188121,
+      "UpX": -0.04417964443564415,
+      "UpY": 0.809016227722168,
+      "UpZ": -0.58612358570098877
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Geometry.Translate",
+        "Id": "440a7815cbc14d8290365c96414f6331",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2128.8606068194695,
+        "Y": 728.66051563687483
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "List.FilterByBoolMask",
+        "Id": "6e08d9235b04421d914145aa040da7ea",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1857.8606068194695,
+        "Y": 676.66051563687483
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "7a81c2027d54422ab4fc4f6b35397772",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1857.8606068194695,
+        "Y": 810.8738489702082
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Geometry.DoesIntersect",
+        "Id": "e32bec0ac9734e5fa76916e5a8945e17",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1553.8606068194695,
+        "Y": 702.66051563687483
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "d2ae8f10fff840d081440f76513c9b94",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 952.86060681946947,
+        "Y": 757.66051563687483
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Geometry.ImportFromSAT",
+        "Id": "38e27560f8de431d9c436cbf4cd890bb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1204.8606068194695,
+        "Y": 756.66051563687483
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Geometry.ImportFromSAT",
+        "Id": "919ebf90f307428090d54cd7de1d4273",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1204.8606068194695,
+        "Y": 648.66051563687472
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "e5f34e050ee5481ea1b83a48fe910f53",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 952.86060681946947,
+        "Y": 647.66051563687472
+      }
+    ],
+    "Annotations": [],
+    "X": -552.43942352010208,
+    "Y": -386.20890492286151,
+    "Zoom": 0.8155151893146142
+  }
+}

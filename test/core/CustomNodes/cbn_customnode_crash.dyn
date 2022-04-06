@@ -1,0 +1,78 @@
+{
+  "Uuid": "55c196e1-8972-4a4d-907e-608fd66455a8",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "cbn_customnode_crash",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "02464870-e36f-4b00-b9c5-390b72339821",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "12d33f2a354a4e65ac06a3c783a7e679",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d3f9c2bcdeff4edca78420fe1397bc7e",
+          "Name": "",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [
+    "02464870-e36f-4b00-b9c5-390b72339821"
+  ],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.5.0.6797",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "cbn_customnode_crash",
+        "Id": "12d33f2a354a4e65ac06a3c783a7e679",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 326.0,
+        "Y": 252.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

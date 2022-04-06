@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Tests;
 using Greg;
 using Greg.Requests;
@@ -107,6 +108,80 @@ namespace Dynamo.PackageManager.Tests
 
         #endregion
 
+        #region GetPackageVersionHeader
+
+        [Test]
+        public void SuccessfullyGetPackageVersionHeaderByPackageId()
+        {
+            var version = "1.0.0";
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+                .Returns(new ResponseWithContentBody<PackageVersion>()
+                {
+                    content = new PackageVersion()
+                    {
+                        version = version
+                    },
+                    success = true
+                });
+
+            var client = new PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var result = client.GetPackageVersionHeader(new PackageInfo(string.Empty, new Version(version)));
+            Assert.AreEqual(result.version, version);
+        }
+
+        [Test, ExpectedException(typeof(ApplicationException), ExpectedMessage = "The package does not exist")]
+        public void FailureOnGetPackageVersionHeaderByPackageId()
+        {
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+                .Returns(new ResponseWithContentBody<PackageVersion>()
+                {
+                    message = "The package does not exist",
+                    success = false
+                });
+
+            var client = new PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            client.GetPackageVersionHeader(new PackageInfo(string.Empty, new Version()));
+        }
+
+        [Test]
+        public void SuccessfullyGetPackageVersionHeaderByPackageName()
+        {
+            var version = "1.0.0";
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+                .Returns(new ResponseWithContentBody<PackageVersion>()
+                {
+                    content = new PackageVersion()
+                    {
+                        version = version
+                    },
+                    success = true
+                });
+
+            var client = new PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var result = client.GetPackageVersionHeader(string.Empty, version);
+            Assert.AreEqual(result.version, version);
+        }
+
+        [Test, ExpectedException(typeof(ApplicationException), ExpectedMessage = "The package does not exist")]
+        public void FailureOnGetPackageVersionHeaderByPackageName()
+        {
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+                .Returns(new ResponseWithContentBody<PackageVersion>()
+                {
+                    message = "The package does not exist",
+                    success = false
+                });
+
+            var client = new PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            client.GetPackageVersionHeader(string.Empty, string.Empty);
+        }
+
+        #endregion
+
         #region DownloadPackage
 
         [Test]
@@ -167,39 +242,6 @@ namespace Dynamo.PackageManager.Tests
             var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
 
             var res = pc.Upvote("id");
-
-            Assert.IsFalse(res);
-        }
-
-        #endregion
-
-        #region Downvote
-
-        [Test]
-        public void Downvote_ReturnsTrueWhenRequestSucceeds()
-        {
-            var gc = new Mock<IGregClient>();
-            gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<Downvote>())).Returns(new ResponseBody()
-            {
-                success = true
-            });
-
-            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
-
-            var res = pc.Downvote("id");
-
-            Assert.IsTrue(res);
-        }
-
-        [Test]
-        public void Downvote_ReturnsFalseWhenRequestThrowsException()
-        {
-            var gc = new Mock<IGregClient>();
-            gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<Downvote>())).Throws<Exception>();
-
-            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
-
-            var res = pc.Downvote("id");
 
             Assert.IsFalse(res);
         }
@@ -430,6 +472,62 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsFalse(res.Success);
         }
 
+        [Test]
+        public void DoesCurrentUserOwnPackage_ReturnsFalseWhenCurrentUserIsNotTheOwner()
+        {
+            var id = "1";
+            var username = "abcd";
+
+            var mp = new ResponseWithContentBody<PackageHeader>
+            {
+                content = new PackageHeader()
+                {
+                    _id = id,
+                    maintainers= new List<User>()
+                },
+                success = true
+            };
+
+            var c = new Mock<IGregClient>();
+            c.Setup(x =>
+                x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<GetMaintainers>()))
+                .Returns(mp);
+
+            var pc = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
+            var res = pc.DoesCurrentUserOwnPackage(new Package("1","Package","2.0.4","1"), username);
+
+            Assert.IsFalse(res);
+        }
+        [Test]
+        public void DoesCurrentUserOwnPackage_ReturnsTrueWhenCurrentUserIsTheOwner()
+        {
+            var id = "1";
+            var usrname = "abcd";
+            User usr = new User {
+                _id = id,
+                username = usrname
+            };
+
+            var mp = new ResponseWithContentBody<PackageHeader>
+            {
+                content = new PackageHeader()
+                {
+                    _id = id,
+                    maintainers = new List<User> { usr }
+                },
+                success = true
+            };
+
+            var c = new Mock<IGregClient>();
+            c.Setup(x =>
+                x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<GetMaintainers>()))
+                .Returns(mp);
+
+            var pc = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
+            var res = pc.DoesCurrentUserOwnPackage(new Package("1", "Package", "2.0.4", "1"), usrname);
+
+            Assert.IsTrue(res);
+        }
         #endregion
 
         #region Undeprecate

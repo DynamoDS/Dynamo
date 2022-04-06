@@ -4,8 +4,8 @@ using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Scheduler;
 using Dynamo.Visualization;
-using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels
 {
@@ -14,6 +14,7 @@ namespace CoreNodeModels
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeSearchTags("WatchImageSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [InPortTypes("System.Drawing.Bitmap")]
     [OutPortTypes("var")]
     [AlsoKnownAs("Dynamo.Nodes.WatchImageCore", "DSCoreNodesUI.WatchImageCore")]
     public class WatchImageCore : NodeModel

@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoTestFx.TD;
 using ProtoCore.Mirror;
 namespace ProtoTest.TD.FFI
 {
@@ -44,7 +41,7 @@ import (""FFITarget.dll"");
             thisTest.Verify("vc1Value", 3);
             thisTest.Verify("vc2Value", 3);
 
-        }
+}
 
         [Test]
         [Category("SmokeTest")]
@@ -182,6 +179,19 @@ import (TestData from ""FFITarget.dll"");
 
             string expression = o as string;
             Assert.IsTrue(expression.Equals("TestData.GetFloat()"));
+        }
+
+        [Test]
+        public void TestToStringDoesNotThrow()
+        {
+            string code = @"
+import (ClassWithExceptionToString from ""FFITarget.dll"");
+x = ClassWithExceptionToString.Construct();
+";
+            var mirror = thisTest.RunScriptSource(code);
+            var x = mirror.GetValue("x");
+            Assert.DoesNotThrow(() => { mirror.GetStringValue(x,this.core.Heap, 0); }); 
+            
         }
     }
 }

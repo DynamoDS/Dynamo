@@ -2,14 +2,12 @@
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <SelectInRegionCommand X="317" Y="312" Width="0" Height="3" IsCrossSelection="false" />
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DoubleInput guid="644ebb42-2c8a-426e-bfc4-642f94508b0f" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="178" y="79" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="0..9" />
-    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="644ebb42-2c8a-426e-bfc4-642f94508b0f" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="178" y="79" isVisible="true" isUpstreamVisible="true" lacing="Disabled"  CodeText="0..9;" ShouldFocus="false" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="644ebb42-2c8a-426e-bfc4-642f94508b0f" Modifiers="0" />
   <DragSelectionCommand X="573" Y="281" DragOperation="0" />
   <DragSelectionCommand X="211" Y="101" DragOperation="1" />
-  <UpdateModelValueCommand Name="Value" Value="0..9" WorkspaceGuid="64a97893-e126-45a9-af96-be59d78d15c7">
+  <UpdateModelValueCommand Name="Code" Value="0..9;" WorkspaceGuid="64a97893-e126-45a9-af96-be59d78d15c7">
     <ModelGuid>644ebb42-2c8a-426e-bfc4-642f94508b0f</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">

@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SampleLibraryZeroTouchMigrationTesting</name>
+    </assembly>
+    <members>
+        <member name="T:SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample">
+            <summary>
+            The HelloDynamoZeroTouch class demonstrates
+            how to create a class in a zero touch library
+            which creates geometry, and exposes public 
+            methods and properties as nodes.
+            </summary>
+        </member>
+        <member name="P:SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample.Awesome">
+            <summary>
+            Properties marked as public will show up as 
+            nodes in the Query section of the dynamo library.
+            </summary>
+        </member>
+        <member name="P:SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample.Point">
+            <summary>
+            The Point stored on the object.
+            </summary>
+        </member>
+        <member name="P:SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample.InvisibleProperty">
+            <summary>
+            Properties and methods marked as internal will not
+            be visible in the Dynamo UI.
+            </summary>
+        </member>
+        <member name="M:SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            Private methods, such as this constructor,
+            will not be visible in the Dynamo library.
+            </summary>
+            <param name="x">The x coordinate.</param>
+            <param name="y">The y coordinate.</param>
+            <param name="z">The z coordinate.</param>
+        </member>
+        <member name="M:SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample.Create(System.Double,System.Double,System.Double)">
+            <summary>
+            Dynamo uses the pattern of static constructors.
+            Don't forget to fill in the xml comments so that
+            you will get help tips in the UI. You can also use
+            default parameters, as we have here. With default
+            parameters defined, you will not be required to attach
+            any inputs to these ports in Dynamo.
+            </summary>
+            <param name="x">The x coordinate of the point.</param>
+            <param name="y">The y coordinate of the point.</param>
+            <param name="z">The z coordinate of the point.</param>
+            <returns>A HelloDynamoZeroTouch object.</returns>
+        </member>
+        <member name="M:SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample.Create(Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Another example of a static constructor which
+            uses a parameter with a default value. The default value
+            is provided as a design script expression.
+            </summary>
+            <param name="point">A point.</param>
+            <returns>A BasicExample object.</returns>
+        </member>
+        <member name="M:SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample.MultiReturnExample">
+            <summary>
+            The MultiReturn attribute can be used to specify
+            that a node is a multi-out node. This node must return
+            a Dictionary with its keys matching the attributes specified in the
+            MultiReturn attribute. The names of the output ports  
+            match the attribute names if there are no XML returns tags.
+            The returned dictionary displayed in the node preview is displayed
+            in the order of its keys as specified in the MultiReturn attribute.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample.MultiReturnExample2">
+            <summary>
+            The MultiReturn attribute can be used to specify
+            that a node is a multi-out node. This node must return
+            a Dictionary with its keys matching the attributes specified in the
+            MultiReturn attribute. The names of the output ports  
+            match the XML returns tag only if they include descriptions.
+            Otherwise the output ports will match the attribute names.
+            The returned dictionary displayed in the node preview is displayed
+            in the order of its keys as specified in the MultiReturn attribute.
+            E.g. this node will display "thing one" and "thing two" in its output ports
+            but it will show "thing 1" and "thing 2" in the node preview.
+            </summary>
+            <returns name="thing one">first thing</returns>
+            <returns name="thing two">second thing</returns>
+        </member>
+        <member name="M:SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample.ToString">
+            <summary>
+            OPTIONAL:
+            Overriding ToString allows you to control what is
+            displayed whenever the object's string representation
+            is used. For example, ToString is called when the 
+            object is displayed in a Watch node.
+            </summary>
+            <returns>The string representation of our object.</returns>
+        </member>
+        <member name="M:SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,Autodesk.DesignScript.Interfaces.TessellationParameters)">
+            <summary>
+            The Tessellate method in the IGraphicItem interface allows
+            you to specify what is drawn when dynamo's visualization is
+            updated.
+            </summary>
+        </member>
+        <member name="T:SampleLibraryZeroTouch.SampleUtilities">
+            <summary>
+            A utility library containing methods that can be called 
+            from NodeModel nodes, or used as nodes in Dynamo.
+            </summary>
+        </member>
+    </members>
+</doc>

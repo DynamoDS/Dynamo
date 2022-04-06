@@ -1,0 +1,137 @@
+{
+  "Uuid": "cb11ea88-51d2-46da-938b-6047d7ad72d7",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "BooleanCoercion",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a : Point = null;\ndef foo(x : bool)\n{\n    return x;\n}\nx = foo(a);",
+      "Id": "265a1b106dac45c79df90ceb419c0e65",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "822531d1db3a421cb995a52955de75b8",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9cfafc2b79a24173969d451b47b136c0",
+          "Name": "",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "i = [Imperative]\n{\n\tif(\"\")\n\t{\n\t\treturn true;\n\t}\n\telse\n\t{\n\t\treturn false;\n\t}\n};",
+      "Id": "13d48579c53e4e71898b68625f50a8c9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "817390f195c949ed915c76931760d697",
+          "Name": "",
+          "Description": "i",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.14.0.3430",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "265a1b106dac45c79df90ceb419c0e65",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 44.799999999999955,
+        "Y": 17.800000000000026
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "13d48579c53e4e71898b68625f50a8c9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 309.4,
+        "Y": 19.40000000000002
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

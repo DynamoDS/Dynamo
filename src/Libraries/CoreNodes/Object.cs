@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Resources = DSCore.Properties.Resources;
 
@@ -13,37 +10,38 @@ namespace DSCore
     public static class Object
     {
         /// <summary>
-        ///     Determines the if the given object is null.
+        ///     Determines if the given object is null.
         /// </summary>
-        /// <param name="obj">Object to test.</param>
+        /// <param name="object">Object to test.</param>
         /// <returns name="bool">Whether object is null.</returns>
         /// <search>is null</search>
-        public static bool IsNull(object obj)
+        public static bool IsNull(object @object)
         {
-            return obj == null;
+            return @object == null;
         }
 
         /// <summary>
         ///     Returns what is passed in, doing nothing.
         /// </summary>
-        /// <param name="obj">An object.</param>
-        public static object Identity(object obj)
+        /// <param name="object">An object.</param>
+        /// <returns name="object">Same object</returns>
+        public static object Identity(object @object)
         {
-            return obj;
+            return @object;
         }
 
         /// <summary>
         ///     Returns the type of object represented as string.
         /// </summary>
-        /// <param name="obj">An object.</param>
+        /// <param name="object">Object to query type</param>
         /// <returns>Type of object.</returns>
-        public static string Type(object obj)
+        public static string Type(object @object)
         {
-            if (obj == null)
+            if (@object == null)
             {
                 throw new ArgumentException(Resources.ObjectArgumentExceptionMessage, "obj");
             }
-            return obj.GetType().ToString();
+            return @object.GetType().ToString();
         }
     }
 }

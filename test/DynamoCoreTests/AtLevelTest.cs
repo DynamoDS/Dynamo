@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using CoreNodeModels;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Nodes.ZeroTouch;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -16,7 +10,7 @@ namespace Dynamo.Tests
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
-            libraries.Add("DSIronPython.dll");
+            libraries.Add("DSCPython.dll");
             libraries.Add("FunctionObject.ds");
             base.GetLibrariesToPreload(libraries);
         }

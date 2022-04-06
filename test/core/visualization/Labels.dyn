@@ -1,31 +1,174 @@
-<Workspace Version="0.8.2.1957" X="-84.907074832804" Y="61.8403257029835" zoom="1.00600419002725" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
-  <NamespaceResolutionMap>
-    <ClassMap partialName="Autodesk.Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
-    <ClassMap partialName="Autodesk.DesignScript.Geometry.Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
-  </NamespaceResolutionMap>
-  <Elements>
-    <Dynamo.Nodes.CodeBlockNodeModel guid="f9dd3ecd-3b7e-4956-8a28-078b238fa12f" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="187" y="151" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="0..3;" ShouldFocus="false" />
-    <Dynamo.Nodes.CodeBlockNodeModel guid="fdec3b9b-56ae-4d01-85c2-47b8425e3130" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="360" y="97" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" CodeText="Autodesk.Point.ByCoordinates(a&lt;1&gt;,a&lt;2&gt;,a&lt;3&gt;);" ShouldFocus="false" />
-  </Elements>
-  <Connectors>
-    <Dynamo.Models.ConnectorModel start="f9dd3ecd-3b7e-4956-8a28-078b238fa12f" start_index="0" end="fdec3b9b-56ae-4d01-85c2-47b8425e3130" end_index="0" portType="0" />
-  </Connectors>
-  <Notes />
-  <Annotations />
-  <Presets />
-  <Cameras>
-    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
-  </Cameras>
-  <Cameras>
-    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
-  </Cameras>
-  <Cameras>
-    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
-  </Cameras>
-  <Cameras>
-    <Camera Name="eb39be19-caad-41f7-ac76-aa6c908a4e96_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
-  </Cameras>
-  <Cameras>
-    <Camera Name="eb39be19-caad-41f7-ac76-aa6c908a4e96_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
-  </Cameras>
-</Workspace>
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Labels",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Autodesk.Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Autodesk.DesignScript.Geometry.Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..3;",
+      "Id": "f9dd3ecd3b7e49568a28078b238fa12f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a7f6c5689f2c4656a33f4e3cfe34f985",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "Autodesk.Point.ByCoordinates(a<1>,a<2>,a<3>);",
+      "Id": "fdec3b9b56ae4d0185c247b8425e3130",
+      "Inputs": [
+        {
+          "Id": "250b90912ab54308b5697fbd924e69a5",
+          "Name": "a",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "239c9c4b5e1d47e4bc583fd6923a34a1",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "5ee06a8db0b543fabb8d95ac480eac46",
+      "Inputs": [
+        {
+          "Id": "79f9154ee4924c579937d6c45a1404dc",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3a34c1314dd5402e8ba508b723955e94",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "a7f6c5689f2c4656a33f4e3cfe34f985",
+      "End": "250b90912ab54308b5697fbd924e69a5",
+      "Id": "a924ecc210b342da968cc085a9609637"
+    },
+    {
+      "Start": "239c9c4b5e1d47e4bc583fd6923a34a1",
+      "End": "79f9154ee4924c579937d6c45a1404dc",
+      "Id": "5a051839001446789078e42f25400334"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.0.7514",
+      "RunType": "Automatic",
+      "RunPeriod": "100"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "f9dd3ecd3b7e49568a28078b238fa12f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 187.0,
+        "Y": 151.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "fdec3b9b56ae4d0185c247b8425e3130",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 360.0,
+        "Y": 97.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "5ee06a8db0b543fabb8d95ac480eac46",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 930.32124926582333,
+        "Y": 95.5857592346726
+      }
+    ],
+    "Annotations": [],
+    "X": -84.907074832804,
+    "Y": 61.8403257029835,
+    "Zoom": 1.00600419002725
+  }
+}

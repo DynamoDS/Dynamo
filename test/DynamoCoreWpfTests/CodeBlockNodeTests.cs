@@ -1,24 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Xml;
-
-using SystemTestServices;
-
-using Dynamo;
-using Dynamo.Controls;
-using Dynamo.Models;
-using Dynamo.Tests;
-using Dynamo.ViewModels;
+using System.Text.RegularExpressions;
+using Dynamo.Graph.Nodes;
+using Dynamo.Utilities;
 using Dynamo.Wpf.Views;
 using NUnit.Framework;
-using System.Text.RegularExpressions;
-using Dynamo.Graph;
-using Dynamo.Graph.Nodes;
-using Dynamo.UI.Controls;
-using Dynamo.Utilities;
 
 namespace DynamoCoreWpfTests
 {
@@ -182,5 +168,15 @@ namespace DynamoCoreWpfTests
             string[] expected = new string[] { "-2468.2342E+04", "34534.345345", "23423", "-98.7", "0", "10", "2", "-555" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
+
+        [Test, RequiresSTA]
+        public void TestFunctionMultipleBlocksDefaultParametersDeleteFirst()
+        {
+            RunCommandsFromFile("DeleteCrashCommands.xml", (commandTag) =>
+            {
+                // NOTE: Nothing needs to be tested here other than that this test does not crash
+            });
+        }
+
     }
 }

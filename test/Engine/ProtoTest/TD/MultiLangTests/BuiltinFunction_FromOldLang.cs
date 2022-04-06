@@ -1,12 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoTest.TD;
-using ProtoCore.Lang.Replication;
-using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
     class BuiltinFunction_FromOldLang : ProtoTestBase
@@ -60,8 +54,14 @@ namespace ProtoTest.TD.MultiLangTests
 	}
 	def testToString()
 	{
-		a = [true,[false,false],true];
+		a = [true,[false,false],true,{""a"":1}];
 		b = __ToStringFromArray(a);
+		return = b;
+	}
+	def testToStringFromObject()
+	{
+		a = {""a"":1};
+		b = __ToStringFromObject(a);
 		return = b;
 	}
 	def testTranspose()
@@ -85,6 +85,7 @@ t6 = testSomeFalse();
 t7 = testSomeTrue();
 t8 = testToString();
 t9 = testTranspose();
+t10 = testToStringFromObject();
 t15 = testNormalizeDepth();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -104,8 +105,9 @@ t15 = testNormalizeDepth();
             thisTest.Verify("t5", 2);
             thisTest.Verify("t6", true);
             thisTest.Verify("t7", true);
-            thisTest.Verify("t8", "{true,{false,false},true}");
+            thisTest.Verify("t8", "[true,[false,false],true,{a:1}]");
             thisTest.Verify("t9", v4);
+            thisTest.Verify("t10", "{a:1}");
             thisTest.Verify("t15", v9);
         }
 
@@ -171,7 +173,7 @@ t14 = b14;
             thisTest.Verify("t4", 2);
             thisTest.Verify("t5", true);
             thisTest.Verify("t6", true);
-            thisTest.Verify("t7", "{true,{false,false},true}");
+            thisTest.Verify("t7", "[true,[false,false],true]");
             thisTest.Verify("t8", v4);
             thisTest.Verify("t14", v9);
         }

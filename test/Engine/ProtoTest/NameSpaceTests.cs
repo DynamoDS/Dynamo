@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using ProtoCore.Namespace;
 
@@ -150,6 +148,42 @@ namespace ProtoTest
             Assert.AreEqual(2, shortNamespaces.Count);
             Assert.AreEqual("Autodesk.Point", shortNamespaces[namespaceList[0]]);
             Assert.AreEqual("Rhino.Point", shortNamespaces[namespaceList[1]]);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetShortestUniqueNamespaces_FromNamespaceList2()
+        {
+            var namespaceList = new List<Symbol>
+            {
+                new Symbol("Revit.Elements.Parameter"),
+                new Symbol("archilab.Revit.Elements.Parameter"),
+                new Symbol("Orchid.RevitProject.Parameters.Parameter"),
+                new Symbol("Orchid.RevitFamily.Parameter")
+            };
+            var shortNamespaces = Symbol.GetShortestUniqueNames(namespaceList);
+
+            Assert.AreEqual(4, shortNamespaces.Count);
+            Assert.AreEqual("Revit.Elements.Parameter", shortNamespaces[namespaceList[0]]);
+            Assert.AreEqual("archilab.Parameter", shortNamespaces[namespaceList[1]]);
+            Assert.AreEqual("RevitProject.Parameter", shortNamespaces[namespaceList[2]]);
+            Assert.AreEqual("RevitFamily.Parameter", shortNamespaces[namespaceList[3]]);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetShortestUniqueNamespaces_FromNamespaceList3()
+        {
+            var namespaceList = new List<Symbol>
+            {
+                new Symbol("Revit.Elements.Category"),
+                new Symbol("Rhythm.Revit.Elements.Category"),
+            };
+            var shortNamespaces = Symbol.GetShortestUniqueNames(namespaceList);
+
+            Assert.AreEqual(2, shortNamespaces.Count);
+            Assert.AreEqual("Revit.Elements.Category", shortNamespaces[namespaceList[0]]);
+            Assert.AreEqual("Rhythm.Category", shortNamespaces[namespaceList[1]]);
         }
 
         [Test]

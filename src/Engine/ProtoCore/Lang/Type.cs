@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using ProtoCore.BuildData;
-using ProtoCore.DSASM;
-using ProtoCore.Utils;
-using ProtoCore.Properties;
 using System.Linq;
 using System.Text;
+using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
+using ProtoCore.Properties;
+using ProtoCore.Utils;
 
 namespace ProtoCore
 {
@@ -151,7 +149,7 @@ namespace ProtoCore
                 primitiveTypeNames[PrimitiveType.Array] = DSDefinitions.Keyword.Array;
                 primitiveTypeNames[PrimitiveType.Pointer] = DSDefinitions.Keyword.PointerReserved;
                 primitiveTypeNames[PrimitiveType.FunctionPointer] = DSDefinitions.Keyword.FunctionPointer;
-                primitiveTypeNames[PrimitiveType.Return] = "return_reserved";
+                primitiveTypeNames[PrimitiveType.Return] = DSDefinitions.Keyword.Return;
             }
             return primitiveTypeNames[type];
         }
@@ -267,7 +265,7 @@ namespace ProtoCore
             cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "func");
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.FunctionPointer);
 
-            cnode = new ClassNode { Name = "return_reserved", Rank = 0, TypeSystem = this };
+            cnode = new ClassNode { Name = DSDefinitions.Keyword.Return, Rank = 0, TypeSystem = this };
             cnode.ID = (int)PrimitiveType.Return;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.Return);
         }
@@ -419,7 +417,9 @@ namespace ProtoCore
                 return array.CopyArray(newTargetType, runtimeCore);
             }
 
-            if (!sv.IsArray && !sv.IsNull &&
+            // Null can be converted to Boolean so we will allow it in the case of indexable types
+            bool nullAsBool = sv.IsNull && (targetType.UID == (int)PrimitiveType.Bool);
+            if (!sv.IsArray && (!sv.IsNull || nullAsBool) &&
                 targetType.IsIndexable &&
                 targetType.rank != DSASM.Constants.kArbitraryRank)
             {

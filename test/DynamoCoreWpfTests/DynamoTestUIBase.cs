@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Windows;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
+using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Scheduler;
 using Dynamo.ViewModels;
-using Dynamo.Nodes;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
 using NUnit.Framework;
 using TestServices;
-using Dynamo.Interfaces;
 
 namespace DynamoCoreWpfTests
 {
@@ -76,6 +78,16 @@ namespace DynamoCoreWpfTests
             View.Show();
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+        }
+
+        protected static void RaiseLoadedEvent(FrameworkElement element)
+        {
+            MethodInfo eventMethod = typeof(FrameworkElement).GetMethod("OnLoaded",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+
+            RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
+
+            eventMethod.Invoke(element, new object[] { args });
         }
 
         /// <summary>
@@ -218,6 +230,24 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, noteViewsOfType.Count(), "Expected a single NoteView with guid: " + guid);
 
             return noteViewsOfType.First();
+        }
+
+        protected static string GetAppDataFolder()
+        {
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var dynamoVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+            var appDataFolder = Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
+                $"{dynamoVersion.FileMajorPart}.{dynamoVersion.FileMinorPart}");
+
+            return appDataFolder;
+        }
+        protected static string GetCommonDataDirectory()
+        {
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            var dynamoVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+            var commonDataFolder = Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
+                $"{dynamoVersion.FileMajorPart}.{dynamoVersion.FileMinorPart}");
+            return commonDataFolder;
         }
 
         #endregion

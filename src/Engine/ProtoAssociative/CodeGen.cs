@@ -330,7 +330,8 @@ namespace ProtoAssociative
             return null;
         }
 
-        private bool CyclicDependencyTest(ProtoCore.AssociativeGraph.GraphNode node, ref SymbolNode cyclicSymbol1, ref SymbolNode cyclicSymbol2)
+        // Returns true if there is no cyclic dependency, returns false otherwise.
+        private bool CyclicDependencyTest(GraphNode node, ref SymbolNode cyclicSymbol1, ref SymbolNode cyclicSymbol2)
         {
             if (null == node || node.updateNodeRefList.Count == 0)
             {
@@ -339,16 +340,15 @@ namespace ProtoAssociative
 
             var indexMap = new Dictionary<GraphNode, int>();
             var lowlinkMap = new Dictionary<GraphNode, int>();
-            var S = new Stack<GraphNode>();
+            var s = new Stack<GraphNode>();
             int index = 0;
 
-            for (int n = 0; n < codeBlock.instrStream.dependencyGraph.GraphList.Count; ++n)
+            foreach (var subNode in codeBlock.instrStream.dependencyGraph.GraphList)
             {
-                ProtoCore.AssociativeGraph.GraphNode subNode = codeBlock.instrStream.dependencyGraph.GraphList[n];
                 indexMap[subNode] = Constants.kInvalidIndex;
             }
 
-            var dependencyList = StrongConnectComponent(node, ref index, lowlinkMap, indexMap, S);
+            var dependencyList = StrongConnectComponent(node, ref index, lowlinkMap, indexMap, s);
             if (dependencyList == null)
             {
                 return true;
@@ -360,7 +360,7 @@ namespace ProtoAssociative
 
                 foreach (var n in dependencyList.GroupBy(x => x.guid).Select(y => y.First()))
                 {
-                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency,
+                    core.BuildStatus.LogWarning(WarningID.InvalidStaticCyclicDependency,
                         ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, core.CurrentDSFileName, graphNode: n);
                 }
                 firstNode.isCyclic = true;
@@ -1180,24 +1180,23 @@ namespace ProtoAssociative
                                 procCallNode = classNode.GetFirstStaticFunctionBy(procName);
                                 isStaticCall = procCallNode != null;
                             }
-                            else if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.None)
+                            if (procCallNode == null && subPass == SubCompilePass.None)
                             {
                                 string message = String.Format(ProtoCore.Properties.Resources.kStaticMethodNotFound,
-                                                               className,
-                                                               procName);
+                                    className,
+                                    procName);
 
                                 buildStatus.LogWarning(WarningID.FunctionNotFound,
-                                                       message,
-                                                       core.CurrentDSFileName,
-                                                       dotCall.line,
-                                                       dotCall.col, 
-                                                       graphNode);
+                                    message,
+                                    core.CurrentDSFileName,
+                                    dotCall.line,
+                                    dotCall.col,
+                                    graphNode);
 
                                 EmitNullNode(new NullNode(), ref inferedType);
 
                                 return null;
                             }
-                            
                         }
                     }
                 }
@@ -1789,18 +1788,24 @@ namespace ProtoAssociative
             }
             else
             {
-                if (depth <= 0 && procName != ProtoCore.DSASM.Constants.kFunctionPointerCall)
+                if (depth <= 0 && procName != Constants.kFunctionPointerCall)
                 {
                     string property;
                     if (CoreUtils.TryGetPropertyName(procName, out property))
                     {
                         string message = String.Format(ProtoCore.Properties.Resources.kPropertyNotFound, property);
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.PropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                        buildStatus.LogWarning(WarningID.PropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                     }
                     else
                     {
-                        string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                        // Log "function not found" warning for CBNs only after compiling all function definition nodes in the first pass
+                        // in CodeBlockNode.RecompileCodeBlockAST(). If not compiling CBNs log these warnings by default.
+                        if (core.IsParsingCodeBlockNode && !core.IsCodeBlockNodeFirstPass ||
+                            !core.IsParsingCodeBlockNode)
+                        {
+                            string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
+                            buildStatus.LogWarning(WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                        }
                     }
 
                     inferedType.UID = (int)PrimitiveType.Null;
@@ -1862,96 +1867,101 @@ namespace ProtoAssociative
         /// AST node
         /// </summary>
         /// <param name="node"></param>
-        /// <returns></returns>
+        /// <returns>Replication guide data</returns>
         private List<AssociativeNode> GetReplicationGuides(AssociativeNode node)
         {
-            
-            if (node is ArrayNameNode)
+            if (node is ArrayNameNode nameNode)
             {
-                var guides = ((ArrayNameNode) node).ReplicationGuides;
-                if (guides == null || guides.Count == 0)
+                var guides = nameNode.ReplicationGuides;
+                if ((guides == null || guides.Count == 0) && nameNode is IdentifierListNode identListNode)
                 {
-                    if (node is IdentifierListNode)
-                    {
-                        var identListNode = node as IdentifierListNode;
-                        return GetReplicationGuides(identListNode.RightNode);
-                    }
+                    return GetReplicationGuides(identListNode.RightNode);
                 }
                 return guides;
             }
             
-            if (node is FunctionDotCallNode)
+            if (node is FunctionDotCallNode dotCallNode)
             {
-                var dotCallNode = node as FunctionDotCallNode;
                 return GetReplicationGuides(dotCallNode.FunctionCall.Function);
             }
 
             return null;
         }
 
+        /// <summary>
+        /// This helper function extracts the at level data from the 
+        /// AST node
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns>At level data</returns>
         private AtLevelNode GetAtLevel(AssociativeNode node)
         {
-            var n1 = node as ArrayNameNode;
-            if (n1 != null)
+            // Check classes derived from ArrayNameNode first
+            if (node is IdentifierListNode identifierListNode)
             {
-                return n1.AtLevel;
+                return GetAtLevel(identifierListNode.RightNode);
             }
 
-            var n2 = node as IdentifierListNode;
-            if (n2 != null)
+            // Then check the base class
+            if (node is ArrayNameNode arrayNameNode)
             {
-                return GetAtLevel(n2.RightNode);
+                return arrayNameNode.AtLevel;
             }
 
-            var n3 = node as FunctionDotCallNode;
-            if (n3 != null)
+            if (node is FunctionDotCallNode functionDotCallNode)
             {
-                return GetAtLevel(n3.FunctionCall.Function);
+                return GetAtLevel(functionDotCallNode.FunctionCall.Function);
             }
 
             return null;
         }
 
+        /// <summary>
+        /// This helper function remove the at level data from the
+        /// AST node
+        /// </summary>
+        /// <param name="node"></param>
         private void RemoveAtLevel(AssociativeNode node)
         {
-            var n1 = node as ArrayNameNode;
-            if (n1 != null)
+            // Check classes derived from ArrayNameNode first
+            if (node is IdentifierListNode identifierListNode)
             {
-                n1.AtLevel = null;
+                RemoveAtLevel(identifierListNode.RightNode);
                 return;
             }
 
-            var n2 = node as IdentifierListNode;
-            if (n2 != null)
+            // Then check the base class
+            if (node is ArrayNameNode arrayNameNode)
             {
-                RemoveAtLevel(n2.RightNode);
+                arrayNameNode.AtLevel = null;
                 return;
             }
 
-            var n3 = node as FunctionDotCallNode;
-            if (n3 != null)
+            if (node is FunctionDotCallNode functionDotCallNode)
             {
-                RemoveAtLevel(n3.FunctionCall.Function);
-                return;
+                RemoveAtLevel(functionDotCallNode.FunctionCall.Function);
             }
         }
 
-        // Remove replication guides
+        /// <summary>
+        /// This helper function removes the replication guide data from the 
+        /// AST node
+        /// </summary>
+        /// <param name="node"></param>
         private void RemoveReplicationGuides(AssociativeNode node)
         {
-            if (node is ArrayNameNode)
+            // Check classes derived from ArrayNameNode first
+            if (node is IdentifierListNode identListNode)
             {
-                var nodeWithReplication = node as ArrayNameNode;
-                nodeWithReplication.ReplicationGuides = new List<AssociativeNode>();
-            }
-            else if (node is IdentifierListNode)
-            {
-                var identListNode = node as IdentifierListNode;
                 RemoveReplicationGuides(identListNode.RightNode);
             }
-            else if (node is FunctionDotCallNode)
+            // Then check the base class
+            else if (node is ArrayNameNode nodeWithReplication)
             {
-                var dotCallNode = node as FunctionDotCallNode;
+                nodeWithReplication.ReplicationGuides = new List<AssociativeNode>();
+            }
+            else if (node is FunctionDotCallNode dotCallNode)
+            {
                 RemoveReplicationGuides(dotCallNode.FunctionCall.Function);
             }
         }
@@ -3198,8 +3208,13 @@ namespace ProtoAssociative
                 // Prevent creation of default constructor for static DS class
                 if (!classDecl.IsExternLib && !classDecl.IsStatic)
                 {
-                    ProtoCore.DSASM.ProcedureTable vtable = core.ClassTable.ClassNodes[globalClassIndex].ProcTable;
-                    if (vtable.GetFunctionBySignature(classDecl.ClassName, new List<ProtoCore.Type>()) == null)
+                    core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(new ProcedureMatchOptions()
+                    {
+                        FunctionName = classDecl.ClassName,
+                        ParameterTypes = new List<ProtoCore.Type>(),
+                        IsConstructor = true,
+                    }, out ProcedureNode procNode);
+                    if (procNode == null)
                     {
                         ConstructorDefinitionNode defaultConstructor = new ConstructorDefinitionNode();
                         defaultConstructor.Name = classDecl.ClassName;
@@ -3314,11 +3329,19 @@ namespace ProtoAssociative
                 int bidx = core.ClassTable.ClassNodes[globalClassIndex].Base;
                 if (bidx != Constants.kInvalidIndex )
                 {
-                    int cidx = core.ClassTable.ClassNodes[bidx].ProcTable.IndexOf(baseConstructorName, argTypeList);
-                    if ((cidx != ProtoCore.DSASM.Constants.kInvalidIndex) &&
-                        core.ClassTable.ClassNodes[bidx].ProcTable.Procedures[cidx].IsConstructor)
+                    int pidx = core.ClassTable.ClassNodes[bidx].ProcTable.
+                        GetFunctionBySignature(new ProcedureMatchOptions()
+                        {
+                            FunctionName = baseConstructorName,
+                            ParameterTypes = argTypeList,
+                            ExcludeAutoGeneratedThisProc = true,
+                            IsConstructor = true,
+                            ExactMatchWithNumArgs = false,
+                            ExactMatchWithArgTypes = false
+                        }, out ProcedureNode procNode);
+                    if (procNode != null)
                     {
-                        ctorIndex = cidx;
+                        ctorIndex = pidx;
                         baseIndex = bidx;
                     }
                 }
@@ -3331,15 +3354,23 @@ namespace ProtoAssociative
                 if (bidx != Constants.kInvalidIndex)
                 {
                     baseConstructorName = core.ClassTable.ClassNodes[bidx].Name;
-                    int cidx = core.ClassTable.ClassNodes[bidx].ProcTable.IndexOf(baseConstructorName, argTypeList);
+                    int pidx = core.ClassTable.ClassNodes[bidx].ProcTable.GetFunctionBySignature(new ProcedureMatchOptions()
+                    {
+                        FunctionName = baseConstructorName,
+                        ParameterTypes = argTypeList,
+                        ExcludeAutoGeneratedThisProc = true,
+                        IsConstructor = true,
+                        ExactMatchWithNumArgs = false,
+                        ExactMatchWithArgTypes = false
+                    }, out ProcedureNode _);
                     // If the base class is a FFI class, it may not contain a 
                     // default constructor, so only assert for design script 
                     // class for which we always generate a default constructor.
                     if (!core.ClassTable.ClassNodes[bidx].IsImportedClass)
                     { 
-                        Validity.Assert(cidx != ProtoCore.DSASM.Constants.kInvalidIndex);
+                        Validity.Assert(pidx != Constants.kInvalidIndex);
                     }
-                    ctorIndex = cidx;
+                    ctorIndex = pidx;
                     baseIndex = bidx;
                 }
             }
@@ -3445,11 +3476,14 @@ namespace ProtoAssociative
                     }
                 }
 
-                var procNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(funcDef.Name, argList);
+                globalProcIndex = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(new ProcedureMatchOptions()
+                {
+                    FunctionName = funcDef.Name,
+                    ParameterTypes = argList
+                    
+                }, out ProcedureNode _);
 
-                globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
-
-                Validity.Assert(null == localProcedure);
+                Validity.Assert(globalProcIndex != Constants.kInvalidIndex);
                 localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
 
                 Validity.Assert(null != localProcedure);
@@ -3484,7 +3518,6 @@ namespace ProtoAssociative
                         EmitBinaryExpressionNode(bNodeTemp, ref inferedType);
                         //duild an inline conditional node for statement: defaultarg = (temp == DefaultArgNode) ? defaultValue : temp;
                         InlineConditionalNode icNode = new InlineConditionalNode();
-                        icNode.IsAutoGenerated = true;
                         BinaryExpressionNode cExprNode = new BinaryExpressionNode();
                         cExprNode.Optr = ProtoCore.DSASM.Operator.eq;
                         cExprNode.LeftNode = iNodeTemp;
@@ -3776,20 +3809,16 @@ namespace ProtoAssociative
                 }
 
                 // Get the exisitng procedure that was added on the previous pass
-                if (ProtoCore.DSASM.Constants.kInvalidIndex == globalClassIndex)
+                ProcedureTable procTable = Constants.kInvalidIndex == globalClassIndex ? codeBlock.procedureTable : core.ClassTable.ClassNodes[globalClassIndex].ProcTable;
+                globalProcIndex = procTable.GetFunctionBySignature(new ProcedureMatchOptions()
                 {
-                    var procNode = codeBlock.procedureTable.GetFunctionBySignature(funcDef.Name, argList);
-                    globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
-                    localProcedure = codeBlock.procedureTable.Procedures[globalProcIndex];
-                }
-                else
-                {
-                    var procNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(funcDef.Name, argList);
-                    globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
-                    localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
-                }
+                    FunctionName = funcDef.Name,
+                    ParameterTypes = argList,
+                    IsStatic = funcDef.IsStatic
+                }, out ProcedureNode procNode);
 
-                Validity.Assert(null != localProcedure);
+                Validity.Assert(procNode != null);
+                localProcedure = procNode;
 
                 // code gen the attribute 
                 // Its only on the parse body pass where the real pc is determined. Update this procedures' pc
@@ -3817,7 +3846,6 @@ namespace ProtoAssociative
                         EmitBinaryExpressionNode(bNodeTemp, ref inferedType, false, null, ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier);
                         //duild an inline conditional node for statement: defaultarg = (temp == DefaultArgNode) ? defaultValue : temp;
                         InlineConditionalNode icNode = new InlineConditionalNode();
-                        icNode.IsAutoGenerated = true;
                         BinaryExpressionNode cExprNode = new BinaryExpressionNode();
                         cExprNode.Optr = ProtoCore.DSASM.Operator.eq;
                         cExprNode.LeftNode = iNodeTemp;
@@ -4139,140 +4167,6 @@ namespace ProtoAssociative
             }
         }
 
-        private void EmitIfStatementNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
-        {
-            int bp = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
-            int L1 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
-
-            // If-expr
-            IfStatementNode ifnode = node as IfStatementNode;
-            DfsTraverse(ifnode.ifExprNode, ref inferedType, false, graphNode);
-            L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bp = pc;
-            EmitCJmp(L1);
-
-
-            // Create a new codeblock for this block
-            // Set the current codeblock as the parent of the new codeblock
-            // Set the new codeblock as a new child of the current codeblock
-            // Set the new codeblock as the current codeblock
-            ProtoCore.DSASM.CodeBlock localCodeBlock = new ProtoCore.DSASM.CodeBlock(
-                context.guid,
-                ProtoCore.DSASM.CodeBlockType.Construct,
-                Language.NotSpecified,
-                core.CodeBlockIndex++,
-                new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("if"), core.RuntimeTableIndex++),
-                null,
-                false,
-                core);
-
-
-            localCodeBlock.instrStream = codeBlock.instrStream;
-            localCodeBlock.parent = codeBlock;
-            codeBlock.children.Add(localCodeBlock);
-            codeBlock = localCodeBlock;
-
-            // If-body
-            foreach (AssociativeNode ifBody in ifnode.IfBody)
-            {
-                inferedType = new ProtoCore.Type();
-                inferedType.UID = (int)PrimitiveType.Var;
-                DfsTraverse(ifBody, ref inferedType, false, graphNode);
-            }
-
-            // Restore - Set the local codeblock parent to be the current codeblock
-            codeBlock = localCodeBlock.parent;
-
-
-            L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
-
-            BackpatchTable backpatchTable = new BackpatchTable();
-            backpatchTable.Append(pc, L1);
-            EmitJmp(L1);
-
-            // Backpatch the L2 destination of the if block
-            Backpatch(bp, pc);
-
-
-            /*		
-            else if(E)	->	traverse E
-                            L1 = pc + 1
-                            L2 = null 
-                            bp = pc
-                            emit(jmp, _cx, L1, L2) 
-            {				
-                S		->	traverse S
-                            L1 = null
-                            bpTable.append(pc)
-                            emit(jmp,labelEnd) 
-                            backpatch(bp,pc)
-            }
-             * */
-
-            // Elseif-expr
-
-
-            /*
-            else 			
-            {				
-                S		->	traverse S
-                            L1 = null
-                            bpTable.append(pc)
-                            emit(jmp,labelEnd) 
-                            backpatch(bp,pc)
-            }		
-             * */
-            // Else-body     
-
-            Validity.Assert(null != ifnode.ElseBody);
-            if (0 != ifnode.ElseBody.Count)
-            {
-                // Create a new symboltable for this block
-                // Set the current table as the parent of the new table
-                // Set the new table as a new child of the current table
-                // Set the new table as the current table
-                // Create a new codeblock for this block
-                // Set the current codeblock as the parent of the new codeblock
-                // Set the new codeblock as a new child of the current codeblock
-                // Set the new codeblock as the current codeblock
-                localCodeBlock = new ProtoCore.DSASM.CodeBlock(
-                    context.guid,
-                    ProtoCore.DSASM.CodeBlockType.Construct,
-                    Language.NotSpecified,
-                    core.CodeBlockIndex++,
-                    new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("else"), core.RuntimeTableIndex++),
-                    null,
-                    false,
-                    core);
-
-                localCodeBlock.instrStream = codeBlock.instrStream;
-                localCodeBlock.parent = codeBlock;
-                codeBlock.children.Add(localCodeBlock);
-                codeBlock = localCodeBlock;
-                foreach (AssociativeNode elseBody in ifnode.ElseBody)
-                {
-                    inferedType = new ProtoCore.Type();
-                    inferedType.UID = (int)PrimitiveType.Var;
-                    DfsTraverse(elseBody, ref inferedType, false, graphNode);
-                }
-
-                // Restore - Set the local codeblock parent to be the current codeblock
-                codeBlock = localCodeBlock.parent;
-
-                L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
-                backpatchTable.Append(pc, L1);
-                EmitJmp(L1);
-            }
-
-            /*
-             * 
-                      ->	backpatch(bpTable, pc) 
-             */
-            // ifstmt-exit
-            // Backpatch all the previous unconditional jumps
-            Backpatch(backpatchTable.backpatchList, pc);
-        }
-
         private void EmitDynamicBlockNode(int block, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
             if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
@@ -4308,132 +4202,118 @@ namespace ProtoAssociative
             }
 
             InlineConditionalNode inlineConditionalNode = node as InlineConditionalNode;
-            // TODO: Jun, this 'if' condition needs to be removed as it was the old implementation - pratapa
-            if (inlineConditionalNode.IsAutoGenerated)
+            // CPS inline conditional
+
+            FunctionCallNode inlineCall = new FunctionCallNode();
+            IdentifierNode identNode = new IdentifierNode();
+            identNode.Name = ProtoCore.DSASM.Constants.kInlineConditionalMethodName;
+            inlineCall.Function = identNode;
+
+            DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
+            DebugProperties.BreakpointOptions newOptions = oldOptions;
+            newOptions |= DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint;
+            core.DebuggerProperties.breakOptions = newOptions;
+
+            core.DebuggerProperties.highlightRange = new ProtoCore.CodeModel.CodeRange
             {
-                // Normal inline conditional
+                StartInclusive = new ProtoCore.CodeModel.CodePoint
+                {
+                    LineNo = parentNode.line,
+                    CharNo = parentNode.col
+                },
 
-                IfStatementNode ifNode = new IfStatementNode();
-                ifNode.ifExprNode = inlineConditionalNode.ConditionExpression;
-                List<AssociativeNode> ifBody = new List<AssociativeNode>();
-                List<AssociativeNode> elseBody = new List<AssociativeNode>();
-                ifBody.Add(inlineConditionalNode.TrueExpression);
-                elseBody.Add(inlineConditionalNode.FalseExpression);
-                ifNode.IfBody = ifBody;
-                ifNode.ElseBody = elseBody;
+                EndExclusive = new ProtoCore.CodeModel.CodePoint
+                {
+                    LineNo = parentNode.endLine,
+                    CharNo = parentNode.endCol
+                }
+            };
 
-                EmitIfStatementNode(ifNode, ref inferedType, graphNode);
+            // As SSA conversion is enabled, we have got the values of
+            // true and false branch, so it isn't necessary to create 
+            // language blocks.
+            if (core.Options.GenerateSSA)
+            {
+                inlineCall.FormalArguments.Add(inlineConditionalNode.ConditionExpression);
+                inlineCall.FormalArguments.Add(inlineConditionalNode.TrueExpression);
+                inlineCall.FormalArguments.Add(inlineConditionalNode.FalseExpression);
             }
             else
             {
-                // CPS inline conditional
-                
-                FunctionCallNode inlineCall = new FunctionCallNode();
-                IdentifierNode identNode = new IdentifierNode();
-                identNode.Name = ProtoCore.DSASM.Constants.kInlineConditionalMethodName;
-                inlineCall.Function = identNode;
+                // True condition language block
+                BinaryExpressionNode bExprTrue = AstFactory.BuildReturnStatement(inlineConditionalNode.TrueExpression);
 
-                DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
-                DebugProperties.BreakpointOptions newOptions = oldOptions;
-                newOptions |= DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint;
-                core.DebuggerProperties.breakOptions = newOptions;
+                LanguageBlockNode langblockT = new LanguageBlockNode();
+                int trueBlockId = Constants.kInvalidIndex;
+                langblockT.codeblock.Language = ProtoCore.Language.Associative;
+                core.AssocNode = bExprTrue;
+                core.InlineConditionalBodyGraphNodes.Push(new List<GraphNode>());
+                EmitDynamicLanguageBlockNode(langblockT, bExprTrue, ref inferedType, ref trueBlockId, graphNode,
+                    ProtoCore.CompilerDefinitions.SubCompilePass.None);
+                List<GraphNode> trueBodyNodes = core.InlineConditionalBodyGraphNodes.Pop();
 
-                core.DebuggerProperties.highlightRange = new ProtoCore.CodeModel.CodeRange
+                // Append dependent nodes of the inline conditional 
+                foreach (GraphNode gnode in trueBodyNodes)
+                foreach (GraphNode dNode in gnode.dependentList)
+                    graphNode.PushDependent(dNode);
+
+                core.AssocNode = null;
+                DynamicBlockNode dynBlockT = new DynamicBlockNode(trueBlockId);
+
+                // False condition language block
+                BinaryExpressionNode bExprFalse =
+                    AstFactory.BuildReturnStatement(inlineConditionalNode.FalseExpression);
+
+                LanguageBlockNode langblockF = new LanguageBlockNode();
+                int falseBlockId = Constants.kInvalidIndex;
+                langblockF.codeblock.Language = ProtoCore.Language.Associative;
+                core.AssocNode = bExprFalse;
+                core.InlineConditionalBodyGraphNodes.Push(new List<GraphNode>());
+                EmitDynamicLanguageBlockNode(langblockF, bExprFalse, ref inferedType, ref falseBlockId, graphNode,
+                    ProtoCore.CompilerDefinitions.SubCompilePass.None);
+                List<GraphNode> falseBodyNodes = core.InlineConditionalBodyGraphNodes.Pop();
+
+                // Append dependent nodes of the inline conditional 
+                foreach (GraphNode gnode in falseBodyNodes)
+                foreach (GraphNode dNode in gnode.dependentList)
+                    graphNode.PushDependent(dNode);
+
+                core.AssocNode = null;
+                DynamicBlockNode dynBlockF = new DynamicBlockNode(falseBlockId);
+
+                inlineCall.FormalArguments.Add(inlineConditionalNode.ConditionExpression);
+                inlineCall.FormalArguments.Add(dynBlockT);
+                inlineCall.FormalArguments.Add(dynBlockF);
+            }
+
+            core.DebuggerProperties.breakOptions = oldOptions;
+            core.DebuggerProperties.highlightRange = new ProtoCore.CodeModel.CodeRange
+            {
+                StartInclusive = new ProtoCore.CodeModel.CodePoint
                 {
-                    StartInclusive = new ProtoCore.CodeModel.CodePoint
-                    {
-                        LineNo = parentNode.line,
-                        CharNo = parentNode.col
-                    },
+                    LineNo = Constants.kInvalidIndex,
+                    CharNo = Constants.kInvalidIndex
+                },
 
-                    EndExclusive = new ProtoCore.CodeModel.CodePoint
-                    {
-                        LineNo = parentNode.endLine,
-                        CharNo = parentNode.endCol
-                    }
-                };
-
-                // As SSA conversion is enabled, we have got the values of
-                // true and false branch, so it isn't necessary to create 
-                // language blocks.
-                if (core.Options.GenerateSSA)
+                EndExclusive = new ProtoCore.CodeModel.CodePoint
                 {
-                    inlineCall.FormalArguments.Add(inlineConditionalNode.ConditionExpression);
-                    inlineCall.FormalArguments.Add(inlineConditionalNode.TrueExpression);
-                    inlineCall.FormalArguments.Add(inlineConditionalNode.FalseExpression);
+                    LineNo = Constants.kInvalidIndex,
+                    CharNo = Constants.kInvalidIndex
                 }
-                else
-                {
-                    // True condition language block
-                    BinaryExpressionNode bExprTrue = AstFactory.BuildReturnStatement(inlineConditionalNode.TrueExpression);
+            };
 
-                    LanguageBlockNode langblockT = new LanguageBlockNode();
-                    int trueBlockId = Constants.kInvalidIndex;
-                    langblockT.codeblock.Language = ProtoCore.Language.Associative;
-                    core.AssocNode = bExprTrue;
-                    core.InlineConditionalBodyGraphNodes.Push(new List<GraphNode>());
-                    EmitDynamicLanguageBlockNode(langblockT, bExprTrue, ref inferedType, ref trueBlockId, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None);
-                    List<GraphNode> trueBodyNodes = core.InlineConditionalBodyGraphNodes.Pop();
+            // Save the pc and store it after the call
+            EmitFunctionCallNode(inlineCall, ref inferedType, false, graphNode,
+                ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier);
+            EmitFunctionCallNode(inlineCall, ref inferedType, false, graphNode,
+                ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
-                    // Append dependent nodes of the inline conditional 
-                    foreach (GraphNode gnode in trueBodyNodes)
-                        foreach (GraphNode dNode in gnode.dependentList)
-                            graphNode.PushDependent(dNode);
-
-                    core.AssocNode = null;
-                    DynamicBlockNode dynBlockT = new DynamicBlockNode(trueBlockId);
-
-                    // False condition language block
-                    BinaryExpressionNode bExprFalse = AstFactory.BuildReturnStatement(inlineConditionalNode.FalseExpression);
-
-                    LanguageBlockNode langblockF = new LanguageBlockNode();
-                    int falseBlockId = Constants.kInvalidIndex;
-                    langblockF.codeblock.Language = ProtoCore.Language.Associative;
-                    core.AssocNode = bExprFalse;
-                    core.InlineConditionalBodyGraphNodes.Push(new List<GraphNode>());
-                    EmitDynamicLanguageBlockNode(langblockF, bExprFalse, ref inferedType, ref falseBlockId, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None);
-                    List<GraphNode> falseBodyNodes = core.InlineConditionalBodyGraphNodes.Pop();
-
-                    // Append dependent nodes of the inline conditional 
-                    foreach (GraphNode gnode in falseBodyNodes)
-                        foreach (GraphNode dNode in gnode.dependentList)
-                            graphNode.PushDependent(dNode);
-
-                    core.AssocNode = null;
-                    DynamicBlockNode dynBlockF = new DynamicBlockNode(falseBlockId);
-
-                    inlineCall.FormalArguments.Add(inlineConditionalNode.ConditionExpression);
-                    inlineCall.FormalArguments.Add(dynBlockT);
-                    inlineCall.FormalArguments.Add(dynBlockF);
-                }
-
-                core.DebuggerProperties.breakOptions = oldOptions;
-                core.DebuggerProperties.highlightRange = new ProtoCore.CodeModel.CodeRange
-                {
-                    StartInclusive = new ProtoCore.CodeModel.CodePoint
-                    {
-                        LineNo = Constants.kInvalidIndex,
-                        CharNo = Constants.kInvalidIndex
-                    },
-
-                    EndExclusive = new ProtoCore.CodeModel.CodePoint
-                    {
-                        LineNo = Constants.kInvalidIndex,
-                        CharNo = Constants.kInvalidIndex
-                    }
-                };
-
-                // Save the pc and store it after the call
-                EmitFunctionCallNode(inlineCall, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier);
-                EmitFunctionCallNode(inlineCall, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
-
-                // Need to restore those settings.
-                if (graphNode != null)
-                {
-                    graphNode.isInlineConditional = isInlineConditionalFlag;
-                    graphNode.updateBlock.startpc = startPC;
-                    graphNode.isReturn = isReturn;
-                }
+            // Need to restore those settings.
+            if (graphNode != null)
+            {
+                graphNode.isInlineConditional = isInlineConditionalFlag;
+                graphNode.updateBlock.startpc = startPC;
+                graphNode.isReturn = isReturn;
             }
         }
 
@@ -5633,7 +5513,6 @@ namespace ProtoAssociative
                             Validity.Assert(null != cyclicSymbol1);
                             Validity.Assert(null != cyclicSymbol2);
 
-                            //
                             // Set the first symbol that triggers the cycle to null
                             ProtoCore.AssociativeGraph.GraphNode nullAssignGraphNode1 = new ProtoCore.AssociativeGraph.GraphNode();
                             nullAssignGraphNode1.updateBlock.startpc = pc;
@@ -6215,9 +6094,6 @@ namespace ProtoAssociative
                     break;
                 case AstKind.IdentifierList:
                     EmitIdentifierListNode(node, ref inferedType, isBooleanOp, graphNode, subPass, parentNode);
-                    break;
-                case AstKind.If:
-                    EmitIfStatementNode(node, ref inferedType);
                     break;
                 case AstKind.InlineConditional:
                     EmitInlineConditionalNode(node, ref inferedType, graphNode, subPass, parentNode as BinaryExpressionNode);

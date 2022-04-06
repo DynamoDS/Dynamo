@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
+using CoreNodeModels.Properties;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using ProtoCore.AST.AssociativeAST;
-using CoreNodeModels.Properties;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels.Input
 {
@@ -51,6 +51,7 @@ namespace CoreNodeModels.Input
                     Id = this.GUID,
                     Name = this.Name,
                     Type = NodeInputData.getNodeInputTypeFromType(typeof(System.Boolean)),
+                    Type2 = NodeInputData.getNodeInputTypeFromType(typeof(System.Boolean)),
                     Description = this.Description,
                     Value = Value.ToString().ToLower(),
                 };

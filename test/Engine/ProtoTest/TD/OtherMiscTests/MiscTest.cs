@@ -1,7 +1,6 @@
 using System;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.OtherMiscTests
 {
