@@ -259,7 +259,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A dropdown menu with customizable values.
+        ///   Looks up a localized string similar to A dropdown menu with customizable values..
         /// </summary>
         public static string CustomSelectionNodeDescription {
             get {
