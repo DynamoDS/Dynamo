@@ -230,6 +230,9 @@ namespace ProtoScript.Runners
 
             ReActivateGraphNodesInCycle(changeSet.RemovedBinaryNodesFromModification);
 
+            // Set new value for modified ASTs
+            SetValueForModifiedNodes(changeSet.ModifiedNodesForRuntimeSetValue);
+
             // Undefine a function that was removed 
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
 
@@ -1645,7 +1648,7 @@ namespace ProtoScript.Runners
                 bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
                 changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
 
-                if (finalDeltaAstList.Any() || anyForcedExecutedNodes)
+                if (finalDeltaAstList.Any() || anyForcedExecutedNodes || changeSetComputer.csData.ModifiedNodesForRuntimeSetValue.Any())
                 {
                     CompileAndExecuteForDeltaExecution(finalDeltaAstList);
                 }
