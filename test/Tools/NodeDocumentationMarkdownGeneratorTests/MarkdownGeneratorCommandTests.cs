@@ -103,7 +103,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
         public void ProducesCorrectOutputFromDirectory()
         {
             // Test output is generated with the following args:
-            //
+            // 
             // NodeDocumentationMarkdownGenerator.exe
             // fromdirectory
             // -i "..\Dynamo\bin\nodes"
@@ -143,7 +143,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
         {
             // Arrange
             var testOutputDirName = "TestMdOutput_CoreNodeModels";
-
+         
             // Act
             tempDirectory = CreateTempOutputDirectory();
             Assert.That(tempDirectory.Exists);
@@ -153,7 +153,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 InputFolderPath = DynamoCoreDir,
                 RecursiveScan = true,
                 OutputFolderPath = tempDirectory.FullName,
-                Filter = preloadedLibraryPaths.Concat(new string[]
+                Filter = preloadedLibraryPaths.Concat(new string[] 
                 {CORENODEMODELS_DLL_NAME,"GeometryUI.dll","PythonNodeModels.dll","Watch3dNodeModels.dll","UnitsUI.dll","" }),
                 ReferencePaths = new List<string>()
             };
@@ -173,15 +173,15 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             var expectedFileNames = new List<string>
             {
-                "LoopWhile.md",
-                "List.Equals.md",
+                "LoopWhile.md", 
+                "List.Equals.md", 
                 "List.GroupByFunction.md",
                 "List.MaximumItemByKey.md",
-                "List.MinimumItemByKey.md",
-                "List.Rank.md",
-                "List.RemoveIfNot.md",
-                "List.SortByFunction.md",
-                "List.TrueForAll.md",
+                "List.MinimumItemByKey.md", 
+                "List.Rank.md", 
+                "List.RemoveIfNot.md", 
+                "List.SortByFunction.md", 
+                "List.TrueForAll.md", 
                 "List.TrueForAny.md"
             };
 
@@ -212,7 +212,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
         public void DictionaryContentIsFoundCorrectlyForCoreNodes()
         {
             // Test output is generated with the following args:
-            //
+            // 
             // NodeDocumentationMarkdownGenerator.exe
             // fromdirectory
             // -i "..\Dynamo\bin\nodes"
@@ -223,7 +223,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             // Arrange
             var testOutputDirName = "TestMdOutput_CoreNodeModels";
-
+ 
             var coreNodeModelsDll = Path.Combine(DynamoCoreNodesDir, CORENODEMODELS_DLL_NAME);
             Assert.That(File.Exists(coreNodeModelsDll));
 
@@ -250,13 +250,13 @@ namespace NodeDocumentationMarkdownGeneratorTests
             //they were all found.
 
             Assert.True(generatedFileNames.Where(x=>Path.GetExtension(x).Contains("md")).All(x => File.ReadAllText(x).ToLower().Contains("in depth")));
-
+          
         }
 
         [Test]
         public void DictionaryImagesAreCompressed()
         {
-
+           
             // Arrange
             var testOutputDirName = "TestMdOutput_CoreNodeModels";
             var sizesBeforeCompression = new DirectoryInfo(mockedDictionaryRoot).GetFiles("*.*", SearchOption.AllDirectories).Where(
@@ -323,7 +323,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 "SampleLibraryUI.Examples.LocalizedCustomNodeModel.md",
                 "SampleLibraryUI.Examples.SliderCustomNodeModel.md"
             };
-
+            
             // Act
             var opts = new FromPackageOptions
             {
@@ -440,7 +440,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
             }
 
             CollectionAssert.AreEquivalent(
-                originalOutDir.GetFiles().Select(x => x.Name),
+                originalOutDir.GetFiles().Select(x => x.Name), 
                 tempDirectory.GetFiles().Select(x => x.Name));
         }
 
@@ -462,7 +462,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
         }
         [Test]
         public void ReferencesFlagAddsReferencePaths()
-        {
+        {   
             // Arrange
             //using the dynamosamples package as a reference because it's not in the default bin paths.
             var packageName = "Dynamo Samples";
