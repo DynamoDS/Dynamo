@@ -7,9 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Xml;
 
+[assembly: InternalsVisibleTo("CoreNodeModelsWpf")]
 
 namespace CoreNodeModels.Input
 {
@@ -137,7 +139,7 @@ namespace CoreNodeModels.Input
         /// </summary>
         /// <param name="ex"></param>
         [IsVisibleInDynamoLibrary(false)]
-        public void Log(Exception ex)
+        internal void Log(Exception ex)
         {
             base.Log(ex.Message, Dynamo.Logging.WarningLevel.Error);
             base.Log(ex.StackTrace, Dynamo.Logging.WarningLevel.Error);
