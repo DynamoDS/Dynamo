@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using Dynamo.Core;
@@ -368,22 +369,28 @@ namespace Dynamo.Wpf.ViewModels.Core
     }
 
     /// <summary>
-    /// Value converter from 0 to Visibility Colapsed
+    /// Value converter from 0 to Visibility Collapsed
     /// </summary>
     public class ZeroToVisibilityCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if((int)value == 0)            
-                return System.Windows.Visibility.Collapsed;
-            return System.Windows.Visibility.Visible;            
+            if ((string) parameter == "Inverse")
+            {
+                if ((int) value == 0)
+                    return Visibility.Visible;
+                return Visibility.Collapsed;
+            }
+
+            if ((int)value == 0)
+                return Visibility.Collapsed;
+            return Visibility.Visible;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
     }
-
     /// <summary>
     /// An object that contains information about the number of 
     /// Info, Warning or Error Nodes after a Run 

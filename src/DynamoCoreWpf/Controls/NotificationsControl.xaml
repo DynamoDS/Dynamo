@@ -93,12 +93,36 @@
                 <DataTemplate>
                     <Border Style="{StaticResource FooterNotificationItemStyle}" CornerRadius="3">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Image x:Name="footerIconImage" Width="12" Source="{Binding NotificationImage, UpdateSourceTrigger=PropertyChanged}"/>
+                            <!-- Create a duplicate of the image with in greyscale. 
+                            "Property changes can only occure during object initialization", which prevents us to use a converter.
+                            Source: https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.formatconvertedbitmap?view=windowsdesktop-6.0 -->
+                            <Image x:Name="footerIconImage" 
+                                   Width="12"
+                                   Source="{Binding NotificationImage, UpdateSourceTrigger=PropertyChanged}" 
+                                   Visibility="{Binding NotificationCount, 
+                                        UpdateSourceTrigger=PropertyChanged, 
+                                        Converter={StaticResource ZeroToVisibilityCollapsedConverter}}">
+                            </Image>
+                            <Image x:Name="footerIconImageGrayScale" 
+                                   Width="12" 
+                                   Visibility="{Binding NotificationCount, 
+                                        UpdateSourceTrigger=PropertyChanged, 
+                                        Converter={StaticResource ZeroToVisibilityCollapsedConverter},
+                                        ConverterParameter=Inverse}">
+                                <Image.Source>
+                                    <FormatConvertedBitmap Source="{Binding NotificationImage, UpdateSourceTrigger=PropertyChanged}"
+                                                           DestinationFormat="Gray8"/>
+                                </Image.Source>
+                                <Image.OpacityMask>
+                                    <ImageBrush ImageSource="{Binding NotificationImage, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Image.OpacityMask>
+                            </Image>
                             <Label x:Name="footerIconText"
                                    Content="{Binding NotificationCount}" 
                                    FontSize="12" Padding="2" 
-                                   Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                   Visibility="{Binding NotificationCount, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ZeroToVisibilityCollapsedConverter}}"/>
+                                   VerticalAlignment="Center"
+                                   VerticalContentAlignment="Center"
+                                   Foreground="{StaticResource PrimaryCharcoal200Brush}"/>
                         </StackPanel>
                     </Border>
                 </DataTemplate>
