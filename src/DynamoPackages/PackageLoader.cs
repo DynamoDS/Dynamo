@@ -285,7 +285,7 @@ namespace Dynamo.PackageManager
 
                 if (blockedAssemblies.Count > 0)
                 {
-                    throw new Exception("The following assemblies are blocked : " + string.Join(", ", blockedAssemblies.Select(x => Path.GetFileName(x.Location))));
+                    throw new DynamoServices.AssemblyBlockedException("The following assemblies are blocked : " + string.Join(", ", blockedAssemblies.Select(x => Path.GetFileName(x.Location))));
                 }
 
                 // Generic fatal error
