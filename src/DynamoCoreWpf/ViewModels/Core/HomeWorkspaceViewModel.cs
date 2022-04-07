@@ -67,7 +67,6 @@ namespace Dynamo.Wpf.ViewModels.Core
             get { return footerNotificationItems; }
             set
             {
-                if (footerNotificationItems == value) return;
                 footerNotificationItems = value;
                 RaisePropertyChanged(nameof(FooterNotificationItems));
             }
@@ -391,13 +390,33 @@ namespace Dynamo.Wpf.ViewModels.Core
     /// </summary>
     public class FooterNotificationItem : NotificationObject
     {
+        private int _notificationCount;
+        private string _notificationImage;
+
         /// <summary>
         /// The number of Warnings, Errors or Info Nodes
         /// </summary>
-        public int NotificationCount { get; set; }
+        public int NotificationCount 
+        { 
+            get { return _notificationCount; }
+            set
+            {
+                _notificationCount = value;
+                RaisePropertyChanged(nameof(NotificationCount));
+            }
+        }
+
         /// <summary>
-        /// The glyph assocaited with this footer item
+        /// The glyph associated with this footer item
         /// </summary>
-        public string NotificationImage { get; set; }
+        public string NotificationImage
+        {
+            get { return _notificationImage; }
+            set
+            {
+                _notificationImage = value;
+                RaisePropertyChanged(nameof(NotificationImage));
+            }
+        }
     }
 }

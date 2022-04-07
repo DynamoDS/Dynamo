@@ -93,12 +93,12 @@
                 <DataTemplate>
                     <Border Style="{StaticResource FooterNotificationItemStyle}" CornerRadius="3">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Image x:Name="footerIconImage" Width="12" Source="{Binding NotificationImage}"/>
+                            <Image x:Name="footerIconImage" Width="12" Source="{Binding NotificationImage, UpdateSourceTrigger=PropertyChanged}"/>
                             <Label x:Name="footerIconText"
                                    Content="{Binding NotificationCount}" 
                                    FontSize="12" Padding="2" 
                                    Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                   Visibility="{Binding NotificationCount, Converter={StaticResource ZeroToVisibilityCollapsedConverter}}"/>
+                                   Visibility="{Binding NotificationCount, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ZeroToVisibilityCollapsedConverter}}"/>
                         </StackPanel>
                     </Border>
                 </DataTemplate>
