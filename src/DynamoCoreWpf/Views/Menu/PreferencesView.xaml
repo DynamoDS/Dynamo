@@ -562,8 +562,8 @@
                                                     <RowDefinition Height="*"></RowDefinition>
                                                 </Grid.RowDefinitions>
                                                 <TextBox  x:Name="groupNameBox"
-                                                          CaretBrush="{StaticResource PreferencesWindowButtonColor}"
-                                                          PreviewKeyDown="groupNameBox_PreviewKeyDown"
+                                                          CaretBrush="{StaticResource PreferencesWindowButtonColor}"                                                          
+                                                          PreviewKeyUp="groupNameBox_PreviewKeyUp"
                                                           Style="{StaticResource TextBoxWaterMarkStyle}"
                                                           Grid.Row="0"
                                                           Margin="10"
