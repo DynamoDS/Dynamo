@@ -103,8 +103,8 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             FooterNotificationItem [] footerItems = new FooterNotificationItem[2]; //TODO : change to 3 when Info is implemented
 
-            footerItems[0] = new FooterNotificationItem() { NotificationCount = 0, NotificationImage = "/DynamoCoreWpf;component/UI/Images/error.png" };
-            footerItems[1] = new FooterNotificationItem() { NotificationCount = 0, NotificationImage = "/DynamoCoreWpf;component/UI/Images/warning_16px.png" };
+            footerItems[0] = new FooterNotificationItem() { NotificationCount = 0, NotificationImage = "/DynamoCoreWpf;component/UI/Images/error.png", NotificationToolTip = "The number of Nodes in Error state."};
+            footerItems[1] = new FooterNotificationItem() { NotificationCount = 0, NotificationImage = "/DynamoCoreWpf;component/UI/Images/warning_16px.png", NotificationToolTip = "The number of Nodes in Warning state." };
 
             footerNotificationItems = new ObservableCollection<FooterNotificationItem>(footerItems);
         }
@@ -427,5 +427,10 @@ namespace Dynamo.Wpf.ViewModels.Core
                 RaisePropertyChanged(nameof(NotificationImage));
             }
         }
+        /// <summary>
+        /// The tooltip associated with the respective item
+        /// The tooltip message stays the same, no update required
+        /// </summary>
+        public string NotificationToolTip { get; set; }
     }
 }
