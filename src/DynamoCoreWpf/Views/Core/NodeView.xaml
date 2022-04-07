@@ -611,8 +611,8 @@
                 <Image Stretch="Uniform"  HorizontalAlignment="Center" VerticalAlignment="Bottom" 
                        x:Name="ZoomStateImgOne"
                        Width="64"
-                       Source="{Binding ImgGlyphThreeSource, UpdateSourceTrigger=PropertyChanged}"
-                       Visibility="{Binding ImgGlyphThreeSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                       Source="{Binding ImgGlyphThreeSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                       Visibility="{Binding ImgGlyphThreeSource,Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
             </UniformGrid>
             <Grid Grid.Row="1" 
                   Margin="0 0 0 0"
@@ -628,7 +628,7 @@
                        HorizontalAlignment="Left" VerticalAlignment="Center"
                        Margin="5 0 "
                        Width="64"
-                       Source="{Binding ImgGlyphOneSource, UpdateSourceTrigger=PropertyChanged}"
+                       Source="{Binding ImgGlyphOneSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
                        Visibility="{Binding ImgGlyphOneSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
                 <Image Grid.Column="1"
                        x:Name="ZoomStateImgThree"
@@ -636,7 +636,7 @@
                        HorizontalAlignment="Right" VerticalAlignment="Center" 
                        Margin="5 0"
                        Width="64"
-                       Source="{Binding ImgGlyphTwoSource, UpdateSourceTrigger=PropertyChanged}"
+                       Source="{Binding ImgGlyphTwoSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
                        Visibility="{Binding ImgGlyphTwoSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
         </Grid>

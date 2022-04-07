@@ -191,6 +191,19 @@ namespace Dynamo.Graph.Nodes
             NodeMessagesClearing?.Invoke(this);
         }
 
+        /// <summary>
+        /// Event triggered whenever the node re-executes to clear its info messages
+        /// </summary>
+        public event Action<NodeModel> NodeInfoMessagesClearing;
+
+        /// <summary>
+        /// Fires on each node that is modified to clear info messages, when the graph executes.
+        /// </summary>
+        internal void OnNodeInfoMessagesClearing()
+        {
+            NodeInfoMessagesClearing?.Invoke(this);
+        }
+
         internal void OnNodeExecutionBegin()
         {
             NodeExecutionBegin?.Invoke(this);
@@ -357,7 +370,7 @@ namespace Dynamo.Graph.Nodes
             get { return state; }
             set
             {
-                if (value != ElementState.Error && value != ElementState.AstBuildBroken)
+                if (value != ElementState.Error && value != ElementState.Info && value != ElementState.AstBuildBroken)
                     ClearTransientWarningsAndErrors();
 
                 // Check before settings and raising
@@ -872,6 +885,15 @@ namespace Dynamo.Graph.Nodes
         public bool IsPartiallyApplied //TODO(Steve): Move to Graph level -- MAGN-5710
         {
             get { return !inPorts.All(p => p.IsConnected); }
+        }
+
+        /// <summary>
+        ///     Are all the outputs of this node connected?
+        /// </summary>
+        [JsonIgnore]
+        public bool AreAllOutputsConnected
+        {
+            get { return outPorts.All(p => p.IsConnected); }
         }
 
         /// <summary>
@@ -1630,8 +1652,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Clears the errors/warnings that are generated when running the graph,
-        /// the State will be set to ElementState.Dead.
+        /// Clears the errors/warnings that are generated when running the graph.
         /// </summary>
         public virtual void ClearErrorsAndWarnings()
         {
@@ -1641,6 +1662,16 @@ namespace Dynamo.Graph.Nodes
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTransientWarningsAndErrors();
             OnNodeMessagesClearing();
+        }
+
+        /// <summary>
+        /// Clears the info messages that are generated when running the graph,
+        /// the State will be set to ElementState.Dead.
+        /// </summary>
+        public virtual void ClearInfoMessages()
+        {
+            infos.RemoveWhere(x => x.State == ElementState.Info);
+            OnNodeInfoMessagesClearing();
         }
 
         /// <summary>
@@ -1759,6 +1790,16 @@ namespace Dynamo.Graph.Nodes
         {
             State = ElementState.Error;
             infos.Add(new Info(p, ElementState.Error));
+        }
+
+        /// <summary>
+        /// Set an info on a node.
+        /// </summary>
+        /// <param name="p">The info text.</param>
+        public void Info(string p)
+        {
+            State = ElementState.Info;
+            infos.Add(new Info(p, ElementState.Info));
         }
 
         /// <summary>
@@ -2437,6 +2478,10 @@ namespace Dynamo.Graph.Nodes
             PreviewPinned = helper.ReadBoolean("isPinned", false);
             IsSelected = helper.ReadBoolean(nameof(IsSelected), IsSelected);
 
+            if (IsSelected)
+                DynamoSelection.Instance.Selection.Add(this);
+            else
+                DynamoSelection.Instance.Selection.Remove(this);
 
             var portInfoProcessed = new HashSet<int>();
 
@@ -2781,7 +2826,8 @@ namespace Dynamo.Graph.Nodes
         Warning,
         PersistentWarning,
         Error,
-        AstBuildBroken
+        AstBuildBroken,
+        Info
     };
 
     /// <summary>

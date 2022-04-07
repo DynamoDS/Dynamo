@@ -1,4 +1,12 @@
-﻿using Dynamo.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Events;
 using Dynamo.Graph.Workspaces;
@@ -8,14 +16,6 @@ using Dynamo.PackageManager;
 using Dynamo.PythonServices;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core.Converters;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -39,7 +39,6 @@ namespace Dynamo.ViewModels
         private ObservableCollection<string> packagePathsForInstall;
         private ObservableCollection<string> fontSizeList;
         private ObservableCollection<string> numberFormatList;
-        private ObservableCollection<StyleItem> styleItemsList;
         private StyleItem addStyleControl;
         private ObservableCollection<string> pythonEngineList;
 
@@ -411,12 +410,12 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// This will contain a list of all the Styles created by the user in the Styles list ( Visual Settings -> Group Styles section)
         /// </summary>
-        public ObservableCollection<StyleItem> StyleItemsList
+        public ObservableCollection<GroupStyleItem> StyleItemsList
         {
-            get { return styleItemsList; }
+            get { return preferenceSettings.GroupStyleItemsList.ToObservableCollection(); }
             set
             {
-                styleItemsList = value;
+                preferenceSettings.GroupStyleItemsList = value.ToList<GroupStyleItem>();
                 RaisePropertyChanged(nameof(StyleItemsList));
             }
         }
@@ -424,11 +423,14 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Used to add styles to the StyleItemsListe while also update the saved changes label
         /// </summary>
-        /// <param name="style"></param>
+        /// <param name="style">style to be added</param>
         public void AddStyle(StyleItem style)
         {
-            StyleItemsList.Add(style);
-            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { HexColorString = style.HexColorString, Name = style.Name, IsDefault = style.IsDefault });
+            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { 
+                HexColorString = style.HexColorString, 
+                Name = style.Name, 
+                IsDefault = style.IsDefault
+            });
             RaisePropertyChanged(nameof(StyleItemsList));
         }
 
@@ -815,19 +817,24 @@ namespace Dynamo.ViewModels
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
             SelectedLanguage = languages.Split(',').First();
 
-            FontSizeList = new ObservableCollection<string>();
-            FontSizeList.Add(Wpf.Properties.Resources.ScalingSmallButton);
-            FontSizeList.Add(Wpf.Properties.Resources.ScalingMediumButton);
-            FontSizeList.Add(Wpf.Properties.Resources.ScalingLargeButton);
-            FontSizeList.Add(Wpf.Properties.Resources.ScalingExtraLargeButton);
+            FontSizeList = new ObservableCollection<string>
+            {
+                Wpf.Properties.Resources.ScalingSmallButton,
+                Wpf.Properties.Resources.ScalingMediumButton,
+                Wpf.Properties.Resources.ScalingLargeButton,
+                Wpf.Properties.Resources.ScalingExtraLargeButton
+            };
             SelectedFontSize = Wpf.Properties.Resources.ScalingMediumButton;
 
-            NumberFormatList = new ObservableCollection<string>();
-            NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber0);
-            NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber00);
-            NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber000);
-            NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000);
-            NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber00000);
+            // Number format settings
+            NumberFormatList = new ObservableCollection<string>
+            {
+                Wpf.Properties.Resources.DynamoViewSettingMenuNumber0,
+                Wpf.Properties.Resources.DynamoViewSettingMenuNumber00,
+                Wpf.Properties.Resources.DynamoViewSettingMenuNumber000,
+                Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000,
+                Wpf.Properties.Resources.DynamoViewSettingMenuNumber00000
+            };
             SelectedNumberFormat = preferenceSettings.NumberFormat;
 
             runSettingsIsChecked = preferenceSettings.DefaultRunType;
@@ -836,8 +843,9 @@ namespace Dynamo.ViewModels
             //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;
 
-            StyleItemsList = LoadStyles(preferenceSettings.GroupStyleItemsList);
-          
+            // Initialize group styles with default and non-default GroupStyleItems
+            StyleItemsList = GroupStyleItem.DefaultGroupStyleItems.AddRange(preferenceSettings.GroupStyleItemsList.Where(style => style.IsDefault != true)).ToObservableCollection();
+
             //When pressing the "Add Style" button some controls will be shown with some values by default so later they can be populated by the user
             AddStyleControl = new StyleItem() { Name = string.Empty, HexColorString = GetRandomHexStringColor() };
 
@@ -859,6 +867,7 @@ namespace Dynamo.ViewModels
             SavedChangesLabel = string.Empty;
             SavedChangesTooltip = string.Empty;
 
+            // Add tabs
             preferencesTabs = new Dictionary<string, TabSettings>();
             preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
             preferencesTabs.Add("Features",new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
@@ -881,22 +890,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// This method loads the group styles defined by the user and stored in the xml file
-        /// </summary>
-        /// <param name="styleItemsList"></param>
-        /// <returns></returns>
-        private ObservableCollection<StyleItem> LoadStyles(IEnumerable<Configuration.StyleItem> styleItemsList)
-        {
-            ObservableCollection<StyleItem> styles = new ObservableCollection<StyleItem>();
-            foreach (var style in styleItemsList)
-            {
-                styles.Add(new StyleItem { Name = style.Name, HexColorString = style.HexColorString, IsDefault = style.IsDefault });
-            }
-            return styles;
-        }
-
-        /// <summary>
-        /// This method will be executed everytime the WorkspaceModel.ScaleFactor value is updated.
+        /// This method will be executed every time the WorkspaceModel.ScaleFactor value is updated.
         /// </summary>
         /// <param name="args"></param>
         private void PreferencesViewModel_WorkspaceSettingsChanged(WorkspacesSettingsChangedEventArgs args)
@@ -1090,28 +1084,35 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// This method will remove the current Style selected from the Styles list
+        /// This method will remove the current Style selected from the Styles list by name
         /// </summary>
-        /// <param name="groupName"></param>
-        internal void RemoveStyleEntry(string groupName)
+        /// <param name="styleName"></param>
+        internal void RemoveStyleEntry(string styleName)
         {
-            StyleItem itemToRemove = (from item in StyleItemsList where item.Name.Equals(groupName) select item).FirstOrDefault();
-            StyleItemsList.Remove(itemToRemove);
-
-            GroupStyleItem itemToRemovePreferences = preferenceSettings.GroupStyleItemsList.FirstOrDefault(x => x.Name.Equals(groupName));
+            GroupStyleItem itemToRemovePreferences = preferenceSettings.GroupStyleItemsList.FirstOrDefault(x => x.Name.Equals(styleName));
             preferenceSettings.GroupStyleItemsList.Remove(itemToRemovePreferences);
-            
+            RaisePropertyChanged(nameof(StyleItemsList));
             UpdateSavedChangesLabel();
         }
 
         /// <summary>
-        /// This method will check if the Style that is being created already exists in the Styles list
+        /// This method will check if the name of Style that is being created already exists in the Styles list
         /// </summary>
-        /// <param name="item1"></param>
+        /// <param name="item">target style item to check</param>
         /// <returns></returns>
-        internal bool ValidateExistingStyle(StyleItem item1)
+        internal bool IsStyleNameValid(StyleItem item)
         {
-            return StyleItemsList.Where(x => x.Name.Equals(item1.Name)).Any();
+            return StyleItemsList.Where(x => x.Name.Equals(item.Name)).Any();
+        }
+
+        /// <summary>
+        /// This method will check if the name of Style that is being created already exists in the Styles list
+        /// </summary>
+        /// <param name="item">target style to be checked</param>
+        /// <returns></returns>
+        internal bool ValidateStyleGuid(StyleItem item)
+        {
+            return StyleItemsList.Where(x => x.Name.Equals(item.Name)).Any();
         }
 
         /// <summary>

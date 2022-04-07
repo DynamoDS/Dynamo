@@ -1553,7 +1553,7 @@ namespace Dynamo.ViewModels
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, "Json file content");
                     }
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
-                    Wpf.Utilities.MessageBoxService.Show(errorMsgString, 
+                    MessageBoxService.Show(errorMsgString, 
                         Properties.Resources.FileLoadFailureMessageBoxTitle, 
                         MessageBoxButton.OK, 
                         MessageBoxImage.Exclamation);
@@ -1616,7 +1616,7 @@ namespace Dynamo.ViewModels
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
                     }
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
-                    MessageBoxService.Show(errorMsgString, string.Empty, MessageBoxButton.OK, MessageBoxImage.None);
+                    MessageBoxService.Show(errorMsgString, commandString, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
