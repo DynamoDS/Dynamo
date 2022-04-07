@@ -99,7 +99,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         private void SetupFooterNotificationItems()
         {
-            CurrentNotificationMessage = "Ready to run.";   // Default value of the notification text block on opening
+            CurrentNotificationMessage = Properties.Resources.RunReady;   // Default value of the notification text block on opening
 
             FooterNotificationItem [] footerItems = new FooterNotificationItem[2]; //TODO : change to 3 when Info is implemented
 

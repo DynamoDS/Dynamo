@@ -3072,4 +3072,7 @@ To install the latest version of a package, click Install. \n
   <data name="RunCompletedWithScaleChangeAndErrorsMessage" xml:space="preserve">
     <value>Run completed with errors on setting new working range.</value>
   </data>
+  <data name="RunReady" xml:space="preserve">
+    <value>Ready to run.</value>
+  </data>
 </root>

@@ -46,18 +46,16 @@
 
         <!-- "Run completed with .." UI element -->
         <Border Style="{StaticResource FooterNotificationItemStyle}"
-                Visibility="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage, 
-                                NotifyOnTargetUpdated=True,
-                                Converter={StaticResource EmptyStringToCollapsedConverter}}"
                 BorderBrush="{Binding Path=HomeSpaceViewModel.CurrentNotificationLevel, 
                                 Converter={StaticResource NotificationLevelToColorConverter}}">
             <TextBlock x:Name="runNotificationTextBlock"
                         Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
                        FontStyle="Italic"
                        FontSize="12"
+                       MinWidth="180"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Stretch"
-                       TextAlignment="Right"
+                       TextAlignment="Left"
                        TextTrimming="WordEllipsis"
                        Foreground="{StaticResource PrimaryCharcoal200Brush}">
             </TextBlock>
