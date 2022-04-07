@@ -1008,6 +1008,23 @@ namespace Dynamo.Controls
                 this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(null); };
             }
             loaded = true;
+
+            //TODO... not sure I like this, it's easy to call, but it might confuse devs, it will silently
+            //return default when client is not setup, maybe should require a reference?
+            //Task.Run(async () =>
+            {
+                //    await Task.Delay(4000);
+                if (DynamoFeatureFlags.FeatureFlagsManager.CheckFeatureFlag<bool>("EasterEggIcon1", false))
+                {
+                    dynamoViewModel.Model.Logger.Log("EASTER EGG ICON IS TRUE");
+                    MessageBoxService.Show("feature flag 1 enabled", "easter", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                }
+                else
+                {
+                    dynamoViewModel.Model.Logger.Log("EASTER EGG ICON IS FALSE");
+                }
+            }
+           // });
         }
 
         /// <summary>

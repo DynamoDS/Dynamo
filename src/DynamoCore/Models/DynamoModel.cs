@@ -376,6 +376,8 @@ namespace Dynamo.Models
         public AuthenticationManager AuthenticationManager { get; set; }
 
         internal static string DefaultPythonEngine { get; private set; }
+
+        internal static DynamoFeatureFlags.FeatureFlagsManager FeatureFlags { get; private set; }
         #endregion
 
         #region initialization and disposal
@@ -647,6 +649,18 @@ namespace Dynamo.Models
             if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
             {
                 AnalyticsService.Start(this, IsHeadless, IsTestMode);
+                //we only start feature flags if analytics is enabled, since feature flags will make network requests.
+                //TODO use seperate ld flag or internal pref/startup config??
+
+                //TODO userID here will always be valid, but analytics service will return new guid if one is not found
+                //it would be better IMO to use a shared id if one is not found - might need seperate implementation for feature flags in that case.
+                //this is only neccesary if we use a seperate flag from analytics flag to control launch darkly.
+                FeatureFlags = new DynamoFeatureFlags.FeatureFlagsManager(AnalyticsService.GetUserIDForSession());
+                //TODO unsub.
+                DynamoFeatureFlags.FeatureFlagsManager.LogRequest += (m) =>
+                {
+                    LogMessage(Dynamo.Logging.LogMessage.Info(m));
+                };
             }
 
             if (!IsTestMode && PreferenceSettings.IsFirstRun)
