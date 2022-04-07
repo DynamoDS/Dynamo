@@ -99,6 +99,8 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         private void SetupFooterNotificationItems()
         {
+            CurrentNotificationMessage = "Ready to run.";   // Default value of the notification text block on opening
+
             FooterNotificationItem [] footerItems = new FooterNotificationItem[2]; //TODO : change to 3 when Info is implemented
 
             footerItems[0] = new FooterNotificationItem() { NotificationCount = 0, NotificationImage = "/DynamoCoreWpf;component/UI/Images/error.png" };
@@ -352,7 +354,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             switch (level)
             {
                 case NotificationLevel.Mild:
-                    return new SolidColorBrush(Colors.Gray);
+                    return (SolidColorBrush)(new BrushConverter().ConvertFrom("#989898"));
                 case NotificationLevel.Moderate:
                     return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FAA21B"));
                 case NotificationLevel.Error:

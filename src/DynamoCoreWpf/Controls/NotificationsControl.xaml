@@ -46,33 +46,11 @@
 
         <!-- "Run completed with .." UI element -->
         <Border Style="{StaticResource FooterNotificationItemStyle}"
-                Background="{StaticResource DarkMidGreyBrush}"
                 Visibility="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage, 
                                 NotifyOnTargetUpdated=True,
                                 Converter={StaticResource EmptyStringToCollapsedConverter}}"
                 BorderBrush="{Binding Path=HomeSpaceViewModel.CurrentNotificationLevel, 
                                 Converter={StaticResource NotificationLevelToColorConverter}}">
-            <!-- Animate the appearance and disapearance of the notification text element.
-            The element will pop in, stay on for 5 second, and fade out.
-            TO DO: Is that the desired behaviour? -->
-            <Border.Triggers>
-                <EventTrigger RoutedEvent="Binding.TargetUpdated">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Opacity)">
-                                <LinearDoubleKeyFrame Value="0"
-                                                          KeyTime="0:0:0" />
-                                <LinearDoubleKeyFrame Value="1"
-                                                          KeyTime="0:0:0.35" />
-                                <LinearDoubleKeyFrame Value="1"
-                                                          KeyTime="0:0:5" />
-                                <LinearDoubleKeyFrame Value="0"
-                                                          KeyTime="0:0:5.35" />
-                            </DoubleAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Border.Triggers>
             <TextBlock x:Name="runNotificationTextBlock"
                         Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
                        FontStyle="Italic"
@@ -91,7 +69,7 @@
                       ItemsSource="{Binding Path=HomeSpaceViewModel.FooterNotificationItems, UpdateSourceTrigger=PropertyChanged}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Style="{StaticResource FooterNotificationItemStyle}" CornerRadius="3">
+                    <Border Style="{StaticResource FooterNotificationItemStyle}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <!-- Create a duplicate of the image with in greyscale. 
                             "Property changes can only occure during object initialization", which prevents us to use a converter.
@@ -119,9 +97,7 @@
                             </Image>
                             <Label x:Name="footerIconText"
                                    Content="{Binding NotificationCount}" 
-                                   FontSize="12" Padding="2" 
-                                   VerticalAlignment="Center"
-                                   VerticalContentAlignment="Center"
+                                   FontSize="12" Padding="2 3 2 2" 
                                    Foreground="{StaticResource PrimaryCharcoal200Brush}"/>
                         </StackPanel>
                     </Border>
