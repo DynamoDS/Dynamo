@@ -440,7 +440,7 @@ namespace Dynamo.Models
         /// CLIMode indicates if we are running in DynamoCLI or DynamoWPFCLI mode.
         /// Note that in CLI mode Scheduler is synchronous.
         /// </summary>
-        public bool CLIMode { get; private set; }
+        public bool CLIMode { get; internal set; }
 
         protected virtual void PreShutdownCore(bool shutdownHost)
         {
@@ -481,7 +481,6 @@ namespace Dynamo.Models
             IAuthProvider AuthProvider { get; set; }
             IEnumerable<IExtension> Extensions { get; set; }
             TaskProcessMode ProcessMode { get; set; }
-            bool CLIMode { get; set; }
 
             /// <summary>
             /// If true, the program does not have a UI.
@@ -509,7 +508,6 @@ namespace Dynamo.Models
             public TaskProcessMode ProcessMode { get; set; }
             public bool IsHeadless { get; set; }
             public string PythonTemplatePath { get; set; }
-            public bool CLIMode { get; set; }
             /// <summary>
             /// Default Python script engine
             /// </summary>
@@ -586,7 +584,6 @@ namespace Dynamo.Models
             Context = config.Context;
             IsTestMode = config.StartInTestMode;
             IsHeadless = config.IsHeadless;
-            CLIMode = config.CLIMode;
 
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode);
