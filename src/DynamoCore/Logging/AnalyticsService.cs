@@ -41,7 +41,7 @@ namespace Dynamo.Logging
             // This will also load the Analytics.Net.ADP assembly
             // We must initialize the ADPAnalyticsUI instance before the Analytics.Start call.
             adpAnalyticsUI = new ADPAnalyticsUI();
-            var dynamoAnalyticsClient = new DynamoAnalyticsClient(model);
+            dynamoAnalyticsClient = new DynamoAnalyticsClient(model);
 
             Analytics.Start(dynamoAnalyticsClient);
             model.WorkspaceAdded += OnWorkspaceAdded;

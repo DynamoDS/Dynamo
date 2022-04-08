@@ -129,7 +129,7 @@ namespace Dynamo.Models
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
-
+    
         #endregion
 
         #region static properties
@@ -655,12 +655,16 @@ namespace Dynamo.Models
                 //TODO userID here will always be valid, but analytics service will return new guid if one is not found
                 //it would be better IMO to use a shared id if one is not found - might need seperate implementation for feature flags in that case.
                 //this is only neccesary if we use a seperate flag from analytics flag to control launch darkly.
-                FeatureFlags = new DynamoFeatureFlags.FeatureFlagsManager(AnalyticsService.GetUserIDForSession());
-                //TODO unsub.
-                DynamoFeatureFlags.FeatureFlagsManager.LogRequest += (m) =>
+
+                //TODO the docs state we can actually leave userid unset, and a guid will be generated and stored in localstorage, but I see no evidence of this
+                //in the dotnet sdk. This may be only for js sdk, so instead we use the stable instrumentation guid in the registry.
+                try
                 {
-                    LogMessage(Dynamo.Logging.LogMessage.Info(m));
-                };
+                    FeatureFlags = new DynamoFeatureFlags.FeatureFlagsManager(AnalyticsService.GetUserIDForSession());
+                    DynamoFeatureFlags.FeatureFlagsManager.LogRequest += LogMessageWrapper;
+
+                }
+                catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
             }
 
             if (!IsTestMode && PreferenceSettings.IsFirstRun)
@@ -1213,7 +1217,7 @@ namespace Dynamo.Models
             CustomNodeManager.MessageLogged -= LogMessage;
             CustomNodeManager.Dispose();
             MigrationManager.MessageLogged -= LogMessage;
-
+            DynamoFeatureFlags.FeatureFlagsManager.LogRequest -= LogMessageWrapper;
         }
 
         private void InitializeCustomNodeManager()
@@ -2758,6 +2762,11 @@ namespace Dynamo.Models
         {
             Logger.Log(obj);
         }
+   private void LogMessageWrapper(string m)
+    {
+        LogMessage(Dynamo.Logging.LogMessage.Info(m));
+
+    }
 
 #if DEBUG_LIBRARY
         private void DumpLibrarySnapshot(IEnumerable<Engine.FunctionGroup> functionGroups)
@@ -2784,7 +2793,7 @@ namespace Dynamo.Models
         }
 #endif
 
-        private void AddNodeTypeToSearch(TypeLoadData typeLoadData)
+    private void AddNodeTypeToSearch(TypeLoadData typeLoadData)
         {
             if (!typeLoadData.IsDSCompatible || typeLoadData.IsDeprecated || typeLoadData.IsHidden
                 || typeLoadData.IsMetaNode)
