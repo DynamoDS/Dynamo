@@ -44,33 +44,19 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!-- "Run completed with .." UI element -->
-        <Border Style="{StaticResource FooterNotificationItemStyle}"
-                BorderBrush="{Binding Path=HomeSpaceViewModel.CurrentNotificationLevel, 
-                                Converter={StaticResource NotificationLevelToColorConverter}}">
-            <TextBlock x:Name="runNotificationTextBlock"
-                        Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
-                       FontStyle="Italic"
-                       FontSize="12"
-                       MinWidth="180"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Stretch"
-                       TextAlignment="Left"
-                       TextTrimming="WordEllipsis"
-                       Foreground="{StaticResource PrimaryCharcoal200Brush}">
-            </TextBlock>
-        </Border>
-
+        <!-- The footer notification icon 
+        Shows the number of Error/Warning/Info Nodes
+        Interactions - clicking will zoom around affected nodes -->
         <ItemsControl x:Name="footerIconItemsControl"
                       VerticalAlignment="Center"
-                      Grid.Column="1"
+                      Grid.Column="0"
                       ItemsSource="{Binding Path=HomeSpaceViewModel.FooterNotificationItems, UpdateSourceTrigger=PropertyChanged}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Style="{StaticResource FooterNotificationItemStyle}">
+                    <Border Style="{StaticResource FooterNotificationItemStyle}" Width="36">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <!-- Create a duplicate of the image with in greyscale. 
-                            "Property changes can only occure during object initialization", which prevents us to use a converter.
+                            <!-- Create a duplicate of the image in greyscale. 
+                            "Property changes can only occur during object initialization", which prevents us to use a converter.
                             Source: https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.formatconvertedbitmap?view=windowsdesktop-6.0 -->
                             <Image x:Name="footerIconImage" 
                                    Width="12"
@@ -110,7 +96,24 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
-        
+
+        <!-- "Run completed with .." UI element -->
+        <Border Style="{StaticResource FooterNotificationItemStyle}"
+                Grid.Column="1"
+                BorderBrush="{Binding Path=HomeSpaceViewModel.CurrentNotificationLevel, 
+                                Converter={StaticResource NotificationLevelToColorConverter}}">
+            <TextBlock x:Name="runNotificationTextBlock"
+                       Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
+                       FontStyle="Italic"
+                       FontSize="12"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Stretch"
+                       TextAlignment="Left"
+                       TextTrimming="WordEllipsis"
+                       Foreground="{StaticResource PrimaryCharcoal200Brush}">
+            </TextBlock>
+        </Border>
+
         <StackPanel Orientation="Horizontal"
                     Grid.Column="2"
                     HorizontalAlignment="Right"
