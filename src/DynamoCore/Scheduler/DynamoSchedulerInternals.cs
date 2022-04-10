@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -7,6 +8,8 @@ namespace Dynamo.Scheduler
     partial class DynamoScheduler
     {
         #region Private Class Data Members
+
+        private readonly object objTaskInProgress = new Object();
 
         private enum EventIndex
         {
@@ -19,7 +22,7 @@ namespace Dynamo.Scheduler
             new ManualResetEvent(false)  // Scheduler shutdown event
         };
 
-        private volatile bool taskInProgress;
+        private bool taskInProgress;
         private bool taskQueueUpdated;
         private readonly ISchedulerThread schedulerThread;
         private readonly List<AsyncTask> taskQueue = new List<AsyncTask>();
@@ -40,10 +43,21 @@ namespace Dynamo.Scheduler
         /// </summary>
         public bool HasTaskInProgress
         {
-            get => taskInProgress;
+            get
+            {
+                lock(objTaskInProgress)
+                {
+                    return taskInProgress;
+                }
+                
+            }
+
             private set
             {
-                taskInProgress = value;
+                lock(objTaskInProgress)
+                {
+                    taskInProgress = value;
+                }
             }
         }
 
