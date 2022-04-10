@@ -1507,19 +1507,15 @@ namespace ProtoScript.Runners
 
         private bool CompileAndExecute(List<AssociativeNode> astList)
         {
-            bool succeeded;
-            if (!astList.Any())
-            {
-                succeeded = true;
-            }
-            else
+            bool succeeded = false;
+            if (astList.Any())
             {
                 succeeded = Compile(astList, runnerCore);
             }
+
             if (succeeded)
             {
-                //Execute(astList.Count > 0);
-                Execute(succeeded);
+                Execute(astList.Count > 0);
             }
             return succeeded;
         }
