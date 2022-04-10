@@ -45,6 +45,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="GraphNodeManagerView.xaml.cs">
       <DependentUpon>GraphNodeManagerView.xaml</DependentUpon>
     </Compile>
@@ -89,6 +90,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="GraphNodeManager_ViewExtensionDefinition.xml" />
+    <Resource Include="Images\EmptyList.png" />
+    <Resource Include="Images\Info.png" />
+    <Resource Include="Images\Null.png" />
+    <Resource Include="Images\Alert.png" />
+    <Resource Include="Images\Error.png" />
+    <Resource Include="Images\Frozen.png" />
+    <Resource Include="Images\Function.png" />
+    <Resource Include="Images\Hidden.png" />
+    <Resource Include="Images\IsInput.png" />
+    <Resource Include="Images\IsOutput.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

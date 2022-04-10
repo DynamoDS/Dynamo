@@ -5,10 +5,27 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dynamo.GraphNodeManager"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:converters="clr-namespace:Dynamo.GraphNodeManager.Converters"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid x:Name="MainGrid">
         <Grid.Resources>
+            <!-- Image Style -->
+            <Style x:Key="ImageStyle" TargetType="Image">
+                <Setter Property="Width" Value="12"></Setter>
+                <Setter Property="Height" Value="12"></Setter>
+                <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
+                <Setter Property="UseLayoutRounding" Value="True"></Setter>
+            </Style>
             <!-- DataGrid style -->
             <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
                 <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle1}"/>
@@ -94,8 +111,16 @@
         </StackPanel>
         <!-- Contains all filter icons -->
         <StackPanel x:Name="FiltersStackPanel"
-                    Grid.Row="1">
-
+                    Grid.Row="1"
+                    Orientation="Horizontal">
+            <Image x:Name="HiddenEyeImage"
+                   Width="16px"
+                   Height="16px"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Source="/GraphNodeManagerViewExtension;component/Images/Hidden.png"
+                   Stretch="UniformToFill" />
+            <Button>Test</Button>
         </StackPanel>
         <DataGrid x:Name="NodesInfoDataGrid"
                   Grid.Row="2"
@@ -135,14 +160,103 @@
                 </GroupStyle>
             </DataGrid.GroupStyle>
 
-            <!-- Node Name --> 
             <DataGrid.Columns>
+
+                <!-- Node Name --> 
                 <DataGridTextColumn
                     Header="Name"
                     Binding="{Binding Name}"
+                    FontWeight="Light"
                     Foreground="#F5F5F5"
                     IsReadOnly="True"
-                    Width="*"></DataGridTextColumn>
+                    Width="3*"></DataGridTextColumn>
+
+
+                <!-- TODO: Create a custom Image with a DependancyProperty to avoid repeating converter
+                    https://stackoverflow.com/questions/11121828/how-to-set-a-converter-in-a-style-but-not-the-path -->
+
+                <!-- State -->
+                <DataGridTemplateColumn
+                    Header="State" 
+                    Width="*"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Hidden.png" 
+                                       Style="{StaticResource ImageStyle}"
+                                       Visibility="{Binding StateIsHidden, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/IsInput.png"
+                                       Style="{StaticResource ImageStyle}" 
+                                       Visibility="{Binding StateIsInput, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/IsOutput.png"
+                                       Style="{StaticResource ImageStyle}" 
+                                       Visibility="{Binding StateIsOutput, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Status -->
+                <DataGridTemplateColumn
+                    Header="Status" 
+                    Width="*"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Frozen.png" 
+                                       Style="{StaticResource ImageStyle}"
+                                       Visibility="{Binding StatusIsFrozen, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Function.png"
+                                       Style="{StaticResource ImageStyle}" 
+                                       Visibility="{Binding StatusIsFunction, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Issues -->
+                <DataGridTemplateColumn
+                    Header="Issues" 
+                    Width="*"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Alert.png" 
+                                       Style="{StaticResource ImageStyle}"
+                                       Visibility="{Binding IssuesHasWarning, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Error.png"
+                                       Style="{StaticResource ImageStyle}" 
+                                       Visibility="{Binding IssuesHasError, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Info -->
+                <DataGridTemplateColumn
+                    Header="Info" 
+                    Width="*"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Info.png" 
+                                       Style="{StaticResource ImageStyle}"
+                                       Visibility="{Binding IsInfo, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/EmptyList.png"
+                                       Style="{StaticResource ImageStyle}" 
+                                       Visibility="{Binding IsEmptyList, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Null.png"
+                                       Style="{StaticResource ImageStyle}" 
+                                       Visibility="{Binding IsNull, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

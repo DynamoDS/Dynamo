@@ -13,8 +13,22 @@ namespace Dynamo.GraphNodeManager.ViewModels
     /// </summary>
     public class NodeViewModel : NotificationObject
     {
+        #region Private Properties
         private string name = String.Empty;
+        private bool stateIsHidden = false;
+        private bool stateIsInput = false;
+        private bool stateIsOutput = false;
+        private bool statusIsFrozen = false;
+        private bool statusIsFunction = false;
+        private bool issuesHasWarning = false;
+        private bool issuesHasError = false;
+        private int dismissedWarnings = 0;
+        private bool isInfo = false;
+        private bool isEmptyList = false;
+        private bool isNull = false;
+        #endregion
 
+        #region Public Fields
         /// <summary>
         /// Node Name
         /// </summary>
@@ -25,9 +39,140 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 name = NodeModel?.Name;
                 return name;
             }
-            internal set { name = value; }
+            internal set => name = value;
+        }
+        /// <summary>
+        /// IsVisible
+        /// </summary>
+        public bool StateIsHidden
+        {
+            get
+            {
+                stateIsHidden = !NodeModel.IsVisible;
+                return stateIsHidden;
+            }
+            internal set => stateIsHidden = value;
+        }
+        /// <summary>
+        /// IsInputNode
+        /// </summary>
+        public bool StateIsInput
+        {
+            get
+            {
+                stateIsInput = NodeModel.IsSetAsInput;
+                return stateIsInput;
+            }
+            internal set => stateIsInput = value;
+        }
+        /// <summary>
+        /// IsOutputNode
+        /// </summary>
+        public bool StateIsOutput
+        {
+            get
+            {
+                stateIsOutput = NodeModel.IsSetAsOutput;
+                return stateIsOutput;
+            }
+            internal set => stateIsInput = value;
         }
 
+        /// <summary>
+        /// IsFrozen
+        /// </summary>
+        public bool StatusIsFrozen
+        {
+            get
+            {
+                statusIsFrozen = NodeModel.IsFrozen;
+                return statusIsFrozen;
+            }
+            internal set => statusIsFrozen = value;
+        }
+
+        /// <summary>
+        /// IsFrozen
+        /// </summary>
+        public bool StatusIsFunction
+        {
+            get
+            {
+                statusIsFunction = NodeModel.IsCustomFunction;
+                return statusIsFunction;
+            }
+            internal set => statusIsFunction = value;
+        }
+
+        /// <summary>
+        /// Node Has Warnings 
+        /// </summary>
+        public bool IssuesHasWarning
+        {
+            get
+            {
+                if (NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning)
+                    issuesHasWarning = true;
+                return issuesHasWarning;
+            }
+            internal set => issuesHasWarning = value;
+        }
+
+        /// <summary>
+        /// Node Has Errors 
+        /// </summary>
+        public bool IssuesHasError
+        {
+            get
+            {
+                issuesHasError = NodeModel.IsInErrorState;
+                return issuesHasError;
+            }
+            internal set => issuesHasError = value;
+        }
+
+
+        /// <summary>
+        /// Node Is Info Node
+        /// </summary>
+        public bool IsInfo
+        {
+            get
+            {
+                isInfo = NodeModel.IsInErrorState;
+                return isInfo;
+            }
+            internal set => isInfo = value;
+        }
+
+        /// <summary>
+        /// Node returns an empty list
+        /// </summary>
+        public bool IsEmptyList
+        {
+            get
+            {
+                isEmptyList = NodeModel.IsInErrorState;
+                return isEmptyList;
+            }
+            internal set => isEmptyList = value;
+        }
+
+        /// <summary>
+        /// Node returns null
+        /// </summary>
+        public bool IsNull
+        {
+            get
+            {
+                isNull = NodeModel.IsInErrorState;
+                return isNull;
+            }
+            internal set => isNull = value;
+        }
+        #endregion
+
+        #region Setup and Constructors
         internal NodeModel NodeModel { get; set; }
 
         /// <summary>
@@ -38,5 +183,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             NodeModel = node;
         }
+        #endregion
+
     }
 }
