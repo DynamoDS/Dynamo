@@ -651,6 +651,31 @@
         </Setter>
     </Style>
 
+    <Style x:Key="TextButtonLink" TargetType="Button">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <TextBlock 
+                               Name="textBlock"        
+                               HorizontalAlignment="Left"                               
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               FontSize="14px"
+                               Background="Transparent"                        
+                               Foreground="#006FB4"
+                               Text="{TemplateBinding Content}"/>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="textBlock" Property="Background" Value="Transparent" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="InputStyle" TargetType="{x:Type TextBox}">
         <Setter Property="Margin" Value="0,0,0,12" />
         <Setter Property="MinWidth" Value="62px" />
@@ -3197,7 +3222,8 @@
     <Style x:Key="ContextMenuItemStyle" TargetType="{x:Type MenuItem}">
         <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
         <Setter Property="Height" Value="Auto" />
-        <Setter Property="Width" Value="240" />
+        <Setter Property="MinWidth" Value="250" />
+        <Setter Property="Width" Value="Auto" />
         <Setter Property="Padding" Value="20,0,0,0" />
         <Setter Property="Template">
             <Setter.Value>
@@ -3257,6 +3283,107 @@
                                VerticalOffset="-2">
                             <Border Background="{TemplateBinding Background}"
                                     BorderBrush="Transparent"
+                                    BorderThickness="0">
+                                <ScrollViewer x:Name="SubMenuScrollViewer"
+                                              CanContentScroll="true"
+                                              Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
+                                                                                            TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                    <Grid RenderOptions.ClearTypeHint="Enabled">
+                                        <ItemsPresenter x:Name="ItemsPresenter"
+                                                        Margin="2"
+                                                        Grid.IsSharedSizeScope="true"
+                                                        KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                        KeyboardNavigation.TabNavigation="Cycle"
+                                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Grid>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="False">
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ContextMenuItemFixedWidthStyle" TargetType="{x:Type MenuItem}">
+        <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="MinWidth" Value="250" />
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Padding" Value="20,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <DockPanel x:Name="dockPanel"
+                               HorizontalAlignment="Stretch"
+                               Background="Transparent"
+                               SnapsToDevicePixels="true">
+                        <Label x:Name="checkBox"
+                               Margin="0,0,-20,0"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Content="✓"
+                               DockPanel.Dock="Left"
+                               FontSize="9px"
+                               Foreground="White"
+                               Visibility="Collapsed" />
+                        <ContentPresenter x:Name="ContentPresenter"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center"
+                                          ContentSource="Header"
+                                          DockPanel.Dock="Left"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          TextBlock.Foreground="{StaticResource NodeContextMenuForeground}" />
+                        <Label x:Name="subMenuArrow"
+                               Margin="0,0,15,7"
+                               Padding="0"
+                               VerticalAlignment="Center"
+                               Content="&gt;"
+                               DockPanel.Dock="Right"
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               FontSize="13px"
+                               Foreground="{StaticResource Blue300Brush}">
+                            <Label.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1.5" />
+                            </Label.RenderTransform>
+                            <Label.Style>
+                                <Style TargetType="{x:Type Label}">
+                                    <Setter Property="Visibility" Value="Hidden" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <Popup x:Name="PART_Popup"
+                               AllowsTransparency="true"
+                               Focusable="false"
+                               HorizontalOffset="0"
+                               MaxWidth="182"
+                               IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                               Placement="Right"
+                               VerticalOffset="-2">
+                            <Border Background="{TemplateBinding Background}"
                                     BorderThickness="0">
                                 <ScrollViewer x:Name="SubMenuScrollViewer"
                                               CanContentScroll="true"
@@ -4535,6 +4662,69 @@
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
                         </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <SolidColorBrush x:Key="BorderBrushMouseOver" Color="#FFFFFF" Opacity="0.15"/>
+
+    <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
+        <Setter Property="Focusable" Value="{Binding Path=IsDefault, Converter={StaticResource InverseBooleanConverter}}"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Grid Margin="0,0,10,10"
+                                  MinWidth="186"
+                                  MinHeight="67">
+                        <Border x:Name="mouseOverBorder"
+                                        Margin="2"
+                                        BorderThickness="2"
+                                        BorderBrush="{StaticResource BorderBrushMouseOver}"
+                                        Visibility="Hidden"
+                                        CornerRadius="2"/>
+                        <Border x:Name="mousePressedBorder"
+                                        Margin="0"
+                                        BorderThickness="4"
+                                        Visibility="Hidden"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        Background="Transparent"
+                                        CornerRadius="4"/>
+                        <Border Name="selectedItemBorder"
+                                        Margin="4"
+                                        Background="Transparent"
+                                        SnapsToDevicePixels="true">
+                        </Border>
+                        <ContentPresenter/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" 
+                                         Value="True">
+                            <Setter Property="BorderBrush" 
+                                            TargetName="selectedItemBorder" 
+                                            Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="BorderThickness"
+                                            TargetName="selectedItemBorder"
+                                            Value="2"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" 
+                                                   Value="True"/>
+                                <Condition Property="Focusable"
+                                                   Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter TargetName="selectedItemBorder" 
+                                                Property="Opacity" 
+                                                Value="0.9" />
+                                <Setter TargetName="mouseOverBorder" 
+                                                Property="Visibility" 
+                                                Value="Visible" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

@@ -21,11 +21,11 @@ namespace DynamoCLI
                 DynamoModel model;
                 if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
                 {
-                    model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath);
+                    model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath, cmdLineArgs.AnalyticsInfo);
                 }
                 else
                 {
-                    model = Dynamo.Applications.StartupUtils.MakeModel(true);
+                    model = Dynamo.Applications.StartupUtils.MakeModel(true, string.Empty, cmdLineArgs.AnalyticsInfo);
                 }
                 var runner = new CommandLineRunner(model);
                 runner.Run(cmdLineArgs);

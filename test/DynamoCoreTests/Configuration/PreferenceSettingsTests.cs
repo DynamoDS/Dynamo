@@ -1,7 +1,7 @@
-﻿using Dynamo.Configuration;
+﻿using System.IO;
+using Dynamo.Configuration;
 using Dynamo.Models;
 using NUnit.Framework;
-using System.IO;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -132,9 +132,9 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(windowSettings.Height, 321);
             Assert.AreEqual(windowSettings.Width, 654);
             Assert.AreEqual(windowSettings.Status, WindowStatus.Maximized);
-            // 5 styles in total, 4 default ones plus the one added in test
-            Assert.AreEqual(settings.GroupStyleItemsList.Count, 5);
-            var styleItemsList = settings.GroupStyleItemsList[4];
+            // Load function will only deserialize the customized style
+            Assert.AreEqual(settings.GroupStyleItemsList.Count, 1);
+            var styleItemsList = settings.GroupStyleItemsList[0];
             Assert.AreEqual(styleItemsList.Name, "TestGroup");
             Assert.AreEqual(styleItemsList.HexColorString, "000000");
         }

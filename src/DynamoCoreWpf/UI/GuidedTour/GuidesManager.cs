@@ -415,7 +415,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         {
                             FormattedText = formattedText,
                             Title = title
-                        }
+                        },
+                        GuidesManager = this
                     };
 
                     //Due that the RatingTextTitle property is just for Survey then we need to set the property using reflection
