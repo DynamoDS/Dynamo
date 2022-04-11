@@ -962,7 +962,8 @@ namespace ProtoCore.Utils
         {
             if (node is IntNode
                 || node is DoubleNode
-                || node is BooleanNode)
+                || node is BooleanNode
+                || node is StringNode)
             {
                 return true;
             }
@@ -970,7 +971,7 @@ namespace ProtoCore.Utils
         }
 
 
-        public static StackValue BuildStackValueForPrimitive(AssociativeNode node)
+        public static StackValue BuildStackValueForPrimitive(AssociativeNode node, RuntimeCore rt)
         {
             Validity.Assert(IsPrimitiveASTNode(node) == true);
 
@@ -988,6 +989,12 @@ namespace ProtoCore.Utils
             {
                 return StackValue.BuildBoolean((node as BooleanNode).Value);
             }
+
+            if (node is StringNode)
+            {
+                return StackValue.BuildString((node as StringNode).Value, rt.Heap);
+            }
+
             return StackValue.BuildNull();
         }
     }

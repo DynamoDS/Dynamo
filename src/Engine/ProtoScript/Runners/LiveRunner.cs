@@ -316,7 +316,7 @@ namespace ProtoScript.Runners
             StackValue svSet = StackValue.BuildNull();
             if (CoreUtils.IsPrimitiveASTNode(bnode.RightNode))
             {
-                svSet = CoreUtils.BuildStackValueForPrimitive(bnode.RightNode);
+                svSet = CoreUtils.BuildStackValueForPrimitive(bnode.RightNode, this.runtimeCore);
             }
             else
             {
