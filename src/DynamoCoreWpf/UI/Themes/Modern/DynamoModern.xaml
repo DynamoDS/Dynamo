@@ -651,6 +651,31 @@
         </Setter>
     </Style>
 
+    <Style x:Key="TextButtonLink" TargetType="Button">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <TextBlock 
+                               Name="textBlock"        
+                               HorizontalAlignment="Left"                               
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               FontSize="14px"
+                               Background="Transparent"                        
+                               Foreground="#006FB4"
+                               Text="{TemplateBinding Content}"/>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="textBlock" Property="Background" Value="Transparent" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="InputStyle" TargetType="{x:Type TextBox}">
         <Setter Property="Margin" Value="0,0,0,12" />
         <Setter Property="MinWidth" Value="62px" />

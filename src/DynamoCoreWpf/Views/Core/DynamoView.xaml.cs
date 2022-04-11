@@ -61,8 +61,9 @@ namespace Dynamo.Controls
         public const string BackgroundPreviewName = "BackgroundPreview";
 
         //The "Packages" and "Get Started" strings needs to be hardcoded due that are hardcoded in the json file (no need localization)
-        private static string GetStartedGuideName = "Get Started";
-        private static string PackagesGuideName = "Packages";
+        internal static string GetStartedGuideName = "Get Started";
+        internal static string PackagesGuideName = "Packages";
+        internal static string OnboardingGuideName = "Onboarding";
 
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
@@ -2405,6 +2406,21 @@ namespace Dynamo.Controls
             try
             {
                 dynamoViewModel.MainGuideManager.LaunchTour(PackagesGuideName);
+            }
+            catch (Exception)
+            {
+                sidebarGrid.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void OnBoardingMenuGuide_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if(dynamoViewModel.ClearHomeWorkspaceInternal())
+                {
+                    dynamoViewModel.MainGuideManager.LaunchTour(OnboardingGuideName);
+                }
             }
             catch (Exception)
             {
