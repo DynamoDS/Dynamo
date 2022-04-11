@@ -7,10 +7,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using DSCore;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Newtonsoft.Json;
@@ -34,6 +36,9 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         [JsonIgnore]
         public DelegateCommand StopPeriodicTimerCommand { get; set; }
+
+        [JsonIgnore]
+        public DelegateCommand SelectIssuesCommand { get; set; }
 
         #endregion
 
@@ -81,6 +86,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             StartPeriodicTimerCommand = new DelegateCommand(StartPeriodicTimer, CanStartPeriodicTimer);
             StopPeriodicTimerCommand = new DelegateCommand(StopPeriodicTimer, CanStopPeriodicTimer);
+            SelectIssuesCommand = new DelegateCommand(SelectIssues);
 
             CheckAndSetPeriodicRunCapability();
 
@@ -99,12 +105,32 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         private void SetupFooterNotificationItems()
         {
-            CurrentNotificationMessage = Properties.Resources.RunReady;   // Default value of the notification text block on opening
+            CurrentNotificationMessage =
+                Properties.Resources.RunReady; // Default value of the notification text block on opening
 
-            FooterNotificationItem [] footerItems = new FooterNotificationItem[2]; //TODO : change to 3 when Info is implemented
-
-            footerItems[0] = new FooterNotificationItem() { NotificationCount = 0, NotificationImage = "/DynamoCoreWpf;component/UI/Images/error.png", NotificationToolTip = "The number of Nodes in Error state."};
-            footerItems[1] = new FooterNotificationItem() { NotificationCount = 0, NotificationImage = "/DynamoCoreWpf;component/UI/Images/warning_16px.png", NotificationToolTip = "The number of Nodes in Warning state." };
+            FooterNotificationItem[]
+                footerItems = new FooterNotificationItem[3]; 
+            footerItems[0] = new FooterNotificationItem()
+            {
+                NotificationCount = 0,
+                NotificationImage = "/DynamoCoreWpf;component/UI/Images/error.png",
+                NotificationToolTip = "The number of Nodes in Error state.",
+                NotificationType = FooterNotificationItem.FooterNotificationType.Error
+            };
+            footerItems[1] = new FooterNotificationItem()
+            {
+                NotificationCount = 0,
+                NotificationImage = "/DynamoCoreWpf;component/UI/Images/warning_16px.png",
+                NotificationToolTip = "The number of Nodes in Warning state.",
+                NotificationType = FooterNotificationItem.FooterNotificationType.Warning
+            };
+            footerItems[2] = new FooterNotificationItem()
+            {
+                NotificationCount = 0,
+                NotificationImage = "/DynamoCoreWpf;component/UI/Images/info.png",
+                NotificationToolTip = "The number of Nodes in Information state.",
+                NotificationType = FooterNotificationItem.FooterNotificationType.Information
+            };
 
             footerNotificationItems = new ObservableCollection<FooterNotificationItem>(footerItems);
         }
@@ -198,6 +224,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                 UpdateNodeInfoBubbleContent(e);
             }
         
+            bool hasInfo = Model.Nodes.Any(n => n.State == ElementState.Info);
             bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
             bool hasErrors = Model.Nodes.Any(n => n.State == ElementState.Error);
 
@@ -235,16 +262,18 @@ namespace Dynamo.Wpf.ViewModels.Core
                 }
             }
 
-            UpdateFooterItems(hasWarnings, hasErrors);
+            UpdateFooterItems(hasInfo, hasWarnings, hasErrors);
         }
 
         /// <summary>
         /// Updates the Info, Warning and Error footer notification items
         /// </summary>
+        /// <param name="hasInfo"></param>
         /// <param name="hasWarnings"></param>
         /// <param name="hasErrors"></param>
-        private void UpdateFooterItems(bool hasWarnings, bool hasErrors)
+        private void UpdateFooterItems(bool hasInfo, bool hasWarnings, bool hasErrors)
         {
+            
             if (hasErrors)
                 FooterNotificationItems[0].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Error);
             else
@@ -253,6 +282,10 @@ namespace Dynamo.Wpf.ViewModels.Core
                 FooterNotificationItems[1].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
             else
                 if (FooterNotificationItems[1].NotificationCount != 0) FooterNotificationItems[1].NotificationCount = 0;
+            if (hasInfo)
+                FooterNotificationItems[2].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Info);
+            else
+                if (FooterNotificationItems[2].NotificationCount != 0) FooterNotificationItems[2].NotificationCount = 0;
         }
 
         private void UpdateNodeInfoBubbleContent(EvaluationCompletedEventArgs evalargs)
@@ -326,6 +359,45 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             return true;
         }
+        
+        /// <summary> 
+        /// Fit the current workspace view to the current selection
+        /// </summary>
+        private void SelectIssues(object parameter)
+        {
+            switch ((FooterNotificationItem.FooterNotificationType)parameter)
+            {
+                case FooterNotificationItem.FooterNotificationType.Error:
+                    var nodes = Model.Nodes.Where(n => n.State == ElementState.Error);
+                    FitSelection(nodes);
+                    break;
+                case FooterNotificationItem.FooterNotificationType.Warning:
+                    nodes = Model.Nodes.Where(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
+                    FitSelection(nodes);
+                    break;
+                case FooterNotificationItem.FooterNotificationType.Information:
+                    nodes = Model.Nodes.Where(n => n.State == ElementState.Info);
+                    FitSelection(nodes);
+                    break;
+            }
+        }
+        /// <summary>
+        /// A sequence of methods to zoom around a selection of nodes 
+        /// </summary>
+        /// <param name="selectedNodes"></param>
+        private void FitSelection(IEnumerable<ISelectable> selectedNodes)
+        {
+            // Don't allow prior to evaluation 
+            if ((Model as HomeWorkspaceModel).EvaluationCount == 0) return;
+            if (!selectedNodes.Any()) return;
+            // Clear the selection then set the nodes to selection
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddRange(selectedNodes);
+            // Execute the FitViewCommand 
+            this.DynamoViewModel.FitViewCommand.Execute(null);
+            // Clean up the selection after
+            DynamoSelection.Instance.ClearSelection();
+        }
 
         /// <summary>
         /// Object dispose function
@@ -377,15 +449,19 @@ namespace Dynamo.Wpf.ViewModels.Core
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((string) parameter == "Inverse")
+            if ("Inverse".Equals((string)parameter))
             {
                 if ((int) value == 0)
+                {
                     return Visibility.Visible;
+                }
                 return Visibility.Collapsed;
             }
 
-            if ((int)value == 0)
+            if ((int) value == 0)
+            {
                 return Visibility.Collapsed;
+            }
             return Visibility.Visible;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -401,6 +477,16 @@ namespace Dynamo.Wpf.ViewModels.Core
     {
         private int _notificationCount;
         private string _notificationImage;
+
+        /// <summary>
+        /// Represents the different types of item - Error, Warning or Info
+        /// </summary>
+        public enum FooterNotificationType
+        {
+            Error,
+            Warning,
+            Information,
+        }
 
         /// <summary>
         /// The number of Warnings, Errors or Info Nodes
@@ -432,5 +518,10 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// The tooltip message stays the same, no update required
         /// </summary>
         public string NotificationToolTip { get; set; }
+
+        /// <summary>
+        /// The type of control, either Error, Warning or Info
+        /// </summary>
+        public FooterNotificationType NotificationType { get; set; }
     }
 }

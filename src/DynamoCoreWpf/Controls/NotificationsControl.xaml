@@ -54,6 +54,11 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border Style="{StaticResource FooterNotificationItemStyle}" Width="36">
+                        <Border.InputBindings>
+                            <MouseBinding MouseAction="LeftClick" 
+                                          Command="{Binding ElementName=footerIconItemsControl, Path=DataContext.HomeSpaceViewModel.SelectIssuesCommand}"
+                                          CommandParameter="{Binding NotificationType}"/>
+                        </Border.InputBindings>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <!-- Create a duplicate of the image in greyscale. 
                             "Property changes can only occur during object initialization", which prevents us to use a converter.
