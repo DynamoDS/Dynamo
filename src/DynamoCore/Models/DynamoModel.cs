@@ -1420,17 +1420,26 @@ namespace Dynamo.Models
            // I think this is consistent with the current behavior - IE today - if a nodeModel exists in an assembly, the rest of the assembly 
            // is not imported as ZT - the same will be true if the assembly contains a NodeViewCustomization.
 
-           // TODO(mjk) draw up matrix of current behaviors which nodeLib flag can control.
-            if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem)
-                && !(NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(assem)))
+            bool hasNodeModelOrNodeViewTypes;
+            try
+            {
+                hasNodeModelOrNodeViewTypes = NodeModelAssemblyLoader.ContainsNodeModelSubType(assem)
+                || (NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(assem));
+            } 
+            catch (Exception ex) {
+                throw new Exceptions.LibraryLoadFailedException(assem.Location, ex.Message);
+            }
+
+            // TODO(mjk) draw up matrix of current behaviors which nodeLib flag can control.
+            if (!hasNodeModelOrNodeViewTypes)
             {
                 if (suppressZeroTouchLibraryLoad)
                 {
-                    LibraryServices.LoadNodeLibrary(assem.Location, false);
+                    LibraryServices.LoadNodeLibrary(assem.Location, isExplicitlyImportedLib: false);
                 }
                 else
                 {
-                    LibraryServices.ImportLibrary(assem.Location);
+                    LibraryServices.ImportLibrary(assem.Location, isExplicitlyImportedLib: false);
                 }
 
                 return;
