@@ -966,7 +966,8 @@ namespace ProtoScript.Runners
                     // It can then be handled normally regardless of its ForceExecution state
                     subtree.ForceExecution = false;
 
-                    if (st.IsInput)
+                    //Check if the subtree (ie a node in graph) is an input and has primitive Right hand Node type
+                    if (st.IsInput && st.AstNodes[0] is BinaryExpressionNode bne  && CoreUtils.IsPrimitiveASTNode(bne.RightNode))
                     {
                         // An input node is not re-compiled and executed
                         // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
