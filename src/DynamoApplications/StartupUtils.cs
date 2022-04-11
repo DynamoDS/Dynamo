@@ -316,19 +316,15 @@ namespace Dynamo.Applications
             {
                 GeometryFactoryPath = geometryFactoryPath,
                 ProcessMode = CLImode ? TaskProcessMode.Synchronous : TaskProcessMode.Asynchronous,
-                HostAnalyticsInfo = info
+                HostAnalyticsInfo = info,
+                CLIMode = CLImode
             };
 
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
             config.StartInTestMode = CLImode ? true : false;
             config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
- 
-            var model = DynamoModel.Start(config);
-            if (model != null)
-            {
-                model.CLIMode = CLImode;
-            }
 
+            var model = DynamoModel.Start(config);
             return model;
         }
 
