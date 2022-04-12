@@ -8,7 +8,7 @@
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              mc:Ignorable="d"
              MinWidth="256"
-             MaxWidth="300"
+             MaxWidth="350"
              IsVisibleChanged="OnNodeAutoCompleteSearchControlVisibilityChanged">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -122,7 +122,7 @@
                      ItemsSource="{Binding FilteredResults, NotifyOnTargetUpdated=True}"
                      TargetUpdated="OnMembersListBoxUpdated"
                      PreviewMouseWheel="OnMembersListBoxMouseWheel"
-                     Margin="0,0,5,0"
+                     Margin="10,0,5,0"
                      Visibility="Visible">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -190,7 +190,7 @@
                                    FontSize="12"
                                    IsHitTestVisible="False"
                                    TextTrimming="CharacterEllipsis"
-                                   MaxWidth="300"
+                                   MaxWidth="250"
                                    Foreground="{StaticResource DefaultSearchTextBlockText}"
                                    VerticalAlignment="Center"
                                    Visibility="{Binding Path=SearchText, 
