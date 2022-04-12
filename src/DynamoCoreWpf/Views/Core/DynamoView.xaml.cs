@@ -1009,22 +1009,17 @@ namespace Dynamo.Controls
             }
             loaded = true;
 
-            //TODO... not sure I like this, it's easy to call, but it might confuse devs, it will silently
-            //return default when client is not setup, maybe should require a reference?
-            //Task.Run(async () =>
+            //feature flag test.
+            if (DynamoFeatureFlags.FeatureFlagsManager.CheckFeatureFlag<bool>("EasterEggIcon1", false))
             {
-                //    await Task.Delay(4000);
-                if (DynamoFeatureFlags.FeatureFlagsManager.CheckFeatureFlag<bool>("EasterEggIcon1", false))
-                {
-                    dynamoViewModel.Model.Logger.Log("EASTER EGG ICON IS TRUE");
-                    MessageBoxService.Show("feature flag 1 enabled", "eastereggicon1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
-                }
-                else
-                {
-                    dynamoViewModel.Model.Logger.Log("EASTER EGG ICON IS FALSE");
-                }
+                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true");
+                MessageBoxService.Show("EasterEggIcon1 was true", "eastereggicon1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
             }
-           // });
+            else
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is false");
+            }
+
         }
 
         /// <summary>

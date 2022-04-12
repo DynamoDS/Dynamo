@@ -661,7 +661,7 @@ namespace Dynamo.Models
                 try
                 {
                     FeatureFlags = new DynamoFeatureFlags.FeatureFlagsManager(AnalyticsService.GetUserIDForSession());
-                    DynamoFeatureFlags.FeatureFlagsManager.LogRequest += LogMessageWrapper;
+                    DynamoFeatureFlags.FeatureFlagsManager.MessageLogged += LogMessageWrapper;
 
                 }
                 catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
@@ -1217,7 +1217,7 @@ namespace Dynamo.Models
             CustomNodeManager.MessageLogged -= LogMessage;
             CustomNodeManager.Dispose();
             MigrationManager.MessageLogged -= LogMessage;
-            DynamoFeatureFlags.FeatureFlagsManager.LogRequest -= LogMessageWrapper;
+            DynamoFeatureFlags.FeatureFlagsManager.MessageLogged -= LogMessageWrapper;
         }
 
         private void InitializeCustomNodeManager()

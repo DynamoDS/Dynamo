@@ -4,14 +4,23 @@ using System.Xml;
 
 namespace DynamoFeatureFlags
 {
-    //TODO make internal
-    public class FeatureFlagsManager:IDisposable
+    /// <summary>
+    /// An entry point for checking the state of Dynamo feature flags. Currently this wraps Launch Darkly,
+    /// but should not expose any LD types.
+    /// </summary>
+    internal class FeatureFlagsManager: IDisposable
     {
         private LaunchDarkly.Sdk.User user;
         private static LaunchDarkly.Sdk.Client.LdClient ldClient;
         private const string sharedUserKey = "SHARED_DYNAMO_USER_KEY1";
-        public static event Action<string> LogRequest; 
-        public FeatureFlagsManager(string userkey, string mobileKey = null)
+        internal static event Action<string> MessageLogged;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="userkey">key for a specific user, should be stable between sessions.</param>
+        /// <param name="mobileKey">mobile sdk key, do not use full sdk key, if null, will load from config.</param>
+        /// <exception cref="ArgumentException"></exception>
+        internal FeatureFlagsManager(string userkey, string mobileKey = null)
         {
             //todo load sdk key from config if null
             if(mobileKey == null)
@@ -38,38 +47,45 @@ namespace DynamoFeatureFlags
             }
             if (userkey == null)
             {
-                LogRequest?.Invoke("The userkey was null when starting feature flag manager, using a shared key," +
+                MessageLogged?.Invoke("The userkey was null when starting feature flag manager, using a shared key," +
                     " possibly analytics was disabled, test mode is active, or headless mode is active.");
                 userkey = sharedUserKey;
             }
             //send user as anonymous//https://docs.launchdarkly.com/home/users/anonymous-users
             user = LaunchDarkly.Sdk.User.Builder(userkey).Anonymous(true).Build();
+
             Init(mobileKey);
         }
-
         internal async void Init(string mobileKey)
         {
             //start up client.
             ldClient = await LaunchDarkly.Sdk.Client.LdClient.InitAsync(mobileKey, user);
             if (ldClient.Initialized)
             {
-                LogRequest?.Invoke($"launch darkly initalized");
+                MessageLogged?.Invoke($"launch darkly initalized");
             }
             else
             {
-                LogRequest?.Invoke($"launch darkly failed to initalize");
+                MessageLogged?.Invoke($"launch darkly failed to initalize");
             }
         }
 
         // TODO as we need more flag types, implement cases here or break out
         // into more specific methods.
-        public static T CheckFeatureFlag<T>(string flagkey,T defaultval)
+        /// <summary>
+        /// Check the value of a specific flag. If the internal client is not initialized yet, will simply return the default value you provide.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="flagkey">string key of the flag to lookup.</param>
+        /// <param name="defaultval">value to return if there is an error reading the flag value.</param>
+        /// <returns></returns>
+        internal static T CheckFeatureFlag<T>(string flagkey,T defaultval)
         {
             try
             {
                 if (ldClient == null || !ldClient.Initialized)
                 {
-                    LogRequest($"feature flags client not initalized for requested flagkey: {flagkey}, returning default value: {defaultval}");
+                    MessageLogged($"feature flags client not initalized for requested flagkey: {flagkey}, returning default value: {defaultval}");
                     return defaultval;
                 }
 
@@ -87,11 +103,14 @@ namespace DynamoFeatureFlags
             }
             catch(Exception ex)
             {
-                LogRequest?.Invoke($"failed to check feature flag key ex: {ex},{System.Environment.NewLine} returning default value: {defaultval}");
+                MessageLogged?.Invoke($"failed to check feature flag key ex: {ex},{System.Environment.NewLine} returning default value: {defaultval}");
                 return defaultval;
             }
         }
 
+        /// <summary>
+        /// cleanup.
+        /// </summary>
         public void Dispose()
         {
             //https://github.com/launchdarkly/dotnet-client-sdk/issues/8#issuecomment-1092278630
