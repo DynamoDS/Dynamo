@@ -436,6 +436,12 @@ namespace Dynamo.Models
         /// </summary>
         public DynamoModelState State { get; internal set; } = DynamoModelState.NotStarted;
 
+        /// <summary>
+        /// CLIMode indicates if we are running in DynamoCLI or DynamoWPFCLI mode.
+        /// Note that in CLI mode Scheduler is synchronous.
+        /// </summary>
+        public bool CLIMode { get; internal set; }
+
         protected virtual void PreShutdownCore(bool shutdownHost)
         {
         }
@@ -518,6 +524,11 @@ namespace Dynamo.Models
             /// TODO: Move this to IStartConfiguration in Dynamo 3.0
             /// </summary>
             public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
+
+            /// <summary>
+            /// CLIMode indicates if we are running in DynamoCLI or DynamoWPFCLI mode.
+            /// </summary>
+            public bool CLIMode { get; set; }
         }
 
         /// <summary>
@@ -560,6 +571,7 @@ namespace Dynamo.Models
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
                 // TODO: This fact should probably be revisited in 3.0.
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
+                CLIMode = defaultStartConfig.CLIMode;
             }
 
             ClipBoard = new ObservableCollection<ModelBase>();

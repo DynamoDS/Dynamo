@@ -315,8 +315,9 @@ namespace Dynamo.Applications
             var config = new DynamoModel.DefaultStartConfiguration()
             {
                 GeometryFactoryPath = geometryFactoryPath,
-                ProcessMode = TaskProcessMode.Asynchronous,
-                HostAnalyticsInfo = info
+                ProcessMode = CLImode ? TaskProcessMode.Synchronous : TaskProcessMode.Asynchronous,
+                HostAnalyticsInfo = info,
+                CLIMode = CLImode
             };
 
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
