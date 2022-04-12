@@ -1,13 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <!--force copying nuget netstd2 dependencies-->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LaunchDarkly.ClientSdk" Version="2.0.1" />
+    <PackageReference Include="LaunchDarkly.ClientSdk" Version="2.0.1">
+      <!--using this to avoid copying net461 deps of launch darkly -->
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <!--to force LD package to reference system.collections.immutable of the same version. -->
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
   </ItemGroup>
 
 </Project>
