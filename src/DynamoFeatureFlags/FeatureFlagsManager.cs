@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Xml;
 
 namespace DynamoFeatureFlags
 {
@@ -21,15 +22,19 @@ namespace DynamoFeatureFlags
 #else
                 var keystring = "ldmobilekey_prd";
 #endif
-                var path = GetType().Assembly.Location;
-                var config = ConfigurationManager.OpenExeConfiguration(path);
-                var key = config.AppSettings.Settings[keystring];
+                //don't use configuration manager as it is not net std 2 compliant.
+                var path = $"{ GetType().Assembly.Location}.config";
+                var key = GetConfigurationItem(keystring, path);
                
                 if (key != null)
                 {
-                    mobileKey = key.Value;
+                    mobileKey = key;
                 }
-
+            }
+            //if mobile key is still null after loading from config, bail.
+            if(mobileKey == null)
+            {
+                throw new ArgumentException("ld mobile key was null");
             }
             if (userkey == null)
             {
@@ -68,7 +73,7 @@ namespace DynamoFeatureFlags
                     return defaultval;
                 }
 
-                Object output = default(T);
+                object output = default(T);
                 switch (default(T))
                 {
                     case bool _:
@@ -89,9 +94,31 @@ namespace DynamoFeatureFlags
 
         public void Dispose()
         {
-            //TODO unclear how this should work in Hosts that can start Dynamo multiple times - 
-            //needs to be tested.//https://github.com/launchdarkly/dotnet-client-sdk/issues/8#issuecomment-1092278630
-            //ldClient.Dispose();
+            //https://github.com/launchdarkly/dotnet-client-sdk/issues/8#issuecomment-1092278630
+            ldClient.Dispose();
+        }
+
+        private static string GetConfigurationItem(String key,string configFilePath)
+        {
+            try
+            {
+                var doc = new XmlDocument();
+                doc.Load(configFilePath);
+                if (doc != null)
+                {
+                    XmlNode node = doc.SelectSingleNode("//appSettings");
+
+                    XmlElement value = (XmlElement)node.SelectSingleNode(string.Format("//add[@key='{0}']", key));
+                    return value.Attributes["value"].Value;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("The referenced configuration item, {0}, could not be retrieved", key);
+                Console.WriteLine(ex.Message);
+                return null;
+            }
         }
 
     }

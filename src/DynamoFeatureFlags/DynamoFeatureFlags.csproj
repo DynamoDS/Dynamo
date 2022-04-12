@@ -10,10 +10,4 @@
     <PackageReference Include="LaunchDarkly.ClientSdk" Version="2.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="System.Configuration">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Configuration.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
