@@ -26,6 +26,8 @@ namespace Dynamo.Wpf.ViewModels.Core
         private NotificationLevel curentNotificationLevel;
         private string currentNotificationMessage;
         private ObservableCollection<FooterNotificationItem> footerNotificationItems;
+        private int notificationsCounter = 0;
+        private FooterNotificationItem.FooterNotificationType footerNotificationType;
 
         #endregion
 
@@ -114,21 +116,21 @@ namespace Dynamo.Wpf.ViewModels.Core
             {
                 NotificationCount = 0,
                 NotificationImage = "/DynamoCoreWpf;component/UI/Images/error.png",
-                NotificationToolTip = "The number of Nodes in Error state.",
+                NotificationToolTip = "Click to cycle through nodes with errors.",
                 NotificationType = FooterNotificationItem.FooterNotificationType.Error
             };
             footerItems[1] = new FooterNotificationItem()
             {
                 NotificationCount = 0,
                 NotificationImage = "/DynamoCoreWpf;component/UI/Images/warning_16px.png",
-                NotificationToolTip = "The number of Nodes in Warning state.",
+                NotificationToolTip = "Click to cycle through nodes with warnings.",
                 NotificationType = FooterNotificationItem.FooterNotificationType.Warning
             };
             footerItems[2] = new FooterNotificationItem()
             {
                 NotificationCount = 0,
                 NotificationImage = "/DynamoCoreWpf;component/UI/Images/info.png",
-                NotificationToolTip = "The number of Nodes in Information state.",
+                NotificationToolTip = "Click to cycle through nodes with info states.",
                 NotificationType = FooterNotificationItem.FooterNotificationType.Information
             };
 
@@ -369,15 +371,15 @@ namespace Dynamo.Wpf.ViewModels.Core
             {
                 case FooterNotificationItem.FooterNotificationType.Error:
                     var nodes = Model.Nodes.Where(n => n.State == ElementState.Error);
-                    FitSelection(nodes);
+                    FitSelection(nodes, (FooterNotificationItem.FooterNotificationType)parameter);
                     break;
                 case FooterNotificationItem.FooterNotificationType.Warning:
                     nodes = Model.Nodes.Where(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
-                    FitSelection(nodes);
+                    FitSelection(nodes, (FooterNotificationItem.FooterNotificationType)parameter);
                     break;
                 case FooterNotificationItem.FooterNotificationType.Information:
                     nodes = Model.Nodes.Where(n => n.State == ElementState.Info);
-                    FitSelection(nodes);
+                    FitSelection(nodes, (FooterNotificationItem.FooterNotificationType)parameter);
                     break;
             }
         }
@@ -385,20 +387,50 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// A sequence of methods to zoom around a selection of nodes 
         /// </summary>
         /// <param name="selectedNodes"></param>
-        private void FitSelection(IEnumerable<ISelectable> selectedNodes)
+        private void FitSelection(IEnumerable<NodeModel> selectedNodes, FooterNotificationItem.FooterNotificationType currentNotificationType)
         {
             // Don't allow prior to evaluation 
             if ((Model as HomeWorkspaceModel).EvaluationCount == 0) return;
-            if (!selectedNodes.Any()) return;
+            var nodeModels = selectedNodes as NodeModel[] ?? selectedNodes.ToArray();
+            if (!nodeModels.Any()) return;
+
+            // Reset the counter if you swap to a different notification type
+            if (!currentNotificationType.Equals(this.footerNotificationType))
+            {
+                this.notificationsCounter = 0;
+                this.footerNotificationType = currentNotificationType;
+            }
+
             // Clear the selection then set the nodes to selection
             DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.AddRange(selectedNodes);
+
+            // If we have reached the maximum nodes for this type, select all and reset the counter
+            int maxCount = nodeModels.Length;
+            if (IsMaxNotificationCounter(this.notificationsCounter, maxCount))
+            {
+                DynamoSelection.Instance.Selection.AddRange(nodeModels);
+                this.notificationsCounter = 0;
+            }
+            else
+            {
+                var node = nodeModels.ElementAt(this.notificationsCounter);
+                DynamoSelection.Instance.Selection.Add(node);
+                this.notificationsCounter++;
+            }
+
             // Execute the FitViewCommand 
-            this.DynamoViewModel.FitViewCommand.Execute(null);
+            this.DynamoViewModel.CurrentSpaceViewModel.FitViewInternal();
+            this.DynamoViewModel.CurrentSpaceViewModel.ResetFitViewToggle(null);
+            //this.DynamoViewModel.FitViewCommand.Execute(null);
             // Clean up the selection after
             DynamoSelection.Instance.ClearSelection();
         }
 
+        private bool IsMaxNotificationCounter(int counter, int max)
+        {
+            if (counter >= max) return true;
+            return false;
+        }
         /// <summary>
         /// Object dispose function
         /// </summary>
