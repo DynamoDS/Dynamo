@@ -7057,7 +7057,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Paths.
+        ///   Looks up a localized string similar to Add Path.
         /// </summary>
         public static string SecurityPathAddPathButtonName {
             get {

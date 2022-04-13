@@ -3084,7 +3084,7 @@ To install the latest version of a package, click Install. \n
     <value>We recommend keeping this toggle off to reduce security risks.</value>
   </data>
   <data name="SecurityPathAddPathButtonName" xml:space="preserve">
-    <value>Add Paths</value>
+    <value>Add Path</value>
   </data>
   <data name="SecurityWarningExpanderName" xml:space="preserve">
     <value>Warning</value>
