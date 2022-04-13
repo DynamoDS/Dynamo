@@ -3084,4 +3084,25 @@ To install the latest version of a package, click Install. \n
   <data name="GroupContextMenuColor" xml:space="preserve">
     <value>Color</value>
   </data>
+  <data name="PreferencesSecuritySettingsTab" xml:space="preserve">
+    <value>Security</value>
+  </data>
+  <data name="PreferencesViewTrustWarningHeader" xml:space="preserve">
+    <value>Trust warning</value>
+  </data>
+  <data name="PreferencesViewTrustWarningLabel" xml:space="preserve">
+    <value>Disable receiving trust warning</value>
+  </data>
+  <data name="PreferencesViewTrustWarningTooltipText" xml:space="preserve">
+    <value>We recommend keeping this toggle off to reduce security risks.</value>
+  </data>
+  <data name="SecurityPathAddPathButtonName" xml:space="preserve">
+    <value>Add Paths</value>
+  </data>
+  <data name="SecurityWarningExpanderName" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="TrustedPathsExpanderName" xml:space="preserve">
+    <value>Trusted location</value>
+  </data>
 </root>
