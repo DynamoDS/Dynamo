@@ -301,7 +301,7 @@ namespace Dynamo.Wpf.Views
             }
         }
 
-        private void groupNameBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void groupNameBox_PreviewKeyUp(object sender, KeyEventArgs e)
         {
             var groupNameTextBox = sender as TextBox;
             if (groupNameBox == null) return;

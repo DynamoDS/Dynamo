@@ -2337,7 +2337,7 @@ namespace Dynamo.ViewModels
         /// <returns>Returns true if the home workspace has been saved and 
         /// cleared, or false otherwise.</returns>
         /// 
-        private bool ClearHomeWorkspaceInternal()
+        internal bool ClearHomeWorkspaceInternal()
         {
             // if the workspace is unsaved, prompt to save
             // otherwise overwrite the home workspace with new workspace

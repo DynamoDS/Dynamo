@@ -1629,7 +1629,7 @@ namespace Dynamo.Tests
 
             RunModel(dynFilePath);
             // Block until all tasks are executed
-            while (CurrentDynamoModel.Scheduler.HasPendingTasks) ;
+            while (CurrentDynamoModel.Scheduler.HasPendingTasks || CurrentDynamoModel.Scheduler.HasTaskInProgress);
 
             var allNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Select(n => n.GUID).ToList();
             int nodeCount = allNodes.Count();
@@ -1650,7 +1650,7 @@ namespace Dynamo.Tests
                 var command = new DynamoModel.ConvertNodesToCodeCommand();
                 CurrentDynamoModel.ExecuteCommand(command);
                 // Block until all tasks are executed
-                while (CurrentDynamoModel.Scheduler.HasPendingTasks) ;
+                while (CurrentDynamoModel.Scheduler.HasPendingTasks || CurrentDynamoModel.Scheduler.HasTaskInProgress);
 
                 foreach (var node in otherNodes)
                 {
@@ -1664,7 +1664,7 @@ namespace Dynamo.Tests
                 var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
                 CurrentDynamoModel.ExecuteCommand(undo);
                 // Block until all tasks are executed
-                while (CurrentDynamoModel.Scheduler.HasPendingTasks) ;
+                while (CurrentDynamoModel.Scheduler.HasPendingTasks || CurrentDynamoModel.Scheduler.HasTaskInProgress);
 
                 // Verify after undo everything is OK
                 Assert.AreEqual(nodeCount, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());

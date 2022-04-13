@@ -18,7 +18,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand portMouseLeftButtonOnContextCommand;
 
         private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
-        private SolidColorBrush PortValueMarkerBlue;
+
         private static SolidColorBrush PortValueMarkerGrey = new SolidColorBrush(Color.FromRgb(153, 153, 153));
 
         private bool showContextMenu;

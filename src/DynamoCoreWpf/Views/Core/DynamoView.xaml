@@ -579,6 +579,10 @@
                                       Header="{x:Static p:Resources.PackagesGuide}"
                                       Click="PackagesMenuGuide_Click">
                             </MenuItem>
+                            <MenuItem x:Name="OnBoardingMenuGuide"
+                                      Header="{x:Static p:Resources.OnboardingGuide}"
+                                      Click="OnBoardingMenuGuide_Click">
+                            </MenuItem>
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewHepMenuSamples}"
                                   Name="SamplesMenu"

@@ -2849,6 +2849,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Get Started.
+        /// </summary>
+        public static string GetStartedLinkText {
+            get {
+                return ResourceManager.GetString("GetStartedLinkText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Getting Started.
         /// </summary>
         public static string GettingStartedMenuItem {
@@ -4072,6 +4081,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Next guide: .
+        /// </summary>
+        public static string NextGuideText {
+            get {
+                return ResourceManager.GetString("NextGuideText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DynamoCoreWpf;NodeAutocompleteDocumentation.html.
         /// </summary>
         public static string NodeAutocompleteDocumentationUriString {
@@ -4374,6 +4392,42 @@ namespace Dynamo.Wpf.Properties {
         public static string OKButton {
             get {
                 return ResourceManager.GetString("OKButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Onboarding.
+        /// </summary>
+        public static string OnboardingGuide {
+            get {
+                return ResourceManager.GetString("OnboardingGuide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get started with Dynamo.
+        /// </summary>
+        public static string OnboardingGuideWelcomeTitle {
+            get {
+                return ResourceManager.GetString("OnboardingGuideWelcomeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is the workspace, where you develop visual programs and preview the results.\n This graph shows the building blocks of Dynamo:\n Nodes perform operations, such as storing a number or creating geometry\n Wires connect nodes\n Together, nodes and wires form a set of instructions for processing data or building geometry..
+        /// </summary>
+        public static string OnboardingWorkspaceText {
+            get {
+                return ResourceManager.GetString("OnboardingWorkspaceText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workspace.
+        /// </summary>
+        public static string OnboardingWorkspaceTitle {
+            get {
+                return ResourceManager.GetString("OnboardingWorkspaceTitle", resourceCulture);
             }
         }
         
