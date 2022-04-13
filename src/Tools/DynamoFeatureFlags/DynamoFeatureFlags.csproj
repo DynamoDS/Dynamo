@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Config/CS_SDK.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <SharedOutputPath>$(OutputPath)\DynamoFeatureFlags\</SharedOutputPath>
+    <OutputPath>bin\AnyCPU\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="LaunchDarkly.ClientSdk" Version="2.0.1">
+    </PackageReference>
+    <PackageReference Include="ILMerge">
+      <Version>3.0.41</Version>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+  <Target Name="AfterBuildOps" AfterTargets="Build">
+    <Exec Condition=" '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True'" Command="if not exist $(SharedOutputPath) mkdir $(SharedOutputPath)" />
+    <!-- the ILMergePath property points to the location of ILMerge.exe console application -->
+    <!--<Exec Condition=" '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True'" Command="$(ILMergeConsolePath) /log $(OutputPath)DynamoFeatureFlags.exe /allowDup /lib:$(OutputPath) /out:$(SharedOutputPath)DynamoFeatureFlags.exe CommandLine.dll LaunchDarkly.ClientSdk.dll LaunchDarkly.CommonSdk.dll LaunchDarkly.EventSource.dll LaunchDarkly.internalSdk.dll LaunchDarkly.JsonStream.dll LaunchDarkly.Logging.dll Microsoft.Bcl.AsyncInterfaces.dll System.Buffers.dll System.Collections.Immutable.dll System.Memory.dll System.Numerics.Vectors.dll System.Runtime.CompilerServices.Unsafe.dll System.Text.Encodings.Web.dll System.Text.Json.dll System.Threading.Tasks.Extensions.dll System.ValueTuple.dll " />-->
+    <Exec Condition=" '!$([MSBuild]::IsOSPlatform(`Windows`))' == 'True' " Command="mkdir -p $(SharedOutputPath)" />
+    <Exec Condition=" '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True' " Command="xcopy /y  $(OutputPath) $(SharedOutputPath)" />
+  </Target>
+</Project>
+

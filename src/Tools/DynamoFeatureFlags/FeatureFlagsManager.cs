@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Xml;
 
 namespace DynamoFeatureFlags
@@ -22,6 +23,8 @@ namespace DynamoFeatureFlags
         /// <exception cref="ArgumentException"></exception>
         internal FeatureFlagsManager(string userkey, string mobileKey = null)
         {
+            var sw = new Stopwatch();
+            sw.Start();
             //todo load sdk key from config if null
             if(mobileKey == null)
             {
@@ -55,6 +58,9 @@ namespace DynamoFeatureFlags
             user = LaunchDarkly.Sdk.User.Builder(userkey).Anonymous(true).Build();
 
             Init(mobileKey);
+            sw.Stop();
+            MessageLogged?.Invoke($"startup time: {sw.ElapsedMilliseconds} ");
+            MessageLogged?.Invoke("<<<<<InitDone>>>>>");
         }
         internal async void Init(string mobileKey)
         {
@@ -85,7 +91,7 @@ namespace DynamoFeatureFlags
             {
                 if (ldClient == null || !ldClient.Initialized)
                 {
-                    MessageLogged($"feature flags client not initalized for requested flagkey: {flagkey}, returning default value: {defaultval}");
+                    MessageLogged?.Invoke($"feature flags client not initalized for requested flagkey: {flagkey}, returning default value: {defaultval}");
                     return defaultval;
                 }
 

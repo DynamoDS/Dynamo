@@ -1010,7 +1010,7 @@ namespace Dynamo.Controls
             loaded = true;
 
             //feature flag test.
-            if (DynamoFeatureFlags.FeatureFlagsManager.CheckFeatureFlag<bool>("EasterEggIcon1", false))
+            if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
             {
                 dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true");
                 MessageBoxService.Show(this,"EasterEggIcon1 was true", "eastereggicon1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
@@ -1019,7 +1019,7 @@ namespace Dynamo.Controls
             {
                 dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is false");
             }
-
+            
         }
 
         /// <summary>

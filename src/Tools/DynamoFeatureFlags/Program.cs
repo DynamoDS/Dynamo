@@ -1,0 +1,100 @@
+﻿using CommandLine;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DynamoFeatureFlags
+{
+
+    class Options
+    {
+        [Option('u', "userkey", Required = false, HelpText = "stable user key, if not provided, a shared key will be used.")]
+        public string UserKey { get; set; }
+        [Option('m', "mobilekey", Required = false, HelpText = "mobile key for dynamo feature flag env. Do not use a full sdk key. If not provided loaded from config.")]
+        public string MobileKey { get; set; }
+
+    }
+    static class Program
+    {
+        static FeatureFlagsManager FeatureFlags { get; set; }
+        private const string checkFeatureFlagCommandToken = @"<<<<<CheckFeatureFlag>>>>>";
+        private const string endOfDataToken = @"<<<<<Eod>>>>>";
+        private const string startOfDataToken = @"<<<<<Sod>>>>>";
+        static void Main(string[] args)
+        {
+            Parser.Default.ParseArguments<Options>(args).WithParsed(ops =>
+            {
+                try
+                {
+                    FeatureFlagsManager.MessageLogged += FeatureFlagsManager_MessageLogged;
+                    FeatureFlags = new FeatureFlagsManager(ops.UserKey, ops.MobileKey);
+                    Console.WriteLine("");
+                    while (true)
+                    {
+                       
+                        var line = Console.ReadLine();
+                        if (line == checkFeatureFlagCommandToken)
+                        {
+                            Console.WriteLine(startOfDataToken);
+                            CheckFeatureFlag();
+                        }
+                        Console.WriteLine(endOfDataToken);
+                    }
+
+                }
+                catch (Exception e) when (e is IOException || e is OutOfMemoryException || e is ArgumentOutOfRangeException)
+                {
+                    // Exit process
+                }
+            });
+                
+        }
+        static void CheckFeatureFlag()
+        {
+            var data = GetData();
+            var array = data.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            var ffkey = array[0];
+            var defaultValString = array[1];
+            var typeName = array[2];
+            var type = Type.GetType(typeName);
+            //convert default val to correct type.
+            var defaultValTyped = Convert.ChangeType(defaultValString, type);
+
+            //convert method to generic using type.
+            var checkFlagMethod = typeof(FeatureFlagsManager).GetMethod(nameof(FeatureFlagsManager.CheckFeatureFlag),
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            var generic = checkFlagMethod.MakeGenericMethod(type);
+
+            // invoke it, we'll get our flag or the default back.
+            var output = generic.Invoke(null, new object[] {ffkey, defaultValTyped });
+            Console.WriteLine(output);
+        }
+        //TODO share in shared CLI base project or assem??
+        static string GetData()
+        {
+            using (StringWriter data = new StringWriter())
+            {
+                while (true)
+                {
+                    var line = Console.ReadLine();
+                    if (line == endOfDataToken)
+                    {
+                        break;
+                    }
+                    data.WriteLine(line);
+                }
+
+                return data.ToString();
+            }
+        }
+
+        private static void FeatureFlagsManager_MessageLogged(string message)
+        {
+           Console.WriteLine(message);
+        }
+    }
+}

@@ -377,7 +377,7 @@ namespace Dynamo.Models
 
         internal static string DefaultPythonEngine { get; private set; }
 
-        internal static DynamoFeatureFlags.FeatureFlagsManager FeatureFlags { get; private set; }
+        internal static DynamoUtilities.DynamoFeatureFlagsManager FeatureFlags { get; private set; }
         #endregion
 
         #region initialization and disposal
@@ -649,20 +649,12 @@ namespace Dynamo.Models
             if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
             {
                 AnalyticsService.Start(this, IsHeadless, IsTestMode);
-                //we only start feature flags if analytics is enabled, since feature flags will make network requests.
-                //TODO use seperate ld flag or internal pref/startup config??
-
-                //TODO userID here will always be valid, but analytics service will return new guid if one is not found
-                //it would be better IMO to use a shared id if one is not found - might need seperate implementation for feature flags in that case.
-                //this is only neccesary if we use a seperate flag from analytics flag to control launch darkly.
-
-                //TODO the docs state we can actually leave userid unset, and a guid will be generated and stored in localstorage, but I see no evidence of this
-                //in the dotnet sdk. This may be only for js sdk, so instead we use the stable instrumentation guid in the registry.
+                //only start feature flags if analytics is not disabled.
                 try
                 {
-                    FeatureFlags = new DynamoFeatureFlags.FeatureFlagsManager(AnalyticsService.GetUserIDForSession());
-                    DynamoFeatureFlags.FeatureFlagsManager.MessageLogged += LogMessageWrapper;
-
+                    //TODO consider CLI lifetime, should this be reset for each flag check, or okay to leave running for Dynamo lifetime?
+                    FeatureFlags = new DynamoUtilities.DynamoFeatureFlagsManager(AnalyticsService.GetUserIDForSession());
+                    FeatureFlags.MessageLogged += LogMessageWrapper;
                 }
                 catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
             }
@@ -1217,7 +1209,8 @@ namespace Dynamo.Models
             CustomNodeManager.MessageLogged -= LogMessage;
             CustomNodeManager.Dispose();
             MigrationManager.MessageLogged -= LogMessage;
-            DynamoFeatureFlags.FeatureFlagsManager.MessageLogged -= LogMessageWrapper;
+            FeatureFlags.MessageLogged -= LogMessageWrapper;
+            FeatureFlags.Dispose();
         }
 
         private void InitializeCustomNodeManager()
