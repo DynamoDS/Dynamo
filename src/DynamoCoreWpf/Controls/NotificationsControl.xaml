@@ -26,6 +26,11 @@
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="Background" Value="{StaticResource DarkMidGreyBrush}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource LightGreyBrush}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="BorderBrush" Value="{StaticResource MidGreyBrush}"></Setter>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
             <core:NotificationLevelToColorConverter x:Key="NotificationLevelToColorConverter"></core:NotificationLevelToColorConverter>
             <core:ZeroToVisibilityCollapsedConverter x:Key="ZeroToVisibilityCollapsedConverter" />
