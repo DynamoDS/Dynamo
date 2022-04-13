@@ -2705,7 +2705,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get Started.
+        ///   Looks up a localized string similar to User Interface Tour.
         /// </summary>
         public static string GetStartedGuide {
             get {

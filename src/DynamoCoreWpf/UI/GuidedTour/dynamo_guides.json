@@ -892,9 +892,9 @@
 					"FormattedText": "GetStartedGuideWelcomeText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "relative",
-					"VerticalPopupOffset": 300,
-					"HorizontalPopupOffset": 800,
+					"PopupPlacement": "center",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 0,
 					"HtmlPage": {
 						"FileName": "getStartedOnboarding.html",
 						"Resources": {

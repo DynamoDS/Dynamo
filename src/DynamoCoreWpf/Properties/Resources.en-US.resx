@@ -2474,7 +2474,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Edit Path</value>
   </data>
   <data name="GetStartedGuide" xml:space="preserve">
-    <value>Get Started</value>
+    <value>User Interface Tour</value>
     <comment>Get Started Dynamo Tour</comment>
   </data>
   <data name="InteractiveGuides" xml:space="preserve">
