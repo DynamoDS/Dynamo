@@ -1013,7 +1013,7 @@ namespace Dynamo.Controls
             if (DynamoFeatureFlags.FeatureFlagsManager.CheckFeatureFlag<bool>("EasterEggIcon1", false))
             {
                 dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true");
-                MessageBoxService.Show("EasterEggIcon1 was true", "eastereggicon1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                MessageBoxService.Show(this,"EasterEggIcon1 was true", "eastereggicon1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
             }
             else
             {
