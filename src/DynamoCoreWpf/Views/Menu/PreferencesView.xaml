@@ -922,7 +922,7 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <StackPanel Orientation="Vertical" Margin="0,6,0,0" Grid.Row="0">
-                                        <Button x:Name="AddPaths"
+                                        <Button x:Name="AddPath"
                                             HorizontalAlignment="Left"
                                             Margin="0"
                                             Content="{x:Static p:Resources.SecurityPathAddPathButtonName}"
