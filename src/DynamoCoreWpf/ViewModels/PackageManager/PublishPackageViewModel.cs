@@ -698,7 +698,7 @@ namespace Dynamo.PackageManager
 
         private bool isWarningEnabled;
         /// <summary>
-        /// This flag will be in true when the Style that user is trying to add already exists (otherwise will be false - Default)
+        /// This flag will be in true when the package name is invalid
         /// </summary>
         public bool IsWarningEnabled
         {
@@ -804,7 +804,6 @@ namespace Dynamo.PackageManager
         {
             this.dynamoViewModel = dynamoViewModel;
             KnownHosts = initializeHostSelections();
-            //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;
         }
 
@@ -1762,7 +1761,7 @@ namespace Dynamo.PackageManager
             if (Search.SearchDictionary<object>.ContainsSpecialCharacters(Name))
             {
                 ErrorString = Resources.PackageNameCannotContainTheseCharacters + " " + new String(Search.SearchDictionary<object>.SpecialAndInvalidCharacters());
-                EnableGroupStyleWarningState(ErrorString);
+                EnableInvalidNameWarningState(ErrorString);
                 return false;
             }
             else
@@ -1820,10 +1819,10 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// This method will enable the warning icon next to the GroupName TextBox and other buttons needed
+        /// This method will enable the warning icon next to the Package Name TextBox
         /// </summary>
         /// <param name="warningMessage">Message that will be displayed when the mouse is over the warning</param>
-        internal void EnableGroupStyleWarningState(string warningMessage)
+        internal void EnableInvalidNameWarningState(string warningMessage)
         {
             CurrentWarningMessage = warningMessage;
             IsWarningEnabled = true;
