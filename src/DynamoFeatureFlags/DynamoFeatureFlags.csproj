@@ -4,16 +4,44 @@
   </ImportGroup>
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <!--force copying nuget netstd2 dependencies-->
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LaunchDarkly.ClientSdk" Version="2.0.1">
-      <!--using this to avoid copying net461 deps of launch darkly -->
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <!--to force LD package to reference system.collections.immutable of the same version. -->
+    <!--We want to us the netstandard2.0 flavor of launch darkly-->
+    <!--But we want nuget to resolve the non-ld assemblies (ex. the immutable pkg) -->
+    <PackageReference Include="LaunchDarkly.ClientSdk" Version="2.0.1" IncludeAssets="none" GeneratePathProperty="true" PrivateAssets="all" />
+    <Reference Include="LaunchDarkly.ClientSdk">
+      <HintPath>$(PkgLaunchDarkly_ClientSdk)/lib/netstandard2.0/LaunchDarkly.ClientSdk.dll</HintPath>
+      <CopyLocal>True</CopyLocal>
+    </Reference>
+    <PackageReference Include="LaunchDarkly.CommonSdk" Version="5.5.0" IncludeAssets="none" GeneratePathProperty="true" PrivateAssets="all" />
+    <Reference Include="LaunchDarkly.CommonSdk">
+      <HintPath>$(PkgLaunchDarkly_CommonSdk)/lib/netstandard2.0/LaunchDarkly.CommonSdk.dll</HintPath>
+      <CopyLocal>True</CopyLocal>
+    </Reference>
+    <PackageReference Include="LaunchDarkly.EventSource" Version="4.1.3" IncludeAssets="none" GeneratePathProperty="true" PrivateAssets="all" />
+    <Reference Include="LaunchDarkly.EventSource">
+      <HintPath>$(PkgLaunchDarkly_EventSource)/lib/netstandard2.0/LaunchDarkly.EventSource.dll</HintPath>
+      <CopyLocal>True</CopyLocal>
+    </Reference>
+    <PackageReference Include="LaunchDarkly.InternalSdk" Version="2.3.2" IncludeAssets="none" GeneratePathProperty="true" PrivateAssets="all" />
+    <Reference Include="LaunchDarkly.InternalSdk">
+      <HintPath>$(PkgLaunchDarkly_InternalSdk)/lib/netstandard2.0/LaunchDarkly.InternalSdk.dll</HintPath>
+      <CopyLocal>True</CopyLocal>
+    </Reference>
+    <PackageReference Include="LaunchDarkly.JsonStream" Version="1.0.3" IncludeAssets="none" GeneratePathProperty="true" PrivateAssets="all" />
+    <Reference Include="LaunchDarkly.JsonStream">
+      <HintPath>$(PkgLaunchDarkly_JsonStream)/lib/netstandard2.0/LaunchDarkly.JsonStream.dll</HintPath>
+      <CopyLocal>True</CopyLocal>
+    </Reference>
+    <PackageReference Include="LaunchDarkly.Logging" Version="1.0.1" IncludeAssets="none" GeneratePathProperty="true" PrivateAssets="all" />
+    <Reference Include="LaunchDarkly.Logging">
+      <HintPath>$(PkgLaunchDarkly_Logging)/lib/netstandard2.0/LaunchDarkly.Logging.dll</HintPath>
+      <CopyLocal>True</CopyLocal>
+    </Reference>
+    
+    <!--LaunchDarkly.ClientSdk has a transitive dependency on System.Collections.Immutable-->
+    <!--We need an explicit package reference so that nuget can copy the proper assemblies-->
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
   </ItemGroup>
 
