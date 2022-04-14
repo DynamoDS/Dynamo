@@ -118,10 +118,6 @@ namespace Dynamo.Engine
                             indexExp.ArrayDimensions = new ArrayNode(exp2, null);
                             return true;
                         }
-                        else
-                        {
-                            return false;
-                        }
                     }
                 }
             }
