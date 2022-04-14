@@ -70,7 +70,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(DynamoPath)\GraphToDSCompiler.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=2.1.7962.24801, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Greg, Version=2.1.7962.24800, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Greg.2.1.7962.24801\lib\net452\Greg.dll</HintPath>
       <Private>True</Private>
     </Reference>
