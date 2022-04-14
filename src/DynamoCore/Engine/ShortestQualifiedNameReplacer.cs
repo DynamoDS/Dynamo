@@ -16,6 +16,8 @@ namespace Dynamo.Engine
     /// automatically shortened to partial namespaces so that they can still be resolved uniquely.
     /// E.g., given {"A.B.C.D.E", "X.Y.A.B.E.C.E", "X.Y.A.C.B.E"}, all with the same class E,
     /// their shortest unique names would be: {"D.E", "E.E", "C.B.E"}.
+    /// 
+    /// Also replaces DesignScript.BuiltIn.Get.ValueAtIndex(exp1, exp2) calls to exp1[exp2] expressions.
     /// </summary>
     internal class ShortestQualifiedNameReplacer : AstReplacer
     {
