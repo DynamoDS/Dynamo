@@ -115,6 +115,42 @@ namespace DynamoFeatureFlags
         }
 
         /// <summary>
+        /// A simplified version of the generic method above, that is simpler to call with dynamic types.
+        /// </summary>
+        /// <param name="flagkey"></param>
+        /// <param name="t"></param>
+        /// <param name="defaultval"></param>
+        /// <returns></returns>
+        internal static object CheckFeatureFlag(string flagkey,Type t, object defaultval)
+        {
+            try
+            {
+                if (ldClient == null || !ldClient.Initialized)
+                {
+                    MessageLogged?.Invoke($"feature flags client not initalized for requested flagkey: {flagkey}, returning default value: {defaultval}");
+                    return defaultval;
+                }
+
+                object output = defaultval;
+                switch (Type.GetTypeCode(t))
+                {
+                    case TypeCode.Boolean:
+                        output = ldClient.BoolVariation(flagkey);
+                        break;
+                    case TypeCode.String:
+                        output = ldClient.StringVariation(flagkey, defaultval as string);
+                        break;
+                }
+                return output;
+            }
+            catch (Exception ex)
+            {
+                MessageLogged?.Invoke($"failed to check feature flag key ex: {ex},{System.Environment.NewLine} returning default value: {defaultval}");
+                return defaultval;
+            }
+        }
+
+        /// <summary>
         /// cleanup.
         /// </summary>
         public void Dispose()

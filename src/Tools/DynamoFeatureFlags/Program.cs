@@ -86,13 +86,8 @@ namespace DynamoFeatureFlags
             //convert default val to correct type.
             var defaultValTyped = Convert.ChangeType(defaultValString, type);
 
-            //convert method to generic using type.
-            var checkFlagMethod = typeof(FeatureFlagsManager).GetMethod(nameof(FeatureFlagsManager.CheckFeatureFlag),
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-            var generic = checkFlagMethod.MakeGenericMethod(type);
-
             // invoke it, we'll get our flag or the default back.
-            var output = generic.Invoke(null, new object[] {ffkey, defaultValTyped });
+            var output = FeatureFlagsManager.CheckFeatureFlag(ffkey, type, defaultValTyped);
             Console.WriteLine(startOfDataToken);
             Console.WriteLine(output);
         }
