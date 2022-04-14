@@ -70,9 +70,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(DynamoPath)\GraphToDSCompiler.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\greg\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=2.1.7962.24801, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.2.1.7962.24801\lib\net452\Greg.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">

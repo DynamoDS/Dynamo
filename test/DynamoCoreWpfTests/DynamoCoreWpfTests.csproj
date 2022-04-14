@@ -45,8 +45,8 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Greg, Version=1.2.7240.28357, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.1.2.7240.28357\lib\net47\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=2.1.7962.24801, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.2.1.7962.24801\lib\net452\Greg.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="HelixToolkit, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
@@ -86,8 +86,8 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=106.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\src\packages\RestSharp.106.12.0\lib\net452\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
