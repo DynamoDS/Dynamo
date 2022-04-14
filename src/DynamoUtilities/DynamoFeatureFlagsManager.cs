@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-
+using System.Threading.Tasks;
 
 namespace DynamoUtilities
 {
@@ -19,7 +19,6 @@ namespace DynamoUtilities
     {
         private const string checkFeatureFlagCommandToken = @"<<<<<CheckFeatureFlag>>>>>";
         private string relativePath = Path.Combine("DynamoFeatureFlags", "DynamoFeatureFlags.exe");
-        internal event Action<string> MessageLogged;
         public override void Dispose()
         {
             KillProcess();
@@ -56,12 +55,12 @@ namespace DynamoUtilities
         internal T CheckFeatureFlag<T>(string featureFlagKey, T defaultval)
         {
             if(!(defaultval is bool || defaultval is string)){
-                MessageLogged?.Invoke("unsupported flag type");
+                RaiseMessageLogged("unsupported flag type");
                 return defaultval;
             }
             if (!started)
             {
-                 MessageLogged?.Invoke(GetCantStartErrorMessage());
+                RaiseMessageLogged(GetCantStartErrorMessage());
                  return defaultval;
             }
             try
@@ -75,16 +74,24 @@ namespace DynamoUtilities
             catch (Exception e) when (e is IOException || e is ObjectDisposedException)
             {
                 KillProcess();
-                MessageLogged?.Invoke(GetCantCommunicateErrorMessage());
+                RaiseMessageLogged(GetCantCommunicateErrorMessage());
                 return defaultval;
             }
-            //TODO if we start moving more complex types than bool/string we should use
-            //JSON (either newtonsoft or system.runtime.serializer which we already reference in this csproj).
-            var dataFromCLI = GetData();
+                //wait for response
+                var dataFromCLI = GetData();
             //convert from string to string or bool.
-            var output = Convert.ChangeType(dataFromCLI, typeof(T));
+            try
+            {   //TODO if we start moving more complex types than bool/string we should use
+                //JSON (either newtonsoft or system.runtime.serializer which we already reference in this csproj).
+                var output = Convert.ChangeType(dataFromCLI, typeof(T));
+                return (T)output;
+            }
+            catch(Exception e)
+            {
+                RaiseMessageLogged($"{e}");
+                return defaultval;
+            }
 
-            return (T)output;
         }
 
 

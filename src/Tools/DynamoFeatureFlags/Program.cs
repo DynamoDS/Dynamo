@@ -40,6 +40,7 @@ namespace DynamoFeatureFlags
                     timer.Enabled = true;
 
                     FeatureFlagsManager.MessageLogged += FeatureFlagsManager_MessageLogged;
+                   
                     FeatureFlags = new FeatureFlagsManager(ops.UserKey, ops.MobileKey);
                     Console.WriteLine("");
                     while (true)
@@ -48,7 +49,6 @@ namespace DynamoFeatureFlags
                         var line = Console.ReadLine();
                         if (line == checkFeatureFlagCommandToken)
                         {
-                            Console.WriteLine(startOfDataToken);
                             CheckFeatureFlag();
                         }
                         Console.WriteLine(endOfDataToken);
@@ -93,6 +93,7 @@ namespace DynamoFeatureFlags
 
             // invoke it, we'll get our flag or the default back.
             var output = generic.Invoke(null, new object[] {ffkey, defaultValTyped });
+            Console.WriteLine(startOfDataToken);
             Console.WriteLine(output);
         }
 
@@ -116,7 +117,7 @@ namespace DynamoFeatureFlags
 
         private static void FeatureFlagsManager_MessageLogged(string message)
         {
-            Debug.WriteLine(message);
+            Console.WriteLine(message);
         }
     }
 }

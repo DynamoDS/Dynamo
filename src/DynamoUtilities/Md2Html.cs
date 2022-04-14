@@ -17,6 +17,7 @@ namespace Dynamo.Utilities
         protected const string startofDataToken = @"<<<<<Sod>>>>>";
         protected readonly Process process = new Process();
         protected bool started;
+        internal event Action<string> MessageLogged;
         public virtual void Dispose()
         {
             KillProcess();   
@@ -46,6 +47,7 @@ namespace Dynamo.Utilities
             var toolPath = Path.Combine(rootPath,relativePath);
             return toolPath;
         }
+        //TODO if we see any issues with deadlocks we can try using a timeout on another thread.
         /// <summary>
         /// Read data from CLI tool
         /// <returns>Returns data read from CLI tool</returns>
@@ -61,7 +63,7 @@ namespace Dynamo.Utilities
                     try
                     {
                         var line = process.StandardOutput.ReadLine();
-                        Debug.WriteLine(line);
+                        MessageLogged?.Invoke(line);
                         if (line == null || line == startofDataToken)
                         {
                             start = true;
@@ -88,6 +90,11 @@ namespace Dynamo.Utilities
 
                 return writer.ToString();
             }
+        }
+
+        protected void RaiseMessageLogged(string message)
+        {
+            MessageLogged?.Invoke(message);
         }
 
         /// <summary>
