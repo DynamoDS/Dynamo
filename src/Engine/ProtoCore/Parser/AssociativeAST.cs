@@ -377,6 +377,11 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class ArrayNameNode : AssociativeNode
     {
+        internal virtual ArrayNameNode CreateInstance()
+        {
+            return new ArrayNameNode(this);
+        }
+
         public ArrayNode ArrayDimensions
         {
             get;
@@ -498,6 +503,11 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class GroupExpressionNode : ArrayNameNode
     {
+        internal override ArrayNameNode CreateInstance()
+        {
+            return new GroupExpressionNode(this);
+        }
+
         public AssociativeNode Expression
         {
             get;
@@ -557,6 +567,11 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class IdentifierNode : ArrayNameNode
     {
+        internal override ArrayNameNode CreateInstance()
+        {
+            return new IdentifierNode(this);
+        }
+
         public IdentifierNode(string identName = null)
         {
             datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.InvalidType, 0);
@@ -659,6 +674,11 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class IdentifierListNode : ArrayNameNode
     {
+        internal override ArrayNameNode CreateInstance()
+        {
+            return new IdentifierListNode(this);
+        }
+
         public bool IsLastSSAIdentListFactor { get; set; }
 
         public AssociativeNode LeftNode
@@ -716,7 +736,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override string ToString()
         {
-            return LeftNode + "." + RightNode;
+            return LeftNode + "." + RightNode + base.ToString();
         }
 
         public override AstKind Kind
@@ -1064,6 +1084,11 @@ namespace ProtoCore.AST.AssociativeAST
         public int DynamicTableIndex { get; set; }
         public AssociativeNode Function { get; set; }
         public List<AssociativeNode> FormalArguments { get; set; }
+
+        internal override ArrayNameNode CreateInstance()
+        {
+            return new FunctionCallNode(this);
+        }
 
         public FunctionCallNode()
         {
@@ -2268,6 +2293,11 @@ namespace ProtoCore.AST.AssociativeAST
         public RangeStepOperator StepOperator { get; set; }
         public bool HasRangeAmountOperator { get; set; }
 
+        internal override ArrayNameNode CreateInstance()
+        {
+            return new RangeExprNode(this);
+        }
+
         public RangeExprNode()
         {
         }
@@ -2375,6 +2405,11 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class ExprListNode : ArrayNameNode
     {
+        internal override ArrayNameNode CreateInstance()
+        {
+            return new ExprListNode(this);
+        }
+
         public ExprListNode()
         {
             Exprs = new List<AssociativeNode>();

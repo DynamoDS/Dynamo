@@ -69,11 +69,71 @@ namespace Dynamo.Engine
             return node;
         }
 
+        /// <summary>
+        /// If node is a DesignScript.BuiltIn.Get.ValueAtIndex(exp1, exp2) function call node.
+        /// it is transformed into a node with indexing operator e.g. exp1[exp2].
+        /// </summary>
+        /// <param name="node">input node</param>
+        /// <param name="indexExp">output node</param>
+        /// <returns>true if input expression is of the form DesignScript.BuiltIn.Get.ValueAtIndex(exp1, exp2), false otherwise</returns>
+        private bool TryBuildIndexingExpression(IdentifierListNode node, out ArrayNameNode indexExp)
+        {
+            indexExp = null;
+            if(node.RightNode is FunctionCallNode fcn)
+            {
+                if(fcn.Function.Name == ProtoCore.AST.Node.BuiltinValueAtIndexMethodName)
+                {
+                    if(node.LeftNode.ToString() == ProtoCore.AST.Node.BuiltinGetValueAtIndexTypeName)
+                    {
+                        var exp1 = fcn.FormalArguments[0];
+                        var exp2 = fcn.FormalArguments[1];
+
+                        if (exp1 is ArrayNameNode ann)
+                        {
+                            if(exp1 is IdentifierListNode iln1)
+                            {
+                                if (!TryBuildIndexingExpression(iln1, out indexExp))
+                                {
+                                    indexExp = ann.CreateInstance();
+                                }
+                            }
+                            else indexExp = ann.CreateInstance();
+
+                            if (exp2 is IdentifierListNode iln2)
+                            {
+                                if (TryBuildIndexingExpression(iln2, out ArrayNameNode index))
+                                {
+                                    if (indexExp.ArrayDimensions != null)
+                                    {
+                                        indexExp = new IdentifierNode(indexExp.ToString());
+                                    }
+                                    indexExp.ArrayDimensions = new ArrayNode(index, null);
+                                    return true;
+                                }
+                            }
+                            if(indexExp.ArrayDimensions != null)
+                            {
+                                indexExp = new IdentifierNode(indexExp.ToString());
+                            }
+                            indexExp.ArrayDimensions = new ArrayNode(exp2, null);
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
 
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
             if (node == null)
                 return null;
+
+            if(TryBuildIndexingExpression(node, out ArrayNameNode indexExp)) return indexExp;
 
             // First pass attempt to resolve the node class name 
             // and shorten it before traversing it deeper
