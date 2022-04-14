@@ -323,11 +323,17 @@ namespace Dynamo.Search
             return s.Split(null);
         }
 
-        private static bool ContainsSpecialCharacters(string element)
+        public static Char[] SpecialAndInvalidCharacters()
         {
-            return element.Contains("*") || element.Contains(".") || element.Contains(" ")
-                || element.Contains("\\");
+            return new[] { '*', '.', ' ', '\\', '/', ':', '?', '<', '>', '|', '"' };
         }
+
+        public static bool ContainsSpecialCharacters(string element)
+        {
+            Char[] invalidCharacters = SpecialAndInvalidCharacters();
+            return (!string.IsNullOrEmpty(element) && element.IndexOfAny(invalidCharacters) >= 0);
+        }
+
         #endregion
 
         /// <summary>
