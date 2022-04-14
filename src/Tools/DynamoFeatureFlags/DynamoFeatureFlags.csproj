@@ -5,7 +5,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <SharedOutputPath>$(OutputPath)\DynamoFeatureFlags\</SharedOutputPath>
-    <OutputPath>bin\AnyCPU\$(Configuration)\</OutputPath>
+    <OutputPath>.\bin\AnyCPU\$(Configuration)\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
