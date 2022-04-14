@@ -27,7 +27,6 @@ namespace DynamoUtilities
         /// <summary>
         /// Constructor
         /// Start the CLI tool and keep it around...
-        /// TODO we need to better handle if Dynamo crashes/is terminated - this process needs to be cleaned up.
         /// </summary>
         internal DynamoFeatureFlagsManager(string userkey)
         {
