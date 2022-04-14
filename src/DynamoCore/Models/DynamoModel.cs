@@ -2655,6 +2655,8 @@ namespace Dynamo.Models
                     newAnnotations.Add(annotationModel);
                 }
 
+                DynamoSelection.Instance.ClearSelectionDisabled = true;
+
                 // Add the new Annotation's to the Workspace
                 foreach (var newAnnotation in newAnnotations)
                 {
@@ -2668,6 +2670,8 @@ namespace Dynamo.Models
                 {
                     AddToSelection(item);
                 }
+
+                DynamoSelection.Instance.ClearSelectionDisabled = false;
 
                 // Record models that are created as part of the command.
                 CurrentWorkspace.RecordCreatedModels(createdModels);
