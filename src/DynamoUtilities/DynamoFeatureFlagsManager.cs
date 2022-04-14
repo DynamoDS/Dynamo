@@ -38,7 +38,7 @@ namespace DynamoUtilities
                 RedirectStandardInput = true,
 
                 UseShellExecute = false,
-                Arguments = $"-u {userkey}",
+                Arguments = $"-u {userkey} -p {Process.GetCurrentProcess().Id}",
                 FileName = GetToolPath(relativePath)
             };
 

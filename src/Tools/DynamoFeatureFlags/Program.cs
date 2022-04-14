@@ -16,7 +16,8 @@ namespace DynamoFeatureFlags
         public string UserKey { get; set; }
         [Option('m', "mobilekey", Required = false, HelpText = "mobile key for dynamo feature flag env. Do not use a full sdk key. If not provided loaded from config.")]
         public string MobileKey { get; set; }
-
+        [Option('p',"proccessID",Required = true, HelpText= "parent proccess id, if this proccess is no longer running, this application will exit.")]
+        public int ProccessID { get; set; }
     }
     static class Program
     {
@@ -24,12 +25,20 @@ namespace DynamoFeatureFlags
         private const string checkFeatureFlagCommandToken = @"<<<<<CheckFeatureFlag>>>>>";
         private const string endOfDataToken = @"<<<<<Eod>>>>>";
         private const string startOfDataToken = @"<<<<<Sod>>>>>";
+        private static int hostProccessId = -1;
         static void Main(string[] args)
         {
             Parser.Default.ParseArguments<Options>(args).WithParsed(ops =>
             {
                 try
                 {
+                    //start watchdog
+                    hostProccessId = ops.ProccessID;
+                    var timer = new System.Timers.Timer(10000);
+                    timer.AutoReset = true;
+                    timer.Elapsed += Timer_Elapsed;
+                    timer.Enabled = true;
+
                     FeatureFlagsManager.MessageLogged += FeatureFlagsManager_MessageLogged;
                     FeatureFlags = new FeatureFlagsManager(ops.UserKey, ops.MobileKey);
                     Console.WriteLine("");
@@ -46,13 +55,26 @@ namespace DynamoFeatureFlags
                     }
 
                 }
-                catch (Exception e) when (e is IOException || e is OutOfMemoryException || e is ArgumentOutOfRangeException)
+                catch (Exception e)
                 {
                     // Exit process
                 }
             });
                 
         }
+
+        private static void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            var currentproc = Process.GetCurrentProcess();
+            var hostAlive = Process.GetProcesses().Any(x => x.Id == Program.hostProccessId);
+            if (!hostAlive)
+            {
+                //exit
+                currentproc.Kill();
+            }
+
+        }
+
         static void CheckFeatureFlag()
         {
             var data = GetData();
@@ -73,7 +95,7 @@ namespace DynamoFeatureFlags
             var output = generic.Invoke(null, new object[] {ffkey, defaultValTyped });
             Console.WriteLine(output);
         }
-        //TODO share in shared CLI base project or assem??
+
         static string GetData()
         {
             using (StringWriter data = new StringWriter())
@@ -94,7 +116,7 @@ namespace DynamoFeatureFlags
 
         private static void FeatureFlagsManager_MessageLogged(string message)
         {
-           Console.WriteLine(message);
+            Debug.WriteLine(message);
         }
     }
 }

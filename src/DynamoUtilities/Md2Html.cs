@@ -62,7 +62,7 @@ namespace Dynamo.Utilities
                     {
                         var line = process.StandardOutput.ReadLine();
                         Debug.WriteLine(line);
-                        if(line == null || line == startofDataToken)
+                        if (line == null || line == startofDataToken)
                         {
                             start = true;
                             continue;//don't record start token to stream.
@@ -79,7 +79,7 @@ namespace Dynamo.Utilities
                             }
                         }
                     }
-                    catch (Exception e) when (e is IOException || e is OutOfMemoryException)
+                    catch (Exception e)
                     {
                         KillProcess();
                         return GetCantCommunicateErrorMessage();
