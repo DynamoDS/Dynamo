@@ -2766,7 +2766,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Rate this guide</value>
   </data>
   <data name="GetStartedGuideSurveyText" xml:space="preserve">
-    <value>Learn more about Dynamo in the #online help=https://primer.dynamobim.org/</value>
+    <value>Learn more about Dynamo in the #online help=https://primer2.dynamobim.org/</value>
   </data>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
