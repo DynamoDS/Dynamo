@@ -35,7 +35,7 @@ namespace DynamoCLI
                 }
                 else
                 {
-                    var model = StartupDaynamo(cmdLineArgs);
+                    var model = StartupDynamo(cmdLineArgs);
 
                     var runner = new CommandLineRunner(model);
                     runner.Run(cmdLineArgs);
@@ -61,7 +61,7 @@ namespace DynamoCLI
         {
             try
             {
-                StartupDaynamo(cmdLineArgs);
+                StartupDynamo(cmdLineArgs);
 
                 Console.WriteLine("-----------------------------------------");
                 Console.WriteLine("DynamoCLI is running in keepalive mode");
@@ -80,7 +80,7 @@ namespace DynamoCLI
         /// </summary>
         /// <param name="cmdLineArgs"></param>
         /// <returns></returns>
-        private static DynamoModel StartupDaynamo(StartupUtils.CommandLineArguments cmdLineArgs)
+        private static DynamoModel StartupDynamo(StartupUtils.CommandLineArguments cmdLineArgs)
         {
             DynamoModel model;
             if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
