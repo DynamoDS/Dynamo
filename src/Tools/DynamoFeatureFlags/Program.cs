@@ -28,6 +28,7 @@ namespace DynamoFeatureFlags
         private static int hostProccessId = -1;
         static void Main(string[] args)
         {
+            //System.Diagnostics.Debugger.Launch();
             Parser.Default.ParseArguments<Options>(args).WithParsed(ops =>
             {
                 try
@@ -42,7 +43,7 @@ namespace DynamoFeatureFlags
                     FeatureFlagsManager.MessageLogged += FeatureFlagsManager_MessageLogged;
                    
                     FeatureFlags = new FeatureFlagsManager(ops.UserKey, ops.MobileKey);
-                    Console.WriteLine("");
+                    Console.WriteLine("feature flag exe starting");
                     while (true)
                     {
                        

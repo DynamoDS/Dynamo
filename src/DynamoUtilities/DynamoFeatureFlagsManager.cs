@@ -29,6 +29,13 @@ namespace DynamoUtilities
         /// </summary>
         internal DynamoFeatureFlagsManager(string userkey)
         {
+            //dont pass userkey arg if null/empty
+            var userkeyarg = $"-u {userkey}";
+            if (string.IsNullOrEmpty(userkey))
+            {
+                userkeyarg = String.Empty;
+            }
+
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 CreateNoWindow = true,
@@ -36,7 +43,7 @@ namespace DynamoUtilities
                 RedirectStandardInput = true,
 
                 UseShellExecute = false,
-                Arguments = $"-u {userkey} -p {Process.GetCurrentProcess().Id}",
+                Arguments = $"{userkeyarg} -p {Process.GetCurrentProcess().Id}",
                 FileName = GetToolPath(relativePath)
             };
 
@@ -44,8 +51,8 @@ namespace DynamoUtilities
             try
             {
                 process.Start();
-                started = true;
-            }
+                    started = true;
+                }
             catch (Win32Exception)
             {
                 // Do nothing
@@ -88,7 +95,7 @@ namespace DynamoUtilities
             }
             catch(Exception e)
             {
-                RaiseMessageLogged($"{e}");
+                RaiseMessageLogged($"{e?.Message}");
                 return defaultval;
             }
 
@@ -97,12 +104,12 @@ namespace DynamoUtilities
 
         protected override string GetCantStartErrorMessage()
         {
-            return $"$can't start { GetToolPath(relativePath)}";
+            return $"can't start { GetToolPath(relativePath)}";
         }
 
         protected override string GetCantCommunicateErrorMessage()
         {
-            return $"$can't communicate with { GetToolPath(relativePath)}";
+            return $"can't communicate with { GetToolPath(relativePath)}";
         }
     }
 }
