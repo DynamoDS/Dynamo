@@ -48,7 +48,7 @@ namespace DynamoFeatureFlags
             {
                 throw new ArgumentException("ld mobile key was null");
             }
-            if (userkey == null)
+            if (string.IsNullOrEmpty(userkey))
             {
                 MessageLogged?.Invoke("The userkey was null when starting feature flag manager, using a shared key," +
                     " possibly analytics was disabled, test mode is active, or headless mode is active.");

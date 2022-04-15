@@ -112,7 +112,7 @@ namespace Dynamo.Logging
         {
             if (dynamoAnalyticsClient is DynamoAnalyticsClient dac)
             {
-                return dac.Session.UserId;
+                return dac.Session?.UserId;
             }
             return null;
         }
