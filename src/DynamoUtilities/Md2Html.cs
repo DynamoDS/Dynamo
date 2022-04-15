@@ -54,6 +54,10 @@ namespace Dynamo.Utilities
         /// </summary>
         protected virtual string GetData()
         {
+            if (process.HasExited)
+            {
+                return string.Empty;
+            }
             using (var writer = new StringWriter())
             {
                 var done = false;
