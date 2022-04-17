@@ -81,7 +81,7 @@ namespace Dynamo.Engine
         /// <returns>true if input expression is of the form DesignScript.BuiltIn.Get.ValueAtIndex(exp1, exp2), false otherwise</returns>
         private bool TryBuildIndexingExpression(IdentifierListNode node, out ArrayNameNode indexExp)
         {
-
+            // If indxExp already has a rank >= 1, we need to append another [] to it with indx.
             SetArrayDimensionsDelegate setArrayDimensions = (ref ArrayNameNode indxExp, AssociativeNode indx) =>
             {
                 if (indxExp.ArrayDimensions != null)
@@ -126,38 +126,10 @@ namespace Dynamo.Engine
                             {
                                 if (TryBuildIndexingExpression(iln2, out ArrayNameNode index))
                                 {
-                                    // If indexExp already has a rank >= 1, we need to append another [] to it with index = exp2.
                                     setArrayDimensions(ref indexExp, index);
                                     return true;
-                                    //if (indexExp.ArrayDimensions != null)
-                                    //{
-                                    //    if (indexExp is IdentifierListNode iln)
-                                    //    {
-                                    //        if (iln.RightNode is ArrayNameNode arr)
-                                    //        {
-                                    //            arr.ArrayDimensions = indexExp.ArrayDimensions;
-                                    //        }
-                                    //    }
-                                    //    else indexExp = new IdentifierNode(indexExp.ToString());
-                                    //}
-                                    //indexExp.ArrayDimensions = new ArrayNode(index, null);
-                                    //return true;
                                 }
                             }
-                            // If indexExp already has a rank >= 1, we need to append another [] to it with index = exp2.
-                            //if (indexExp.ArrayDimensions != null)
-                            //{
-                            //    if(indexExp is IdentifierListNode iln)
-                            //    {
-                            //        if(iln.RightNode is ArrayNameNode arr)
-                            //        {
-                            //            arr.ArrayDimensions = indexExp.ArrayDimensions;
-                            //        }
-                            //    }
-                            //    else indexExp = new IdentifierNode(indexExp.ToString());
-                            //}
-                            //indexExp.ArrayDimensions = new ArrayNode(exp2, null);
-                            //return true;
                             setArrayDimensions(ref indexExp, exp2);
                             return true;
                         }
