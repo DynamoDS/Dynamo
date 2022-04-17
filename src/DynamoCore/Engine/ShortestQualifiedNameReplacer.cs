@@ -23,6 +23,7 @@ namespace Dynamo.Engine
     {
         private readonly ClassTable classTable;
         private readonly ElementResolver resolver;
+        private delegate void SetArrayDimensionsDelegate(ref ArrayNameNode indxExp, AssociativeNode indx);
 
         public ShortestQualifiedNameReplacer(ClassTable classTable, ElementResolver resolver)
         {
@@ -80,6 +81,23 @@ namespace Dynamo.Engine
         /// <returns>true if input expression is of the form DesignScript.BuiltIn.Get.ValueAtIndex(exp1, exp2), false otherwise</returns>
         private bool TryBuildIndexingExpression(IdentifierListNode node, out ArrayNameNode indexExp)
         {
+
+            SetArrayDimensionsDelegate setArrayDimensions = (ref ArrayNameNode indxExp, AssociativeNode indx) =>
+            {
+                if (indxExp.ArrayDimensions != null)
+                {
+                    if (indxExp is IdentifierListNode iln)
+                    {
+                        if (iln.RightNode is ArrayNameNode arr)
+                        {
+                            arr.ArrayDimensions = indxExp.ArrayDimensions;
+                        }
+                    }
+                    else indxExp = new IdentifierNode(indxExp.ToString());
+                }
+                indxExp.ArrayDimensions = new ArrayNode(indx, null);
+            };
+
             indexExp = null;
             if(node.RightNode is FunctionCallNode fcn)
             {
@@ -89,35 +107,58 @@ namespace Dynamo.Engine
                     {
                         var exp1 = fcn.FormalArguments[0];
                         var exp2 = fcn.FormalArguments[1];
-
+                        
+                        // exp1 = expression to be indexed.
+                        // Only expressions of ArrayNameNode type can be indexed.
                         if (exp1 is ArrayNameNode ann)
                         {
-                            if(exp1 is IdentifierListNode iln1)
+                            if (exp1 is IdentifierListNode iln1)
                             {
                                 if (!TryBuildIndexingExpression(iln1, out indexExp))
                                 {
-                                    indexExp = ann.CreateInstance();
+                                    indexExp = iln1;
                                 }
                             }
-                            else indexExp = ann.CreateInstance();
+                            else indexExp = ann;
 
+                            // exp2 = expression that evaluates to an index.
                             if (exp2 is IdentifierListNode iln2)
                             {
                                 if (TryBuildIndexingExpression(iln2, out ArrayNameNode index))
                                 {
-                                    if (indexExp.ArrayDimensions != null)
-                                    {
-                                        indexExp = new IdentifierNode(indexExp.ToString());
-                                    }
-                                    indexExp.ArrayDimensions = new ArrayNode(index, null);
+                                    // If indexExp already has a rank >= 1, we need to append another [] to it with index = exp2.
+                                    setArrayDimensions(ref indexExp, index);
                                     return true;
+                                    //if (indexExp.ArrayDimensions != null)
+                                    //{
+                                    //    if (indexExp is IdentifierListNode iln)
+                                    //    {
+                                    //        if (iln.RightNode is ArrayNameNode arr)
+                                    //        {
+                                    //            arr.ArrayDimensions = indexExp.ArrayDimensions;
+                                    //        }
+                                    //    }
+                                    //    else indexExp = new IdentifierNode(indexExp.ToString());
+                                    //}
+                                    //indexExp.ArrayDimensions = new ArrayNode(index, null);
+                                    //return true;
                                 }
                             }
-                            if(indexExp.ArrayDimensions != null)
-                            {
-                                indexExp = new IdentifierNode(indexExp.ToString());
-                            }
-                            indexExp.ArrayDimensions = new ArrayNode(exp2, null);
+                            // If indexExp already has a rank >= 1, we need to append another [] to it with index = exp2.
+                            //if (indexExp.ArrayDimensions != null)
+                            //{
+                            //    if(indexExp is IdentifierListNode iln)
+                            //    {
+                            //        if(iln.RightNode is ArrayNameNode arr)
+                            //        {
+                            //            arr.ArrayDimensions = indexExp.ArrayDimensions;
+                            //        }
+                            //    }
+                            //    else indexExp = new IdentifierNode(indexExp.ToString());
+                            //}
+                            //indexExp.ArrayDimensions = new ArrayNode(exp2, null);
+                            //return true;
+                            setArrayDimensions(ref indexExp, exp2);
                             return true;
                         }
                     }
@@ -131,7 +172,11 @@ namespace Dynamo.Engine
             if (node == null)
                 return null;
 
-            if(TryBuildIndexingExpression(node, out ArrayNameNode indexExp)) return indexExp;
+            if (TryBuildIndexingExpression(node, out ArrayNameNode indexExp))
+            {
+                if (indexExp is IdentifierListNode iln) node = iln;
+                else return indexExp;
+            }
 
             // First pass attempt to resolve the node class name 
             // and shorten it before traversing it deeper
@@ -151,7 +196,8 @@ namespace Dynamo.Engine
             {
                 LeftNode = newLeftNode,
                 RightNode = rightNode,
-                Optr = Operator.dot
+                Optr = Operator.dot,
+                ArrayDimensions = node.ArrayDimensions
             };
             return node;
         }

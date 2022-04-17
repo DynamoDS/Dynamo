@@ -1429,6 +1429,38 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void NestedIndexingInCodeBlockToCode1()
+        {
+            OpenModel(@"core\node2code\func()[][].dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            SelectAll(nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.Code.Contains("Point.ByCoordinates(x<1>, y<2>)[0][0];"));
+        }
+
+        [Test]
+        public void NestedIndexingInCodeBlockToCode2()
+        {
+            OpenModel(@"core\node2code\func()[func()[]].dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            SelectAll(nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.Code.Contains("Math.Pow(x<1>, y<2>)[0][Math.Round(1..2)[0]];"));
+        }
+
+        [Test]
         public void TestDirectoryToCode()
         {
             OpenModel(@"core\node2code\directory.dyn");
