@@ -25,6 +25,7 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using PythonNodeModels;
+using SharpDX.DXGI;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -1593,7 +1594,7 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number <= 0.4)
+            if (number <= Double.Parse(Wpf.Properties.Resources.ZoomLevel))
                 return false;
 
             return true;
@@ -1604,14 +1605,14 @@ namespace Dynamo.Controls
             throw new NotSupportedException();
         }
     }
-
+    
     public class ZoomToOpacityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number <= 0.4)
+            if (number <= Double.Parse(Wpf.Properties.Resources.ZoomLevel))
                 return 0.0;
 
             return 0.5;
@@ -1632,7 +1633,7 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number > 0.4)
+            if (number > Double.Parse(Wpf.Properties.Resources.ZoomLevel))
                 return Visibility.Collapsed;
 
             return Visibility.Visible;    
