@@ -3092,6 +3092,7 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="RunReady" xml:space="preserve">
     <value>Ready to run.</value>
+  </data>
   <data name="PreferencesSecuritySettingsTab" xml:space="preserve">
     <value>Security</value>
   </data>
