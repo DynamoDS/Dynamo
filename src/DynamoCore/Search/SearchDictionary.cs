@@ -325,7 +325,23 @@ namespace Dynamo.Search
 
         public static Char[] SpecialAndInvalidCharacters()
         {
-            return new[] { '*', '.', ' ', '\\', '/', ':', '?', '<', '>', '|', '"' };
+            char[] invalidFileChars = System.IO.Path.GetInvalidFileNameChars();
+
+            List<string> filteredChars = new List<string>();
+            foreach (char someChar in invalidFileChars)
+            {   // Excluding white spaces and uncommon characters, only keeping the displayed in the Windows alert
+                if (!Char.IsWhiteSpace(someChar) && (int)someChar > 31)
+                {
+                    filteredChars.Add(someChar.ToString());
+                }
+            }
+
+            char[] result = new char[filteredChars.Count];
+            for (int i = 0; i < filteredChars.Count; i++)
+            {
+                result[i] = char.Parse(filteredChars[i]);
+            }
+            return result;
         }
 
         public static bool ContainsSpecialCharacters(string element)
