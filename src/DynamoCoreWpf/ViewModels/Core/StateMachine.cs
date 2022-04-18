@@ -129,13 +129,14 @@ namespace Dynamo.ViewModels
             // Here each node in the selection is being recorded for undo right
             // before they get updated by the drag operation.
             // 
-            RecordSelectionForUndo();
+            //RecordSelectionForUndo();
             draggedNodes.Clear();
             foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
             {
                 ILocatable locatable = selectable as ILocatable;
+                ModelBase nodeModel = selectable as ModelBase;
                 if (null != locatable)
-                    draggedNodes.Add(new DraggedNode(locatable, mouseCursor));
+                    draggedNodes.Add(new DraggedNode(locatable, mouseCursor, nodeModel.GUID));
             }
 
             if (draggedNodes.Count <= 0) // There is nothing to drag.
@@ -159,7 +160,9 @@ namespace Dynamo.ViewModels
 
         internal void EndDragSelection(Point2D mouseCursor)
         {
-            UpdateDraggedSelection(mouseCursor); // Final position update.
+            RecordSelectionForUndo();
+            UpdateDraggedSelection(mouseCursor); // Final position update.         
+
             draggedNodes.Clear(); // We are no longer dragging anything.
         }
 
@@ -236,7 +239,7 @@ namespace Dynamo.ViewModels
         internal void BeginCreateConnections(Guid nodeId, int portIndex, PortType portType)
         {
             // Only handle ctrl connections if selected port is an input port
-            if (firstStartPort == null || portType == PortType.Output) return; 
+            if (firstStartPort == null || portType == PortType.Output) return;
             this.SetActiveConnectors(null); // End the current connection
 
             // Then, start a new connection
@@ -254,7 +257,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal bool CheckActiveConnectorCompatibility(PortViewModel portVM,bool isSnapping = true)
+        internal bool CheckActiveConnectorCompatibility(PortViewModel portVM, bool isSnapping = true)
         {
             // Check if required ports exist
             if (FirstActiveConnector == null || portVM == null)
@@ -303,7 +306,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void SetActiveConnectors (ConnectorViewModel[] connectors) // A replacement for SetActiveConnector(), for handling both single and multiple connectors
+        private void SetActiveConnectors(ConnectorViewModel[] connectors) // A replacement for SetActiveConnector(), for handling both single and multiple connectors
         {
             if (null != connectors && connectors.Count() > 0)
             {
@@ -338,11 +341,33 @@ namespace Dynamo.ViewModels
             // just to select a node (as opposed to moving the selected nodes), in 
             // which case we don't want any of the nodes to be recorded for undo.
             // 
-            List<ModelBase> models = DynamoSelection.Instance.Selection.
-                Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
 
-            WorkspaceModel.RecordModelsForModification(models, Model.UndoRecorder);
+            //List<ModelBase> models = DynamoSelection.Instance.Selection.
+            //    Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
 
+            //WorkspaceModel.RecordModelsForModification(models, Model.UndoRecorder);
+
+            //DynamoViewModel.RaiseCanExecuteUndoRedo();
+
+
+            //The models are being stored with it's initial position to record only the changed ones.
+            List<ModelBase> changedPositionModels = new List<ModelBase>();
+            foreach (DraggedNode draggedNode in draggedNodes)
+            {
+                //Checks if the draggednoded has changed its position
+                if (draggedNode.HasChangedPosition())
+                {
+                    ModelBase model = DynamoSelection.Instance.Selection.
+                        Where((x) => (x is ModelBase)).Cast<ModelBase>().FirstOrDefault(x => x.GUID == draggedNode.guid);
+
+                    changedPositionModels.Add(model);
+
+                    //The nodes are being reseted to inital position for recording the model purposes 
+                    draggedNode.UpdateInitialPosition();
+                }
+            }
+
+            WorkspaceModel.RecordModelsForModification(changedPositionModels, Model.UndoRecorder);
             DynamoViewModel.RaiseCanExecuteUndoRedo();
         }
 
@@ -372,6 +397,8 @@ namespace Dynamo.ViewModels
         {
             double deltaX = 0, deltaY = 0;
             ILocatable locatable = null;
+            internal Guid guid;
+            double initialPostiionX = 0, initialPostiionY = 0;
 
             /// <summary>
             /// Construct a DraggedNode for a given ILocatable object.
@@ -387,11 +414,14 @@ namespace Dynamo.ViewModels
             /// be moved. However, the movement of ILocatable will be limited by 
             /// region and that it cannot be moved beyond the region.</param>
             /// 
-            public DraggedNode(ILocatable locatable, Point2D mouseCursor)
+            public DraggedNode(ILocatable locatable, Point2D mouseCursor, Guid guid)
             {
                 this.locatable = locatable;
                 deltaX = mouseCursor.X - locatable.X;
                 deltaY = mouseCursor.Y - locatable.Y;
+                initialPostiionX = locatable.X;
+                initialPostiionY = locatable.Y;
+                this.guid = guid;
             }
 
             public void Update(Point2D mouseCursor)
@@ -402,6 +432,17 @@ namespace Dynamo.ViewModels
                 locatable.X = x;
                 locatable.Y = y;
                 locatable.ReportPosition();
+            }
+
+            public bool HasChangedPosition()
+            {
+                return !(initialPostiionX == locatable.X && initialPostiionY == locatable.Y);
+            }
+
+            public void UpdateInitialPosition()
+            {
+                locatable.X = initialPostiionX;
+                locatable.Y = initialPostiionY;
             }
         }
 
@@ -622,7 +663,7 @@ namespace Dynamo.ViewModels
                     }
                     else
                     {
-                        if (e.ClickCount < 2) 
+                        if (e.ClickCount < 2)
                         {
                             // if the Shift key is held down while the left mouse button is pressed, then do not initiate the window selection sequence
                             DynamoSelection.Instance.ClearSelectionDisabled = Keyboard.Modifiers == ModifierKeys.Shift;
@@ -728,13 +769,13 @@ namespace Dynamo.ViewModels
 
                             // If the item is a group and the hovered group
                             // is not a nested group, we add it to the dropGroup
-                            if (item is AnnotationModel && 
+                            if (item is AnnotationModel &&
                                 !owningWorkspace.Model.Annotations.ContainsModel(dropGroup.AnnotationModel))
                             {
                                 owningWorkspace.DynamoViewModel.AddGroupToGroupModelCommand.Execute(dropGroup.AnnotationModel.GUID);
                                 continue;
                             }
-                                
+
                             owningWorkspace.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
                         }
                         dropGroup.NodeHoveringState = false;
@@ -860,7 +901,7 @@ namespace Dynamo.ViewModels
 
                     // If we are dragging groups over a group that is already nested
                     // we return as we cant have more than one nested layer
-                    else if (draggedGroups.Any() && 
+                    else if (draggedGroups.Any() &&
                         owningWorkspace.Model.Annotations.ContainsModel(dropGroup.AnnotationModel) ||
                         draggedGroups.Any(x=>x.HasNestedGroups))
                     {
@@ -891,7 +932,7 @@ namespace Dynamo.ViewModels
                             .Where(x => x.AnnotationModel.ContainsModel(dropGroup.AnnotationModel))
                             .FirstOrDefault();
                         if (parentGroup != null && !parentGroup.IsExpanded) return false;
-                        
+
                         dropGroup.NodeHoveringState = true;
                     }
 

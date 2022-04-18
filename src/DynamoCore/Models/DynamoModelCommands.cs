@@ -265,6 +265,7 @@ namespace Dynamo.Models
                     if (!command.Modifiers.HasFlag(ModifierKeys.Shift) && command.ModelGuids.Count() == 1)
                         ClearSelectionAndRecordUndo();
 
+                    WorkspaceModel.RecordModelsForModification(new List<ModelBase>() { model }, CurrentWorkspace.UndoRecorder);
                     DynamoSelection.Instance.Selection.AddUnique(model);
                 }
                 else
@@ -286,9 +287,9 @@ namespace Dynamo.Models
                 models.Add(modelBase);
             }
 
-            DynamoSelection.Instance.ClearSelection();
-
             WorkspaceModel.RecordModelsForModification(models, CurrentWorkspace.UndoRecorder);
+
+            DynamoSelection.Instance.ClearSelection();
         }
 
         private void MakeConnectionImpl(MakeConnectionCommand command)
