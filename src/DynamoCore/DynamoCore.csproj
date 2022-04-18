@@ -78,8 +78,6 @@ limitations under the License.
     <Reference Include="Analytics.NET.Google">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.1.7040.19960, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.1.1.7040.19960\lib\net47\Greg.dll</HintPath>
     <Reference Include="Greg, Version=2.2.0.1080, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Greg.2.2.0.1080\lib\net452\Greg.dll</HintPath>
       <Private>True</Private>
@@ -391,7 +389,6 @@ limitations under the License.
       <ExternLibG224 Include="$(SolutionDir)..\extern\LibG_224_0_1\*" />
       <ExternLibG2244 Include="$(SolutionDir)..\extern\LibG_224_4_0\*" />
       <ExternLibG225 Include="$(SolutionDir)..\extern\LibG_225_0_0\*" />
-      <ExternLibG226 Include="$(SolutionDir)..\extern\LibG_226_0_0\*" />
       <ExternLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />

@@ -45,8 +45,6 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Greg, Version=1.1.7040.19960, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.1.1.7040.19960\lib\net47\Greg.dll</HintPath>
     <Reference Include="Greg, Version=2.2.0.1080, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Greg.2.2.0.1080\lib\net452\Greg.dll</HintPath>
       <Private>True</Private>
