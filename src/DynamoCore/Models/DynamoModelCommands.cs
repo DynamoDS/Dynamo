@@ -265,7 +265,7 @@ namespace Dynamo.Models
                     if (!command.Modifiers.HasFlag(ModifierKeys.Shift) && command.ModelGuids.Count() == 1)
                         ClearSelectionAndRecordUndo();
 
-                    AddSelectionAndRecordUndo(model);                  
+                    AddSelectionAndRecordUndo(model);
                 }
                 else
                 {

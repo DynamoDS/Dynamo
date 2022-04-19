@@ -129,11 +129,10 @@ namespace Dynamo.ViewModels
             // Here each node in the selection is being recorded for undo right
             // before they get updated by the drag operation.
             // 
-            //RecordSelectionForUndo();
-             draggedNodes.Clear();
+            draggedNodes.Clear();
             foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
             {
-                ILocatable locatable = selectable as ILocatable;                
+                ILocatable locatable = selectable as ILocatable;
                 if (null != locatable)
                     draggedNodes.Add(new DraggedNode(locatable, mouseCursor));
             }
@@ -333,22 +332,6 @@ namespace Dynamo.ViewModels
 
         private void RecordSelectionForUndo(Point2D mousePoint)
         {
-            // This is where we attempt to store all the models in undo recorder 
-            // before they are modified (i.e. being dragged around the canvas).
-            // Note that we only do this once when the first mouse-move occurs 
-            // after a mouse-down, because mouse-down can potentially be used 
-            // just to select a node (as opposed to moving the selected nodes), in 
-            // which case we don't want any of the nodes to be recorded for undo.
-            // 
-
-            //List<ModelBase> models = DynamoSelection.Instance.Selection.
-            //    Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
-
-            //WorkspaceModel.RecordModelsForModification(models, Model.UndoRecorder);
-
-            //DynamoViewModel.RaiseCanExecuteUndoRedo();
-
-
             //The models are being stored with its initial position to record only the changed ones.
             List<ModelBase> changedPositionModels = new List<ModelBase>();
             foreach (DraggedNode draggedNode in draggedNodes)
@@ -435,7 +418,7 @@ namespace Dynamo.ViewModels
                 locatable.ReportPosition();
             }
 
-            public bool HasChangedPosition(Point2D mousePoint)
+            internal bool HasChangedPosition(Point2D mousePoint)
             {
                 //This boolean is for cases when the model has already changed its position before ending the drag action
                 bool hasAlreadyChanged = !(initialPositionX == locatable.X && initialPositionY == locatable.Y);
