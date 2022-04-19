@@ -780,7 +780,7 @@ namespace DynamoCoreWpfTests
 
             ViewModel.ExecuteCommand(command);
 
-            // Check note and annotation are moved////////////
+            // Check note and annotation are moved
             Assert.AreNotEqual(groupX, groupVm.Left);
             Assert.AreNotEqual(groupY, groupVm.Top);
             Assert.AreNotEqual(noteX, noteVm.Left);
