@@ -119,7 +119,7 @@ namespace Dynamo.Controls
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;
 
             //Initialize the ViewExtensionManager with the CommonDataDirectory so that view extensions found here are checked first for dll's with signed certificates
-            viewExtensionManager = new ViewExtensionManager(new[] {dynamoViewModel.Model.PathManager.CommonDataDirectory });
+            viewExtensionManager = new ViewExtensionManager(new[] { dynamoViewModel.Model.PathManager.CommonDataDirectory });
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -219,7 +219,6 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
             FocusableGrid.InputBindings.Clear();
         }
-
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
             if (!(workspace is HomeWorkspaceModel hws))
@@ -1009,17 +1008,19 @@ namespace Dynamo.Controls
             }
             loaded = true;
 
-            //feature flag test.
-            if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
+            
+            //The following code illustrates use of FeatureFlagsManager.
+            //safe to remove.
+            if (DynamoModel.FeatureFlags != null)
             {
-                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true");
-                MessageBoxService.Show(this,"EasterEggIcon1 was true", "eastereggicon1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                CheckTestFlags();
             }
+            //if feature flags is not yet initalized, subscribe to the event and wait.
             else
             {
-                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is false");
+                DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckTestFlags;
             }
-            
+           
         }
 
         /// <summary>
@@ -1031,6 +1032,34 @@ namespace Dynamo.Controls
             var workspace = this.ChildOfType<WorkspaceView>();
             if (workspace != null)
                 workspace.HideAllPopUp(obj);
+        }
+        /// <summary>
+        /// check some test flags from launch darkly.
+        /// code is safe to remove at any time.
+        /// </summary>
+        private void CheckTestFlags()
+        {
+
+            //feature flag test.
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("EasterEggIcon1", false) == true)
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true");
+                MessageBoxService.Show(this, "EasterEggIcon1 was true", "eastereggicon1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+            }
+            else
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is false");
+            }
+
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is string ffs && ffs != "NA")
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is enabled");
+                MessageBoxService.Show(this, ffs, "EasterEggMessage1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+            }
+            else
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is disabled");
+            }
         }
 
         private void TrackStartupAnalytics()
@@ -1585,6 +1614,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
+            DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckTestFlags;
 
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();

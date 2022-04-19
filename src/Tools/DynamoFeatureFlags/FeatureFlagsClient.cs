@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.Xml;
@@ -9,24 +11,36 @@ namespace DynamoFeatureFlags
     /// An entry point for checking the state of Dynamo feature flags. Currently this wraps Launch Darkly,
     /// but should not expose any LD types.
     /// </summary>
-    internal class FeatureFlagsManager: IDisposable
+    internal class FeatureFlagsClient : IDisposable
     {
         private LaunchDarkly.Sdk.User user;
         private static LaunchDarkly.Sdk.Client.LdClient ldClient;
+        /// <summary>
+        /// shared key, when stable key is not provided.
+        /// </summary>
         private const string sharedUserKey = "SHARED_DYNAMO_USER_KEY1";
+        /// <summary>
+        /// Event for clients to attach to console log.
+        /// </summary>
         internal static event Action<string> MessageLogged;
+        /// <summary>
+        /// Cache of all user's flags in internal as LDtype. Needs to be converted to primitive object before
+        /// being handed to clients.
+        /// </summary>
+        private LaunchDarkly.Sdk.LdValue AllFlags { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="userkey">key for a specific user, should be stable between sessions.</param>
         /// <param name="mobileKey">mobile sdk key, do not use full sdk key, if null, will load from config.</param>
         /// <exception cref="ArgumentException"></exception>
-        internal FeatureFlagsManager(string userkey, string mobileKey = null)
+        internal FeatureFlagsClient(string userkey, string mobileKey = null)
         {
             var sw = new Stopwatch();
             sw.Start();
             //todo load sdk key from config if null
-            if(mobileKey == null)
+            if (mobileKey == null)
             {
                 //load key from config depending on build config.
 #if DEBUG
@@ -37,14 +51,14 @@ namespace DynamoFeatureFlags
                 //don't use configuration manager as it is not net std 2 compliant.
                 var path = $"{ GetType().Assembly.Location}.config";
                 var key = GetConfigurationItem(keystring, path);
-               
+
                 if (key != null)
                 {
                     mobileKey = key;
                 }
             }
             //if mobile key is still null after loading from config, bail.
-            if(mobileKey == null)
+            if (mobileKey == null)
             {
                 throw new ArgumentException("ld mobile key was null");
             }
@@ -59,13 +73,16 @@ namespace DynamoFeatureFlags
 
             Init(mobileKey);
             sw.Stop();
-            MessageLogged?.Invoke($"startup time: {sw.ElapsedMilliseconds} ");
+            MessageLogged?.Invoke($"LD startup time: {sw.ElapsedMilliseconds} ");
             MessageLogged?.Invoke("<<<<<InitDone>>>>>");
+            //gather all the user's flags and create a top level ldvalue object containing all of them.
+            AllFlags= LaunchDarkly.Sdk.LdValue.ObjectFrom(new ReadOnlyDictionary<string,LaunchDarkly.Sdk.LdValue>(ldClient.AllFlags()));
+
         }
-        internal async void Init(string mobileKey)
+        internal void Init(string mobileKey)
         {
             //start up client.
-            ldClient = await LaunchDarkly.Sdk.Client.LdClient.InitAsync(mobileKey, user);
+            ldClient =  LaunchDarkly.Sdk.Client.LdClient.Init(mobileKey, user,TimeSpan.FromSeconds(5));
             if (ldClient.Initialized)
             {
                 MessageLogged?.Invoke($"launch darkly initalized");
@@ -76,79 +93,11 @@ namespace DynamoFeatureFlags
             }
         }
 
-        // TODO as we need more flag types, implement cases here or break out
-        // into more specific methods.
-        /// <summary>
-        /// Check the value of a specific flag. If the internal client is not initialized yet, will simply return the default value you provide.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="flagkey">string key of the flag to lookup.</param>
-        /// <param name="defaultval">value to return if there is an error reading the flag value.</param>
-        /// <returns></returns>
-        internal static T CheckFeatureFlag<T>(string flagkey,T defaultval)
+        internal string GetAllFlagsAsJSON()
         {
-            try
-            {
-                if (ldClient == null || !ldClient.Initialized)
-                {
-                    MessageLogged?.Invoke($"feature flags client not initalized for requested flagkey: {flagkey}, returning default value: {defaultval}");
-                    return defaultval;
-                }
-
-                object output = default(T);
-                switch (default(T))
-                {
-                    case bool _:
-                        output = ldClient.BoolVariation(flagkey);
-                        break;
-                    case string _:
-                        output = ldClient.StringVariation(flagkey, defaultval as string);
-                        break;
-                }
-                return (T)output;
-            }
-            catch(Exception ex)
-            {
-                MessageLogged?.Invoke($"failed to check feature flag key ex: {ex},{System.Environment.NewLine} returning default value: {defaultval}");
-                return defaultval;
-            }
+            return AllFlags.ToJsonString();
         }
 
-        /// <summary>
-        /// A simplified version of the generic method above, that is simpler to call with dynamic types.
-        /// </summary>
-        /// <param name="flagkey"></param>
-        /// <param name="t"></param>
-        /// <param name="defaultval"></param>
-        /// <returns></returns>
-        internal static object CheckFeatureFlag(string flagkey,Type t, object defaultval)
-        {
-            try
-            {
-                if (ldClient == null || !ldClient.Initialized)
-                {
-                    MessageLogged?.Invoke($"feature flags client not initalized for requested flagkey: {flagkey}, returning default value: {defaultval}");
-                    return defaultval;
-                }
-
-                object output = defaultval;
-                switch (Type.GetTypeCode(t))
-                {
-                    case TypeCode.Boolean:
-                        output = ldClient.BoolVariation(flagkey);
-                        break;
-                    case TypeCode.String:
-                        output = ldClient.StringVariation(flagkey, defaultval as string);
-                        break;
-                }
-                return output;
-            }
-            catch (Exception ex)
-            {
-                MessageLogged?.Invoke($"failed to check feature flag key ex: {ex},{System.Environment.NewLine} returning default value: {defaultval}");
-                return defaultval;
-            }
-        }
 
         /// <summary>
         /// cleanup.

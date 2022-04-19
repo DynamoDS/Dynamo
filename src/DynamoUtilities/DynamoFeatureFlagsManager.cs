@@ -1,14 +1,17 @@
 ﻿using Dynamo.Utilities;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DynamoUtilities
 {
-    
+
 
     /// <summary>
     /// A wrapper around the DynamoFeatureFlags CLI tool.
@@ -17,8 +20,10 @@ namespace DynamoUtilities
     /// </summary>
     internal class DynamoFeatureFlagsManager : CLIWrapper
     {
-        private const string checkFeatureFlagCommandToken = @"<<<<<CheckFeatureFlag>>>>>";
         private string relativePath = Path.Combine("DynamoFeatureFlags", "DynamoFeatureFlags.exe");
+        private Dictionary<string, object> AllFlagsCache { get; set; }//TODO lock is likely overkill.
+        private SynchronizationContext syncContext;
+        internal static event Action FlagsRetrieved;
         public override void Dispose()
         {
             KillProcess();
@@ -27,8 +32,9 @@ namespace DynamoUtilities
         /// Constructor
         /// Start the CLI tool and keep it around...
         /// </summary>
-        internal DynamoFeatureFlagsManager(string userkey)
+        internal DynamoFeatureFlagsManager(string userkey, SynchronizationContext syncContext)
         {
+            this.syncContext = syncContext;
             //dont pass userkey arg if null/empty
             var userkeyarg = $"-u {userkey}";
             if (string.IsNullOrEmpty(userkey))
@@ -59,46 +65,53 @@ namespace DynamoUtilities
             }
         }
 
+        internal void CacheAllFlags()
+        {
+
+            //wait for response
+            var dataFromCLI = GetData();
+            //convert from json string to dictionary.
+            try
+            {  
+                AllFlagsCache = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataFromCLI);
+                //invoke the flags retrieved event on the sync context which should be the main ui thread.
+                syncContext?.Send((_) =>
+                {   
+                    FlagsRetrieved?.Invoke();
+
+                },null);
+                
+            }
+            catch (Exception e)
+            {
+                RaiseMessageLogged($"{e?.Message}");
+            }
+        }
+
         internal T CheckFeatureFlag<T>(string featureFlagKey, T defaultval)
         {
             if(!(defaultval is bool || defaultval is string)){
                 RaiseMessageLogged("unsupported flag type");
                 return defaultval;
             }
-            if (!started)
+            // if we have not retrieved flags from the cli return empty
+            // and log.
+           
+            if(AllFlagsCache == null)
             {
-                RaiseMessageLogged(GetCantStartErrorMessage());
-                 return defaultval;
-            }
-            try
-            {
-                process.StandardInput.WriteLine(checkFeatureFlagCommandToken);
-                process.StandardInput.WriteLine(featureFlagKey);
-                process.StandardInput.WriteLine(defaultval);
-                process.StandardInput.WriteLine(typeof(T).FullName);
-                process.StandardInput.WriteLine(endOfDataToken);
-            }
-            catch (Exception e) when (e is IOException || e is ObjectDisposedException)
-            {
-                KillProcess();
-                RaiseMessageLogged(GetCantCommunicateErrorMessage());
+                RaiseMessageLogged("the flags cache is null, something went wrong retrieving feature flags," +
+                  " or you need to wait longer for the cache to populate, you can use the static FlagsRetrieved event for this purpose. ");
                 return defaultval;
             }
-                //wait for response
-                var dataFromCLI = GetData();
-            //convert from string to string or bool.
-            try
-            {   //TODO if we start moving more complex types than bool/string we should use
-                //JSON (either newtonsoft or system.runtime.serializer which we already reference in this csproj).
-                var output = Convert.ChangeType(dataFromCLI, typeof(T));
-                return (T)output;
-            }
-            catch(Exception e)
+            if (AllFlagsCache.ContainsKey(featureFlagKey))
             {
-                RaiseMessageLogged($"{e?.Message}");
+                return (T)AllFlagsCache[featureFlagKey];
+            }
+            else
+            {
+                RaiseMessageLogged($"failed to get value for feature flag key ex: {featureFlagKey},{System.Environment.NewLine} returning default value: {defaultval}");
                 return defaultval;
             }
-
         }
 
 

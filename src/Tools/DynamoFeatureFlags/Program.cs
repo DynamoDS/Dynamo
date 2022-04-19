@@ -21,8 +21,7 @@ namespace DynamoFeatureFlags
     }
     static class Program
     {
-        static FeatureFlagsManager FeatureFlags { get; set; }
-        private const string checkFeatureFlagCommandToken = @"<<<<<CheckFeatureFlag>>>>>";
+        static FeatureFlagsClient FeatureFlags { get; set; }
         private const string endOfDataToken = @"<<<<<Eod>>>>>";
         private const string startOfDataToken = @"<<<<<Sod>>>>>";
         private static int hostProccessId = -1;
@@ -40,20 +39,11 @@ namespace DynamoFeatureFlags
                     timer.Elapsed += Timer_Elapsed;
                     timer.Enabled = true;
 
-                    FeatureFlagsManager.MessageLogged += FeatureFlagsManager_MessageLogged;
+                    FeatureFlagsClient.MessageLogged += FeatureFlagsManager_MessageLogged;
                    
-                    FeatureFlags = new FeatureFlagsManager(ops.UserKey, ops.MobileKey);
+                    FeatureFlags = new FeatureFlagsClient(ops.UserKey, ops.MobileKey);
                     Console.WriteLine("feature flag exe starting");
-                    while (true)
-                    {
-                       
-                        var line = Console.ReadLine();
-                        if (line == checkFeatureFlagCommandToken)
-                        {
-                            CheckFeatureFlag();
-                        }
-                        Console.WriteLine(endOfDataToken);
-                    }
+                    SendAllFlags();
 
                 }
                 catch (Exception e)
@@ -76,39 +66,11 @@ namespace DynamoFeatureFlags
 
         }
 
-        static void CheckFeatureFlag()
+        private static void SendAllFlags()
         {
-            var data = GetData();
-            var array = data.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-            var ffkey = array[0];
-            var defaultValString = array[1];
-            var typeName = array[2];
-            var type = Type.GetType(typeName);
-            //convert default val to correct type.
-            var defaultValTyped = Convert.ChangeType(defaultValString, type);
-
-            // invoke it, we'll get our flag or the default back.
-            var output = FeatureFlagsManager.CheckFeatureFlag(ffkey, type, defaultValTyped);
             Console.WriteLine(startOfDataToken);
-            Console.WriteLine(output);
-        }
-
-        static string GetData()
-        {
-            using (StringWriter data = new StringWriter())
-            {
-                while (true)
-                {
-                    var line = Console.ReadLine();
-                    if (line == endOfDataToken)
-                    {
-                        break;
-                    }
-                    data.WriteLine(line);
-                }
-
-                return data.ToString();
-            }
+            Console.WriteLine(FeatureFlags.GetAllFlagsAsJSON());
+            Console.WriteLine(endOfDataToken);
         }
 
         private static void FeatureFlagsManager_MessageLogged(string message)

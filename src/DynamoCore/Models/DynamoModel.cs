@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Core;
@@ -646,17 +647,34 @@ namespace Dynamo.Models
             }
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
+            // or the feature flags client.
             if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
             {
                 AnalyticsService.Start(this, IsHeadless, IsTestMode);
-                //only start feature flags if analytics is not disabled.
-                try
+                
+
+                //run process startup/reading on another thread so we don't block dynamo startup.
+                //if we end up needing to control aspects of dynamo model or view startup that we can't make
+                //event based/async then just run this on main thread - ie get rid of the Task.Run()
+                var mainThreadSyncContext = new SynchronizationContext();
+                Task.Run(() =>
                 {
-                    //TODO consider CLI lifetime, should this be reset for each flag check, or okay to leave running for Dynamo lifetime?
-                    FeatureFlags = new DynamoUtilities.DynamoFeatureFlagsManager(AnalyticsService.GetUserIDForSession());
-                    FeatureFlags.MessageLogged += LogMessageWrapper;
-                }
-                catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
+                    try
+                    {
+                            //this will kill the CLI process after cacheing the flags in Dynamo process.
+                            using (FeatureFlags = new DynamoUtilities.DynamoFeatureFlagsManager(AnalyticsService.GetUserIDForSession(), mainThreadSyncContext))
+                        {
+                            FeatureFlags.MessageLogged += LogMessageWrapper;
+                            //this will block task thread as it waits for data from feature flags process.
+                            FeatureFlags.CacheAllFlags();
+                        }
+                    }
+                    catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
+                });
+
+                //TODO just a test of feature flag event, safe to remove at any time.
+                DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckFeatureFlagTest;
+
             }
 
             if (!IsTestMode && PreferenceSettings.IsFirstRun)
@@ -881,6 +899,28 @@ namespace Dynamo.Models
             State = DynamoModelState.StartedUIless;
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
+        }
+
+        private void CheckFeatureFlagTest()
+        {
+            if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
+            {
+                this.Logger.Log("EasterEggIcon1 is true FROM MODEL");
+
+            }
+            else
+            {
+                this.Logger.Log("EasterEggIcon1 is false FROM MODEL");
+            }
+
+            if (DynamoModel.FeatureFlags.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is var s && s != "NA")
+            {
+                this.Logger.Log("EasterEggMessage1 is enabled FROM MODEL");
+            }
+            else
+            {
+                this.Logger.Log("EasterEggMessage1 is disabled FROM MODEL");
+            }
         }
 
         private void SetDefaultPythonTemplate()
@@ -1210,6 +1250,7 @@ namespace Dynamo.Models
             CustomNodeManager.Dispose();
             MigrationManager.MessageLogged -= LogMessage;
             FeatureFlags.MessageLogged -= LogMessageWrapper;
+            DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckFeatureFlagTest;
             FeatureFlags.Dispose();
         }
 
@@ -2758,7 +2799,6 @@ namespace Dynamo.Models
    private void LogMessageWrapper(string m)
     {
         LogMessage(Dynamo.Logging.LogMessage.Info(m));
-
     }
 
 #if DEBUG_LIBRARY
