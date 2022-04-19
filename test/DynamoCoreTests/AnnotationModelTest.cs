@@ -195,9 +195,9 @@ namespace Dynamo.Tests
             model.ExecuteCommand(
                     new DynCmd.SelectModelCommand(Guid.Empty, Utilities.ModifierKeys.None));
 
-            //Undo Selection
+            //Undo Deselection
             model.CurrentWorkspace.Undo();
-            Assert.IsFalse(DynamoSelection.Instance.Selection.Any());
+            Assert.IsTrue(DynamoSelection.Instance.Selection.Any());
             Assert.AreEqual("This is a unit test", annotation.AnnotationText);
 
             //Undo Title text
