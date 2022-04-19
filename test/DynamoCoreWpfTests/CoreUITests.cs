@@ -917,7 +917,7 @@ namespace DynamoCoreWpfTests
             NodeModel locatable = ViewModel.Model.CurrentWorkspace.Nodes.First();
 
             var startPoint = new Point2D(8, 64);
-            var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint, addNode.GUID);
+            var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint);
 
             // Initial node position.
             Assert.AreEqual(16, locatable.X);
