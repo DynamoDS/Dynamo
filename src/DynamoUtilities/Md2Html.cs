@@ -20,7 +20,7 @@ namespace Dynamo.Utilities
         internal event Action<string> MessageLogged;
         public virtual void Dispose()
         {
-            KillProcess();   
+            KillProcess();
         }
 
         /// <summary>
@@ -36,6 +36,7 @@ namespace Dynamo.Utilities
                 }
                 started = false;
             }
+            process.Dispose();
         }
         /// <summary>
         /// Compute the location of the CLI tool

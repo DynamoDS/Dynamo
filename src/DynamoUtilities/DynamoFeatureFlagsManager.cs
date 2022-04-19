@@ -28,12 +28,20 @@ namespace DynamoUtilities
         {
             KillProcess();
         }
+
         /// <summary>
         /// Constructor
         /// Start the CLI tool and keep it around...
         /// </summary>
-        internal DynamoFeatureFlagsManager(string userkey, SynchronizationContext syncContext)
+        /// <param name="userkey">non PII key to identify this user.</param>
+        /// <param name="syncContext">context used for raising FlagRetrieved event.</param>
+        /// <param name="testmode">will be not contact feature flag service in testmode.</param>
+        internal DynamoFeatureFlagsManager(string userkey, SynchronizationContext syncContext, bool testmode)
         {
+            if(testmode == false)
+            {
+                return;
+            }
             this.syncContext = syncContext;
             //dont pass userkey arg if null/empty
             var userkeyarg = $"-u {userkey}";

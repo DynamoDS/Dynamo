@@ -651,7 +651,7 @@ namespace Dynamo.Models
             if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
             {
                 AnalyticsService.Start(this, IsHeadless, IsTestMode);
-                
+
 
                 //run process startup/reading on another thread so we don't block dynamo startup.
                 //if we end up needing to control aspects of dynamo model or view startup that we can't make
@@ -661,8 +661,12 @@ namespace Dynamo.Models
                 {
                     try
                     {
-                            //this will kill the CLI process after cacheing the flags in Dynamo process.
-                            using (FeatureFlags = new DynamoUtilities.DynamoFeatureFlagsManager(AnalyticsService.GetUserIDForSession(), mainThreadSyncContext))
+                        //this will kill the CLI process after cacheing the flags in Dynamo process.
+                        using (FeatureFlags =
+                                new DynamoUtilities.DynamoFeatureFlagsManager(
+                                AnalyticsService.GetUserIDForSession(),
+                                mainThreadSyncContext,
+                                IsTestMode))
                         {
                             FeatureFlags.MessageLogged += LogMessageWrapper;
                             //this will block task thread as it waits for data from feature flags process.
