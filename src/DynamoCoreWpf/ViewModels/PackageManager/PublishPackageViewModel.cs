@@ -1758,9 +1758,9 @@ namespace Dynamo.PackageManager
 
         private bool CheckPackageValidity()
         {
-            if (Search.SearchDictionary<object>.ContainsSpecialCharacters(Name))
+            if (!string.IsNullOrEmpty(Name) && Name.IndexOfAny(PathManager.InvalidCharacters) >= 0)
             {
-                ErrorString = Resources.PackageNameCannotContainTheseCharacters + " " + new String(Search.SearchDictionary<object>.SpecialAndInvalidCharacters());
+                ErrorString = Resources.PackageNameCannotContainTheseCharacters + " " + new String(PathManager.InvalidCharacters);
                 EnableInvalidNameWarningState(ErrorString);
                 return false;
             }
