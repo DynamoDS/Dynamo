@@ -38,7 +38,7 @@ namespace DynamoUtilities
         /// <param name="testmode">will be not contact feature flag service in testmode.</param>
         internal DynamoFeatureFlagsManager(string userkey, SynchronizationContext syncContext, bool testmode)
         {
-            if(testmode == false)
+            if(testmode == true)
             {
                 return;
             }
