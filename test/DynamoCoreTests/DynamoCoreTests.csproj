@@ -24,8 +24,7 @@
     <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="2.0.226801" GeneratePathProperty="true" />
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" GeneratePathProperty="true" />
     <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" GeneratePathProperty="true" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.3" GeneratePathProperty="true">
-    </PackageReference>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.3" GeneratePathProperty="true"/>
     <PackageReference Include="System.Memory" Version="4.5.4" GeneratePathProperty="true" />
     <PackageReference Include="System.Buffers" Version="4.5.1" GeneratePathProperty="true" />
     <Reference Include="Analytics.NET.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -147,7 +146,7 @@
       <Copy SourceFiles="$(PkgMicrosoft_Diagnostics_Runtime)\lib\net461\Microsoft.Diagnostics.Runtime.dll" DestinationFolder="$(OutputPath)/../../../test/packages" />
       <Copy SourceFiles="$(PkgSystem_Collections_Immutable)\lib\net461\System.Collections.Immutable.dll" DestinationFolder="$(OutputPath)/../../../test/packages" />
       <Copy SourceFiles="$(PkgSystem_Reflection_Metadata)\lib\net461\System.Reflection.Metadata.dll" DestinationFolder="$(OutputPath)/../../../test/packages" />
-      <Copy SourceFiles="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" DestinationFolder="$(OutputPath)/../../../test/packages" />
+      <Copy SourceFiles="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\net461.0\System.Runtime.CompilerServices.Unsafe.dll" DestinationFolder="$(OutputPath)/../../../test/packages" />
       <Copy SourceFiles="$(PkgSystem_Memory)\lib\net461\System.Memory.dll" DestinationFolder="$(OutputPath)/../../../test/packages" />
       <Copy SourceFiles="$(PkgSystem_Buffers)\lib\net461\System.Buffers.dll" DestinationFolder="$(OutputPath)/../../../test/packages" />
   </Target>
