@@ -73,6 +73,7 @@ namespace Dynamo.GraphNodeManager
         /// <param name="e"></param>
         private void MenuItemUnCheckedHandler(object sender, RoutedEventArgs e)
         {
+            this.Dispose();
             viewLoadedParamsReference.CloseExtensioninInSideBar(this);
         }
 
@@ -107,6 +108,7 @@ namespace Dynamo.GraphNodeManager
         /// </summary>
         public override void Dispose()
         {
+            // TODO Should we dispose of the View as well?
             this.ViewModel?.Dispose();
         }
         /// <summary>

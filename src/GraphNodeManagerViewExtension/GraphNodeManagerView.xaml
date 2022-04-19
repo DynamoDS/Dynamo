@@ -25,6 +25,7 @@
                 <Setter Property="Height" Value="12"></Setter>
                 <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
                 <Setter Property="UseLayoutRounding" Value="True"></Setter>
+                <Setter Property="Margin" Value="0 0 3 0"></Setter>
             </Style>
             <!-- DataGrid style -->
             <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
@@ -183,9 +184,9 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Hidden.png" 
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Function.png" 
                                        Style="{StaticResource ImageStyle}"
-                                       Visibility="{Binding StateIsHidden, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                       Visibility="{Binding StateIsFunction, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/IsInput.png"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding StateIsInput, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
@@ -208,9 +209,9 @@
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/Frozen.png" 
                                        Style="{StaticResource ImageStyle}"
                                        Visibility="{Binding StatusIsFrozen, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
-                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Function.png"
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Hidden.png"
                                        Style="{StaticResource ImageStyle}" 
-                                       Visibility="{Binding StatusIsFunction, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                       Visibility="{Binding StatusIsHidden, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

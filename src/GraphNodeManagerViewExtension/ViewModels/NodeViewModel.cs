@@ -15,11 +15,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
     {
         #region Private Properties
         private string name = String.Empty;
-        private bool stateIsHidden = false;
         private bool stateIsInput = false;
         private bool stateIsOutput = false;
+        private bool stateIsFunction = false;
+        private bool statusIsHidden = false;
         private bool statusIsFrozen = false;
-        private bool statusIsFunction = false;
         private bool issuesHasWarning = false;
         private bool issuesHasError = false;
         private int dismissedWarnings = 0;
@@ -44,14 +44,14 @@ namespace Dynamo.GraphNodeManager.ViewModels
         /// <summary>
         /// IsVisible
         /// </summary>
-        public bool StateIsHidden
+        public bool StatusIsHidden
         {
             get
             {
-                stateIsHidden = !NodeModel.IsVisible;
-                return stateIsHidden;
+                statusIsHidden = !NodeModel.IsVisible;
+                return statusIsHidden;
             }
-            internal set => stateIsHidden = value;
+            internal set => statusIsHidden = value;
         }
         /// <summary>
         /// IsInputNode
@@ -94,14 +94,14 @@ namespace Dynamo.GraphNodeManager.ViewModels
         /// <summary>
         /// IsFrozen
         /// </summary>
-        public bool StatusIsFunction
+        public bool StateIsFunction
         {
             get
             {
-                statusIsFunction = NodeModel.IsCustomFunction;
-                return statusIsFunction;
+                stateIsFunction = NodeModel.IsCustomFunction;
+                return stateIsFunction;
             }
-            internal set => statusIsFunction = value;
+            internal set => stateIsFunction = value;
         }
 
         /// <summary>
@@ -112,7 +112,9 @@ namespace Dynamo.GraphNodeManager.ViewModels
             get
             {
                 if (NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning)
+                {
                     issuesHasWarning = true;
+                }
                 return issuesHasWarning;
             }
             internal set => issuesHasWarning = value;
@@ -139,7 +141,10 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             get
             {
-                isInfo = NodeModel.IsInErrorState;
+                if (NodeModel.State == ElementState.Info)
+                {
+                    isInfo = true;
+                }
                 return isInfo;
             }
             internal set => isInfo = value;
@@ -152,7 +157,9 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             get
             {
-                isEmptyList = NodeModel.IsInErrorState;
+                
+                isEmptyList = true;
+                
                 return isEmptyList;
             }
             internal set => isEmptyList = value;

@@ -90,6 +90,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="GraphNodeManager_ViewExtensionDefinition.xml" />
+    <Resource Include="Images\Filter.png" />
+    <Resource Include="Images\MissingNode.png" />
     <Resource Include="Images\EmptyList.png" />
     <Resource Include="Images\Info.png" />
     <Resource Include="Images\Null.png" />
