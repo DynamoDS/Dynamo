@@ -16,8 +16,8 @@ namespace DynamoFeatureFlags
         public string UserKey { get; set; }
         [Option('m', "mobilekey", Required = false, HelpText = "mobile key for dynamo feature flag env. Do not use a full sdk key. If not provided loaded from config.")]
         public string MobileKey { get; set; }
-        [Option('p',"proccessID",Required = true, HelpText= "parent proccess id, if this proccess is no longer running, this application will exit.")]
-        public int ProccessID { get; set; }
+        [Option('p',"processID",Required = true, HelpText= "parent process id, if this process is no longer running, this application will exit.")]
+        public int ProcessID { get; set; }
     }
     static class Program
     {
@@ -33,7 +33,7 @@ namespace DynamoFeatureFlags
                 try
                 {
                     //start watchdog
-                    hostProccessId = ops.ProccessID;
+                    hostProccessId = ops.ProcessID;
                     var timer = new System.Timers.Timer(10000);
                     timer.AutoReset = true;
                     timer.Elapsed += Timer_Elapsed;
