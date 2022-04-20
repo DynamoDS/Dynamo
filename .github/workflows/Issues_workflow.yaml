@@ -17,11 +17,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Remove conflicting chars
+        env:
+          ISSUE_TITLE: ${{github.event.issue.title}}
         uses: frabert/replace-string-action@v1.2
         id: remove_quotations
         with:
           pattern: "\""
-          string: ${{ github.event.issue.title }}
+          string: ${{env.ISSUE_TITLE}}
           replace-with: '-'
           flags: g    
       - name: Check Information
@@ -85,11 +87,13 @@ jobs:
 
       #Removes conflicting characters before using the issue content as a script parameter
       - name: Remove conflicting chars
+        env:
+          ISSUE_BODY: ${{github.event.issue.body}}
         uses: frabert/replace-string-action@v1.2
         id: remove_quotations
         with:
           pattern: "\""
-          string: ${{ github.event.issue.body }}
+          string: ${{env.ISSUE_BODY}}
           replace-with: '-'
           flags: g
 
