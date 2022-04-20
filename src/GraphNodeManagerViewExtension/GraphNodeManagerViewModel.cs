@@ -60,9 +60,15 @@ namespace Dynamo.GraphNodeManager
         public ObservableCollection<NodeViewModel> Nodes { get; set; } = new ObservableCollection<NodeViewModel>();
 
         /// <summary>
+        /// Collection of user filters
+        /// </summary>
+        public ObservableCollection<FilterViewModel> FilterItems { get; set; } = new ObservableCollection<FilterViewModel>();
+
+        /// <summary>
         /// Collection of all current Workspace Nodes
         /// </summary>
         public CollectionViewSource NodesCollection { get; set; }
+
 
         /// <summary>
         /// Is the recomputeAll button enabled in the UI. Users should not be able to force a 
@@ -102,7 +108,24 @@ namespace Dynamo.GraphNodeManager
             {
                 CurrentWorkspace = p.CurrentWorkspaceModel as HomeWorkspaceModel;
             }
+
+            InitializeFilters();
         }
+
+        private void InitializeFilters()
+        {
+            FilterItems.Add(new FilterViewModel(){Name = "Empty List"});
+            FilterItems.Add(new FilterViewModel(){Name = "Error"});
+            FilterItems.Add(new FilterViewModel(){Name = "Frozen"});
+            FilterItems.Add(new FilterViewModel(){Name = "Function"});
+            FilterItems.Add(new FilterViewModel(){Name = "Information"});
+            FilterItems.Add(new FilterViewModel(){Name = "Is Input"});
+            FilterItems.Add(new FilterViewModel(){Name = "Is Output"});
+            FilterItems.Add(new FilterViewModel(){Name = "Null"});
+            FilterItems.Add(new FilterViewModel(){Name = "Warning"});
+            FilterItems.Add(new FilterViewModel(){Name = "Preview off"});
+        }
+
         #endregion
 
         #region Node Methods

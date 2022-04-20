@@ -13,8 +13,11 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converters:BooleanToBackgroundColorConverter x:Key="BooleanToBackgroundColorConverter"/>
+            <converters:BooleanToForegroundColorConverter x:Key="BooleanToForegroundColorConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid x:Name="MainGrid">
@@ -111,18 +114,74 @@
 
         </StackPanel>
         <!-- Contains all filter icons -->
-        <StackPanel x:Name="FiltersStackPanel"
-                    Grid.Row="1"
-                    Orientation="Horizontal">
-            <Image x:Name="HiddenEyeImage"
+        <Grid x:Name="FilterGrid"
+              Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Image x:Name="FilterImage"
+                   Grid.Column="0"
                    Width="16px"
                    Height="16px"
+                   Margin="10 0 15 0"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
-                   Source="/GraphNodeManagerViewExtension;component/Images/Hidden.png"
+                   Source="/GraphNodeManagerViewExtension;component/Images/Filter.png"
                    Stretch="UniformToFill" />
-            <Button>Test</Button>
-        </StackPanel>
+            <ItemsControl x:Name="FilterItemControl"
+                              Grid.Column="1"
+                              Margin="5"
+                              ItemsSource="{Binding FilterItems, UpdateSourceTrigger=PropertyChanged}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="3"
+                                CornerRadius="13"
+                                Padding="4 2"
+                                Height="26"
+                                VerticalAlignment="Center"
+                                BorderThickness="0">
+                            <Border.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleCommand}"/>
+                            </Border.InputBindings>
+                            <Border.Style>
+                                <Style>
+                                    <Setter Property="Border.Background" 
+                                            Value="{Binding IsFilterOn, 
+                                        Converter={StaticResource BooleanToBackgroundColorConverter},
+                                        UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="Border.IsMouseOver" Value="True">
+                                            <Setter Property="Border.Background" Value="{StaticResource LightGreyBrush}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock Text="{Binding Name}" 
+                                   Padding="5 0"
+                                   TextAlignment="Center"
+                                   VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property= "Foreground" 
+                                                Value="{Binding IsFilterOn, 
+                                        Converter={StaticResource BooleanToForegroundColorConverter},
+                                        UpdateSourceTrigger=PropertyChanged}"/>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+
+        </Grid>
         <DataGrid x:Name="NodesInfoDataGrid"
                   Grid.Row="2"
                   ItemsSource="{Binding Path=NodesCollection.View}" 

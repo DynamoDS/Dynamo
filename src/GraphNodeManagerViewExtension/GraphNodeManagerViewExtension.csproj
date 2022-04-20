@@ -57,6 +57,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\FilterViewModel.cs" />
     <Compile Include="ViewModels\NodeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
