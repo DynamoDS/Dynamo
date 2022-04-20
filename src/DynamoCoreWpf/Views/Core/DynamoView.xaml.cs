@@ -1043,22 +1043,21 @@ namespace Dynamo.Controls
             //feature flag test.
             if (DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("EasterEggIcon1", false) == true)
             {
-                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true");
-                MessageBoxService.Show(this, "EasterEggIcon1 was true", "eastereggicon1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true from view");
             }
             else
             {
-                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is false");
+                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is false from view");
             }
 
             if (DynamoModel.FeatureFlags?.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is string ffs && ffs != "NA")
             {
-                dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is enabled");
+                dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is enabled from view");
                 MessageBoxService.Show(this, ffs, "EasterEggMessage1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
             }
             else
             {
-                dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is disabled");
+                dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is disabled from view");
             }
         }
 
