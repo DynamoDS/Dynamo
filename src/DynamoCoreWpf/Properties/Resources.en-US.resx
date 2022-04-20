@@ -1528,7 +1528,7 @@ Next assemblies were loaded several times:
 {0}</value>
   </data>
   <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
-    <value>The name of the package cannot contain /,\, or *.</value>
+    <value>The name of the package cannot contain</value>
     <comment>ErrorString</comment>
   </data>
   <data name="PackageNeedAtLeastOneFile" xml:space="preserve">

@@ -31,6 +31,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <controls:EmptyStringToFalseConverter x:Key="EmptyStringToFalseConverter" />
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
                 <Grid Height="29px"
                       HorizontalAlignment="Stretch"
@@ -419,7 +420,7 @@
                         </TextBlock.ToolTip>
                     </TextBlock>
                     <TextBox Name="packageNameInput"
-                             Style="{StaticResource InputStyle}"
+                             Style="{StaticResource InputStyleWithIcon}"
                              Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}"
                              IsEnabled ="{Binding Path=CanEditName}"
                              Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
