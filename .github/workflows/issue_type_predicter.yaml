@@ -25,11 +25,13 @@ jobs:
       #Removes conflicting characters before using the issue content as a script parameter
       - uses: actions/checkout@v2
       - name: Remove conflicting chars
+        env:
+          ISSUE_BODY: ${{github.event.issue.body}}
         uses: frabert/replace-string-action@v1.2
         id: remove_quotations
         with:
           pattern: "\""
-          string: ${{ github.event.issue.body }}
+          string: ${{env.ISSUE_BODY}}
           replace-with: '-'
 
        #Checks for missing information inside the issue content
