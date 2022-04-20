@@ -38,24 +38,33 @@ namespace DynamoFeatureFlags
         /// <exception cref="ArgumentException"></exception>
         internal FeatureFlagsClient(string userkey, string mobileKey = null, bool testMode = false)
         {
+           
             var sw = new Stopwatch();
             sw.Start();
             //todo load sdk key from config if null
             if (mobileKey == null)
             {
-                //load key from config depending on build config.
-#if DEBUG
-                var keystring = "ldmobilekey_dev";
-#else
-                var keystring = "ldmobilekey_prd";
-#endif
-                //don't use configuration manager as it is not net std 2 compliant.
-                var path = $"{ GetType().Assembly.Location}.config";
-                var key = GetConfigurationItem(keystring, path);
-
-                if (key != null)
+                //if test mode just use a mock key
+                if (testMode)
                 {
-                    mobileKey = key;
+                    mobileKey = "hardcoded_test_mobilekey";
+                }
+                else
+                {
+                    //load key from config depending on build config.
+#if DEBUG
+                    var keystring = "ldmobilekey_dev";
+#else
+                    var keystring = "ldmobilekey_prd";
+#endif
+                    //don't use configuration manager as it is not net std 2 compliant.
+                    var path = $"{ GetType().Assembly.Location}.config";
+                    var key = GetConfigurationItem(keystring, path);
+
+                    if (key != null)
+                    {
+                        mobileKey = key;
+                    }
                 }
             }
             //if mobile key is still null after loading from config, bail.
