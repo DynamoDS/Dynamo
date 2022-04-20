@@ -13,6 +13,7 @@
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
     <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
   </ItemGroup>
   <ItemGroup>

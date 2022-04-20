@@ -2705,7 +2705,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get Started.
+        ///   Looks up a localized string similar to User Interface Tour.
         /// </summary>
         public static string GetStartedGuide {
             get {
@@ -2795,7 +2795,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn more about Dynamo in the #online help=https://primer.dynamobim.org/.
+        ///   Looks up a localized string similar to Learn more about Dynamo in the #online help=https://primer2.dynamobim.org/.
         /// </summary>
         public static string GetStartedGuideSurveyText {
             get {
@@ -2845,6 +2845,15 @@ namespace Dynamo.Wpf.Properties {
         public static string GetStartedGuideWelcomeTitle {
             get {
                 return ResourceManager.GetString("GetStartedGuideWelcomeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get Started.
+        /// </summary>
+        public static string GetStartedLinkText {
+            get {
+                return ResourceManager.GetString("GetStartedLinkText", resourceCulture);
             }
         }
         
@@ -4072,6 +4081,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Next guide: .
+        /// </summary>
+        public static string NextGuideText {
+            get {
+                return ResourceManager.GetString("NextGuideText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DynamoCoreWpf;NodeAutocompleteDocumentation.html.
         /// </summary>
         public static string NodeAutocompleteDocumentationUriString {
@@ -4374,6 +4392,42 @@ namespace Dynamo.Wpf.Properties {
         public static string OKButton {
             get {
                 return ResourceManager.GetString("OKButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Onboarding.
+        /// </summary>
+        public static string OnboardingGuide {
+            get {
+                return ResourceManager.GetString("OnboardingGuide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get started with Dynamo.
+        /// </summary>
+        public static string OnboardingGuideWelcomeTitle {
+            get {
+                return ResourceManager.GetString("OnboardingGuideWelcomeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is the workspace, where you develop visual programs and preview the results.\n This graph shows the building blocks of Dynamo:\n Nodes perform operations, such as storing a number or creating geometry\n Wires connect nodes\n Together, nodes and wires form a set of instructions for processing data or building geometry..
+        /// </summary>
+        public static string OnboardingWorkspaceText {
+            get {
+                return ResourceManager.GetString("OnboardingWorkspaceText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workspace.
+        /// </summary>
+        public static string OnboardingWorkspaceTitle {
+            get {
+                return ResourceManager.GetString("OnboardingWorkspaceTitle", resourceCulture);
             }
         }
         
@@ -5766,6 +5820,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Security.
+        /// </summary>
+        public static string PreferencesSecuritySettingsTab {
+            get {
+                return ResourceManager.GetString("PreferencesSecuritySettingsTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Style name already in use.
         /// </summary>
         public static string PreferencesViewAlreadyExistingStyleWarning {
@@ -6005,6 +6068,33 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewTitle {
             get {
                 return ResourceManager.GetString("PreferencesViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trust warning.
+        /// </summary>
+        public static string PreferencesViewTrustWarningHeader {
+            get {
+                return ResourceManager.GetString("PreferencesViewTrustWarningHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable receiving trust warning.
+        /// </summary>
+        public static string PreferencesViewTrustWarningLabel {
+            get {
+                return ResourceManager.GetString("PreferencesViewTrustWarningLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We recommend keeping this toggle off to reduce security risks..
+        /// </summary>
+        public static string PreferencesViewTrustWarningTooltipText {
+            get {
+                return ResourceManager.GetString("PreferencesViewTrustWarningTooltipText", resourceCulture);
             }
         }
         
@@ -6967,6 +7057,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Path.
+        /// </summary>
+        public static string SecurityPathAddPathButtonName {
+            get {
+                return ResourceManager.GetString("SecurityPathAddPathButtonName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string SecurityWarningExpanderName {
+            get {
+                return ResourceManager.GetString("SecurityWarningExpanderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select All.
         /// </summary>
         public static string SelectAllTitle {
@@ -7368,6 +7476,15 @@ namespace Dynamo.Wpf.Properties {
         public static string TourLabelProgressText {
             get {
                 return ResourceManager.GetString("TourLabelProgressText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trusted location.
+        /// </summary>
+        public static string TrustedPathsExpanderName {
+            get {
+                return ResourceManager.GetString("TrustedPathsExpanderName", resourceCulture);
             }
         }
         

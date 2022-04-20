@@ -18,6 +18,8 @@
     <None Remove="UI\Images\NodeStates\frozen-64px.png" />
     <None Remove="UI\Images\NodeStates\hidden-64px.png" />
     <None Remove="UI\Images\NodeStates\info-64px.png" />
+    <None Remove="Views\GuidedTour\HtmlPages\getStartedOnboarding.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\Resources\emptyImage.png" />
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
@@ -566,6 +568,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\getStartedOnboarding.html" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -1493,6 +1496,7 @@
     <Resource Include="UI\Images\bubble-arrow.png" />
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\emptyImage.png" />
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
