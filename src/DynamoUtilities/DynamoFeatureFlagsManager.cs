@@ -41,11 +41,16 @@ namespace DynamoUtilities
             this.syncContext = syncContext;
             //dont pass userkey arg if null/empty
             var userkeyarg = $"-u {userkey}";
+            var testmodearg = string.Empty;
             if (string.IsNullOrEmpty(userkey))
             {
                 userkeyarg = String.Empty;
             }
-            var args = $"{userkeyarg} -p {Process.GetCurrentProcess().Id} -t {testmode}";
+            if (testmode == true)
+            {
+                testmodearg = "-t";
+            }
+            var args = $"{userkeyarg} -p {Process.GetCurrentProcess().Id} {testmodearg}";
             StartProces(relativePath, args);
         }
 
