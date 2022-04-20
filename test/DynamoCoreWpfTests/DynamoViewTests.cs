@@ -77,8 +77,8 @@ namespace DynamoCoreWpfTests
 
             ItemCollection items = notificationsControl.footerIconItemsControl.Items;
 
-            // We should have 2 FooterIconItems, 1 for error, 1 for warning
-            Assert.AreEqual(items.Count, 2);
+            // We should have 3 FooterIconItems, 1 for error, 1 for warning, and 1 for Info
+            Assert.AreEqual(items.Count, 3);
 
             // The first item should be the Error, the second should be the Warning
             Assert.AreEqual((items[0] as FooterNotificationItem).NotificationCount, 3);
