@@ -327,7 +327,13 @@ namespace Dynamo.Search
         {
             // Excluding white spaces and uncommon characters, only keeping the displayed in the Windows alert
             return System.IO.Path.GetInvalidFileNameChars().Where(x => !char.IsWhiteSpace(x) && (int)x > 31).ToArray();
-        }        
+        }
+
+        private static bool ContainsSpecialCharacters(string element)
+        {
+            Char[] invalidCharacters = SpecialAndInvalidCharacters();
+            return (!string.IsNullOrEmpty(element) && element.IndexOfAny(invalidCharacters) >= 0);
+        }
 
         #endregion
 
