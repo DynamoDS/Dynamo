@@ -131,29 +131,6 @@ namespace Dynamo.Core
             }
         }
 
-        private static char[] invalidCharacters = null;
-        /// <summary>
-        /// List of the Windows invalid characters
-        /// </summary>
-        internal static char[] InvalidCharacters
-        {
-            get
-            {
-                if (invalidCharacters == null)
-                {
-                    invalidCharacters = PathHelper.SpecialAndInvalidCharacters();
-                }
-                return invalidCharacters;
-            }
-            set
-            {
-                if (invalidCharacters != value)
-                {
-                    invalidCharacters = value;
-                }
-            }
-        }
-
         //Todo in Dynamo 3.0, Add this to the IPathManager interface
         /// <summary>
         /// The local directory that contains package directory created by all users.

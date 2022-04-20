@@ -18,6 +18,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
+using DynamoUtilities;
 using Greg.Requests;
 using Microsoft.Practices.Prism.Commands;
 using PythonNodeModels;
@@ -1758,9 +1759,9 @@ namespace Dynamo.PackageManager
 
         private bool CheckPackageValidity()
         {
-            if (!string.IsNullOrEmpty(Name) && Name.IndexOfAny(PathManager.InvalidCharacters) >= 0)
+            if (!string.IsNullOrEmpty(Name) && Name.IndexOfAny(PathHelper.SpecialAndInvalidCharacters()) >= 0)
             {
-                ErrorString = Resources.PackageNameCannotContainTheseCharacters + " " + new String(PathManager.InvalidCharacters);
+                ErrorString = Resources.PackageNameCannotContainTheseCharacters + " " + new String(PathHelper.SpecialAndInvalidCharacters());
                 EnableInvalidNameWarningState(ErrorString);
                 return false;
             }
