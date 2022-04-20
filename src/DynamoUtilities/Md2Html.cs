@@ -79,7 +79,7 @@ namespace Dynamo.Utilities
             process.Dispose();
         }
         /// <summary>
-        /// Compute the location of the CLI tool
+        /// Compute the location of the CLI tool.
         /// </summary>
         /// <returns>Returns full path to the CLI tool</returns>
         protected static string GetToolPath(string relativePath)
