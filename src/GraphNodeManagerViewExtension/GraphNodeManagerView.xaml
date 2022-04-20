@@ -136,8 +136,8 @@
                 </Grid>
             </StackPanel>
         </Border>
+        
         <!-- Contains all filter icons -->
-
         <DockPanel Grid.Row="1">
             <Grid x:Name="FilterGrid" DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>

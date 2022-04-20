@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Navigation;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
+using ProtoCore.Mirror;
 
 namespace Dynamo.GraphNodeManager.ViewModels
 {
@@ -98,7 +100,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             get
             {
-                stateIsFunction = NodeModel.IsCustomFunction;
+                stateIsFunction = IsNodeOutputFunction(NodeModel.CachedValue);
                 return stateIsFunction;
             }
             internal set => stateIsFunction = value;
@@ -157,9 +159,8 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             get
             {
-                
-                isEmptyList = true;
-                
+                isEmptyList = IsNodeEmptyList(NodeModel.CachedValue);
+
                 return isEmptyList;
             }
             internal set => isEmptyList = value;
@@ -172,12 +173,39 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             get
             {
-                isNull = NodeModel.IsInErrorState;
+                isNull = NodeModel.CachedValue != null && NodeModel.CachedValue.IsNull;
                 return isNull;
             }
             internal set => isNull = value;
         }
         #endregion
+
+        /// <summary>
+        ///  Returns true only if it IsCollection and has no elements inside
+        /// </summary>
+        /// <param name="mirrorData"></param>
+        /// <returns></returns>
+        private bool IsNodeEmptyList(MirrorData mirrorData)
+        {
+            if (mirrorData == null || !mirrorData.IsCollection) return false;
+
+            var list = mirrorData.GetElements();
+            return !list.Any();
+        }
+
+        /// <summary>
+        /// Returns true only if the mirrorData class is not null and its name is set to Function
+        /// </summary>
+        /// <param name="mirrorData"></param>
+        /// <returns></returns>
+        private bool IsNodeOutputFunction(MirrorData mirrorData)
+        {
+            if (mirrorData == null || mirrorData.Class == null) return false;
+
+            if (string.Equals(mirrorData.Class.Name, "Function")) return true;
+            return false;
+        }
+
 
         #region Setup and Constructors
         internal NodeModel NodeModel { get; set; }
