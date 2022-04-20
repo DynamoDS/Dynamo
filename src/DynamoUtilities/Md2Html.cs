@@ -18,10 +18,50 @@ namespace Dynamo.Utilities
         protected readonly Process process = new Process();
         protected bool started;
         internal event Action<string> MessageLogged;
+
         public virtual void Dispose()
         {
+            process.ErrorDataReceived -= Process_ErrorDataReceived;
             KillProcess();
         }
+
+        protected virtual void StartProces(string relativeEXEPath, string argString)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardInput = true,
+                RedirectStandardError = true,
+
+                UseShellExecute = false,
+                Arguments = argString,
+                FileName = GetToolPath(relativeEXEPath)
+            };
+
+            process.StartInfo = startInfo;
+            try
+            {
+                process.Start();
+                started = true;
+                //the only purspose here is to avoid deadlocks when std err gets filled up 4kb
+                //in long running processes.
+                process.ErrorDataReceived += Process_ErrorDataReceived;
+                process.BeginErrorReadLine();
+                
+            }
+            catch (Win32Exception)
+            {
+                // Do nothing
+            }
+        }
+
+        private void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        {
+           //do nothing, we just want to empty the error stream.
+        }
+
+
 
         /// <summary>
         /// Kill the CLI tool - if running
@@ -136,27 +176,7 @@ namespace Dynamo.Utilities
         /// </summary>
         internal Md2Html()
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardInput = true,
-
-                UseShellExecute = false,
-                Arguments = @"",
-                FileName = GetToolPath(relativePath)
-            };
-
-            process.StartInfo = startInfo;
-            try
-            {
-                process.Start();
-                started = true;
-            }
-            catch(Win32Exception)
-            {
-                // Do nothing
-            }
+            StartProces(relativePath,string.Empty);
         }
 
         /// <summary>

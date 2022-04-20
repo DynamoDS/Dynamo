@@ -18,6 +18,8 @@ namespace DynamoFeatureFlags
         public string MobileKey { get; set; }
         [Option('p',"processID",Required = true, HelpText= "parent process id, if this process is no longer running, this application will exit.")]
         public int ProcessID { get; set; }
+        [Option('t', "testmode", Required = false, HelpText = "in testmode the cli will not connect to feature flags service, and will return a hardcoded set of flags.")]
+        public bool TestMode { get; set; }
     }
     static class Program
     {
@@ -41,7 +43,7 @@ namespace DynamoFeatureFlags
 
                     FeatureFlagsClient.MessageLogged += FeatureFlagsManager_MessageLogged;
                    
-                    FeatureFlags = new FeatureFlagsClient(ops.UserKey, ops.MobileKey);
+                    FeatureFlags = new FeatureFlagsClient(ops.UserKey, ops.MobileKey,ops.TestMode);
                     Console.WriteLine("feature flag exe starting");
                     SendAllFlags();
 

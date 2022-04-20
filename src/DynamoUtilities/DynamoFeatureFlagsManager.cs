@@ -35,13 +35,9 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="userkey">non PII key to identify this user.</param>
         /// <param name="syncContext">context used for raising FlagRetrieved event.</param>
-        /// <param name="testmode">will be not contact feature flag service in testmode.</param>
-        internal DynamoFeatureFlagsManager(string userkey, SynchronizationContext syncContext, bool testmode)
-        {
-            if(testmode == true)
-            {
-                return;
-            }
+        /// <param name="testmode">will not contact feature flag service in testmode, will respond with defaults.</param>
+        internal DynamoFeatureFlagsManager(string userkey, SynchronizationContext syncContext, bool testmode=false)
+        {  
             this.syncContext = syncContext;
             //dont pass userkey arg if null/empty
             var userkeyarg = $"-u {userkey}";
@@ -49,28 +45,8 @@ namespace DynamoUtilities
             {
                 userkeyarg = String.Empty;
             }
-
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardInput = true,
-
-                UseShellExecute = false,
-                Arguments = $"{userkeyarg} -p {Process.GetCurrentProcess().Id}",
-                FileName = GetToolPath(relativePath)
-            };
-
-            process.StartInfo = startInfo;
-            try
-            {
-                process.Start();
-                    started = true;
-                }
-            catch (Win32Exception)
-            {
-                // Do nothing
-            }
+            var args = $"{userkeyarg} -p {Process.GetCurrentProcess().Id} -t {testmode}";
+            StartProces(relativePath, args);
         }
 
         internal void CacheAllFlags()

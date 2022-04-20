@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Configuration;
 using System.Diagnostics;
 using System.Xml;
+using LaunchDarkly.Sdk;
 
 namespace DynamoFeatureFlags
 {
@@ -34,8 +34,9 @@ namespace DynamoFeatureFlags
         /// </summary>
         /// <param name="userkey">key for a specific user, should be stable between sessions.</param>
         /// <param name="mobileKey">mobile sdk key, do not use full sdk key, if null, will load from config.</param>
+        /// <param name="testMode">if true, will not call ld APIs, will return hardcoded data.</param>
         /// <exception cref="ArgumentException"></exception>
-        internal FeatureFlagsClient(string userkey, string mobileKey = null)
+        internal FeatureFlagsClient(string userkey, string mobileKey = null, bool testMode = false)
         {
             var sw = new Stopwatch();
             sw.Start();
@@ -68,6 +69,15 @@ namespace DynamoFeatureFlags
                     " possibly analytics was disabled, test mode is active, or headless mode is active.");
                 userkey = sharedUserKey;
             }
+            if (testMode)
+            {
+                MessageLogged?.Invoke($"LD startup: testmode true, no LD connection. ");
+                MessageLogged?.Invoke($"LD startup time: {sw.ElapsedMilliseconds} ");
+                MessageLogged?.Invoke("<<<<<InitDone>>>>>");
+                AllFlags = LdValue.ObjectFrom(new Dictionary<string,LdValue> { { "Testflag1",LdValue.Of(true) }, { "Testflag2", LdValue.Of("I am a string") } });
+                return;
+            }
+
             //send user as anonymous//https://docs.launchdarkly.com/home/users/anonymous-users
             user = LaunchDarkly.Sdk.User.Builder(userkey).Anonymous(true).Build();
 
@@ -76,7 +86,10 @@ namespace DynamoFeatureFlags
             MessageLogged?.Invoke($"LD startup time: {sw.ElapsedMilliseconds} ");
             MessageLogged?.Invoke("<<<<<InitDone>>>>>");
             //gather all the user's flags and create a top level ldvalue object containing all of them.
-            AllFlags= LaunchDarkly.Sdk.LdValue.ObjectFrom(new ReadOnlyDictionary<string,LaunchDarkly.Sdk.LdValue>(ldClient.AllFlags()));
+            if (ldClient.Initialized)
+            {
+                AllFlags = LdValue.ObjectFrom(new ReadOnlyDictionary<string, LaunchDarkly.Sdk.LdValue>(ldClient.AllFlags()));
+            }
 
         }
         internal void Init(string mobileKey)
