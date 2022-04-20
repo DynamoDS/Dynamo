@@ -140,22 +140,7 @@
         <!-- Contains all filter icons -->
         <DockPanel Grid.Row="1">
             <Grid x:Name="FilterGrid" DockPanel.Dock="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-
-            <Image x:Name="FilterImage"
-                   Grid.Column="0"
-                   Width="16px"
-                   Height="16px"
-                   Margin="10 0 15 0"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Source="/GraphNodeManagerViewExtension;component/Images/Filter.png"
-                   Stretch="UniformToFill" />
-            <ItemsControl x:Name="FilterItemControl"
-                              Grid.Column="1"
+                <ItemsControl x:Name="FilterItemControl"
                               Margin="5"
                               ItemsSource="{Binding FilterItems, UpdateSourceTrigger=PropertyChanged}">
                 <ItemsControl.ItemTemplate>
@@ -215,7 +200,8 @@
                HorizontalAlignment="Right"
                VerticalAlignment="Center"
                Source="/GraphNodeManagerViewExtension;component/Images/Export.png"
-               Stretch="UniformToFill"/>
+               Stretch="UniformToFill"
+               Cursor="Hand"/>
         </DockPanel>
         <DataGrid x:Name="NodesInfoDataGrid"
                   Grid.Row="2"
