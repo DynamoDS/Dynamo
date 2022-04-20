@@ -83,7 +83,7 @@ namespace DynamoFeatureFlags
                 MessageLogged?.Invoke($"LD startup: testmode true, no LD connection. ");
                 MessageLogged?.Invoke($"LD startup time: {sw.ElapsedMilliseconds} ");
                 MessageLogged?.Invoke("<<<<<InitDone>>>>>");
-                AllFlags = LdValue.ObjectFrom(new Dictionary<string,LdValue> { { "Testflag1",LdValue.Of(true) }, { "Testflag2", LdValue.Of("I am a string") } });
+                AllFlags = LdValue.ObjectFrom(new Dictionary<string,LdValue> { { "TestFlag1",LdValue.Of(true) }, { "TestFlag2", LdValue.Of("I am a string") } });
                 return;
             }
 

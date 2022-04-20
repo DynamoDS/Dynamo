@@ -56,6 +56,12 @@ namespace DynamoFeatureFlags
                 
         }
 
+        /// <summary>
+        /// This method kills the process if the parent proc is no longer running.
+        /// But this method is unlikely to be executed since we exit after writing to std.out.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private static void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             var currentproc = Process.GetCurrentProcess();
@@ -63,6 +69,7 @@ namespace DynamoFeatureFlags
             if (!hostAlive)
             {
                 //exit
+                Environment.Exit(-1);
                 currentproc.Kill();
             }
 
