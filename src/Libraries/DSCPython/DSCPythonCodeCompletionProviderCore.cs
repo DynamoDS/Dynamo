@@ -378,6 +378,7 @@ clr.setPreload(True)
 
             if (!PythonEngine.IsInitialized)
             {
+                Python.Included.Installer.SetupPythonSync();
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
             }
