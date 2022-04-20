@@ -141,7 +141,7 @@ namespace Dynamo.Core
             {
                 if (invalidCharacters == null)
                 {
-                    invalidCharacters = Search.SearchDictionary<object>.SpecialAndInvalidCharacters();
+                    invalidCharacters = PathHelper.SpecialAndInvalidCharacters();
                 }
                 return invalidCharacters;
             }

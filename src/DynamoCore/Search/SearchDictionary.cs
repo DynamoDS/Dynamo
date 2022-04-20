@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using Dynamo.Configuration;
+using DynamoUtilities;
 
 namespace Dynamo.Search
 {
@@ -321,17 +322,11 @@ namespace Dynamo.Search
         private static string[] SplitOnWhiteSpace(string s)
         {
             return s.Split(null);
-        }
-
-        internal static Char[] SpecialAndInvalidCharacters()
-        {
-            // Excluding white spaces and uncommon characters, only keeping the displayed in the Windows alert
-            return System.IO.Path.GetInvalidFileNameChars().Where(x => !char.IsWhiteSpace(x) && (int)x > 31).ToArray();
-        }
+        }        
 
         private static bool ContainsSpecialCharacters(string element)
         {
-            Char[] invalidCharacters = SpecialAndInvalidCharacters();
+            Char[] invalidCharacters = PathHelper.SpecialAndInvalidCharacters();
             return (!string.IsNullOrEmpty(element) && element.IndexOfAny(invalidCharacters) >= 0);
         }
 
