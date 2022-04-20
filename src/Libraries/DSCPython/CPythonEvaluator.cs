@@ -263,9 +263,9 @@ for modname,mod in sys.modules.copy().items():
                 return null;
             }
 
+            InstallPython();
             if (!PythonEngine.IsInitialized)
             {
-                Python.Included.Installer.SetupPythonSync();
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
                 
