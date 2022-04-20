@@ -56,7 +56,7 @@ namespace Dynamo.GraphNodeManager.Converters
 
             brush = (bool)value
                 ? (SolidColorBrush)
-                SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MidGreyBrush"]
+                SharedDictionaryManager.DynamoColorsAndBrushesDictionary["LightMidGreyBrush"]
                 : (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkGreyBrush"];
 
             return brush;

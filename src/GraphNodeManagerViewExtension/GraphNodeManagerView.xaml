@@ -108,14 +108,38 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <!-- Accommodates the Search functionality -->
-        <StackPanel x:Name="SearchBarStackPanel"
-                    Grid.Row="0">
 
-        </StackPanel>
+        <!-- Accommodates the Search functionality -->
+        <Border Grid.Row="0"
+                Margin="3 15 20 5"
+                BorderBrush="{StaticResource MidGreyBrush}" 
+                BorderThickness="0 0 0 1">
+            <StackPanel x:Name="SearchBarStackPanel"
+                        Margin="0 0 0 5"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                <Image x:Name="SearchImage"
+                       Width="16px"
+                       Height="16px"
+                       Margin="5 0"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Source="/GraphNodeManagerViewExtension;component/Images/Search.png"
+                       Stretch="UniformToFill" />
+                <Grid>
+                    <TextBlock Foreground="{StaticResource DisabledFontColorBrush}">Search</TextBlock>
+                    <TextBox x:Name="SearchTextBox" 
+                             HorizontalAlignment="Stretch"
+                             BorderThickness="0"
+                             Background="Transparent"></TextBox>
+                </Grid>
+            </StackPanel>
+        </Border>
         <!-- Contains all filter icons -->
-        <Grid x:Name="FilterGrid"
-              Grid.Row="1">
+
+        <DockPanel Grid.Row="1">
+            <Grid x:Name="FilterGrid" DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -182,6 +206,17 @@
             </ItemsControl>
 
         </Grid>
+
+        <Image x:Name="ExportImage"
+               DockPanel.Dock="Right"
+               Width="16px"
+               Height="16px"
+               Margin="15 0 15 15"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"
+               Source="/GraphNodeManagerViewExtension;component/Images/Export.png"
+               Stretch="UniformToFill"/>
+        </DockPanel>
         <DataGrid x:Name="NodesInfoDataGrid"
                   Grid.Row="2"
                   ItemsSource="{Binding Path=NodesCollection.View}" 
