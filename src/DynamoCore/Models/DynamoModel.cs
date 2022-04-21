@@ -1255,7 +1255,6 @@ namespace Dynamo.Models
             MigrationManager.MessageLogged -= LogMessage;
             FeatureFlags.MessageLogged -= LogMessageWrapper;
             DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckFeatureFlagTest;
-            FeatureFlags.Dispose();
         }
 
         private void InitializeCustomNodeManager()

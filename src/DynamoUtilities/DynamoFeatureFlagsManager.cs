@@ -24,10 +24,6 @@ namespace DynamoUtilities
         private Dictionary<string, object> AllFlagsCache { get; set; }//TODO lock is likely overkill.
         private SynchronizationContext syncContext;
         internal static event Action FlagsRetrieved;
-        public override void Dispose()
-        {
-            KillProcess();
-        }
 
         /// <summary>
         /// Constructor
@@ -51,7 +47,7 @@ namespace DynamoUtilities
                 testmodearg = "-t";
             }
             var args = $"{userkeyarg} -p {Process.GetCurrentProcess().Id} {testmodearg}";
-            StartProces(relativePath, args);
+            StartProcess(relativePath, args);
         }
 
         internal void CacheAllFlags()

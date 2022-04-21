@@ -25,7 +25,12 @@ namespace Dynamo.Utilities
             KillProcess();
         }
 
-        protected virtual void StartProces(string relativeEXEPath, string argString)
+        /// <summary>
+        /// Start the process. 
+        /// </summary>
+        /// <param name="relativeEXEPath">relative path to the exe to start.</param>
+        /// <param name="argString">argument string to pass to process.</param>
+        protected virtual void StartProcess(string relativeEXEPath, string argString)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
@@ -176,7 +181,7 @@ namespace Dynamo.Utilities
         /// </summary>
         internal Md2Html()
         {
-            StartProces(relativePath,string.Empty);
+            StartProcess(relativePath,string.Empty);
         }
 
         /// <summary>
