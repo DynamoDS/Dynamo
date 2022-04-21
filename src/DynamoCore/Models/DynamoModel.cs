@@ -2799,10 +2799,10 @@ namespace Dynamo.Models
         {
             Logger.Log(obj);
         }
-   private void LogMessageWrapper(string m)
-    {
-        LogMessage(Dynamo.Logging.LogMessage.Info(m));
-    }
+        private void LogMessageWrapper(string m)
+        {
+            LogMessage(Dynamo.Logging.LogMessage.Info(m));
+        }
 
 #if DEBUG_LIBRARY
         private void DumpLibrarySnapshot(IEnumerable<Engine.FunctionGroup> functionGroups)
@@ -2829,7 +2829,7 @@ namespace Dynamo.Models
         }
 #endif
 
-    private void AddNodeTypeToSearch(TypeLoadData typeLoadData)
+        private void AddNodeTypeToSearch(TypeLoadData typeLoadData)
         {
             if (!typeLoadData.IsDSCompatible || typeLoadData.IsDeprecated || typeLoadData.IsHidden
                 || typeLoadData.IsMetaNode)
