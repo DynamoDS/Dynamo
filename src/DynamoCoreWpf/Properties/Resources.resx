@@ -3071,6 +3071,15 @@ To install the latest version of a package, click Install. \n
   <data name="GroupContextMenuColor" xml:space="preserve">
     <value>Color</value>
   </data>
+  <data name="RunCompletedWithErrorsMessage" xml:space="preserve">
+    <value>Run completed with errors.</value>
+  </data>
+  <data name="RunCompletedWithScaleChangeAndErrorsMessage" xml:space="preserve">
+    <value>Run completed with errors on setting new working range.</value>
+  </data>
+  <data name="RunReady" xml:space="preserve">
+    <value>Ready to run.</value>
+  </data>
   <data name="PreferencesSecuritySettingsTab" xml:space="preserve">
     <value>Security</value>
   </data>
