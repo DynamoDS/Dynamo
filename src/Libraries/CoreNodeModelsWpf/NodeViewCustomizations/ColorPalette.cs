@@ -69,7 +69,8 @@ namespace CoreNodeModelsWpf.Nodes
             var convertedModelColor = ((Color)(converter.Convert(colorPaletteNode.DsColor, null, null, null)));
             var isSameColor = convertedModelColor
                  .Equals(ColorPaletteUINode.xceedColorPickerControl.SelectedColor);
-            if (!isSameColor)
+
+            if (ColorPaletteUINode.xceedColorPickerControl.SelectedColor != null && !isSameColor)
             {
                 //we need to record the colorPicker node before the model is updated.
                 var undoRecorder = viewNode.ViewModel.WorkspaceViewModel.Model.UndoRecorder;

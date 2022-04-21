@@ -47,6 +47,13 @@ namespace Dynamo.Wpf.Views.GuidedTour
             //Vertical offset plus 50 is to compensate the header size
             VerticalOffset = hInfo.VerticalPopupOffSet + headerOffset;
 
+            //Adjustment of welcome steps which doesn't require a tooltip, and by that, an offset.
+            if (viewModel.Step.StepType == Step.StepTypes.WELCOME)
+            {
+                HorizontalOffset = 0;
+                VerticalOffset = 0;
+            }
+
             LoadWebBrowser(hInfo.HtmlPage);
         }
 

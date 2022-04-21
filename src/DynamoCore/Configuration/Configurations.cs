@@ -85,7 +85,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Link to Dynamo primer
         /// </summary>
-        public static string DynamoPrimer = "http://dynamoprimer.com/";
+        public static string DynamoPrimer = "http://primer2.dynamobim.org/";
 
         /// <summary>
         /// Link to Dynamo download page

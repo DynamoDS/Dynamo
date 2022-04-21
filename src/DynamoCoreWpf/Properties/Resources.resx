@@ -1640,7 +1640,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <comment>ErrorString</comment>
   </data>
   <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
-    <value>The name of the package cannot contain /,\, or *.</value>
+    <value>The name of the package cannot contain</value>
     <comment>ErrorString</comment>
   </data>
   <data name="PackageNeedAtLeastOneFile" xml:space="preserve">
@@ -2716,7 +2716,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Edit Path</value>
   </data>
   <data name="GetStartedGuide" xml:space="preserve">
-    <value>Get Started</value>
+    <value>User Interface Tour</value>
     <comment>Get Started Dynamo Tour</comment>
   </data>
   <data name="InteractiveGuides" xml:space="preserve">
@@ -2766,7 +2766,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Rate this guide</value>
   </data>
   <data name="GetStartedGuideSurveyText" xml:space="preserve">
-    <value>Learn more about Dynamo in the #online help=https://primer.dynamobim.org/</value>
+    <value>Learn more about Dynamo in the #online help=https://primer2.dynamobim.org/</value>
   </data>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
@@ -3070,5 +3070,26 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="GroupContextMenuColor" xml:space="preserve">
     <value>Color</value>
+  </data>
+  <data name="PreferencesSecuritySettingsTab" xml:space="preserve">
+    <value>Security</value>
+  </data>
+  <data name="PreferencesViewTrustWarningHeader" xml:space="preserve">
+    <value>Trust warning</value>
+  </data>
+  <data name="PreferencesViewTrustWarningLabel" xml:space="preserve">
+    <value>Disable receiving trust warning</value>
+  </data>
+  <data name="PreferencesViewTrustWarningTooltipText" xml:space="preserve">
+    <value>We recommend keeping this toggle off to reduce security risks.</value>
+  </data>
+  <data name="SecurityPathAddPathButtonName" xml:space="preserve">
+    <value>Add Path</value>
+  </data>
+  <data name="SecurityWarningExpanderName" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="TrustedPathsExpanderName" xml:space="preserve">
+    <value>Trusted location</value>
   </data>
 </root>
