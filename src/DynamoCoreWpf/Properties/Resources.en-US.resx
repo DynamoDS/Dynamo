@@ -3114,4 +3114,7 @@ To install the latest version of a package, click Install. \n
   <data name="TrustedPathsExpanderName" xml:space="preserve">
     <value>Trusted location</value>
   </data>
+  <data name="ZoomLevel" xml:space="preserve">
+    <value>0.4</value>
+  </data>
 </root>
