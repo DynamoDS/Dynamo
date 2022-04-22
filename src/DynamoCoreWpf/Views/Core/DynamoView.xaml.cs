@@ -2419,6 +2419,7 @@ namespace Dynamo.Controls
             {
                 if(dynamoViewModel.ClearHomeWorkspaceInternal())
                 {
+                    dynamoViewModel.OpenOnboardingGuideFile();
                     dynamoViewModel.MainGuideManager.LaunchTour(OnboardingGuideName);
                 }
             }

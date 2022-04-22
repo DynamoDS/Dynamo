@@ -66,6 +66,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
+        internal static string OnboardingGuideWorkspace
+        {
+            get
+            {
+                return Path.Combine(GuidesExecutingDirectory, @"UI\GuidedTour\DynamoOnboardingGuide_HouseCreationDS.dyn");
+            }
+        }
+
         /// <summary>
         /// GuidesManager Constructor 
         /// </summary>

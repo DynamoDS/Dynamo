@@ -910,14 +910,37 @@
 				"ShowLibrary": false,
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 432,
+				"Height": 280,
 				"StepContent": {
 					"Title": "OnboardingWorkspaceTitle",
 					"FormattedText": "OnboardingWorkspaceText"
 				},
-				"HostPopupInfo": {					
-					"VerticalPopupOffset": 100,
-					"HorizontalPopupOffset": 50
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "ExecutePackageSearch",
+						"ExecuteCleanUpForward": true,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					}
+				],
+				"HostPopupInfo":
+				{
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 300,
+					"PopupPlacement": "bottom",
+					"HostUIElementString": "background_grid",
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
 				}
 			}		
 		]

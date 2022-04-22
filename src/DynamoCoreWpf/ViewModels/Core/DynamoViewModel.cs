@@ -1627,6 +1627,11 @@ namespace Dynamo.ViewModels
             this.ShowStartPage = false; // Hide start page if there's one.
         }
 
+        internal void OpenOnboardingGuideFile()
+        {
+            Open(new Tuple<string, bool>(GuidesManager.OnboardingGuideWorkspace, true));
+        }
+
         private bool CanOpen(object parameters)
         {
             var filePath = parameters as string;
