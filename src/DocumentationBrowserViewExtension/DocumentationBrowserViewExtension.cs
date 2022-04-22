@@ -174,11 +174,11 @@ namespace Dynamo.DocumentationBrowser
             // this also forces the Sidebar to open
             AddToSidebar(false);
 
-            // Check the menu item
-            this.documentationBrowserMenuItem.IsChecked = true;
-
             // forward the event to the ViewModel to handle
             this.ViewModel?.HandleOpenDocumentationLinkEvent(args);
+
+            // Check the menu item
+            this.documentationBrowserMenuItem.IsChecked = true;
         }
 
         private void OnViewModelMessageLogged(ILogMessage msg)
