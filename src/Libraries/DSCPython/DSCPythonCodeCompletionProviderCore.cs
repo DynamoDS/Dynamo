@@ -376,6 +376,8 @@ clr.setPreload(True)
             BasicVariableTypes.Add(Tuple.Create(LIST_VARIABLE, typeof(PyList)));
             BasicVariableTypes.Add(Tuple.Create(DICT_VARIABLE, typeof(PyDict)));
 
+            Python.Included.Installer.SetupPython().Wait();
+
             if (!PythonEngine.IsInitialized)
             {
                 PythonEngine.Initialize();
