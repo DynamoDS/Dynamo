@@ -6,6 +6,7 @@ using ProtoCore.BuildData;
 using ProtoScript.Runners;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using DynamoServices;
 
 namespace Dynamo.Scheduler
 {
@@ -37,6 +38,40 @@ namespace Dynamo.Scheduler
         }
 
         /// <summary>
+        /// DFS algorithm to check cyclic dependency in Dynamo graph.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="visitTracker"></param>
+        /// <param name="recursionTracker"></param>
+        /// <param name="cyclicNodes">list of all nodes participating in a cycle</param>
+        /// <returns>true if graph is cyclic, false otherwise</returns>
+        private bool IsGraphCyclic(NodeModel node, HashSet<NodeModel> visitTracker, 
+            HashSet<NodeModel> recursionTracker, List<NodeModel> cyclicNodes)
+        {
+            if(recursionTracker.Contains(node))
+            {
+                cyclicNodes.Add(node);
+                return true;
+            }
+            if(visitTracker.Contains(node))
+            {
+                return false;
+            }
+            recursionTracker.Add(node);
+            visitTracker.Add(node);
+
+            var outputNodes = node.OutputNodes.Values.SelectMany(set => set.Select(t => t.Item2)).Distinct();
+            foreach (var child in outputNodes)
+            {
+                if (IsGraphCyclic(child, visitTracker, recursionTracker, cyclicNodes))
+                    return true;
+            }
+            recursionTracker.Remove(node);
+
+            return false;
+        }
+
+        /// <summary>
         /// This method is called by code that intends to start a graph update.
         /// This method is called on the main thread where node collection in a 
         /// WorkspaceModel can be safely accessed.
@@ -59,6 +94,40 @@ namespace Dynamo.Scheduler
                 TargetedWorkspace = workspace;
 
                 ModifiedNodes = ComputeModifiedNodes(workspace);
+
+                // Detect cyclic dependencies in graph
+                var cyclicNodes = new List<NodeModel>();
+
+                var visited = new HashSet<NodeModel>();
+                var recursed = new HashSet<NodeModel>();
+                foreach (var node in ModifiedNodes)
+                {
+                    if(!IsGraphCyclic(node, visited, recursed, cyclicNodes))
+                    {
+                        var warnings = controller.LiveRunnerCore.BuildStatus.Warnings.ToList();
+                        foreach(var warning in warnings)
+                        {
+                            if(warning.ID == WarningID.InvalidStaticCyclicDependency && 
+                                node.GUID == warning.GraphNodeGuid)
+                            {
+                                node.ClearErrorsAndWarnings();
+                                controller.LiveRunnerCore.BuildStatus.ClearWarningsForGraph(warning.GraphNodeGuid);
+                            }
+                        }
+                    }
+                }
+                if (cyclicNodes.Any())
+                {
+                    foreach (var node in cyclicNodes)
+                    {
+                        controller.LiveRunnerCore.BuildStatus.LogWarning(WarningID.InvalidStaticCyclicDependency,
+                        ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, node.GUID);
+
+                        node.Warning(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, true);
+                    }
+                    // Skip scheduling task for graph execution.
+                    return false;
+                }
                 graphSyncData = engineController.ComputeSyncData(workspace.Nodes, ModifiedNodes, verboseLogging);
                 if (graphSyncData == null)
                     return false;

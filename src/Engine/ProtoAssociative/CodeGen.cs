@@ -264,115 +264,115 @@ namespace ProtoAssociative
         // http://en.wikipedia.org/wiki/Tarjan's_strongly_connected_components_algorithm
         // 
         // Returns the first strongly connected component
-        private List<GraphNode> StrongConnectComponent(GraphNode node, ref int index, Dictionary<GraphNode, int> lowlinkMap, Dictionary<GraphNode, int> indexMap, Stack<GraphNode> S)
-        {
-            indexMap[node] = index;
-            lowlinkMap[node] = index;
-            index++;
-            S.Push(node);
+        //private List<GraphNode> StrongConnectComponent(GraphNode node, ref int index, Dictionary<GraphNode, int> lowlinkMap, Dictionary<GraphNode, int> indexMap, Stack<GraphNode> S)
+        //{
+        //    indexMap[node] = index;
+        //    lowlinkMap[node] = index;
+        //    index++;
+        //    S.Push(node);
 
-            for (int n = 0; n < codeBlock.instrStream.dependencyGraph.GraphList.Count; ++n)
-            {
-                ProtoCore.AssociativeGraph.GraphNode subNode = codeBlock.instrStream.dependencyGraph.GraphList[n];
+        //    for (int n = 0; n < codeBlock.instrStream.dependencyGraph.GraphList.Count; ++n)
+        //    {
+        //        ProtoCore.AssociativeGraph.GraphNode subNode = codeBlock.instrStream.dependencyGraph.GraphList[n];
 
-                if (!subNode.isActive)
-                {
-                    continue;
-                }
+        //        if (!subNode.isActive)
+        //        {
+        //            continue;
+        //        }
 
-                if (!IsDependentSubNode(node, subNode))
-                {
-                    continue;
-                }
+        //        if (!IsDependentSubNode(node, subNode))
+        //        {
+        //            continue;
+        //        }
 
-                bool equalIdentList = ProtoCore.AssociativeEngine.Utils.AreLHSEqualIdentList(node, subNode);
-                if (equalIdentList)
-                {
-                    continue;
-                }
+        //        bool equalIdentList = ProtoCore.AssociativeEngine.Utils.AreLHSEqualIdentList(node, subNode);
+        //        if (equalIdentList)
+        //        {
+        //            continue;
+        //        }
 
-                // No update for auto generated temps
-                bool isTempVarUpdate = ProtoCore.AssociativeEngine.Utils.IsTempVarLHS(node);
-                if (isTempVarUpdate)
-                {
-                    continue;
-                }
+        //        // No update for auto generated temps
+        //        bool isTempVarUpdate = ProtoCore.AssociativeEngine.Utils.IsTempVarLHS(node);
+        //        if (isTempVarUpdate)
+        //        {
+        //            continue;
+        //        }
 
-                subNode = GetFinanlStatementOfSSA(subNode, ref n);
+        //        subNode = GetFinanlStatementOfSSA(subNode, ref n);
 
-                if (indexMap[subNode] == Constants.kInvalidIndex)
-                {
-                    StrongConnectComponent(subNode, ref index, lowlinkMap, indexMap, S);
-                    lowlinkMap[node] = Math.Min(lowlinkMap[node], lowlinkMap[subNode]);
-                }
-                else if (S.Contains(subNode))
-                {
-                    lowlinkMap[node] = Math.Min(lowlinkMap[node], indexMap[subNode]);
-                }
-            }
+        //        if (indexMap[subNode] == Constants.kInvalidIndex)
+        //        {
+        //            StrongConnectComponent(subNode, ref index, lowlinkMap, indexMap, S);
+        //            lowlinkMap[node] = Math.Min(lowlinkMap[node], lowlinkMap[subNode]);
+        //        }
+        //        else if (S.Contains(subNode))
+        //        {
+        //            lowlinkMap[node] = Math.Min(lowlinkMap[node], indexMap[subNode]);
+        //        }
+        //    }
 
-            if (lowlinkMap[node] == indexMap[node] && S.Count > 1)
-            {
-                List<GraphNode> dependencyList = new List<GraphNode>();
-                while (true)
-                {
-                    GraphNode w = S.Pop();
-                    dependencyList.Add(w);
-                    if (w.UID == node.UID)
-                    {
-                        break;
-                    }
-                }
+        //    if (lowlinkMap[node] == indexMap[node] && S.Count > 1)
+        //    {
+        //        List<GraphNode> dependencyList = new List<GraphNode>();
+        //        while (true)
+        //        {
+        //            GraphNode w = S.Pop();
+        //            dependencyList.Add(w);
+        //            if (w.UID == node.UID)
+        //            {
+        //                break;
+        //            }
+        //        }
 
-                return dependencyList;
-            }
+        //        return dependencyList;
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         // Returns true if there is no cyclic dependency, returns false otherwise.
-        private bool CyclicDependencyTest(GraphNode node, ref SymbolNode cyclicSymbol1, ref SymbolNode cyclicSymbol2)
-        {
-            if (null == node || node.updateNodeRefList.Count == 0)
-            {
-                return true;
-            }
+        //private bool CyclicDependencyTest(GraphNode node, ref SymbolNode cyclicSymbol1, ref SymbolNode cyclicSymbol2)
+        //{
+        //    if (null == node || node.updateNodeRefList.Count == 0)
+        //    {
+        //        return true;
+        //    }
 
-            var indexMap = new Dictionary<GraphNode, int>();
-            var lowlinkMap = new Dictionary<GraphNode, int>();
-            var s = new Stack<GraphNode>();
-            int index = 0;
+        //    var indexMap = new Dictionary<GraphNode, int>();
+        //    var lowlinkMap = new Dictionary<GraphNode, int>();
+        //    var s = new Stack<GraphNode>();
+        //    int index = 0;
 
-            foreach (var subNode in codeBlock.instrStream.dependencyGraph.GraphList)
-            {
-                indexMap[subNode] = Constants.kInvalidIndex;
-            }
+        //    foreach (var subNode in codeBlock.instrStream.dependencyGraph.GraphList)
+        //    {
+        //        indexMap[subNode] = Constants.kInvalidIndex;
+        //    }
 
-            var dependencyList = StrongConnectComponent(node, ref index, lowlinkMap, indexMap, s);
-            if (dependencyList == null)
-            {
-                return true;
-            }
-            else
-            {
-                GraphNode firstNode = dependencyList[0];
-                GraphNode lastNode = node;
+        //    var dependencyList = StrongConnectComponent(node, ref index, lowlinkMap, indexMap, s);
+        //    if (dependencyList == null)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        GraphNode firstNode = dependencyList[0];
+        //        GraphNode lastNode = node;
 
-                foreach (var n in dependencyList.GroupBy(x => x.guid).Select(y => y.First()))
-                {
-                    core.BuildStatus.LogWarning(WarningID.InvalidStaticCyclicDependency,
-                        ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, core.CurrentDSFileName, graphNode: n);
-                }
-                firstNode.isCyclic = true;
+        //        foreach (var n in dependencyList.GroupBy(x => x.guid).Select(y => y.First()))
+        //        {
+        //            core.BuildStatus.LogWarning(WarningID.InvalidStaticCyclicDependency,
+        //                ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, core.CurrentDSFileName, graphNode: n);
+        //        }
+        //        firstNode.isCyclic = true;
 
-                cyclicSymbol1 = firstNode.updateNodeRefList[0].nodeList[0].symbol;
-                cyclicSymbol2 = lastNode.updateNodeRefList[0].nodeList[0].symbol;
+        //        cyclicSymbol1 = firstNode.updateNodeRefList[0].nodeList[0].symbol;
+        //        cyclicSymbol2 = lastNode.updateNodeRefList[0].nodeList[0].symbol;
 
-                firstNode.cyclePoint = lastNode;
+        //        firstNode.cyclePoint = lastNode;
 
-                return false;
-            }
-        }
+        //        return false;
+        //    }
+        //}
 
         private SymbolNode Allocate(
             int classIndex,  // In which class table this variable will be allocated to ?
@@ -5494,48 +5494,48 @@ namespace ProtoAssociative
 
                     SymbolNode cyclicSymbol1 = null;
                     SymbolNode cyclicSymbol2 = null;
-                    if (core.Options.staticCycleCheck)
-                    {
-                        if (!CyclicDependencyTest(graphNode, ref cyclicSymbol1, ref cyclicSymbol2))
-                        {
-                            Validity.Assert(null != cyclicSymbol1);
-                            Validity.Assert(null != cyclicSymbol2);
+                    //if (core.Options.staticCycleCheck)
+                    //{
+                    //    if (!CyclicDependencyTest(graphNode, ref cyclicSymbol1, ref cyclicSymbol2))
+                    //    {
+                    //        Validity.Assert(null != cyclicSymbol1);
+                    //        Validity.Assert(null != cyclicSymbol2);
 
-                            // Set the first symbol that triggers the cycle to null
-                            ProtoCore.AssociativeGraph.GraphNode nullAssignGraphNode1 = new ProtoCore.AssociativeGraph.GraphNode();
-                            nullAssignGraphNode1.updateBlock.startpc = pc;
+                    //        // Set the first symbol that triggers the cycle to null
+                    //        ProtoCore.AssociativeGraph.GraphNode nullAssignGraphNode1 = new ProtoCore.AssociativeGraph.GraphNode();
+                    //        nullAssignGraphNode1.updateBlock.startpc = pc;
 
-                            EmitPushNull();
-                            EmitInstrConsole(ProtoCore.DSASM.kw.pop, cyclicSymbol1.name);
-                            EmitPopForSymbol(cyclicSymbol1, cyclicSymbol1.runtimeTableIndex, node.line, node.col, node.endLine, node.endCol);
+                    //        EmitPushNull();
+                    //        EmitInstrConsole(ProtoCore.DSASM.kw.pop, cyclicSymbol1.name);
+                    //        EmitPopForSymbol(cyclicSymbol1, cyclicSymbol1.runtimeTableIndex, node.line, node.col, node.endLine, node.endCol);
 
-                            nullAssignGraphNode1.PushSymbolReference(cyclicSymbol1);
-                            nullAssignGraphNode1.procIndex = globalProcIndex;
-                            nullAssignGraphNode1.classIndex = globalClassIndex;
-                            nullAssignGraphNode1.updateBlock.endpc = pc - 1;
+                    //        nullAssignGraphNode1.PushSymbolReference(cyclicSymbol1);
+                    //        nullAssignGraphNode1.procIndex = globalProcIndex;
+                    //        nullAssignGraphNode1.classIndex = globalClassIndex;
+                    //        nullAssignGraphNode1.updateBlock.endpc = pc - 1;
 
-                            PushGraphNode(nullAssignGraphNode1);
-                            EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, false);
+                    //        PushGraphNode(nullAssignGraphNode1);
+                    //        EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, false);
 
 
-                            //
-                            // Set the second symbol that triggers the cycle to null
-                            ProtoCore.AssociativeGraph.GraphNode nullAssignGraphNode2 = new ProtoCore.AssociativeGraph.GraphNode();
-                            nullAssignGraphNode2.updateBlock.startpc = pc;
+                    //        //
+                    //        // Set the second symbol that triggers the cycle to null
+                    //        ProtoCore.AssociativeGraph.GraphNode nullAssignGraphNode2 = new ProtoCore.AssociativeGraph.GraphNode();
+                    //        nullAssignGraphNode2.updateBlock.startpc = pc;
 
-                            EmitPushNull();
-                            EmitInstrConsole(ProtoCore.DSASM.kw.pop, cyclicSymbol2.name);
-                            EmitPopForSymbol(cyclicSymbol2, cyclicSymbol2.runtimeTableIndex, node.line, node.col, node.endLine, node.endCol);
+                    //        EmitPushNull();
+                    //        EmitInstrConsole(ProtoCore.DSASM.kw.pop, cyclicSymbol2.name);
+                    //        EmitPopForSymbol(cyclicSymbol2, cyclicSymbol2.runtimeTableIndex, node.line, node.col, node.endLine, node.endCol);
 
-                            nullAssignGraphNode2.PushSymbolReference(cyclicSymbol2);
-                            nullAssignGraphNode2.procIndex = globalProcIndex;
-                            nullAssignGraphNode2.classIndex = globalClassIndex;
-                            nullAssignGraphNode2.updateBlock.endpc = pc - 1;
+                    //        nullAssignGraphNode2.PushSymbolReference(cyclicSymbol2);
+                    //        nullAssignGraphNode2.procIndex = globalProcIndex;
+                    //        nullAssignGraphNode2.classIndex = globalClassIndex;
+                    //        nullAssignGraphNode2.updateBlock.endpc = pc - 1;
 
-                            PushGraphNode(nullAssignGraphNode2);
-                            EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, false);
-                        }
-                    }
+                    //        PushGraphNode(nullAssignGraphNode2);
+                    //        EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, false);
+                    //    }
+                    //}
                     if (isGraphInScope)
                     {
                         EmitCompileLog("==============End Node==============\n");

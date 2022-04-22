@@ -126,8 +126,8 @@ namespace Dynamo.Tests
             var finalNodes = 117;// includes dummy nodes
             activateTaskCounter(finalNodes);
             CurrentDynamoModel.ExecuteCommand(new ConvertNodesToCodeCommand());
-            Assert.AreEqual(wModel.Nodes.Count(), finalNodes);
-            Assert.AreEqual(taskCounter, 1);
+            Assert.AreEqual(finalNodes, wModel.Nodes.Count());
+            Assert.AreEqual(1, taskCounter);
             deactivateTaskCounter();
 
             CurrentDynamoModel.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
