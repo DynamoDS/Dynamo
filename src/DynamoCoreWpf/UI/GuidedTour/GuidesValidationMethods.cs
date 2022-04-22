@@ -586,5 +586,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Execute the JS function with the provided parameters
             ResourceUtilities.ExecuteJSFunction(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo, parametersInvokeScript);
         }
+
     }
 }
