@@ -716,7 +716,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override string ToString()
         {
-            return LeftNode + "." + RightNode;
+            return LeftNode + "." + RightNode + base.ToString();
         }
 
         public override AstKind Kind

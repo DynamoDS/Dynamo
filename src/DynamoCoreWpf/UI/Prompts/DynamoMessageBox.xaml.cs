@@ -139,9 +139,13 @@ namespace Dynamo.UI.Prompts
                 BodyText = messageBoxText,
                 TitleText = caption,
                 MessageBoxButton = button,
-                MessageBoxImage = icon,
-                Owner = owner
+                MessageBoxImage = icon
             };
+
+            if (owner.IsLoaded) 
+            {
+                dynamoMessageBox.Owner = owner;
+            }
 
             dynamoMessageBox.ConfigureButtons(button);
             dynamoMessageBox.ShowDialog();

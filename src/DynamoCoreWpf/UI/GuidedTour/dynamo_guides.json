@@ -877,5 +877,50 @@
 				}
 			}
 		]
+	},
+	{
+		"Name": "Onboarding",
+		"GuideSteps": [
+			{
+				"Sequence": 0,
+				"Name": "welcome",
+				"Type": "welcome",
+				"Width": 480,
+				"Height": 320,
+				"StepContent": {
+					"Title": "OnboardingGuideWelcomeTitle",
+					"FormattedText": "GetStartedGuideWelcomeText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "center",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 0,
+					"HtmlPage": {
+						"FileName": "getStartedOnboarding.html",
+						"Resources": {
+							"#GetStartedImage": "emptyImage.png"
+						}
+					}
+				}
+			},
+			{
+				"Sequence": 1,
+				"Name": "library",
+				"Type": "tooltip",
+				"ShowLibrary": false,
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 432,
+				"StepContent": {
+					"Title": "OnboardingWorkspaceTitle",
+					"FormattedText": "OnboardingWorkspaceText"
+				},
+				"HostPopupInfo": {					
+					"VerticalPopupOffset": 100,
+					"HorizontalPopupOffset": 50
+				}
+			}		
+		]
 	}
+
 ]

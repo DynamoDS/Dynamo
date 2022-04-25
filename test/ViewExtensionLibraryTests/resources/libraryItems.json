@@ -5234,7 +5234,7 @@
     },
     {
       "fullyQualifiedName": "DSCore.String.GetNumber",
-      "iconUrl": null,
+      "iconUrl": "http://localhost/icons/DSCore.String.GetNumber.Small?path=DSCoreNodes.dll",
       "contextData": "DSCore.String.GetNumber@string",
       "parameters": null,
       "itemType": "action",

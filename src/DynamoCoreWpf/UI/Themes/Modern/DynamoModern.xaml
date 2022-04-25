@@ -119,6 +119,40 @@
         <Setter Property="Background" Value="#343434" />
     </Style>
 
+    <!--  Generic Dynamo ToolTip  -->
+    <Style x:Key="GenericToolTipLight" TargetType="ToolTip">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="MaxWidth" Value="300" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Grid x:Name="PopupGrid">
+                        <Grid x:Name="ShadowBackground" Background="Transparent">
+                            <Path Margin="5 0 0 0" Width="20" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Data="M0,6 L6,0 12,6Z" Stroke="Gray" Fill="White" Stretch="None" />
+                            <Border BorderThickness="1 0 1 1" CornerRadius="3" Margin="0 5 7 7" BorderBrush="#999999" Background="white" Padding="10,8">
+                                <ContentPresenter/>
+                            </Border>
+                            <Border BorderThickness="0 1 0 0" CornerRadius="0 0 3 0" Margin="16 5 9 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="7" BorderBrush="#999999" />
+                            <Border BorderThickness="0 1 0 0" CornerRadius="3 0 0 0" Margin="0 5 0 0"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="7" Width="6" BorderBrush="#999999" />
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Resources>
+            <Style TargetType="ContentPresenter">
+                <Style.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                        <Setter Property="FontSize" Value="12px" />
+                        <Setter Property="Foreground" Value="#232323" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </Style.Resources>
+    </Style>
+    
     <Image x:Key="ComboDownIcon_normal" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/tick_selected.png" />
 
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
@@ -651,6 +685,31 @@
         </Setter>
     </Style>
 
+    <Style x:Key="TextButtonLink" TargetType="Button">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <TextBlock 
+                               Name="textBlock"        
+                               HorizontalAlignment="Left"                               
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               FontSize="14px"
+                               Background="Transparent"                        
+                               Foreground="#006FB4"
+                               Text="{TemplateBinding Content}"/>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="textBlock" Property="Background" Value="Transparent" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="InputStyle" TargetType="{x:Type TextBox}">
         <Setter Property="Margin" Value="0,0,0,12" />
         <Setter Property="MinWidth" Value="62px" />
@@ -681,6 +740,94 @@
                                 Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                 IsHitTestVisible="False"
                                 Opacity="0.5"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Text" Value=""/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Visibility" TargetName="WaterMarkLabel" Value="Visible"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="InputStyleWithIcon" TargetType="{x:Type TextBox}">
+        <Setter Property="Margin" Value="0,0,0,12" />
+        <Setter Property="MinWidth" Value="62px" />
+        <Setter Property="CaretBrush" Value="{StaticResource PrimaryCharcoal200Brush}" />
+        <Setter Property="Padding" Value="10,12,10,8"/>
+        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}"/>
+        <Setter Property="FontSize" Value="12px" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="25" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Row="0"
+							Grid.ColumnSpan="2"
+                            Background="#353535"
+                            BorderBrush="Transparent"                            
+                            BorderThickness="1"
+                            />
+                        <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
+                        <Label  x:Name="WaterMarkLabel"
+								Grid.Row="0"
+                                Padding="13,13,10,8"
+                                Content="{TemplateBinding Tag}" 
+                                VerticalAlignment="Center"
+                                Visibility="Collapsed"
+                                FontFamily="{StaticResource ArtifaktElementRegular}"
+                                FontSize="12px"
+                                Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                IsHitTestVisible="False"
+                                Opacity="0.5"/>
+                        <!--  This is the Canvas for the exclamation mark appearing when the Style that the user is trying to insert already exists  -->
+                        <Canvas Grid.Column="1" Margin="0,5,5,0"
+                                Visibility="{Binding Path=IsWarningEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Canvas.ToolTip>
+                                <ToolTip Content="{Binding CurrentWarningMessage}" Style="{StaticResource GenericToolTipLight}"/>
+                            </Canvas.ToolTip>
+                            <Path Fill="#FAA21B">
+                                <Path.Data>
+                                    <CombinedGeometry GeometryCombineMode="Exclude">
+                                        <CombinedGeometry.Geometry1>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="True" StartPoint="10,5">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="18,20" />
+                                                                    <LineSegment Point="2,20" />
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                        </CombinedGeometry.Geometry1>
+                                        <CombinedGeometry.Geometry2>
+                                            <GeometryGroup FillRule="EvenOdd">
+                                                <EllipseGeometry Center="10,18" RadiusX="1.5" RadiusY="1.5"/>
+                                                <RectangleGeometry Rect="8.5,8.5,3,7.5"/>
+                                            </GeometryGroup>
+                                        </CombinedGeometry.Geometry2>
+                                    </CombinedGeometry>
+                                </Path.Data>
+                            </Path>
+                        </Canvas>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <MultiTrigger>
@@ -1872,40 +2019,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
-
-    <!--  Generic Dynamo ToolTip  -->
-    <Style x:Key="GenericToolTipLight" TargetType="ToolTip">
-        <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Setter Property="MaxWidth" Value="300" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ToolTip">
-                    <Grid x:Name="PopupGrid">
-                        <Grid x:Name="ShadowBackground" Background="Transparent">
-                            <Path Margin="5 0 0 0" Width="20" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Data="M0,6 L6,0 12,6Z" Stroke="Gray" Fill="White" Stretch="None" />
-                            <Border BorderThickness="1 0 1 1" CornerRadius="3" Margin="0 5 7 7" BorderBrush="#999999" Background="white" Padding="10,8">
-                                <ContentPresenter/>
-                            </Border>
-                            <Border BorderThickness="0 1 0 0" CornerRadius="0 0 3 0" Margin="16 5 9 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="7" BorderBrush="#999999" />
-                            <Border BorderThickness="0 1 0 0" CornerRadius="3 0 0 0" Margin="0 5 0 0"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="7" Width="6" BorderBrush="#999999" />
-                        </Grid>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Resources>
-            <Style TargetType="ContentPresenter">
-                <Style.Resources>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="TextWrapping" Value="Wrap" />
-                        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-                        <Setter Property="FontSize" Value="12px" />
-                        <Setter Property="Foreground" Value="#232323" />
-                    </Style>
-                </Style.Resources>
-            </Style>
-        </Style.Resources>
     </Style>
 
     <Style x:Key="StartPageListBox" TargetType="ListBox">
@@ -3258,6 +3371,107 @@
                                VerticalOffset="-2">
                             <Border Background="{TemplateBinding Background}"
                                     BorderBrush="Transparent"
+                                    BorderThickness="0">
+                                <ScrollViewer x:Name="SubMenuScrollViewer"
+                                              CanContentScroll="true"
+                                              Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
+                                                                                            TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                    <Grid RenderOptions.ClearTypeHint="Enabled">
+                                        <ItemsPresenter x:Name="ItemsPresenter"
+                                                        Margin="2"
+                                                        Grid.IsSharedSizeScope="true"
+                                                        KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                        KeyboardNavigation.TabNavigation="Cycle"
+                                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Grid>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="False">
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ContextMenuItemFixedWidthStyle" TargetType="{x:Type MenuItem}">
+        <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="MinWidth" Value="250" />
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Padding" Value="20,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <DockPanel x:Name="dockPanel"
+                               HorizontalAlignment="Stretch"
+                               Background="Transparent"
+                               SnapsToDevicePixels="true">
+                        <Label x:Name="checkBox"
+                               Margin="0,0,-20,0"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Content="✓"
+                               DockPanel.Dock="Left"
+                               FontSize="9px"
+                               Foreground="White"
+                               Visibility="Collapsed" />
+                        <ContentPresenter x:Name="ContentPresenter"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center"
+                                          ContentSource="Header"
+                                          DockPanel.Dock="Left"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          TextBlock.Foreground="{StaticResource NodeContextMenuForeground}" />
+                        <Label x:Name="subMenuArrow"
+                               Margin="0,0,15,7"
+                               Padding="0"
+                               VerticalAlignment="Center"
+                               Content="&gt;"
+                               DockPanel.Dock="Right"
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               FontSize="13px"
+                               Foreground="{StaticResource Blue300Brush}">
+                            <Label.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1.5" />
+                            </Label.RenderTransform>
+                            <Label.Style>
+                                <Style TargetType="{x:Type Label}">
+                                    <Setter Property="Visibility" Value="Hidden" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <Popup x:Name="PART_Popup"
+                               AllowsTransparency="true"
+                               Focusable="false"
+                               HorizontalOffset="0"
+                               MaxWidth="182"
+                               IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                               Placement="Right"
+                               VerticalOffset="-2">
+                            <Border Background="{TemplateBinding Background}"
                                     BorderThickness="0">
                                 <ScrollViewer x:Name="SubMenuScrollViewer"
                                               CanContentScroll="true"
