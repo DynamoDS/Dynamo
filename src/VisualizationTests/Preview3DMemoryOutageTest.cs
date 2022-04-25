@@ -1,5 +1,6 @@
 ﻿using Dynamo.Models;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoCoreWpfTests.Utility;
 using HelixToolkit.Wpf.SharpDX;
@@ -48,7 +49,7 @@ namespace WpfVisualizationTests
             {
                 CallBase = true
             };
-            watch3DMock.Protected().Setup("OnRequestAttachToScene", ItExpr.IsAny<Model3D>()).Throws<OutOfMemoryException>();
+            watch3DMock.Protected().Setup("AggregateRenderPackages", ItExpr.IsAny<IEnumerable<HelixRenderPackage>>()).Throws<OutOfMemoryException>();
             return new DynamoViewModel.StartConfiguration()
             {
                 Watch3DViewModel = watch3DMock.Object

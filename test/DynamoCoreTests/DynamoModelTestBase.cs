@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -28,6 +29,9 @@ namespace Dynamo
         protected TestPathResolver pathResolver;
         protected IPreferences dynamoSettings;
 
+        // Some tests override the static property PathManager.BuiltinPackagesDirectory, so we need a way to reset it after each test.
+        private string originalBuiltinPackagesDirectory;
+
         protected override DynamoModel GetModel()
         {
             return CurrentDynamoModel;
@@ -37,6 +41,9 @@ namespace Dynamo
         public override void Setup()
         {
             base.Setup();
+
+            // Store a copy of the PathManager.BuiltinPackagesDirectory so that we can reset it after each DynamoModelTest
+            originalBuiltinPackagesDirectory = originalBuiltinPackagesDirectory ?? PathManager.BuiltinPackagesDirectory;
             StartDynamo(dynamoSettings);
         }
 
@@ -52,6 +59,8 @@ namespace Dynamo
                     CurrentDynamoModel.ShutDown(false);
                     CurrentDynamoModel = null;
                 }
+
+                PathManager.BuiltinPackagesDirectory = originalBuiltinPackagesDirectory;
             }
             catch (Exception ex)
             {
@@ -92,6 +101,7 @@ namespace Dynamo
             }
 
             this.CurrentDynamoModel = DynamoModel.Start(CreateStartConfiguration(settings));
+            Assert.AreEqual(CurrentDynamoModel.State, DynamoModel.DynamoModelState.StartedUIless);
         }
 
         /// <summary>
@@ -136,6 +146,12 @@ namespace Dynamo
         {
             string openPath = Path.Combine(TestDirectory, relativeFilePath);
             CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath));
+        }
+
+        protected void OpenModelInManualMode(string relativeFilePath)
+        {
+            string openPath = Path.Combine(TestDirectory, relativeFilePath);
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath, true));
         }
 
         protected void OpenSampleModel(string relativeFilePath)
@@ -188,6 +204,9 @@ namespace Dynamo
             CurrentDynamoModel.PreferenceSettings.CustomPackageFolders.Add(packageDirectory);
             var loader = GetPackageLoader();
             var pkg = loader.ScanPackageDirectory(packageDirectory);
+            if (pkg is null)
+                return;
+
             loader.LoadPackages(new List<Package> { pkg });
         }
 

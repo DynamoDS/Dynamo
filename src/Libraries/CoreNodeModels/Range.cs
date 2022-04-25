@@ -42,7 +42,7 @@ namespace CoreNodeModels
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData("end", Resources.RangePortDataEndToolTip, endPortDefaultValue)));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue)));
             }
-            if(outPorts.Count() == 0) OutPorts.Add(new PortModel(PortType.Output, this, new PortData("seq", Resources.RangePortDataSeqToolTip)));
+            if(outPorts.Count() == 0) OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.RangePortDataSeqToolTip)));
             ArgumentLacing = LacingStrategy.Auto;
             SetNodeStateBasedOnConnectionAndDefaults();
         }
@@ -55,7 +55,7 @@ namespace CoreNodeModels
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("end", Resources.RangePortDataEndToolTip, endPortDefaultValue)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("seq", Resources.RangePortDataSeqToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.RangePortDataSeqToolTip)));
 
             RegisterAllPorts();
 
@@ -140,7 +140,7 @@ namespace CoreNodeModels
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData("amount", Resources.RangePortDataAmountToolTip, amountPortDefaultValue)));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue)));
             }
-            if (outPorts.Count() == 0) OutPorts.Add(new PortModel(PortType.Output, this, new PortData("seq", Resources.RangePortDataSeqToolTip)));
+            if (outPorts.Count() == 0) OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.RangePortDataSeqToolTip)));
             ArgumentLacing = LacingStrategy.Auto;
             SetNodeStateBasedOnConnectionAndDefaults();
         }
@@ -150,7 +150,7 @@ namespace CoreNodeModels
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("amount", Resources.RangePortDataAmountToolTip, amountPortDefaultValue)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("seq", Resources.RangePortDataSeqToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.RangePortDataSeqToolTip)));
 
             RegisterAllPorts();
 

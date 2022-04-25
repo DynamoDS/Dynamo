@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -85,9 +86,30 @@ namespace Dynamo.Wpf.Extensions
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
         }
 
+        [Obsolete("Method will be deprecated in Dynamo 3.0, please use AddExtensionMenuItem")]
         public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
         {
             AddItemToMenu(type, menuItem, index);
+        }
+
+        /// <summary>
+        /// Adds a menu item to the extensions menu
+        /// Items will be ordered alphabetically
+        /// </summary>
+        /// <param name="menuItem">Menu item for the extension to be added</param>
+        public void AddExtensionMenuItem(MenuItem menuItem)
+        {
+            if (dynamoMenu == null) return;
+
+            var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
+            var dynamoItem = dynamoMenuItems.First(item => item.Header.ToString() == Properties.Resources.DynamoViewExtensionsMenu);
+
+            if (dynamoItem == null) return;
+            if (!dynamoItem.IsEnabled) dynamoItem.IsEnabled = true;
+
+            dynamoItem.Items.Add(menuItem);
+            //Orders the menu items alphabetically 
+            dynamoItem.Items.SortDescriptions.Add(new SortDescription("Header", ListSortDirection.Ascending));
         }
 
         /// <summary>
@@ -98,9 +120,9 @@ namespace Dynamo.Wpf.Extensions
         /// <returns></returns>
         public void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
         {
-            TabItem tabItem  = dynamoView.AddExtensionTabItem(viewExtension, contentControl);
+            bool added  = dynamoView.AddOrFocusExtensionControl(viewExtension, contentControl);
 
-            if (tabItem != null)
+            if (added)
             {
                 dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.ExtensionAdded);
             }
@@ -117,7 +139,7 @@ namespace Dynamo.Wpf.Extensions
         /// <returns></returns>
         public void CloseExtensioninInSideBar(IViewExtension viewExtension)
         {
-            dynamoView.CloseExtensionTabItem(viewExtension);
+            dynamoView.CloseExtensionControl(viewExtension);
         }
 
         public void AddSeparator(MenuBarType type, Separator separatorObj, int index = -1)
@@ -193,11 +215,44 @@ namespace Dynamo.Wpf.Extensions
             }
         }
 
+        /// <summary>
+        /// Request to open a view extension in the side panel by name.
+        /// </summary>
+        /// <param name="extensionName"></param>
+        public void OpenViewExtension(string extensionName)
+        {
+            dynamoViewModel.OnViewExtensionOpenRequest(extensionName);
+        }
+        
+        /// <summary>
+        /// Event raised when a component inside Dynamo raises a request to open a view extension.
+        /// </summary>
+        public event Action<string> ViewExtensionOpenRequest
+        {
+            // we provide a transparent passthrough to underlying event
+            // so that the ViewLoadedParams class itself doesn't appear as a subscriber to the event
+            add => dynamoViewModel.ViewExtensionOpenRequest += value;
+            remove => dynamoViewModel.ViewExtensionOpenRequest -= value;
+        }
+
+        /// <summary>
+        /// Event raised when a component inside Dynamo raises a request to open a view extension
+        /// providing extension name or GUID while being passed a parameter object.
+        /// </summary>
+        public event Action<string, object> ViewExtensionOpenRequestWithParameter
+        {
+            // we provide a transparent passthrough to underlying event
+            // so that the ViewLoadedParams class itself doesn't appear as a subscriber to the event
+            add => dynamoViewModel.ViewExtensionOpenWithParameterRequest += value;
+            remove => dynamoViewModel.ViewExtensionOpenWithParameterRequest -= value;
+        }
+
     }
     /// <summary>
     /// An enum that represents the different possible 
     /// MenuBars which ViewExtensions may add items to.
     /// </summary>
+    /// TODO: Remove in Dynamo 3.0
     public enum MenuBarType
     {
         File,

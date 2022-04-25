@@ -5,6 +5,8 @@ using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Models;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -105,7 +107,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void TestLoadDllFileSuccess()
+        public void TestLoadDllFileSuccessWithLibrarySearchPathsResultionToFindDLL()
         {
             LibraryLoaded = false;
 
@@ -118,6 +120,32 @@ namespace Dynamo.Tests
             {
                 Assert.IsTrue(ex is LibraryLoadFailedException);
             }
+            Assert.IsTrue(LibraryLoaded);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestLoadDllFileAtPathSuccess()
+        {
+            LibraryLoaded = false;
+
+            string libraryPath = Path.Combine(TestDirectory, "pkgs", "Package", "bin", @"Package.dll");
+        
+            libraryServices.ImportLibrary(libraryPath);
+   
+            Assert.IsTrue(LibraryLoaded);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestLoadDllFileWithApostropheInPathSuccess()
+        {
+            LibraryLoaded = false;
+
+            string libraryPath = Path.Combine(TestDirectory, "pkgs", "Pack'age", "bin", @"Package.dll");
+      
+            libraryServices.ImportLibrary(libraryPath);
+
             Assert.IsTrue(LibraryLoaded);
         }
 
@@ -207,21 +235,21 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void TestAddStandardLibraryPath()
+        public void TestAddBuiltinPackagesPath()
         {
             // Get the default custom package folders
             List<string> customPackageFolders = CurrentDynamoModel.PreferenceSettings.CustomPackageFolders;
 
             // Test that the default number of folders is correct
-            Assert.IsTrue(customPackageFolders.Count == 2);
+            Assert.IsTrue(customPackageFolders.Count == 3);
 
             // Test that the path is added as expected
             CurrentDynamoModel.AddPackagePath(TestDirectory, "");
-            Assert.IsTrue(customPackageFolders.Count == 3);
+            Assert.IsTrue(customPackageFolders.Count == 4);
 
             // Test that the path is not duplicated
             CurrentDynamoModel.AddPackagePath(TestDirectory, "");
-            Assert.IsTrue(customPackageFolders.Count == 3);
+            Assert.IsTrue(customPackageFolders.Count == 4);
         }
 
         [Test]
@@ -232,7 +260,7 @@ namespace Dynamo.Tests
             List<string> customPackageFolders = CurrentDynamoModel.PreferenceSettings.CustomPackageFolders;
 
             // Test that the default number of folders is correct
-            Assert.IsTrue(customPackageFolders.Count == 2);
+            Assert.IsTrue(customPackageFolders.Count == 3);
 
             string filename = @"DLL.dll";
             string packagePath = Path.Combine(TestDirectory, @"pkgs\Custom Rounding\extra");
@@ -240,15 +268,50 @@ namespace Dynamo.Tests
 
             // Test that the full file path is added as expected
             CurrentDynamoModel.AddPackagePath(packagePath, filename);
-            Assert.IsTrue(customPackageFolders.Count == 3);
+            Assert.IsTrue(customPackageFolders.Count == 4);
             int count = customPackageFolders.Where(s => s == libraryPath).Count();
             Assert.IsTrue(count == 1);
 
             // Test that the full file path is not duplicated
             CurrentDynamoModel.AddPackagePath(packagePath, filename);
-            Assert.IsTrue(customPackageFolders.Count == 3);
+            Assert.IsTrue(customPackageFolders.Count == 4);
             count = customPackageFolders.Where(s => s == libraryPath).Count();
             Assert.IsTrue(count == 1);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestBuiltinPackagesTokenIsFirstInList()
+        {
+            // Get the default custom package folders
+            List<string> customPackageFolders = CurrentDynamoModel.PreferenceSettings.CustomPackageFolders;
+
+            // Test that the default number of folders is correct
+            Assert.IsTrue(customPackageFolders.Count == 3);
+
+            // Check that builtinPackages token is first
+            Assert.AreEqual(DynamoModel.BuiltInPackagesToken, customPackageFolders[0]);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void Dispose_DS_ClassInstance()
+        {
+            CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary("..\\..\\..\\test\\core\\library\\testclass.ds");
+
+            var testNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("Test.CreateTest"));
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(testNode, 0, 0, true, false));
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
+            Assert.IsNotNull(node);
+
+            int stackCount = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeMemory.Stack.Count;
+            CurrentDynamoModel.DeleteModelInternal(new List<Graph.ModelBase>() { node });
+
+            // There is an issue with global variables, they do not get cleaned up properly 
+            // so in this case the stack count will be increased by 1.
+            // Change this after the issue is fixed
+            int stackCountAfterDelete = stackCount + 1;
+            Assert.AreEqual(stackCount + 1, CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeMemory.Stack.Count);
         }
     }
 }

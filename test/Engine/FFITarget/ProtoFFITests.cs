@@ -423,6 +423,14 @@ namespace FFITarget
             return x.GetValue();
         }
 
+        /// <summary>
+        /// Return nested dictionary.
+        /// </summary>
+        /// <returns name="col">column</returns>
+        /// <returns name="dict">dictionary</returns>
+        /// <returns name="num">number</returns>
+        /// <returns name="wt">weight</returns>
+        /// <returns name="ok">okay</returns>
         [MultiReturn("color", "dict", "nums", "weight", "ok")]
         public Dictionary<string, object> ReturnNestedDictionary()
         {
@@ -964,6 +972,14 @@ namespace FFITarget
     {
         public class Point
         {
+            [IsVisibleInDynamoLibrary(false)]
+            public Point()
+            {
+                dX = 0;
+                dY = 0;
+                dZ = 0;
+            }
+
             public static Point XYZ(double x, double y, double z)
             {
                 var p = new Point { dX = x, dY = y, dZ = z };

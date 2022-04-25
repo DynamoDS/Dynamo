@@ -1,12 +1,13 @@
-﻿using Dynamo.Core;
-using Dynamo.DocumentationBrowser.Properties;
-using Dynamo.Logging;
-using Dynamo.ViewModels;
-using System;
+﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
+using Dynamo.Core;
+using Dynamo.DocumentationBrowser.Properties;
+using Dynamo.Logging;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -15,43 +16,19 @@ namespace Dynamo.DocumentationBrowser
         #region Constants
 
         private const string HTML_TEMPLATE_IDENTIFIER = "%TEMPLATE%";
-        private const string BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME = nameof(Resources.InternalError) + ".html";
-        private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = nameof(Resources.FileNotFound) + ".html";
+        private const string BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME = "InternalError.html";
+        private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = "FileNotFound.html";
         private const string BUILT_IN_CONTENT_NO_CONTENT_FILENAME = "NoContent.html";
-        private const string SCRIPT_TAG_REGEX = @"<script[^>]*>[\s\S]*?</script>";
-        private const string DPISCRIPT = @"<script> function getDPIScale()
-        {
-            var dpi = 96.0;
-            if (window.screen.deviceXDPI != undefined)
-            {
-                dpi = window.screen.deviceXDPI;
-            }
-            else
-            {
-                var tmpNode = document.createElement('DIV');
-                tmpNode.style.cssText = 'width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden';
-                document.body.appendChild(tmpNode);
-                dpi = parseInt(tmpNode.offsetWidth);
-                tmpNode.parentNode.removeChild(tmpNode);
-            }
+        private const string STYLE_RESOURCE = "Dynamo.DocumentationBrowser.Docs.MarkdownStyling.html";
 
-            return dpi / 96.0;
-        }
-
-        function adaptDPI()
-        {
-            var dpiScale = getDPIScale();
-            document.body.style.zoom = dpiScale;
-
-            var widthPercentage = ((100.0 / dpiScale)-5).toString() + '%';
-            document.body.style.width = widthPercentage;
-        }
-        adaptDPI() </script>";
         #endregion
 
         #region Properties
 
         private bool shouldLoadDefaultContent;
+        private readonly PackageDocumentationManager packageManagerDoc;
+        private MarkdownHandler markdownHandler;
+        private FileSystemWatcher markdownFileWatcher;
 
         /// <summary>
         /// The link to the documentation website or file to display.
@@ -62,13 +39,26 @@ namespace Dynamo.DocumentationBrowser
             get { return this.link; }
             private set
             {
+                var oldLink = link;
+                // if the link is changed we unsubscribe the current watcher
+                // and create a new watcher for the new link, if its a markdown file.
+                if (value != oldLink)
+                {
+                    UnsubscribeMdWatcher();
+                    WatchMdFile(value.OriginalString);
+                }
+
                 this.link = value;
                 OnLinkChanged(value);
+
             }
         }
+
         private Uri link;
 
         private string content;
+
+        private MarkdownHandler MarkdownHandlerInstance => markdownHandler ?? (markdownHandler = new MarkdownHandler());
         public bool HasContent => !string.IsNullOrWhiteSpace(this.content);
 
         /// <summary>
@@ -107,6 +97,7 @@ namespace Dynamo.DocumentationBrowser
         }
 
         internal Action<ILogMessage> MessageLogged;
+        private OpenDocumentationLinkEventArgs openDocumentationLinkEventArgs;
 
         #endregion
 
@@ -118,11 +109,22 @@ namespace Dynamo.DocumentationBrowser
 
             // default to no content page on first start or no error selected
             this.shouldLoadDefaultContent = true;
+            packageManagerDoc = PackageDocumentationManager.Instance;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!Models.DynamoModel.IsTestMode)
+            {
+                this.content = "";
+            }
+            markdownHandler?.Dispose();
         }
 
         public void Dispose()
         {
-            this.content = null;
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion
@@ -131,10 +133,11 @@ namespace Dynamo.DocumentationBrowser
 
         public void HandleOpenDocumentationLinkEvent(OpenDocumentationLinkEventArgs e)
         {
+            openDocumentationLinkEventArgs = e;
             if (e == null)
                 NavigateToNoContentPage();
-
-            this.IsRemoteResource = e.IsRemoteResource;
+            else
+                this.IsRemoteResource = e.IsRemoteResource;
 
             // Ignore requests to remote resources
             if (!this.IsRemoteResource)
@@ -150,15 +153,39 @@ namespace Dynamo.DocumentationBrowser
         {
             try
             {
-                var content = LoadContentFromResources(e.Link.ToString());
-                if (content == null)
+                string targetContent;
+                Uri link;
+                switch (e)
+                {
+                    case OpenNodeAnnotationEventArgs openNodeAnnotationEventArgs:
+                        var mdLink = packageManagerDoc.GetAnnotationDoc(
+                            openNodeAnnotationEventArgs.MinimumQualifiedName, 
+                            openNodeAnnotationEventArgs.PackageName);
+
+                        link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
+                        targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
+                        break;
+
+                    case OpenDocumentationLinkEventArgs openDocumentationLink:
+                        link = openDocumentationLink.Link;
+                        targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly);
+                        break;
+
+                    default:
+                        // Navigate to unsupported 
+                        targetContent = null;
+                        link = null;
+                        break;
+                }
+
+                if (targetContent == null)
                 {
                     NavigateToContentMissingPage();
                 }
                 else
                 {
-                    this.content = content;
-                    this.Link = e.Link;
+                    this.content = targetContent;
+                    this.Link = link;
                 }
             }
             catch (FileNotFoundException)
@@ -179,13 +206,87 @@ namespace Dynamo.DocumentationBrowser
             this.shouldLoadDefaultContent = false;
         }
 
+        private void WatchMdFile(string mdLink)
+        {
+            if (string.IsNullOrWhiteSpace(mdLink))
+                return;
+
+            var fileName = Path.GetFileNameWithoutExtension(mdLink);
+            if (!packageManagerDoc.ContainsAnnotationDoc(fileName))
+                return;
+
+            markdownFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(mdLink))
+            {
+                Filter = Path.GetFileName(mdLink),
+                EnableRaisingEvents = true
+            };
+            markdownFileWatcher.Changed += OnCurrentMdFileChanged;
+        }
+
+        private void UnsubscribeMdWatcher()
+        {
+            if (markdownFileWatcher is null)
+                return;
+
+            markdownFileWatcher.Changed -= OnCurrentMdFileChanged;
+        }
+
+        // Its a known issue that FileWatchers raises the same event twice when a file is modified from some programs.
+        // https://stackoverflow.com/questions/1764809/filesystemwatcher-changed-event-is-raised-twice
+        private void OnCurrentMdFileChanged(object sender, FileSystemEventArgs e)
+        {
+            if (e.FullPath != link.OriginalString)
+                return;
+            if (!(openDocumentationLinkEventArgs is OpenNodeAnnotationEventArgs))
+                return;
+
+            var nodeAnnotationArgs = openDocumentationLinkEventArgs as OpenNodeAnnotationEventArgs;
+            this.content = CreateNodeAnnotationContent(nodeAnnotationArgs);
+            this.Link = new Uri(e.FullPath);
+        }
+
+        private string CreateNodeAnnotationContent(OpenNodeAnnotationEventArgs e)
+        {
+            var writer = new StringWriter();
+            try
+            {
+                writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
+
+                // Get the Node info section
+                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e);
+                writer.WriteLine(nodeDocumentation);
+
+                // Convert the markdown file to html
+                MarkdownHandlerInstance.ParseToHtml(ref writer, e.MinimumQualifiedName, e.PackageName);
+
+                writer.Flush();
+                var output = writer.ToString();
+
+                // Sanitize html and warn if any changes where made
+                if (MarkdownHandlerInstance.SanitizeHtml(ref output))
+                {
+                    LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
+                }
+
+                // inject the syntax highlighting script at the bottom at the document.
+                output += DocumentationBrowserUtils.GetDPIScript();
+                output += DocumentationBrowserUtils.GetSyntaxHighlighting();
+
+                return output;
+            }
+            finally
+            {
+                writer?.Dispose();
+            }
+        }
+
         #endregion
 
         #region Navigation to built-in pages
 
         public void NavigateToInternalErrorPage(string errorDetails)
         {
-            this.content = LoadContentFromResources(BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME);
+            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME, GetType().Assembly);
 
             // if additional details about the error were passed in,
             // update the error page HTML with that content
@@ -199,13 +300,13 @@ namespace Dynamo.DocumentationBrowser
 
         public void NavigateToContentMissingPage()
         {
-            this.content = LoadContentFromResources(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME);
+            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME, GetType().Assembly);
             UpdateLinkSafely(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME);
         }
 
         public void NavigateToNoContentPage()
         {
-            this.content = LoadContentFromResources(BUILT_IN_CONTENT_NO_CONTENT_FILENAME);
+            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_NO_CONTENT_FILENAME, GetType().Assembly);
             UpdateLinkSafely(BUILT_IN_CONTENT_NO_CONTENT_FILENAME);
         }
 
@@ -223,7 +324,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.Link = new Uri(link, UriKind.Relative);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // silently ignore any exceptions as otherwise it brings down all of Dynamo
             }
@@ -236,64 +337,6 @@ namespace Dynamo.DocumentationBrowser
         internal string GetContent()
         {
             return this.content;
-        }
-
-        private string LoadContentFromResources(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentNullException(nameof(name));
-
-            string result;
-            // If an assembly was specified in the uri, the resource will be searched there.
-            Assembly assembly;
-            var assemblyIndex = name.LastIndexOf(";");
-            if (assemblyIndex != -1)
-            {
-                var assemblyName = name.Substring(0, assemblyIndex);
-                // Ignore version and public key, in case they were specified.
-                var versionIndex = assemblyName.IndexOf(";");
-                if (versionIndex != -1)
-                {
-                    assemblyName = assemblyName.Substring(0, versionIndex);
-                }
-                assembly = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.GetName().Name == assemblyName).FirstOrDefault();
-                if (assembly == null)
-                {
-                    // The specified assembly is not loaded
-                    return null;
-                }
-                name = name.Substring(assemblyIndex + 1);
-            }
-            else
-            {
-                // Default to documentation browser assembly if no assembly was specified.
-                assembly = GetType().Assembly;
-            }
-
-            var availableResources = assembly.GetManifestResourceNames();
-
-            var matchingResource = availableResources
-                .Where(str => str.EndsWith(name))
-                .FirstOrDefault();
-
-            if (string.IsNullOrEmpty(matchingResource)) return null;
-
-            using (Stream stream = assembly.GetManifestResourceStream(matchingResource))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                result = reader.ReadToEnd();
-            }
-
-            // Clean up possible script tags from document
-            if (Regex.IsMatch(result, SCRIPT_TAG_REGEX, RegexOptions.IgnoreCase))
-            {
-                LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
-                result = Regex.Replace(result, SCRIPT_TAG_REGEX, "", RegexOptions.IgnoreCase);
-            }
-            //inject our DPI functions:
-            result = result + DPISCRIPT;
-
-            return result;
         }
 
         private void LogWarning(string msg, WarningLevel level) => this.MessageLogged?.Invoke(LogMessage.Warning(msg, level));

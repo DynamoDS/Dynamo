@@ -1,0 +1,194 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "MissingCell_OpenXml",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Users\\t_misom\\dev\\github\\Dynamo\\test\\core\\excel\\missingCell.xlsx",
+      "InputValue": ".\\missingCell.xlsx",
+      "NodeType": "ExtensionNode",
+      "Id": "7c788fc91dd948cea4a35b278250a681",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f77d3f70878e4f40b8522d417e56f714",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its file path."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"Sheet1\";",
+      "Id": "f854655ac7654b128294761ca05a8d7c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "69f35e4a96bc4f3a92de73060488bebe",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSOffice.Data.OpenXMLImportExcel@string,string,int,int,bool",
+      "Id": "d011bdbd73f348c9b144e0b0be32890f",
+      "Inputs": [
+        {
+          "Id": "7424e53aec934252ad06461d731a733e",
+          "Name": "filePath",
+          "Description": "File representing the Excel workbook\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9e9ded0870254b9e9549c34887e2fbb9",
+          "Name": "sheetName",
+          "Description": "Name of the worksheet containing data\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "21ba5bbef13f4d25b273650b0f734e3a",
+          "Name": "startRow",
+          "Description": "Start row for reading data. Enter 0 for Row 1, 1 for Row 2, etc.\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ecf4e7c7912b42f3aa5baf98ff9376c6",
+          "Name": "startColumn",
+          "Description": "Start column for reading data. Enter 0 for Column A, 1 for Column B, etc.\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5ca4ac8eca5b42698e4193b315446f52",
+          "Name": "readAsString",
+          "Description": "Toggle to read cells as strings\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0d0c25489daf4be09839880bfafb93fa",
+          "Name": "data",
+          "Description": "Rows of data from the Excel worksheet",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Read data from a Microsoft Excel spreadsheet. Data is read by row and returned in a series of lists by row. Rows and columns are zero-indexed; for example, the value in cell A1 will appear in the data list at [0,0].\n\nData.OpenXMLImportExcel (filePath: string, sheetName: string, startRow: int = 0, startColumn: int = 0, readAsString: bool = false): var[][]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f77d3f70878e4f40b8522d417e56f714",
+      "End": "7424e53aec934252ad06461d731a733e",
+      "Id": "3a65703a74fa4d059c122fd25c4f7063"
+    },
+    {
+      "Start": "69f35e4a96bc4f3a92de73060488bebe",
+      "End": "9e9ded0870254b9e9549c34887e2fbb9",
+      "Id": "697814f1ac844e91be052b63efaf5d14"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "ExtensionWorkspaceData": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.4557",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "7c788fc91dd948cea4a35b278250a681",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 76.799999999999955,
+        "Y": 84.399999999999963
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "f854655ac7654b128294761ca05a8d7c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 72.199999999999989,
+        "Y": 185.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Data.OpenXMLImportExcel",
+        "Id": "d011bdbd73f348c9b144e0b0be32890f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 331.6,
+        "Y": 101.19999999999997
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

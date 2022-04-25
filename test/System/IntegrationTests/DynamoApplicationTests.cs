@@ -13,10 +13,10 @@ namespace IntegrationTests
         public void DynamoSandboxLoadsASMFromValidPath()
         {
             var versions = new List<Version>(){
-                    new Version(224, 4, 0),
-                    new Version(224, 0, 1),
-                    new Version(223, 0, 1),
-                    new Version(225, 0, 0) };
+
+                    new Version(227, 0, 0),
+                    new Version(228, 0, 0)
+            };
 
 
             //go get a valid asm path.
@@ -33,8 +33,8 @@ namespace IntegrationTests
                     // asm modules in the nunit-agent process.
                     dynamoSandbox = System.Diagnostics.Process.Start(Path.Combine(coreDirectory, "DynamoSandbox.exe"), $"-gp \"{locatedPath}\"");
                     dynamoSandbox.WaitForInputIdle();
-              
-                var firstASMmodulePath = string.Empty;
+
+                    var firstASMmodulePath = string.Empty;
                     foreach (ProcessModule module in dynamoSandbox.Modules)
                     {
                         if (module.FileName.Contains("ASMAHL"))
@@ -43,8 +43,8 @@ namespace IntegrationTests
                             break;
                         }
                     }
-                //assert that ASM is really loaded from exactly where we specified.
-                Assert.AreEqual(Path.GetDirectoryName(firstASMmodulePath), locatedPath);
+                    //assert that ASM is really loaded from exactly where we specified.
+                    Assert.AreEqual(Path.GetDirectoryName(firstASMmodulePath), locatedPath);
                 });
             }
             finally
@@ -53,6 +53,13 @@ namespace IntegrationTests
                 dynamoSandbox?.Kill();
 
             }
+        }
+
+        [Test]
+        public void DynamoMakeModelWithHostName()
+        {
+            var model = Dynamo.Applications.StartupUtils.MakeModel(false, string.Empty, "DynamoFormIt");
+            Assert.AreEqual(model.HostName, "DynamoFormIt");
         }
 
         [Test]
@@ -66,6 +73,7 @@ namespace IntegrationTests
             });
 
         }
+
         [Test]
         public void GetVersionFromASMPath_returnsFileVersionForMockdll()
         {

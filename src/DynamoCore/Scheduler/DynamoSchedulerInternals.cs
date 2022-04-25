@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -7,6 +8,8 @@ namespace Dynamo.Scheduler
     partial class DynamoScheduler
     {
         #region Private Class Data Members
+
+        private readonly object objTaskInProgress = new Object();
 
         private enum EventIndex
         {
@@ -19,6 +22,7 @@ namespace Dynamo.Scheduler
             new ManualResetEvent(false)  // Scheduler shutdown event
         };
 
+        private bool taskInProgress;
         private bool taskQueueUpdated;
         private readonly ISchedulerThread schedulerThread;
         private readonly List<AsyncTask> taskQueue = new List<AsyncTask>();
@@ -35,6 +39,29 @@ namespace Dynamo.Scheduler
         }
 
         /// <summary>
+        /// Returns true if a task is curently executing
+        /// </summary>
+        public bool HasTaskInProgress
+        {
+            get
+            {
+                lock(objTaskInProgress)
+                {
+                    return taskInProgress;
+                }
+                
+            }
+
+            private set
+            {
+                lock(objTaskInProgress)
+                {
+                    taskInProgress = value;
+                }
+            }
+        }
+
+        /// <summary>
         /// Returns true if task queue is not empty.
         /// </summary>
         public bool HasPendingTasks
@@ -47,6 +74,7 @@ namespace Dynamo.Scheduler
                 }
             }
         }
+
         #endregion
 
         #region Private Class Helper Methods
@@ -144,6 +172,7 @@ namespace Dynamo.Scheduler
 
         private void ProcessTaskInternal(AsyncTask asyncTask)
         {
+            HasTaskInProgress = true;
             NotifyTaskStateChanged(asyncTask, TaskStateChangedEventArgs.State.ExecutionStarting);
 
             var executionState = asyncTask.Execute()
@@ -153,6 +182,7 @@ namespace Dynamo.Scheduler
             NotifyTaskStateChanged(asyncTask, executionState);
             asyncTask.HandleTaskCompletion();
             NotifyTaskStateChanged(asyncTask, TaskStateChangedEventArgs.State.CompletionHandled);
+            HasTaskInProgress = false;
         }
 
         #endregion

@@ -54,8 +54,14 @@ namespace ProtoTest.TD.MultiLangTests
 	}
 	def testToString()
 	{
-		a = [true,[false,false],true];
+		a = [true,[false,false],true,{""a"":1}];
 		b = __ToStringFromArray(a);
+		return = b;
+	}
+	def testToStringFromObject()
+	{
+		a = {""a"":1};
+		b = __ToStringFromObject(a);
 		return = b;
 	}
 	def testTranspose()
@@ -79,6 +85,7 @@ t6 = testSomeFalse();
 t7 = testSomeTrue();
 t8 = testToString();
 t9 = testTranspose();
+t10 = testToStringFromObject();
 t15 = testNormalizeDepth();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -98,8 +105,9 @@ t15 = testNormalizeDepth();
             thisTest.Verify("t5", 2);
             thisTest.Verify("t6", true);
             thisTest.Verify("t7", true);
-            thisTest.Verify("t8", "[true,[false,false],true]");
+            thisTest.Verify("t8", "[true,[false,false],true,{a:1}]");
             thisTest.Verify("t9", v4);
+            thisTest.Verify("t10", "{a:1}");
             thisTest.Verify("t15", v9);
         }
 

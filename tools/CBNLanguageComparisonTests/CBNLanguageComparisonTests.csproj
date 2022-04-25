@@ -66,7 +66,7 @@
     <Reference Include="FFITarget">
       <HintPath>$(DynamoPath)\FFITarget.dll</HintPath>
     </Reference>
-    <Reference Include="GraphToDSCompiler, Version=0.3.8238.8306, Culture=neutral, PublicKeyToken=4ab07533c327f749, processorArchitecture=AMD64">
+    <Reference Include="GraphToDSCompiler, Version=0.3.8238.8306, Culture=neutral, PublicKeyToken=4ab07533c327f749, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(DynamoPath)\GraphToDSCompiler.dll</HintPath>
     </Reference>

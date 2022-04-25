@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Graph;
@@ -15,6 +16,12 @@ namespace Dynamo.UI.Prompts
     /// </summary>
     public partial class EditWindow
     {
+        /// <summary>
+        /// Event analyses when a key has been typed on the edit window, 
+        /// used to alter the behaviour of certain keys, 
+        /// for example for adding bullet point support.         
+        /// </summary>
+        internal event EventHandler<KeyEventArgs> EditTextBoxPreviewKeyDown;
         private readonly DynamoViewModel dynamoViewModel;
         private bool CommitChangesOnReturn { get; set; }
 
@@ -40,7 +47,15 @@ namespace Dynamo.UI.Prompts
                         expr.UpdateSource();
                 };
             }
+            this.editText.PreviewKeyDown += EditText_PreviewKeyDown;
+            this.Closed += EditWindow_Closed;
         }
+
+        private void EditText_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            EditTextBoxPreviewKeyDown?.Invoke(sender, e);
+        }
+
         private void OnEditWindowPreviewKeyDown(object sender, KeyEventArgs e)
         {
            if(CommitChangesOnReturn && (e.Key == Key.Return || e.Key == Key.Enter))
@@ -108,6 +123,12 @@ namespace Dynamo.UI.Prompts
             else if (null != noteModel)
                 return noteModel;
             return annotationModel;
+        }
+
+        private void EditWindow_Closed(object sender, EventArgs e)
+        {
+            this.editText.PreviewKeyDown -= EditText_PreviewKeyDown;
+            this.Closed -= EditWindow_Closed;
         }
     }
 }

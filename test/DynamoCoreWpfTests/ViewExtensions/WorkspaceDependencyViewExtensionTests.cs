@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -37,6 +38,13 @@ namespace DynamoCoreWpfTests
             };
         }
 
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            string path = Path.Combine(PackagesDirectory, "Custom Rounding", "extra", "DLL.dll");
+            libraries.Add(path);
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void RestartBannerDefaultStateTest()
         {
@@ -48,7 +56,8 @@ namespace DynamoCoreWpfTests
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            viewExtension.Loaded(loadedParams);
+
             var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
             viewExtension.DependencyView.DependencyRegen(CurrentWorkspace);
             // Restart banner should not display by default
@@ -67,14 +76,13 @@ namespace DynamoCoreWpfTests
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            viewExtension.Loaded(loadedParams);
 
             var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
-            var info = CurrentWorkspace.NodeLibraryDependencies.Find(x => x.Name == "Dynamo Samples");
 
             // This is equivalent to uninstall the package
             var package = viewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == "Dynamo Samples").FirstOrDefault();
-            package.MarkedForUninstall = true;
+            package.LoadState.SetScheduledForDeletion();
 
             // Once choosing to install the specified version, info.State should reflect RequireRestart
             viewExtension.DependencyView.DependencyRegen(CurrentWorkspace);
@@ -129,6 +137,35 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
+        /// This test will verify that the Closed() will be triggered on the extension that is closed. 
+        /// </summary>
+        [Test]
+        public void OnViewExtensionClosedTest()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            WorkspaceDependencyViewExtension workspaceDependencyViewExtension = (WorkspaceDependencyViewExtension) extensionManager.ViewExtensions
+                                                                                .Where(ve => ve.Name.Equals("Workspace References")).FirstOrDefault();
+            // Open a graph which should bring up the Workspace References view extension window with one tab
+            Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+
+            // Assert that the workspace references menu item is checked.
+            Assert.IsTrue(workspaceDependencyViewExtension.workspaceReferencesMenuItem.IsChecked);
+
+            // Closing the view extension side bar should trigger the Closed() on the workspace dependency view extension.
+            // This will un-check the workspace references menu item.
+            loadedParams.CloseExtensioninInSideBar(workspaceDependencyViewExtension);
+
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+
+            // Assert that the workspace references menu item is un-checked.
+            Assert.IsFalse(workspaceDependencyViewExtension.workspaceReferencesMenuItem.IsChecked);
+        }
+
+        /// <summary>
         /// This test will make sure that the extension tab is closed upon closing the home workspace.
         /// </summary>
         [Test]
@@ -160,13 +197,13 @@ namespace DynamoCoreWpfTests
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            viewExtension.Loaded(loadedParams);
 
             var homeWorkspaceModel = ViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
 
             // This is equivalent to uninstall the package
             var package = viewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == "Dynamo Samples").FirstOrDefault();
-            package.MarkedForUninstall = true;
+            package.LoadState.SetScheduledForDeletion();
 
             // Closing the dyf will trigger DependencyRegen of HomeWorkspaceModel.
             // The HomeWorkspaceModel does not contain any dependency info since it's empty
@@ -185,7 +222,7 @@ namespace DynamoCoreWpfTests
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            viewExtension.Loaded(loadedParams);
 
             var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
             var info = CurrentWorkspace.NodeLibraryDependencies.Find(x => x.Name == "Dynamo Samples");
@@ -236,17 +273,90 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("Workspace References", viewExtension.Name);
 
             Assert.AreEqual("A6706BF5-11C2-458F-B7C8-B745A77EF7FD", viewExtension.UniqueId);
-
         }
 
-        public static void RaiseLoadedEvent(FrameworkElement element)
+        [Test]
+        public void VerifyDynamoLoadingOnOpeningWorkspaceWithMissingCustomNodes()
         {
-            MethodInfo eventMethod = typeof(FrameworkElement).GetMethod("OnLoaded",
-                BindingFlags.Instance | BindingFlags.NonPublic);
+            List<string> dependenciesList = new List<string>() { "MeshToolkit", "Clockwork for Dynamo 1.x", "Clockwork for Dynamo 2.x", "Dynamo Samples" };
+            DynamoModel.IsTestMode = false;
 
-            RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
+            var examplePath = Path.Combine(@"core\packageDependencyTests\PackageDependencyStates.dyn");
+            Open(examplePath);
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
 
-            eventMethod.Invoke(element, new object[] { args });
+            var workspaceViewExtension = (WorkspaceDependencyViewExtension) View.viewExtensionManager.ViewExtensions
+                                                                                .Where(x => x.Name.Equals("Workspace References")).FirstOrDefault();
+
+            foreach (PackageDependencyRow packageDependencyRow in workspaceViewExtension.DependencyView.dataRows) 
+            {
+                var dependencyInfo = packageDependencyRow.DependencyInfo;
+                Assert.Contains(dependencyInfo.Name, dependenciesList);
+            }
+        }
+
+        [Test]
+        public void VerifyLocalDefinitions()
+        {
+            List<string> dependenciesList = new List<string>() { "RootNode.dyf"};
+            DynamoModel.IsTestMode = false;
+
+            // Load the custom node and the zero touch assembly.
+            GetLibrariesToPreload(new List<string>());
+            var examplePath = Path.Combine(@"core\custom_node_dep_test\RootNode.dyf");
+            Open(examplePath);
+            ViewModel.Model.ClearCurrentWorkspace();
+
+            // Open test file to verify the LocalDefinitions list. 
+            examplePath = Path.Combine(@"core\LocalDefinitionsTest.dyn");
+            Open(examplePath);
+           
+            var workspaceViewExtension = (WorkspaceDependencyViewExtension)View.viewExtensionManager.ViewExtensions
+                                                                                .Where(x => x.Name.Equals("Workspace References")).FirstOrDefault();
+
+            Assert.AreEqual(1, workspaceViewExtension.DependencyView.localDefinitionDataRows.Count());
+            DependencyRow localDefinitionRow = workspaceViewExtension.DependencyView.localDefinitionDataRows.FirstOrDefault();
+            var dependencyInfo = localDefinitionRow.DependencyInfo;
+            Assert.Contains(dependencyInfo.Name, dependenciesList);
+        }
+
+        [Test]
+        public void VerifyExternalFileReferences()
+        {
+            List<string> dependenciesList = new List<string>() { "DynamoTest.xlsx", "Dynamo.png" };
+            DynamoModel.IsTestMode = false;
+
+            // Open test file to verify the external file references. 
+            var examplePath = Path.Combine(@"core\ExternalReferencesTest.dyn");
+            Open(examplePath);
+
+            var workspaceViewExtension = (WorkspaceDependencyViewExtension)View.viewExtensionManager.ViewExtensions
+                                                                                .Where(x => x.Name.Equals("Workspace References")).FirstOrDefault();
+
+            workspaceViewExtension.DependencyView.TriggerDependencyRegen();
+
+            Assert.AreEqual(2, workspaceViewExtension.DependencyView.externalFilesDataRows.Count());
+            foreach (DependencyRow localDefinitionRow in workspaceViewExtension.DependencyView.externalFilesDataRows)
+            {
+                var dependencyInfo = localDefinitionRow.DependencyInfo;
+                Assert.Contains(dependencyInfo.Name, dependenciesList);
+            }
+        }
+        [Test]
+        public void GetExternalFilesShouldBailIfGraphExecuting()
+        {
+            DynamoModel.IsTestMode = false;
+
+            // Open test file to verify the external file references are not computed when RunEnabled is false. 
+            var examplePath = Path.Combine(@"core\ExternalReferencesTest.dyn");
+            Open(examplePath);
+            (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunEnabled = false;
+            var results = Model.CurrentWorkspace.ExternalFiles;
+            Assert.AreEqual(0, results.Count());
+            (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunEnabled = true;
+            results = Model.CurrentWorkspace.ExternalFiles;
+            Assert.AreEqual(2, results.Count());
+
         }
     }
 }

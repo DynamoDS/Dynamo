@@ -1,7 +1,8 @@
-﻿using Dynamo.Migration;
-using NUnit.Framework;
+﻿using System;
 using System.IO;
 using System.Xml;
+using Dynamo.Migration;
+using NUnit.Framework;
 
 namespace Dynamo.Tests.Migrations
 {
@@ -15,21 +16,34 @@ namespace Dynamo.Tests.Migrations
         [Category("UnitTests")]
         public void TestWorkspaceMigrations()
         {
+            string consoleOutput;
+
             //Arrange
             string openPath = Path.Combine(TestDirectory, @"core\NodeStates.dyn");
             RunModel(openPath);
             string logFileText = string.Empty;
             XmlDocument xmlDoc = new XmlDocument();
 
-            //Act
-            //Create a instance of WorkspaceMigration and call the function that writes to the log
-            var workMigration = new WorkspaceMigrations(CurrentDynamoModel);
-            workMigration.Migrate_0_5_3_to_0_6_0(xmlDoc);
-            var currentLoggerPath = CurrentDynamoModel.Logger.LogPath;
+            using (StringWriter stringWriter = new StringWriter())
+            {
+                TextWriter standardOutput = Console.Out;
 
-            //Assert
-            Assert.IsTrue(File.Exists(currentLoggerPath));//Check that the log was created successfully
-            Assert.IsTrue(CurrentDynamoModel.Logger.LogText.Contains("migration from 0.5.3.x to 0.6.1.x"));//Checks that the log text contains the migration info
+                // Set the console out to a string object to verify the log message.
+                Console.SetOut(stringWriter);
+
+                //Act
+                //Create a instance of WorkspaceMigration and call the function that writes to the log
+                var workMigration = new WorkspaceMigrations(CurrentDynamoModel);
+                workMigration.Migrate_0_5_3_to_0_6_0(xmlDoc);
+
+                consoleOutput = stringWriter.ToString();
+
+                // Set the console out back to std out. 
+                Console.SetOut(standardOutput);
+            }
+
+            //Checks that the console output text contains the migration info
+            Assert.IsTrue(consoleOutput.Contains("migration from 0.5.3.x to 0.6.1.x"));
         }
     }
 }

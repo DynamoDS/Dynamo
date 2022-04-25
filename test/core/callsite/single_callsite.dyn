@@ -1,0 +1,121 @@
+{
+  "Uuid": "7842fe7c-89f6-4c0e-bb31-6862df1705af",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "single_callsite",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.WrapperObject.WrapperObject@int",
+      "Id": "08278f9e8ae64c72b86313e04cdde709",
+      "Inputs": [
+        {
+          "Id": "599ad1ca06bd4bcea928df0e9d0333f3",
+          "Name": "x",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "51cd409f271a4eddaae826b0cd688980",
+          "Name": "WrapperObject",
+          "Description": "WrapperObject",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "WrapperObject.WrapperObject (x: int): WrapperObject"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "5;",
+      "Id": "a92599c7b5b34d60a19a5e77a0bbbf4a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b002457465464d63bd59ccd3a33ff326",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "b002457465464d63bd59ccd3a33ff326",
+      "End": "599ad1ca06bd4bcea928df0e9d0333f3",
+      "Id": "efd05d500be046cab0366fda1c913390"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.10.0.3236",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "WrapperObject.WrapperObject",
+        "Id": "08278f9e8ae64c72b86313e04cdde709",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 497.5,
+        "Y": 410.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "a92599c7b5b34d60a19a5e77a0bbbf4a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 326.0,
+        "Y": 412.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

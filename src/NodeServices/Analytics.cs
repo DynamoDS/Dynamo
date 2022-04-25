@@ -8,6 +8,12 @@ namespace Dynamo.Logging
     public static class Analytics
     {
         /// <summary>
+        /// Disables all analytics collection (Google, ADP, etc.) for the lifetime of the process.
+        /// To ensure that no analytics get through, please set set this flag to false before the DynamoModel is constructed.
+        /// </summary>
+        public static bool DisableAnalytics;
+
+        /// <summary>
         /// A dummy IDisposable class
         /// </summary>
         class Dummy : IDisposable
@@ -15,7 +21,7 @@ namespace Dynamo.Logging
             public void Dispose() { }
         }
 
-        private static IAnalyticsClient client = null;
+        internal static IAnalyticsClient client = null;
         
         /// <summary>
         /// Starts analytics client
@@ -48,9 +54,10 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Returns if analytics reporting is ON
+        /// Returns if any analytics reporting is ON (Google, ADP etc.)
         /// </summary>
         public static bool ReportingAnalytics { get { return client != null && client.ReportingAnalytics; } }
+
 
         /// <summary>
         /// Tracks application startup time
@@ -133,7 +140,7 @@ namespace Dynamo.Logging
 
         /// <summary>
         /// Creates a new timed event with start state and tracks its start.
-        /// Disposing the returnd event will record the event completion.
+        /// Disposing the returned event will record the event completion.
         /// </summary>
         /// <param name="category">Event category</param>
         /// <param name="variable">Timed varaible name</param>
@@ -183,6 +190,7 @@ namespace Dynamo.Logging
         /// </summary>
         /// <param name="tag">Usage tag</param>
         /// <param name="data">Usage data</param>
+        [Obsolete("Function will be removed in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
         public static void LogPiiInfo(string tag, string data)
         {
             if (client != null) client.LogPiiInfo(tag, data);

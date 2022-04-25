@@ -23,6 +23,9 @@ namespace ProtoCore.Utils
             var trimChars = new[] {'\n','\t','\r',' '};
             fileName = fileName.Trim(trimChars);
 
+            // Fix file paths which include an apostrophe
+            fileName = fileName.Replace("\\'", "'");
+
             //1.  First search at .exe module directory, in case files of the same name exists in the following directories.
             //    The .exe module directory is of highest priority.
             //    CodeBase is used here because Assembly.Location does not work quite well when the module is shallow-copied in nunit test.

@@ -20,6 +20,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
@@ -158,9 +159,26 @@ namespace Dynamo.ViewModels
         private void OnRequestShowInCanvasSearch(object param)
         {
             var flag = (ShowHideFlags)param;
+            RequestShowInCanvasSearch?.Invoke(flag);
+        }
 
-            if (RequestShowInCanvasSearch != null)
-                RequestShowInCanvasSearch(flag);
+        internal event Action<object> RequestHideAllPopup;
+        private void OnRequestHideAllPopup(object param)
+        {
+            RequestHideAllPopup?.Invoke(param);
+        }
+
+        internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
+        internal event Action<ShowHideFlags, PortViewModel> RequestPortContextMenu;
+
+        internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag)
+        {
+            RequestNodeAutoCompleteSearch?.Invoke(flag);
+        }
+
+        internal void OnRequestPortContextMenu(ShowHideFlags flag, PortViewModel viewModel)
+        {
+            RequestPortContextMenu?.Invoke(flag, viewModel);
         }
 
         #endregion
@@ -221,13 +239,19 @@ namespace Dynamo.ViewModels
         /// of Graph.Json.
         /// </summary>
         [JsonProperty("Camera")]
-        public CameraData Camera => DynamoViewModel.BackgroundPreviewViewModel.GetCameraInformation() ?? new CameraData();
+        public CameraData Camera => DynamoViewModel.BackgroundPreviewViewModel?.GetCameraInformation() ?? new CameraData();
 
         /// <summary>
         /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
         /// </summary>
         [JsonIgnore]
         public SearchViewModel InCanvasSearchViewModel { get; private set; }
+
+        /// <summary>
+        /// ViewModel that is used in NodeAutoComplete feature in context menu and called by Shift+DoubleClick.
+        /// </summary>
+        [JsonIgnore]
+        public NodeAutoCompleteSearchViewModel NodeAutoCompleteSearchViewModel { get; private set; }
 
         /// <summary>
         /// Cursor Property Binding for WorkspaceView
@@ -261,6 +285,10 @@ namespace Dynamo.ViewModels
         // Do not serialize notes, they will be converted to annotations during serialization
         [JsonIgnore]
         public ObservableCollection<NoteViewModel> Notes { get; } = new ObservableCollection<NoteViewModel>();
+
+        [JsonIgnore]
+        public ObservableCollection<ConnectorPinViewModel> Pins { get; } = new ObservableCollection<ConnectorPinViewModel>();
+
         [JsonIgnore]
         public ObservableCollection<InfoBubbleViewModel> Errors { get; } = new ObservableCollection<InfoBubbleViewModel>();
         public ObservableCollection<AnnotationViewModel> Annotations { get; } = new ObservableCollection<AnnotationViewModel>();
@@ -400,6 +428,8 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
 
+        
+
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
@@ -416,6 +446,9 @@ namespace Dynamo.ViewModels
 
             var notesColl = new CollectionContainer { Collection = Notes };
             WorkspaceElements.Add(notesColl);
+
+            var pinsColl = new CollectionContainer { Collection = Pins };
+            WorkspaceElements.Add(pinsColl);
 
             var errorsColl = new CollectionContainer { Collection = Errors };
             WorkspaceElements.Add(errorsColl);
@@ -449,15 +482,25 @@ namespace Dynamo.ViewModels
             DynamoViewModel.CopyCommand.CanExecuteChanged += CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged += CopyPasteChanged;
 
-            // sync collections
 
+
+            // InCanvasSearchViewModel needs to happen before the nodes are created
+            // as we rely upon it to retrieve node icon images
+            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel)
+            {
+                Visible = true
+            };
+
+            // sync collections
             foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
             foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
             foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
             foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
-
-            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
-            InCanvasSearchViewModel.Visible = true;
+            
+            NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
+            {
+                Visible = true
+            };
         }
         /// <summary>
         /// This event is triggered from Workspace Model. Used in instrumentation
@@ -475,7 +518,6 @@ namespace Dynamo.ViewModels
             Model.NodeAdded -= Model_NodeAdded;
             Model.NodeRemoved -= Model_NodeRemoved;
             Model.NodesCleared -= Model_NodesCleared;
-
             Model.NoteAdded -= Model_NoteAdded;
             Model.NoteRemoved -= Model_NoteRemoved;
             Model.NotesCleared -= Model_NotesCleared;
@@ -500,10 +542,15 @@ namespace Dynamo.ViewModels
 
             Notes.ToList().ForEach(noteViewModel => noteViewModel.Dispose());
             Connectors.ToList().ForEach(connectorViewmModel => connectorViewmModel.Dispose());
+            Annotations.ToList().ForEach(AnnotationViewModel => AnnotationViewModel.Dispose());
             Nodes.Clear();
             Notes.Clear();
+            Pins.Clear();
             Connectors.Clear();
+            Errors.Clear();
+            Annotations.Clear();
             InCanvasSearchViewModel.Dispose();
+            NodeAutoCompleteSearchViewModel.Dispose();
         }
 
         internal void ZoomInInternal()
@@ -527,7 +574,7 @@ namespace Dynamo.ViewModels
         /// <param name="filePath"></param>
         /// <param name="engine"></param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
-        internal void Save(string filePath, bool isBackup = false, EngineController engine = null)
+        internal void Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
         {
             if (String.IsNullOrEmpty(filePath))
             {
@@ -536,6 +583,11 @@ namespace Dynamo.ViewModels
 
             try
             {
+                if (!isBackup)
+                {
+                    Model.OnSaving(saveContext);
+                }
+
                 //set the name before serializing model.
                 this.Model.setNameBasedOnFileName(filePath, isBackup);
                 // Stage 1: Serialize the workspace.
@@ -585,19 +637,19 @@ namespace Dynamo.ViewModels
             var viewBlock = obj["View"];
             if (viewBlock == null)
               return null;
-           
-            var settings = new JsonSerializerSettings
-            {
-                Error = (sender, args) =>
-                {
-                    args.ErrorContext.Handled = true;
-                    Console.WriteLine(args.ErrorContext.Error);
-                },
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Newtonsoft.Json.Formatting.Indented,
-                Culture = CultureInfo.InvariantCulture
-            };
+
+           var settings = new JsonSerializerSettings
+           {
+               Error = (sender, args) =>
+               {
+                   args.ErrorContext.Handled = true;
+                   Console.WriteLine(args.ErrorContext.Error);
+               },
+               ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+               TypeNameHandling = TypeNameHandling.Auto,
+               Formatting = Newtonsoft.Json.Formatting.Indented,
+               Culture = CultureInfo.InvariantCulture
+           };
 
             return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
@@ -655,22 +707,32 @@ namespace Dynamo.ViewModels
 
         private void Model_AnnotationRemoved(AnnotationModel annotation)
         {
-            Annotations.Remove(Annotations.First(x => x.AnnotationModel == annotation));
+            var matchingAnnotation = Annotations.First(x => x.AnnotationModel == annotation);
+            Annotations.Remove(matchingAnnotation);
+            matchingAnnotation.Dispose();
+           
         }
 
         private void Model_AnnotationsCleared()
         {
+            foreach (var annotationViewModel in Annotations)
+            {
+                annotationViewModel.Dispose();
+            }
             Annotations.Clear();
         }
 
         void Model_NodesCleared()
         {
-            foreach(var nodeViewModel in Nodes)
+            lock (Nodes)
             {
-                this.unsubscribeNodeEvents(nodeViewModel);
-                nodeViewModel.Dispose();
+                foreach (var nodeViewModel in Nodes)
+                {
+                    this.unsubscribeNodeEvents(nodeViewModel);
+                    nodeViewModel.Dispose();
+                }
+                Nodes.Clear();
             }
-            Nodes.Clear();
             Errors.Clear();
 
             PostNodeChangeActions();
@@ -684,9 +746,13 @@ namespace Dynamo.ViewModels
 
         void Model_NodeRemoved(NodeModel node)
         {
-            NodeViewModel nodeViewModel = Nodes.First(x => x.NodeLogic == node);
-            Errors.Remove(nodeViewModel.ErrorBubble);
-            Nodes.Remove(nodeViewModel);
+            NodeViewModel nodeViewModel;
+            lock (Nodes)
+            {
+                nodeViewModel = Nodes.First(x => x.NodeLogic == node);
+                Errors.Remove(nodeViewModel.ErrorBubble);
+                Nodes.Remove(nodeViewModel);
+            }
             //unsub the events we attached below in NodeAdded.
             this.unsubscribeNodeEvents(nodeViewModel);
             nodeViewModel.Dispose();
@@ -699,10 +765,12 @@ namespace Dynamo.ViewModels
             var nodeViewModel = new NodeViewModel(this, node);
             nodeViewModel.SnapInputEvent += nodeViewModel_SnapInputEvent;
             nodeViewModel.NodeLogic.Modified += OnNodeModified;
-            Nodes.Add(nodeViewModel);
+            lock (Nodes)
+            {
+                Nodes.Add(nodeViewModel);
+            }
             Errors.Add(nodeViewModel.ErrorBubble);
-            nodeViewModel.UpdateBubbleContent();
-
+            
             PostNodeChangeActions();
         }
 
@@ -764,7 +832,6 @@ namespace Dynamo.ViewModels
                     break;
 
             }
-            
         }
 
         void ModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -800,6 +867,7 @@ namespace Dynamo.ViewModels
             DynamoSelection.Instance.ClearSelection();
             Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
             Notes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.Model));
+            Annotations.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.AnnotationModel));
         }
 
         internal bool CanSelectAll(object parameter)
@@ -831,18 +899,26 @@ namespace Dynamo.ViewModels
 
         internal bool CanNodeToCode(object parameters)
         {
-            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
+            var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>();
+            if (!nodeModels.Any() || nodeModels.Any(x => x.IsInErrorState))
+            {
+                return false;
+            }
+            return true;
         }
 
         internal void SelectInRegion(Rect2D region, bool isCrossSelect)
         {
             var fullyEnclosed = !isCrossSelect;
             var selection = DynamoSelection.Instance.Selection;
-            var childlessModels = Model.Nodes.Concat<ModelBase>(Model.Notes);
+            var childlessModels = Model.Nodes
+                .Concat<ModelBase>(Model.Notes)
+                .Concat<ModelBase>(Pins.Select(c=>c.Model));
 
             foreach (var n in childlessModels)
             {
-                if (IsInRegion(region, n, fullyEnclosed))
+                // if target is within selection area but does not belong to a collapsed group
+                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed && !IsModelInCollapsedGroup(n))
                 {
                     selection.AddUnique(n);
                 }
@@ -854,20 +930,59 @@ namespace Dynamo.ViewModels
 
             foreach (var n in Model.Annotations)
             {
-                if (IsInRegion(region, n, fullyEnclosed))
+                // if target is within selection area but does not belong to a collapsed group
+                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed && !IsModelInCollapsedGroup(n))
                 {
                     selection.AddUnique(n);
                     // if annotation is selected its children should be added to selection too
                     foreach (var m in n.Nodes)
                     {
+                        if (m is AnnotationModel nestedGroup)
+                        {
+                            foreach (var model in nestedGroup.Nodes)
+                            {
+                                selection.AddUnique(model);
+                            }
+                        }
                         selection.AddUnique(m);
                     }
                 }
-                else if (n.IsSelected)
+                // only remove current selection if ClearSelectionDisabled flag is false
+                // This prevents group getting removed when user press shift to add more groups
+                else if (n.IsSelected && !Model.Annotations.ContainsModel(n)
+                    && !DynamoSelection.Instance.ClearSelectionDisabled)
                 {
                     selection.Remove(n);
                 }
             }
+        }
+
+        /// <summary>
+        /// Determine if a Dynamo element belongs to a collapsed group or sub group of a collapsed group
+        /// </summary>
+        /// <param name="model">Target node, note, annotation</param>
+        /// <returns></returns>
+        private bool IsModelInCollapsedGroup(ModelBase model)
+        {
+            bool IsInCollapsedGroup = false;
+            // Check all the collapsed groups and their sub groups
+            foreach (var group in Model.Annotations.Where(x => !x.IsExpanded))
+            {
+                if (group.Nodes.Contains(model))
+                {
+                    IsInCollapsedGroup = true;
+                    break;
+                }
+                foreach (var nestGroup in group.Nodes.OfType<AnnotationModel>())
+                {
+                    if (nestGroup.Nodes.Contains(model))
+                    {
+                        IsInCollapsedGroup = true;
+                        break;
+                    }
+                }
+            }
+            return IsInCollapsedGroup;
         }
 
         private static bool IsInRegion(Rect2D region, ILocatable locatable, bool fullyEnclosed)
@@ -973,16 +1088,36 @@ namespace Dynamo.ViewModels
                 }
                     break;
                 case "HorizontalLeft":
-                {
-                    var xAll = GetSelectionMinX();
-                    toAlign.ForEach((x) => { x.X = xAll; });
-                }
+                    {
+                        var xAll = GetSelectionMinX();
+                        toAlign.ForEach((x) =>
+                        {
+                            if (x is ConnectorPinModel pin)
+                            {
+                                x.X = xAll - ConnectorPinViewModel.OneThirdWidth;
+                            }
+                            else
+                            {
+                                x.X = xAll;
+                            }
+                        });
+                    }
                     break;
                 case "HorizontalRight":
-                {
-                    var xAll = GetSelectionMaxX();
-                    toAlign.ForEach((x) => { x.X = xAll - x.Width; });
-                }
+                    {
+                        var xAll = GetSelectionMaxX();
+                        toAlign.ForEach((x) =>
+                        {
+                            if (x is ConnectorPinModel pin)
+                            {
+                                x.X = xAll - ConnectorPinViewModel.OneThirdWidth * 4;
+                            }
+                            else
+                            {
+                                x.X = xAll - x.Width;
+                            }
+                        });
+                    }
                     break;
                 case "VerticalCenter":
                 {
@@ -991,16 +1126,36 @@ namespace Dynamo.ViewModels
                 }
                     break;
                 case "VerticalTop":
-                {
-                    var yAll = GetSelectionMinY();
-                    toAlign.ForEach((x) => { x.Y = yAll; });
-                }
+                    {
+                        var yAll = GetSelectionMinY();
+                        toAlign.ForEach((x) =>
+                        {
+                            if (x is ConnectorPinModel pin)
+                            {
+                                x.Y = yAll + ConnectorPinViewModel.OneThirdWidth;
+                            }
+                            else
+                            {
+                                x.Y = yAll;
+                            }
+                        });
+                    }
                     break;
                 case "VerticalBottom":
-                {
-                    var yAll = GetSelectionMaxY();
-                    toAlign.ForEach((x) => { x.Y = yAll - x.Height; });
-                }
+                    {
+                        var yAll = GetSelectionMaxY();
+                        toAlign.ForEach((x) =>
+                        {
+                            if (x is ConnectorPinModel pin)
+                            {
+                                x.Y = yAll - ConnectorPinViewModel.OneThirdWidth*2;
+                            }
+                            else
+                            {
+                                x.Y = yAll - x.Height;
+                            }
+                        });
+                    }
                     break;
                 case "VerticalDistribute":
                 {
@@ -1097,8 +1252,10 @@ namespace Dynamo.ViewModels
 
         private void SetArgumentLacing(object parameter)
         {
-            var modelGuids = DynamoSelection.Instance.Selection.
-                OfType<NodeModel>().Select(n => n.GUID);
+            var modelGuids = DynamoSelection.Instance.Selection
+                .OfType<NodeModel>()
+                .Where(n => n.ArgumentLacing != LacingStrategy.Disabled)
+                .Select(n => n.GUID);
 
             if (!modelGuids.Any())
                 return;
@@ -1249,7 +1406,7 @@ namespace Dynamo.ViewModels
             OnRequestZoomToFitView(this, zoomArgs);
         }
 
-        private void ResetFitViewToggle(object o)
+        internal void ResetFitViewToggle(object o)
         {
             _fitViewActualZoomToggle = false;
         }
@@ -1371,6 +1528,42 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("AnyNodeVisible");
             RaisePropertyChanged("SelectionArgumentLacing");            
         }
+
+        /// <summary>
+        /// Returns ViewModelBase by GUID
+        /// </summary>
+        /// <param name="modelGuid">Identifier of the requested model.</param>
+        /// <returns>Found <see cref="ViewModelBase"/> object.</returns>
+        internal ViewModelBase GetViewModelInternal(Guid modelGuid)
+        {
+            ViewModelBase foundModel = (Connectors.FirstOrDefault(c => c.ConnectorModel.GUID == modelGuid)
+                ?? Nodes.FirstOrDefault(node => node.NodeModel.GUID == modelGuid) as ViewModelBase)
+                ?? (Notes.FirstOrDefault(note => note.Model.GUID == modelGuid)
+                ?? Annotations.FirstOrDefault(annotation => annotation.AnnotationModel.GUID == modelGuid) as ViewModelBase);
+
+            return foundModel;
+        }
+
+        /// <summary>
+        /// Gets viewModels by their GUIDs
+        /// </summary>
+        /// <param name="modelGuids">Identifiers of the requested models.</param>
+        /// <returns>All found <see cref="ViewModelBase"/> objects.</returns>
+        internal IEnumerable<ViewModelBase> GetViewModelsInternal(IEnumerable<Guid> modelGuids)
+        {
+            var foundModels = new List<ViewModelBase>();
+
+            foreach (var modelGuid in modelGuids)
+            {
+                var foundModel = GetViewModelInternal(modelGuid);
+                if (foundModel != null)
+                    foundModels.Add(foundModel);
+            }
+
+            return foundModels;
+        }
+
+        
     }
 
     public class ViewModelEventArgs : EventArgs

@@ -1,0 +1,258 @@
+{
+  "Uuid": "afd84a69-787d-4452-8770-2580abb498a0",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "func_nested_replication",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "WrapperObject.wrap": {
+        "Key": "FFITarget.WrapperObject",
+        "Value": "FFITarget.dll"
+      },
+      "WrapperObject": {
+        "Key": "FFITarget.WrapperObject",
+        "Value": "FFITarget.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "def internalReplication(x){\ny = 0..x;\ndata = WrapperObject.WrapperObject(y);\nreturn data;\n};",
+      "Id": "2eaf202864784de6b7a8fa650cb269d4",
+      "Inputs": [],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x = 2;\ninternalReplication(x);",
+      "Id": "73177f2a9bb341b3aee69dc098238adb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3182304912ec4a3a9eab344ffc8816c9",
+          "Name": "",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9562aeb60ebc43568d8eeeb2426fe749",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
+      "Id": "22e0f3229b314aa48914e8f6b925872c",
+      "Inputs": [
+        {
+          "Id": "edff8796ed994f1a8fa7283ab5321639",
+          "Name": "wrapperObject",
+          "Description": "FFITarget.WrapperObject",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8a740277ee2f4dc2bd16b9313d139646",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "WrapperObject.ID: int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
+      "Id": "74cd0ca6d4964ec2b500fbe96139d28c",
+      "Inputs": [
+        {
+          "Id": "b2e2506647c94e7cbc8a26a7bb1af4d5",
+          "Name": "wrapperObject",
+          "Description": "FFITarget.WrapperObject",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7529ef8dd3434cee89d5fa24cf7e5180",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "WrapperObject.ID: int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "wait;\ninternalReplication(0..3);",
+      "Id": "eaa6067ccf6b41d684e89a12cbf8da63",
+      "Inputs": [
+        {
+          "Id": "357b146f8f164d1f843783242364a416",
+          "Name": "wait",
+          "Description": "wait",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e2ee7009042045dca37df22edc449f69",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c237dd65328d469fad0e0a9ac283e8c8",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "9562aeb60ebc43568d8eeeb2426fe749",
+      "End": "edff8796ed994f1a8fa7283ab5321639",
+      "Id": "1bbdae1cc48747be9607a953a50efe96"
+    },
+    {
+      "Start": "8a740277ee2f4dc2bd16b9313d139646",
+      "End": "357b146f8f164d1f843783242364a416",
+      "Id": "105a818831ec4022b47ee036ffb44091"
+    },
+    {
+      "Start": "c237dd65328d469fad0e0a9ac283e8c8",
+      "End": "b2e2506647c94e7cbc8a26a7bb1af4d5",
+      "Id": "e2906f92f00d40be86f03ab94dfa6314"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.10.0.3220",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "2eaf202864784de6b7a8fa650cb269d4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 120.0,
+        "Y": 310.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "inner replicating",
+        "Id": "73177f2a9bb341b3aee69dc098238adb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 215.0,
+        "Y": 469.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "id1",
+        "Id": "22e0f3229b314aa48914e8f6b925872c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 509.0,
+        "Y": 478.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "id2",
+        "Id": "74cd0ca6d4964ec2b500fbe96139d28c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 556.0,
+        "Y": 750.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "both replicating",
+        "Id": "eaa6067ccf6b41d684e89a12cbf8da63",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 172.0,
+        "Y": 744.0
+      }
+    ],
+    "Annotations": [],
+    "X": 38.0,
+    "Y": -303.0,
+    "Zoom": 1.0
+  }
+}

@@ -20,13 +20,13 @@ namespace CoreNodeModels
     [NodeSearchTags("ColorRangeSearchTags", typeof(Resources))]
 
     [InPortNames("colors", "indices", "value")]
-    [InPortTypes("Color[]", "double[]", "double")]
+    [InPortTypes("DSCore.Color[]", "double[]", "double")]
     [InPortDescriptions(typeof(Resources),
         "ColorRangePortDataColorsToolTip",
         "ColorRangePortDataIndicesToolTip",
         "ColorRangePortDataValueToolTip")]
     [OutPortNames("color")]
-    [OutPortTypes("Color")]
+    [OutPortTypes("DSCore.Color")]
     [OutPortDescriptions(typeof(Resources),
         "ColorRangePortDataResultToolTip")]
     [AlsoKnownAs("DSCoreNodesUI.ColorRange")]

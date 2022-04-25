@@ -2014,7 +2014,7 @@ list1 = [ true, null, a1, 0, 0.0, 1.5, 0.5, -1 ];
 list2 = !list1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { false, null, null, true, true, false, false, false };
+            Object[] v1 = new Object[] { false, true, true, true, true, false, false, false };
             thisTest.Verify("list2", v1);
         }
 
@@ -2028,7 +2028,7 @@ list1 = [ [ true, null], 0, 1 ];
 list2 = !list1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { new Object[] { false, null }, true, false };
+            Object[] v1 = new Object[] { new Object[] { false, true }, true, false };
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
             thisTest.Verify("list2", v1);
         }
@@ -2569,6 +2569,34 @@ test3 = a1.X[0][0];
             Object n1 = null;
             thisTest.Verify("test3", 1);
             thisTest.Verify("test2", new Object[] { 1, 2 });
+        }
+
+        [Test]
+        [Category("Replication")]
+        public void DotOperationShouldIdentifyTheTypeOfArraysWithSomeEmptyItems()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+a = TestObjectA.TestObjectA(1);
+array1 = [[],[a]];
+test1 = array1.a;
+array2 = [[a],[]];
+test2 = array2.a;
+array3 = [[[[]]],[[[],[]],[[],[a]]]];
+test3 = array3.a;
+";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("test1", new object[] { new object[0], new object[] { 1 } });
+            thisTest.Verify("test2", new object[] { new object[] { 1 }, new object[0] });
+            thisTest.Verify("test3", new object[] {
+                new object[] { new object[] { new object[0] } },
+                new object[]
+                {
+                    new object[] { new object[0], new object[0] },
+                    new object[] { new object[0], new object[] { 1 } }
+                }
+            });
         }
 
         [Test]
@@ -4939,6 +4967,32 @@ px2 = DummyPoint2D.X(l2);
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("px1", new object[] { new object[] { }, new object[] { 0 } });
             thisTest.Verify("px2", new object[] { new object[] { 0 }, new object[] { } });
+        }
+
+        [Test]
+        public void TestReplicationWithNestedEmptyLists()
+        {
+            string code =
+@"
+def foo( x:var[] )
+{
+    return x;
+}
+
+a = [[],[]];
+b = [[1],[]];
+c = [[],[1]];
+d = [null,[]];
+out1 = foo(a);
+out2 = foo(b);
+out3 = foo(c);
+out4 = foo(d);
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("out1", new object[] { new object[] { }, new object[] { } });
+            thisTest.Verify("out2", new object[] { new object[] { 1 }, new object[] { } });
+            thisTest.Verify("out3", new object[] { new object[] { }, new object[] { 1 } });
+            thisTest.Verify("out4", new object[] { null, new object[] { } });
         }
 
         // This tests the case 4 block in the computeFeps method (CallSite.cs)

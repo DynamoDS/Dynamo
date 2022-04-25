@@ -70,60 +70,11 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
-        ///
-        ///&lt;!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. --&gt;
-        ///&lt;head&gt;
-        ///    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
-        ///    &lt;meta charset=&quot;UTF-8&quot; /&gt;
-        ///&lt;/head&gt;
-        ///
-        ///&lt;style&gt;
-        ///  *{
-        ///      transition: all 0.6s;
-        ///  }
-        ///
-        ///  html {
-        ///      height: 100%;
-        ///  }
-        ///
-        ///  body{
-        ///      font-family: &quot;Artifakt Element&quot;, &quot;Open Sans&quot;, sans-serif;
-        ///      font-size: 14px;
-        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format( [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to Documentation Browser.
         /// </summary>
-        public static string FileNotFound {
+        public static string ExtensionName {
             get {
-                return ResourceManager.GetString("FileNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
-        ///
-        ///&lt;!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. --&gt;
-        ///&lt;head&gt;
-        ///  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
-        ///  &lt;meta charset=&quot;UTF-8&quot; /&gt;
-        ///&lt;/head&gt;
-        ///
-        ///&lt;style&gt;
-        ///  *{
-        ///      transition: all 0.6s;
-        ///  }
-        ///
-        ///  html {
-        ///      height: 100%;
-        ///  }
-        ///
-        ///  body{
-        ///      font-family: &quot;Artifakt Element&quot;, &quot;Open Sans&quot;, sans-serif;
-        ///      font-size: 14px;
-        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format(&quot;wof [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string InternalError {
-            get {
-                return ResourceManager.GetString("InternalError", resourceCulture);
+                return ResourceManager.GetString("ExtensionName", resourceCulture);
             }
         }
         
@@ -146,7 +97,7 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Documentation Browser.
+        ///   Looks up a localized string similar to Show _Documentation Browser.
         /// </summary>
         public static string MenuItemText {
             get {
@@ -155,26 +106,56 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
-        ///
-        ///&lt;!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. --&gt;
-        ///&lt;head&gt;
-        ///  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
-        ///  &lt;meta charset=&quot;UTF-8&quot; /&gt;
-        ///&lt;/head&gt;
-        ///
-        ///&lt;style&gt;
-        ///  body {
-        ///      color: white;
-        ///      font-size: 14px;
-        ///      font-family: &quot;Artifakt Element&quot;, &quot;Open Sans&quot;, sans-serif;
-        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format(&quot;woff&quot;);
-        ///      background-color: #353535;
-        ///      padding: 1%; [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to Category.
         /// </summary>
-        public static string NoContent {
+        public static string NodeDocumentationCategory {
             get {
-                return ResourceManager.GetString("NoContent", resourceCulture);
+                return ResourceManager.GetString("NodeDocumentationCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string NodeDocumentationDescription {
+            get {
+                return ResourceManager.GetString("NodeDocumentationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inputs.
+        /// </summary>
+        public static string NodeDocumentationInputs {
+            get {
+                return ResourceManager.GetString("NodeDocumentationInputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Info.
+        /// </summary>
+        public static string NodeDocumentationNodeInfo {
+            get {
+                return ResourceManager.GetString("NodeDocumentationNodeInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Type.
+        /// </summary>
+        public static string NodeDocumentationNodeType {
+            get {
+                return ResourceManager.GetString("NodeDocumentationNodeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outputs.
+        /// </summary>
+        public static string NodeDocumentationOutputs {
+            get {
+                return ResourceManager.GetString("NodeDocumentationOutputs", resourceCulture);
             }
         }
         

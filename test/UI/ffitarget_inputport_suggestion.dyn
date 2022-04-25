@@ -1,0 +1,94 @@
+{
+  "Uuid": "79ea0296-2698-4563-9ebd-ca50128bd4e7",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "ffitarget_inputport_suggestion",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyPoint.Translate@FFITarget.DummyVector",
+      "Id": "9aeba33453a34c73823976222b44375b",
+      "Inputs": [
+        {
+          "Id": "6386befce6fb4baba5131314fc55348b",
+          "Name": "dummyPoint",
+          "Description": "FFITarget.DummyPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4352cc5bbe58469e80d7db2760dd0871",
+          "Name": "direction",
+          "Description": "DummyVector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fc8a45bf13a449b4814ec0a843fc5be0",
+          "Name": "DummyPoint",
+          "Description": "DummyPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyPoint.Translate (direction: DummyVector): DummyPoint"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.9.0.2607",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "DummyPoint.Translate",
+        "Id": "9aeba33453a34c73823976222b44375b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 618.0,
+        "Y": 357.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

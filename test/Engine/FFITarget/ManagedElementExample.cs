@@ -182,6 +182,11 @@ namespace FFITarget
 
         private const string __TEMP_REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
 
+        public static void ResetNextID()
+        {
+            nextID = 0;
+        }
+
         public WrapperObject(int x)
         {
             WrapperGuid = Guid.NewGuid();

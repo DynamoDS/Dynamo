@@ -57,7 +57,15 @@ This a simple example of a Zero-Touch node that performs a division. Taking a lo
 3. `DivisionByZero.html`: This is the name of the HTML file that should be displayed for help. This file must be an `Embedded Resource` in the specified assembly.
 
 
-### Contextual help best practices
+## How to localize help content
+Help content can be localized by leveraging on the built-in satellite assembly creation .NET provides. You just need to create a translated copy of your help file, set its `Build Action` to `Embedded Resource` and following this naming convention:
+```
+DivisionByZero.html <- Invariant culture, the default when no appropriate language is available
+DivisionByZero.en-us.html <- Specific culture for English in the United States of America
+DivisionByZero.es.html <- Neutral culture for Spanish
+```
+
+## Contextual help best practices
 1. Keep help content concise but useful. Provide links to additional online help resources.
 2. Give style to HTML documents. Either use your own theme or base on the Dynamo theme used in [the built-in help documents](https://github.com/DynamoDS/Dynamo/tree/master/src/DocumentationBrowserViewExtension/Docs).
 3. Avoid adding scripts to HTML documents. For security reasons we forbid their use.

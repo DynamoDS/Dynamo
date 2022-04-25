@@ -305,7 +305,7 @@ namespace Dynamo.Engine
             return splitted[splitted.Length - 2] + "." + splitted[splitted.Length - 1];
         }
 
-        internal string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
+        internal string GetFunctionSignatureFromFunctionSignatureHint(string functionSignature)
         {
             // if the hint is explicit, we can simply return the mapped function
             if (priorNameHints.ContainsKey(functionSignature))
@@ -621,14 +621,21 @@ namespace Dynamo.Engine
                     ImportProcedure(library, globalFunction);
                 }
             }
+            catch (DynamoServices.AssemblyBlockedException e)
+            {
+                // This exception is caught upstream after displaying a failed load library warning to the user.
+                throw e;
+            }
             catch (Exception e)
             {
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message,
                     throwOnFailure: !isExplicitlyImportedLib));
                 return false;
             }
-            importedLibraries.Add(library);
-
+            if (!importedLibraries.Contains(library))
+            {
+                importedLibraries.Add(library);
+            }
             return true;
         }
 
@@ -1095,7 +1102,10 @@ namespace Dynamo.Engine
             if (pathManager.PackagesDirectories.Any(
                 directory => library.StartsWith(directory)))
             {
-                packagedLibraries.Add(library);
+                if (!packagedLibraries.Contains(library))
+                {
+                    packagedLibraries.Add(library);
+                }
             }
 
             EventHandler<LibraryLoadingEventArgs> handler = LibraryLoading;
@@ -1190,7 +1200,7 @@ namespace Dynamo.Engine
             public string LibraryPath { get; private set; }
         }
 
-        private class LibraryPathComparer : IEqualityComparer<string>
+        internal class LibraryPathComparer : IEqualityComparer<string>
         {
             public bool Equals(string path1, string path2)
             {

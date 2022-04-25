@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Windows.Navigation;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 
@@ -8,7 +6,9 @@ namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel
     {
+        [Obsolete("This event will be removed, do not use. It does nothing.")]
         public event EventHandler RequestManagePackagesDialog;
+        [Obsolete("This method will be removed do not use. It does nothing.")]
         public virtual void OnRequestManagePackagesDialog(Object sender, EventArgs e)
         {
             if (RequestManagePackagesDialog != null)
@@ -32,8 +32,9 @@ namespace Dynamo.ViewModels
                 RequestPackageManagerSearchDialog(this, e);
             }
         }
-
+        [Obsolete("This event will be removed, do not use. It does nothing.")]
         public event EventHandler RequestPackagePathsDialog;
+        [Obsolete("This method will be removed do not use. It does nothing.")]
         public virtual void OnRequestPackagePathsDialog(object sender, EventArgs e)
         {
             var handler = RequestPackagePathsDialog;
@@ -59,8 +60,10 @@ namespace Dynamo.ViewModels
                 RequestSave3DImage(this, e);
             }
         }
-
+        [Obsolete("This event will be removed later, now the Scaling Factor functionality is implemented in PreferencesViewModel.cs")]
         public event EventHandler RequestScaleFactorDialog;
+
+        [Obsolete("This method will be removed later, now the Scaling Factor functionality is implemented in PreferencesViewModel.cs")]
         public virtual void OnRequestScaleFactorDialog(object sender, EventArgs e)
         {
             var handler = RequestScaleFactorDialog;
@@ -161,6 +164,36 @@ namespace Dynamo.ViewModels
         {
             if (RequestReturnFocusToView != null)
                 RequestReturnFocusToView();
+        }
+
+        /// <summary>
+        /// Event used to verify that the correct dialog is being showed when saving a graph with unresolved linter issues.
+        /// This is only meant to be used for unit testing purposes.
+        /// As the GenericTaskDialog is not owned by the DynamoWindow we need another way to verify that it shows up
+        /// when doing unit tests.
+        /// </summary>
+        internal event Action<SaveWarningOnUnresolvedIssuesArgs> SaveWarningOnUnresolvedIssuesShows;
+        internal void OnSaveWarningOnUnresolvedIssuesShows(SaveWarningOnUnresolvedIssuesArgs e)
+        {
+            SaveWarningOnUnresolvedIssuesShows?.Invoke(e);
+        }
+
+        /// <summary>
+        /// Event raised when there's a request to open the view extension in the side panel.
+        /// </summary>
+        internal event Action<string> ViewExtensionOpenRequest;
+        internal void OnViewExtensionOpenRequest(string extensionName)
+        {
+            ViewExtensionOpenRequest?.Invoke(extensionName);
+        }
+
+        /// <summary>
+        /// Event raised when there's a request to open the view extension in the side panel.
+        /// </summary>
+        internal event Action<string, object> ViewExtensionOpenWithParameterRequest;
+        internal void OnViewExtensionOpenWithParameterRequest(string extensionIdentification, object obj)
+        {
+            ViewExtensionOpenWithParameterRequest?.Invoke(extensionIdentification, obj);
         }
     }
 }

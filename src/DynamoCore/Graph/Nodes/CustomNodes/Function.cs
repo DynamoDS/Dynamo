@@ -381,7 +381,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// </summary>
         public Symbol()
         {
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Properties.Resources.ToolTipSymbol)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Properties.Resources.ToolTipInputData)));
 
             RegisterAllPorts();
 
@@ -538,7 +538,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             var resolver = workspaceElementResolver ?? ElementResolver;
             var parseParam = new ParseParam(this.GUID, parseString, resolver);
 
-            if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) &&
+            if (EngineController.CompilationServices.PreCompileCodeBlock(parseParam) &&
                 parseParam.ParsedNodes.Any())
             {
                 var parsedComments = parseParam.ParsedComments;
@@ -664,7 +664,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// </summary>
         public Output()
         {
-            InPorts.Add(new Nodes.PortModel(PortType.Input, this, new PortData("", "")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Properties.Resources.ToolTipOutputData)));
 
             RegisterAllPorts();
 
@@ -776,7 +776,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             var resolver = workspaceElementResolver ?? ElementResolver;
             var parseParam = new ParseParam(GUID, expression + ";", resolver);
 
-            EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam);
+            EngineController.CompilationServices.PreCompileCodeBlock(parseParam);
             if (parseParam.ParsedNodes.Any())
             {
                 var parsedComments = parseParam.ParsedComments;

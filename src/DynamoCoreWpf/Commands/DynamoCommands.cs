@@ -123,6 +123,7 @@ namespace Dynamo.ViewModels
                 case "UngroupModelCommand":
                 case "AddModelToGroupCommand":
                 case "CreateAndConnectNodeCommand":
+                case "AddGroupToGroupCommand":
                     RaiseCanExecuteUndoRedo();
                     break;
 
@@ -138,6 +139,7 @@ namespace Dynamo.ViewModels
                 case "CreateCustomNodeCommand":
                 case "AddPresetCommand":
                 case "ApplyPresetCommand":
+                case "OpenFileFromJsonCommand":
                     // for this commands there is no need
                     // to do anything after execution
                     break;
@@ -146,7 +148,7 @@ namespace Dynamo.ViewModels
                     throw new InvalidOperationException("Unhandled command name");
             }
 
-            if (Dynamo.Logging.Analytics.ReportingAnalytics && !command.IsInPlaybackMode)
+            if (Logging.Analytics.ReportingAnalytics && !command.IsInPlaybackMode)
             {
                 command.TrackAnalytics();
             }
@@ -166,6 +168,7 @@ namespace Dynamo.ViewModels
                     break;
 
                 case "OpenFileCommand":
+                case "OpenFileFromJsonCommand":
                 case "RunCancelCommand":
                 case "ForceRunCancelCommand":
                 case "CreateNodeCommand":
@@ -187,6 +190,7 @@ namespace Dynamo.ViewModels
                 case "AddPresetCommand":
                 case "ApplyPresetCommand":
                 case "CreateAndConnectNodeCommand":
+                case "AddGroupToGroupCommand":
                     // for this commands there is no need
                     // to do anything before execution
                     break;

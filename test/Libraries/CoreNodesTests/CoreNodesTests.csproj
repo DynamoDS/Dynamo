@@ -1,11 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config/CS.props" />
+    <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{09EC17AF-24D2-4542-A913-0C27AE345C18}</ProjectGuid>
@@ -13,77 +10,15 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DSCoreNodesTests</RootNamespace>
     <AssemblyName>DSCoreNodesTests</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Moq, Version=4.2.1507.118, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\src\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ProtoGeometry, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <PackageReference Include="Moq" Version="4.2.1507.0118" />
+	  <PackageReference Include="NUnit" Version="2.6.3" />
+	  <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ColorRangeTests.cs" />
-    <Compile Include="DateTimeTests.cs" />
-    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>Properties\AssemblySharedInfo.cs</Link>
-    </Compile>
-    <Compile Include="ColorTests.cs" />
-    <Compile Include="ComparisonTests.cs" />
-    <Compile Include="FileTests.cs" />
-    <Compile Include="ListTests.cs" />
-    <Compile Include="LogicTests.cs" />
-    <Compile Include="MathTests.cs" />
-    <Compile Include="NodeWithUITests.cs" />
-    <Compile Include="NumberTests.cs" />
-    <Compile Include="ObjectTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProtoNodesTests.cs" />
-    <Compile Include="QuadtreeTests.cs" />
-    <Compile Include="Setup.cs" />
-    <Compile Include="ThreadTests.cs" />
-    <Compile Include="WebTests.cs" />
-    <Compile Include="StringTests.cs" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
@@ -126,6 +61,11 @@
       <Name>DynamoCoreTests</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\TestUINodes\TestUINodes.csproj">
+      <Project>{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}</Project>
+      <Name>TestUINodes</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\SystemTestServices\SystemTestServices.csproj">
       <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
       <Name>SystemTestServices</Name>
@@ -138,16 +78,4 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

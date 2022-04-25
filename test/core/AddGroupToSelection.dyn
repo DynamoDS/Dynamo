@@ -1,0 +1,165 @@
+{
+  "Uuid": "7b1ab118-0088-4b39-bb1b-7f9d009448fd",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "AddGroupToSelection",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "aNode;",
+      "Id": "032c6f2c2867454b856a65293f0c70c2",
+      "Inputs": [
+        {
+          "Id": "151f84da14d54a92b77b275b97e3fcdf",
+          "Name": "aNode",
+          "Description": "aNode",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bc6c4ddc1a0c45a59c2506e116cf81b3",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "nodeInGroup;",
+      "Id": "8d387d9e418345f499c343f6004f9ce6",
+      "Inputs": [
+        {
+          "Id": "e4d26ad21eba47c0901eb0c60089c4f2",
+          "Name": "nodeInGroup",
+          "Description": "nodeInGroup",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "42dfc8860b61467883e63fd025416a4a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.12",
+      "Data": {}
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.11.1.4675",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "032c6f2c2867454b856a65293f0c70c2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 128.84623556878853,
+        "Y": 238.68189946976514
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "8d387d9e418345f499c343f6004f9ce6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -265.87318328702133,
+        "Y": 254.50830160279963
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "2d16185b0bb94b038bb80545e651eae4",
+        "Title": "A group",
+        "Nodes": [
+          "8d387d9e418345f499c343f6004f9ce6",
+          "47502f57d59542b7ad1fbf50d202906f"
+        ],
+        "Left": -275.87318328702133,
+        "Top": 144.64473752488522,
+        "Width": 264.0,
+        "Height": 202.46356407791444,
+        "FontSize": 36.0,
+        "InitialTop": 197.8447375248852,
+        "InitialHeight": 322.174019791762,
+        "TextblockHeight": 43.2,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "47502f57d59542b7ad1fbf50d202906f",
+        "Title": "Note in group",
+        "Nodes": [],
+        "Left": -210.76518335501282,
+        "Top": 197.8447375248852,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 808.45009572419906,
+    "Y": 44.361512102469987,
+    "Zoom": 1.2065498889305668
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "Uuid": "aacfee43-e53f-4456-979b-8008bc6f0efe",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "element_binding_customNodes_replication",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..5;",
+      "Id": "2c0b32d1f1f94cbe9352b6b406aa3385",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "56aefac395194e4ba6e090519449fe31",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
+      "Id": "3cab31e7c7e646cfb11f6145edf1d8c3",
+      "Inputs": [
+        {
+          "Id": "42a7fb65370044d2beb0853cd8d73bf9",
+          "Name": "wrapperObject",
+          "Description": "FFITarget.WrapperObject",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ee226e401a9f43c8934ea1d62093fb64",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "WrapperObject.ID: int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "a50ee530-041a-4ba9-a382-51693fffe016",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "ae556322b4fc413984b3729a636db198",
+      "Inputs": [
+        {
+          "Id": "ab3a62dce3aa4119b1a59f7d690c7a35",
+          "Name": "x",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6d9b29d5b9e84d61b161164c401acfc3",
+          "Name": "WrapperObject",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "some custom node that creates elements"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "56aefac395194e4ba6e090519449fe31",
+      "End": "ab3a62dce3aa4119b1a59f7d690c7a35",
+      "Id": "f649e7c4ea3a49299258ae9405789bbf"
+    },
+    {
+      "Start": "6d9b29d5b9e84d61b161164c401acfc3",
+      "End": "42a7fb65370044d2beb0853cd8d73bf9",
+      "Id": "b1399e7bd00c45bd894d4d7f6c3443dd"
+    }
+  ],
+  "Dependencies": [
+    "a50ee530-041a-4ba9-a382-51693fffe016"
+  ],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.10.0.3136",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "2c0b32d1f1f94cbe9352b6b406aa3385",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 231.0,
+        "Y": 383.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "WrapperObject.ID",
+        "Id": "3cab31e7c7e646cfb11f6145edf1d8c3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 644.0,
+        "Y": 468.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "createObjectWrapperTrace",
+        "Id": "ae556322b4fc413984b3729a636db198",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 450.0,
+        "Y": 336.0
+      }
+    ],
+    "Annotations": [],
+    "X": -16.0,
+    "Y": -3.0,
+    "Zoom": 1.0
+  }
+}

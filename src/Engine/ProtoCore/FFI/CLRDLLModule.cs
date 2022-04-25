@@ -681,13 +681,13 @@ namespace ProtoFFI
             return func;
         }
 
-        private ProtoCore.AST.AssociativeAST.AssociativeNode ParseMethod(MethodInfo method)
+        private AssociativeNode ParseMethod(MethodInfo method)
         {
             ProtoCore.Type retype = CLRModuleType.GetProtoCoreType(method.ReturnType, Module);
             bool propaccessor = isPropertyAccessor(method);
             bool isOperator = isOverloadedOperator(method);
 
-            FFIMethodAttributes mattrs = new FFIMethodAttributes(method, mGetterAttributes);
+            var mattrs = new FFIMethodAttributes(method, mGetterAttributes);
             if (method.IsStatic &&
                 method.DeclaringType == method.ReturnType &&
                 !propaccessor &&
@@ -791,18 +791,21 @@ namespace ProtoFFI
                 pointers.Add(f);
         }
 
-        private ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode ParseConstructor(ConstructorInfo c, System.Type type)
+        private ConstructorDefinitionNode ParseConstructor(ConstructorInfo c, Type type)
         {
             //Constructors should always return user defined type object, hence it should be pointer type.
             ProtoCore.Type selfType = ProtoCoreType;
 
-            ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode constr = ParsedNamedConstructor(c, type.Name, selfType);
+            var mattrs = new FFIMethodAttributes(c);
+            var constr = ParsedNamedConstructor(c, type.Name, selfType);
+            constr.MethodAttributes = mattrs;
+
             return constr;
         }
 
-        private ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode ParsedNamedConstructor(MethodBase method, string constructorName, ProtoCore.Type returnType)
+        private ConstructorDefinitionNode ParsedNamedConstructor(MethodBase method, string constructorName, ProtoCore.Type returnType)
         {
-            ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode constr = new ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode();
+            var constr = new ConstructorDefinitionNode();
             constr.Name = constructorName;
             constr.Signature = ParseArgumentSignature(method);
             constr.ReturnType = returnType;
@@ -1185,17 +1188,18 @@ namespace ProtoFFI
                     //This probably wasn't a .NET dll
                     System.Diagnostics.Debug.WriteLine(exception.Message);
                     System.Diagnostics.Debug.WriteLine(exception.StackTrace);
-                    throw new System.Exception(string.Format("Dynamo can only import .NET DLLs. Failed to load library: {0}.", name));
+                    throw new Exception(string.Format("Dynamo can only import .NET DLLs. Failed to load library: {0}.", name));
                 }
-
-                catch (System.Exception exception)
+                catch(DynamoServices.AssemblyBlockedException exception)
                 {
-                    // If the exception is having HRESULT of 0x80131515, then perhaps we need to instruct the user to "unblock" the downloaded DLL. Please seee the following link for details:
-                    // http://blogs.msdn.com/b/brada/archive/2009/12/11/visual-studio-project-sample-loading-error-assembly-could-not-be-loaded-and-will-be-ignored-could-not-load-file-or-assembly-or-one-of-its-dependencies-operation-is-not-supported-exception-from-hresult-0x80131515.aspx
-                    // 
+                    // this exception is caught upstream after displaying a failed load library warning to the user.
+                    throw exception;
+                }
+                catch (Exception exception)
+                {
                     System.Diagnostics.Debug.WriteLine(exception.Message);
                     System.Diagnostics.Debug.WriteLine(exception.StackTrace);
-                    throw new System.Exception(string.Format("Fail to load library: {0}.", name));
+                    throw new Exception(string.Format("Fail to load library: {0}.", name));
                 }
             }
 
@@ -1315,7 +1319,11 @@ namespace ProtoFFI
             }
         }
 
+        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0. Use FFIMethodAttributes(MethodBase method, Dictionary<MethodInfo, Attribute[]> getterAttributes = null) instead.")]
         public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes)
+            : this(method as MethodBase, getterAttributes) { }
+
+        public FFIMethodAttributes(MethodBase method, Dictionary<MethodInfo, Attribute[]> getterAttributes = null)
         {
             if (method == null)
                 throw new ArgumentNullException("method");
@@ -1333,16 +1341,16 @@ namespace ProtoFFI
                 HiddenInLibrary = baseAttributes.HiddenInLibrary;
             }
 
-            Attribute[] atts = null;
-            if (getterAttributes.TryGetValue(method, out atts))
+            Attribute[] atts;
+            if (method is MethodInfo mInfo && getterAttributes != null && getterAttributes.TryGetValue(mInfo, out atts))
             {
                 attributes = atts;
             }
             else
-            {   
+            {
                 attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
             }
-            
+
             foreach (var attr in attributes)
             {
                 if (attr is AllowRankReductionAttribute)
@@ -1358,7 +1366,7 @@ namespace ProtoFFI
                     var multiReturnAttr = (attr as MultiReturnAttribute);
                     returnKeys = multiReturnAttr.ReturnKeys.ToList();
                 }
-                else if(attr.HiddenInDynamoLibrary())
+                else if (attr.HiddenInDynamoLibrary())
                 {
                     HiddenInLibrary = true;
                 }
@@ -1386,7 +1394,7 @@ namespace ProtoFFI
                 }
                 else if (attr is IsLacingDisabledAttribute)
                 {
-                    IsLacingDisabled = true; 
+                    IsLacingDisabled = true;
                 }
                 else if (attr is AllowArrayPromotionAttribute)
                 {
@@ -1394,7 +1402,6 @@ namespace ProtoFFI
                 }
             }
         }
-
     }
 
     /// <summary>

@@ -11,7 +11,8 @@ namespace Dynamo.PackageManager.Tests
         [SetUp]
         public override void Setup()
         {
-            base.Setup();
+            SetupDirectories();
+
             var settings = new PreferenceSettings();
             var parentFolder = Path.Combine(TestDirectory, "pkgs", "multiple_locations");
             settings.CustomPackageFolders = new List<string>
@@ -38,9 +39,6 @@ namespace Dynamo.PackageManager.Tests
         {
             var loader = GetPackageLoader();
             
-            Assert.AreEqual(loader.DefaultPackagesDirectory,
-                Path.Combine(TestDirectory, "pkgs", "multiple_locations", "folder1", "packages"));
-
             var expectedLoadedPackageNum = 0;
             foreach(var pkg in loader.LocalPackages)
             {

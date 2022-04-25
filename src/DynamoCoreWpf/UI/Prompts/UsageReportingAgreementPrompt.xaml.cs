@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Media;
+using Dynamo.Logging;
 using Dynamo.Services;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
@@ -28,59 +31,52 @@ namespace Dynamo.UI.Prompts
                     resourceProvider.GetImageSource(Wpf.Interfaces.ResourceNames.ConsentForm.Image));
             }
             viewModel = dynamoViewModel;
-
-            var instrumentationFile = "InstrumentationConsent.rtf";
-
-            if (viewModel.Model.PathManager.ResolveDocumentPath(ref instrumentationFile))
-                InstrumentationContent.File = instrumentationFile;
-
             var googleAnalyticsFile = "GoogleAnalyticsConsent.rtf";
 
             if (viewModel.Model.PathManager.ResolveDocumentPath(ref googleAnalyticsFile))
-                GoogleAnalyticsContent.File = googleAnalyticsFile;
+                GoogleAnalyticsConsent.File = googleAnalyticsFile;
+            var adpAnalyticsFile = "ADPAnalyticsConsent.rtf";
 
-            AcceptUsageReportingTextBlock.Text =
-                string.Format(Wpf.Properties.Resources.ConsentFormInstrumentationCheckBoxContent,
-                    dynamoViewModel.BrandingResourceProvider.ProductName);
-            AcceptUsageReportingCheck.IsChecked = UsageReportingManager.Instance.IsUsageReportingApproved;
-            AcceptUsageReportingCheck.Visibility =
-                UsageReportingManager.Instance.IsAnalyticsReportingApproved ?
-                System.Windows.Visibility.Visible :
-                System.Windows.Visibility.Hidden;
-            AcceptAnalyticsReportingCheck.IsChecked = UsageReportingManager.Instance.IsAnalyticsReportingApproved;
+            if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
+                ADPAnalyticsConsent.File = adpAnalyticsFile;
 
+            //disable adp configure dialog version check fails.
+            //also disabled below id all analytics disabled.
+            configure_adp_button.IsEnabled = AnalyticsService.IsADPAvailable();
+
+            AcceptGoogleAnalyticsCheck.IsChecked = UsageReportingManager.Instance.IsAnalyticsReportingApproved;
+
+            if (Analytics.DisableAnalytics)
+            {
+                AcceptGoogleAnalyticsCheck.IsChecked = false;
+                AcceptGoogleAnalyticsTextBlock.IsEnabled = false;
+                AcceptGoogleAnalyticsCheck.IsEnabled = false;
+
+                configure_adp_button.IsEnabled = false;
+            }
+           
         }
 
         private void ToggleIsUsageReportingChecked(object sender, RoutedEventArgs e)
         {
             UsageReportingManager.Instance.SetUsageReportingAgreement(
-                AcceptUsageReportingCheck.IsChecked.HasValue && 
+                AcceptUsageReportingCheck.IsChecked.HasValue &&
                 AcceptUsageReportingCheck.IsChecked.Value);
             AcceptUsageReportingCheck.IsChecked = UsageReportingManager.Instance.IsUsageReportingApproved;
         }
 
-        private void ToggleIsAnalyticsReportingChecked(object sender, RoutedEventArgs e)
+        private void ToggleIsGoogleAnalyticsChecked(object sender, RoutedEventArgs e)
         {
             UsageReportingManager.Instance.SetAnalyticsReportingAgreement(
-                AcceptAnalyticsReportingCheck.IsChecked.HasValue && 
-                AcceptAnalyticsReportingCheck.IsChecked.Value);
-            if (AcceptAnalyticsReportingCheck.IsChecked == true)
-            {
-                AcceptUsageReportingCheck.Visibility = System.Windows.Visibility.Visible;
-            }
-            else
-            {
-                AcceptUsageReportingCheck.Visibility = System.Windows.Visibility.Hidden;
-                AcceptUsageReportingCheck.IsChecked = false;
-                UsageReportingManager.Instance.SetUsageReportingAgreement(false);
-            }
+                AcceptGoogleAnalyticsCheck.IsChecked.HasValue &&
+                AcceptGoogleAnalyticsCheck.IsChecked.Value);
         }
 
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
-            // Update user agreement
-            UsageReportingManager.Instance.SetUsageReportingAgreement(AcceptUsageReportingCheck.IsChecked.Value);
-            UsageReportingManager.Instance.SetAnalyticsReportingAgreement(AcceptAnalyticsReportingCheck.IsChecked.Value);
+            // Update user agreement for GA.
+            //ADP is set via the ADPSDK consent window.
+            UsageReportingManager.Instance.SetAnalyticsReportingAgreement(AcceptGoogleAnalyticsCheck.IsChecked.Value);
             Close();
         }
 
@@ -96,6 +92,16 @@ namespace Dynamo.UI.Prompts
         {
             base.OnClosed(e);
             viewModel = null;
+        }
+
+        private void configure_adp_button_Click(object sender, RoutedEventArgs e)
+        {
+            IntPtr handle = new IntPtr();
+            if (Owner != null)
+            {
+                handle = new WindowInteropHelper(Owner).Handle;
+            }
+            AnalyticsService.ShowADPConsetDialog(handle);
         }
     }
 }

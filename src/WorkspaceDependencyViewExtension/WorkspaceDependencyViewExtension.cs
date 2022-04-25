@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Controls;
+using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -15,10 +16,10 @@ namespace Dynamo.WorkspaceDependency
     /// which tracks graph dependencies (currently only packages) on the Dynamo right panel.
     /// It reacts to workspace modified/ cleared events to refresh.
     /// </summary>
-    public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
+    public class WorkspaceDependencyViewExtension : ViewExtensionBase, IViewExtension, ILogSource
     {
         internal MenuItem workspaceReferencesMenuItem;
-        private const String extensionName = "Workspace References";
+        private readonly String extensionName = Properties.Resources.ExtensionName;
 
         internal WorkspaceDependencyView DependencyView
         {
@@ -31,7 +32,7 @@ namespace Dynamo.WorkspaceDependency
         /// <summary>
         /// Extension Name
         /// </summary>
-        public string Name
+        public override string Name
         {
             get
             {
@@ -42,7 +43,7 @@ namespace Dynamo.WorkspaceDependency
         /// <summary>
         /// GUID of the extension
         /// </summary>
-        public string UniqueId
+        public override string UniqueId
         {
             get
             {
@@ -53,9 +54,9 @@ namespace Dynamo.WorkspaceDependency
         /// <summary>
         /// Dispose function after extension is closed
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
-            DependencyView.OnExtensionTabClosed -= OnCloseExtension;
+            DependencyView.Dispose();
         }
 
 
@@ -64,15 +65,9 @@ namespace Dynamo.WorkspaceDependency
         {
         }
 
-        public void Shutdown()
+        public override void Startup(ViewStartupParams viewStartupParams)
         {
-            DependencyView.Dispose();
-            this.Dispose();
-        }
-
-        public void Startup(ViewStartupParams viewLoadedParams)
-        {
-            pmExtension = viewLoadedParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            pmExtension = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
         }
 
         public event Action<ILogMessage> MessageLogged;
@@ -82,26 +77,18 @@ namespace Dynamo.WorkspaceDependency
             this.MessageLogged?.Invoke(msg);
         }
 
-        internal void OnCloseExtension(String extensionTabName)
-        {
-            if (extensionTabName.Equals(extensionName))
-            {
-                this.workspaceReferencesMenuItem.IsChecked = false;
-            }  
-        }
-
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
             // when a package is loaded update the DependencyView 
             // as we may have installed a missing package.
 
+            DependencyView.CustomNodeManager = (CustomNodeManager)viewLoadedParams.StartupParams.CustomNodeManager;
+
             pmExtension.PackageLoader.PackgeLoaded += (package) =>
             {
                 DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
             };
-
-            DependencyView.OnExtensionTabClosed += OnCloseExtension;
 
             // Adding a button in view menu to refresh and show manually
             workspaceReferencesMenuItem = new MenuItem { Header = Resources.MenuItemString, IsCheckable = true, IsChecked = false };
@@ -119,10 +106,16 @@ namespace Dynamo.WorkspaceDependency
                     viewLoadedParams.CloseExtensioninInSideBar(this);
                     workspaceReferencesMenuItem.IsChecked = false;
                 }
-
             };
-            viewLoadedParams.AddMenuItem(MenuBarType.View, workspaceReferencesMenuItem);
+            viewLoadedParams.AddExtensionMenuItem(workspaceReferencesMenuItem);
         }
 
+        public override void Closed()
+        {
+            if (this.workspaceReferencesMenuItem != null) 
+            { 
+                this.workspaceReferencesMenuItem.IsChecked = false;
+            }
+        }
     }
 }

@@ -129,12 +129,12 @@
       "keywords": "DSCore.Logic.Or, DSCoreNodesUI.Logic.Or, Or"
     },
     {
-      "fullyQualifiedName": "Core.Logic.If",
-      "iconUrl": "http://localhost/icons/CoreNodeModels.Logic.If.Small?path=nodes\\CoreNodeModels.dll",
+      "fullyQualifiedName": "Core.Logic.RefactoredIf",
+      "iconUrl": "http://localhost/icons/CoreNodeModels.Logic.RefactoredIf.Small?path=nodes\\CoreNodeModels.dll",
       "contextData": "If",
       "parameters": null,
       "itemType": "action",
-      "keywords": "DSCoreNodesUI.Logic.If, If"
+      "keywords": "DSCoreNodesUI.Logic.RefactoredIf, RefactoredIf"
     },
     {
       "fullyQualifiedName": "Core.Logic.ScopeIf",
@@ -314,7 +314,7 @@
     },
     {
       "fullyQualifiedName": "Core.Input.Integer Slider",
-      "iconUrl": "http://localhost/icons/CoreNodeModels.Input.IntegerSlider.Small?path=nodes\\CoreNodeModels.dll",
+      "iconUrl": "http://localhost/icons/CoreNodeModels.Input.IntegerSlider64Bit.Small?path=nodes\\CoreNodeModels.dll",
       "contextData": "Integer Slider",
       "parameters": null,
       "itemType": "action",
@@ -2497,6 +2497,14 @@
       "keywords": "segments, joincurves"
     },
     {
+      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves.Small?path=ProtoGeometry.dll",
+      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves@Autodesk.DesignScript.Geometry.Curve[]",
+      "parameters": null,
+      "itemType": "create",
+      "keywords": "segments, joincurves, group curves"
+    },
+    {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints",
       "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.ByPoints.Small?path=ProtoGeometry.dll",
       "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool",
@@ -2505,9 +2513,9 @@
       "keywords": "segments, joincurves, lines"
     },
     {
-      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve.Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve@Autodesk.DesignScript.Geometry.Curve,double,Autodesk.DesignScript.Geometry.Vector",
+      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal.Small?path=ProtoGeometry.dll",
+      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal@Autodesk.DesignScript.Geometry.Curve,double,Autodesk.DesignScript.Geometry.Vector",
       "parameters": null,
       "itemType": "create",
       "keywords": "offset"
@@ -2727,6 +2735,22 @@
       "parameters": null,
       "itemType": "action",
       "keywords": "bevel, flattenedges"
+    },
+    {
+      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Solid.Separate",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Solid.Separate.Small?path=ProtoGeometry.dll",
+      "contextData": "Autodesk.DesignScript.Geometry.Solid.Separate@Autodesk.DesignScript.Geometry.Solid",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "split, disjoint"
+    },
+    {
+      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Solid.ByRuledLoft",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Solid.ByRuledLoft.Small?path=ProtoGeometry.dll",
+      "contextData": "Autodesk.DesignScript.Geometry.Solid.ByRuledLoft@Autodesk.DesignScript.Geometry.PolyCurve[],bool",
+      "parameters": "(crossSections, checkAndRepair)",
+      "itemType": "create",
+      "keywords": "Brep, brep, ruled, loft"
     },
     {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints",
@@ -4617,6 +4641,22 @@
       "keywords": "test, all, false"
     },
     {
+      "fullyQualifiedName": "DSCore.List.AnyTrue",
+      "iconUrl": "http://localhost/icons/DSCore.List.AnyTrue.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.List.AnyTrue@var[]..[]",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "test, any, true"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.AnyFalse",
+      "iconUrl": "http://localhost/icons/DSCore.List.AnyFalse.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.List.AnyFalse@var[]..[]",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "test, any, false"
+    },
+    {
       "fullyQualifiedName": "DSCore.List.Count",
       "iconUrl": "http://localhost/icons/DSCore.List.Count.Small?path=DSCoreNodes.dll",
       "contextData": "DSCore.List.Count@var[]..[]",
@@ -4714,11 +4754,19 @@
     },
     {
       "fullyQualifiedName": "DSCore.List.Shuffle",
-      "iconUrl": "http://localhost/icons/DSCore.List.Shuffle.Small?path=DSCoreNodes.dll",
+      "iconUrl": "http://localhost/icons/DSCore.List.Shuffle.varN.Small?path=DSCoreNodes.dll",
       "contextData": "DSCore.List.Shuffle@var[]..[]",
       "parameters": null,
       "itemType": "action",
       "keywords": "random, randomize, shuffle, jitter, randomness"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.Shuffle",
+      "iconUrl": "http://localhost/icons/DSCore.List.Shuffle.varN-int.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.List.Shuffle@var[]..[],int",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "random, randomize, shuffle, jitter, randomness, seed"
     },
     {
       "fullyQualifiedName": "DSCore.List.Permutations",
@@ -4777,12 +4825,28 @@
       "keywords": "random, numberrange"
     },
     {
+      "fullyQualifiedName": "DSCore.Math.Random",
+      "iconUrl": "http://localhost/icons/DSCore.Math.Random.double-double-int.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.Math.Random@double,double,int",
+      "parameters": "(value1, value2, seed)",
+      "itemType": "action",
+      "keywords": "random, numberrange, seed"
+    },
+    {
       "fullyQualifiedName": "DSCore.Math.RandomList",
-      "iconUrl": "http://localhost/icons/DSCore.Math.RandomList.Small?path=DSCoreNodes.dll",
+      "iconUrl": "http://localhost/icons/DSCore.Math.RandomList.int.Small?path=DSCoreNodes.dll",
       "contextData": "DSCore.Math.RandomList@int",
       "parameters": null,
       "itemType": "action",
       "keywords": "random, listcontains"
+    },
+    {
+      "fullyQualifiedName": "DSCore.Math.RandomList",
+      "iconUrl": "http://localhost/icons/DSCore.Math.RandomList.int-double-double-int.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.Math.RandomList@int,double,double,int",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "random, listcontains, seed"
     },
     {
       "fullyQualifiedName": "DSCore.Math.PiTimes2",
@@ -5167,6 +5231,14 @@
       "parameters": null,
       "itemType": "action",
       "keywords": "2number, str2number, strtonumber, string2number, stringtonumber, int, double, cast"
+    },
+    {
+      "fullyQualifiedName": "DSCore.String.GetNumber",
+      "iconUrl": "http://localhost/icons/DSCore.String.GetNumber.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.String.GetNumber@string",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "getnumber,tonumber,strtonumber,numberinstring,string2number,stringtonumber,int,double,cast"
     },
     {
       "fullyQualifiedName": "DSCore.String.Concat",
@@ -5593,9 +5665,25 @@
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSOffice.Data.ExportExcel",
-      "iconUrl": "http://localhost/icons/DSOffice.Data.ExportExcel.Small?path=DSOffice.dll",
-      "contextData": "DSOffice.Data.ExportExcel@string,string,int,int,var[][],bool",
+      "fullyQualifiedName": "DSOffice.Data.ExportToExcel",
+      "iconUrl": "http://localhost/icons/DSOffice.Data.ExportToExcel.Small?path=DSOffice.dll",
+      "contextData": "DSOffice.Data.ExportToExcel@string,string,int,int,var[][],bool,bool",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": ""
+    },
+    {
+      "fullyQualifiedName": "DSOffice.Data.OpenXMLImportExcel",
+      "iconUrl": "http://localhost/icons/DSOffice.Data.ImportExcel.Small?path=DSOffice.dll",
+      "contextData": "DSOffice.Data.OpenXMLImportExcel@string,string,int,int,bool",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": ""
+    },
+    {
+      "fullyQualifiedName": "DSOffice.Data.OpenXMLExportExcel",
+      "iconUrl": "http://localhost/icons/DSOffice.Data.ExportToExcel.Small?path=DSOffice.dll",
+      "contextData": "DSOffice.Data.OpenXMLExportExcel@string,string,var[][],int,int,bool,bool",
       "parameters": null,
       "itemType": "action",
       "keywords": ""

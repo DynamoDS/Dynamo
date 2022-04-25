@@ -1,9 +1,9 @@
 # Build Dynamo using latest VS and DotNET
 name: Dynamo-VS2019Build
-on: [push]
+on: [push,pull_request]
 jobs:
  build:
-  runs-on: windows-latest
+  runs-on: windows-2019
   steps:
     - name: Checkout Dynamo Repo
       uses: actions/checkout@v2

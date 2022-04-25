@@ -76,7 +76,7 @@ namespace ProtoCore
 
                     if (HasData)
                         return true;
-                    
+
                     //Not empty, and doesn't have data so test recursive
                     Validity.Assert(NestedData != null,
                         "Invalid recursion logic, this is a VM bug, please report to the Dynamo Team");
@@ -245,10 +245,10 @@ namespace ProtoCore
                 var assemblyNameObj = new AssemblyName(assemblyName);
                 //find matching assemblies by name, version is not used.
                 var matchingAssembly = assemblies.FirstOrDefault(x => x.GetName().Name == assemblyNameObj.Name);
-                if(matchingAssembly!= null)
+                if (matchingAssembly != null)
                 {
-                   var matchingType = matchingAssembly.GetType(typeName);
-                    if(matchingType != null)
+                    var matchingType = matchingAssembly.GetType(typeName);
+                    if (matchingType != null)
                     {
                         return matchingType;
                     }
@@ -373,7 +373,7 @@ namespace ProtoCore
         private int classScope;
         private string methodName;
         private readonly FunctionTable globalFunctionTable;
-        private int invokeCount; //Number of times the callsite has been executed within this run
+        internal int invokeCount; //Number of times the callsite has been executed within this run
         private List<ISerializable> beforeFirstRunSerializables = new List<ISerializable>();
 
         //TODO(Luke): This should be loaded from the attribute
@@ -710,7 +710,10 @@ namespace ProtoCore
         /// <param name="core"></param>
         private void UpdateCallsiteExecutionState(Object callsiteData, RuntimeCore runtimeCore)
         {
+        
+            Debug.WriteLine($"resetting callsite invoke count for {this.methodName}");
             invokeCount = 0;
+            
 
             /*
             if (core.EnableCallsiteExecutionState)
@@ -907,7 +910,7 @@ namespace ProtoCore
                             if (replicationInstructions == null ||
                                 IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
                             {
-                                resolvedFeps = new List<FunctionEndPoint>() {compliantTarget};
+                                resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                                 replicationInstructions = replicationOption;
                                 matchFound = true;
                             }
@@ -948,7 +951,7 @@ namespace ProtoCore
                         if (replicationInstructions == null ||
                             IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
                         {
-                            resolvedFeps = new List<FunctionEndPoint>() {compliantTarget};
+                            resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                             replicationInstructions = replicationOption;
                             matchFound = true;
                         }
@@ -1118,23 +1121,35 @@ namespace ProtoCore
             Validity.Assert(svThisPtr.IsPointer,
                             "this pointer wasn't a pointer. {89635B06-AD53-4170-ADA5-065EB2AE5858}");
 
-            int typeID = svThisPtr.metaData.type;
 
-            //Test for exact match
-            List<FunctionEndPoint> exactFeps = new List<FunctionEndPoint>();
+            // We have multiple possible scopes for the function call:
+            // 1. Static method call - no this pointer
+            // ex: ClassA.Method();
+            //    Hidden static methods generate multiple feps.
+            //    We do not need to check actually if the method has the "IsHideBySig" (https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.ishidebysig)
+            //    because static methods can only be hidden.
+            // 2. Method call from an instance of a class - valid this pointer.
+            // ex: classAInstance.method();
+            // 3. Function from the global scope - no this pointer and no class scope.
+            // ex: SomeGlobalFunction();
+            //
+            // All 3 cases will run through the same matching steps.
 
-            foreach (FunctionEndPoint fep in feps)
-                if (fep.ClassOwnerIndex == typeID)
-                    exactFeps.Add(fep);
+            // A static function call has an invalid this pointer and a valid class scope;
+            bool isValidStaticFuncCall = svThisPtr.Pointer == Constants.kInvalidIndex && stackFrame.ClassScope != Constants.kInvalidIndex;
 
-            if (exactFeps.Count == 1)
+            int typeID = isValidStaticFuncCall ? stackFrame.ClassScope : svThisPtr.metaData.type;
+
+            // Try to match with feps belonging to the class scope (most derived class should have priority).
+            // In this case we simply select the function that belongs to the calling class.
+            // The assumption here is that all function end points in "feps" have already been checked that they have the same signature.
+            IEnumerable<FunctionEndPoint> exactFeps = feps.Where(x => x.ClassOwnerIndex == typeID);
+            if (exactFeps.Count() == 1)
             {
-                return exactFeps[0];
+                return exactFeps.First();
             }
-
-
+            
             //Walk the class tree structure to find the method
-
             while (runtimeCore.DSExecutable.classTable.ClassNodes[typeID].Base != Constants.kInvalidIndex)
             {
                 typeID = runtimeCore.DSExecutable.classTable.ClassNodes[typeID].Base;
@@ -1149,15 +1164,15 @@ namespace ProtoCore
 
             foreach (FunctionEndPoint fep in feps)
             {
-                int noArbitraries = 0;
+                int numArbitraryRanks = 0;
 
                 for (int i = 0; i < argumentsList.Count; i++)
                 {
                     if (fep.FormalParams[i].rank == Constants.kArbitraryRank)
-                        noArbitraries++;
-
-                    numberOfArbitraryRanks.Add(noArbitraries);
+                        numArbitraryRanks++;
                 }
+
+                numberOfArbitraryRanks.Add(numArbitraryRanks);
             }
 
             int smallest = Int32.MaxValue;
@@ -1406,10 +1421,18 @@ namespace ProtoCore
             DominantListStructure domintListStructure,
             StackFrame stackFrame, RuntimeCore runtimeCore)
         {
-            // Update the CallsiteExecutionState with 
-            // TODO: Replace this with the real data
-            UpdateCallsiteExecutionState(null, runtimeCore);
+           
+            // if the last dispatched callsite is this callsite then we are repeatedly making calls
+            // to this same callsite (for example replicating over an outer function that contains this callsite)
+            // and should not reset the invoke count.
+            if (runtimeCore.LastDispatchedCallSite != this)
+            {
+                UpdateCallsiteExecutionState(null, runtimeCore);
+            }
+            runtimeCore.LastDispatchedCallSite = this;
 
+
+            //TODO reuse this when we have time to profile it.
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
@@ -1461,6 +1484,7 @@ namespace ProtoCore
                     candidatesFeps.Add(fep);
                 }
             }
+
             funcGroup = new FunctionGroup(candidatesFeps);
 
             #endregion
@@ -1504,9 +1528,28 @@ namespace ProtoCore
             return ret;
         }
 
+        //Pre-initialize array for repeated calls.  The StackValue is inserted vs making a new array for every call.
+        private static List<StackValue> disposeArguments = new List<StackValue>() { StackValue.Null };
+        //Cache final function endpoint for repeated calls;
+        private FunctionEndPoint finalFep;
+
+        internal StackValue DispatchDispose(StackValue stackValue, RuntimeCore runtimeCore)
+        {
+            //Cache finalFep for CallSite.  Note there is always only one dispose endpoint returned.
+            if (finalFep == null)
+            {
+                var funcGroup = FirstFunctionGroupInInheritanceChain(runtimeCore, classScope);
+                finalFep = funcGroup.FunctionEndPoints[0];
+            }
+            
+            disposeArguments[0] = stackValue;
+
+            //EXECUTE
+            return finalFep.Execute(null, disposeArguments, null, runtimeCore);
+        }
 
         private StackValue Execute(
-            List<FunctionEndPoint> functionEndPoint,
+            List<FunctionEndPoint> functionEndPoints,
             Context c,
             List<StackValue> formalParameters,
             List<ReplicationInstruction> replicationInstructions,
@@ -1520,12 +1563,12 @@ namespace ProtoCore
             if (replicationInstructions.Count == 0)
             {
                 c.IsReplicating = false;
-                ret = ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, singleRunTraceData, newTraceData);
+                ret = ExecWithZeroRI(functionEndPoints, c, formalParameters, stackFrame, runtimeCore, singleRunTraceData, newTraceData);
             }
             else //replicated call
             {
                 c.IsReplicating = true;
-                ret = ExecWithRISlowPath(functionEndPoint, c, formalParameters, replicationInstructions, stackFrame, runtimeCore, singleRunTraceData, newTraceData);
+                ret = ExecWithRISlowPath(functionEndPoints, c, formalParameters, replicationInstructions, stackFrame, runtimeCore, singleRunTraceData, newTraceData);
             }
 
             //Do a trace save here
@@ -1545,7 +1588,7 @@ namespace ProtoCore
         /// <summary>
         /// Execute an arbitrary depth replication using the full slow path algorithm
         /// </summary>
-        /// <param name="functionEndPoint"></param>
+        /// <param name="functionEndPoints"></param>
         /// <param name="c"></param>
         /// <param name="formalParameters"></param>
         /// <param name="replicationInstructions"></param>
@@ -1556,7 +1599,7 @@ namespace ProtoCore
         /// <param name="finalFunctionEndPoint"></param>
         /// <returns></returns>
         private StackValue ExecWithRISlowPath(
-            List<FunctionEndPoint> functionEndPoint,
+            List<FunctionEndPoint> functionEndPoints,
             Context c,
             List<StackValue> formalParameters,
             List<ReplicationInstruction> replicationInstructions,
@@ -1572,7 +1615,12 @@ namespace ProtoCore
             //Recursion base case
             if (replicationInstructions.Count == 0)
             {
-                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
+                return ExecWithZeroRI(functionEndPoints, c, formalParameters, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
+            }
+
+            if (finalFunctionEndPoint == null && functionEndPoints.Count == 1)
+            {
+                finalFunctionEndPoint = SelectFinalFep(c, functionEndPoints, formalParameters, stackFrame, runtimeCore);
             }
 
             //Get the replication instruction that this call will deal with
@@ -1603,15 +1651,6 @@ namespace ProtoCore
 
                     default:
                         throw new ReplicationCaseNotCurrentlySupported(Resources.AlgorithmNotSupported);
-                }
-
-                //We determine if the input parameters are of homogeneous types to set the final function endpoint once
-                var homogeneousReturn = AreParametersHomogeneousTypes(formalParameters, runtimeCore);
-                var isHomogeneous = homogeneousReturn.Item1;
-                if (isHomogeneous)
-                {
-                    var finalFormalParameters = homogeneousReturn.Item2;
-                    finalFunctionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
                 }
 
                 bool hasEmptyArg = false;
@@ -1702,11 +1741,11 @@ namespace ProtoCore
                         }
                     }
 
-                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
 
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
-                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFunctionEndPoint);
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoints, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFunctionEndPoint);
 
                     runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
@@ -1732,28 +1771,15 @@ namespace ProtoCore
                 //We will call the subsequent reductions n times
                 int cartIndex = ri.CartesianIndex;
 
-                //We determine if the input parameters are of homogeneous types to set the final function endpoint once
-                if (cartIndex == 0)
-                {
-                    var homogeneousReturn = AreParametersHomogeneousTypes(formalParameters, runtimeCore);
-                    var isHomogeneous = homogeneousReturn.Item1;
-                    if (isHomogeneous)
-                    {
-                        var finalFormalParameters = homogeneousReturn.Item2;
-                        finalFunctionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
-                    }
-                }
-
                 //this will hold the heap elements for all the arrays that are going to be replicated over
                 bool supressArray = false;
                 int retSize;
-                StackValue[] parameters = null;
+                DSArray array = null;
 
                 if (formalParameters[cartIndex].IsArray)
                 {
-                    DSArray array = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameters[cartIndex]);
-                    parameters = array.Values.ToArray();
-                    retSize = parameters.Length;
+                    array = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameters[cartIndex]);
+                    retSize = array.Count;
                 }
                 else
                 {
@@ -1764,7 +1790,7 @@ namespace ProtoCore
                 StackValue[] retSVs = new StackValue[retSize];
 
                 SingleRunTraceData retTrace = newTraceData;
-                retTrace.NestedData = new List<SingleRunTraceData>(); //this will shadow the SVs as they are created
+                retTrace.NestedData = new List<SingleRunTraceData>(retSize); //this will shadow the SVs as they are created
 
                 //Populate out the size of the list with default values
                 //@TODO:Luke perf optimisation here
@@ -1773,28 +1799,23 @@ namespace ProtoCore
                     retTrace.NestedData.Add(new SingleRunTraceData());
                 }
 
+                //Build the call
+                List<StackValue> newFormalParams = formalParameters.ToList();
+
                 if (supressArray)
                 {
-                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
 
-                    List<StackValue> newFormalParams = formalParameters.ToList();
-
-                    return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
+                    return ExecWithRISlowPath(functionEndPoints, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
                 }
 
                 //Now iterate over each of these options
                 for (int i = 0; i < retSize; i++)
                 {
-                    //Build the call
-                    List<StackValue> newFormalParams = formalParameters.ToList();
+                    //It was an array pack the arg with the current value
+                    newFormalParams[cartIndex] = array.GetValueFromIndex(i, runtimeCore);
 
-                    if (parameters != null)
-                    {
-                        //It was an array pack the arg with the current value
-                        newFormalParams[cartIndex] = parameters[i];
-                    }
-
-                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
 
                     SingleRunTraceData lastExecTrace;
 
@@ -1820,7 +1841,7 @@ namespace ProtoCore
                     //previousTraceData = lastExecTrace;
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
-                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFunctionEndPoint);
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoints, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFunctionEndPoint);
 
                     runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
@@ -1919,62 +1940,6 @@ namespace ProtoCore
 
             return ret;
         }
-
-        /// <summary>
-        /// Determine if the formalParameters are homogeneous types and initialize a flat list of final formalParameters
-        /// </summary>
-        /// <param name="formalParameters"></param>
-        /// <param name="runtimeCore"></param>
-        /// <returns>item1: true if the formalParameters are homogeneous, item2: finalformalParameters</returns>
-        private static Tuple<bool, List<StackValue>> AreParametersHomogeneousTypes(List<StackValue> formalParameters, RuntimeCore runtimeCore)
-        {
-            var finalFormalParameters = new List<StackValue>();
-
-            foreach (var formalParameter in formalParameters)
-            { 
-                //expand array if required to compare inputs
-                if (formalParameter.IsArray)
-                {
-                    var array = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameter);
-                    var flatParameters = array.Values.ToArray();
-
-                    switch (flatParameters.Length)
-                    {
-                        case 0:
-                            //set function result false and exit due to empty list
-                            return new Tuple<bool, List<StackValue>> (false, null);
-                        case 1:
-                            //Add single sample parameter to pass for evaluation in SelectFinalFep
-                            finalFormalParameters.Add(flatParameters[0]);
-                            break;
-                        default:
-                            for (int j = 0; j < flatParameters.Length - 1; j++)
-                            {
-                                //Compare the type data for subsequent items
-                                if (flatParameters[j].optype != flatParameters[j + 1].optype ||
-                                    flatParameters[j].metaData.type != flatParameters[j + 1].metaData.type)
-                                {
-                                    //set function result false and exit due to dissimilar function parameters
-                                    return new Tuple<bool, List<StackValue>>(false, null);
-                                }
-                            }
-
-                            //Add single sample parameter to pass for evaluation in SelectFinalFep
-                            finalFormalParameters.Add(flatParameters[0]);
-                            break;
-                    }
-                }
-                else
-                {
-                    //For single parameter add it to pass for evaluation in SelectFinalFep
-                    finalFormalParameters.Add(formalParameter);
-                }
-            }
-
-            //formalParameteres evaluated as homogeneous
-            return new Tuple<bool, List<StackValue>>(true, finalFormalParameters);
-        }
-
 
         /// <summary>
         /// If all the arguments that have rep guides are single values, then strip the rep guides

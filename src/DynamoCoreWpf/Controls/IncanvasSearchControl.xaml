@@ -1,37 +1,33 @@
 ﻿<UserControl x:Class="Dynamo.UI.Controls.InCanvasSearchControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
-             xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
-             mc:Ignorable="d"
              MinWidth="250"
-             IsVisibleChanged="OnInCanvasSearchControlVisibilityChanged">
+             IsVisibleChanged="OnInCanvasSearchControlVisibilityChanged"
+             mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="SearchMemberStyle"
                    BasedOn="{StaticResource MemberGroupMemberStyle}"
                    TargetType="{x:Type ListBoxItem}">
-                <EventSetter Event="PreviewMouseLeftButtonUp"
-                             Handler="OnMouseLeftButtonUp" />
-                <EventSetter Event="MouseEnter"
-                             Handler="OnMouseEnter" />
-                <EventSetter Event="MouseLeave"
-                             Handler="OnMouseLeave" />
+                <EventSetter Event="PreviewMouseLeftButtonUp" Handler="OnMouseLeftButtonUp" />
+                <EventSetter Event="MouseEnter" Handler="OnMouseEnter" />
+                <EventSetter Event="MouseLeave" Handler="OnMouseLeave" />
             </Style>
-            
-            <Style TargetType="{x:Type ScrollViewer}"
-                   BasedOn="{StaticResource LibraryScrollViewerStyle}">
-                <Setter Property="Template"
-                        Value="{StaticResource LibraryScrollViewerControlTemplate}" />
+
+            <Style BasedOn="{StaticResource LibraryScrollViewerStyle}" TargetType="{x:Type ScrollViewer}">
+                <Setter Property="Template" Value="{StaticResource LibraryScrollViewerControlTemplate}" />
             </Style>
 
         </ResourceDictionary>
@@ -42,94 +38,79 @@
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid Name="SearchText"
-              Grid.Row="0">
+        <Grid Name="SearchText" Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Border CornerRadius="8"
-                    Background="{StaticResource SearchTextBoxBackground}"
-                    BorderBrush="{StaticResource outerBorderSelection}"
-                    BorderThickness="1"
+            <Border Grid.ColumnSpan="2"
+                    Margin="0,0,0,2"
                     Padding="5"
-                    Margin="1 3"
-                    Grid.ColumnSpan="2">
+                    Background="{StaticResource SearchTextBoxBackground}"
+                    BorderBrush="#2A576C"
+                    BorderThickness="0,0,0,1">
                 <Grid>
-                    <StackPanel Name="SearchIconAndTextBlockGrid"
-                                Grid.ColumnSpan="2"
-                                Width="Auto"
-                                Orientation="Horizontal">
+                    <DockPanel Name="SearchIconAndTextBlockGrid" Grid.ColumnSpan="2">
                         <Image x:Name="SearchIcon"
-                               Width="18"
-                               Height="18"
+                               Width="20px"
+                               Height="20px"
+                               HorizontalAlignment="Left"
                                VerticalAlignment="Center"
-                               HorizontalAlignment="Left">
+                               DockPanel.Dock="Right">
                             <Image.Style>
                                 <Style TargetType="{x:Type Image}">
-                                    <Setter Property="Source"
-                                            Value="/DynamoCoreWpf;component/UI/Images/search_normal.png" />
-
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"
-                                                     Value="True">
-                                            <Setter Property="Source"
-                                                    Value="/DynamoCoreWpf;component/UI/Images/search_hover.png" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/searchmagnifier.png" />
                                 </Style>
                             </Image.Style>
                         </Image>
-
                         <TextBlock Name="SearchTextBlock"
-                                   FontSize="14"
-                                   IsHitTestVisible="False"
-                                   Foreground="{StaticResource DeafultSearchTextBlockText}"
-                                   VerticalAlignment="Center"
-                                   Visibility="{Binding Path=SearchText, 
-                                                    Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
-                                   HorizontalAlignment="Center"
                                    Height="18"
-                                   Margin="9,0,0,0"
-                                   Text="{x:Static resx:Resources.SearchTextBlockText}" />
-
-                    </StackPanel>
-
+                                   Margin="5,1,0,0"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   DockPanel.Dock="Left"
+                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                   FontSize="14"
+                                   Foreground="{StaticResource DefaultSearchTextBlockText}"
+                                   IsHitTestVisible="False"
+                                   Text="{x:Static resx:Resources.SearchTextBlockText}"
+                                   Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" />
+                    </DockPanel>
                     <TextBox Name="SearchTextBox"
-                             Foreground="{StaticResource SearchBoxBackgroundColor}"
+                             MinWidth="250"
+                             Margin="3,3,0,0"
+                             VerticalAlignment="Center"
                              Background="Transparent"
                              BorderThickness="0"
-                             FontSize="14"
-                             IsEnabled="True"
-                             VerticalAlignment="Center"
-                             Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             MinWidth="200"
                              CaretBrush="{StaticResource CommonSidebarTextColor}"
-                             Margin="26,0,0,-1"
-                             TextChanged="OnSearchTextBoxTextChanged" />
+                             FontFamily="{StaticResource ArtifaktElementRegular}"
+                             FontSize="14"
+                             Foreground="{StaticResource DefaultSearchTextBlockText}"
+                             IsEnabled="True"
+                             Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
             </Border>
+            
         </Grid>
-
-        <Border Opacity=".9"
-                Background="{StaticResource LibraryCommonBackground}"
-                Margin="1,2,1,0"
+        <Rectangle Grid.Row="0" Height="2px" Fill="#ADD4E5" VerticalAlignment="Bottom"/>
+        <Border Name="FoundMembers"
                 Grid.Row="1"
-                Name="FoundMembers"
-                MaxHeight="250">
+                MaxHeight="250"
+                Background="{StaticResource LibraryCommonBackground}"
+                Opacity=".9">
             <ListBox Name="MembersListBox"
                      Background="Transparent"
                      BorderBrush="Transparent"
                      ItemContainerStyle="{StaticResource SearchMemberStyle}"
                      ItemsSource="{Binding FilteredResults, NotifyOnTargetUpdated=True}"
-                     TargetUpdated="OnMembersListBoxUpdated"
-                     PreviewMouseWheel="OnMembersListBoxMouseWheel">
+                     PreviewMouseWheel="OnMembersListBoxMouseWheel"
+                     TargetUpdated="OnMembersListBoxUpdated">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
-                                      Style="{StaticResource InCanvasScrollViewerStyle}"
+                        <ScrollViewer MinWidth="250"
                                       CanContentScroll="True"
-                                      Width="250">
+                                      Style="{StaticResource InCanvasScrollViewerStyle}"
+                                      Template="{StaticResource InCanvasScrollViewerControlTemplate}">
                             <ContentPresenter ContentTemplate="{StaticResource MemberTemplate}" />
                         </ScrollViewer>
                     </DataTemplate>
@@ -138,20 +119,13 @@
 
             <Border.Style>
                 <Style TargetType="{x:Type Border}">
-                    <Setter Property="Visibility"
-                            Value="Visible" />
+                    <Setter Property="Visibility" Value="Visible" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=SearchResults.Count}"
-                                     Value="0">
-                            <Setter Property="Visibility"
-                                    Value="Collapsed" />
+                        <DataTrigger Binding="{Binding Path=SearchResults.Count}" Value="0">
+                            <Setter Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
-
-                        <DataTrigger Binding="{Binding Path=CurrentMode,
-                                                       Converter={StaticResource LibraryViewModeToBoolConverter}}"
-                                     Value="True">
-                            <Setter Property="Visibility"
-                                    Value="Collapsed" />
+                        <DataTrigger Binding="{Binding Path=CurrentMode, Converter={StaticResource LibraryViewModeToBoolConverter}}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -160,10 +134,10 @@
 
 
         <Border Margin="-3,0,-3,0">
-            <Popup StaysOpen="True"
+            <Popup x:Name="toolTipPopup"
                    AllowsTransparency="True"
                    Placement="Right"
-                   x:Name="toolTipPopup">
+                   StaysOpen="True">
                 <uicontrols:ToolTipWindow />
             </Popup>
         </Border>

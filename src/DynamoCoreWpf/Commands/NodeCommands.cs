@@ -20,6 +20,9 @@ namespace Dynamo.ViewModels
         private DelegateCommand _ungroupCommand;
         private DelegateCommand _addToGroupCommand;
         private DelegateCommand _computeRunStateOfTheNodeCommand;
+        private DelegateCommand selectConnectedUpstreamCommand;
+        private DelegateCommand selectConnectedDownstreamCommand;
+        private DelegateCommand selectConnectedDownAndUpstreamCommand;
 
         [JsonIgnore]
         public DelegateCommand RenameCommand
@@ -191,10 +194,61 @@ namespace Dynamo.ViewModels
             {
                 if (_computeRunStateOfTheNodeCommand == null)
                 {
-                    _computeRunStateOfTheNodeCommand = new DelegateCommand(ToggleIsFrozen, CanToggleIsFrozen);
+                    _computeRunStateOfTheNodeCommand = new DelegateCommand(ToggleIsFrozen);
                 }
 
                 return _computeRunStateOfTheNodeCommand;
+            }
+        }
+
+        /// <summary>
+        /// Command to select connected upstream nodes of the selected nodeModel
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand SelectConnectedUpstreamCommand
+        {
+            get
+            {
+                if (selectConnectedUpstreamCommand == null)
+                {
+                    selectConnectedUpstreamCommand = new DelegateCommand(SelectUpstreamNeighbours);
+                }
+
+                return selectConnectedUpstreamCommand;
+            }
+        }
+
+        /// <summary>
+        /// Command to select connected downstream nodes of the selected nodeModel
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand SelectConnectedDownstreamCommand
+        {
+            get
+            {
+                if (selectConnectedDownstreamCommand == null)
+                {
+                    selectConnectedDownstreamCommand = new DelegateCommand(SelectDownstreamNeighbours);
+                }
+
+                return selectConnectedDownstreamCommand;
+            }
+        }
+
+        /// <summary>
+        /// Command to select connected upstream and downstream nodes of the selected nodeModel
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand SelectConnectedUpAndDownstreamCommand
+        {
+            get
+            {
+                if (selectConnectedDownAndUpstreamCommand == null)
+                {
+                    selectConnectedDownAndUpstreamCommand = new DelegateCommand(SelectDownstreamAndUpstreamNeighbours);
+                }
+
+                return selectConnectedDownAndUpstreamCommand;
             }
         }
     }

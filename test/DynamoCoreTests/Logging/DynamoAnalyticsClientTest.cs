@@ -1,4 +1,7 @@
-﻿using Dynamo.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
@@ -8,10 +11,6 @@ using Dynamo.Models;
 using Dynamo.Scheduler;
 using Microsoft.Win32;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace Dynamo.Tests.Loggings
 {
@@ -21,22 +20,15 @@ namespace Dynamo.Tests.Loggings
         private const string DEFAULT_RETURN_VALUE = "Default Not Found";
         private const string SHUTDOWN_TYPE_NAME = "CleanShutdown";
         private const string REG_KEY = "HKEY_CURRENT_USER\\Software\\DynamoStability";
-        private const string ASSUMING_CRASHING_SHUTDOWN_VALUE = "assumingCrashing";
 
         //We need to override this function because the one in DynamoModelTestBase is setting StartInTestMode = true
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPreferences settings)
         {
-            var preferenceSettings = new PreferenceSettings
-            {
-                IsUsageReportingApproved = true //This will enable to execute the Get method from DynamoAnalyticsClient.Logger
-            };
-
             return new DynamoModel.DefaultStartConfiguration()
             {
                 PathResolver = pathResolver,
                 StartInTestMode = false,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
-                Preferences = preferenceSettings,
                 ProcessMode = TaskProcessMode.Synchronous
             };
         }

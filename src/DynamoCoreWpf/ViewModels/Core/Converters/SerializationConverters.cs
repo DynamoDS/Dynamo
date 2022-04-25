@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
+using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.ViewModels;
 using Newtonsoft.Json;
 using Type = System.Type;
@@ -35,6 +38,15 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WritePropertyName("Camera");
             serializer.Serialize(writer, workspaceView.Camera);
 
+            writer.WritePropertyName("ConnectorPins");
+            writer.WriteStartArray();
+
+            foreach (var wirePin in workspaceView.Pins)
+            {
+                serializer.Serialize(writer, wirePin);
+            }
+            writer.WriteEndArray();
+
             writer.WritePropertyName("NodeViews");
             writer.WriteStartArray();
             foreach (var nodeView in workspaceView.Nodes)
@@ -54,6 +66,10 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
                 convertedNote.X = note.Left;
                 convertedNote.Y = note.Top;
                 convertedNote.AnnotationText = note.Text;
+                if (note.PinnedNode != null)
+                {
+                    convertedNote.PinnedNode = note.PinnedNode.NodeModel;
+                }
 
                 serializer.Serialize(writer, new AnnotationViewModel(workspaceView, convertedNote));
             }
@@ -103,6 +119,14 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteValue(anno.GUID.ToString("N"));
             writer.WritePropertyName("Title");
             writer.WriteValue(anno.AnnotationText);
+            writer.WritePropertyName("DescriptionText");
+            writer.WriteValue(anno.AnnotationDescriptionText);
+            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.IsExpanded));
+            writer.WriteValue(anno.IsExpanded);
+            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.WidthAdjustment));
+            writer.WriteValue(anno.WidthAdjustment);
+            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.HeightAdjustment));
+            writer.WriteValue(anno.HeightAdjustment);
             writer.WritePropertyName("Nodes");
             writer.WriteStartArray();
             foreach (var m in anno.Nodes)
@@ -110,6 +134,8 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
                 writer.WriteValue(m.GUID.ToString("N"));
             }
             writer.WriteEndArray();
+            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.HasNestedGroups));
+            writer.WriteValue(anno.HasNestedGroups);
             writer.WritePropertyName("Left");
             writer.WriteValue(anno.X);
             writer.WritePropertyName("Top");
@@ -127,7 +153,12 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WritePropertyName("TextblockHeight");
             writer.WriteValue(anno.TextBlockHeight);
             writer.WritePropertyName("Background");
-            writer.WriteValue(anno.Background != null ? anno.Background : "");
+            writer.WriteValue(anno.Background != null ? anno.Background : "");            
+            if (anno.PinnedNode != null)
+            {
+                writer.WritePropertyName(nameof(anno.PinnedNode));
+                writer.WriteValue(anno.PinnedNode.GUID.ToString("N"));
+            }
             writer.WriteEndObject();
         }
     }

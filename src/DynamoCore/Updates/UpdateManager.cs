@@ -9,6 +9,7 @@ using System.Net;
 using System.Reflection;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using Autodesk.Analytics.Core;
 using Dynamo.Core;
 using Dynamo.Logging;
 
@@ -357,7 +358,7 @@ namespace Dynamo.Updates
 
         /// <summary>
         /// Event handler for the web client's requestion completed event. Reads
-        /// the request's result information and subsequently triggers
+        /// the request result information and subsequently triggers
         /// the UpdateDataAvailable event.
         /// </summary>
         /// <param name="sender"></param>
@@ -449,7 +450,7 @@ namespace Dynamo.Updates
             CheckNewerDailyBuild = false;
             ForceUpdate = false;
             InstallerNameBase = INSTALL_NAME_BASE;
-            DisableUpdates=false;
+            DisableUpdates = false;
         }
 
         /// <summary>
@@ -706,7 +707,7 @@ namespace Dynamo.Updates
         {
             get
             {
-                //Update is not available unitl it's downloaded
+                //Update is not available until it's downloaded
                 if (DownloadedUpdateInfo == null)
                     return false;
 
@@ -813,7 +814,7 @@ namespace Dynamo.Updates
 
         /// <summary>
         /// Callback for the UpdateRequest's UpdateDataAvailable event.
-        /// Reads the request's data, and parses for available versions. 
+        /// Reads the request data, and parses for available versions. 
         /// If a more recent version is available, the UpdateInfo object 
         /// will be set. 
         /// </summary>
@@ -941,7 +942,7 @@ namespace Dynamo.Updates
             var updater = Path.Combine(currDir, INSTALLUPDATE_EXE);
             
             // Double check that that the updater program exists.
-            // This program lives in the users's base Dynamo directory. If 
+            // This program lives in the users' base Dynamo directory. If 
             // it doesn't exist, we can't run the update.
 
             if (!File.Exists(updater)) 

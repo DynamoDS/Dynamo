@@ -21,7 +21,6 @@ namespace Analysis
         /// <param name="point"></param>
         /// <param name="label"></param>
         /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
         public static Label ByPointAndString(Point point, string label)
         {
             if (point == null)
@@ -40,7 +39,13 @@ namespace Analysis
         public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
             package.AddPointVertex(point.X, point.Y, point.Z);
-            package.Description = label;
+            package.DisplayLabels = true;
+            if (package is IRenderLabels renderLabels)
+            {
+                renderLabels.AddLabel(label, point.X, point.Y, point.Z);
+                renderLabels.AutoGenerateLabels = false;
+            }
+            
         }
     }
 }

@@ -7,15 +7,17 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:w="clr-namespace:Dynamo.WorkspaceDependency.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              VerticalAlignment="Top"
-             HorizontalAlignment="Left">
+             HorizontalAlignment="Stretch">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter"/>
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <!-- DataGrid style -->
             <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
@@ -60,156 +62,401 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+            <Style TargetType="{x:Type fa:ImageAwesome}">
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{DynamicResource LibraryItemHostBackground}"/>
+                        <Setter Property="Foreground" Value="White"/>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="False">
+                        <Setter Property="Foreground" Value="{DynamicResource MemberButtonText}"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <Style TargetType="ToolTip">
+                <Style.Resources>
+                    <Style TargetType="ContentPresenter">
+                        <Style.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="Wrap" />
+                            </Style>
+                        </Style.Resources>
+                    </Style>
+                </Style.Resources>
+                <Setter Property="MaxWidth" Value="300" />
+            </Style>
+            <DataTemplate x:Key="PackagesHeader">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" FontSize="14" FontWeight="Medium" Text="{Binding}" />
+                    <Image Grid.Column="1" Margin="10,0,0,0" Width="14" Height="14" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" VerticalAlignment="Center">
+                        <Image.ToolTip>
+                            <ToolTip Content="{x:Static w:Resources.PackagesToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Image.ToolTip>
+                    </Image>
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="LocalDefinitionsHeader">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" FontSize="14" FontWeight="Medium" Text="{Binding}" />
+                    <Image Grid.Column="1" Margin="10,0,0,0" Width="14" Height="14" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" VerticalAlignment="Center">
+                        <Image.ToolTip>
+                            <ToolTip Content="{x:Static w:Resources.LocalDefinitionsToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Image.ToolTip>
+                    </Image>
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="ExternalFilesHeader">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" FontSize="14" FontWeight="Medium" Text="{Binding}" />
+                    <Image Grid.Column="1" Margin="10,0,0,0" Width="14" Height="14" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" VerticalAlignment="Center">
+                        <Image.ToolTip>
+                            <ToolTip Content="{x:Static w:Resources.ExternalFilesToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Image.ToolTip>
+                    </Image>
+                </Grid>
+            </DataTemplate>
+            <Style x:Key="PackagesExpanderStyle" TargetType="Expander" BasedOn="{StaticResource WorkspaceReferencesExpanderStyle}">
+                <Setter Property="HeaderTemplate" Value="{StaticResource PackagesHeader}" />
+            </Style>
+            <Style x:Key="LocalDefinitionsExpanderStyle" TargetType="Expander" BasedOn="{StaticResource WorkspaceReferencesExpanderStyle}">
+                <Setter Property="HeaderTemplate" Value="{StaticResource LocalDefinitionsHeader}" />
+            </Style>
+            <Style x:Key="ExternalFilesExpanderStyle" TargetType="Expander" BasedOn="{StaticResource WorkspaceReferencesExpanderStyle}">
+                <Setter Property="HeaderTemplate" Value="{StaticResource ExternalFilesHeader}" />
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
+
     <Grid Background= "#353535">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <DataGrid 
-            Name="PackageDependencyTable" 
-            AutoGenerateColumns="False"
-            Style="{StaticResource DataGridStyle1}"
-            CanUserAddRows="False"
-            GridLinesVisibility ="None"
-            Background="#353535"
-            FontSize="13"
-            VerticalAlignment="Center"
-            SelectionUnit="FullRow"
-            SelectionMode="Extended"
-            ScrollViewer.CanContentScroll="False" 
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            CanUserResizeColumns="False" 
-            CanUserResizeRows="False"
-            CanUserSortColumns="False"
-            HeadersVisibility="Column"
-            Grid.Row="0">
-            <DataGrid.Columns>
-                <!-- State Icon -->
-                <DataGridTemplateColumn 
-                    IsReadOnly="True"
-                    Width="38">
-                    <DataGridTemplateColumn.Header>
-                        <Button Width="Auto"
-                                Background="Transparent"
-                                Foreground="Transparent"
-                                BorderThickness="0">
+        <!-- Packages information-->
+        <Expander x:Name="Packages"
+                  Grid.Row="0"  
+                  Style="{StaticResource PackagesExpanderStyle}"
+                  Header="{x:Static w:Resources.PackageHeaderText}">
+            <DataGrid 
+                Name="PackageDependencyTable" 
+                AutoGenerateColumns="False"
+                Style="{StaticResource DataGridStyle1}"
+                CanUserAddRows="False"
+                GridLinesVisibility ="None"
+                Background="#353535"
+                FontSize="13"
+                VerticalAlignment="Center"
+                SelectionUnit="FullRow"
+                SelectionMode="Extended"
+                ScrollViewer.CanContentScroll="False" 
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                CanUserResizeColumns="False" 
+                CanUserResizeRows="False"
+                CanUserSortColumns="False"
+                HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <!-- State Icon -->
+                    <DataGridTemplateColumn 
+                        IsReadOnly="True"
+                        Width="38">
+                        <DataGridTemplateColumn.Header>
                             <fa:ImageAwesome Name="Refresh" 
-                                         Icon="Refresh" 
-                                         Foreground="{DynamicResource MemberButtonText}" 
-                                         ToolTip="{x:Static w:Resources.RefreshButtonTooltipText}" 
-                                         MouseLeftButtonDown="Refresh_MouseLeftButtonDown"/>
-                        </Button>
-                    </DataGridTemplateColumn.Header>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image Source="{Binding Icon}" Width="18" Height="18" Margin="0,8,0,8"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <!-- Package Name -->
-                <DataGridTextColumn 
-                    Header="{x:Static w:Resources.PackageHeaderText}" 
-                    Binding="{Binding Name}" 
-                    Foreground="#aaaaaa" 
-                    IsReadOnly="True" 
-                    Width="*">
+                                             Icon="Refresh" 
+                                             MouseLeftButtonDown="Refresh_MouseLeftButtonDown">
+                                <fa:ImageAwesome.ToolTip>
+                                    <ToolTip Content="{x:Static w:Resources.RefreshButtonTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                                </fa:ImageAwesome.ToolTip>
+                            </fa:ImageAwesome>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Icon}" Width="18" Height="18" Margin="0,8,0,8"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!-- Package Name -->
+                    <DataGridTextColumn 
+                        Header="{x:Static w:Resources.NameHeader}" 
+                        Binding="{Binding Name}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True" 
+                        Width="2*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                                <Setter Property="ToolTip" Value="{Binding Name}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!-- Package Path -->
+                    <DataGridTextColumn 
+                        Header="{x:Static w:Resources.PathHeader}" 
+                        Binding="{Binding Path}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True" 
+                        Width="3*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                                <Setter Property="ToolTip" Value="{Binding Path}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!-- Package Version -->
+                    <DataGridTextColumn 
+                        Header="{x:Static w:Resources.VersionHeader}" 
+                        Binding="{Binding Version}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True"
+                        Width="*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="VerticalAlignment" Value="Center" />
                             <Setter Property="Margin" Value="10,0,10,0"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <!-- Package Version -->
-                <DataGridTextColumn 
-                    Header="{x:Static w:Resources.VersionHeaderText}" 
-                    Binding="{Binding Version}" 
-                    Foreground="#aaaaaa" 
-                    IsReadOnly="True"
-                    >
-                <DataGridTextColumn.ElementStyle>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Margin" Value="10,0,10,0"/>
-                    </Style>
-                </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-            </DataGrid.Columns>
-            <!-- Expanded Details -->
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <StackPanel Background="#252525">
-                        <TextBlock
-                            Text="{Binding DetailsMessage}"
-                            TextWrapping="Wrap"
-                            Foreground="{DynamicResource MemberButtonText}"
-                            Margin="10"
-                            FontSize="11">
-                        </TextBlock>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button
-                                Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
-                                Name="DownloadPackageButton"
-                                Click="DownloadPackage"
-                                HorizontalAlignment="Center"
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+                <!-- Expanded Details -->
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <StackPanel Background="#252525">
+                            <TextBlock
+                                Text="{Binding DetailsMessage}"
+                                TextWrapping="Wrap"
+                                TextAlignment="Center"
+                                Foreground="{DynamicResource MemberButtonText}"
                                 Margin="10"
-                                Height="20"
-                                Background="#000000"
-                                BorderThickness="0">
-                                <TextBlock 
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Margin="5,0,5,0"
-                                    Foreground="#cccccc"
-                                    FontSize="10px"
-                                    Text="{x:Static w:Resources.InstallButtonText}">
-                                </TextBlock>
-                            </Button>
-                            <Button
-                                Visibility="{Binding Path=ShowKeepLocalButton, Converter={StaticResource BoolToVis}}"
-                                Name="KeepLocalPackageButton"
-                                Click="KeepLocalPackage"
-                                HorizontalAlignment="Center"
-                                Margin="10"
-                                Height="20"
-                                Background="#000000"
-                                BorderThickness="0">
-                                <TextBlock 
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Margin="5,0,5,0"
-                                    Foreground="#cccccc"
-                                    FontSize="10px"
-                                    Text="{x:Static w:Resources.KeepLocalButtonText}">
-                                </TextBlock>
-                            </Button>
+                                FontSize="11">
+                            </TextBlock>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Style="{StaticResource SmallTextButton}"
+                                    Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
+                                    Name="DownloadPackageButton"
+                                    Click="DownloadPackage"
+                                    Margin="10"
+                                    Content="{x:Static w:Resources.InstallButtonText}"/>
+                                <Button Style="{StaticResource SmallTextButton}"
+                                    Visibility="{Binding Path=ShowKeepLocalButton, Converter={StaticResource BoolToVis}}"
+                                    Name="KeepLocalPackageButton"
+                                    Click="KeepLocalPackage"
+                                    Margin="10"
+                                    Content="{x:Static w:Resources.KeepLocalButtonText}">
+                                </Button>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
-        </DataGrid>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+            </DataGrid>
+        </Expander>
+
+        <!-- Local definitions information-->
+        <Expander x:Name="LocalDefinitions"
+                  Grid.Row="1"  
+                  Style="{StaticResource LocalDefinitionsExpanderStyle}"
+                  Header="{x:Static w:Resources.LocalDefinitionsHeaderText}">
+            <DataGrid
+                Name="LocalDefinitionsTable"
+                AutoGenerateColumns="False"
+                Style="{StaticResource DataGridStyle1}"
+                CanUserAddRows="False"
+                GridLinesVisibility ="None"
+                Background="#353535"
+                FontSize="13"
+                VerticalAlignment="Center"
+                SelectionUnit="FullRow"
+                SelectionMode="Extended"
+                ScrollViewer.CanContentScroll="False" 
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                CanUserResizeColumns="False" 
+                CanUserResizeRows="False"
+                CanUserSortColumns="False"
+                HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <!-- State Icon -->
+                    <DataGridTemplateColumn 
+                        IsReadOnly="True"
+                        Width="38">
+                        <DataGridTemplateColumn.Header>
+                            <fa:ImageAwesome Name="RefreshReferences" 
+                                             Icon="Refresh" 
+                                             MouseLeftButtonDown="Refresh_MouseLeftButtonDown">
+                                <fa:ImageAwesome.ToolTip>
+                                    <ToolTip Content="{x:Static w:Resources.RefreshButtonTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                                </fa:ImageAwesome.ToolTip>
+                            </fa:ImageAwesome>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Icon}" Width="18" Height="18" Margin="0,8,0,8"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!-- Local Definition Name -->
+                    <DataGridTextColumn 
+                        Header="{x:Static w:Resources.NameHeader}"
+                        Binding="{Binding Name}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True" 
+                        Width="2*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                                <Setter Property="ToolTip" Value="{Binding Name}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!--  Local Definition Path -->
+                    <DataGridTextColumn 
+                        Header="{x:Static w:Resources.PathHeader}" 
+                        Binding="{Binding Path}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True"
+                        Width="3*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                                <Setter Property="ToolTip" Value="{Binding Path}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!--  Local Definition Size -->
+                    <DataGridTextColumn
+                        Header="{x:Static w:Resources.SizeHeader}" 
+                        Binding="{Binding Size}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True"
+                        Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Expander>
+
+        <!-- External Files information-->
+        <Expander x:Name="ExternalFiles"
+                  Grid.Row="2"  
+                  Style="{StaticResource ExternalFilesExpanderStyle}"
+                  Header="{x:Static w:Resources.ExternalFilesHeaderText}">
+            <DataGrid
+                Name="ExternalFilesTable"
+                AutoGenerateColumns="False"
+                Style="{StaticResource DataGridStyle1}"
+                CanUserAddRows="False"
+                GridLinesVisibility ="None"
+                Background="#353535"
+                FontSize="13"
+                VerticalAlignment="Center"
+                SelectionUnit="FullRow"
+                SelectionMode="Extended"
+                ScrollViewer.CanContentScroll="False" 
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                CanUserResizeColumns="False" 
+                CanUserResizeRows="False"
+                CanUserSortColumns="False"
+                HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <!-- State Icon -->
+                    <DataGridTemplateColumn 
+                        IsReadOnly="True"
+                        Width="38">
+                        <DataGridTemplateColumn.Header>
+                            <fa:ImageAwesome Name="RefreshExternalReferences" 
+                                             Icon="Refresh" 
+                                             MouseLeftButtonDown="Refresh_MouseLeftButtonDown">
+                                <fa:ImageAwesome.ToolTip>
+                                    <ToolTip Content="{x:Static w:Resources.RefreshButtonTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                                </fa:ImageAwesome.ToolTip>
+                            </fa:ImageAwesome>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Icon}" Width="18" Height="18" Margin="0,8,0,8"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!-- External File Name -->
+                    <DataGridTextColumn 
+                        Header="{x:Static w:Resources.NameHeader}"
+                        Binding="{Binding Name}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True" 
+                        Width="2*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                                <Setter Property="ToolTip" Value="{Binding Name}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!-- External File Path -->
+                    <DataGridTextColumn 
+                        Header="{x:Static w:Resources.PathHeader}" 
+                        Binding="{Binding Path}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True"
+                        Width="3*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                                <Setter Property="ToolTip" Value="{Binding Path}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!-- External File Size -->
+                    <DataGridTextColumn
+                        Header="{x:Static w:Resources.SizeHeader}" 
+                        Binding="{Binding Size}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True"
+                        Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Expander>
 
         <!-- Fill Space -->
         <Grid x:Name="container"
             Background="Transparent"
-            Grid.Row="1"
+            Grid.Row="3"
             Height="10000"
             VerticalAlignment="Stretch">
         </Grid>
 
         <!-- Template for the feedback banner -->
-        <DockPanel Name="Feedback" VerticalAlignment="Bottom" Grid.Row="2" Width="600">
+        <DockPanel Name="Feedback" VerticalAlignment="Bottom" Grid.Row="4" Width="600">
             <!-- Restart Banner -->
             <StatusBar
                 Name="RestartBanner"

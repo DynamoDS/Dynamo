@@ -1,11 +1,16 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Xml;
 using Dynamo.Core;
+using Dynamo.PackageManager;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Nodes.Prompts
@@ -18,6 +23,7 @@ namespace Dynamo.Nodes.Prompts
         private string details; // Store here for clipboard copy
         private string folderPath;
         private string productName;
+        private string markdownPackages;
 
         public CrashPrompt(string details, DynamoViewModel dynamoViewModel)
         {
@@ -25,10 +31,10 @@ namespace Dynamo.Nodes.Prompts
             this.CrashDetailsContent.Text = details;
 
             productName = dynamoViewModel.BrandingResourceProvider.ProductName;
-            Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle,productName);
+            Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
         }
-        
+
         public CrashPrompt(DynamoViewModel dynamoViewModel)
         {
             InitializeComponent();
@@ -41,6 +47,9 @@ namespace Dynamo.Nodes.Prompts
         public CrashPrompt(CrashPromptArgs args, DynamoViewModel dynamoViewModel)
         {
             InitializeComponent();
+
+            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;
+            markdownPackages = Wpf.Utilities.CrashUtilities.PackagesToMakrdown(packageLoader);
 
             productName = dynamoViewModel.BrandingResourceProvider.ProductName;
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
@@ -92,7 +101,7 @@ namespace Dynamo.Nodes.Prompts
 
         private void PostOnGithub_Click(object sender, RoutedEventArgs e)
         {
-            DynamoViewModel.ReportABug(this.CrashDetailsContent.Text);
+            DynamoViewModel.ReportABug(markdownPackages);
         }
 
         private void Details_Click(object sender, RoutedEventArgs e)
@@ -105,7 +114,9 @@ namespace Dynamo.Nodes.Prompts
         private void Copy_Click(object sender, RoutedEventArgs e)
         {
             this.CrashDetailsContent.Visibility = Visibility.Visible;
-            Clipboard.SetData(DataFormats.Text, details);
+
+            var allAssemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.FullName);
+            Clipboard.SetData(DataFormats.Text, details + "\n\n-------- Assemblies --------\n\n" + string.Join("|", allAssemblies));
         }
 
         private void OpenFolder_Click(object sender, RoutedEventArgs e)

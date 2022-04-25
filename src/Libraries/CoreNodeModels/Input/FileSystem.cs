@@ -92,7 +92,7 @@ namespace CoreNodeModels.Input
 
     [NodeName("File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("FilenameNodeDescription", typeof(Resources))]
+    [NodeDescription("FilePathDescription", typeof(Resources))]
     [NodeSearchTags("FilePathSearchTags", typeof(Resources))]
     [SupressImportIntoVM]
     [InPortTypes("UI Input")]
@@ -107,7 +107,7 @@ namespace CoreNodeModels.Input
             ShouldDisplayPreviewCore = false;
         }
 
-        public Filename() : base("Filename")
+        public Filename() : base(Resources.FilePathOutputDescription)
         {
             ShouldDisplayPreviewCore = false;
         }
@@ -118,7 +118,7 @@ namespace CoreNodeModels.Input
     [NodeDescription("DirectoryNodeDescription", typeof(Resources))]
     [NodeSearchTags("DirectoryPathSearchTags", typeof(Resources))]
     [InPortTypes("UI Input")]
-    [OutPortTypes("bool")]
+    [OutPortTypes("string")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.Directory", "DSCoreNodesUI.Input.Directory")]
@@ -130,7 +130,7 @@ namespace CoreNodeModels.Input
             ShouldDisplayPreviewCore = false;
         }
 
-        public Directory() : base("Directory")
+        public Directory() : base(Resources.DirectoryPathOutputDescription)
         {
             ShouldDisplayPreviewCore = false;
         }
@@ -256,7 +256,7 @@ namespace CoreNodeModels.Input
     [NodeDescription("FileObjectNodeDescription", typeof(Resources))]
     [NodeSearchTags("FilePathSearchTags", typeof(Resources))]
     [SupressImportIntoVM]
-    [OutPortTypes("object")]
+    [OutPortTypes("var")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.FileObject", "DSCoreNodesUI.Input.FileObject")]
     public class FileObject : FileSystemObject<FileInfo>
@@ -317,6 +317,7 @@ namespace CoreNodeModels.Input
     [NodeCategory("Core.File")]
     [NodeDescription("DirectoryObjectNodeDescription",typeof(Resources))]
     [NodeSearchTags("DirectoryPathSearchTags", typeof(Resources))]
+    [OutPortTypes("var")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.DirectoryObject", "DSCoreNodesUI.Input.DirectoryObject", "Directory.FromPath")]

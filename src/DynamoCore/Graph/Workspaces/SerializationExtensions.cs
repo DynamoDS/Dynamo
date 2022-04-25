@@ -37,12 +37,15 @@ namespace Dynamo.Graph.Workspaces
                         new DummyNodeWriteConverter(),
                         new TypedParameterConverter(),
                         new NodeLibraryDependencyConverter(logger),
+                        new LinterManagerConverter(logger)
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
 
             var json = JsonConvert.SerializeObject(workspace, settings);
             var result = ReplaceTypeDeclarations(json);
+
+            result = SerializeIntegerSliderAs32BitType(result);
 
             return result;
         }
@@ -71,6 +74,26 @@ namespace Dynamo.Graph.Workspaces
             }
 
             return result;
+        }
+
+        [Obsolete("Remove method after obsoleting IntegerSlider and replacing it with IntegerSlider64Bit")]
+        internal static string DeserializeIntegerSliderTo64BitType(string json)
+        {
+            var result = json;
+
+            var rgx2 = new Regex(@"\bCoreNodeModels.Input.IntegerSlider\b");
+
+            return rgx2.Replace(result, "CoreNodeModels.Input.IntegerSlider64Bit");
+        }
+
+        [Obsolete("Remove method after obsoleting IntegerSlider and replacing it with IntegerSlider64Bit")]
+        internal static string SerializeIntegerSliderAs32BitType(string json)
+        {
+            var result = json;
+
+            var rgx2 = new Regex(@"\bCoreNodeModels.Input.IntegerSlider64Bit\b");
+
+            return rgx2.Replace(result, "CoreNodeModels.Input.IntegerSlider");
         }
     }
 }

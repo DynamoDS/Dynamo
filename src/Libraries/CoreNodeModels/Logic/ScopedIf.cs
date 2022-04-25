@@ -46,26 +46,6 @@ namespace CoreNodeModels.Logic
             return astNodes;
         }
 
-        private void SanityCheck()
-        {
-            // condition branch
-            var condNodes = GetInScopeNodesForInport(0, false, true, true).Where(n => !(n is Symbol));
-            var trueNodes = new HashSet<NodeModel>(GetInScopeNodesForInport(1, false).Where(n => !(n is Symbol)));
-            var falseNodes = new HashSet<NodeModel>(GetInScopeNodesForInport(2, false).Where(n => !(n is Symbol)));
-
-            trueNodes.IntersectWith(condNodes);
-            falseNodes.IntersectWith(condNodes);
-            trueNodes.UnionWith(falseNodes);
-
-            if (trueNodes.Any())
-            {
-                foreach (var node in trueNodes)
-                {
-                    node.Error("A node cann't be both in condition and true/false branches of IF node");
-                }
-            }
-        }
-
         /// <summary>
         /// Specify if upstream nodes that connected to specified inport should
         /// be compiled in the scope or not. 

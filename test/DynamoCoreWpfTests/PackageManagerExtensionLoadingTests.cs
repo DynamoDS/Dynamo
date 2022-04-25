@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
+using Dynamo.GraphMetadata;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -56,8 +57,24 @@ namespace DynamoCoreWpfTests
         [Test]
         public void PackageManagerLoadsAndAddsViewExtension()
         {
-            Assert.That(this.View.viewExtensionManager.ViewExtensions.Select(x => x.Name),
-                Is.EquivalentTo((new List<string> { "Documentation Browser", "DynamoManipulationExtension","LibraryUI","NotificationsExtension", "Workspace References", "Sample View Extension","PackageManagerViewExtension" })));
+            Assert.That(this.View.viewExtensionManager.ViewExtensions.OrderBy(x => x.Name).Select(x => x.Name),
+                Is.EquivalentTo(
+                    (new List<string>
+                    {
+                        "Documentation Browser", 
+                        "DynamoManipulationExtension",
+                        "Graph Status",
+                        "LibraryUI - MSWebBrowser", 
+                        "Notifications", 
+                        "Package Details",
+                        "PackageManagerViewExtension",
+                        "Properties",
+                        "Python Migration",
+                        "Sample View Extension",
+                        "Workspace References",
+                    })
+                )
+            );
         }
 
         [Test]

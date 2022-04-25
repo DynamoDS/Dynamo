@@ -1,0 +1,182 @@
+{
+  "Uuid": "b5a40826-2443-4d78-860c-435623d4c62b",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "cpythoncustomclass",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\nclass myClass:\r\n\tdef __init__(self,name):\r\n\t\tself.name = name\r\n\t\r\n\tdef newName(self,x):\r\n\t\treturn self.name+x\t\r\n\t\r\n\r\nOUT = myClass(\"firstName\")",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "171dd90290b04238851e4d0bc3a822f7",
+      "Inputs": [
+        {
+          "Id": "402e13f0a17f456ca90d3ef8fca74b8a",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "666a86477ccb4451b1e3c177711265f7",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ntest = IN[0]\r\n\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = test.name",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "da61b52e2ffc46cc81d46870578cb118",
+      "Inputs": [
+        {
+          "Id": "38a60a614a70477bbba8595f1876c6ce",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7f6adcaf0b38477cb6230c92e7e9bffa",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ninstance = IN[0]\r\n\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = instance.newName(\"lastname\")",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "b1e0b9744ae443b7b93ae6adeec48eae",
+      "Inputs": [
+        {
+          "Id": "6248269f872347ff8857daef50bfbaf9",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ee2269469a9c481fa102a6ba91ecd2a1",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "666a86477ccb4451b1e3c177711265f7",
+      "End": "38a60a614a70477bbba8595f1876c6ce",
+      "Id": "496eb326d4944fa29e06366f11e2d501"
+    },
+    {
+      "Start": "666a86477ccb4451b1e3c177711265f7",
+      "End": "6248269f872347ff8857daef50bfbaf9",
+      "Id": "a87f86d18eca4fd0965e3dd4da47c24c"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.8.0.1915",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "classdef",
+        "Id": "171dd90290b04238851e4d0bc3a822f7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 213.5,
+        "Y": 107.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "downstream1",
+        "Id": "da61b52e2ffc46cc81d46870578cb118",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 421.5,
+        "Y": 255.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "downstream2",
+        "Id": "b1e0b9744ae443b7b93ae6adeec48eae",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 607.0,
+        "Y": 255.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

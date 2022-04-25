@@ -1,13 +1,11 @@
 <Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DoubleInput guid="e525d3c0-130b-41de-a720-b4981443532d" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="94.5" y="24.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="1..50..5" />
-    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="e525d3c0-130b-41de-a720-b4981443532d" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="94.5" y="24.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1..50..5;" ShouldFocus="false" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="e525d3c0-130b-41de-a720-b4981443532d" Modifiers="0" />
   <DragSelectionCommand X="297" Y="213" DragOperation="0" />
   <DragSelectionCommand X="127" Y="37" DragOperation="1" />
-  <UpdateModelValueCommand Name="Value" Value="1..50..5" WorkspaceGuid="ab759470-f33e-47b1-80dc-8dcd88855151">
+  <UpdateModelValueCommand Name="Code" Value="1..50..5;" WorkspaceGuid="ab759470-f33e-47b1-80dc-8dcd88855151">
     <ModelGuid>e525d3c0-130b-41de-a720-b4981443532d</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">

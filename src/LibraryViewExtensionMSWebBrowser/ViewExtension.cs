@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
@@ -17,8 +12,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
     /// </summary>
     public class LibraryViewExtensionMSWebBrowser : IViewExtension
     {
-        private ViewLoadedParams viewLoadedParams;
-        private ViewStartupParams viewStartupParams;
+        private ViewLoadedParams viewParams;
         private LibraryViewCustomization customization = new LibraryViewCustomization();
         private LibraryViewController controller;
 
@@ -27,25 +21,24 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             get { return "63cd0755-4a36-4670-ae89-b68e772633c4"; }
         }
 
-        public static readonly string ExtensionName = "LibraryUI2";
+        public static readonly string ExtensionName = "LibraryUI - MSWebBrowser";
 
         public string Name
         {
             get { return ExtensionName; }
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(ViewStartupParams viewStartupParams)
         {
-            viewStartupParams = p;
-            p.ExtensionManager.RegisterService<ILibraryViewCustomization>(customization);
+            viewStartupParams.ExtensionManager.RegisterService<ILibraryViewCustomization>(customization);
         }
 
-        public void Loaded(ViewLoadedParams p)
+        public void Loaded(ViewLoadedParams viewLoadedParams)
         {
             if (!DynamoModel.IsTestMode)
             {
-                viewLoadedParams = p;
-                controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive, customization);
+                viewParams = viewLoadedParams;
+                controller = new LibraryViewController(viewLoadedParams.DynamoWindow, viewLoadedParams.CommandExecutive, customization);
                 controller.AddLibraryView();
                 (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += handleDynamoViewPropertyChanges;
             }
@@ -59,19 +52,19 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
            DynamoViewModel senderDVM = sender as DynamoViewModel;
            
            if (senderDVM!= null && e.PropertyName == nameof(senderDVM.ShowStartPage))
-            {
-                var sp = senderDVM.ShowStartPage;
-                var vis = sp == true ? Visibility.Hidden : Visibility.Visible;
-                if(controller.browser != null)
-                {
-                    controller.browser.Visibility = vis;
-                }
-            }
+           {
+               var sp = senderDVM.ShowStartPage;
+               var vis = sp == true ? Visibility.Hidden : Visibility.Visible;
+               if(controller.browser != null)
+               {
+                   controller.browser.Visibility = vis;
+               }
+           }
         }
 
         public void Shutdown()
         {
-            Dispose();
+            // Do nothing for now
         }
 
         public void Dispose()
@@ -86,9 +79,9 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
 
             if (controller != null) controller.Dispose();
             if (customization != null) customization.Dispose();
-            if(viewLoadedParams != null && viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel != null)
+            if(viewParams != null && viewParams.DynamoWindow.DataContext as DynamoViewModel != null)
             {
-                (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -= handleDynamoViewPropertyChanges;
+                (viewParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -= handleDynamoViewPropertyChanges;
             }
           
 

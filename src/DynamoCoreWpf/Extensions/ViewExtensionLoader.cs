@@ -10,19 +10,27 @@ namespace Dynamo.Wpf.Extensions
 {
     public class ViewExtensionLoader : IViewExtensionLoader, ILogSource
     {
-        private IViewExtension Load(ViewExtensionDefinition viewExtension)
+        internal IViewExtension Load(ViewExtensionDefinition viewExtension)
         {
             try
             {
-                if (viewExtension.RequiresSignedEntryPoint)
+                if (viewExtension.IsEnabled)
                 {
-                    CertificateVerification.CheckAssemblyForValidCertificate(viewExtension.AssemblyPath);
-                }
+                    if (viewExtension.RequiresSignedEntryPoint)
+                    {
+                        CertificateVerification.CheckAssemblyForValidCertificate(viewExtension.AssemblyPath);
+                    }
+                    var assembly = Assembly.LoadFrom(viewExtension.AssemblyPath);
+                    var result = assembly.CreateInstance(viewExtension.TypeName) as IViewExtension;
+                    ExtensionLoading?.Invoke(result);
 
-                var assembly = Assembly.LoadFrom(viewExtension.AssemblyPath);
-                var result = assembly.CreateInstance(viewExtension.TypeName) as IViewExtension;
-                ExtensionLoading?.Invoke(result);
-                return result;
+                    Analytics.TrackEvent(
+                    Actions.Load,
+                    Categories.ExtensionOperations, viewExtension.TypeName);
+
+                    return result;
+                }
+                return null;
             }
             catch(Exception ex)
             {
@@ -59,6 +67,12 @@ namespace Dynamo.Wpf.Extensions
                 else if (item.Name == "TypeName")
                 {
                     definition.TypeName = item.InnerText;
+                }
+                else if (item.Name == "IsEnabled")
+                {
+                    // Because the default value for this property is true so we check if user specifically put it false
+                    bool.TryParse(item.InnerText, out bool result);
+                    definition.IsEnabled = result;
                 }
             }
 

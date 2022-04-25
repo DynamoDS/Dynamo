@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using DSCore.Properties;
+using DynamoServices;
 using NCalc;
 using ProtoCore.Utils;
 using CSMath = System.Math;
@@ -30,13 +31,27 @@ namespace DSCore
         /// <summary>
         ///     Produce a random number in the range [lower_number, higher_number).
         /// </summary>
-        /// <param name="value1">One end of the range for the random number.</param>
-        /// <param name="value2">One end of the range for the random number.</param>
-        /// <returns name="number">Random number in the range [lowValue, highValue).</returns>
+        /// <param name="value1">Lower end of the range for the random number.</param>
+        /// <param name="value2">Higher end of the range for the random number.</param>
+        /// <returns name="number">Random number in the range [lower_number, higher_number).</returns>
         /// <search>random,numberrange</search>
         public static double Random(double value1, double value2)
         {
             double result = Min(value1, value2) + Abs(value2 - value1) * mRandom.NextDouble();
+            return result;
+        }
+
+        /// <summary>
+        ///     Produce a random number in the range [lower_number, higher_number) based on an initial seed value.
+        /// </summary>
+        /// <param name="value1">Lower end of the range for the random number.</param>
+        /// <param name="value2">Higher end of the range for the random number.</param>
+        /// <param name="seed">Seed value for the random number generator.</param>
+        /// <returns name="number">Random number in the range [lower_number, higher_number).</returns>
+        /// <search>random,numberrange,seed</search>
+        public static double Random(double value1, double value2, int seed)
+        {
+            double result = Min(value1, value2) + Abs(value2 - value1) * new Random(seed).NextDouble();
             return result;
         }
 
@@ -58,9 +73,32 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Produces a list containing the given amount of random doubles
+        ///     in the defined range of [lower_number, higher_number) based on an initial seed value.
+        /// </summary>
+        /// <param name="amount">Amount of random numbers the result list will contain.</param>
+        /// <param name="value1">Lower end of the range for the random number.</param>
+        /// <param name="value2">Higher end of the range for the random number.</param>
+        /// <param name="seed">Seed value for the random number generator.</param>
+        /// <returns name="number">List of random numbers in the range [lower_number, higher_number).</returns>
+        /// <search>random,listcontains,seed</search>
+        public static IList RandomList(int amount, double value1, double value2, int seed)
+        {
+            var result = new ArrayList();
+            var random = new Random(seed);
+
+            foreach (var x in Enumerable.Range(0, amount).Select(_ => random.NextDouble()))
+            {
+                result.Add(Min(value1, value2) + Abs(value2 - value1) * x);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         ///     Pi Constant Multiplied by 2
         /// </summary>
-        /// <returns name="2pi">2 times PI.</returns>
+        /// <returns name="double">2 times PI.</returns>
         /// <search>2pi,2*pi,twopi,two*pi</search>
         public static double PiTimes2
         {
@@ -74,7 +112,7 @@ namespace DSCore
         ///     Averages a list of numbers.
         /// </summary>
         /// <param name="numbers">List of numbers to be averaged.</param>
-        /// <returns name="average">Average of the list of numbers.</returns>
+        /// <returns name="double">Average of the list of numbers.</returns>
         /// <search>avg,mean</search>
         public static double Average(IList<double> numbers)
         {
@@ -150,21 +188,21 @@ namespace DSCore
         /// <summary>
         ///     The mathematical constant Pi, 3.14159...
         /// </summary>
-        /// <returns name="pi">double. The constant Pi.</returns>
+        /// <returns name="double">The constant Pi</returns>
         /// <search>3.141592653589793</search>
         public static double PI { get { return 3.141592653589793; } }
 
         /// <summary>
         ///     The mathematical constant e, 2.71828...
         /// </summary>
-        /// <returns name="e">double. The constant e.</returns>
+        /// <returns name="double">The constant e</returns>
         /// <search>exp,2.718281828459045</search>
         public static double E { get { return 2.718281828459045; } }
 
         /// <summary>
         ///     The golden ratio, (1 + sqrt(5))/2 = 1.61803...
         /// </summary>
-        /// <returns name="phi">double. The golden ratio.</returns>
+        /// <returns name="double">The golden ratio</returns>
         /// <search>golden,ratio,divine,phi,tau,1.61803398875</search>
         public static double GoldenRatio { get { return 1.61803398875; } }
 
@@ -193,8 +231,8 @@ namespace DSCore
         /// <summary>
         ///     Finds the absolute value of a number.
         /// </summary>
-        /// <param name="number">A number.</param>
-        /// <returns name="absoluteValue">Absolute value of the number.</returns>
+        /// <param name="number">Number to get absolute value from</param>
+        /// <returns name="number">Absolute value of the number</returns>
         /// <search>absolute value,magnitude</search>
         public static double Abs(double number)
         {
@@ -230,7 +268,7 @@ namespace DSCore
         ///     Finds the inverse cosine, the angle whose cosine is the given ratio.
         /// </summary>
         /// <param name="ratio">The cosine of the angle, a number in the range [-1, 1].</param>
-        /// <returns name="angle">The angle whose cosine is the input ratio.</returns>
+        /// <returns name="double">The angle whose cosine is the input ratio.</returns>
         /// <search>acosine,arccosine</search>
         public static double Acos(double ratio)
         {
@@ -241,7 +279,7 @@ namespace DSCore
         ///     Finds the inverse sine, the angle whose sine is the given ratio.
         /// </summary>
         /// <param name="ratio">The sine of the angle, a number in the range [-1, 1].</param>
-        /// <returns name="angle">The angle whose sine is the input ratio.</returns>
+        /// <returns name="double">The angle whose sine is the input ratio</returns>
         /// <search>asine,arcsin</search>
         public static double Asin(double ratio)
         {
@@ -252,7 +290,7 @@ namespace DSCore
         ///     Finds the inverse tangent, the angle whose tangent is the given ratio.
         /// </summary>
         /// <param name="ratio">The tangent of the angle.</param>
-        /// <returns name="angle">The angle whose tangent is the input ratio.</returns>
+        /// <returns name="double">The angle whose tangent is the input ratio</returns>
         /// <search>atangent,arctangent</search>
         public static double Atan(double ratio)
         {
@@ -265,7 +303,7 @@ namespace DSCore
         /// </summary>
         /// <param name="numerator">The numerator of the tangent of the angle.</param>
         /// <param name="denominator">The denominator of the tangent of the angle.</param>
-        /// <returns name="angle">The angle whose tangent is numerator/denominator.</returns>
+        /// <returns name="double">The angle whose tangent is numerator/denominator</returns>
         /// <search>atangent,arctangent</search>
         public static double Atan2(double numerator, double denominator)
         {
@@ -276,18 +314,19 @@ namespace DSCore
         ///     Returns the first integer greater than the number
         /// </summary>
         /// <param name="number">Number to round up.</param>
-        /// <returns name="integer">First integer greater than the number.</returns>
+        /// <returns name="int">First integer greater than the number</returns>
         /// <search>ceiling,round</search>
         public static long Ceiling(double number)
         {
-            return (long)CSMath.Ceiling(number);
+            var ceiling = CSMath.Ceiling(number);
+            return DoCheckedCast(ceiling);
         }
 
         /// <summary>
         ///     Finds the cosine of an angle.
         /// </summary>
         /// <param name="angle">Angle in degrees to take the cosine of.</param>
-        /// <returns name="cos">Cosine of the angle.</returns>
+        /// <returns name="double">Cosine of the angle</returns>
         /// <search>cosine</search>
         public static double Cos(double angle)
         {
@@ -298,7 +337,7 @@ namespace DSCore
         ///     Finds the hyperbolic cosine of an angle (radians).
         /// </summary>
         /// <param name="angle">An angle in radians.</param>
-        /// <returns name="cosh">Hyperbolic cosine of the angle.</returns>
+        /// <returns name="double">Hyperbolic cosine of the angle</returns>
         /// <search>hyperbolic cosine</search>
         public static double Cosh(double angle)
         {
@@ -310,7 +349,7 @@ namespace DSCore
         /// </summary>
         /// <param name="dividend">The number to be divided.</param>
         /// <param name="divisor">The number to be divided by.</param>
-        /// <returns name="remainder">The remainder of the division.</returns>
+        /// <returns name="int">The remainder of the division</returns>
         /// <search>remainder</search>
         public static long DivRem(long dividend, long divisor)
         {
@@ -324,15 +363,15 @@ namespace DSCore
         /// </summary>
         /// <param name="formulaString">NCalc formula</param>
         /// <param name="parameters">Variable names</param>
-        /// <param name="args">Variable bindings</param>
-        /// <returns name="result">Result of the formula calculation.</returns>
-        public static object EvaluateFormula(string formulaString, string[] parameters, object[] args)
+        /// <param name="arguments">Variable bindings</param>
+        /// <returns name="result">type: var[]..[] (result of the formula calculation)</returns>
+        public static object EvaluateFormula(string formulaString, string[] parameters, object[] arguments)
         {
             var e = new Expression(formulaString.ToLower(), EvaluateOptions.IgnoreCase);
 
             e.Parameters["pi"] = 3.14159265358979;
 
-            foreach (var arg in args.Select((arg, i) => new { Value = arg, Index = i }))
+            foreach (var arg in arguments.Select((arg, i) => new { Value = arg, Index = i }))
             {
                 var parameter = parameters[arg.Index];
                 e.Parameters[parameter] = arg.Value;
@@ -345,7 +384,7 @@ namespace DSCore
         ///     Returns the exponential of the number, the constant e raised to the value number.
         /// </summary>
         /// <param name="number">Number.</param>
-        /// <returns name="e^number">The exponential of the number.</returns>
+        /// <returns name="double">The exponential of the number.</returns>
         /// <search>exponential</search>
         public static double Exp(double number)
         {
@@ -355,12 +394,13 @@ namespace DSCore
         /// <summary>
         ///     Returns the first integer smaller than the number.
         /// </summary>
-        /// <param name="number">Number to round up.</param>
-        /// <returns name="integer">First integer smaller than the number.</returns>
+        /// <param name="number">Number to round down</param>
+        /// <returns name="int">First integer smaller than the number</returns>
         /// <search>round</search>
         public static long Floor(double number)
         {
-            return (long)CSMath.Floor(number);
+            var floor = CSMath.Floor(number);
+            return DoCheckedCast(floor);
         }
         
         [IsVisibleInDynamoLibrary(false)]
@@ -373,7 +413,7 @@ namespace DSCore
         ///     Finds the natural logarithm of a number in the range (0, ∞).
         /// </summary>
         /// <param name="number">Number greater than 0.</param>
-        /// <returns name="log">Natural log of the number.</returns>
+        /// <returns name="double">Natural log of the number.</returns>
         /// <search>natural,logarithm,ln</search>
         public static double Log(double number)
         {
@@ -385,7 +425,7 @@ namespace DSCore
         /// </summary>
         /// <param name="number">Number greater than 0.</param>
         /// <param name="logBase">Base of the logarithm in the range [0,1),(1, ∞).</param>
-        /// <returns name="log">Logarithm of the number.</returns>
+        /// <returns name="double">Logarithm of the number.</returns>
         /// <search>logarithm,ld,lg</search>
         public static double Log(double number, double logBase)
         {
@@ -396,7 +436,7 @@ namespace DSCore
         ///     Finds the base-10 logarithm of a number.
         /// </summary>
         /// <param name="number">Number greater than 0.</param>
-        /// <returns name="log">Logarithm of the number.</returns>
+        /// <returns name="double">Logarithm of the number.</returns>
         /// <search>logarithm</search>
         public static double Log10(double number)
         {
@@ -488,9 +528,9 @@ namespace DSCore
         /// <summary>
         /// Rounds a number to a specified number of fractional digits. 
         /// </summary>
-        /// <param name="number">Number to be rounded.</param>
-        /// <param name="digits">Number of fractional digits in the return value.</param>
-        /// <returns name="number">The number nearest to value that contains a number of fractional digits equal to digits.</returns>
+        /// <param name="number">Number to round</param>
+        /// <param name="digits">Number of fractional digits in the return value</param>
+        /// <returns name="number">The number nearest to value that contains a number of fractional digits equal to digits</returns>
         public static double Round(double number, int digits)
         {
             return CSMath.Round(number, digits);
@@ -499,8 +539,8 @@ namespace DSCore
         /// <summary>
         ///     Returns the sign of the number: -1, 0, or 1.
         /// </summary>
-        /// <param name="number">A number.</param>
-        /// <returns name="sign">The sign of the number: -1, 0, or 1.</returns>
+        /// <param name="number">Number to get sign from</param>
+        /// <returns name="int">The sign of the number: -1, 0, or 1</returns>
         public static long Sign(double number)
         {
             return CSMath.Sign(number);
@@ -509,18 +549,18 @@ namespace DSCore
         /// <summary>
         ///     Returns the sign of the number: -1, 0, or 1.
         /// </summary>
-        /// <param name="integer">A number.</param>
-        /// <returns name="sign">The sign of the number: -1, 0, or 1.</returns>
-        public static long Sign(long integer)
+        /// <param name="int">Integer to get sign from</param>
+        /// <returns name="int">The sign of the number: -1, 0, or 1</returns>
+        public static long Sign(long @int)
         {
-            return CSMath.Sign(integer);
+            return CSMath.Sign(@int);
         }
 
         /// <summary>
         ///     Finds the sine of an angle.
         /// </summary>
         /// <param name="angle">Angle in degrees to take the sine of.</param>
-        /// <returns name="sin">Sine of the angle.</returns>
+        /// <returns name="double">Sine of the angle.</returns>
         /// <search>sine</search>
         public static double Sin(double angle)
         {
@@ -531,7 +571,7 @@ namespace DSCore
         ///     Finds the hyperbolic sine of an angle (radians).
         /// </summary>
         /// <param name="angle">An angle in radians.</param>
-        /// <returns name="sinh">Hyperbolic sine of the angle.</returns>
+        /// <returns name="double">Hyperbolic sine of the angle.</returns>
         /// <search>hyperbolic</search>
         public static double Sinh(double angle)
         {
@@ -542,7 +582,7 @@ namespace DSCore
         ///     Finds the positive square root of a number in the range [0, ∞).
         /// </summary>
         /// <param name="number">A number in the range [0, ∞).</param>
-        /// <returns name="sqrt">Positive square root of the number.</returns>
+        /// <returns name="double">Positive square root of the number.</returns>
         /// <search>square,root,radical</search>
         public static double Sqrt(double number)
         {
@@ -552,8 +592,8 @@ namespace DSCore
         /// <summary>
         ///     Finds the tangent of an angle.
         /// </summary>
-        /// <param name="angle">Angle in degrees to take the tangent of.</param>
-        /// <returns name="tan">Tangent of the angle.</returns>
+        /// <param name="angle">Angle in radians</param>
+        /// <returns name="double">Tangent of the angle</returns>
         /// <search>tangent</search>
         public static double Tan(double angle)
         {
@@ -566,8 +606,8 @@ namespace DSCore
         /// <summary>
         ///     Finds the hyperbolic tangent of an angle (radians).
         /// </summary>
-        /// <param name="angle">An angle in radians.</param>
-        /// <returns name="tanh">Hyperbolic tangent of the angle.</returns>
+        /// <param name="angle">Angle in radians</param>
+        /// <returns name="double">Hyperbolic tangent of the angle</returns>
         /// <search>hyperbolic,tanh</search>
         public static double Tanh(double angle)
         {
@@ -584,8 +624,8 @@ namespace DSCore
         /// <summary>
         ///      Find the sum of a series of numbers
         /// </summary>
-        /// <param name="values">The numbers to sum</param>
-        /// <returns name="sum">The sum of the values</returns>
+        /// <param name="values">Numbers to add to sum</param>
+        /// <returns name="double">The sum of the values</returns>
         /// <search>mass addition,massadd</search>
         public static double Sum(IEnumerable<double> values)
         {
@@ -595,8 +635,8 @@ namespace DSCore
         /// <summary>
         ///     Finds the factorial result of a positive integer.
         /// </summary>
-        /// <param name="number">A positive integer.</param>
-        /// <returns name="number!">The factorial result of the integer.</returns>
+        /// <param name="number">A positive integer</param>
+        /// <returns name="number">The factorial result of the integer.</returns>
         /// <search>!</search>
         public static long Factorial(long number)
         {
@@ -633,15 +673,34 @@ namespace DSCore
         /// <summary>
         ///     Boolean XOR: Returns true if and only if exactly one of the inputs is true.
         /// </summary>
-        /// <param name="a">A boolean.</param>
-        /// <param name="b">A boolean.</param>
-        /// <returns name="bool">Boolean result.</returns>
+        /// <param name="bool">A boolean</param>
+        /// <param name="otherBool">Other boolean</param>
+        /// <returns name="bool">Boolean result</returns>
         /// <search>xor,exclusive,or</search>
-        public static bool Xor(bool a, bool b)
+        public static bool Xor(bool @bool, bool otherBool)
         {
-            return a ^ b;
+            return @bool ^ otherBool;
         }
 
         private static readonly Random mRandom = new Random();
+
+        /// <summary>
+        /// Performs a cast to long in a checked context. If the operation produces an overflow,
+        /// then a warning is produced and the overflowed result is returned.
+        /// </summary>
+        /// <param name="value">Operation to be performed</param>
+        /// <returns>The result of the operation</returns>
+        private static long DoCheckedCast(double value)
+        {
+            try
+            {
+                return checked((long)value);
+            }
+            catch (OverflowException)
+            {
+                LogWarningMessageEvents.OnLogWarningMessage(string.Format($"{Properties.Resources.IntegerOverflow}href=IntegerOverflow.html"));
+                return (long)value;
+            }
+        }
     }
 }

@@ -25,7 +25,6 @@ using ProtoCore;
 using PythonNodeModels;
 using SystemTestServices;
 using TestServices;
-using IntegerSlider = CoreNodeModels.Input.IntegerSlider;
 
 namespace DynamoCoreWpfTests
 {
@@ -47,7 +46,7 @@ namespace DynamoCoreWpfTests
         protected WorkspaceModel workspace = null;
         protected WorkspaceViewModel workspaceViewModel = null;
         protected double tolerance = 1e-6;
-        protected double codeBlockPortHeight = Configurations.CodeBlockPortHeightInPixels;
+        protected double codeBlockPortHeight = Configurations.PortHeightInPixels;
 
         public override void Setup()
         {
@@ -147,6 +146,7 @@ namespace DynamoCoreWpfTests
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("FFITarget.dll");
+            libraries.Add("DSCPython.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -1454,7 +1454,6 @@ namespace DynamoCoreWpfTests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
-            libraries.Add("DSIronPython.dll");
             libraries.Add("FunctionObject.ds");
             base.GetLibrariesToPreload(libraries);
         }
@@ -3708,7 +3707,7 @@ namespace DynamoCoreWpfTests
 
                     //Check the CBN for input/output ports
                     Assert.AreNotEqual(ElementState.Error, cbn.State);
-                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(0, cbn.OutPorts.Count);
                     Assert.AreEqual(0, cbn.InPorts.Count);
 
                 }
@@ -4285,7 +4284,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(3, workspace.Nodes.Count());
 
             var number = GetNode("31f48bb5-4bdf-4066-b343-5df0f6f4337f") as DoubleInput;
-            var slider = GetNode("ff4d4e43-8932-4588-95ed-f41c7f322ad0") as IntegerSlider;
+            var slider = GetNode("ff4d4e43-8932-4588-95ed-f41c7f322ad0") as IntegerSlider64Bit;
             var codeblock = GetNode("d7e88a85-d32f-416c-b449-b22f099c5471") as CodeBlockNodeModel;
 
             Assert.IsNotNull(number);
@@ -4302,8 +4301,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, codeblock.OutPorts.Count);
 
             AssertPreviewValue("d7e88a85-d32f-416c-b449-b22f099c5471", 80);
-
-            //Assert.Inconclusive("Porting : DoubleInput");
         }
 
         [Test]

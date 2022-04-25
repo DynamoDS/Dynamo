@@ -7,16 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
+using Point = System.Windows.Point;
+using Size = System.Windows.Size;
 
 namespace Dynamo.ViewModels
 {
@@ -31,6 +37,9 @@ namespace Dynamo.ViewModels
         public delegate void NodeDialogEventHandler(object sender, NodeDialogEventArgs e);
         public delegate void SnapInputEventHandler(PortViewModel portViewModel);
         public delegate void PreviewPinStatusHandler(bool pinned);
+
+        internal delegate void NodeAutoCompletePopupEventHandler(Popup popup);
+        internal delegate void PortContextMenuPopupEventHandler(Popup popup);
         #endregion
 
         #region events
@@ -50,6 +59,7 @@ namespace Dynamo.ViewModels
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
         private bool isRenamed = false;
+        private bool isNodeInCollapsedGroup = false;
         #endregion
 
         #region public members
@@ -107,6 +117,7 @@ namespace Dynamo.ViewModels
         public InfoBubbleViewModel ErrorBubble { get; set; }
 
         [JsonIgnore]
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
         public string ToolTipText
         {
             get { return nodeLogic.ToolTipText; }
@@ -162,8 +173,11 @@ namespace Dynamo.ViewModels
             {
                 if (nodeLogic.IsSetAsInput != value)
                 {
-                    nodeLogic.IsSetAsInput = value;
-                    RaisePropertyChanged("IsSetAsInput");
+                    DynamoViewModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
+                        Guid.Empty, NodeModel.GUID, nameof(IsSetAsInput), value.ToString()));
+
+                    RaisePropertyChanged(nameof(IsSetAsInput));
+                    Analytics.TrackEvent(Actions.Set, Categories.NodeContextMenuOperations, "AsInput");
                 }
             }
         }
@@ -187,21 +201,26 @@ namespace Dynamo.ViewModels
             {
                 if (nodeLogic.IsSetAsOutput != value)
                 {
-                    nodeLogic.IsSetAsOutput = value;
-                    RaisePropertyChanged("IsSetAsOutput");
+                    DynamoViewModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
+                        Guid.Empty, NodeModel.GUID, nameof(IsSetAsOutput), value.ToString()));
+
+                    RaisePropertyChanged(nameof(IsSetAsOutput));
+                    Analytics.TrackEvent(Actions.Set, Categories.NodeContextMenuOperations, "AsOutput");
                 }
             }
         }
+
+        
         /// <summary>
         /// The Name of the nodemodel this view points to
         /// this is the name of the node as it is displayed in the UI.
         /// </summary>
         public string Name
         {
-            get 
+            get
             {
                 IsRenamed = OriginalName != nodeLogic.Name;
-                return nodeLogic.Name; 
+                return nodeLogic.Name;
             }
             set { nodeLogic.Name = value; }
         }
@@ -240,6 +259,16 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.State; }
         }
+        
+        /// <summary>
+        /// The total number of info/warnings/errors dismissed by the user on this node.
+        /// This is displayed on the node by a little icon beside the Context Menu button.
+        /// </summary>
+        [JsonIgnore]
+        public int NumberOfDismissedAlerts
+        {
+            get => DismissedAlerts.Count;
+        }
 
         [JsonIgnore]
         public string Description
@@ -252,7 +281,7 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.IsCustomFunction ? true : false; }
         }
-
+        
         /// <summary>
         /// Element's left position is two-way bound to this value
         /// </summary>
@@ -302,6 +331,8 @@ namespace Dynamo.ViewModels
             {
                 zIndex = value;
                 RaisePropertyChanged("ZIndex");
+                if (ErrorBubble == null) return;
+                ErrorBubble.ZIndex = zIndex + 1;
             }
         }
 
@@ -324,7 +355,55 @@ namespace Dynamo.ViewModels
             }
         }
 
-    
+        /// <summary>
+        /// Determines whether or not the semi-transparent overlay is displaying on the node.
+        /// This reflects whether the node is in a info/warning/error/frozen state
+        /// </summary>
+        [JsonIgnore]
+        public bool NodeOverlayVisible => IsFrozen;
+
+        /// <summary>
+        /// Determines whether the node is showing a bar at its base, indicating that the
+        /// node has undismissed info/warning/error messages.
+        /// </summary>
+        [JsonIgnore]
+        public bool NodeWarningBarVisible => (ErrorBubble != null && ErrorBubble.DoesNodeDisplayMessages) || IsVisible == false;
+
+        /// <summary>
+        /// The color of the warning bar: blue for info, orange for warnings, red for errors.
+        /// </summary>
+        [JsonIgnore]
+        public SolidColorBrush WarningBarColor
+        {
+            get => warningBarColor;
+            internal set
+            {
+                if (warningBarColor != value)
+                {
+                    warningBarColor = value;
+                    RaisePropertyChanged(nameof(WarningBarColor));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Determines the color of the node's visual overlay, which displays
+        /// if the node is in a Frozen, Info, Error or Warning state.
+        /// </summary>
+        [JsonIgnore]
+        public SolidColorBrush NodeOverlayColor
+        {
+            get => nodeOverlayColor;
+            internal set
+            {
+                if (nodeOverlayColor != value)
+                {
+                    nodeOverlayColor = value;
+                    RaisePropertyChanged(nameof(NodeOverlayColor));
+                }
+            }
+        }
+
         [JsonIgnore]
         public Visibility PeriodicUpdateVisibility
         {
@@ -370,8 +449,14 @@ namespace Dynamo.ViewModels
             get { return nodeLogic.DisplayLabels; }
             set
             {
-                nodeLogic.DisplayLabels = value;
-                RaisePropertyChanged("IsDisplayingLabels");
+                if (nodeLogic.DisplayLabels != value)
+                {
+                    DynamoViewModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
+                    Guid.Empty, NodeModel.GUID, nameof(nodeLogic.DisplayLabels), value.ToString()));
+
+                    RaisePropertyChanged(nameof(IsDisplayingLabels));
+                    Analytics.TrackEvent(Actions.Show, Categories.NodeContextMenuOperations, "Labels");
+                }
             }
         }
 
@@ -455,6 +540,19 @@ namespace Dynamo.ViewModels
         }
 
         private bool isNodeNewlyAdded;
+        private ImageSource imageSource;
+        private string imgGlyphOneSource;
+        private string imgGlyphTwoSource;
+        private string imgGlyphThreeSource;
+        private SolidColorBrush warningBarColor;
+        private SolidColorBrush nodeOverlayColor;
+
+        private static readonly string warningGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/alert-64px.png";
+        private static readonly string errorGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/error-64px.png";
+        private static readonly string infoGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/info-64px.png";
+        private static readonly string previewGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/hidden-64px.png";
+        private static readonly string frozenGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png";
+
         [JsonIgnore]
         public bool IsNodeAddedRecently
         {
@@ -551,9 +649,112 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
+        public ImageSource ImageSource
+        {
+            get => imageSource;
+            set
+            {
+                imageSource = value;
+                RaisePropertyChanged(nameof(ImageSource));
+            }
+        }
+
+        [JsonIgnore]
+        public string ImgGlyphOneSource
+        {
+            get => imgGlyphOneSource;
+            set
+            {
+                imgGlyphOneSource = value;
+                RaisePropertyChanged(nameof(ImgGlyphOneSource));
+            }
+        }
+
+        [JsonIgnore]
+        public string ImgGlyphTwoSource
+        {
+            get => imgGlyphTwoSource;
+            set
+            {
+                imgGlyphTwoSource = value;
+                RaisePropertyChanged(nameof(ImgGlyphTwoSource));
+            }
+        }
+
+        [JsonIgnore]
+        public string ImgGlyphThreeSource
+        {
+            get => imgGlyphThreeSource;
+            set
+            {
+                imgGlyphThreeSource = value;
+                RaisePropertyChanged(nameof(ImgGlyphThreeSource));
+            }
+        }
+
+        internal double ActualHeight { get; set; }
+        internal double ActualWidth { get; set; }
+
+        /// <summary>
+        /// Node description defined by the user.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string UserDescription
+        {
+            get { return NodeModel.UserDescription; }
+            set { NodeModel.UserDescription = value; }
+        }
+
+        public override bool IsCollapsed
+        {
+            get => base.IsCollapsed;
+            set
+            {
+                base.IsCollapsed = value;
+                if (ErrorBubble == null) return;
+                ErrorBubble.IsCollapsed = value;
+                RaisePropertyChanged(nameof(NodeWarningBarVisible));
+            }
+        }
+
+        /// <summary>
+        /// Used as a flag to indicate to associated connectors what ZIndex to be drawn at.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsNodeInCollapsedGroup
+        {
+            get => isNodeInCollapsedGroup;
+            set
+            {
+                isNodeInCollapsedGroup = value;
+                RaisePropertyChanged(nameof(IsNodeInCollapsedGroup));
+            }
+        }
+
+        /// <summary>
+        /// A collection of error/warning/info messages, dismissed via a sub-menu in the node Context Menu.
+        /// </summary>
+        [JsonIgnore]
+        public ObservableCollection<string> DismissedAlerts => nodeLogic.DismissedAlerts;       
+
         #endregion
 
         #region events
+
+        internal event NodeAutoCompletePopupEventHandler RequestAutoCompletePopupPlacementTarget;
+        internal event PortContextMenuPopupEventHandler RequestPortContextMenuPopupPlacementTarget;
+
+        internal void OnRequestAutoCompletePopupPlacementTarget(Popup popup)
+        {
+            RequestAutoCompletePopupPlacementTarget?.Invoke(popup);
+        }
+
+        public void OnRequestPortContextMenuPlacementTarget(Popup popup)
+        {
+            RequestPortContextMenuPopupPlacementTarget?.Invoke(popup);
+        }
+
         public event NodeDialogEventHandler RequestShowNodeHelp;
         public virtual void OnRequestShowNodeHelp(Object sender, NodeDialogEventArgs e)
         {
@@ -581,10 +782,33 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Event to determine when Node is selected
+        /// </summary>
+        internal event EventHandler Selected;
+        internal void OnSelected(object sender, EventArgs e)
+        {
+            Selected?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Event to determine when Node is removed
+        /// </summary>
+        internal event EventHandler Removed;
+        internal void OnRemoved(object sender, EventArgs e)
+        {
+            Removed?.Invoke(this, e);
+        }
+
         #endregion
 
         #region constructors
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="workspaceViewModel"></param>
+        /// <param name="logic"></param>
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic)
         {
             WorkspaceViewModel = workspaceViewModel;
@@ -599,12 +823,10 @@ namespace Dynamo.ViewModels
             logic.OutPorts.CollectionChanged += outports_collectionChanged;
 
             logic.PropertyChanged += logic_PropertyChanged;
+            logic.Infos.CollectionChanged += Infos_CollectionChanged;
 
             DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
-
-            ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
-            UpdateBubbleContent();
 
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
@@ -622,14 +844,117 @@ namespace Dynamo.ViewModels
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             ZIndex = ++StaticZIndex;
             ++NoteViewModel.StaticZIndex;
+
+            if (workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource))
+            {
+                ImageSource = imgSource;
+            }
+            logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
+            logic.NodeInfoMessagesClearing += Logic_NodeInfoMessagesClearing;
+
+            logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsVisible)));
+            UpdateBubbleContent();
         }
 
+        private void Infos_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateBubbleContent();
+        }
+
+
+        /// <summary>
+        /// Updates whether the Warning Bar is visible or not and whether the node's
+        /// Frozen/Info/Warning/Error overlay is displaying.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateOverlays(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(NodeWarningBarVisible));
+            RaisePropertyChanged(nameof(NodeOverlayVisible));
+            RaisePropertyChanged(nameof(NodeOverlayColor));
+        }
+        
+        /// <summary>
+        /// Clears the existing messages on a node before it executes and re-evalutes its warnings/errors. 
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Logic_NodeMessagesClearing(NodeModel obj)
+        {
+            // Because errors are evaluated before the graph/node executes, we need to ensure 
+            // errors aren't being dismissed when the graph runs.
+            // Persistent warnings should also not be dismissed when a graph runs as they can include:
+            // 1. Compile-time warnings in CBNs
+            // 2. Obsolete nodes with warnings
+            // 3. Dummy or unresolved nodes
+            if (nodeLogic.State == ElementState.Error || nodeLogic.State == ElementState.PersistentWarning || ErrorBubble == null) return;
+
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    ErrorBubble.NodeMessages.Clear();
+                });
+            }
+            else
+            {
+                ErrorBubble.NodeMessages.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Clears the existing messages on a node before it executes and re-evalutes its warnings/errors. 
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Logic_NodeInfoMessagesClearing(NodeModel obj)
+        {
+            if (ErrorBubble == null) return;
+
+            var itemsToRemove = ErrorBubble.NodeMessages.Where(x => x.Style == InfoBubbleViewModel.Style.Info).ToList();
+
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    foreach (var itemToRemove in itemsToRemove)
+                    {
+                        ErrorBubble.NodeMessages.Remove(itemToRemove);
+                    }
+                });
+            }
+            else
+            {
+                foreach (var itemToRemove in itemsToRemove)
+                {
+                    ErrorBubble.NodeMessages.Remove(itemToRemove);
+                }
+            }
+        }
+
+        private void DismissedNodeMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!(sender is ObservableCollection<InfoBubbleDataPacket> observableCollection)) return;
+
+            DismissedAlerts.Clear();
+
+            foreach (InfoBubbleDataPacket infoBubbleDataPacket in observableCollection)
+            {
+                DismissedAlerts.Add(infoBubbleDataPacket.Message);
+            }
+            
+            RaisePropertyChanged(nameof(DismissedAlerts));
+            RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
+        }
+        
         /// <summary>
         /// Dispose function
         /// </summary>
         public override void Dispose()
         {
-            this.NodeModel.PropertyChanged -= logic_PropertyChanged;
+            NodeModel.PropertyChanged -= logic_PropertyChanged;
+            NodeModel.InPorts.CollectionChanged -= inports_collectionChanged;
+            NodeModel.OutPorts.CollectionChanged -= outports_collectionChanged;
+            NodeModel.Infos.CollectionChanged -= Infos_CollectionChanged;
 
             DynamoViewModel.Model.PropertyChanged -= Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged -= DebugSettings_PropertyChanged;
@@ -647,7 +972,12 @@ namespace Dynamo.ViewModels
             {
                 p.Dispose();
             }
-            ErrorBubble.Dispose();
+
+            NodeModel.NodeMessagesClearing -= Logic_NodeMessagesClearing;
+            NodeModel.NodeInfoMessagesClearing -= Logic_NodeInfoMessagesClearing;
+            
+            if (ErrorBubble != null) DisposeErrorBubble();
+
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
         }
@@ -722,13 +1052,13 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in nodeLogic.InPorts)
             {
-                PortViewModel inportViewModel = SubscribePortEvents(item);
+                PortViewModel inportViewModel = SubscribeInPortEvents(item);
                 InPorts.Add(inportViewModel);
             }
 
             foreach (var item in nodeLogic.OutPorts)
             {
-                PortViewModel outportViewModel = SubscribePortEvents(item);
+                PortViewModel outportViewModel = SubscribeOutPortEvents(item);
                 OutPorts.Add(outportViewModel);
             }
         }
@@ -778,27 +1108,38 @@ namespace Dynamo.ViewModels
                     break;
                 case "State":
                     RaisePropertyChanged("State");
+                    HandleColorOverlayChange();
+                    RaisePropertyChanged(nameof(NodeWarningBarVisible));
                     break;
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
                     break;
-                case "ToolTipText":
+                case nameof(NodeModel.ToolTipText):
                     UpdateBubbleContent();
                     // TODO Update preview bubble visibility to false
                     break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
+                    HandleColorOverlayChange();
+                    RaisePropertyChanged(nameof(NodeWarningBarVisible));
                     break;
                 case "Width":
                     RaisePropertyChanged("Width");
+                    UpdateErrorBubbleWidth();
                     UpdateErrorBubblePosition();
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
                     UpdateErrorBubblePosition();
                     break;
-                case "DisplayLabels":
-                    RaisePropertyChanged("IsDisplayingLables");
+                case nameof(NodeModel.DisplayLabels):
+                    RaisePropertyChanged(nameof(IsDisplayingLabels));
+                    break;
+                case nameof(NodeModel.IsSetAsInput):
+                    RaisePropertyChanged(nameof(IsSetAsInput));
+                    break;
+                case nameof(NodeModel.IsSetAsOutput):
+                    RaisePropertyChanged(nameof(IsSetAsOutput));
                     break;
                 case "Position":
                     UpdateErrorBubblePosition();
@@ -812,39 +1153,312 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsFrozen":
                     RaiseFrozenPropertyChanged();
+                    HandleColorOverlayChange();
+                    RaisePropertyChanged(nameof(NodeOverlayVisible));
                     break;
             }
         }
 
+        /// <summary>
+        /// Respond to property changes on the error bubble.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void ErrorBubble_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(ErrorBubble.DoesNodeDisplayMessages):
+                    HandleColorOverlayChange();
+                    RaisePropertyChanged(nameof(NodeWarningBarVisible));
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// A single method that handles all color-related overrides
+        /// The following events trigger color update:
+        /// Error, Warning, Frozen, PreviewOff, Info TODO(still don't know what that is)
+        /// </summary>
+        private void HandleColorOverlayChange()
+        {
+            WarningBarColor = GetWarningColor();
+            NodeOverlayColor = GetBorderColor();
+        }
+
+        /// <summary>
+        /// Updates the width of the node's Warning/Error bubbles, in case the width of the node changes.
+        /// </summary>
+        private void UpdateErrorBubbleWidth()
+        {
+            ErrorBubble.BubbleWidth = NodeModel.Width;
+        }
+
+        /// <summary>
+        /// Creates a new ErrorBubble and assigns it to the ErrorBubble property.
+        /// </summary>
+        private void BuildErrorBubble()
+        {
+            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(DynamoViewModel)
+            {
+                IsCollapsed = this.IsCollapsed
+            };
+
+            ErrorBubble.NodeInfoToDisplay.CollectionChanged += UpdateOverlays;
+            ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
+            ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateOverlays;
+            ErrorBubble.PropertyChanged += ErrorBubble_PropertyChanged;
+            
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    WorkspaceViewModel.Errors.Add(ErrorBubble);
+                });
+            }
+            
+            // The Error bubble sits above the node in ZIndex. Since pinned notes sit above
+            // the node as well and the ErrorBubble needs to display on top of these, the
+            // ErrorBubble's ZIndex should be the node's ZIndex + 2.
+            ErrorBubble.ZIndex = ZIndex + 2;
+
+            // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
+            
+            ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeMessages_CollectionChanged;
+        }
+
+        // These colors are duplicated from the DynamoColorsAndBrushesDictionary as it is not assumed that the xaml will be loaded before setting the color
+        // SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeErrorColor"];
+        private static SolidColorBrush errorColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#EB5555"));
+        // SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeWarningColor"];
+        private static SolidColorBrush warningColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FAA21B"));
+        // SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
+        private static SolidColorBrush noPreviewColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
+
+        /// <summary>
+        /// Sets the color of the warning bar, which informs the user that the node is in
+        /// either an error or a warning state.
+        /// </summary>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        internal SolidColorBrush GetWarningColor()
+        {
+            if (nodeLogic.IsInErrorState)
+            {
+                return errorColor;
+            }
+
+            if (NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning)
+            {
+                //Handle the case where the user has dismissed the warning and no warnings are showing.
+                if (ErrorBubble != null && !ErrorBubble.DoesNodeDisplayMessages)
+                {
+                    return noPreviewColor;
+                }
+
+                return warningColor;
+            }
+
+            return noPreviewColor;
+        }
+        /// <summary>
+        /// Determines the color of the overlay border based on the
+        /// state of the node. Priorities apply in order of appearance in if/else statement.
+        /// Applicable if zoom is smaller than 60% (State 2)
+        /// TODO: Can be done with switch case statement if we refactor node view states
+        /// </summary>
+        /// <returns></returns>
+        internal SolidColorBrush GetBorderColor()
+        {
+            // TODO: What defines 'info' state?
+            bool infoState = false;
+            SolidColorBrush result = null;
+
+            /*
+                Priorities seem to be:
+                Error > Warning > Info ; Frozen > Preview > None
+                Pass through all possible states in reverse order 
+                to assign icon values for each possible scenario
+            */
+
+            ResetColorGlyphs();
+
+            if (!this.IsVisible)
+            {
+                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
+                ImgGlyphOneSource = previewGlyph; 
+            }
+            if (this.IsFrozen)
+            {
+                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeFrozenOverlayColor"]; 
+                if (ImgGlyphOneSource == null)
+                {
+                    ImgGlyphOneSource = frozenGlyph;
+                }
+                else
+                {
+                    ImgGlyphOneSource = frozenGlyph;
+                    ImgGlyphTwoSource = previewGlyph;
+                }
+            }
+            if (infoState)
+            {
+                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInfoColor"];
+                if (ImgGlyphTwoSource != null)
+                {
+                    ImgGlyphTwoSource = infoGlyph;
+                }
+                else
+                {
+                    ImgGlyphThreeSource = infoGlyph;
+                }
+            }
+            if (NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning)
+            {
+                result = warningColor;
+                if (ImgGlyphTwoSource == null)
+                {
+                    ImgGlyphTwoSource = warningGlyph;
+                }
+                else
+                {
+                    ImgGlyphThreeSource = warningGlyph;
+                }
+            }
+            if (NodeModel.State == ElementState.Error)
+            {
+                result = errorColor;
+                if (ImgGlyphTwoSource == null)
+                {
+                    ImgGlyphTwoSource = errorGlyph;
+                }
+                else
+                {
+                    ImgGlyphThreeSource = errorGlyph;
+                }
+            }
+
+            return result;
+        }
+        private void ResetColorGlyphs()
+        {
+            ImgGlyphOneSource = null;
+            ImgGlyphTwoSource = null;
+            ImgGlyphThreeSource = null;
+        }
+
+        /// <summary>
+        /// Disposes the ErrorBubble when it's no longer needed.
+        /// </summary>
+        private void DisposeErrorBubble()
+        {
+            if (ErrorBubble == null) return;
+            ErrorBubble.DismissedMessages.CollectionChanged -= DismissedNodeMessages_CollectionChanged;
+
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    ErrorBubble.NodeMessages.Clear();
+                });
+            }
+
+            ErrorBubble.NodeInfoToDisplay.CollectionChanged -= UpdateOverlays;
+            ErrorBubble.NodeWarningsToDisplay.CollectionChanged -= UpdateOverlays;
+            ErrorBubble.NodeErrorsToDisplay.CollectionChanged -= UpdateOverlays;
+            ErrorBubble.PropertyChanged -= ErrorBubble_PropertyChanged;
+
+            ErrorBubble.Dispose();
+        }
+
         public void UpdateBubbleContent()
         {
-            if (ErrorBubble == null || DynamoViewModel == null)
-                return;
-            if (string.IsNullOrEmpty(NodeModel.ToolTipText))
+            if (DynamoViewModel == null) return;
+
+            bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning; 
+            bool isNodeStateInfo = NodeModel.State == ElementState.Info;
+
+            // Persistent warnings should continue to be displayed even if nodes are not involved in an execution as they can include:
+            // 1. Compile-time warnings in CBNs
+            // 2. Obsolete nodes with warnings
+            // 3. Dummy or unresolved nodes
+            if (NodeModel.State != ElementState.PersistentWarning && !NodeModel.IsInErrorState && !isNodeStateInfo)
             {
-                if (NodeModel.State != ElementState.Error && NodeModel.State != ElementState.Warning)
+                if (!NodeModel.WasInvolvedInExecution || !hasErrorOrWarning) return;
+            }
+
+            if (NodeModel.Infos.Count == 0) return;
+
+            if (ErrorBubble == null) BuildErrorBubble();
+
+            if (!WorkspaceViewModel.Errors.Contains(ErrorBubble)) return;
+
+            var topLeft = new Point(NodeModel.X, NodeModel.Y);
+            var botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+
+            const InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
+            var packets = new List<InfoBubbleDataPacket>(NodeModel.Infos.Count);
+
+            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.None;
+            int styleRank = int.MaxValue;
+
+            foreach (var info in NodeModel.Infos)
+            {
+                var infoStyle = info.State == ElementState.Error ? InfoBubbleViewModel.Style.Error : InfoBubbleViewModel.Style.Warning;
+                infoStyle = info.State == ElementState.Info ? InfoBubbleViewModel.Style.Info : infoStyle;
+
+                // Set the info bubble style based on the heirarchy of node messages style. 1) Error 2) Warning 3) Info.
+                if (infoStyle == InfoBubbleViewModel.Style.Info && styleRank > 3)
                 {
-                    ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
+                    style = InfoBubbleViewModel.Style.Info;
+                    styleRank = 3;
                 }
+                
+                if (infoStyle == InfoBubbleViewModel.Style.Warning && styleRank > 2)
+                {
+                    style = InfoBubbleViewModel.Style.Warning;
+                    styleRank = 2;
+                }
+
+                if (infoStyle == InfoBubbleViewModel.Style.Error)
+                {
+                    style = InfoBubbleViewModel.Style.Error;
+                    styleRank = 1;
+                }
+
+                var data = new InfoBubbleDataPacket(infoStyle, topLeft, botRight, info.Message, connectingDirection);
+                packets.Add(data);
+            }
+
+            ErrorBubble.InfoBubbleStyle = style;
+
+            // If running Dynamo with UI, use dispatcher, otherwise not
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    foreach (var data in packets)
+                    {
+                        if (!ErrorBubble.NodeMessages.Contains(data))
+                        {
+                            ErrorBubble.NodeMessages.Add(data);
+                        }
+                    }
+                    HandleColorOverlayChange();
+                });
             }
             else
             {
-                if (!WorkspaceViewModel.Errors.Contains(ErrorBubble))
-                    return;
-
-                var topLeft = new Point(NodeModel.X, NodeModel.Y);
-                var botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-                InfoBubbleViewModel.Style style = NodeModel.State == ElementState.Error
-                    ? InfoBubbleViewModel.Style.ErrorCondensed
-                    : InfoBubbleViewModel.Style.WarningCondensed;
-                // NOTE!: If tooltip is not cached here, it will be cleared once the dispatcher is invoked below
-                string content = NodeModel.ToolTipText;
-                const InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
-                var data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-
-                ErrorBubble.UpdateContentCommand.Execute(data);
-                ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
+                foreach (var data in packets)
+                {
+                    if (!ErrorBubble.NodeMessages.Contains(data))
+                    {
+                        ErrorBubble.NodeMessages.Add(data);
+                    }
+                }
+                HandleColorOverlayChange();
             }
+            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);            
         }
 
         private void UpdateErrorBubblePosition()
@@ -865,6 +1479,7 @@ namespace Dynamo.ViewModels
             //helpDialog.Show();
 
             OnRequestShowNodeHelp(this, new NodeDialogEventArgs(NodeModel));
+            Analytics.TrackEvent(Actions.ViewDocumentation, Categories.NodeContextMenuOperations, NodeModel.Name);
         }
 
         private bool CanShowHelp(object parameter)
@@ -875,6 +1490,7 @@ namespace Dynamo.ViewModels
         private void ShowRename(object parameter)
         {
             OnRequestShowNodeRename(this, new NodeDialogEventArgs(NodeModel));
+            Analytics.TrackEvent(Actions.Rename, Categories.NodeContextMenuOperations);
         }
 
         private bool CanShowRename(object parameter)
@@ -891,15 +1507,19 @@ namespace Dynamo.ViewModels
         {
             var command = new DynamoModel.DeleteModelCommand(nodeLogic.GUID);
             DynamoViewModel.ExecuteCommand(command);
+            OnRemoved(this, EventArgs.Empty);
+            Analytics.TrackEvent(Actions.Delete, Categories.NodeContextMenuOperations, nodeLogic.Name);
         }
 
         private void SetLacingType(object param)
         {
             DynamoViewModel.ExecuteCommand(
                 new DynamoModel.UpdateModelValueCommand(
-                    Guid.Empty, NodeModel.GUID, "ArgumentLacing", param.ToString()));
+                    Guid.Empty, NodeModel.GUID, nameof(ArgumentLacing), param.ToString()));
 
             DynamoViewModel.RaiseCanExecuteUndoRedo();
+
+            Analytics.TrackEvent(Actions.Set, Categories.NodeContextMenuOperations, "Lacing");
         }
 
         private bool CanSetLacingType(object param)
@@ -930,7 +1550,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    PortViewModel inportViewModel = SubscribePortEvents(item as PortModel);
+                    PortViewModel inportViewModel = SubscribeInPortEvents(item as PortModel);
                     InPorts.Add(inportViewModel);
                 }
             }
@@ -966,7 +1586,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    PortViewModel outportViewModel = SubscribePortEvents(item as PortModel);
+                    PortViewModel outportViewModel = SubscribeOutPortEvents(item as PortModel);
                     OutPorts.Add(outportViewModel);
                 }
             }
@@ -978,6 +1598,7 @@ namespace Dynamo.ViewModels
                 {
                     PortViewModel portToRemove = UnSubscribePortEvents(OutPorts.ToList().First(x => x.PortModel == item));
                     OutPorts.Remove(portToRemove);
+                    portToRemove.Dispose();
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Reset)
@@ -985,6 +1606,7 @@ namespace Dynamo.ViewModels
                 foreach (var p in OutPorts)
                 {
                     UnSubscribePortEvents(p);
+                    p.Dispose();
                 }
                 OutPorts.Clear();
             }
@@ -992,13 +1614,27 @@ namespace Dynamo.ViewModels
 
 
         /// <summary>
-        /// Registers the port events.
+        /// Registers the in port events.
         /// </summary>
         /// <param name="item">PortModel.</param>
         /// <returns></returns>
-        private PortViewModel SubscribePortEvents(PortModel item)
+        protected virtual PortViewModel SubscribeInPortEvents(PortModel item)
         {
-            PortViewModel portViewModel = new PortViewModel(this, item);
+            InPortViewModel portViewModel = new InPortViewModel(this, item);
+            portViewModel.MouseEnter += OnRectangleMouseEnter;
+            portViewModel.MouseLeave += OnRectangleMouseLeave;
+            portViewModel.MouseLeftButtonDown += OnMouseLeftButtonDown;
+            return portViewModel;
+        }
+
+        /// <summary>
+        /// Registers the out port events.
+        /// </summary>
+        /// <param name="item">PortModel.</param>
+        /// <returns></returns>
+        protected virtual PortViewModel SubscribeOutPortEvents(PortModel item)
+        {
+            OutPortViewModel portViewModel = new OutPortViewModel(this, item);
             portViewModel.MouseEnter += OnRectangleMouseEnter;
             portViewModel.MouseLeave += OnRectangleMouseLeave;
             portViewModel.MouseLeftButtonDown += OnMouseLeftButtonDown;
@@ -1069,6 +1705,8 @@ namespace Dynamo.ViewModels
 
             DynamoViewModel.Model.ExecuteCommand(command);
             DynamoViewModel.RaiseCanExecuteUndoRedo();
+
+            Analytics.TrackEvent(Actions.Preview, Categories.NodeContextMenuOperations, visibility);
         }
 
         private bool CanVisibilityBeToggled(object parameter)
@@ -1157,6 +1795,7 @@ namespace Dynamo.ViewModels
         private void CreateGroup(object parameters)
         {
             DynamoViewModel.AddAnnotationCommand.Execute(null);
+            Analytics.TrackEvent(Actions.Create, Categories.NodeContextMenuOperations, "Group");
         }
 
         private bool CanCreateGroup(object parameters)
@@ -1202,11 +1841,8 @@ namespace Dynamo.ViewModels
             }
 
             RaiseFrozenPropertyChanged();
-        }
 
-        private bool CanToggleIsFrozen(object parameters)
-        {
-            return DynamoSelection.Instance.Selection.Count() == 1;
+            Analytics.TrackEvent(Actions.Freeze, Categories.NodeContextMenuOperations);
         }
 
         private void RaiseFrozenPropertyChanged()
@@ -1237,6 +1873,7 @@ namespace Dynamo.ViewModels
         private void UngroupNode(object parameters)
         {
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.NodeContextMenuOperations, "Node");
         }
 
         private bool CanUngroupNode(object parameters)
@@ -1252,19 +1889,82 @@ namespace Dynamo.ViewModels
         private void AddToGroup(object parameters)
         {
             WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
+            Analytics.TrackEvent(Actions.AddedTo, Categories.NodeContextMenuOperations, "Node");
         }
 
         private bool CanAddToGroup(object parameters)
         {
-            var groups = WorkspaceViewModel.Model.Annotations;
-            if (groups.Any(x => x.IsSelected))
+            var selectedGroups = WorkspaceViewModel.Model.Annotations
+                .Where(x => x.IsSelected);
+
+            if (selectedGroups.Any() && 
+                !selectedGroups.All(x => !x.IsExpanded)) 
             {
-                return !(groups.ContainsModel(NodeLogic.GUID));
+                return !(WorkspaceViewModel.Model.Annotations.ContainsModel(NodeLogic.GUID));
             }
             return false;
         }
 
+        
 
+        private void SelectUpstreamNeighbours(object parameters)
+        {
+            NodeModel.SelectUpstreamNeighbours();
+
+            var upstreamNodes = NodeModel
+                .AllUpstreamNodes(new List<NodeModel>())
+                .ToList();
+
+            upstreamNodes.Add(NodeModel);
+
+            SelectRelatedGroupsToNodes(upstreamNodes);
+        }
+        
+        private void SelectDownstreamNeighbours(object parameters)
+        {
+            NodeModel.SelectDownstreamNeighbours();
+
+            var downstreamNodes = NodeModel
+                .AllDownstreamNodes(new List<NodeModel>())
+                .ToList();
+
+            downstreamNodes.Add(NodeModel);
+
+            SelectRelatedGroupsToNodes(downstreamNodes);
+        }
+
+        private void SelectDownstreamAndUpstreamNeighbours(object parameters)
+        {
+            NodeModel.SelectUpstreamAndDownstreamNeighbours();
+            
+            var nodesSelected = NodeModel
+                .AllUpstreamNodes(new List<NodeModel>())
+                .ToList();
+
+            nodesSelected.AddRange(NodeModel
+                .AllDownstreamNodes(new List<NodeModel>())
+                .ToList());
+
+            nodesSelected.Add(NodeModel);
+
+            SelectRelatedGroupsToNodes(nodesSelected);
+
+        }
+
+
+        private void SelectRelatedGroupsToNodes(List<NodeModel> nodes)
+        {
+            var nodesGUIDS = nodes.Select(n => n.GUID);
+            var groups = WorkspaceViewModel.Annotations;
+            foreach (var group in groups)
+            {
+                var groupsNodesGUIDS = group.Nodes.Select(n => n.GUID);
+
+                if (groupsNodesGUIDS.Intersect(nodesGUIDS).Any())
+                    group.AddGroupAndGroupedNodesToSelection();
+            }
+        }
+        
         #region Private Helper Methods
         private Point GetTopLeft()
         {
@@ -1276,6 +1976,7 @@ namespace Dynamo.ViewModels
             return new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
         }
         #endregion
+
     }
 
     public class NodeDialogEventArgs : EventArgs

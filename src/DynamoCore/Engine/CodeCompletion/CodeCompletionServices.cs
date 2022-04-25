@@ -133,7 +133,8 @@ namespace Dynamo.Engine.CodeCompletion
         }
 
         /// <summary>
-        /// Returns the list of function signatures of all overloads of a given method
+        /// Returns the list of function signatures of all overloads of a given method 
+        /// or getter method equivalent of a property.
         /// </summary>
         /// <param name="code"> code being typed in code block </param>
         /// <param name="functionName"> given method name for which signature is queried </param>
@@ -144,19 +145,13 @@ namespace Dynamo.Engine.CodeCompletion
         internal IEnumerable<CompletionData> GetFunctionSignatures(string code, string functionName, string functionPrefix,
             ElementResolver resolver = null)
         {
-            IEnumerable<MethodMirror> candidates = null;
+            IEnumerable<StaticMirror> candidates = null;
 
             // if function is global, search for function in Built-ins
             if (string.IsNullOrEmpty(functionPrefix))
             {
-                return StaticMirror.GetOverloadsOnBuiltIns(core, functionName).
-                    Select(x =>
-                    {
-                        return new CompletionData(x.MethodName, CompletionData.CompletionType.Method)
-                        {
-                            Stub = x.ToString()
-                        };
-                    });
+                return StaticMirror.GetOverloadsOnBuiltIns(core, functionName).Select(x =>
+                    new CompletionData(x.MethodName, CompletionData.CompletionType.Method, x.ToString()));
             }
 
             // Determine if the function prefix is a class name
@@ -169,6 +164,7 @@ namespace Dynamo.Engine.CodeCompletion
             if (type != null)
             {
                 candidates = type.GetOverloadsOnType(functionName);
+                candidates = candidates.Concat(type.GetProperties().Where(x => x.IsStatic && x.PropertyName == functionName));
             }
             // If not of class type
             else
@@ -279,6 +275,11 @@ namespace Dynamo.Engine.CodeCompletion
             this.Type = type;
         }
 
+        internal CompletionData(string text, CompletionType type, string stub) : this(text, type)
+        {
+            Stub = stub;
+        }
+
 
         internal static CompletionData ConvertMirrorToCompletionData(StaticMirror mirror, bool useShorterName = false, 
             ElementResolver resolver = null)
@@ -289,16 +290,13 @@ namespace Dynamo.Engine.CodeCompletion
                 string methodName = method.MethodName;
                 string signature = method.ToString();
                 CompletionType type = method.IsConstructor ? CompletionType.Constructor : CompletionType.Method;
-                return new CompletionData(methodName, type)
-                {
-                    Stub = signature
-                };
+                return new CompletionData(methodName, type, signature);
             }
             var property = mirror as PropertyMirror;
             if (property != null)
             {
                 string propertyName = property.PropertyName;
-                return new CompletionData(propertyName, CompletionType.Property);
+                return new CompletionData(propertyName, CompletionType.Property, property.ToString());
             }
             var classMirror = mirror as ClassMirror;
             if (classMirror != null)
@@ -306,8 +304,8 @@ namespace Dynamo.Engine.CodeCompletion
                 string className = useShorterName ? GetShortClassName(classMirror, resolver) : classMirror.Alias;
                 return new CompletionData(className, CompletionType.Class);
             }
-            else
-                throw new ArgumentException("Invalid argument");
+
+            throw new ArgumentException("Invalid argument");
         }
 
         private static string GetShortClassName(ClassMirror mirror, ElementResolver resolver)

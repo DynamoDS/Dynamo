@@ -178,6 +178,24 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The operation resulted in an integer overflow. Its result may be unexpected..
+        /// </summary>
+        internal static string IntegerOverflow {
+            get {
+                return ResourceManager.GetString("IntegerOverflow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid destination file path used as copy path..
+        /// </summary>
+        internal static string InvalidDestinationPathErrorMessage {
+            get {
+                return ResourceManager.GetString("InvalidDestinationPathErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One or more input types are not matching. Lists as keys are not supported..
         /// </summary>
         internal static string InvalidKeysErrorMessage {
@@ -201,6 +219,15 @@ namespace DSCore.Properties {
         internal static string LoadImageFromPathObsolete {
             get {
                 return ResourceManager.GetString("LoadImageFromPathObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected Python engine could not be found.
+        /// </summary>
+        internal static string MissingPythonEngine {
+            get {
+                return ResourceManager.GetString("MissingPythonEngine", resourceCulture);
             }
         }
         

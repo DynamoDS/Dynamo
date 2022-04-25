@@ -361,7 +361,9 @@ namespace Dynamo.Graph.Nodes
                 }
             }
 
-            if (context == SaveContext.File)
+            if (context == SaveContext.File || 
+                context == SaveContext.Save || 
+                context == SaveContext.SaveAs)
             {
                 //When save files, only save the original node's content, 
                 //instead of saving the dummy node.
@@ -399,7 +401,8 @@ namespace Dynamo.Graph.Nodes
         {
             XmlElement originalElement = OriginalXmlNodeContent;
 
-            if (context == SaveContext.File && originalElement != null)
+            if ((context == SaveContext.File || context == SaveContext.Save || context == SaveContext.SaveAs) &&
+                originalElement != null)
             {
                 XmlElement originalNode = xmlDocument.CreateElement(originalElement.Name);
                 return originalNode;
@@ -430,12 +433,12 @@ namespace Dynamo.Graph.Nodes
             {
                 if (string.IsNullOrEmpty(FunctionName))
                 {
-                    const string format = "Node of type '{0}',from assembly '{1}', is now deprecated.";
+                    string format = Properties.Resources.NodeOfTypeDeprecatedMsg;
                     return string.Format(format, TypeName, LegacyAssembly);
                 }
                 else
                 {
-                    const string format = "Node '{0}' is now deprecated";
+                    string format = Properties.Resources.NodeDeprecatedMsg;
                     return string.Format(format, FunctionName);
                 }
             }
@@ -444,17 +447,17 @@ namespace Dynamo.Graph.Nodes
             {
                 if (string.IsNullOrEmpty(FunctionName))
                 {
-                    const string format = "Node of type '{0}', from assembly '{1}', cannot be resolved.";
+                    string format = Properties.Resources.NodeOfTypeNotResolvedMsg;
                     return string.Format(format, TypeName, LegacyAssembly);
                 }
                 else
                 {
-                    const string format = "Node '{0}' cannot be resolved.";
+                    string format = Properties.Resources.NodeNotResolvedMsg;
                     return string.Format(format, FunctionName);
                 }
             }
 
-            const string message = "Unhandled 'DummyNode.NodeNature' value: {0}";
+            string message = Properties.Resources.NodeUnhandledMsg;
             throw new InvalidOperationException(string.Format(message, NodeNature));
         }
 

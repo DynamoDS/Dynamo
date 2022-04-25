@@ -24,22 +24,25 @@ namespace CoreNodeModels.Logic
         /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
         protected BinaryLogic(Operator op, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            ArgumentLacing = LacingStrategy.Auto;
             _op = op;
         }
 
         protected BinaryLogic(Operator op)
         {
+            ArgumentLacing = LacingStrategy.Auto;
             _op = op;
 
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("bool0", Resources.PortDataOperandToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("bool1", Resources.PortDataOperandToolTip)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Resources.PortDataResultToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("bool0", Resources.PortDataOperandToolTip + 0)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("bool1", Resources.PortDataOperandToolTip + 1)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("bool", Resources.PortDataResultToolTip)));
             RegisterAllPorts();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(
             List<AssociativeNode> inputAstNodes)
         {
+            UseLevelAndReplicationGuide(inputAstNodes);
             var inputs = inputAstNodes as IEnumerable<AssociativeNode>;
             return new[]
             {
@@ -48,7 +51,7 @@ namespace CoreNodeModels.Logic
                     inputs.Reverse()
                           .Aggregate(
                               (current, node) =>
-                                  AstFactory.BuildBinaryExpression(node, current, _op)))
+                                  AstFactory.BuildFunctionCall(Op.GetOpFunction(_op), new List<AssociativeNode>{ node, current})))
             };
         }
 
