@@ -276,8 +276,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         protected override void RefreshPortColors()
         {
+            bool isPythonNode = node.NodeModel is PythonNodeModels.PythonNode;
             //Is in function state
-            if (node.NodeModel.IsPartiallyApplied)
+            if (node.NodeModel.IsPartiallyApplied && !isPythonNode)
             {
                 if (node.NodeModel.AreAllOutputsConnected)
                 {
@@ -292,7 +293,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                SetupDefaultPortColorValues();
+                SetupDefaultPortColorValues(isPythonNode);
             }
         }
 
@@ -311,7 +312,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void SetupDefaultPortColorValues()
+        private void SetupDefaultPortColorValues(bool isPythonNode = false)
         {
             // Special case for keeping list structure visual appearance
             if (port.UseLevels && port.KeepListStructure && port.IsConnected)
@@ -321,7 +322,7 @@ namespace Dynamo.ViewModels
                 PortBorderBrushColor = PortBorderBrushColorKeepListStructure;
             }
             // Port has a default value, shows blue marker
-            else if (UsingDefaultValue && DefaultValueEnabled)
+            else if (UsingDefaultValue && DefaultValueEnabled || isPythonNode)
             {
                 PortValueMarkerColor = PortValueMarkerBlue;
                 PortBackgroundColor = PortBackgroundColorDefault;

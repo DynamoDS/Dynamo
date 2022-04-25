@@ -294,8 +294,10 @@ namespace Dynamo.ViewModels
         }
 
         protected override void RefreshPortColors()
-        {            
-            if (node.NodeModel.IsPartiallyApplied)
+        {
+            bool isPythonNode = node.NodeModel is PythonNodeModels.PythonNode;
+
+            if (node.NodeModel.IsPartiallyApplied && !isPythonNode)
             {
                 PortDefaultValueMarkerVisible = true;
                 portValueMarkerColor = PortValueMarkerGrey;
