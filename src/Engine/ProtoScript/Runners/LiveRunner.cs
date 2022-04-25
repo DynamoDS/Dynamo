@@ -774,6 +774,16 @@ namespace ProtoScript.Runners
                 return deltaAstList;
             }
 
+            //Redefinition of input nodes can only be processed when all the modified nodes are input nodes.
+            var redefinitionAllowed = true;
+            foreach (var modifiedSubTree in modifiedSubTrees)
+            {
+                if (!modifiedSubTree.IsInput)
+                {
+                    redefinitionAllowed = false;
+                }
+            }
+
             for (int n = 0; n < modifiedSubTrees.Count(); ++n)
             {
                 var modifiedSubTree = modifiedSubTrees[n];
@@ -786,7 +796,7 @@ namespace ProtoScript.Runners
                 if (modifiedSubTree.DeltaComputation)
                 {
                     // Get modified statements
-                    var modifiedASTList = GetModifiedNodes(modifiedSubTree, out csData.ModifiedNodesForRuntimeSetValue);
+                    var modifiedASTList = GetModifiedNodes(modifiedSubTree, redefinitionAllowed, out csData.ModifiedNodesForRuntimeSetValue);
                     modifiedSubTree.ModifiedAstNodes.Clear();
                     modifiedSubTree.ModifiedAstNodes.AddRange(modifiedASTList);
                     modifiedSubTree.ModifiedAstNodes.AddRange(csData.ModifiedNodesForRuntimeSetValue);
@@ -933,7 +943,7 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="subtree"></param>
         /// <returns></returns>
-        private List<AssociativeNode> GetModifiedNodes(Subtree subtree, out List<AssociativeNode> modifiedInputAST)
+        private List<AssociativeNode> GetModifiedNodes(Subtree subtree, bool redefinitionAllowed, out List<AssociativeNode> modifiedInputAST)
         {
             modifiedInputAST = new List<AssociativeNode>();
             Subtree st;
@@ -967,7 +977,7 @@ namespace ProtoScript.Runners
                     subtree.ForceExecution = false;
 
                     //Check if the subtree (ie a node in graph) is an input and has primitive Right hand Node type
-                    if (st.IsInput && st.AstNodes[0] is BinaryExpressionNode bne  && CoreUtils.IsPrimitiveASTNode(bne.RightNode))
+                    if (redefinitionAllowed && st.IsInput && st.AstNodes[0] is BinaryExpressionNode bne  && CoreUtils.IsPrimitiveASTNode(bne.RightNode))
                     {
                         // An input node is not re-compiled and executed
                         // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
