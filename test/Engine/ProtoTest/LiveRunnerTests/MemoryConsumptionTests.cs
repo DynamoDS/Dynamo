@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using ProtoCore.Mirror;
 using ProtoScript.Runners;
-using ProtoTestFx.TD;
 
 namespace ProtoTest.LiveRunner
 {
@@ -36,25 +34,23 @@ namespace ProtoTest.LiveRunner
                 "a = 2;"      
             };
 
-            Guid guid = Guid.NewGuid();
+            Guid guid = System.Guid.NewGuid();
 
             // First run
             // a = 1
             List<Subtree> added = new List<Subtree>();
-            Subtree st = TestFrameWork.CreateSubTreeFromCode(guid, codes[0]);
-            st.IsInput = true;
+            Subtree st = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]);
             added.Add(st);
             var syncData = new GraphSyncData(null, added, null);
             liverunner.UpdateGraph(syncData);
 
-            RuntimeMirror mirror = liverunner.InspectNodeValue("a");
+            ProtoCore.Mirror.RuntimeMirror mirror = liverunner.InspectNodeValue("a");
             Assert.IsTrue((Int64)mirror.GetData().Data == 1);
 
             // Modify 
             // a = 2
             List<Subtree> modified = new List<Subtree>(); 
-            st = TestFrameWork.CreateSubTreeFromCode(guid, codes[1]);
-            st.IsInput = true;
+            st = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]);
             modified.Add(st);
             syncData = new GraphSyncData(null, null, modified);
             liverunner.UpdateGraph(syncData);
@@ -72,21 +68,20 @@ namespace ProtoTest.LiveRunner
             int rhs = 0;
             string code = String.Format("a = {0};", rhs.ToString());
 
-            Guid guid = Guid.NewGuid();
+            Guid guid = System.Guid.NewGuid();
 
             // First run
-            // a = 0
+            // a = 1
             List<Subtree> added = new List<Subtree>();
-            Subtree st = TestFrameWork.CreateSubTreeFromCode(guid, code);
-            st.IsInput = true;
+            Subtree st = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, code);
             added.Add(st);
             var syncData = new GraphSyncData(null, added, null);
             liverunner.UpdateGraph(syncData);
 
-            RuntimeMirror mirror = liverunner.InspectNodeValue("a");
+            ProtoCore.Mirror.RuntimeMirror mirror = liverunner.InspectNodeValue("a");
             Assert.IsTrue((Int64)mirror.GetData().Data == 0);
 
-            List<Subtree> modified;
+            List<Subtree> modified = null;
 
             const int maxUpdate = 100;
             for (int n = 1; n <= maxUpdate; ++n)
@@ -94,8 +89,7 @@ namespace ProtoTest.LiveRunner
                 // Modify a
                 code = String.Format("a = {0};", n.ToString());
                 modified = new List<Subtree>();
-                st = TestFrameWork.CreateSubTreeFromCode(guid, code);
-                st.IsInput = true;
+                st = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, code);
                 modified.Add(st);
                 syncData = new GraphSyncData(null, null, modified);
                 liverunner.UpdateGraph(syncData);
@@ -103,6 +97,8 @@ namespace ProtoTest.LiveRunner
 
             mirror = liverunner.InspectNodeValue("a");
             Assert.IsTrue((Int64)mirror.GetData().Data == 100);
+
+            // instruction stream not increaed.
         }
 
         [Test]
