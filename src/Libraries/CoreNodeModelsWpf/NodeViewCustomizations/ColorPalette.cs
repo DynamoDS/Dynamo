@@ -39,9 +39,6 @@ namespace CoreNodeModelsWpf.Nodes
 
             //kick off ui to match initial model state.
             this.ColorPaletteNode_PropertyChanged(ColorPaletteUINode, new PropertyChangedEventArgs("DsColor"));
-
-            var undoRecorder = viewNode.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
-            WorkspaceModel.RecordModelForModification(colorPaletteNode, undoRecorder);
         }
 
         private void ColorPaletteNode_PropertyChanged(object sender, PropertyChangedEventArgs e)
