@@ -116,6 +116,11 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly double ZoomIncrement = 0.05;
 
+        /// <summary>
+        /// Zoom Threshold Level 
+        /// </summary>
+        public static readonly double ZoomLevel = 0.4;
+
         #endregion
 
         #region Tab Bar Configurations

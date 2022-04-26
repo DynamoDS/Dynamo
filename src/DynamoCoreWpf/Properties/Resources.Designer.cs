@@ -7950,14 +7950,5 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ZeroTouchTypeShortString", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 0.4.
-        /// </summary>
-        public static string ZoomLevel {
-            get {
-                return ResourceManager.GetString("ZoomLevel", resourceCulture);
-            }
-        }
     }
 }
