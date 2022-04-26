@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -73,6 +74,62 @@ namespace Dynamo.Wpf.Interfaces
             using (var s = ToJSONStream())
             {
                 return FromJSONStream(s);
+            }
+        }
+
+
+        internal static LayoutSpecification PartialMergeSpecs(LayoutSpecification mainSpec, LayoutSpecification specToMerge)
+        {
+            var mainspecClone = mainSpec.Clone();
+            var originalSections = mainspecClone.sections;
+            foreach(var sectionToMerge in specToMerge.sections)
+            {
+                var match = false;
+                foreach (var orgSection in originalSections)
+                {
+                    //found a match
+                    if(sectionToMerge.text == orgSection.text)
+                    {
+                        match = true;
+                        PartialMergeSpecs(orgSection, sectionToMerge, LayoutElementType.category);
+                        break;
+                    }
+                }
+                if (!match)
+                {
+                    mainspecClone.sections.Add(sectionToMerge);
+                }
+            }
+            return mainspecClone;
+        }
+        
+        private static void PartialMergeSpecs(LayoutElement orgElement, LayoutElement mergeElement, LayoutElementType type)
+        {
+            //sanity check
+            if (orgElement.text != mergeElement.text)
+            {
+                throw new ArgumentException("elements to merge must have the same name");
+            }
+            //find matching type
+            foreach (var mergeChildElement in mergeElement.childElements.Where(x => x.elementType == type))
+            {
+                var match = false;
+                foreach (var orgChildElement in orgElement.childElements.Where(x => x.elementType == type))
+                {
+                    //matching name.
+                    if (orgChildElement.text == mergeChildElement.text)
+                    {
+                        match = true;
+                        PartialMergeSpecs(orgChildElement, mergeChildElement, LayoutElementType.group);
+                        break;
+                    }
+
+                }
+                if (!match)
+                {
+                    Console.WriteLine($"creating a new {type}:{mergeChildElement.text} under {orgElement.text} ");
+                    orgElement.childElements.Add(mergeChildElement);
+                }
             }
         }
     }

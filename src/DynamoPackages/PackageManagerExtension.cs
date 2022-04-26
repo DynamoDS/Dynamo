@@ -13,7 +13,7 @@ using Greg;
 
 namespace Dynamo.PackageManager
 {
-    public class PackageManagerExtension : IExtension, ILogSource, IExtensionSource
+    public class PackageManagerExtension : IExtension, ILogSource, IExtensionSource, ILayoutSpecSource
     {
         #region Fields & Properties
 
@@ -24,6 +24,14 @@ namespace Dynamo.PackageManager
        
         public event Func<string, IExtension> RequestLoadExtension;
         public event Action<IExtension> RequestAddExtension;
+
+        private Action<string> layouthandler;
+        //explicit interface implementation lets us keep the event internal for now.
+        event Action<string> ILayoutSpecSource.RequestApplyLayoutSpec
+        {
+            add { layouthandler += value; }
+            remove { layouthandler -= value; }
+        }
 
         public event Action<ILogMessage> MessageLogged;
 
@@ -62,6 +70,7 @@ namespace Dynamo.PackageManager
         ///     Dynamo Package Manager Instance.
         /// </summary>
         public PackageManagerClient PackageManagerClient { get; private set; }
+
 
         #endregion
 
@@ -150,6 +159,7 @@ namespace Dynamo.PackageManager
             //raise the public events on this extension when the package loader requests.
             PackageLoader.RequestLoadExtension += RequestLoadExtension;
             PackageLoader.RequestAddExtension += RequestAddExtension;
+            PackageLoader.RequestApplyLayoutSpec += layouthandler;
             PackageLoader.PackagesLoaded += LoadPackagesHandler;
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;

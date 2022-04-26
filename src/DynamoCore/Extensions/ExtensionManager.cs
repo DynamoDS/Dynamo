@@ -1,10 +1,20 @@
-﻿using System;
+﻿using Dynamo.Logging;
+using Dynamo.Wpf.Interfaces;
+using System;
 using System.Collections.Generic;
-using Dynamo.Logging;
+using System.Threading.Tasks;
 
 namespace Dynamo.Extensions
 {
 
+    internal interface ILayoutSpecSource
+    {
+        /// <summary>
+        /// Event that is raised when the LayoutSpecSource requests a LayoutSpec to be applied.
+        /// The string parameter here should be the layout spec json.
+        /// </summary>
+        event Action<string> RequestApplyLayoutSpec;
+    }
     /// <summary>
     /// An object which may request extensions to be loaded and added to the extensionsManager.
     /// </summary>
@@ -80,6 +90,11 @@ namespace Dynamo.Extensions
                 (obj as IExtensionSource).RequestLoadExtension -= RequestLoadExtensionHandler;
                 (obj as IExtensionSource).RequestAddExtension -= RequestAddExtensionHandler;
             }
+            if (obj is ILayoutSpecSource ls)
+            {
+                ls.RequestApplyLayoutSpec -= RequestApplyLayoutSpecHandler;
+            }
+
         }
 
         private void SubscribeExtension(IExtension obj)
@@ -91,8 +106,46 @@ namespace Dynamo.Extensions
                 (obj as IExtensionSource).RequestLoadExtension += RequestLoadExtensionHandler;
                 (obj as IExtensionSource).RequestAddExtension += RequestAddExtensionHandler;
             }
+            if(obj is ILayoutSpecSource ls)
+            {
+                ls.RequestApplyLayoutSpec += RequestApplyLayoutSpecHandler;
+            }
 
         }
+
+        private void RequestApplyLayoutSpecHandler(string specJSON)
+        {
+            Log($"an extension requested application of {specJSON} layout spec");
+            //TODO we actually want to do this AFTER the library view extension is loaded or we
+            //can't retrieve the current layout spec... and it really is not too useful without a view?
+            //maybe moving the events to the viewExtensionManager? Or we wait until library view is loaded
+            //or to the PackageManagerViewExtension etc... unclear, for now just wait a bit!
+
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await Task.Delay(15000);
+                    //try to combine the layout specs at the top 2 levels.
+                    //ie matching section/category only.
+                    var customizationService = Service<ILibraryViewCustomization>();
+                    var originalLayoutSpec = customizationService.GetSpecification();
+
+                    var requestedLayoutSpec = LayoutSpecification.FromJSONString(specJSON);
+                    var merged = LayoutSpecification.PartialMergeSpecs(originalLayoutSpec, requestedLayoutSpec);
+                    customizationService.SetSpecification(merged);
+
+
+                }
+
+                catch (Exception ex)
+                {
+                    Log(ex.ToString());
+                }
+            });
+              
+        }
+
 
         /// <summary>
         /// Adds an extension to the current session.
