@@ -8,7 +8,7 @@
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              mc:Ignorable="d"
              MinWidth="256"
-             MaxWidth="350"
+             MaxWidth="400"
              IsVisibleChanged="OnNodeAutoCompleteSearchControlVisibilityChanged">
     <UserControl.Resources>
         <ResourceDictionary>
