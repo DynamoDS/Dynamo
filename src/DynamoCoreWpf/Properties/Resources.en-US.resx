@@ -1528,7 +1528,7 @@ Next assemblies were loaded several times:
 {0}</value>
   </data>
   <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
-    <value>The name of the package cannot contain /,\, or *.</value>
+    <value>The name of the package cannot contain</value>
     <comment>ErrorString</comment>
   </data>
   <data name="PackageNeedAtLeastOneFile" xml:space="preserve">
@@ -3084,6 +3084,15 @@ To install the latest version of a package, click Install. \n
   <data name="GroupContextMenuColor" xml:space="preserve">
     <value>Color</value>
   </data>
+  <data name="RunCompletedWithErrorsMessage" xml:space="preserve">
+    <value>Run completed with errors.</value>
+  </data>
+  <data name="RunCompletedWithScaleChangeAndErrorsMessage" xml:space="preserve">
+    <value>Run completed with errors on setting new working range.</value>
+  </data>
+  <data name="RunReady" xml:space="preserve">
+    <value>Ready to run.</value>
+  </data>
   <data name="PreferencesSecuritySettingsTab" xml:space="preserve">
     <value>Security</value>
   </data>
@@ -3104,5 +3113,8 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="TrustedPathsExpanderName" xml:space="preserve">
     <value>Trusted location</value>
+  </data>
+  <data name="ZoomLevel" xml:space="preserve">
+    <value>0.4</value>
   </data>
 </root>

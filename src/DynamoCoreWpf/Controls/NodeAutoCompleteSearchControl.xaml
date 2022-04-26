@@ -8,6 +8,7 @@
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              mc:Ignorable="d"
              MinWidth="256"
+             MaxWidth="400"
              IsVisibleChanged="OnNodeAutoCompleteSearchControlVisibilityChanged">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -64,7 +65,7 @@
                     <StackPanel Name="AutoCompletionHeader"
                                 Grid.ColumnSpan="1"
                                 Width="Auto"
-                                HorizontalAlignment="Center"
+                                HorizontalAlignment="Left"
                                 Orientation="Horizontal">
                         <TextBlock Text="{x:Static resx:Resources.Autocomplete}"
                                TextWrapping="Wrap"
@@ -114,21 +115,22 @@
                 Name="AutoCompleteCandidates"
                 MaxHeight="250">
             <ListBox Name="MembersListBox"
+                     HorizontalAlignment="Left"
                      Background="Transparent"
                      BorderBrush="Transparent"
                      ItemContainerStyle="{StaticResource SearchMemberStyle}"
                      ItemsSource="{Binding FilteredResults, NotifyOnTargetUpdated=True}"
                      TargetUpdated="OnMembersListBoxUpdated"
                      PreviewMouseWheel="OnMembersListBoxMouseWheel"
-                     Margin="-15,0,5,0"
+                     Margin="10,0,5,0"
                      Visibility="Visible">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
+                            <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
                                       Style="{StaticResource InCanvasScrollViewerStyle}"
                                       CanContentScroll="True"
-                                      Width="250">
-                            <ContentPresenter ContentTemplate="{StaticResource MemberTemplate}" />
+                                      Width="{Binding Source={x:Static resx:Resources.Autocomplete}, Converter={StaticResource NodeAutocompleteWidthConverter}}">
+                                <ContentPresenter ContentTemplate="{StaticResource MemberTemplate}" />
                         </ScrollViewer>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -187,11 +189,13 @@
                         <TextBlock Name="SearchTextBlock"
                                    FontSize="12"
                                    IsHitTestVisible="False"
-                                   Foreground="{StaticResource DeafultSearchTextBlockText}"
+                                   TextTrimming="CharacterEllipsis"
+                                   MaxWidth="250"
+                                   Foreground="{StaticResource DefaultSearchTextBlockText}"
                                    VerticalAlignment="Center"
                                    Visibility="{Binding Path=SearchText, 
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
-                                   HorizontalAlignment="Center"
+                                   HorizontalAlignment="Left"
                                    Height="18"
                                    Text="{x:Static resx:Resources.AutocompleteSearchTextBlockText}" />
 

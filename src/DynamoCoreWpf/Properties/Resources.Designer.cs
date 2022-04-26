@@ -4795,7 +4795,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The name of the package cannot contain /,\, or *..
+        ///   Looks up a localized string similar to The name of the package cannot contain.
         /// </summary>
         public static string PackageNameCannotContainTheseCharacters {
             get {
@@ -6868,6 +6868,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run completed with errors..
+        /// </summary>
+        public static string RunCompletedWithErrorsMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithErrorsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with errors on setting new working range..
+        /// </summary>
+        public static string RunCompletedWithScaleChangeAndErrorsMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithScaleChangeAndErrorsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run completed with warnings on setting new working range..
         /// </summary>
         public static string RunCompletedWithScaleChangeAndWarningsMessage {
@@ -6891,6 +6909,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RunCompletedWithWarningsMessage {
             get {
                 return ResourceManager.GetString("RunCompletedWithWarningsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ready to run..
+        /// </summary>
+        public static string RunReady {
+            get {
+                return ResourceManager.GetString("RunReady", resourceCulture);
             }
         }
         
@@ -7948,6 +7975,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ZeroTouchTypeShortString {
             get {
                 return ResourceManager.GetString("ZeroTouchTypeShortString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.4.
+        /// </summary>
+        public static string ZoomLevel {
+            get {
+                return ResourceManager.GetString("ZoomLevel", resourceCulture);
             }
         }
     }

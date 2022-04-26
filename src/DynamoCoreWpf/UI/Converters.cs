@@ -1233,6 +1233,31 @@ namespace Dynamo.Controls
         }
     }
 
+    public class NodeAutocompleteWidthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is string && value.ToString().Length > 25)
+            {
+                return 400;
+            }
+
+            if (value is string && value.ToString().Length > 15)
+            {
+                return 350;
+            }
+
+            return 250;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class BoolToFullscreenWatchVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
