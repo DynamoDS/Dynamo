@@ -14,8 +14,10 @@ namespace Dynamo.Controls
     {
         private WatchViewModel _vm;
         private WatchViewModel prevWatchViewModel;
-        private readonly int defaultSize = 200;
-        private readonly int minSize = 100;
+        private readonly int defaultWidthSize = 200;
+        private readonly int defaultHeightSize = 200;
+        private readonly int minWidthSize = 100;
+        private readonly int minHeightSize = 60;
 
         public WatchTree()
         {
@@ -26,15 +28,31 @@ namespace Dynamo.Controls
         void WatchTree_Loaded(object sender, RoutedEventArgs e)
         {
             _vm = this.DataContext as WatchViewModel;
+            _vm.PropertyChanged += _vm_PropertyChanged;
+        }
+
+        private void _vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsCollection")
+            {
+                if (_vm.IsCollection)
+                {
+                    this.Height = defaultHeightSize;
+                }
+                else
+                {
+                    this.Height = minHeightSize;
+                }
+            }
         }
 
         internal void SetWatchNodeProperties() 
         {
             resizeThumb.Visibility = Visibility.Visible;
-            this.Width = defaultSize;
-            this.Height = defaultSize;
-            inputGrid.MinHeight = minSize;
-            inputGrid.MinWidth = minSize;
+            this.Width = defaultWidthSize;
+            this.Height = minHeightSize;
+            inputGrid.MinHeight = minHeightSize;
+            inputGrid.MinWidth = minWidthSize;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
