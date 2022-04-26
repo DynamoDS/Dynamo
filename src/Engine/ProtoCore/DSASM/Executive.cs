@@ -36,7 +36,6 @@ namespace ProtoCore.DSASM
         private InstructionStream istream;
         public RuntimeMemory rmem { get; set; }
 
-        private StackValue LX;
         public StackValue RX { get; set; }
         public StackValue TX { get; set; }
 
@@ -67,12 +66,7 @@ namespace ProtoCore.DSASM
         /// This is updated for every bounce and function call
         /// </summary>
         private List<AssociativeGraph.GraphNode> graphNodesInProgramScope;
-
-        public void SetAssociativeUpdateRegister(StackValue sv)
-        {
-            LX = sv;
-        }
-
+        
         public Executive(RuntimeCore runtimeCore, bool isFep = false)
         {
             IsExplicitCall = false;
@@ -1347,12 +1341,8 @@ namespace ProtoCore.DSASM
 
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);
-            //int nextPC;
             if (reachableGraphNodes.Count > 0)
             {
-                // Get the next pc to jump to
-                //nextPC = reachableGraphNodes[0].updateBlock.startpc;
-                //LX = StackValue.BuildInt(nextPC);
                 for (int n = 0; n < reachableGraphNodes.Count; ++n)
                 {
                     AssociativeGraph.GraphNode gnode = reachableGraphNodes[n];
@@ -1646,7 +1636,6 @@ namespace ProtoCore.DSASM
             int fp = rmem.FramePointer;
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
-                LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
                 RX = rmem.GetAtRelative(StackFrame.FrameIndexRX);
                 TX = rmem.GetAtRelative(StackFrame.FrameIndexTX);
             }
@@ -1657,7 +1646,6 @@ namespace ProtoCore.DSASM
             int fp = rmem.FramePointer;
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
-                LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
                 TX = rmem.GetAtRelative(StackFrame.FrameIndexTX);
             }
        }
@@ -1667,7 +1655,6 @@ namespace ProtoCore.DSASM
             int fp = rmem.FramePointer;
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
-                rmem.SetAtRelative(StackFrame.FrameIndexLX, LX);
                 rmem.SetAtRelative(StackFrame.FrameIndexRX, RX);
                 rmem.SetAtRelative(StackFrame.FrameIndexTX, TX);
             }
@@ -1675,7 +1662,7 @@ namespace ProtoCore.DSASM
 
         public List<StackValue> GetRegisters()
         {
-            return new List<StackValue> { RX, TX, LX };
+            return new List<StackValue> { RX, TX };
         }
 
         /// <summary>
@@ -2352,9 +2339,6 @@ namespace ProtoCore.DSASM
                 case AddressType.Register:
                     switch (opSymbol.Register)
                     {
-                        case Registers.LX:
-                            data = LX;
-                            break;
                         case Registers.RX:
                             data = RX;
                             break;
@@ -2468,10 +2452,6 @@ namespace ProtoCore.DSASM
                         StackValue data = opVal;
                         switch (op1.Register)
                         {
-                            case Registers.LX:
-                                opPrev = LX;
-                                LX = data;
-                                break;
                             case Registers.RX:
                                 opPrev = RX;
                                 RX = data;
