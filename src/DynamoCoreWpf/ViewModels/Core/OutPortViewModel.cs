@@ -87,7 +87,7 @@ namespace Dynamo.ViewModels
             get => areConnectorsHidden;
             set
             {
-                areConnectorsHidden = value; 
+                areConnectorsHidden = value;
                 RaisePropertyChanged(nameof(AreConnectorsHidden));
             }
         }
@@ -100,7 +100,7 @@ namespace Dynamo.ViewModels
             get => hideWiresButtonEnabled;
             set
             {
-                hideWiresButtonEnabled = value; 
+                hideWiresButtonEnabled = value;
                 RaisePropertyChanged(nameof(HideWiresButtonEnabled));
             }
         }
@@ -119,7 +119,7 @@ namespace Dynamo.ViewModels
         }
 
 
-        public bool PortDefaultValueMarkerVisible 
+        public bool PortDefaultValueMarkerVisible
         {
             get => portDefaultValueMarkerVisible;
             set
@@ -151,6 +151,7 @@ namespace Dynamo.ViewModels
         public OutPortViewModel(NodeViewModel node, PortModel port) :base(node, port)
         {
             port.PropertyChanged += PortPropertyChanged;
+            node.NodeModel.PropertyChanged += NodeModel_PropertyChanged;
 
             RefreshHideWiresState();
         }
@@ -159,6 +160,16 @@ namespace Dynamo.ViewModels
         {
             port.PropertyChanged -= PortPropertyChanged;
             base.Dispose();
+        }
+
+        private void NodeModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(node.NodeModel.CachedValue):
+                    RefreshPortColors();
+                    break;
+            }
         }
 
         private void PortPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -228,7 +239,7 @@ namespace Dynamo.ViewModels
                 }
 
                 connectorViewModel.BreakConnectionCommand.Execute(null);
-            }            
+            }
         }
 
         /// <summary>
@@ -294,10 +305,14 @@ namespace Dynamo.ViewModels
         }
 
         protected override void RefreshPortColors()
-        {
-            bool isPythonNode = node.NodeModel is PythonNodeModels.PythonNode;
+        { 
+            //This variable checks if the node is a function class
+            bool isFunctionNode = node.NodeModel.CachedValue != null &&
+                                    node.NodeModel.CachedValue.Data == null &&
+                                    !node.NodeModel.CachedValue.IsNull &&
+                                    node.NodeModel.CachedValue.Class != null;
 
-            if (node.NodeModel.IsPartiallyApplied && !isPythonNode)
+            if (node.NodeModel.IsPartiallyApplied && isFunctionNode)
             {
                 PortDefaultValueMarkerVisible = true;
                 portValueMarkerColor = PortValueMarkerGrey;
