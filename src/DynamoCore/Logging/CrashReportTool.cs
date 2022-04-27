@@ -16,7 +16,7 @@ namespace Dynamo.Core
     public class CrashReportArgs : EventArgs
     {
         public bool SendLogFile = true;
-        public bool SendPreferencesFile = true;
+        public bool SendSettingsFile = true;
         public bool SendDynFile = true;
 
         internal DynamoModel model;
@@ -29,7 +29,7 @@ namespace Dynamo.Core
 
     internal class CrashReportTool
     {
-        private static string CerToolLocation = @"D:\dev\CER\bin\senddmp.exe";
+        private static string CerToolLocation = @"";
 
         internal enum MINIDUMP_TYPE
         {
@@ -62,36 +62,76 @@ namespace Dynamo.Core
             MiniDumpValidTypeFlags = 0x01ffffff
         };
 
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetCurrentProcess();
+
+        [DllImport("kernel32.dll")]
+        static extern uint GetCurrentProcessId();
+
+        [DllImport("kernel32.dll")]
+        static extern uint GetCurrentThreadId();
+
         [DllImport("dbghelp.dll")]
         public static extern bool MiniDumpWriteDump(
             IntPtr hProcess,
             UInt32 ProcessId,
             SafeHandle hFile,
             MINIDUMP_TYPE DumpType,
-            IntPtr ExceptionParam,
+            ref MINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
             IntPtr UserStreamParam,
             IntPtr CallbackParam);
 
-        // If input argument "outputFile" is null or empty,
+
+        /// <summary>
+        /// Struct mapping to MINIDUMP_EXCEPTION_INFORMATION for Win32 API
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        public struct MINIDUMP_EXCEPTION_INFORMATION
+        {
+            /// <summary>
+            /// The thread id
+            /// </summary>
+            public uint ThreadId;
+
+            /// <summary>
+            /// The exception pointers
+            /// </summary>
+            public IntPtr ExceptionPointers;
+
+            /// <summary>
+            /// The client pointers
+            /// </summary>
+            public int ClientPointers;
+        }
+
+        // If input argument "outputDir" is null or empty,
         // the crash report file (name = %processName%_%processId%.dmp) will be created
         // in the temp folder path (%TMP% on windows)
-        internal static string CreateMiniDumpFile(string outputFile = null)
+        internal static string CreateMiniDumpFile(string outputDir = null)
         {
             Process process = Process.GetCurrentProcess();
-            UInt32 pid = (UInt32)process.Id;
-            IntPtr hProcess = process.Handle;
             MINIDUMP_TYPE DumpType = MINIDUMP_TYPE.MiniDumpNormal;
 
-            if (string.IsNullOrEmpty(outputFile))
+            if (string.IsNullOrEmpty(outputDir))
             {
-                string tempDir = Path.GetTempPath();
-                outputFile = Path.Combine(tempDir, process.ProcessName + "_" + pid + ".dmp");
+                outputDir = Path.GetTempPath();
             }
 
-            FileStream dmpFileStream = File.Create(outputFile);
-            if (MiniDumpWriteDump(hProcess, pid, dmpFileStream.SafeFileHandle, DumpType, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
+            var outputFile = Path.Combine(outputDir, process.ProcessName + "_" + process.Id + ".dmp");
+
+            MINIDUMP_EXCEPTION_INFORMATION info = new MINIDUMP_EXCEPTION_INFORMATION
             {
-                return outputFile;
+                ClientPointers = 1,
+                ExceptionPointers = Marshal.GetExceptionPointers(),
+                ThreadId = GetCurrentThreadId()
+            };
+
+            using (FileStream dmpFileStream = File.Create(outputFile))
+            {
+                if (MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), dmpFileStream.SafeFileHandle, DumpType, ref info, IntPtr.Zero, IntPtr.Zero))
+                {
+                    return outputFile;
+                }
             }
             return null;
         }
@@ -102,52 +142,60 @@ namespace Dynamo.Core
             {
                 DynamoModel.IsCrashing = true;
 
-                var filesToSend = new List<string>();
-                if (args.SendLogFile && args.model != null)
-                {
-                    filesToSend.Add(args.model.Logger.LogPath);
-                }
+                var cerDir = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "DynamoCER_Report_" +
+                    DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd-HH-mm-ss")));
 
-                if (args.SendLogFile && args.model != null)
+                using (Scheduler.Disposable.Create(() => { cerDir.Delete(); }) )
                 {
-                    filesToSend.Add(args.model.PathManager.PreferenceFilePath);
-                }
-                
-                if (args.SendDynFile && args.model != null)
-                {
-                    var dynFilePath = args.model.CurrentWorkspace.FileName;
-                    if (string.IsNullOrEmpty(dynFilePath))
+                    var filesToSend = new List<string>();
+                    if (args.SendLogFile && args.model != null)
                     {
-                        dynFilePath = Path.Combine(Path.GetTempPath(), "dyn-" + DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd-HH-mm-ss") + ".dyn");
-                        args.model.CurrentWorkspace.Save(dynFilePath);
+                        string logFile = Path.Combine(cerDir.FullName, "DynamoLog.log");
+
+                        File.Copy(args.model.Logger.LogPath, logFile);
+                        // might be usefull to dump all loaded Packages into
+                        // the log at this point.
+                        filesToSend.Add(logFile);
                     }
-                    filesToSend.Add(dynFilePath);
+
+                    if (args.SendSettingsFile && args.model != null)
+                    {
+                        string settingsFile = Path.Combine(cerDir.FullName, "DynamoSettings.xml");
+                        File.Copy(args.model.PathManager.PreferenceFilePath, settingsFile);
+
+                        filesToSend.Add(settingsFile);
+                    }
+
+                    if (args.SendDynFile && args.model != null)
+                    {
+                        var dynFilePath = Path.Combine(cerDir.FullName, "DynamoModel.dyn");
+                        args.model.CurrentWorkspace.Save(dynFilePath);
+
+                        filesToSend.Add(dynFilePath);
+                    }
+
+                    var extras = string.Join(" ", filesToSend.Select(f => "/EXTRA " + f));
+
+                    string appConfig = "";
+                    if (args.model != null)
+                    {
+                        var appName = string.IsNullOrEmpty(args.model.HostAnalyticsInfo.HostName) ? Process.GetCurrentProcess().ProcessName :
+                            args.model.HostAnalyticsInfo.HostName;
+                        appConfig = $@"<ProductInformation name=\""{appName}\"" build_version=\""{args.model.Version}\"" " +
+                        $@"registry_version=\""{args.model.Version}\"" registry_localeID=\""{CultureInfo.CurrentCulture.LCID}\"" uptime=\""0\"" " +
+                        $@"session_start_count=\""0\"" session_clean_close_count=\""0\"" current_session_length=\""0\"" />";
+                    }
+
+                    var miniDumpFilePath = CreateMiniDumpFile(cerDir.FullName);
+                    var upiConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "upiconfig.xml");
+
+                    var cerArgs = $"/UPITOKEN {upiConfigFilePath} /DMP {miniDumpFilePath} /APPXML \"{appConfig}\" {extras}";
+                    Process.Start(new ProcessStartInfo(CerToolLocation, cerArgs)).WaitForExit();
                 }
-
-                var extras = string.Join(" ", filesToSend.Select(f => "/EXTRA " + f));
-
-                string appConfig = "";
-                if (args.model != null)
-                {
-                    var appName = string.IsNullOrEmpty(args.model.HostAnalyticsInfo.HostName) ? Process.GetCurrentProcess().ProcessName :
-                        args.model.HostAnalyticsInfo.HostName;
-                    appConfig = $" / APPXML <ProductInformation name=\"{appName}\" build_version=\"{args.model.Version}\"" +
-                    $"registry_version = \"{args.model.Version}\" registry_localeID=\"{CultureInfo.CurrentCulture.LCID}\" uptime=\"0\" " +
-                    $"session_start_count=\"0\" session_clean_close_count=\"0\" current_session_length=\"0\"/>";
-                }
-
-                bool exists = File.Exists(CerToolLocation);
-
-                var miniDumpFilePath = CreateMiniDumpFile();
-                var upiConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "upiconfig.xml");
-
-                
-                var cerArgs = $"/ UPITOKEN {upiConfigFilePath} / DMP {miniDumpFilePath} {appConfig} {extras}";
-                Process.Start(new ProcessStartInfo(CerToolLocation, cerArgs));
             }
-            catch
+            catch(Exception ex)
             {
-                // Do nothing
+                args.model?.Logger?.LogError($"Failed to invoke CER with the following error : {ex.Message}");
             }
         }
     }
