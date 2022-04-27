@@ -24,7 +24,9 @@ When this tool starts, it will connect to LD with given user key and mobile key,
 
 If a mobile key is not provided, it will be loaded from config file, DEBUG builds will load the dev key, RELEASE will load prod.
 
-## How to use:
+This tool is intended to be used by Dynamo directly. It should work via command line as well, but is not tested thoroughly for this use case.
+
+## Diagram:
 
 
 ```mermaid
