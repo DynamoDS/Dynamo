@@ -1270,8 +1270,6 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         internal SolidColorBrush GetBorderColor()
         {
-            // TODO: What defines 'info' state?
-            bool infoState = false;
             SolidColorBrush result = null;
 
             /*
@@ -1301,10 +1299,10 @@ namespace Dynamo.ViewModels
                     ImgGlyphTwoSource = previewGlyph;
                 }
             }
-            if (infoState)
+            if (NodeModel.State == ElementState.Info)
             {
                 result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInfoColor"];
-                if (ImgGlyphTwoSource != null)
+                if (ImgGlyphTwoSource == null)
                 {
                     ImgGlyphTwoSource = infoGlyph;
                 }
