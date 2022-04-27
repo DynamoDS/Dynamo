@@ -66,11 +66,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
-        internal static string OnboardingGuideWorkspace
+        internal static string OnboardingGuideWorkspaceEmbeededResource
         {
             get
             {
-                return Path.Combine(GuidesExecutingDirectory, @"UI\GuidedTour\DynamoOnboardingGuide_HouseCreationDS.dyn");
+                return @"Dynamo.Wpf.UI.GuidedTour.DynamoOnboardingGuide_HouseCreationDS.dyn";
             }
         }
 

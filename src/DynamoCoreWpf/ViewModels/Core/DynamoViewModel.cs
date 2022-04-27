@@ -1628,8 +1628,9 @@ namespace Dynamo.ViewModels
         }
 
         internal void OpenOnboardingGuideFile()
-        {
-            Open(new Tuple<string, bool>(GuidesManager.OnboardingGuideWorkspace, true));
+        {  
+            var jsonDynFile = ResourceUtilities.LoadContentFromResources(GuidesManager.OnboardingGuideWorkspaceEmbeededResource, GetType().Assembly, false, false);
+            OpenFromJson(new Tuple<string, bool>(jsonDynFile, true));
         }
 
         private bool CanOpen(object parameters)
