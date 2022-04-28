@@ -21,6 +21,14 @@ namespace ProtoCore
             /// </summary>
             private StackValue svData;
 
+            public bool IsFunction
+            {
+                get
+                {
+                    return svData.IsPointer && Class.Name.Equals("Function") && Class.LibraryMirror.Name.Equals("FunctionObject.ds");
+                }
+            }
+
 
             //
             // Comment Jun:

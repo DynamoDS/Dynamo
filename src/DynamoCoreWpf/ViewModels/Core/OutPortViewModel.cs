@@ -158,7 +158,9 @@ namespace Dynamo.ViewModels
 
         public override void Dispose()
         {
-            port.PropertyChanged -= PortPropertyChanged;
+            port.PropertyChanged -= PortPropertyChanged; 
+            node.NodeModel.PropertyChanged -= NodeModel_PropertyChanged;
+
             base.Dispose();
         }
 
@@ -305,12 +307,10 @@ namespace Dynamo.ViewModels
         }
 
         protected override void RefreshPortColors()
-        { 
+        {
             //This variable checks if the node is a function class
             bool isFunctionNode = node.NodeModel.CachedValue != null &&
-                                    node.NodeModel.CachedValue.Data == null &&
-                                    !node.NodeModel.CachedValue.IsNull &&
-                                    node.NodeModel.CachedValue.Class != null;
+                node.NodeModel.CachedValue.IsFunction;
 
             if (node.NodeModel.IsPartiallyApplied && isFunctionNode)
             {

@@ -22,7 +22,7 @@ namespace Dynamo.ViewModels
         private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
 
         private bool portDefaultValueMarkerVisible;
-        private bool isReturningDefaultValue;
+        private bool isFunctionNode;
 
         private static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
         private static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
@@ -170,6 +170,8 @@ namespace Dynamo.ViewModels
         public override void Dispose()
         {
             port.PropertyChanged -= PortPropertyChanged;
+            node.NodeModel.PropertyChanged -= NodeModel_PropertyChanged;
+
             base.Dispose();
         }
 
@@ -288,14 +290,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         protected override void RefreshPortColors()
         {
-            //Boolean that defines if the node has a default value from the cache value
-            isReturningDefaultValue = !string.IsNullOrEmpty(node.NodeModel.CachedValue?.StringData);
-            
             //This variable checks if the node is a function class
-            bool isFunctionNode = node.NodeModel.CachedValue != null &&
-                                    node.NodeModel.CachedValue.Data == null &&
-                                    !node.NodeModel.CachedValue.IsNull &&
-                                    node.NodeModel.CachedValue.Class != null;
+            isFunctionNode = node.NodeModel.CachedValue != null &&
+                node.NodeModel.CachedValue.IsFunction;
 
             if (isFunctionNode)
             {
@@ -307,7 +304,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    SetupDefaultPortColorValues(isFunctionNode);
+                    SetupDefaultPortColorValues();
                 }
             }
             else
@@ -331,7 +328,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void SetupDefaultPortColorValues(bool isFunctionNode = false)
+        private void SetupDefaultPortColorValues()
         {
             
             // Special case for keeping list structure visual appearance
@@ -342,7 +339,7 @@ namespace Dynamo.ViewModels
                 PortBorderBrushColor = PortBorderBrushColorKeepListStructure;
             }
             // Port has a default value, shows blue marker
-            else if (UsingDefaultValue && DefaultValueEnabled || (isReturningDefaultValue && !isFunctionNode))
+            else if ((UsingDefaultValue && DefaultValueEnabled) || !isFunctionNode)
             {
                 PortValueMarkerColor = PortValueMarkerBlue;
                 PortBackgroundColor = PortBackgroundColorDefault;
