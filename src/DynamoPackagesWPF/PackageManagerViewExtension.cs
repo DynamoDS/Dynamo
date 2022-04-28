@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Dynamo.Wpf.Extensions;
 
@@ -10,7 +11,7 @@ namespace Dynamo.PackageManager.UI
     /// Currently its only responsibility is to request the loading of ViewExtensions which it finds in packages.
     /// In the future packageManager functionality should be moved from DynamoCoreWPF to this ViewExtension.
     /// </summary>
-    public class PackageManagerViewExtension : IViewExtension, IViewExtensionSource
+    public class PackageManagerViewExtension : IViewExtension, IViewExtensionSource, ILayoutSpecSource
     {
         private readonly List<IViewExtension> requestedExtensions = new List<IViewExtension>();
         private PackageManagerExtension packageManager;
@@ -40,6 +41,14 @@ namespace Dynamo.PackageManager.UI
 
         public event Action<IViewExtension> RequestAddExtension;
         public event Func<string, IViewExtension> RequestLoadExtension;
+        private Action<string> layouthandler;
+        //explicit interface implementation lets us keep the event internal for now.
+        event Action<string> ILayoutSpecSource.RequestApplyLayoutSpec
+        {
+            add { layouthandler += value; }
+            remove { layouthandler -= value; }
+        }
+
 
         public void Dispose()
         {
@@ -48,7 +57,7 @@ namespace Dynamo.PackageManager.UI
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            // Do nothing for now
+            RequestLoadLayoutSpecs(packageManager.PackageLoader.LocalPackages);
         }
 
             public void Shutdown()
@@ -71,8 +80,8 @@ namespace Dynamo.PackageManager.UI
                 var packagesToCheck = packageManager.PackageLoader.LocalPackages;
                 RequestLoadViewExtensionsForLoadedPackages(packagesToCheck);
             }
+            
         }
-
 
         private void RequestLoadViewExtensionsForLoadedPackages(IEnumerable<Package> packages)
         {
@@ -95,10 +104,35 @@ namespace Dynamo.PackageManager.UI
             }
         }
 
+        private void RequestLoadLayoutSpecs(IEnumerable<Package> packages)
+        {
+            foreach(var package in packages)
+            {
+                //only load layout specs for built in packages.
+                if (!package.BuiltInPackage)
+                {
+                    continue;
+                }
+                //if package is builtin and has a layout spec, try to apply it.
+                var packageLayoutSpecs = package.AdditionalFiles.Where(
+                    file => file.Model.Name.ToLowerInvariant().Contains("layoutspecs.json")).ToList();
+                //if an extension capable of handling layout specs is found, request
+                //they apply the spec.
+                foreach (var specPath in packageLayoutSpecs)
+                {
+                    layouthandler?.Invoke(File.ReadAllText(specPath.Model.FullName));
+                }
+            }
+        }
+
+
         private void packageLoadedHandler(Package package)
         {
             //when a package is loaded with packageManager, this extension should inspect it for viewExtensions.
-            this.RequestLoadViewExtensionsForLoadedPackages(new List<Package>() { package });
+            var pkgs = new List<Package>() { package };
+            RequestLoadViewExtensionsForLoadedPackages(pkgs);
         }
+
+
     }
 }

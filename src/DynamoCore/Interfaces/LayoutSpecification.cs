@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -77,8 +78,13 @@ namespace Dynamo.Wpf.Interfaces
             }
         }
 
-
-        internal static LayoutSpecification PartialMergeSpecs(LayoutSpecification mainSpec, LayoutSpecification specToMerge)
+        /// <summary>
+        /// Merge two layout specs.
+        /// </summary>
+        /// <param name="mainSpec">Original spec, will be cloned before modifications are made.</param>
+        /// <param name="specToMerge">This spec will be merged into mainspec.</param>
+        /// <returns>A modified spec with specToMerge merged into mainSpec. mainSpec object will not be modified.</returns>
+        internal static LayoutSpecification MergeLayoutSpecs(LayoutSpecification mainSpec, LayoutSpecification specToMerge)
         {
             var mainspecClone = mainSpec.Clone();
             var originalSections = mainspecClone.sections;
@@ -91,7 +97,7 @@ namespace Dynamo.Wpf.Interfaces
                     if(sectionToMerge.text == orgSection.text)
                     {
                         match = true;
-                        PartialMergeSpecs(orgSection, sectionToMerge, LayoutElementType.category);
+                        MergeLayoutElements(orgSection, sectionToMerge, LayoutElementType.category);
                         break;
                     }
                 }
@@ -102,8 +108,15 @@ namespace Dynamo.Wpf.Interfaces
             }
             return mainspecClone;
         }
-        
-        private static void PartialMergeSpecs(LayoutElement orgElement, LayoutElement mergeElement, LayoutElementType type)
+        /// <summary>
+        /// Recursive function to merge one layout element into another based on element.text and type for matching.
+        /// Will not merge any information between elements (include info, path etc) will only move child elements.
+        /// </summary>
+        /// <param name="orgElement"></param>
+        /// <param name="mergeElement"></param>
+        /// <param name="type"></param>
+        /// <exception cref="ArgumentException"></exception>
+        private static void MergeLayoutElements(LayoutElement orgElement, LayoutElement mergeElement, LayoutElementType type)
         {
             //sanity check
             if (orgElement.text != mergeElement.text)
@@ -120,14 +133,16 @@ namespace Dynamo.Wpf.Interfaces
                     if (orgChildElement.text == mergeChildElement.text)
                     {
                         match = true;
-                        PartialMergeSpecs(orgChildElement, mergeChildElement, LayoutElementType.group);
+                        //if there is a match, recurse.
+                        MergeLayoutElements(orgChildElement, mergeChildElement, LayoutElementType.group);
                         break;
                     }
 
                 }
+                //no match, move element to other spec.
                 if (!match)
                 {
-                    Console.WriteLine($"creating a new {type}:{mergeChildElement.text} under {orgElement.text} ");
+                    Debug.WriteLine($"creating a new {type}:{mergeChildElement.text} under {orgElement.text} ");
                     orgElement.childElements.Add(mergeChildElement);
                 }
             }

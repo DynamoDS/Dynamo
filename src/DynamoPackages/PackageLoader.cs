@@ -38,7 +38,6 @@ namespace Dynamo.PackageManager
         internal event Func<string, Graph.Workspaces.PackageInfo, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
         internal event Func<string, IExtension> RequestLoadExtension;
         internal event Action<IExtension> RequestAddExtension;
-        internal event Action<string> RequestApplyLayoutSpec;
 
         /// <summary>
         /// This event is raised when a package is first added to the list of packages this package loader is loading.
@@ -314,19 +313,6 @@ namespace Dynamo.PackageManager
                     }
                     requestedExtensions.Add(extension);
                 }
-
-                //if package is builtin and has a layout spec, try to apply it?
-                //TODO we may need to store it and apply it later..or perhaps before is actually better.
-                //TODO probably good to store it so we can see what specs we have applied / merged.
-                var packageLayoutSpecs = package.AdditionalFiles.Where(
-                    file => file.Model.Name.ToLowerInvariant().Contains("layoutspecs.json")).ToList();
-                //if an extension capable of handling layout specs is found, request
-                //they apply the spec.
-                foreach (var specPath in packageLayoutSpecs)
-                {   //TODO json or path?
-                    RequestApplyLayoutSpec?.Invoke(File.ReadAllText(specPath.Model.FullName));
-                }
-
 
                 package.SetAsLoaded();
                 PackgeLoaded?.Invoke(package);
