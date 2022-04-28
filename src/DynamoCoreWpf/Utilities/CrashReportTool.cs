@@ -123,7 +123,7 @@ namespace Dynamo.Core
                 outputDir = Path.GetTempPath();
             }
 
-            var outputFile = Path.Combine(outputDir, process.ProcessName + "_" + process.Id + ".dmp");
+            var outputFile = Path.Combine(outputDir, $"{process.ProcessName}_{process.Id}.dmp"); ;
 
             MINIDUMP_EXCEPTION_INFORMATION info = new MINIDUMP_EXCEPTION_INFORMATION
             {
