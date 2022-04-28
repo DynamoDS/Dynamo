@@ -142,6 +142,13 @@ namespace Dynamo.Core
             return null;
         }
 
+        internal static bool IsCEREnabled()
+        {
+            return !string.IsNullOrEmpty(CerToolLocation) &&
+                File.Exists(CerToolLocation) &&
+                DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("CER", false) == true;
+        }
+
         // Calls external CER tool (with UI)
         internal static void OnCrashReportWindow(CrashReportArgs args)
         {
