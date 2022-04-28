@@ -1238,6 +1238,11 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
+            if (value is string && value.ToString().Length > 25)
+            {
+                return 400;
+            }
+
             if (value is string && value.ToString().Length > 15)
             {
                 return 350;

@@ -1638,7 +1638,7 @@ namespace Dynamo.PackageManager
                 }
 
                 Package.AddAssemblies(Assemblies);
-
+                Package.LoadState.SetAsLoaded();
                 return files;
             }
             catch (Exception e)
@@ -1646,6 +1646,7 @@ namespace Dynamo.PackageManager
                 UploadState = PackageUploadHandle.State.Error;
                 ErrorString = e.Message;
                 dynamoViewModel.Model.Logger.Log(e);
+                Package?.LoadState.SetAsError(ErrorString);
             }
 
             return new string[] {};

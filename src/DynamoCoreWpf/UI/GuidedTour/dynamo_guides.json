@@ -885,6 +885,7 @@
 				"Sequence": 0,
 				"Name": "welcome",
 				"Type": "welcome",
+				"ShowLibrary": false,
 				"Width": 480,
 				"Height": 320,
 				"StepContent": {
@@ -908,16 +909,26 @@
 				"Name": "library",
 				"Type": "tooltip",
 				"ShowLibrary": false,
-				"TooltipPointerDirection": "top_left",
+				"TooltipPointerDirection": "none",
 				"Width": 480,
-				"Height": 432,
+				"Height": 280,
 				"StepContent": {
 					"Title": "OnboardingWorkspaceTitle",
 					"FormattedText": "OnboardingWorkspaceText"
 				},
-				"HostPopupInfo": {
-					"VerticalPopupOffset": 100,
-					"HorizontalPopupOffset": 50
+				"HostPopupInfo":
+				{
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 100,
+					"PopupPlacement": "bottom",
+					"HostUIElementString": "background_grid",
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362"
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
 				}
 			},
 			{
