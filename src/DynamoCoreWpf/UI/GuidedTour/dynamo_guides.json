@@ -915,11 +915,45 @@
 					"Title": "OnboardingWorkspaceTitle",
 					"FormattedText": "OnboardingWorkspaceText"
 				},
-				"HostPopupInfo": {					
+				"HostPopupInfo": {
 					"VerticalPopupOffset": 100,
 					"HorizontalPopupOffset": 50
 				}
-			}		
+			},
+			{
+				"Sequence": 2,
+				"Name": "nodes",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 300,
+				"ShowLibrary": false,
+				"StepContent": {
+					"Title": "OnboardingNodesTitle",
+					"FormattedText": "OnboardingNodesText"
+				},
+				"HostPopupInfo": {
+					"HostUIElementString": "background_grid",
+					"VerticalPopupOffset": 100,
+					"HorizontalPopupOffset": 100,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362"
+					},
+					"CutOffRectArea": {
+						"WindowElementNameString": "background_grid",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "HighlightPort",
+						"Action": "execute"
+					}
+				]
+			}
 		]
 	}
 

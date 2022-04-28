@@ -14,6 +14,9 @@ using static Dynamo.Wpf.UI.GuidedTour.Guide;
 using Dynamo.Wpf.Views.GuidedTour;
 using Dynamo.Utilities;
 using Newtonsoft.Json.Linq;
+using System.Windows.Shapes;
+using System.IO;
+using static Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -26,7 +29,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static Step CurrentExecutingStep;
         internal static Guide CurrentExecutingGuide;
         internal static GuidesManager CurrentExecutingGuidesManager;
-        
+
         private static ExitGuide exitGuide;
         private const string AutodeskSamplePackage = "Dynamo Samples";
         private static PackageManagerSearchViewModel viewModel;
@@ -126,7 +129,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
             else
             {
-                if(CloseButtonSearchPackages != null)
+                if (CloseButtonSearchPackages != null)
                     CloseButtonSearchPackages.Click -= CloseButton_Click;
             }
         }
@@ -145,10 +148,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             if (enableFunction)
             {
-                if(ownedWindow != null)
+                if (ownedWindow != null)
                     viewModel = ownedWindow.DataContext as PackageManagerSearchViewModel;
-             
-                Button buttonElement = Guide.FindChild(ownedWindow, stepInfo.HostPopupInfo.HostUIElementString) as Button; 
+
+                Button buttonElement = Guide.FindChild(ownedWindow, stepInfo.HostPopupInfo.HostUIElementString) as Button;
                 viewModel.PackageManagerClientViewModel.Downloads.CollectionChanged += Downloads_CollectionChanged;
             }
             else
@@ -162,9 +165,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         //This methos is called when a download is added in the list 
         private static void Downloads_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            var downloads = (System.Collections.ObjectModel.ObservableCollection<PackageDownloadHandle>) sender;
+            var downloads = (System.Collections.ObjectModel.ObservableCollection<PackageDownloadHandle>)sender;
 
-            if(downloads.Any())
+            if (downloads.Any())
             {
                 //Gets the first package of the list
                 packageDownloadHandle = downloads.First();
@@ -176,7 +179,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         //This method is called when the package download state is changed
         private static void GuidesValidationMethods_PropertyChanged1(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(packageDownloadHandle.DownloadState == PackageDownloadHandle.State.Installed)
+            if (packageDownloadHandle.DownloadState == PackageDownloadHandle.State.Installed)
             {
                 CurrentExecutingGuide.HideCurrentStep(CurrentExecutingStep.Sequence, GuideFlow.FORWARD);
                 if (CurrentExecutingStep.Sequence < CurrentExecutingGuide.TotalSteps)
@@ -206,10 +209,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             var validationMethods = new GuidesValidationMethods();
 
-            var eventHandlerMethod = validationMethods.GetType().GetMethod(methodname, BindingFlags.NonPublic | BindingFlags.Instance);           
+            var eventHandlerMethod = validationMethods.GetType().GetMethod(methodname, BindingFlags.NonPublic | BindingFlags.Instance);
 
             Delegate del = Delegate.CreateDelegate(eventInfo.EventHandlerType, validationMethods, eventHandlerMethod);
-            
+
             if (addEvent)
                 eventInfo.AddEventHandler(element, del);
             else
@@ -223,7 +226,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="e"></param>
         internal void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
-           CurrentExecutingGuide.HideCurrentStep(CurrentExecutingStep.Sequence, GuideFlow.FORWARD);
+            CurrentExecutingGuide.HideCurrentStep(CurrentExecutingStep.Sequence, GuideFlow.FORWARD);
             if (CurrentExecutingStep.Sequence < CurrentExecutingGuide.TotalSteps)
             {
                 //Due that when the Guide is being executed the TermsOfUseView is not modal then the code that set the PackageDownloadTouAccepted is not reached then we need to set it manually
@@ -273,11 +276,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
             CurrentExecutingStep = stepInfo;
             //We try to find the PackageManagerSearchView window
             Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
-            if(enableFunction)
+            if (enableFunction)
             {
                 //We need to check if the PackageManager search is already open if that is the case we don't need to open it again
                 if (ownedWindow != null) return;
-                    stepInfo.DynamoViewModelStep.ShowPackageManagerSearch(null);
+                stepInfo.DynamoViewModelStep.ShowPackageManagerSearch(null);
 
                 PackageManagerSearchView packageManager = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerSearchView;
                 if (packageManager == null)
@@ -289,7 +292,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 searchPackagesLoaded = false;
                 //Due that we need to search the Autodesk Sample package after the initial search is completed 
                 //we need to subscribe to the PropertyChanged event so we will know when the SearchState property is equal to Results (meaning that got results)
-                searchPackagesPropertyChanged = (sender, e) => { PackageManagerViewModel_PropertyChanged(sender, e, uiAutomationData); } ;
+                searchPackagesPropertyChanged = (sender, e) => { PackageManagerViewModel_PropertyChanged(sender, e, uiAutomationData); };
                 packageManagerViewModel.PropertyChanged += searchPackagesPropertyChanged.Invoke;
             }
             else
@@ -308,7 +311,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (uiAutomationData.ExecuteCleanUpForward && currentFlow == GuideFlow.FORWARD)
                 {
                     ClosePackageManager(packageManager);
-                }                  
+                }
 
                 //The Guide is moving to FORWARD and the ExecuteCleanUpForward = false, then we don't need to close the PackageManagerSearchView
                 if (uiAutomationData.ExecuteCleanUpBackward && currentFlow == GuideFlow.BACKWARD)
@@ -371,7 +374,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (searchPackagesLoaded)
             {
                 var nextButton = Guide.FindChild((CurrentExecutingStep.StepUIPopup as PopupWindow).mainPopupGrid, uiAutomationData.ElementName) as Button;
-                if(nextButton != null)
+                if (nextButton != null)
                     nextButton.IsEnabled = true;
             }
         }
@@ -419,7 +422,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (nextbuttonFound == null) return;
             //Add or Remove the handler assigned to the Button.Click
             ManageEventHandler(nextbuttonFound, automaticHandler.HandlerElementEvent, automaticHandler.ExecuteMethod, enableFunction);
-            
+
         }
 
         /// <summary>
@@ -469,7 +472,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             Button foundElement = Guide.FindChild(packageManager, stepInfo.HostPopupInfo.HighlightRectArea.WindowElementNameString) as Button;
             if (foundElement == null)
                 return;
-            if(enableFunction)
+            if (enableFunction)
                 foundElement.Click += ViewDetails_Click;
             else
                 foundElement.Click -= ViewDetails_Click;
@@ -505,7 +508,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             const string packageSearchWindowName = "PackageSearch";
 
             CurrentExecutingStep = stepInfo;
-            var stepMainWindow = stepInfo.MainWindow as Window;          
+            var stepMainWindow = stepInfo.MainWindow as Window;
             var packageDetailsWindow = Guide.FindChild(stepMainWindow, stepInfo.HostPopupInfo.HostUIElementString) as UserControl;
 
             if (enableFunction)
@@ -529,7 +532,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 //The PackageDetails sidebar is using events when is being shown then we need to execute those events before setting the Popup.PlacementTarget.
                 //otherwise the sidebar will not be present (and we don't have host for the Popup) and the Popup will be located out of the Dynamo window
-                CurrentExecutingStep.MainWindow.Dispatcher.Invoke(DispatcherPriority.Background,new Action(delegate { }));
+                CurrentExecutingStep.MainWindow.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }
             else
             {
@@ -585,6 +588,56 @@ namespace Dynamo.Wpf.UI.GuidedTour
             object[] parametersInvokeScript = new object[] { jsFunctionName, new object[] { } };
             //Execute the JS function with the provided parameters
             ResourceUtilities.ExecuteJSFunction(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo, parametersInvokeScript);
+        }
+
+        internal static void HighlightPort(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+            var stepMainWindow = CurrentExecutingStep.MainWindow as Window;
+
+            string TestDirectory = @"C:\Repositories\GitHub\RobertGlobant20\Dynamo\test";
+            string samplepath = System.IO.Path.Combine(TestDirectory, @"core\DynamoOnboardingGuide_HouseCreationDS.dyn");
+            string fileContents = File.ReadAllText(samplepath);
+
+            //Act
+            (stepMainWindow.DataContext as DynamoViewModel).OpenFromJsonCommand.Execute(new Tuple<string, bool>(fileContents, false));
+            CurrentExecutingStep.MainWindow.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+
+
+            var nodeViewChildren = stepMainWindow.ChildrenOfType<NodeView>();
+
+            //Means that we don't have nodes in the Workspace
+            if (nodeViewChildren == null || nodeViewChildren.Count() == 0) return;
+
+            //Get the first CoordinateSystem.ByOrigin node
+            var byOriginNode = (from nodeView in nodeViewChildren
+            where (nodeView.DataContext is NodeViewModel) &&
+                  (nodeView.DataContext as NodeViewModel).Name == "CoordinateSystem.ByOrigin"
+            select nodeView).FirstOrDefault();
+
+            if (byOriginNode == null) return;
+            var itemsControlInputPort = Guide.FindChild(byOriginNode, "inputPortControl") as ItemsControl;
+            var itemContainer = itemsControlInputPort.ItemContainerGenerator.ContainerFromIndex(0);
+            var mainGrid = itemContainer.ChildOfType<Grid>();
+
+            if(enableFunction)
+            {
+                //Creates the highlight rectangle so it can be added and shown over the port
+                var portRectangle = stepInfo.CreateRectangle(mainGrid, CurrentExecutingStep.HostPopupInfo.HighlightRectArea.HighlightColor);
+
+                //The Rectangle will be added dynamically in a specific step and then when passing to next step we will remove it
+                mainGrid.Children.Add(portRectangle);
+                Grid.SetColumn(portRectangle, 1);
+                Grid.SetColumnSpan(portRectangle, 7);
+                Grid.SetRow(portRectangle, 0);
+            }
+            else
+            {
+                var buttonRectangle = mainGrid.Children.OfType<Rectangle>().Where(rect => rect.Name.Equals("HighlightRectangle")).FirstOrDefault();
+                if (buttonRectangle != null)
+                    mainGrid.Children.Remove(buttonRectangle);
+            }
+           
         }
     }
 }

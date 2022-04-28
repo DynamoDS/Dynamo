@@ -28,6 +28,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public double HeightBoxDelta { get => heightBoxDelta; set => heightBoxDelta = value; }
 
 
+        [JsonProperty(nameof(WindowElementNameString))]
+        public string WindowElementNameString { get; set; }
+
         /// <summary>
         /// Rect used to cut a rectangle on the guide background 
         /// </summary>

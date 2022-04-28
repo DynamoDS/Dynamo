@@ -386,6 +386,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public void UpdateLocation()
         {
             SetCutOffSectionSize(true);
+            UpdateHighlighRectArea();
             UpdatePopupLocationInvoke(stepUIPopup);
             if(stepUIPopup is PopupWindow)
             {
@@ -397,7 +398,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Update the Location of Popups only when they are located over the Library (HostPopupInfo.WindowName = LibraryView)
         /// </summary>
-        public void UpdateLibraryPopupsLocation()
+        internal void UpdateLibraryPopupsLocation()
         {
             if (HostPopupInfo.WindowName != null && HostPopupInfo.WindowName.Equals(nameof(LibraryView)))
             {
@@ -415,12 +416,21 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
+        private void UpdateHighlighRectArea()
+        {
+            SetHighlightSection(true);
+        }
+
         /// <summary>
         /// This method will update the interactions of the Popup with the Library like the highligthed items or the event subscriptions
         /// </summary>
         internal void UpdateLibraryInteractions()
         {
-            var automationSubscribePackage = (from automation in UIAutomation
+            if (UIAutomation == null) return;
+            var jsAutomations = from automation in UIAutomation
+                                 where !string.IsNullOrEmpty(automation.JSFunctionName)
+                                 select automation;
+            var automationSubscribePackage = (from automation in jsAutomations
                                               where automation.JSFunctionName.Equals(subscribePackageClickedFuncName)
                                               select automation).FirstOrDefault();
             if (automationSubscribePackage == null) return;
@@ -759,7 +769,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="targetElement">the element in which the rectangle will be animated (basically is for creating the Scope)</param>
         /// <param name="recColor">string representing the rectangle color</param>
         /// <returns>The Rectangle with the animation started</returns>
-        private Rectangle CreateRectangle(FrameworkElement targetElement, string recColor)
+        internal Rectangle CreateRectangle(FrameworkElement targetElement, string recColor)
         {
             //This is the effect that will be animated with the StoryBoard
             var blur = new BlurEffect()
