@@ -21,3 +21,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoPackages")]
 [assembly: InternalsVisibleTo("ProtoScript")]
 [assembly: InternalsVisibleTo("ProtoCore")]
+[assembly: InternalsVisibleTo("DynamoSandbox")]

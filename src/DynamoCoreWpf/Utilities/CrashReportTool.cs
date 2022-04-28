@@ -1,7 +1,9 @@
 ﻿using Dynamo.Core;
 using Dynamo.Models;
+using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -13,23 +15,35 @@ using System.Threading.Tasks;
 
 namespace Dynamo.Core
 {
-    public class CrashReportArgs : EventArgs
+    internal class CrashReportArgs : EventArgs
     {
         public bool SendLogFile = true;
         public bool SendSettingsFile = true;
         public bool SendDynFile = true;
+        public bool SendRecordedCommands = true;
 
-        internal DynamoModel model;
+        internal DynamoViewModel viewModel;
 
-        internal CrashReportArgs(DynamoModel dynamoModel)
+        internal CrashReportArgs(DynamoViewModel dynamoViewModel)
         {
-            model = dynamoModel;
+            viewModel = dynamoViewModel;
         }
     }
 
     internal class CrashReportTool
     {
-        private static string CerToolLocation = @"";
+        static CrashReportTool()
+        {
+            try
+            {
+                var assemblyConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+                CerToolLocation = assemblyConfig?.AppSettings.Settings["CERLocation"]?.Value;
+            }
+            catch
+            {}
+        }
+
+        private static string CerToolLocation;
 
         internal enum MINIDUMP_TYPE
         {
@@ -61,12 +75,6 @@ namespace Dynamo.Core
             MiniDumpFilterWriteCombinedMemory,
             MiniDumpValidTypeFlags = 0x01ffffff
         };
-
-        [DllImport("kernel32.dll")]
-        static extern IntPtr GetCurrentProcess();
-
-        [DllImport("kernel32.dll")]
-        static extern uint GetCurrentProcessId();
 
         [DllImport("kernel32.dll")]
         static extern uint GetCurrentThreadId();
@@ -123,12 +131,12 @@ namespace Dynamo.Core
             {
                 ClientPointers = 1,
                 ExceptionPointers = Marshal.GetExceptionPointers(),
-                ThreadId = GetCurrentThreadId()
+                ThreadId = GetCurrentThreadId()//The windows thread id (as opposed to Thread.CurrentThread.ManagedThreadId)
             };
 
             using (FileStream dmpFileStream = File.Create(outputFile))
             {
-                if (MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), dmpFileStream.SafeFileHandle, DumpType, ref info, IntPtr.Zero, IntPtr.Zero))
+                if (MiniDumpWriteDump(process.Handle, (uint)process.Id, dmpFileStream.SafeFileHandle, DumpType, ref info, IntPtr.Zero, IntPtr.Zero))
                 {
                     return outputFile;
                 }
@@ -138,6 +146,13 @@ namespace Dynamo.Core
 
         internal static void OnCrashReportWindow(CrashReportArgs args)
         {
+            DynamoModel model = args.viewModel?.Model;
+            if (string.IsNullOrEmpty(CerToolLocation))
+            {
+                model?.Logger?.LogError($"CERLocation was not provided in the DynamoCore.dll.config");
+                return;
+            }
+
             try
             {
                 DynamoModel.IsCrashing = true;
@@ -148,41 +163,46 @@ namespace Dynamo.Core
                 using (Scheduler.Disposable.Create(() => { cerDir.Delete(); }) )
                 {
                     var filesToSend = new List<string>();
-                    if (args.SendLogFile && args.model != null)
+                    if (args.SendLogFile && model != null)
                     {
                         string logFile = Path.Combine(cerDir.FullName, "DynamoLog.log");
 
-                        File.Copy(args.model.Logger.LogPath, logFile);
+                        File.Copy(model.Logger.LogPath, logFile);
                         // might be usefull to dump all loaded Packages into
                         // the log at this point.
                         filesToSend.Add(logFile);
                     }
 
-                    if (args.SendSettingsFile && args.model != null)
+                    if (args.SendSettingsFile && model != null)
                     {
                         string settingsFile = Path.Combine(cerDir.FullName, "DynamoSettings.xml");
-                        File.Copy(args.model.PathManager.PreferenceFilePath, settingsFile);
+                        File.Copy(model.PathManager.PreferenceFilePath, settingsFile);
 
                         filesToSend.Add(settingsFile);
                     }
 
-                    if (args.SendDynFile && args.model != null)
+                    if (args.SendDynFile && model != null)
                     {
                         var dynFilePath = Path.Combine(cerDir.FullName, "DynamoModel.dyn");
-                        args.model.CurrentWorkspace.Save(dynFilePath);
+                        model.CurrentWorkspace.Save(dynFilePath);
 
                         filesToSend.Add(dynFilePath);
+                    }
+
+                    if (args.SendRecordedCommands && args.viewModel != null)
+                    {
+                        filesToSend.Add(args.viewModel.DumpRecordedCommands());
                     }
 
                     var extras = string.Join(" ", filesToSend.Select(f => "/EXTRA " + f));
 
                     string appConfig = "";
-                    if (args.model != null)
+                    if (model != null)
                     {
-                        var appName = string.IsNullOrEmpty(args.model.HostAnalyticsInfo.HostName) ? Process.GetCurrentProcess().ProcessName :
-                            args.model.HostAnalyticsInfo.HostName;
-                        appConfig = $@"<ProductInformation name=\""{appName}\"" build_version=\""{args.model.Version}\"" " +
-                        $@"registry_version=\""{args.model.Version}\"" registry_localeID=\""{CultureInfo.CurrentCulture.LCID}\"" uptime=\""0\"" " +
+                        var appName = string.IsNullOrEmpty(model.HostAnalyticsInfo.HostName) ? Process.GetCurrentProcess().ProcessName :
+                            model.HostAnalyticsInfo.HostName;
+                        appConfig = $@"<ProductInformation name=\""{appName}\"" build_version=\""{model.Version}\"" " +
+                        $@"registry_version=\""{model.Version}\"" registry_localeID=\""{CultureInfo.CurrentCulture.LCID}\"" uptime=\""0\"" " +
                         $@"session_start_count=\""0\"" session_clean_close_count=\""0\"" current_session_length=\""0\"" />";
                     }
 
@@ -195,7 +215,7 @@ namespace Dynamo.Core
             }
             catch(Exception ex)
             {
-                args.model?.Logger?.LogError($"Failed to invoke CER with the following error : {ex.Message}");
+                model?.Logger?.LogError($"Failed to invoke CER with the following error : {ex.Message}");
             }
         }
     }

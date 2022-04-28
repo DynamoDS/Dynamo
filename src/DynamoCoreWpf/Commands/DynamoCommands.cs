@@ -60,6 +60,11 @@ namespace Dynamo.ViewModels
             return (automationSettings.CurrentState == AutomationSettings.State.Recording);
         }
 
+        internal string DumpRecordedCommands()
+        {
+            return automationSettings.SaveRecordedCommands();
+        }
+
         #endregion
 
         #region Workspace Command Entry Point
