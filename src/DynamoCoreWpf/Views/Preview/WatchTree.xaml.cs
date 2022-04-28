@@ -17,7 +17,7 @@ namespace Dynamo.Controls
         private readonly int defaultWidthSize = 200;
         private readonly int defaultHeightSize = 200;
         private readonly int minWidthSize = 100;
-        private readonly int minHeightSize = 60;
+        private readonly int minHeightSize = 38;
 
         public WatchTree()
         {
@@ -28,7 +28,7 @@ namespace Dynamo.Controls
         void WatchTree_Loaded(object sender, RoutedEventArgs e)
         {
             _vm = this.DataContext as WatchViewModel;
-            _vm.PropertyChanged += _vm_PropertyChanged;
+            _vm.PropertyChanged += _vm_PropertyChanged;            
         }
 
         private void _vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -42,6 +42,17 @@ namespace Dynamo.Controls
                 else
                 {
                     this.Height = minHeightSize;
+                }
+            }
+            else if (e.PropertyName == "Children")
+            {
+                if (!_vm.IsCollection)
+                {
+                    if (_vm.Children != null)
+                    {
+                        double requiredWidth = _vm.Children[0].NodeLabel.Length * System.Convert.ToDouble(8.5);
+                        this.Width = requiredWidth < defaultWidthSize ? defaultWidthSize : requiredWidth;
+                    }                    
                 }
             }
         }
