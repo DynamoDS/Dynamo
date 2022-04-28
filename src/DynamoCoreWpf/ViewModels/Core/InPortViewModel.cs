@@ -6,6 +6,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Commands;
+using ProtoCore.Utils;
 
 namespace Dynamo.ViewModels
 {
@@ -291,8 +292,9 @@ namespace Dynamo.ViewModels
         protected override void RefreshPortColors()
         {
             //This variable checks if the node is a function class
-            isFunctionNode = node.NodeModel.CachedValue != null &&
-                node.NodeModel.CachedValue.IsFunction;
+            isFunctionNode = node.NodeModel.IsPartiallyApplied && 
+                             node.NodeModel.CachedValue != null &&
+                             node.NodeModel.CachedValue.IsFunction;
 
             if (isFunctionNode)
             {
