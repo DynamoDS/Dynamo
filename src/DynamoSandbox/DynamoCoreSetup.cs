@@ -104,7 +104,7 @@ namespace DynamoSandbox
                     {
 
 
-                        if (DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("CER", false) == true)
+                        if (DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("CER", true) == true)
                         {
                             CrashReportTool.OnCrashReportWindow(new CrashReportArgs(viewModel));
                         }

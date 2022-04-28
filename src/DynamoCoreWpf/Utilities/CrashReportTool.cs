@@ -10,8 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dynamo.Core
 {
@@ -45,7 +43,7 @@ namespace Dynamo.Core
 
         private static string CerToolLocation;
 
-        internal enum MINIDUMP_TYPE
+        private enum MINIDUMP_TYPE
         {
             MiniDumpNormal = 0x00000000,
             MiniDumpWithDataSegs = 0x00000001,
@@ -77,10 +75,10 @@ namespace Dynamo.Core
         };
 
         [DllImport("kernel32.dll")]
-        static extern uint GetCurrentThreadId();
+        private static extern uint GetCurrentThreadId();
 
         [DllImport("dbghelp.dll")]
-        public static extern bool MiniDumpWriteDump(
+        private static extern bool MiniDumpWriteDump(
             IntPtr hProcess,
             UInt32 ProcessId,
             SafeHandle hFile,
@@ -94,7 +92,7 @@ namespace Dynamo.Core
         /// Struct mapping to MINIDUMP_EXCEPTION_INFORMATION for Win32 API
         /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        public struct MINIDUMP_EXCEPTION_INFORMATION
+        private struct MINIDUMP_EXCEPTION_INFORMATION
         {
             /// <summary>
             /// The thread id
@@ -115,7 +113,7 @@ namespace Dynamo.Core
         // If input argument "outputDir" is null or empty,
         // the crash report file (name = %processName%_%processId%.dmp) will be created
         // in the temp folder path (%TMP% on windows)
-        internal static string CreateMiniDumpFile(string outputDir = null)
+        private static string CreateMiniDumpFile(string outputDir = null)
         {
             Process process = Process.GetCurrentProcess();
             MINIDUMP_TYPE DumpType = MINIDUMP_TYPE.MiniDumpNormal;
@@ -144,6 +142,7 @@ namespace Dynamo.Core
             return null;
         }
 
+        // Calls external CER tool (with UI)
         internal static void OnCrashReportWindow(CrashReportArgs args)
         {
             DynamoModel model = args.viewModel?.Model;
