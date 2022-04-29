@@ -453,7 +453,9 @@ namespace Dynamo.Nodes
             var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItem;
             if (groupStyleItemSelected == null) return;
 
-            ViewModel.UpdateGroupStyle(groupStyleItemSelected);                
+            ViewModel.UpdateGroupStyle(groupStyleItemSelected);
+            // Tracking selecting group style item
+            Logging.Analytics.TrackEvent(Actions.Select, Categories.GroupOperations, nameof(GroupStyleItem));
         }
 
         /// <summary>
@@ -464,6 +466,8 @@ namespace Dynamo.Nodes
         private void GroupStyleAnnotation_SubmenuOpened(object sender, RoutedEventArgs e)
         {
             ViewModel.ReloadGroupStyles();
+            // Tracking loading group style items
+            Logging.Analytics.TrackEvent(Actions.Load, Categories.GroupOperations, nameof(GroupStyleItem) + "s");
         }
     }
 }
