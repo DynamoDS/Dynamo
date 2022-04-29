@@ -174,7 +174,7 @@ namespace Dynamo.Core
         {
             return !string.IsNullOrEmpty(CerToolDir) &&
                 Directory.Exists(CerToolDir) &&
-                DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("CER", true) == true;
+                DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("CER", false) == true;
         }
 
         // Calls external CER tool (with UI)
