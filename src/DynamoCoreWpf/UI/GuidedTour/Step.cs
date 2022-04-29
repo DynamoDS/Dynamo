@@ -244,7 +244,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             if (this.StepUIPopup is PopupWindow popupWindow)
             {
-                if (Guide.FindChild((popupWindow).mainPopupGrid, NextButton) is Button nextbuttonFound)
+                if (GuideUtilities.FindChild((popupWindow).mainPopupGrid, NextButton) is Button nextbuttonFound)
                 {
                     nextbuttonFound.Focus();
                 }
@@ -285,14 +285,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //This means that the HostPopupInfo.HostUIElementString is in a different Window than DynamoView
             if (!string.IsNullOrEmpty(HostPopupInfo.WindowName)) 
             {
-                Window ownedWindow = Guide.FindWindowOwned(HostPopupInfo.WindowName, MainWindow as Window);
+                Window ownedWindow = GuideUtilities.FindWindowOwned(HostPopupInfo.WindowName, MainWindow as Window);
                 if (ownedWindow == null)  return;
                 HostPopupInfo.HostUIElement = ownedWindow;
                 stepUIPopup.PlacementTarget = ownedWindow;
                 UpdateLocation();
             }
             //This case will be used for UIElements that are in the Dynamo VisualTree but they are shown until there is a user interaction (like the SideBar cases)
-            var hostUIElement = Guide.FindChild(MainWindow, HostPopupInfo.HostUIElementString);
+            var hostUIElement = GuideUtilities.FindChild(MainWindow, HostPopupInfo.HostUIElementString);
             if (hostUIElement == null)
                 return;
             HostPopupInfo.HostUIElement = hostUIElement;
@@ -310,16 +310,30 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 return;
             if(bVisible)
             {
+                string windowElementNameCutOffSection = string.Empty;
+                //In case the element name was not provided in the CutOffArea when we use the one in the HostPopup                 
+                if (!string.IsNullOrEmpty(HostPopupInfo.CutOffRectArea.WindowElementNameString))
+                    windowElementNameCutOffSection = HostPopupInfo.CutOffRectArea.WindowElementNameString;                
+                else
+                    windowElementNameCutOffSection = HostPopupInfo.HostUIElementString;
+
                 //This will validate that HostPopupInfo.HostUIElement is in the MainWindow VisualTree otherwise the TransformToAncestor() will crash
-                var foundUIElement = Guide.FindChild(MainWindow, HostPopupInfo.HostUIElementString);
+                UIElement foundUIElement = null;
+                if (!string.IsNullOrEmpty(windowElementNameCutOffSection))
+                    foundUIElement = GuideUtilities.FindChild(MainWindow, HostPopupInfo.HostUIElementString);
+                if(!string.IsNullOrEmpty(HostPopupInfo.CutOffRectArea.NodeId))
+                    foundUIElement = GuideUtilities.FindNodeByID(MainWindow, HostPopupInfo.CutOffRectArea.NodeId);
                 if (foundUIElement == null)
                     return;
 
-                Point relativePoint = HostPopupInfo.HostUIElement.TransformToAncestor(MainWindow)
+                Point relativePoint = foundUIElement.TransformToAncestor(MainWindow)
                               .Transform(new Point(0, 0));
 
-                var holeWidth = HostPopupInfo.HostUIElement.DesiredSize.Width + HostPopupInfo.CutOffRectArea.WidthBoxDelta;
-                var holeHeight = HostPopupInfo.HostUIElement.DesiredSize.Height + HostPopupInfo.CutOffRectArea.HeightBoxDelta;
+                relativePoint.X += HostPopupInfo.CutOffRectArea.XPosOffset;
+                relativePoint.Y += HostPopupInfo.CutOffRectArea.YPosOffset;
+
+                var holeWidth = foundUIElement.DesiredSize.Width + HostPopupInfo.CutOffRectArea.WidthBoxDelta;
+                var holeHeight = foundUIElement.DesiredSize.Height + HostPopupInfo.CutOffRectArea.HeightBoxDelta;
 
                 if (StepGuideBackground.CutOffBackgroundArea != null)
                 {
@@ -386,7 +400,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public void UpdateLocation()
         {
             SetCutOffSectionSize(true);
-            UpdateHighlighRectArea();
             UpdatePopupLocationInvoke(stepUIPopup);
             if(stepUIPopup is PopupWindow)
             {
@@ -414,11 +427,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (automationCalculateStep == null) return;
                 GuidesValidationMethods.CalculateLibraryItemLocation(this, automationCalculateStep, true, Guide.GuideFlow.CURRENT);
             }
-        }
-
-        private void UpdateHighlighRectArea()
-        {
-            SetHighlightSection(true);
         }
 
         /// <summary>
@@ -470,7 +478,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             var popupBorderName = "SubmenuBorder";
             //This section will search the UIElement dynamically in the Dynamo VisualTree in which an automation action will be executed
-            UIElement automationUIElement = Guide.FindChild(MainWindow, uiAutomationData.Name);
+            UIElement automationUIElement = GuideUtilities.FindChild(MainWindow, uiAutomationData.Name);
             if (automationUIElement != null)
                 uiAutomationData.UIElementAutomation = automationUIElement;
           
@@ -521,7 +529,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     if(uiAutomationData.WindowName.Equals(WindowNamePopup))
                     {
                         //Finds the Button inside the PopupWindow
-                        var buttonFound = Guide.FindChild((stepUIPopup as PopupWindow).mainPopupGrid, uiAutomationData.Name) as Button;
+                        var buttonFound = GuideUtilities.FindChild((stepUIPopup as PopupWindow).mainPopupGrid, uiAutomationData.Name) as Button;
                         if (buttonFound == null) return;
 
                         switch (uiAutomationData.Action)
@@ -556,7 +564,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal void ExecutePreValidation()
         {
             object[] parametersArray;
-            Window ownedWindow = Guide.FindWindowOwned(HostPopupInfo.WindowName, MainWindow as Window);
+            Window ownedWindow = GuideUtilities.FindWindowOwned(HostPopupInfo.WindowName, MainWindow as Window);
 
             if (PreValidationInfo != null)
             {
@@ -629,7 +637,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (HostPopupInfo.HighlightRectArea.UIElementTypeString.Equals(typeof(MenuItem).Name))
             {
                 //We try to find the WindowElementNameString (in this case the MenuItem) in the DynamoView VisualTree
-                var foundUIElement = Guide.FindChild(HostPopupInfo.HostUIElement, HostPopupInfo.HighlightRectArea.WindowElementNameString);
+                var foundUIElement = GuideUtilities.FindChild(HostPopupInfo.HostUIElement, HostPopupInfo.HighlightRectArea.WindowElementNameString);
 
                 if (foundUIElement != null)
                 {
@@ -645,7 +653,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 string highlightColor = HostPopupInfo.HighlightRectArea.HighlightColor;
 
                 //Find the in the DynamoView VisualTree the specified Element (WindowElementNameString)
-                var hostUIElement = Guide.FindChild(MainWindow, HostPopupInfo.HighlightRectArea.WindowElementNameString);
+                var hostUIElement = GuideUtilities.FindChild(MainWindow, HostPopupInfo.HighlightRectArea.WindowElementNameString);
 
                 if (hostUIElement == null)
                 {
@@ -684,9 +692,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
             else
             {
                 string highlightColor = HostPopupInfo.HighlightRectArea.HighlightColor;
-                Window ownedWindow = Guide.FindWindowOwned(HostPopupInfo.HighlightRectArea.WindowName, MainWindow as Window);
+                Window ownedWindow = GuideUtilities.FindWindowOwned(HostPopupInfo.HighlightRectArea.WindowName, MainWindow as Window);
                 if (ownedWindow == null) return;
-                UIElement foundElement = Guide.FindChild(ownedWindow, HostPopupInfo.HighlightRectArea.WindowElementNameString);
+                UIElement foundElement = GuideUtilities.FindChild(ownedWindow, HostPopupInfo.HighlightRectArea.WindowElementNameString);
                 switch (HostPopupInfo.HighlightRectArea.UIElementTypeString.ToUpper())
                 {
                     //We need to highlight a Button (if the Button template doesn't have a grid then the template needs to be updated)

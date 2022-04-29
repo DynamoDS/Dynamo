@@ -36,7 +36,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This will represent the action that will be executed as part of the UI Automation
         /// </summary>
-        public UIAction Action { get; set; }        
+        public UIAction Action { get; set; }
+
+        /// <summary>
+        /// The list of arguments sent to the function to be executed
+        /// </summary>
+        public List<object> Parameters { get; set; }
 
         /// <summary>
         /// This will be the WPF UI Element in which the Action will be executed

@@ -78,12 +78,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 //If the TermsOfService is not accepted yet it will show the TermsOfUseView otherwise it will show the PackageManagerSearchView
                 stepInfo.DynamoViewModelStep.ShowPackageManagerSearch(null);
-                Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+                Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
 
                 foreach (var handler in uiAutomationData.AutomaticHandlers)
                 {
                     if (ownedWindow == null) return;
-                    UIElement element = Guide.FindChild(ownedWindow, handler.HandlerElement);
+                    UIElement element = GuideUtilities.FindChild(ownedWindow, handler.HandlerElement);
 
                     //When the Accept button is pressed in the TermsOfUseView then we need to move to the next Step
                     if (element != null)
@@ -93,11 +93,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //When enableFunction = false, means we are hiding (closing) the TermsOfUse Window due that we are moving to the next Step or we are exiting the Guide
             else
             {
-                Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+                Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
                 if (ownedWindow == null) return;
 
                 //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
-                Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+                GuideUtilities.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
             }
         }
 
@@ -117,13 +117,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (stepInfo.ExitGuide != null)
                     exitGuide = stepInfo.ExitGuide;
 
-                Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+                Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
 
                 foreach (var handler in uiAutomationData.AutomaticHandlers)
                 {
                     if (ownedWindow == null) return;
 
-                    CloseButtonSearchPackages = Guide.FindChild(ownedWindow, handler.HandlerElement) as Button;
+                    CloseButtonSearchPackages = GuideUtilities.FindChild(ownedWindow, handler.HandlerElement) as Button;
                     CloseButtonSearchPackages.Click += CloseButton_Click;
                 }
             }
@@ -144,21 +144,21 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void ExecuteInstallPackagesFlow(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
-            Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+            Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
 
             if (enableFunction)
             {
                 if (ownedWindow != null)
                     viewModel = ownedWindow.DataContext as PackageManagerSearchViewModel;
 
-                Button buttonElement = Guide.FindChild(ownedWindow, stepInfo.HostPopupInfo.HostUIElementString) as Button;
+                Button buttonElement = GuideUtilities.FindChild(ownedWindow, stepInfo.HostPopupInfo.HostUIElementString) as Button;
                 viewModel.PackageManagerClientViewModel.Downloads.CollectionChanged += Downloads_CollectionChanged;
             }
             else
             {
                 //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously (just if the flow if FORWARD from Step6 to Step7)
                 if (uiAutomationData.ExecuteCleanUpForward && currentFlow == GuideFlow.FORWARD)
-                    Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+                    GuideUtilities.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
             }
         }
 
@@ -275,14 +275,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             CurrentExecutingStep = stepInfo;
             //We try to find the PackageManagerSearchView window
-            Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+            Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
             if (enableFunction)
             {
                 //We need to check if the PackageManager search is already open if that is the case we don't need to open it again
                 if (ownedWindow != null) return;
                 stepInfo.DynamoViewModelStep.ShowPackageManagerSearch(null);
 
-                PackageManagerSearchView packageManager = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerSearchView;
+                PackageManagerSearchView packageManager = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerSearchView;
                 if (packageManager == null)
                     return;
                 PackageManagerSearchViewModel packageManagerViewModel = packageManager.DataContext as PackageManagerSearchViewModel;
@@ -298,7 +298,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             else
             {
 
-                PackageManagerSearchView packageManager = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerSearchView;
+                PackageManagerSearchView packageManager = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerSearchView;
                 if (packageManager == null)
                     return;
                 PackageManagerSearchViewModel packageManagerViewModel = packageManager.DataContext as PackageManagerSearchViewModel;
@@ -373,7 +373,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             if (searchPackagesLoaded)
             {
-                var nextButton = Guide.FindChild((CurrentExecutingStep.StepUIPopup as PopupWindow).mainPopupGrid, uiAutomationData.ElementName) as Button;
+                var nextButton = GuideUtilities.FindChild((CurrentExecutingStep.StepUIPopup as PopupWindow).mainPopupGrid, uiAutomationData.ElementName) as Button;
                 if (nextButton != null)
                     nextButton.IsEnabled = true;
             }
@@ -392,7 +392,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             CurrentExecutingStep = stepInfo;
 
             //We try to find the WindowElementNameString (in this case the MenuItem) in the DynamoView VisualTree
-            var foundUIElement = Guide.FindChild(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo.HighlightRectArea.WindowElementNameString) as MenuItem;
+            var foundUIElement = GuideUtilities.FindChild(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo.HighlightRectArea.WindowElementNameString) as MenuItem;
             if (foundUIElement == null)
                 return;
             if (enableFunction)
@@ -418,7 +418,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Due that only one handler was configured we get the first one
             var automaticHandler = uiAutomationData.AutomaticHandlers.FirstOrDefault();
             //Find the NextButton inside the Popup
-            var nextbuttonFound = Guide.FindChild((CurrentExecutingStep.StepUIPopup as PopupWindow).mainPopupGrid, automaticHandler.HandlerElement) as Button;
+            var nextbuttonFound = GuideUtilities.FindChild((CurrentExecutingStep.StepUIPopup as PopupWindow).mainPopupGrid, automaticHandler.HandlerElement) as Button;
             if (nextbuttonFound == null) return;
             //Add or Remove the handler assigned to the Button.Click
             ManageEventHandler(nextbuttonFound, automaticHandler.HandlerElementEvent, automaticHandler.ExecuteMethod, enableFunction);
@@ -467,9 +467,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void SubscribeViewDetailsEvent(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
-            PackageManagerSearchView packageManager = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerSearchView;
+            PackageManagerSearchView packageManager = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerSearchView;
             if (packageManager == null) return;
-            Button foundElement = Guide.FindChild(packageManager, stepInfo.HostPopupInfo.HighlightRectArea.WindowElementNameString) as Button;
+            Button foundElement = GuideUtilities.FindChild(packageManager, stepInfo.HostPopupInfo.HighlightRectArea.WindowElementNameString) as Button;
             if (foundElement == null)
                 return;
             if (enableFunction)
@@ -509,12 +509,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             CurrentExecutingStep = stepInfo;
             var stepMainWindow = stepInfo.MainWindow as Window;
-            var packageDetailsWindow = Guide.FindChild(stepMainWindow, stepInfo.HostPopupInfo.HostUIElementString) as UserControl;
+            var packageDetailsWindow = GuideUtilities.FindChild(stepMainWindow, stepInfo.HostPopupInfo.HostUIElementString) as UserControl;
 
             if (enableFunction)
             {
                 //This section will open the Package Details Sidebar
-                PackageManagerSearchView packageManager = Guide.FindWindowOwned(packageSearchWindowName, stepMainWindow) as PackageManagerSearchView;
+                PackageManagerSearchView packageManager = GuideUtilities.FindWindowOwned(packageSearchWindowName, stepMainWindow) as PackageManagerSearchView;
                 if (packageManager == null)
                     return;
                 PackageManagerSearchViewModel packageManagerViewModel = packageManager.DataContext as PackageManagerSearchViewModel;
@@ -546,7 +546,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (tabitem == null)
                     return;
                 //Get the Close button from the PackageDetailsView
-                Button closeButton = Guide.FindChild(tabitem, closeButtonName) as Button;
+                Button closeButton = GuideUtilities.FindChild(tabitem, closeButtonName) as Button;
                 if (closeButton == null)
                     return;
                 dynamoView.CloseExtensionTab(closeButton, null);
@@ -590,40 +590,30 @@ namespace Dynamo.Wpf.UI.GuidedTour
             ResourceUtilities.ExecuteJSFunction(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo, parametersInvokeScript);
         }
 
+        /// <summary>
+        /// This method will highlight the input port of a node (NodeView)
+        /// </summary>
+        /// <param name="stepInfo">Information about the Step</param>
+        /// <param name="uiAutomationData">Information about UI Automation that is being executed</param>
+        /// <param name="enableFunction">Variable used to know if we are executing the automation or undoing changes</param>
+        /// <param name="currentFlow">Current Guide Flow</param>
         internal static void HighlightPort(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
             var stepMainWindow = CurrentExecutingStep.MainWindow as Window;
 
-            string TestDirectory = @"C:\Repositories\GitHub\RobertGlobant20\Dynamo\test";
-            string samplepath = System.IO.Path.Combine(TestDirectory, @"core\DynamoOnboardingGuide_HouseCreationDS.dyn");
-            string fileContents = File.ReadAllText(samplepath);
-
-            //Act
-            (stepMainWindow.DataContext as DynamoViewModel).OpenFromJsonCommand.Execute(new Tuple<string, bool>(fileContents, false));
-            CurrentExecutingStep.MainWindow.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
-
-
-            var nodeViewChildren = stepMainWindow.ChildrenOfType<NodeView>();
-
-            //Means that we don't have nodes in the Workspace
-            if (nodeViewChildren == null || nodeViewChildren.Count() == 0) return;
-
-            //Get the first CoordinateSystem.ByOrigin node
-            var byOriginNode = (from nodeView in nodeViewChildren
-            where (nodeView.DataContext is NodeViewModel) &&
-                  (nodeView.DataContext as NodeViewModel).Name == "CoordinateSystem.ByOrigin"
-            select nodeView).FirstOrDefault();
-
+            var byOriginNode = GuideUtilities.FindNodeByID(stepMainWindow, "a20a93da6af14deebe2df37c1662349f");
             if (byOriginNode == null) return;
-            var itemsControlInputPort = Guide.FindChild(byOriginNode, "inputPortControl") as ItemsControl;
+            var itemsControlInputPort = GuideUtilities.FindChild(byOriginNode, "inputPortControl") as ItemsControl;
+            if (itemsControlInputPort == null) return;
             var itemContainer = itemsControlInputPort.ItemContainerGenerator.ContainerFromIndex(0);
             var mainGrid = itemContainer.ChildOfType<Grid>();
 
             if(enableFunction)
             {
+                var highlightColor = uiAutomationData.Parameters.FirstOrDefault() as string;
                 //Creates the highlight rectangle so it can be added and shown over the port
-                var portRectangle = stepInfo.CreateRectangle(mainGrid, CurrentExecutingStep.HostPopupInfo.HighlightRectArea.HighlightColor);
+                var portRectangle = stepInfo.CreateRectangle(mainGrid, highlightColor);
 
                 //The Rectangle will be added dynamically in a specific step and then when passing to next step we will remove it
                 mainGrid.Children.Add(portRectangle);
@@ -633,6 +623,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
             else
             {
+                //When moving to the next/previous or exiting the guide, then the Rectangle previously added will be removed
                 var buttonRectangle = mainGrid.Children.OfType<Rectangle>().Where(rect => rect.Name.Equals("HighlightRectangle")).FirstOrDefault();
                 if (buttonRectangle != null)
                     mainGrid.Children.Remove(buttonRectangle);
