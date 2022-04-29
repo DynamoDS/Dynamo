@@ -454,8 +454,8 @@ namespace Dynamo.Nodes
             if (groupStyleItemSelected == null) return;
 
             ViewModel.UpdateGroupStyle(groupStyleItemSelected);
-            // Tracking selecting group style item
-            Logging.Analytics.TrackEvent(Actions.Select, Categories.GroupStyleOperations, nameof(GroupStyleItem));
+            // Tracking selecting group style item and if it is a default style by Dynamo
+            Logging.Analytics.TrackEvent(Actions.Select, Categories.GroupStyleOperations, nameof(GroupStyleItem), groupStyleItemSelected.IsDefault ? 1 : 0);
         }
 
         /// <summary>
