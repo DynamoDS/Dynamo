@@ -5,13 +5,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using CefSharp;
 using Dynamo;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Interfaces;
-using Dynamo.LibraryUI;
-using Dynamo.LibraryUI.Handlers;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Moq;
@@ -39,7 +36,7 @@ namespace ViewExtensionLibraryTests
     public class LibraryResourceProviderTests : UnitTestBase
     {
         private const string EventX = "X";
-
+        /*
         [Test]
         [Category("UnitTests"), Category("Failure")]
         public void EventControllerCallback()
@@ -623,5 +620,6 @@ namespace ViewExtensionLibraryTests
             moq.Setup(e => e.CreationName).Returns(creationName);
             return moq;
         }
+        */
     }
 }
