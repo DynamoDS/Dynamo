@@ -455,7 +455,7 @@ namespace Dynamo.Nodes
 
             ViewModel.UpdateGroupStyle(groupStyleItemSelected);
             // Tracking selecting group style item
-            Logging.Analytics.TrackEvent(Actions.Select, Categories.GroupOperations, nameof(GroupStyleItem));
+            Logging.Analytics.TrackEvent(Actions.Select, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
         /// <summary>
@@ -467,7 +467,7 @@ namespace Dynamo.Nodes
         {
             ViewModel.ReloadGroupStyles();
             // Tracking loading group style items
-            Logging.Analytics.TrackEvent(Actions.Load, Categories.GroupOperations, nameof(GroupStyleItem) + "s");
+            Logging.Analytics.TrackEvent(Actions.Load, Categories.GroupStyleOperations, nameof(GroupStyleItem) + "s");
         }
     }
 }

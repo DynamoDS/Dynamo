@@ -116,6 +116,11 @@ namespace Dynamo.Logging
         /// Events Category related to connectors
         /// </summary>
         ConnectorOperations,
+
+        /// <summary>
+        /// Events Category related to group styles
+        /// </summary>
+        GroupStyleOperations,
     }
 
     /// <summary>
