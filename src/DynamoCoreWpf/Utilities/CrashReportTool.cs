@@ -1,9 +1,8 @@
-﻿using Dynamo.Core;
-using Dynamo.Models;
+﻿using Dynamo.Models;
 using Dynamo.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -34,14 +33,17 @@ namespace Dynamo.Core
         {
             try
             {
-                var assemblyConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
-                CerToolLocation = assemblyConfig?.AppSettings.Settings["CERLocation"]?.Value;
+                CerToolDir = GetCERToolLocation();
             }
             catch
             {}
         }
 
-        private static string CerToolLocation;
+        private static List<string> ProductsWithCER => new List<string>() { "Revit", "Civil", "Robot Structural Analysis" };
+        private static readonly string CERExe = "senddmp.exe";
+
+
+        private static string CerToolDir;
 
         private enum MINIDUMP_TYPE
         {
@@ -142,18 +144,44 @@ namespace Dynamo.Core
             return null;
         }
 
+        private static string GetCERToolLocation()
+        {
+            string rootFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
+            if (!File.Exists(assemblyPath))
+                throw new FileNotFoundException(assemblyPath);
+
+            var assembly = Assembly.LoadFrom(assemblyPath);
+
+            var type = assembly.GetType("DynamoInstallDetective.Utilities");
+
+            var installationsMethod = type.GetMethod(
+                "FindMultipleProductInstallations",
+                BindingFlags.Public | BindingFlags.Static);
+
+            if (installationsMethod == null)
+            {
+                throw new MissingMethodException("Method 'DynamoInstallDetective.Utilities.FindProductInstallations' not found");
+            }
+
+            var methodParams = new object[] { ProductsWithCER, CERExe };
+            var installs = installationsMethod.Invoke(null, methodParams) as IEnumerable;
+
+            return installs.Cast<KeyValuePair<string, Tuple<int, int, int, int>>>().Select(x => x.Key).LastOrDefault();
+        }
+
         internal static bool IsCEREnabled()
         {
-            return !string.IsNullOrEmpty(CerToolLocation) &&
-                File.Exists(CerToolLocation) &&
-                DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("CER", false) == true;
+            return !string.IsNullOrEmpty(CerToolDir) &&
+                Directory.Exists(CerToolDir) &&
+                DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("CER", true) == true;
         }
 
         // Calls external CER tool (with UI)
         internal static void OnCrashReportWindow(CrashReportArgs args)
         {
             DynamoModel model = args.viewModel?.Model;
-            if (string.IsNullOrEmpty(CerToolLocation))
+            if (string.IsNullOrEmpty(CerToolDir))
             {
                 model?.Logger?.LogError($"CERLocation was not provided in the DynamoCore.dll.config");
                 return;
@@ -216,7 +244,8 @@ namespace Dynamo.Core
                     var upiConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "upiconfig.xml");
 
                     var cerArgs = $"/UPITOKEN {upiConfigFilePath} /DMP {miniDumpFilePath} /APPXML \"{appConfig}\" {extras}";
-                    Process.Start(new ProcessStartInfo(CerToolLocation, cerArgs)).WaitForExit();
+                    var cerTool = Path.Combine(CerToolDir, CERExe);
+                    Process.Start(new ProcessStartInfo(cerTool, cerArgs)).WaitForExit();
                 }
             }
             catch(Exception ex)
