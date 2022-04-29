@@ -25,7 +25,7 @@ namespace ProtoCore
             {
                 get
                 {
-                    return IsPointer && Class.Name.Equals(CoreUtils.NodeFunctionClassName) && Class.LibraryMirror.Name.Equals(CoreUtils.NodeLibraryMirronFunctionObjectName);
+                    return IsPointer && Class.Name.Equals(CoreUtils.FunctionObjectClass) && Class.LibraryMirror.Name.Equals(CoreUtils.FunctionObjectLibrary);
                 }
             }
 
