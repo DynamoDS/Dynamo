@@ -23,6 +23,12 @@ namespace Dynamo.Controls
         {
             InitializeComponent();
             this.Loaded += WatchTree_Loaded;
+            this.Unloaded += WatchTree_Unloaded;
+        }
+
+        private void WatchTree_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _vm.PropertyChanged -= _vm_PropertyChanged;
         }
 
         void WatchTree_Loaded(object sender, RoutedEventArgs e)
@@ -46,14 +52,18 @@ namespace Dynamo.Controls
             }
             else if (e.PropertyName == "Children")
             {
-                if (!_vm.IsCollection)
+                if (_vm.Children != null)
                 {
-                    if (_vm.Children != null)
+                    if (!_vm.Children[0].IsCollection)
+                    {                        
+                        double requiredWidth = (_vm.Children[0].NodeLabel.Length * 7.5) + 20;
+                        this.Width = requiredWidth;
+                    }
+                    else
                     {
-                        double requiredWidth = _vm.Children[0].NodeLabel.Length * System.Convert.ToDouble(8.5);
-                        this.Width = requiredWidth < defaultWidthSize ? defaultWidthSize : requiredWidth;
-                    }                    
-                }
+                        this.Width = defaultWidthSize;
+                    }
+                }                
             }
         }
 
