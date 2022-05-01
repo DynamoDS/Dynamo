@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Windows.Navigation;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
+using Dynamo.UI.Commands;
+using Dynamo.Selection;
 using ProtoCore.Mirror;
 
 namespace Dynamo.GraphNodeManager.ViewModels
@@ -24,10 +27,12 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private bool statusIsFrozen = false;
         private bool issuesHasWarning = false;
         private bool issuesHasError = false;
-        private int dismissedWarnings = 0;
         private bool isInfo = false;
         private bool isEmptyList = false;
         private bool isNull = false;
+        private int dismissedAlertsCount = 0;
+        private bool isDummyNode = false;
+
         #endregion
 
         #region Public Fields
@@ -178,6 +183,30 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set => isNull = value;
         }
+        /// <summary>
+        /// Number of dismissed alerts - Warnings/Errors in a node
+        /// </summary>
+        public int DismissedAlertsCount
+        {
+            get
+            {
+                dismissedAlertsCount = NodeModel.DismissedAlerts.Count;
+                return dismissedAlertsCount;
+            }
+            internal set => dismissedAlertsCount = value;
+        }
+        /// <summary>
+        /// If the node is broken or unreferenced
+        /// </summary>
+        public bool IsDummyNode
+        {
+            get
+            {
+                isDummyNode = (NodeModel as DummyNode) != null;
+                return isDummyNode;
+            }
+            internal set => isDummyNode = value;
+        }
         #endregion
 
         /// <summary>
@@ -207,6 +236,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         }
 
 
+
         #region Setup and Constructors
         internal NodeModel NodeModel { get; set; }
 
@@ -218,6 +248,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             NodeModel = node;
         }
+        
         #endregion
 
     }

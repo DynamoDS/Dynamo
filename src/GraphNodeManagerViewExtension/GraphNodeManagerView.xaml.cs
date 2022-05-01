@@ -20,11 +20,28 @@ namespace Dynamo.GraphNodeManager
     /// </summary>
     public partial class GraphNodeManagerView : UserControl
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="viewModel"></param>
         public GraphNodeManagerView(GraphNodeManagerViewModel viewModel)
         {
             InitializeComponent();
-            this.DataContext = viewModel;
 
+            this.DataContext = viewModel;
+        }
+
+        /// <summary>
+        /// Handles selection changed of DataGrid Item
+        /// Calls a method in the ViewModel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NodeTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var vm = this.DataContext as GraphNodeManagerViewModel;
+            if ((sender as DataGrid) == null) return;
+            vm.NodeSelect((sender as DataGrid).SelectedItem);
         }
     }
 }

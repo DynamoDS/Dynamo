@@ -17,6 +17,8 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converters:BooleanToBackgroundColorConverter x:Key="BooleanToBackgroundColorConverter"/>
+            <converters:BooleanToBackgroundHoverColorConverter x:Key="BooleanToBackgroundHoverColorConverter"/>
+            <converters:BooleanToBackgroundPressedColorConverter x:Key="BooleanToBackgroundPressedColorConverter"/>
             <converters:BooleanToForegroundColorConverter x:Key="BooleanToForegroundColorConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -28,7 +30,7 @@
                 <Setter Property="Height" Value="12"></Setter>
                 <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
                 <Setter Property="UseLayoutRounding" Value="True"></Setter>
-                <Setter Property="Margin" Value="0 0 3 0"></Setter>
+                <Setter Property="Margin" Value="3 0"></Setter>
             </Style>
             <!-- DataGrid style -->
             <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
@@ -111,9 +113,49 @@
 
         <!-- Accommodates the Search functionality -->
         <Border Grid.Row="0"
-                Margin="3 15 20 5"
-                BorderBrush="{StaticResource MidGreyBrush}" 
-                BorderThickness="0 0 0 1">
+                Margin="3 15 20 5">
+
+            <!--Not working at the moment-->
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush" Value="{StaticResource MidGreyBrush}"/>
+                    <Setter Property="BorderThickness" Value="0 0 0 5"></Setter>
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <LinearGradientBrush.GradientStops>
+                                    <GradientStop Color="LightGray" Offset="0.0"/>
+                                    <GradientStop Color="DarkGray" Offset="0.25"/>
+                                    <GradientStop Color="Transparent" Offset="1.0"/>
+                                </LinearGradientBrush.GradientStops>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Border.BorderBrush">
+                                <Setter.Value> 
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <LinearGradientBrush.GradientStops>
+                                            <GradientStop Color="Aquamarine" Offset="0.0"/>
+                                            <GradientStop Color="GreenYellow" Offset="0.25"/>
+                                            <GradientStop Color="DarkSlateBlue" Offset="1.0"/>
+                                        </LinearGradientBrush.GradientStops>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsMouseCaptured" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource Blue300Brush}"></Setter>
+                            <Setter Property="BorderThickness" Value="0 0 0 5"></Setter>
+                        </Trigger>
+                        <Trigger Property="IsMouseCaptureWithin" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource Blue300Brush}"></Setter>
+                            <Setter Property="BorderThickness" Value="0 0 0 5"></Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
             <StackPanel x:Name="SearchBarStackPanel"
                         Margin="0 0 0 5"
                         HorizontalAlignment="Left"
@@ -146,9 +188,9 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border Margin="3"
-                                CornerRadius="13"
+                                CornerRadius="12"
                                 Padding="4 2"
-                                Height="26"
+                                Height="24"
                                 VerticalAlignment="Center"
                                 BorderThickness="0">
                             <Border.InputBindings>
@@ -158,18 +200,23 @@
                                 <Style>
                                     <Setter Property="Border.Background" 
                                             Value="{Binding IsFilterOn, 
-                                        Converter={StaticResource BooleanToBackgroundColorConverter},
-                                        UpdateSourceTrigger=PropertyChanged}"/>
+                                                            Converter={StaticResource BooleanToBackgroundColorConverter},
+                                                            UpdateSourceTrigger=PropertyChanged}"/>
                                     <Style.Triggers>
-                                        <Trigger Property="Border.IsMouseOver" Value="True">
-                                            <Setter Property="Border.Background" Value="{StaticResource LightGreyBrush}" />
-                                        </Trigger>
-                                    </Style.Triggers>
+                                            <Trigger Property="Border.IsMouseOver" Value="True">
+                                                <Setter Property="Border.Background" 
+                                                        Value="{Binding IsFilterOn, 
+                                                                        Converter={StaticResource BooleanToBackgroundHoverColorConverter},
+                                                                        UpdateSourceTrigger=PropertyChanged}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
                                 </Style>
                             </Border.Style>
                             <TextBlock Text="{Binding Name}" 
-                                   Padding="5 0"
+                                   Padding="4 2 4 0"
                                    TextAlignment="Center"
+                                   FontSize="10"
+                                   FontWeight="Light"
                                    VerticalAlignment="Center">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
@@ -206,6 +253,7 @@
         <DataGrid x:Name="NodesInfoDataGrid"
                   Grid.Row="2"
                   ItemsSource="{Binding Path=NodesCollection.View}" 
+                  IsSynchronizedWithCurrentItem="True"
                   Style="{StaticResource DataGridStyle1}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
@@ -222,7 +270,8 @@
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   CanUserResizeColumns="True" 
                   CanUserSortColumns="True"
-                  HeadersVisibility="Column">
+                  HeadersVisibility="Column"
+                  SelectionChanged="NodeTable_SelectionChanged">
 
             <DataGrid.GroupStyle>
                 <GroupStyle>
@@ -311,6 +360,19 @@
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/Error.png"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding IssuesHasError, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <Border Height="12" Width="12" CornerRadius="6" 
+                                        VerticalAlignment="Center" HorizontalAlignment="Center"
+                                        Visibility="{Binding DismissedAlertsCount, Converter={StaticResource IntToVisibilityConverter}}"
+                                        Background="{StaticResource PrimaryCharcoal100Brush}">
+                                    <TextBlock Text="{Binding DismissedAlertsCount}" 
+                                               Foreground="{StaticResource DarkGreyBrush}" 
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               FontSize="8"/>
+                                </Border>
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/MissingNode.png"
+                                       Style="{StaticResource ImageStyle}" 
+                                       Visibility="{Binding IsDummyNode, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

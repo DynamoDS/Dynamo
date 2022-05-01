@@ -6,11 +6,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+//using System.Windows.Input;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.GraphNodeManager.ViewModels;
+using Dynamo.Models;
+using Dynamo.UI.Commands;
 using Dynamo.Wpf.Extensions;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using Dynamo.Extensions;
+using Dynamo.Graph.Nodes;
+using Dynamo.Models;
+using Dynamo.Utilities;
+using Dynamo.Wpf.Extensions;
+using ModifierKeys = Dynamo.Utilities.ModifierKeys;
+
 
 namespace Dynamo.GraphNodeManager
 {
@@ -23,8 +36,15 @@ namespace Dynamo.GraphNodeManager
     {
         #region Private Properties
         private readonly ViewLoadedParams viewLoadedParams;
+
         private HomeWorkspaceModel currentWorkspace;
-        private Dictionary<Guid, NodeViewModel> nodeDictionary = new Dictionary<Guid, NodeViewModel>();
+
+        private readonly ViewModelCommandExecutive viewModelCommandExecutive;
+
+        private readonly string uniqueId;
+
+        private readonly Dictionary<Guid, NodeViewModel> nodeDictionary = new Dictionary<Guid, NodeViewModel>();
+
         private bool isEditingEnabled = true;
         private bool isRecomputeEnabled = true;
 
@@ -51,6 +71,10 @@ namespace Dynamo.GraphNodeManager
                 }
             }
         }
+        
+
+        private ViewModelCommandExecutive viewModelExecutive;
+
         #endregion
 
         #region Public Properties
@@ -68,6 +92,8 @@ namespace Dynamo.GraphNodeManager
         /// Collection of all current Workspace Nodes
         /// </summary>
         public CollectionViewSource NodesCollection { get; set; }
+
+        public System.Windows.Input.ICommand NodeSelectCommand { get; set; }
 
 
         /// <summary>
@@ -97,7 +123,7 @@ namespace Dynamo.GraphNodeManager
         /// Establish the Current Workspace
         /// </summary>
         /// <param name="p"></param>
-        public GraphNodeManagerViewModel(ViewLoadedParams p)
+        public GraphNodeManagerViewModel(ViewLoadedParams p, string id)
         {
             this.viewLoadedParams = p;
 
@@ -107,9 +133,32 @@ namespace Dynamo.GraphNodeManager
             if (p.CurrentWorkspaceModel is HomeWorkspaceModel)
             {
                 CurrentWorkspace = p.CurrentWorkspaceModel as HomeWorkspaceModel;
+                viewModelExecutive = p.ViewModelCommandExecutive;
+                commandExecutive = p.CommandExecutive;
+                viewModelCommandExecutive = p.ViewModelCommandExecutive;
+                uniqueId = id;
             }
 
             InitializeFilters();
+
+            NodeSelectCommand = new DelegateCommand(NodeSelect);
+        }
+
+        /// <summary>
+        /// Zoom around the currently selected Node
+        /// </summary>
+        /// <param name="obj"></param>
+        internal void NodeSelect(object obj)
+        {
+            var nodeViewModel = obj as NodeViewModel;
+            if (nodeViewModel == null) return;
+
+            // Select
+            var command = new DynamoModel.SelectModelCommand(nodeViewModel.NodeModel.GUID, ModifierKeys.None);  // Cannot resolve constructor error?
+            commandExecutive.ExecuteCommand(command, uniqueId, "GraphNodeManager");
+
+            // Focus on selected
+            viewModelCommandExecutive.FindByIdCommand(nodeViewModel.NodeModel.GUID.ToString());
         }
 
         private void InitializeFilters()

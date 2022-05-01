@@ -83,7 +83,7 @@ namespace Dynamo.GraphNodeManager
         private void AddToSidebar()
         {
             // initialise the ViewModel and View for the window
-            this.ViewModel = new GraphNodeManagerViewModel(this.viewLoadedParamsReference);
+            this.ViewModel = new GraphNodeManagerViewModel(this.viewLoadedParamsReference, UniqueId);
             this.ManagerView = new GraphNodeManagerView(this.ViewModel);
 
             if (this.ManagerView == null)
