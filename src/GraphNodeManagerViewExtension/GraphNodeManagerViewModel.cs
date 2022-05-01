@@ -18,10 +18,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Extensions;
-using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 using Dynamo.Utilities;
-using Dynamo.Wpf.Extensions;
+using Newtonsoft.Json;
 using ModifierKeys = Dynamo.Utilities.ModifierKeys;
 
 
@@ -74,6 +72,7 @@ namespace Dynamo.GraphNodeManager
         
 
         private ViewModelCommandExecutive viewModelExecutive;
+        private readonly ICommandExecutive commandExecutive;
 
         #endregion
 
@@ -95,12 +94,41 @@ namespace Dynamo.GraphNodeManager
 
         public System.Windows.Input.ICommand NodeSelectCommand { get; set; }
 
+        /// <summary>
+        /// Search Box Text binding
+        /// </summary>
+        [JsonIgnore]
+        public string searchText;
+        public string SearchText
+        {
+            get { return searchText; }
+            set
+            {
+                searchText = value;
+                RaisePropertyChanged(nameof(SearchText));
+            }
+        }
+        /// <summary>
+        /// Search Box Prompt binding
+        /// </summary>
+        [JsonIgnore]
+        public string searchBoxPrompt = "Search.."; 
+        public string SearchBoxPrompt
+        {
+            get { return searchBoxPrompt; }
+            set
+            {
+                searchBoxPrompt = value;
+                RaisePropertyChanged(nameof(SearchBoxPrompt));
+            }
+        }
 
         /// <summary>
         /// Is the recomputeAll button enabled in the UI. Users should not be able to force a 
         /// reset of the engine and re-execution of the graph if one is still ongoing. This causes...trouble.
         /// Source: TuneUp https://github.com/DynamoDS/TuneUp
         /// </summary>
+        [JsonIgnore]
         public bool IsRecomputeEnabled
         {
             get => isRecomputeEnabled;
@@ -113,6 +141,8 @@ namespace Dynamo.GraphNodeManager
                 }
             }
         }
+
+
         #endregion
 
         #region Constructor

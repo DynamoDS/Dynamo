@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Dynamo.GraphNodeManager"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:converters="clr-namespace:Dynamo.GraphNodeManager.Converters"
+             xmlns:controls="clr-namespace:Dynamo.GraphNodeManager.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -111,73 +112,8 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <!-- Accommodates the Search functionality -->
-        <Border Grid.Row="0"
-                Margin="3 15 20 5">
-
-            <!--Not working at the moment-->
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="BorderBrush" Value="{StaticResource MidGreyBrush}"/>
-                    <Setter Property="BorderThickness" Value="0 0 0 5"></Setter>
-                    <Setter Property="BorderBrush">
-                        <Setter.Value>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                <LinearGradientBrush.GradientStops>
-                                    <GradientStop Color="LightGray" Offset="0.0"/>
-                                    <GradientStop Color="DarkGray" Offset="0.25"/>
-                                    <GradientStop Color="Transparent" Offset="1.0"/>
-                                </LinearGradientBrush.GradientStops>
-                            </LinearGradientBrush>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Border.BorderBrush">
-                                <Setter.Value> 
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                        <LinearGradientBrush.GradientStops>
-                                            <GradientStop Color="Aquamarine" Offset="0.0"/>
-                                            <GradientStop Color="GreenYellow" Offset="0.25"/>
-                                            <GradientStop Color="DarkSlateBlue" Offset="1.0"/>
-                                        </LinearGradientBrush.GradientStops>
-                                    </LinearGradientBrush>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                        <Trigger Property="IsMouseCaptured" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource Blue300Brush}"></Setter>
-                            <Setter Property="BorderThickness" Value="0 0 0 5"></Setter>
-                        </Trigger>
-                        <Trigger Property="IsMouseCaptureWithin" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource Blue300Brush}"></Setter>
-                            <Setter Property="BorderThickness" Value="0 0 0 5"></Setter>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-            <StackPanel x:Name="SearchBarStackPanel"
-                        Margin="0 0 0 5"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal">
-                <Image x:Name="SearchImage"
-                       Width="16px"
-                       Height="16px"
-                       Margin="5 0"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Source="/GraphNodeManagerViewExtension;component/Images/Search.png"
-                       Stretch="UniformToFill" />
-                <Grid>
-                    <TextBlock Foreground="{StaticResource DisabledFontColorBrush}">Search</TextBlock>
-                    <TextBox x:Name="SearchTextBox" 
-                             HorizontalAlignment="Stretch"
-                             BorderThickness="0"
-                             Background="Transparent"></TextBox>
-                </Grid>
-            </StackPanel>
-        </Border>
+        <!-- Search Bar -->
+        <controls:SearchBoxControl Grid.Row="0" Margin="10 5 20 5"/>
         
         <!-- Contains all filter icons -->
         <DockPanel Grid.Row="1">
@@ -250,6 +186,8 @@
                Stretch="UniformToFill"
                Cursor="Hand"/>
         </DockPanel>
+
+        <!-- Node Data Grid -->
         <DataGrid x:Name="NodesInfoDataGrid"
                   Grid.Row="2"
                   ItemsSource="{Binding Path=NodesCollection.View}" 
