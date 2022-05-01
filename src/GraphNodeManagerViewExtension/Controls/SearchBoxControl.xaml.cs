@@ -21,9 +21,26 @@ namespace Dynamo.GraphNodeManager.Controls
     /// </summary>
     public partial class SearchBoxControl : UserControl
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public SearchBoxControl()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Handles Search Box Text Changed Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void SearchTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            textBox.Focus();
         }
     }
 

@@ -69,7 +69,6 @@ namespace Dynamo.GraphNodeManager
                 }
             }
         }
-        
 
         private ViewModelCommandExecutive viewModelExecutive;
         private readonly ICommandExecutive commandExecutive;
@@ -105,14 +104,19 @@ namespace Dynamo.GraphNodeManager
             set
             {
                 searchText = value;
+                NodesCollectionFilter_Changed();
                 RaisePropertyChanged(nameof(SearchText));
             }
         }
+
         /// <summary>
         /// Search Box Prompt binding
         /// </summary>
         [JsonIgnore]
-        public string searchBoxPrompt = "Search.."; 
+        public string searchBoxPrompt = "Search..";
+
+        public GraphNodeManagerView GraphNodeManagerView;
+
         public string SearchBoxPrompt
         {
             get { return searchBoxPrompt; }
@@ -141,8 +145,6 @@ namespace Dynamo.GraphNodeManager
                 }
             }
         }
-
-
         #endregion
 
         #region Constructor
@@ -191,6 +193,34 @@ namespace Dynamo.GraphNodeManager
             viewModelCommandExecutive.FindByIdCommand(nodeViewModel.NodeModel.GUID.ToString());
         }
 
+        /// <summary>
+        /// On changing a condition that affects the filter
+        /// </summary>
+        private void NodesCollectionFilter_Changed()
+        {
+            // Refresh the view to apply filters.
+            CollectionViewSource.GetDefaultView(GraphNodeManagerView.NodesInfoDataGrid.ItemsSource).Refresh();
+        }
+
+        /// <summary>
+        /// Applies filter based on the Search Bar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NodesCollectionViewSource_Filter(object sender, FilterEventArgs e)
+        {
+            if (string.IsNullOrEmpty(SearchText))
+                return;
+
+            if (e.Item is NodeViewModel nvm)
+            {
+                if (nvm.Name.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    e.Accepted = true;
+                else
+                    e.Accepted = false;
+            }
+        }
+
         private void InitializeFilters()
         {
             FilterItems.Add(new FilterViewModel(){Name = "Empty List"});
@@ -231,6 +261,7 @@ namespace Dynamo.GraphNodeManager
 
             NodesCollection = new CollectionViewSource();
             NodesCollection.Source = Nodes;
+            NodesCollection.Filter += NodesCollectionViewSource_Filter;
             // Sort the data by execution state
             //NodesCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(NodeViewModel.StateDescription)));
             //NodesCollection.SortDescriptions.Add(new SortDescription(nameof(NodeViewModel.State), ListSortDirection.Ascending));
@@ -239,7 +270,7 @@ namespace Dynamo.GraphNodeManager
             RaisePropertyChanged(nameof(NodesCollection));
             RaisePropertyChanged(nameof(Nodes));
         }
-
+        
         /// <summary>
         /// Enable editing when it is disabled temporarily.
         /// </summary>
@@ -368,6 +399,8 @@ namespace Dynamo.GraphNodeManager
             UnsubscribeWorkspaceEvents(CurrentWorkspace);
             viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
             viewLoadedParams.CurrentWorkspaceCleared -= OnCurrentWorkspaceCleared;
+            NodesCollection.Filter -= NodesCollectionViewSource_Filter;
+            GraphNodeManagerView = null;
         }
 
         #endregion

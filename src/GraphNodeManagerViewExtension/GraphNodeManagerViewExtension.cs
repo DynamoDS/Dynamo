@@ -91,6 +91,8 @@ namespace Dynamo.GraphNodeManager
                 return;
             }
 
+            this.ViewModel.GraphNodeManagerView = this.ManagerView;
+
             this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.ManagerView);
         }
         #endregion
@@ -108,8 +110,9 @@ namespace Dynamo.GraphNodeManager
         /// </summary>
         public override void Dispose()
         {
-            // TODO Should we dispose of the View as well?
             this.ViewModel?.Dispose();
+            this.ManagerView = null;
+            this.ViewModel = null;
         }
         /// <summary>
         /// Uncheck if I get closed

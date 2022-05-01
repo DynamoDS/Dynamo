@@ -105,8 +105,8 @@
                             CaretBrush="White"
                             Cursor="IBeam"
                             HorizontalAlignment="Stretch"
-                            Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                            ></TextBox>
+                            TextChanged="SearchTextBox_OnTextChanged"
+                            Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                     </Grid>
                 </DockPanel>
             </Border>
