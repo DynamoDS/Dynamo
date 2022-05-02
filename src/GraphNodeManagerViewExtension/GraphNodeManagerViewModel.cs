@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 //using System.Windows.Input;
 using Dynamo.Core;
@@ -14,14 +10,9 @@ using Dynamo.GraphNodeManager.ViewModels;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.Wpf.Extensions;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using Dynamo.Extensions;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
-using ModifierKeys = Dynamo.Utilities.ModifierKeys;
-
 
 namespace Dynamo.GraphNodeManager
 {
