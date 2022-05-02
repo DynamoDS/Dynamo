@@ -9,6 +9,8 @@ using Dynamo;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Interfaces;
+using Dynamo.LibraryViewExtensionMSWebBrowser;
+using Dynamo.LibraryViewExtensionMSWebBrowser.Handlers;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Moq;
@@ -229,6 +231,37 @@ namespace ViewExtensionLibraryTests
             var binaryPath = Path.Combine(packagePath, "bin", "Package.dll");
             Assert.AreEqual($"http://localhost/icons/{name}.Small?path={binaryPath}", url.Url);
         }
+        */
+        private static Mock<NodeSearchElement> MockNodeSearchElement(string fullname, string creationName)
+        {
+            var moq = new Mock<NodeSearchElement>() { CallBase = true };
+            moq.Setup(e => e.FullName).Returns(fullname);
+            moq.Setup(e => e.CreationName).Returns(creationName);
+            return moq;
+        }
+
+        [Test]
+        public void BuiltInPackagedNodeSearchElementLoadedType()
+        {
+            var category = "abc.xyz.somepackage";
+            var name = "My Node";
+            var creationName = "create abc xyz";
+            var expectedQualifiedName = "bltinpkg://abc.xyz.somepackage.My Node";
+            var path = @"C:\temp\packages\test.dll";
+            var moq = new Mock<TestNodeSearchElement>(category, name, ElementTypes.Packaged|ElementTypes.BuiltIn, path) { CallBase = true };
+            var element = moq.Object;
+            moq.Setup(e => e.CreationName).Returns(creationName);
+
+            var provider = new NodeItemDataProvider(new NodeSearchModel());
+            var item = provider.CreateLoadedTypeItem<LoadedTypeItem>(element);
+            Assert.AreEqual(expectedQualifiedName, item.fullyQualifiedName);
+            Assert.AreEqual(creationName, item.contextData);
+            Assert.AreEqual("abc, xyz, somepackage", item.keywords);
+
+            var url = new IconUrl(new Uri(item.iconUrl));
+            Assert.AreEqual("My%20Node.Small", url.Name);
+            Assert.AreEqual(path, url.Path);
+        }
 
         [Test]
         [Category("UnitTests"), Category("Failure")]
@@ -314,7 +347,7 @@ namespace ViewExtensionLibraryTests
             var url = new IconUrl(name, path, true);
             Assert.AreEqual(url.Url, item.iconUrl);
         }
-
+        /*
         [Test]
         [Category("UnitTests"), Category("Failure")]
         public void CustomNodePropertiesWindowValidateCategories()
@@ -613,13 +646,7 @@ namespace ViewExtensionLibraryTests
             Assert.IsTrue(result.IsCompleted);
         }
 
-        private static Mock<NodeSearchElement> MockNodeSearchElement(string fullname, string creationName)
-        {
-            var moq = new Mock<NodeSearchElement>() { CallBase = true };
-            moq.Setup(e => e.FullName).Returns(fullname);
-            moq.Setup(e => e.CreationName).Returns(creationName);
-            return moq;
-        }
+        
         */
     }
 }
