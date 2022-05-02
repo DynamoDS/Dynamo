@@ -30,8 +30,6 @@ namespace Dynamo.ViewModels
     public class TrustedPathViewModel : ViewModelBase
     {
         public ObservableCollection<string> TrustedLocations { get; private set; }
-        [Obsolete("SelectedIndex is no longer referenced, do not use.")]
-        public int SelectedIndex { get; set; }
        
         public event EventHandler<TrustedPathEventArgs> RequestShowFileDialog;
         public virtual void OnRequestShowFileDialog(object sender, TrustedPathEventArgs e)
@@ -52,6 +50,7 @@ namespace Dynamo.ViewModels
             InitializeTrustedLocations();
             InitializeCommands();
         }
+
         /// <summary>
         /// This constructor overload has been added for backwards comptability.
         /// </summary>
@@ -71,10 +70,6 @@ namespace Dynamo.ViewModels
 
         private int ConvertPathToIndex(object path)
         {
-            if(path is int pint)
-            {
-                return pint;
-            }
             return TrustedLocations.IndexOf(path as string);
         }
 
@@ -142,11 +137,12 @@ namespace Dynamo.ViewModels
         private void CommitChanges(object param)
         {
             var newpaths = CommitTrustedLocations();
-            //to be implemented
+            //TODO: to be implemented
         }
 
         internal void InitializeTrustedLocations()
         {
+            //TODO: to be implemented
             TrustedLocations = new ObservableCollection<string>();
         }
 
