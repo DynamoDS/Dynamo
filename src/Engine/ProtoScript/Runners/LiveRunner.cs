@@ -305,14 +305,10 @@ namespace ProtoScript.Runners
         /// The StackValue can be a primitive or an object
         /// Currently, only primitives are supported
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="bnode"></param>
         /// <returns></returns>
-        private StackValue GetStackValueForRuntime(AssociativeNode node)
+        private StackValue GetStackValueForRuntime(BinaryExpressionNode bnode)
         {
-            BinaryExpressionNode bnode = node as BinaryExpressionNode;
-            Validity.Assert(bnode != null);
-            Validity.Assert(bnode.Optr == Operator.assign);
-
             StackValue svSet = StackValue.BuildNull();
             if (CoreUtils.IsPrimitiveASTNode(bnode.RightNode))
             {
@@ -335,17 +331,27 @@ namespace ProtoScript.Runners
         private void SetValueForModifiedNodes(List<AssociativeNode> modifiedNodes)
         {
             // Currently only supports 1 input node
-            Validity.Assert(modifiedNodes.Count <= 1);
+            //Validity.Assert(modifiedNodes.Count <= 1);
 
-            if (modifiedNodes.Count > 0)
+            //if (modifiedNodes.Count > 0)
+            foreach(var node in modifiedNodes)
             {
-                AssociativeNode node = modifiedNodes[0];
+                //AssociativeNode node = modifiedNodes[0];
+                var bnode = node as BinaryExpressionNode;
+                if (bnode == null) continue;
 
-                StackValue sv = GetStackValueForRuntime(node);
-                int startPC = runtimeCore.SetValue(modifiedNodes, sv);
-                Validity.Assert(startPC != Constants.kInvalidIndex);
-                runtimeCore.SetStartPC(startPC);
+                StackValue sv = GetStackValueForRuntime(bnode);
+                runtimeCore.ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(bnode.OriginalAstID, sv);
+                //int startPC = runtimeCore.SetValue(modifiedNodes, sv);
+                //Validity.Assert(startPC != Constants.kInvalidIndex);
+                //runtimeCore.SetStartPC(startPC);
             }
+            GraphNode gnode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope(runtimeCore, modifiedNodes);
+            if (gnode == null) return;
+
+            var startPC = gnode.updateBlock.startpc;
+            Validity.Assert(startPC != Constants.kInvalidIndex);
+            runtimeCore.SetStartPC(startPC);
         }
 
         /// <summary>
@@ -685,9 +691,19 @@ namespace ProtoScript.Runners
             if (cachedTreeExists && oldSubTree.AstNodes != null)
             {
                 List<AssociativeNode> removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                // TODO: test this if-logic if necessary for optimized execution
                 if (st.IsInput && removedNodes.Any())
                 {
-                    (modifiedASTList[0] as BinaryExpressionNode).OriginalAstID = (removedNodes[0] as BinaryExpressionNode).OriginalAstID;
+                    if (removedNodes.Count == modifiedASTList.Count)
+                    {
+                        for (int i = 0; i < removedNodes.Count; i++)
+                        {
+                            if (modifiedASTList[i] is BinaryExpressionNode modifiedNode && removedNodes[i] is BinaryExpressionNode removedNode)
+                            {
+                                modifiedNode.OriginalAstID = removedNode.OriginalAstID;
+                            }
+                        }
+                    }
                 }
                 else if (!st.ForceExecution)
                 {
@@ -796,10 +812,15 @@ namespace ProtoScript.Runners
                 if (modifiedSubTree.DeltaComputation)
                 {
                     // Get modified statements
-                    var modifiedASTList = GetModifiedNodes(modifiedSubTree, redefinitionAllowed, out csData.ModifiedNodesForRuntimeSetValue);
+                    // TODO: Change to csData.ModifiedNodesForRuntimeSetValue.Add(node) for each subtree so that we collect all modified nodes
+                    // for all subtrees and don't overwrite this list with the changed node in the last subtree.
+                    List<AssociativeNode> modifiedInputAST;
+                    var modifiedASTList = GetModifiedNodes(modifiedSubTree, redefinitionAllowed, out modifiedInputAST);
+                    csData.ModifiedNodesForRuntimeSetValue.AddRange(modifiedInputAST);
+
                     modifiedSubTree.ModifiedAstNodes.Clear();
                     modifiedSubTree.ModifiedAstNodes.AddRange(modifiedASTList);
-                    modifiedSubTree.ModifiedAstNodes.AddRange(csData.ModifiedNodesForRuntimeSetValue);
+                    modifiedSubTree.ModifiedAstNodes.AddRange(modifiedInputAST);
                     deltaAstList.AddRange(modifiedASTList);
 
                     foreach (AssociativeNode node in modifiedASTList)
@@ -813,14 +834,13 @@ namespace ProtoScript.Runners
                         SetNestedLanguageBlockASTGuids(modifiedSubTree.GUID, new List<ProtoCore.AST.Node>() { bnode });
                     }
                     // Handle modified primitives
-                    foreach (AssociativeNode node in csData.ModifiedNodesForRuntimeSetValue)
+                    foreach (AssociativeNode node in modifiedInputAST)
                     {
                         var bnode = node as BinaryExpressionNode;
                         Validity.Assert(bnode != null);
-                        {
-                            bnode.guid = modifiedSubTrees[n].GUID;
-                            bnode.IsInputExpression = true;
-                        }
+                        
+                        bnode.guid = modifiedSubTrees[n].GUID;
+                        bnode.IsInputExpression = true;
                     }
                     UpdateCachedASTList(modifiedSubTree, modifiedSubTree.ModifiedAstNodes);
                 }
@@ -977,7 +997,7 @@ namespace ProtoScript.Runners
                     subtree.ForceExecution = false;
 
                     //Check if the subtree (ie a node in graph) is an input and has primitive Right hand Node type
-                    if (redefinitionAllowed && st.IsInput && st.AstNodes[0] is BinaryExpressionNode bne  && CoreUtils.IsPrimitiveASTNode(bne.RightNode))
+                    if (redefinitionAllowed && st.IsInput && node is BinaryExpressionNode bne  && CoreUtils.IsPrimitiveASTNode(bne.RightNode))
                     {
                         // An input node is not re-compiled and executed
                         // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes

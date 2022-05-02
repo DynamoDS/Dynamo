@@ -5408,13 +5408,6 @@ namespace ProtoAssociative
                             symbolnode.datatype = inferedType;
                         }
 
-                        //
-                        // Jun Comment: 
-                        //      Update system uses the following registers:  
-                        //      _ex stores prev value of ident 't'  - VM assigned
-                        //      _fx stores new value                - VM assigned
-                        //
-
                         if (bnode.LeftNode is TypedIdentifierNode)
                         {
                             EmitCast(castType.UID, castType.rank);
@@ -5423,13 +5416,13 @@ namespace ProtoAssociative
                         if (bnode.IsInputExpression)
                         {
                             StackValue regLX = StackValue.BuildRegister(Registers.LX);
-                            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regLX);
-                            EmitPop(regLX, globalClassIndex);
+                            EmitInstrConsole(kw.pop, kw.regLX);
+                            EmitPopUpdateInstruction(regLX, bnode.OriginalAstID);
 
                             graphNode.updateBlock.updateRegisterStartPC = pc;
 
-                            EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regLX);
-                            EmitPush(regLX);
+                            EmitInstrConsole(kw.push, kw.regLX);
+                            EmitPushUpdateInstruction(regLX, bnode.OriginalAstID);
                         }
 
                         if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.Expression)

@@ -108,7 +108,6 @@ namespace ProtoCore.Lang
 
             StackValue svBlockDecl = StackValue.BuildBlockIndex(blockDecl);
 
-            List<StackValue> registers = interpreter.runtime.GetRegisters();
             var newStackFrame = new StackFrame(thisPtr, 
                                                classScopeCaller, 
                                                1, 
@@ -120,7 +119,7 @@ namespace ProtoCore.Lang
                                                0,   // depth
                                                framePointer, 
                                                svBlockDecl.BlockIndex,
-                                               registers, 
+                                               interpreter.runtime.GetRegisters(), 
                                                0);
 
             bool isInDebugMode = runtimeCore.Options.IDEDebugMode &&

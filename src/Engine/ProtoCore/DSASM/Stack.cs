@@ -220,11 +220,11 @@ namespace ProtoCore.DSASM
             set { Frame[AbsoluteIndex.TX] = value; }
         }
 
-        public StackValue LX
-        {
-            get { return Frame[AbsoluteIndex.LX]; }
-            set { Frame[AbsoluteIndex.LX] = value; }
-        }
+        //public StackValue LX
+        //{
+        //    get { return Frame[AbsoluteIndex.LX]; }
+        //    set { Frame[AbsoluteIndex.LX] = value; }
+        //}
 
         public List<StackValue> GetRegisters()
         {

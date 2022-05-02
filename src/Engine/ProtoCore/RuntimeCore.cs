@@ -341,13 +341,13 @@ namespace ProtoCore
         /// <param name="astID"></param>
         /// <param name="sv"></param>
         /// <returns></returns>
-        public int SetValue(List<AssociativeNode> modifiedNodes, StackValue sv)
-        {
-            ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(sv);
-            GraphNode gnode = AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope(this, modifiedNodes);
-            Validity.Assert(gnode != null);
-            return gnode.updateBlock.startpc;
-        }
+        //public int SetValue(List<AssociativeNode> modifiedNodes, StackValue sv)
+        //{
+        //    ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(sv);
+        //    GraphNode gnode = AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope(this, modifiedNodes);
+        //    Validity.Assert(gnode != null);
+        //    return gnode.updateBlock.startpc;
+        //}
 
         /// <summary>
         /// This function determines what the starting pc should be for the next execution session
