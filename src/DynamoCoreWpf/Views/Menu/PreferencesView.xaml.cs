@@ -68,6 +68,7 @@ namespace Dynamo.Wpf.Views
             dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
             dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
             dynamoViewModel.PreferencesViewModel.PackagePathsViewModel?.InitializeRootLocations();
+            dynamoViewModel.PreferencesViewModel.TrustedPathsViewModel?.InitializeTrustedLocations();
 
             // Init package paths for install 
             dynamoViewModel.PreferencesViewModel.InitPackagePathsForInstall();
