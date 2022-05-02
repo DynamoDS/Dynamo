@@ -2366,7 +2366,11 @@ namespace ProtoCore.DSASM
                     {
                         case Registers.LX:
                             //data = LX;
-                            data = updateRegisters[opClass.IntegerValue];
+                            if (updateRegisters.TryGetValue(opClass.IntegerValue, out StackValue sv))
+                            {
+                                data = sv;
+                            }
+                            else data = opSymbol;
                             break;
                         case Registers.RX:
                             data = RX;
