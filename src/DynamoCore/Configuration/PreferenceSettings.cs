@@ -289,8 +289,9 @@ namespace Dynamo.Configuration
         public List<string> CustomPackageFolders { get; set; }
 
         /// <summary>
-        /// A list of trusted locations (folders). Dynamo will load dlls from these locations
-        /// without asking the user for consent.
+        /// A list of trusted locations (folders) as it is recorded in the preferences file.
+        /// Do not directly use this property when trying to check for trusted locations.
+        /// Instead use Dynamo.Core.TrustedLocatationsManager to check/query for trusted locations.
         /// </summary>
         public List<string> TrustedLocations { get; set; }
 

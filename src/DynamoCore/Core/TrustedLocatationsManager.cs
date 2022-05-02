@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dynamo.Core
 {
@@ -26,6 +24,7 @@ namespace Dynamo.Core
 
         /// <summary>
         /// Dynamo's trusted locations.
+        /// Dynamo will load dlls from these locations without asking the user for consent.
         /// </summary>
         public List<string> TrustedLocations
         {
