@@ -379,6 +379,8 @@ namespace Dynamo.Models
         internal static string DefaultPythonEngine { get; private set; }
 
         internal static DynamoUtilities.DynamoFeatureFlagsManager FeatureFlags { get; private set; }
+
+        internal TrustedLocatationsManager TrustedLocatationsManager => TrustedLocatationsManager.Instance;
         #endregion
 
         #region initialization and disposal
@@ -788,6 +790,8 @@ namespace Dynamo.Models
 
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
+
+            TrustedLocatationsManager.Initialize(PreferenceSettings);
 
             SearchModel = new NodeSearchModel(Logger);
             SearchModel.ItemProduced +=

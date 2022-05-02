@@ -289,6 +289,11 @@ namespace Dynamo.Configuration
         public List<string> CustomPackageFolders { get; set; }
 
         /// <summary>
+        /// Returns list of folders that the User trusts.
+        /// </summary>
+        public List<string> TrustedLocations { get; set; }
+
+        /// <summary>
         /// A list of packages used by the Package Manager to determine
         /// which packages are marked for deletion.
         /// </summary>
@@ -526,6 +531,8 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             CustomPackageFolders = new List<string>();
+            TrustedLocations = new List<string>();
+
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
@@ -607,6 +614,7 @@ namespace Dynamo.Configuration
             }
             catch (Exception) { }
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
+            settings.TrustedLocations = settings.TrustedLocations.Distinct().ToList();
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
             return settings;

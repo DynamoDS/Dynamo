@@ -103,6 +103,46 @@ namespace DynamoUtilities
         }
 
         /// <summary>
+        /// Returns whether current user has read access to the folder path.
+        /// </summary>
+        /// <param name="folderPath">Folder path</param>
+        /// <returns></returns>
+        internal static bool HasReadPermissionOnDir(string folderPath)
+        {
+            try
+            {
+                var readAllow = false;
+                var readDeny = false;
+                var accessControlList = Directory.GetAccessControl(folderPath);
+                if (accessControlList == null)
+                    return false;
+
+                var accessRules = accessControlList.GetAccessRules(true, true,
+                                            typeof(System.Security.Principal.SecurityIdentifier));
+                if (accessRules == null)
+                    return false;
+
+                foreach (FileSystemAccessRule rule in accessRules)
+                {
+                    // When current rule does not contain setting related to Read, skip.
+                    if ((FileSystemRights.Read & rule.FileSystemRights) != FileSystemRights.Read)
+                        continue;
+
+                    if (rule.AccessControlType == AccessControlType.Allow)
+                        readAllow = true;
+                    else if (rule.AccessControlType == AccessControlType.Deny)
+                        readDeny = true;
+                }
+
+                return readAllow && !readDeny;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// This is a utility method for checking if given path contains valid XML document.
         /// </summary>
         /// <param name="path">path to the target xml file</param>
