@@ -22,26 +22,23 @@ namespace Dynamo.Core
             new Lazy<TrustedLocatationsManager>
             (() => new TrustedLocatationsManager());
 
-        private List<string> trustedLocations = new List<string>();
+        private PreferenceSettings settings;
+
         /// <summary>
         /// Dynamo's trusted locations.
         /// </summary>
         public List<string> TrustedLocations
         {
-            get => trustedLocations;
+            get => settings.TrustedLocations;
             internal set
             {
-                trustedLocations = value;
+                settings.TrustedLocations = value;
             }
         }
 
         internal void Initialize(PreferenceSettings settings)
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            trustedLocations = settings.TrustedLocations;
+            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         #region Public members
@@ -87,7 +84,7 @@ namespace Dynamo.Core
             }
 
             // All subdirectories are considered trusted if the parent directory is trusted.
-            var trustedLoc = trustedLocations.FirstOrDefault(x => location.StartsWith(x));
+            var trustedLoc = TrustedLocations.FirstOrDefault(x => location.StartsWith(x));
             return !string.IsNullOrEmpty(trustedLoc);
         }
         #endregion
