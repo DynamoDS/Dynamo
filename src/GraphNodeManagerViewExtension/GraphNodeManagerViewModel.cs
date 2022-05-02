@@ -9,11 +9,12 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.GraphNodeManager.ViewModels;
 using Dynamo.Models;
-using Dynamo.UI.Commands;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Extensions;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.Commands;
 using Newtonsoft.Json;
+using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 
 namespace Dynamo.GraphNodeManager
 {
@@ -84,7 +85,8 @@ namespace Dynamo.GraphNodeManager
         /// </summary>
         public CollectionViewSource NodesCollection { get; set; }
 
-        public System.Windows.Input.ICommand NodeSelectCommand { get; set; }
+        public DelegateCommand NodeSelectCommand { get; set; }
+        public DelegateCommand<string> ExportCommand { get; set; }
 
         /// <summary>
         /// Search Box Text binding
@@ -169,7 +171,9 @@ namespace Dynamo.GraphNodeManager
             InitializeFilters();
 
             NodeSelectCommand = new DelegateCommand(NodeSelect);
+            ExportCommand = new DelegateCommand<string>(ExportGraph);
         }
+
 
         private void InitializeFilters()
         {
@@ -252,7 +256,26 @@ namespace Dynamo.GraphNodeManager
             // Focus on selected
             viewModelCommandExecutive.FindByIdCommand(nodeViewModel.NodeModel.GUID.ToString());
         }
+        /// <summary>
+        /// Export the current graph to CSV or JSON
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        internal void ExportGraph(object parameter)
+        {
+            if (parameter == null) return;
+            string type = parameter.ToString();
 
+            switch (type)
+            {
+                case "CSV":
+                    Utilities.Utilities.ExportToCSV(Nodes.ToArray());
+                    break;
+                case "JSON":
+                    Utilities.Utilities.ExportToJson(Nodes.ToArray());
+                    break;
+            }
+        }
         /// <summary>
         /// On changing a condition that affects the filter
         /// </summary>

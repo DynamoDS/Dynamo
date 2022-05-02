@@ -43,5 +43,27 @@ namespace Dynamo.GraphNodeManager
             if ((sender as DataGrid) == null) return;
             vm.NodeSelect((sender as DataGrid).SelectedItem);
         }
+
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var vm = this.DataContext as GraphNodeManagerViewModel;
+            if (vm == null) return;
+
+            MenuItem mi = sender as MenuItem;
+            if (mi.Name.Equals("ExportToCSV")) vm.ExportGraph("CSV");
+            if (mi.Name.Equals("ExportToJSON")) vm.ExportGraph("JSON");
+        }
+
+        private void ExportImage_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                Image image = sender as Image;
+                ContextMenu contextMenu = image.ContextMenu;
+                contextMenu.PlacementTarget = image;
+                contextMenu.IsOpen = true;
+                e.Handled = true;
+            }
+        }
     }
 }

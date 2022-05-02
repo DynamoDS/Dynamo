@@ -8,6 +8,7 @@
              xmlns:converters="clr-namespace:Dynamo.GraphNodeManager.Converters"
              xmlns:controls="clr-namespace:Dynamo.GraphNodeManager.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             x:Name="UserControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -114,37 +115,50 @@
 
         <!-- Search Bar -->
         <controls:SearchBoxControl Grid.Row="0" Margin="10 5 20 5"/>
-        
+
         <!-- Contains all filter icons -->
         <DockPanel Grid.Row="1">
             <Grid x:Name="FilterGrid" DockPanel.Dock="Top">
                 <ItemsControl x:Name="FilterItemControl"
                               Margin="5"
                               ItemsSource="{Binding FilterItems, UpdateSourceTrigger=PropertyChanged}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <controls:FilterItemControl/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <controls:FilterItemControl/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Grid>
 
-        </Grid>
-
-        <Image x:Name="ExportImage"
-               DockPanel.Dock="Right"
-               Width="16px"
-               Height="16px"
-               Margin="15 0 15 15"
-               HorizontalAlignment="Right"
-               VerticalAlignment="Center"
-               Source="/GraphNodeManagerViewExtension;component/Images/Export.png"
-               Stretch="UniformToFill"
-               Cursor="Hand"/>
+            <Image x:Name="ExportImage"
+                   DockPanel.Dock="Right"
+                   Width="16px"
+                   Height="16px"
+                   Margin="15 0 15 15"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Center"
+                   Source="/GraphNodeManagerViewExtension;component/Images/Export.png"
+                   Stretch="UniformToFill"
+                   MouseUp="ExportImage_OnMouseUp"
+                   Cursor="Hand">
+                <Image.ContextMenu>
+                    <ContextMenu Name="MainContextMenu"
+                                 Margin="0 -10"
+                                 Style="{StaticResource ContextMenuStyle}"
+                                 Background="#666666"
+                                 Width="170">
+                        <MenuItem x:Name="CSVItem" Header="Export as CSV" Padding="10" FontSize="12"
+                                  Command="{Binding ExportCommand}" CommandParameter="CSV"/>
+                        <MenuItem x:Name="JSONItem" Header="Export as JSON" Padding="10" FontSize="12"
+                                  Command="{Binding ExportCommand}" CommandParameter="JSON"/>
+                    </ContextMenu>
+                </Image.ContextMenu>
+            </Image>
         </DockPanel>
 
         <!-- Node Data Grid -->
@@ -190,7 +204,7 @@
 
             <DataGrid.Columns>
 
-                <!-- Node Name --> 
+                <!-- Node Name -->
                 <DataGridTextColumn
                     Header="Name"
                     Binding="{Binding Name}"
@@ -198,7 +212,6 @@
                     Foreground="#F5F5F5"
                     IsReadOnly="True"
                     Width="3*"></DataGridTextColumn>
-
 
                 <!-- TODO: Create a custom Image with a DependancyProperty to avoid repeating converter
                     https://stackoverflow.com/questions/11121828/how-to-set-a-converter-in-a-style-but-not-the-path -->
@@ -258,7 +271,7 @@
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/Error.png"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding IssuesHasError, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
-                                <Border Height="12" Width="12" CornerRadius="6" 
+                                <Border Height="14" Width="14" CornerRadius="7" 
                                         VerticalAlignment="Center" HorizontalAlignment="Center"
                                         Visibility="{Binding DismissedAlertsCount, Converter={StaticResource IntToVisibilityConverter}}"
                                         Background="{StaticResource PrimaryCharcoal100Brush}">
@@ -266,6 +279,7 @@
                                                Foreground="{StaticResource DarkGreyBrush}" 
                                                VerticalAlignment="Center"
                                                HorizontalAlignment="Center"
+                                               Margin="-1 0 0 0"
                                                FontSize="8"/>
                                 </Border>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/MissingNode.png"
