@@ -22,7 +22,9 @@ namespace Dynamo.PackageManager.UI
                 return "PackageManagerViewExtension";
             }
         }
-
+        /// <summary>
+        /// ViewExtensions that were requested to be loaded.
+        /// </summary>
         public IEnumerable<IViewExtension> RequestedExtensions
         {
             get
@@ -38,6 +40,10 @@ namespace Dynamo.PackageManager.UI
                 return "100f5ec3-fde7-4205-80a7-c968b3a5a27b";
             }
         }
+        /// <summary>
+        /// Collection of layout spec paths that were requested for merging into the library layout.
+        /// </summary>
+        internal IEnumerable<string> RequestedLayoutSpecPaths { get;private set;} = new List<string>();
 
         public event Action<IViewExtension> RequestAddExtension;
         public event Func<string, IViewExtension> RequestLoadExtension;
@@ -120,6 +126,7 @@ namespace Dynamo.PackageManager.UI
                 //they apply the spec.
                 foreach (var specPath in packageLayoutSpecs)
                 {
+                    (RequestedLayoutSpecPaths as IList<string>)?.Add(specPath.Model.FullName);
                     layouthandler?.Invoke(File.ReadAllText(specPath.Model.FullName));
                 }
             }
