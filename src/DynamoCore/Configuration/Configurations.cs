@@ -117,9 +117,9 @@ namespace Dynamo.Configuration
         public static readonly double ZoomIncrement = 0.05;
 
         /// <summary>
-        /// Zoom Threshold Level 
+        /// Global zoom threshold level for node overlay to apply (zoom-in/out behavior) 
         /// </summary>
-        public static readonly double ZoomLevel = 0.4;
+        public static readonly double ZoomThreshold = 0.4;
 
         #endregion
 
