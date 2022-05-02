@@ -33,7 +33,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             ToggleCommand = new DelegateCommand(Toggle);
         }
 
-        private void Toggle(object obj)
+        public void Toggle(object obj)
         {
             IsFilterOn = !IsFilterOn;
         }

@@ -71,7 +71,7 @@ namespace Dynamo.GraphNodeManager.Controls
                 }
                 else
                 {
-                    if (String.IsNullOrWhiteSpace((string)value))
+                    if (value != null && string.IsNullOrWhiteSpace(value.ToString()))
                     {
                         textVisible = true; // If the textbox has no text, we can show the Control..
                     }

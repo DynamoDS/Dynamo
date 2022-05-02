@@ -123,47 +123,7 @@
                               ItemsSource="{Binding FilterItems, UpdateSourceTrigger=PropertyChanged}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="3"
-                                CornerRadius="12"
-                                Padding="4 2"
-                                Height="24"
-                                VerticalAlignment="Center"
-                                BorderThickness="0">
-                            <Border.InputBindings>
-                                <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleCommand}"/>
-                            </Border.InputBindings>
-                            <Border.Style>
-                                <Style>
-                                    <Setter Property="Border.Background" 
-                                            Value="{Binding IsFilterOn, 
-                                                            Converter={StaticResource BooleanToBackgroundColorConverter},
-                                                            UpdateSourceTrigger=PropertyChanged}"/>
-                                    <Style.Triggers>
-                                            <Trigger Property="Border.IsMouseOver" Value="True">
-                                                <Setter Property="Border.Background" 
-                                                        Value="{Binding IsFilterOn, 
-                                                                        Converter={StaticResource BooleanToBackgroundHoverColorConverter},
-                                                                        UpdateSourceTrigger=PropertyChanged}"/>
-                                            </Trigger>
-                                        </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-                            <TextBlock Text="{Binding Name}" 
-                                   Padding="4 2 4 0"
-                                   TextAlignment="Center"
-                                   FontSize="10"
-                                   FontWeight="Light"
-                                   VerticalAlignment="Center">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property= "Foreground" 
-                                                Value="{Binding IsFilterOn, 
-                                        Converter={StaticResource BooleanToForegroundColorConverter},
-                                        UpdateSourceTrigger=PropertyChanged}"/>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Border>
+                        <controls:FilterItemControl/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>

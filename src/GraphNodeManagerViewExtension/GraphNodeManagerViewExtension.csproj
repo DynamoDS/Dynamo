@@ -84,6 +84,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\FilterItemControl.xaml.cs">
+      <DependentUpon>FilterItemControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SearchBoxControl.xaml.cs">
       <DependentUpon>SearchBoxControl.xaml</DependentUpon>
     </Compile>
@@ -112,6 +115,10 @@
     <Page Include="Controls\ControlColorsAndBrushes.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\FilterItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\SearchBoxControl.xaml">
       <SubType>Designer</SubType>
