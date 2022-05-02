@@ -55,15 +55,20 @@ namespace Dynamo.Controls
                 if (_vm.Children != null)
                 {
                     if (!_vm.Children[0].IsCollection)
-                    {                        
-                        double requiredWidth = (_vm.Children[0].NodeLabel.Length * 7.5) + 20;
+                    {
+                        double requiredWidth = (_vm.Children[0].NodeLabel.Length * 7.5);
+                        if (requiredWidth > (defaultWidthSize * 2))
+                        {
+                            requiredWidth = defaultWidthSize * 2;
+                        }
+                        requiredWidth += 20;
                         this.Width = requiredWidth;
                     }
                     else
                     {
                         this.Width = defaultWidthSize;
                     }
-                }                
+                }
             }
         }
 
