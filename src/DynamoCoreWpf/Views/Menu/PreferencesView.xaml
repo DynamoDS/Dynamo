@@ -924,7 +924,7 @@
                                     </Grid.RowDefinitions>
                                     <StackPanel Orientation="Vertical" Margin="0,6,0,0" Grid.Row="0">
                                         <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
-                                            <trustedpaths:TrustedPathView x:Name="TrustedPathView" DataContext="{Binding TrustedPathViewModel}"/>
+                                            <trustedpaths:TrustedPathView x:Name="TrustedPathView" DataContext="{Binding TrustedPathsViewModel}"/>
                                         </ScrollViewer>
                                     </StackPanel>
                                 </Grid>

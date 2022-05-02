@@ -72,8 +72,6 @@ namespace Dynamo.ViewModels
         private string selectedPackagePathForInstall;
         private bool isVisibleAddStyleBorder;
         private bool isEnabledAddStyleButton;
-
-        private readonly List<string> trustedPathsList = new List<string>();
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
