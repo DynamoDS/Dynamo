@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Data;
 //using System.Windows.Input;
 using Dynamo.Core;
@@ -33,6 +34,7 @@ namespace Dynamo.GraphNodeManager
         private readonly string uniqueId;
 
         private readonly Dictionary<Guid, NodeViewModel> nodeDictionary = new Dictionary<Guid, NodeViewModel>();
+        private Dictionary<string, FilterViewModel> filterDictionary = new Dictionary<string, FilterViewModel>();
 
         private bool isEditingEnabled = true;
         private bool isRecomputeEnabled = true;
@@ -95,7 +97,9 @@ namespace Dynamo.GraphNodeManager
             set
             {
                 searchText = value;
-                NodesCollectionFilter_Changed();
+
+                // Every time we type in the Search Box, we will be updating the Filter
+                NodesCollectionFilter_Changed();    
                 RaisePropertyChanged(nameof(SearchText));
             }
         }
@@ -167,63 +171,20 @@ namespace Dynamo.GraphNodeManager
             NodeSelectCommand = new DelegateCommand(NodeSelect);
         }
 
-        /// <summary>
-        /// Zoom around the currently selected Node
-        /// </summary>
-        /// <param name="obj"></param>
-        internal void NodeSelect(object obj)
-        {
-            var nodeViewModel = obj as NodeViewModel;
-            if (nodeViewModel == null) return;
-
-            // Select
-            var command = new DynamoModel.SelectModelCommand(nodeViewModel.NodeModel.GUID, ModifierKeys.None);  // Cannot resolve constructor error?
-            commandExecutive.ExecuteCommand(command, uniqueId, "GraphNodeManager");
-
-            // Focus on selected
-            viewModelCommandExecutive.FindByIdCommand(nodeViewModel.NodeModel.GUID.ToString());
-        }
-
-        /// <summary>
-        /// On changing a condition that affects the filter
-        /// </summary>
-        private void NodesCollectionFilter_Changed()
-        {
-            // Refresh the view to apply filters.
-            CollectionViewSource.GetDefaultView(GraphNodeManagerView.NodesInfoDataGrid.ItemsSource).Refresh();
-        }
-
-        /// <summary>
-        /// Applies filter based on the Search Bar
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NodesCollectionViewSource_Filter(object sender, FilterEventArgs e)
-        {
-            if (string.IsNullOrEmpty(SearchText))
-                return;
-
-            if (e.Item is NodeViewModel nvm)
-            {
-                if (nvm.Name.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    e.Accepted = true;
-                else
-                    e.Accepted = false;
-            }
-        }
-
         private void InitializeFilters()
         {
-            FilterItems.Add(new FilterViewModel(){Name = "Empty List"});
-            FilterItems.Add(new FilterViewModel(){Name = "Error"});
-            FilterItems.Add(new FilterViewModel(){Name = "Frozen"});
-            FilterItems.Add(new FilterViewModel(){Name = "Function"});
-            FilterItems.Add(new FilterViewModel(){Name = "Information"});
-            FilterItems.Add(new FilterViewModel(){Name = "Is Input"});
-            FilterItems.Add(new FilterViewModel(){Name = "Is Output"});
-            FilterItems.Add(new FilterViewModel(){Name = "Null"});
-            FilterItems.Add(new FilterViewModel(){Name = "Warning"});
-            FilterItems.Add(new FilterViewModel(){Name = "Preview off"});
+            FilterItems.Add(new FilterViewModel(this){Name = "Empty List"});
+            FilterItems.Add(new FilterViewModel(this){Name = "Error"});
+            FilterItems.Add(new FilterViewModel(this){Name = "Frozen"});
+            FilterItems.Add(new FilterViewModel(this){Name = "Function"});
+            FilterItems.Add(new FilterViewModel(this){Name = "Information"});
+            FilterItems.Add(new FilterViewModel(this){Name = "Is Input"});
+            FilterItems.Add(new FilterViewModel(this){Name = "Is Output"});
+            FilterItems.Add(new FilterViewModel(this){Name = "Null"});
+            FilterItems.Add(new FilterViewModel(this){Name = "Warning"});
+            FilterItems.Add(new FilterViewModel(this){Name = "Preview off"});
+
+            filterDictionary = new Dictionary<string, FilterViewModel>(FilterItems.ToDictionary(fi => fi.Name));
         }
 
         #endregion
@@ -275,7 +236,106 @@ namespace Dynamo.GraphNodeManager
             }
             RaisePropertyChanged(nameof(NodesCollection));
         }
+        /// <summary>
+        /// Zoom around the currently selected Node
+        /// </summary>
+        /// <param name="obj"></param>
+        internal void NodeSelect(object obj)
+        {
+            var nodeViewModel = obj as NodeViewModel;
+            if (nodeViewModel == null) return;
 
+            // Select
+            var command = new DynamoModel.SelectModelCommand(nodeViewModel.NodeModel.GUID, ModifierKeys.None);  // Cannot resolve constructor error?
+            commandExecutive.ExecuteCommand(command, uniqueId, "GraphNodeManager");
+
+            // Focus on selected
+            viewModelCommandExecutive.FindByIdCommand(nodeViewModel.NodeModel.GUID.ToString());
+        }
+
+        /// <summary>
+        /// On changing a condition that affects the filter
+        /// </summary>
+        internal void NodesCollectionFilter_Changed()
+        {
+            // Refresh the view to apply filters.
+            CollectionViewSource.GetDefaultView(GraphNodeManagerView.NodesInfoDataGrid.ItemsSource).Refresh();
+        }
+
+        /// <summary>
+        /// Applies filter based on the Search Bar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NodesCollectionViewSource_Filter(object sender, FilterEventArgs e)
+        {
+            if (!(e.Item is NodeViewModel nvm)) return;
+            if (!filterDictionary.Any()) return;
+
+            // Boolean Toggle Filters
+            if (!nvm.IsEmptyList && filterDictionary["Empty List"].IsFilterOn)
+            {
+                e.Accepted = false;
+                return;
+            }
+            if (!nvm.IssuesHasError && filterDictionary["Error"].IsFilterOn)
+            {
+                e.Accepted = false;
+                return;
+            }
+            if (!nvm.StatusIsFrozen && filterDictionary["Frozen"].IsFilterOn)
+            {
+                e.Accepted = false;
+                return;
+            }
+            if (!nvm.StateIsFunction && filterDictionary["Function"].IsFilterOn)
+            {
+                e.Accepted = false;
+                return;
+            }
+            if (!nvm.IsInfo && filterDictionary["Information"].IsFilterOn)
+            {
+                e.Accepted = false;
+                return;
+            }
+            if (!nvm.StateIsInput && filterDictionary["Is Input"].IsFilterOn)
+            {
+                e.Accepted = false;
+                return;
+            }
+            if (!nvm.StateIsOutput && filterDictionary["Is Output"].IsFilterOn)
+            {
+                e.Accepted = false;
+                return;
+            }
+            if (!nvm.IsNull && filterDictionary["Null"].IsFilterOn)
+            {
+                e.Accepted = false;
+                return;
+            }
+            if (!nvm.IssuesHasWarning && filterDictionary["Warning"].IsFilterOn)
+            {
+                e.Accepted = false;
+                return;
+            }
+            if (!nvm.StatusIsHidden && filterDictionary["Preview off"].IsFilterOn)
+            {
+                e.Accepted = false;
+                return;
+            }
+
+            // Textual SearchBox Filter
+            if (string.IsNullOrEmpty(SearchText)) return;
+            if (nvm.Name.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                e.Accepted = true;
+            else
+            {
+                e.Accepted = false;
+                return;
+            }
+
+            e.Accepted = true;
+        }
         #endregion
 
         #region Workspace EventHandlers

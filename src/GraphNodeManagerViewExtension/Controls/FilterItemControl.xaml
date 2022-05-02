@@ -19,7 +19,7 @@
                                            ToggleDefaultBrush="{StaticResource MidBlueBrush}" 
                                            ToggleHoverBrush="{StaticResource MidDarkBlueBrush}" 
                                            TogglePressedBrush="{StaticResource MidLightBlueBrush}" />
-            <ControlTemplate x:Key="toggleTemplate" TargetType="{x:Type Button}">
+            <ControlTemplate x:Key="ToggleTemplate" TargetType="{x:Type Button}">
                 <Border x:Name="border" 
                         Padding="4 2" 
                         Margin="3"
@@ -60,7 +60,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Button Template="{StaticResource toggleTemplate}" Height="32" Click="ButtonBase_OnClick">
+        <Button Template="{StaticResource ToggleTemplate}" Height="32" Click="ButtonBase_OnClick">
             <TextBlock Text="{Binding Name}" 
                        Padding="4 2 4 0"
                        TextAlignment="Center"

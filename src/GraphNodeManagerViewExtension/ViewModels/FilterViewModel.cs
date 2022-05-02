@@ -10,11 +10,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
 {
     public class FilterViewModel : NotificationObject
     {
-        private bool isFilterOn = false;
-
-        public DelegateCommand ToggleCommand { get; set; }
+        private readonly GraphNodeManagerViewModel graphNodeManagerViewModel;
+        
         public string Name { get; internal set; }
 
+        private bool isFilterOn = false;
         public bool IsFilterOn
         {
             get
@@ -24,18 +24,20 @@ namespace Dynamo.GraphNodeManager.ViewModels
             internal set
             {
                 isFilterOn = value;
+
                 RaisePropertyChanged(nameof(IsFilterOn));
             }
         }
 
-        public FilterViewModel()
+        public FilterViewModel(GraphNodeManagerViewModel vm)
         {
-            ToggleCommand = new DelegateCommand(Toggle);
+            this.graphNodeManagerViewModel = vm;
         }
 
         public void Toggle(object obj)
         {
             IsFilterOn = !IsFilterOn;
+            graphNodeManagerViewModel.NodesCollectionFilter_Changed();
         }
     }
 }
