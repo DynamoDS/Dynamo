@@ -29,9 +29,9 @@ namespace Dynamo.Core
         private List<string> trustedLocations;
 
         /// <summary>
-        /// An enumerable that represents Dynamo's trusted locations
+        /// An read only list of paths that represents Dynamo's trusted locations
         /// </summary>
-        public IEnumerable<string> TrustedLocations => trustedLocations;
+        public IReadOnlyList<string> TrustedLocations => trustedLocations;
 
         internal void Initialize(PreferenceSettings settings)
         {

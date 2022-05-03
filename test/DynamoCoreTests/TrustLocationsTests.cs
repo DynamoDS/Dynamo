@@ -2,6 +2,7 @@
 using Dynamo.Core;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -18,8 +19,10 @@ namespace Dynamo.Tests
             base.Setup();
 
             settings = new PreferenceSettings();
-            settings.TrustedLocations.Add(Path.Combine(TestDirectory, "ShouldNotExist"));
-            settings.TrustedLocations.Add(ExecutingDirectory);
+            settings.TrustedLocations = new List<string>() {
+                Path.Combine(TestDirectory, "ShouldNotExist"),
+                ExecutingDirectory
+            };
 
             TrustedLocatationsManager.Instance.Initialize(settings);
         }
@@ -28,39 +31,39 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestManagerAPIs()
         {
-            Assert.AreEqual(TrustedLocatationsManager.Instance.TrustedLocations.Count, settings.TrustedLocations.Count);
+            Assert.AreEqual(TrustedLocatationsManager.Instance.TrustedLocations.Count, 2);
 
             Assert.Throws<ArgumentException>(() =>
             {
-                TrustedLocatationsManager.Instance.IsTrustedFolder(".//Test");
+                TrustedLocatationsManager.Instance.IsTrustedLocation(".//Test");
             });
 
             Assert.Throws<ArgumentException>(() =>
             {
-                TrustedLocatationsManager.Instance.IsTrustedFolder(null);
+                TrustedLocatationsManager.Instance.IsTrustedLocation(null);
             });
 
             Assert.Throws<ArgumentException>(() =>
             {
-                TrustedLocatationsManager.Instance.IsTrustedFolder("");
+                TrustedLocatationsManager.Instance.IsTrustedLocation("");
             });
 
             Assert.Throws<NotSupportedException>(() =>
             {
-                TrustedLocatationsManager.Instance.IsTrustedFolder(Path.Combine(TestDirectory,":"));
+                TrustedLocatationsManager.Instance.IsTrustedLocation(Path.Combine(TestDirectory,":"));
             });
 
             var doesNotExist = TrustedLocatationsManager.Instance.TrustedLocations[0];
             Assert.Throws<ArgumentException>(() =>
             {
-                TrustedLocatationsManager.Instance.IsTrustedFolder(doesNotExist);
+                TrustedLocatationsManager.Instance.IsTrustedLocation(doesNotExist);
             });
 
             var notTrusted = Directory.GetParent(doesNotExist).FullName;
-            Assert.IsFalse(TrustedLocatationsManager.Instance.IsTrustedFolder(notTrusted));
+            Assert.IsFalse(TrustedLocatationsManager.Instance.IsTrustedLocation(notTrusted));
 
             var trusted = TrustedLocatationsManager.Instance.TrustedLocations[1];
-            Assert.IsTrue(TrustedLocatationsManager.Instance.IsTrustedFolder(trusted));
+            Assert.IsTrue(TrustedLocatationsManager.Instance.IsTrustedLocation(trusted));
 
         }
     }
