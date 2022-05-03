@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using System.Windows.Shapes;
 using System.IO;
 using static Dynamo.Models.DynamoModel;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -40,6 +41,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private static bool searchPackagesLoaded;
 
         internal static PackageManagerSearchViewModel packagesViewModel;
+
+        private static NodeModel lastCreatedNode;
 
         //This method will return a bool that describes if the Terms Of Service was accepted or not.
         internal static bool AcceptedTermsOfUse(DynamoViewModel dynViewModel)
@@ -622,7 +625,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 Grid.SetRow(portRectangle, 0);
             }
             else
-            {
+            { 
                 //When moving to the next/previous or exiting the guide, then the Rectangle previously added will be removed
                 var buttonRectangle = mainGrid.Children.OfType<Rectangle>().Where(rect => rect.Name.Equals("HighlightRectangle")).FirstOrDefault();
                 if (buttonRectangle != null)
@@ -635,24 +638,31 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             var nodeCreationName = (string)uiAutomationData.JSParameters.FirstOrDefault();
 
-            GuidedTourNodeCreatedEventHandler func = (nodeName) =>
+            Action<NodeModel> func = (nodeModel) =>
             {
-                GuideFlowEvents_GuidedTourNodeCreated(nodeName, nodeCreationName);
+                GuideFlowEvents_GuidedTourNodeCreated(nodeModel, nodeCreationName);
             };
 
-            if (enableFunction)
+            if (currentFlow == GuideFlow.BACKWARD && lastCreatedNode != null)
             {
-                GuideFlowEvents.GuidedTourNodeCreated += func;
+                var stepMainWindow = CurrentExecutingStep.MainWindow as Window;
+                stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.RemoveAndDisposeNode(lastCreatedNode);
+            }
+
+            if (enableFunction)
+            {              
+                stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.NodeAdded += func;
             }
             else
             {
-                GuideFlowEvents.GuidedTourNodeCreated -= func;
+                stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.NodeAdded -= func;
             }
         }
 
-        private static void GuideFlowEvents_GuidedTourNodeCreated(string createdNodeName, string uiAutomationElementName)
+        private static void GuideFlowEvents_GuidedTourNodeCreated(NodeModel createdNode, string uiAutomationElementName)
         {
-            if (createdNodeName.Equals(uiAutomationElementName))
+            lastCreatedNode = createdNode;
+            if (createdNode.Name.Equals(uiAutomationElementName))
             {
                 CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
             }
