@@ -116,10 +116,10 @@ namespace Dynamo.Core
             }
 
             string location = Path.GetFullPath(path);
-            if (string.IsNullOrEmpty(Path.GetFileName(location)))
+            if (!File.GetAttributes(location).HasFlag(FileAttributes.Directory))
             {
-                // File path
-                location = Path.GetPathRoot(location);
+                // File path 
+                location = Directory.GetParent(location).FullName;
             }
 
             if (!Directory.Exists(location))

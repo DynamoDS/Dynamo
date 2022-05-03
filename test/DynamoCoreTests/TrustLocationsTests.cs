@@ -54,7 +54,7 @@ namespace Dynamo.Tests
             });
 
             var doesNotExist = TrustedLocatationsManager.Instance.TrustedLocations[0];
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<FileNotFoundException>(() =>
             {
                 TrustedLocatationsManager.Instance.IsTrustedLocation(doesNotExist);
             });
@@ -81,7 +81,8 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(1, settingsCount);
 
-
+            Assert.IsTrue(TrustedLocatationsManager.Instance.AddTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd", "pkg.json")));
+            Assert.IsTrue(TrustedLocatationsManager.Instance.IsTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd")));
         }
     }
 }
