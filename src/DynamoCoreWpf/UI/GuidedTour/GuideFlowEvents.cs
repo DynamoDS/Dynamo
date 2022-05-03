@@ -5,6 +5,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
     public delegate void GuidedTourNextEventHandler();
     public delegate void GuidedTourPrevEventHandler();
     public delegate void UpdatePopupLocationEventHandler();
+    public delegate void GuidedTourNodeCreatedEventHandler(string name);
     public delegate void UpdateLibraryInteractionsEventHandler();
     public delegate void GuidedTourStartEventHandler(GuidedTourStateEventArgs args);
     public delegate void GuidedTourFinishEventHandler(GuidedTourStateEventArgs args);
@@ -29,6 +30,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             if (GuidedTourPrevStep != null)
                 GuidedTourPrevStep();
+        }
+
+        //Event that will be raised when the Popup Back button is pressed, the value passed as parameter is the current Step Sequence
+        public static event GuidedTourNodeCreatedEventHandler GuidedTourNodeCreated;
+        public static void OnGuidedTourNodeCreated(string name)
+        {
+            if (GuidedTourNodeCreated != null)
+                GuidedTourNodeCreated(name);
         }
 
         //Event that will be raised when the Guide is started (the first popup will be shown)

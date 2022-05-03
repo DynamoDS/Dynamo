@@ -97,6 +97,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 {
                     var data = simpleRPCPayload["data"] as string;
                     controller.CreateNode(data);
+                    controller.NodeCreated(data);
                 }
                 else if (funcName == "showNodeTooltip")
                 {
@@ -588,6 +589,11 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             GuideFlowEvents.OnUpdatePopupLocation();
         }
 
+        internal void NodeCreated(string data)
+        {
+            GuideFlowEvents.OnGuidedTourNodeCreated(data);
+        }
+
         /// <summary>
         /// Convenience method for logging to Dynamo Console.
         /// </summary>
@@ -623,5 +629,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 browser = null;
             }
         }
+
+       
     }
 }

@@ -90,6 +90,9 @@ namespace Dynamo.LibraryUI
         // TODO remove this when we can control the library state from Dynamo more precisely.
         private bool disableObserver = false;
 
+        public delegate void NodeCreateEventHandler(string name);
+        public event NodeCreateEventHandler NodeCreated;
+
         /// <summary>
         /// Creates LibraryViewController
         /// </summary>
@@ -140,10 +143,14 @@ namespace Dynamo.LibraryUI
                 {
                     this.disableObserver = true;
                 }
+
                 //Create the node of given item name
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), ViewExtension.ExtensionName);
                 LogEventsToInstrumentation(CreateNodeInstrumentationString, nodeName);
+
+                if (NodeCreated != null)
+                    NodeCreated(nodeName);
 
                 this.disableObserver = false;
             }));

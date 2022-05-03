@@ -14,6 +14,7 @@ using static Dynamo.Wpf.UI.GuidedTour.Guide;
 using Dynamo.Wpf.Views.GuidedTour;
 using Dynamo.Utilities;
 using Newtonsoft.Json.Linq;
+using static Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -585,6 +586,23 @@ namespace Dynamo.Wpf.UI.GuidedTour
             object[] parametersInvokeScript = new object[] { jsFunctionName, new object[] { } };
             //Execute the JS function with the provided parameters
             ResourceUtilities.ExecuteJSFunction(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo, parametersInvokeScript);
+        }
+
+        internal static void CreateNode(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            if (enableFunction)
+            {
+                GuideFlowEvents.GuidedTourNodeCreated += GuideFlowEvents_GuidedTourNodeCreated;
+            }
+            else
+            {
+                GuideFlowEvents.GuidedTourNodeCreated -= GuideFlowEvents_GuidedTourNodeCreated;
+            }
+        }
+
+        private static void GuideFlowEvents_GuidedTourNodeCreated(string name)
+        {
+            
         }
     }
 }
