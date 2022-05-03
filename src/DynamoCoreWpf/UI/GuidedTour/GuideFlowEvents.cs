@@ -32,7 +32,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 GuidedTourPrevStep();
         }
 
-        //Event that will be raised when the Popup Back button is pressed, the value passed as parameter is the current Step Sequence
+        //Event that will be raised when a new node is created from the library view
         public static event GuidedTourNodeCreatedEventHandler GuidedTourNodeCreated;
         public static void OnGuidedTourNodeCreated(string name)
         {

@@ -1028,7 +1028,7 @@
 						"ControlType": "function",
 						"Name": "CreateNode",
 						"JSFunctionName": "",
-						"JSParameters": [ "ByCenterPointRadius" ],
+						"JSParameters": [ "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double" ],
 						"Action": "execute"
 					}
 				]

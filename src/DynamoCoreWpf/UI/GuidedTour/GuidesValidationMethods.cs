@@ -590,19 +590,29 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         internal static void CreateNode(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
+            var nodeCreationName = (string)uiAutomationData.JSParameters.FirstOrDefault();
+
+            GuidedTourNodeCreatedEventHandler func = (nodeName) =>
+            {
+                GuideFlowEvents_GuidedTourNodeCreated(nodeName, nodeCreationName);
+            };
+
             if (enableFunction)
             {
-                GuideFlowEvents.GuidedTourNodeCreated += GuideFlowEvents_GuidedTourNodeCreated;
+                GuideFlowEvents.GuidedTourNodeCreated += func;
             }
             else
             {
-                GuideFlowEvents.GuidedTourNodeCreated -= GuideFlowEvents_GuidedTourNodeCreated;
+                GuideFlowEvents.GuidedTourNodeCreated -= func;
             }
         }
 
-        private static void GuideFlowEvents_GuidedTourNodeCreated(string name)
+        private static void GuideFlowEvents_GuidedTourNodeCreated(string createdNodeName, string uiAutomationElementName)
         {
-            
+            if (createdNodeName.Equals(uiAutomationElementName))
+            {
+                CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
+            }
         }
     }
 }
