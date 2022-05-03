@@ -60,14 +60,14 @@ namespace Dynamo.Core
         /// <exception cref="System.Security.SecurityException">Dynamo does not have the required permissions.</exception>
         public bool IsTrustedFolder(string path)
         {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException($"The input argument is null or empty.");
+            }
+
             if (!Path.IsPathRooted(path))
             {
                 throw new ArgumentException($"The input argument {path} must be an absolute path");
-            }
-
-            if (!PathHelper.HasReadPermissionOnDir(path))
-            {
-                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {path}");
             }
 
             string location = Path.GetFullPath(path);
@@ -80,6 +80,11 @@ namespace Dynamo.Core
             if (!Directory.Exists(location))
             {
                 throw new ArgumentException($"Folder path {location} does not exist");
+            }
+
+            if (!PathHelper.HasReadPermissionOnDir(location))
+            {
+                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {path}");
             }
 
             // All subdirectories are considered trusted if the parent directory is trusted.
