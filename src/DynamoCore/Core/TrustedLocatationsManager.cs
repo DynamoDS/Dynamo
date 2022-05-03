@@ -86,6 +86,20 @@ namespace Dynamo.Core
             return false;
         }
 
+        /// <summary>
+        /// Overrides the entire trusted locations list with the input argument
+        /// </summary>
+        /// <param name="paths"></param>
+        internal void SetTrustedLocations(IEnumerable<string> paths)
+        {
+            trustedLocations.Clear();
+            foreach(var item in paths)
+            {
+                AddTrustedLocation(item);
+            }
+            settings.TrustedLocations = trustedLocations;
+        }
+
         // 
         /// <summary>
         /// Checks is the path is considered valid for Dynamo's trusted locations.

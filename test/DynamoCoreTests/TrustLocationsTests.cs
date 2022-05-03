@@ -83,6 +83,11 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(TrustedLocatationsManager.Instance.AddTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd", "pkg.json")));
             Assert.IsTrue(TrustedLocatationsManager.Instance.IsTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd")));
+
+            TrustedLocatationsManager.Instance.SetTrustedLocations(new List<string>() { TestDirectory });
+
+            Assert.IsTrue(TrustedLocatationsManager.Instance.IsTrustedLocation(TestDirectory));
+            Assert.AreEqual(1, TrustedLocatationsManager.Instance.TrustedLocations.Count);
         }
     }
 }
