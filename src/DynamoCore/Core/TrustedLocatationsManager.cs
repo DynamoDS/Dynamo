@@ -20,7 +20,7 @@ namespace Dynamo.Core
             new Lazy<TrustedLocatationsManager>
             (() => new TrustedLocatationsManager());
 
-        private readonly PreferenceSettings settings;
+        private PreferenceSettings settings;
 
         /// <summary>
         /// Dynamo's trusted locations.
@@ -35,7 +35,7 @@ namespace Dynamo.Core
 
         internal void Initialize(PreferenceSettings settings)
         {
-            settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             trustedLocations = settings.TrustedLocations?.ToList() ?? new List<string>();
         }
 
@@ -53,13 +53,13 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="path">The path to be added as a trusted location</param>
         /// <returns></returns>
-        public bool AddTrustedLocation(string path)
+        internal bool AddTrustedLocation(string path)
         {
             try
             {
                 string location = ValidateTrustedLocation(path);
                 var existing = TrustedLocations.FirstOrDefault(x => x.Equals(location));
-                if (string.IsNullOrEmpty(existing))
+                if (settings != null && string.IsNullOrEmpty(existing))
                 {
                     trustedLocations.Add(location);
                     settings.TrustedLocations = trustedLocations;
@@ -75,10 +75,10 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="path">The path to be removed from the trusted locations</param>
         /// <returns>The true if the path was removed and false otherwise</returns>
-        public bool RemoveTrustedLocation(string path)
+        internal bool RemoveTrustedLocation(string path)
         {
             string location = ValidateTrustedLocation(path);
-            if (trustedLocations.RemoveAll(x => x.Equals(location)) >= 0)
+            if (settings!= null && trustedLocations.RemoveAll(x => x.Equals(location)) >= 0)
             {
                 settings.TrustedLocations = trustedLocations;
                 return true;

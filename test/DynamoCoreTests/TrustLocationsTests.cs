@@ -65,6 +65,23 @@ namespace Dynamo.Tests
             var trusted = TrustedLocatationsManager.Instance.TrustedLocations[1];
             Assert.IsTrue(TrustedLocatationsManager.Instance.IsTrustedLocation(trusted));
 
+            Assert.IsFalse(TrustedLocatationsManager.Instance.AddTrustedLocation(ExecutingDirectory));
+            Assert.IsTrue(TrustedLocatationsManager.Instance.AddTrustedLocation(Path.Combine(TestDirectory, "pkgs")));
+
+            Assert.AreEqual(3, TrustedLocatationsManager.Instance.TrustedLocations.Count);
+            Assert.IsTrue(TrustedLocatationsManager.Instance.RemoveTrustedLocation(ExecutingDirectory));
+            Assert.AreEqual(2, TrustedLocatationsManager.Instance.TrustedLocations.Count);
+
+            Assert.IsTrue(TrustedLocatationsManager.Instance.RemoveTrustedLocation(Path.Combine(TestDirectory, "pkgs")));
+            Assert.AreEqual(1, TrustedLocatationsManager.Instance.TrustedLocations.Count);
+
+            int settingsCount = 0;
+            foreach(var item in settings.TrustedLocations)
+                settingsCount++;
+
+            Assert.AreEqual(1, settingsCount);
+
+
         }
     }
 }
