@@ -916,8 +916,7 @@
 					"Title": "OnboardingWorkspaceTitle",
 					"FormattedText": "OnboardingWorkspaceText"
 				},
-				"HostPopupInfo":
-				{
+				"HostPopupInfo": {
 					"VerticalPopupOffset": 300,
 					"HorizontalPopupOffset": 100,
 					"PopupPlacement": "bottom",
@@ -929,8 +928,111 @@
 						"WidthBoxDelta": 0,
 						"HeightBoxDelta": 0
 					}
-				}
-			}		
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"WindowName": "LibraryView",
+						"Name": "SubscribeNextButtonClickEvent",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Geometry", "Curves", "Circle" ],
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "NextButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "ExecuteAutomaticPackage_Click"
+							}
+						]
+					}
+				]
+			},
+			{
+				"Sequence": 2,
+				"Name": "library",
+				"Type": "tooltip",
+				"ShowLibrary": true,
+				"TooltipPointerDirection": "none",
+				"Width": 480,
+				"Height": 248,
+				"StepContent": {
+					"Title": "OnboardingPlaceNodeTitle",
+					"FormattedText": "OnboardingPlaceNodeText"
+				},
+				"HostPopupInfo": {
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 100,
+					"PopupPlacement": "right",
+					"HostUIElementString": "sidebarGrid",
+					"WindowName": "LibraryView",
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "WebBrowser",
+						"UIElementGridContainer": "sidebarGrid",
+						"WindowElementNameString": "ByCenterPointRadius",
+						"WindowName": "LibraryView"
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 0,
+						"ControlType": "JSFunction",
+						"WindowName": "LibraryView",
+						"Name": "InvokeJSFunction",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Geometry", "LibraryItemText" ]
+					},
+					{
+						"Sequence": 1,
+						"ControlType": "JSFunction",
+						"WindowName": "LibraryView",
+						"Name": "InvokeJSFunction",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Curves", "LibraryItemGroupText" ]
+					},
+
+					{
+						"Sequence": 2,
+						"ControlType": "JSFunction",
+						"WindowName": "LibraryView",
+						"Name": "InvokeJSFunction",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Circle", "LibraryItemGroupText" ]
+					},
+					{
+						"Sequence": 4,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "getDocumentClientRect",
+						"JSParameters": [ "ByCenterPointRadius" ],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 5,
+						"ControlType": "button",
+						"WindowName": "PopupWindow",
+						"Name": "NextButton",
+						"JSFunctionName": "",
+						"Action": "disable"
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "subscribePackageClickedEvent",
+						"JSParameters": [ "SampleLibraryUI" ],
+						"Action": "execute"
+					}
+				]
+			}	
 		]
 	}
 
