@@ -289,11 +289,11 @@ namespace Dynamo.Configuration
         public List<string> CustomPackageFolders { get; set; }
 
         /// <summary>
-        /// A list of trusted locations (folders) as it is recorded in the preferences file.
+        /// A list of trusted locations (folders) as recorded in the preferences file.
         /// Do not directly use this property when trying to check for trusted locations.
-        /// Instead use Dynamo.Core.TrustedLocatationsManager to check/query for trusted locations.
+        /// Instead use Dynamo.Core.TrustedLocatationsManager to manage for trusted locations.
         /// </summary>
-        public List<string> TrustedLocations { get; set; }
+        public IEnumerable<string> TrustedLocations { get; internal set; }
 
         /// <summary>
         /// A list of packages used by the Package Manager to determine
@@ -533,6 +533,7 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             CustomPackageFolders = new List<string>();
+      
             TrustedLocations = new List<string>();
 
             PythonTemplateFilePath = "";

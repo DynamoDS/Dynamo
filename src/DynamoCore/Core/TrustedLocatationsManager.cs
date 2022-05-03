@@ -20,24 +20,23 @@ namespace Dynamo.Core
             new Lazy<TrustedLocatationsManager>
             (() => new TrustedLocatationsManager());
 
-        private PreferenceSettings settings;
+        private readonly PreferenceSettings settings;
 
         /// <summary>
         /// Dynamo's trusted locations.
-        /// Dynamo will load dlls from these locations without asking the user for consent.
+        /// Dynamo will load .dyn files from these locations without asking the user for consent.
         /// </summary>
-        public List<string> TrustedLocations
-        {
-            get => settings.TrustedLocations;
-            internal set
-            {
-                settings.TrustedLocations = value;
-            }
-        }
+        private List<string> trustedLocations;
+
+        /// <summary>
+        /// An enumerable that represents Dynamo's trusted locations
+        /// </summary>
+        public IEnumerable<string> TrustedLocations => trustedLocations;
 
         internal void Initialize(PreferenceSettings settings)
         {
-            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            trustedLocations = settings.TrustedLocations?.ToList() ?? new List<string>();
         }
 
         #region Public members
@@ -50,16 +49,61 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Checkes whether the input argument (path) is among Dynamo's trusted locations
-        /// Only directories are supported (if a file path is used, its root directry will be checked).
+        /// Add a path to the Dynamo's trusted locations
         /// </summary>
-        /// <param name="path">An absolute path to a folder or file on disk</param>
+        /// <param name="path">The path to be added as a trusted location</param>
         /// <returns></returns>
+        public bool AddTrustedLocation(string path)
+        {
+            try
+            {
+                string location = ValidateTrustedLocation(path);
+                var existing = TrustedLocations.FirstOrDefault(x => x.Equals(location));
+                if (string.IsNullOrEmpty(existing))
+                {
+                    trustedLocations.Add(location);
+                    settings.TrustedLocations = trustedLocations;
+                    return true;
+                }
+            }
+            catch { }
+            return false;
+        }
+
+        /// <summary>
+        /// Remove a path from the Dynamo's trusted locations
+        /// </summary>
+        /// <param name="path">The path to be removed from the trusted locations</param>
+        /// <returns>The true if the path was removed and false otherwise</returns>
+        public bool RemoveTrustedLocation(string path)
+        {
+            string location = ValidateTrustedLocation(path);
+            if (trustedLocations.RemoveAll(x => x.Equals(location)) >= 0)
+            {
+                settings.TrustedLocations = trustedLocations;
+                return true;
+            }
+            return false;
+        }
+
+        // 
+        /// <summary>
+        /// Checks is the path is considered valid for Dynamo's trusted locations.
+        /// An exception is thrown if the path is considered invalid.
+        /// A path is considered valid if the following conditions are true:
+        /// 1. Path is not null and not empty.
+        /// 2. Path is an absolute path (not relative).
+        /// 4. Path has valid characters.
+        /// 5. Path exists.
+        /// 6. Dynamo has read permissions to access the path.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns>A normalized and validated path</returns>
         /// <exception cref="ArgumentException">Input argument is null or empty.</exception>
         /// <exception cref="ArgumentException">Input argument is not an absolute path.</exception>
         /// <exception cref="ArgumentException">Path directory does not exist</exception>
         /// <exception cref="System.Security.SecurityException">Dynamo does not have the required permissions.</exception>
-        public bool IsTrustedFolder(string path)
+        public string ValidateTrustedLocation(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -87,6 +131,18 @@ namespace Dynamo.Core
             {
                 throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {path}");
             }
+            return location;
+        }
+
+        /// <summary>
+        /// Checkes whether the input argument (path) is among Dynamo's trusted locations
+        /// Only directories are supported (if a file path is used, its root directry will be checked).
+        /// </summary>
+        /// <param name="path">An absolute path to a folder or file on disk</param>
+        /// <returns>True if the path is a trusted location, false otherwise</returns>
+        public bool IsTrustedLocation(string path)
+        {
+            string location = ValidateTrustedLocation(path);
 
             // All subdirectories are considered trusted if the parent directory is trusted.
             var trustedLoc = TrustedLocations.FirstOrDefault(x => location.StartsWith(x));
