@@ -916,7 +916,8 @@
 					"Title": "OnboardingWorkspaceTitle",
 					"FormattedText": "OnboardingWorkspaceText"
 				},
-				"HostPopupInfo": {
+				"HostPopupInfo":
+				{
 					"VerticalPopupOffset": 300,
 					"HorizontalPopupOffset": 100,
 					"PopupPlacement": "bottom",
@@ -928,111 +929,43 @@
 						"WidthBoxDelta": 0,
 						"HeightBoxDelta": 0
 					}
-				},
-				"UIAutomation": [
-					{
-						"Sequence": 1,
-						"ControlType": "function",
-						"WindowName": "LibraryView",
-						"Name": "SubscribeNextButtonClickEvent",
-						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
-						"JSParameters": [ "Geometry", "Curves", "Circle" ],
-						"AutomaticHandlers": [
-							{
-								"HandlerElement": "NextButton",
-								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "ExecuteAutomaticPackage_Click"
-							}
-						]
-					}
-				]
+				}
 			},
 			{
 				"Sequence": 2,
-				"Name": "library",
+				"Name": "nodes",
 				"Type": "tooltip",
-				"ShowLibrary": true,
+				"ShowLibrary": false,
 				"TooltipPointerDirection": "none",
 				"Width": 480,
-				"Height": 248,
+				"Height": 300,
 				"StepContent": {
-					"Title": "OnboardingPlaceNodeTitle",
-					"FormattedText": "OnboardingPlaceNodeText"
+					"Title": "OnboardingNodesTitle",
+					"FormattedText": "OnboardingNodesText"
 				},
 				"HostPopupInfo": {
+					"HostUIElementString": "background_grid",
+					"PopupPlacement": "bottom",
 					"VerticalPopupOffset": 300,
 					"HorizontalPopupOffset": 100,
-					"PopupPlacement": "right",
-					"HostUIElementString": "sidebarGrid",
-					"WindowName": "LibraryView",
-					"HighlightRectArea": {
-						"HighlightColor": "#EF9362",
-						"UIElementTypeString": "WebBrowser",
-						"UIElementGridContainer": "sidebarGrid",
-						"WindowElementNameString": "ByCenterPointRadius",
-						"WindowName": "LibraryView"
-					},
 					"CutOffRectArea": {
+						"NodeId": "a20a93da6af14deebe2df37c1662349f",
+						"XPosOffset": -30,
+						"YPosOffset": -20,
 						"WidthBoxDelta": 0,
 						"HeightBoxDelta": 0
 					}
 				},
 				"UIAutomation": [
 					{
-						"Sequence": 0,
-						"ControlType": "JSFunction",
-						"WindowName": "LibraryView",
-						"Name": "InvokeJSFunction",
-						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
-						"JSParameters": [ "Geometry", "LibraryItemText" ]
-					},
-					{
 						"Sequence": 1,
-						"ControlType": "JSFunction",
-						"WindowName": "LibraryView",
-						"Name": "InvokeJSFunction",
-						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
-						"JSParameters": [ "Curves", "LibraryItemGroupText" ]
-					},
-
-					{
-						"Sequence": 2,
-						"ControlType": "JSFunction",
-						"WindowName": "LibraryView",
-						"Name": "InvokeJSFunction",
-						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
-						"JSParameters": [ "Circle", "LibraryItemGroupText" ]
-					},
-					{
-						"Sequence": 4,
-						"ControlType": "JSFunction",
-						"Name": "InvokeJSFunction",
-						"JSFunctionName": "getDocumentClientRect",
-						"JSParameters": [ "ByCenterPointRadius" ],
-						"Action": "execute"
-					},
-					{
-						"Sequence": 5,
-						"ControlType": "button",
-						"WindowName": "PopupWindow",
-						"Name": "NextButton",
-						"JSFunctionName": "",
-						"Action": "disable"
-					},
-					{
-						"Sequence": 3,
 						"ControlType": "function",
-						"Name": "CreateNode",
-						"JSFunctionName": "",
-						"JSParameters": [ "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double" ],
+						"Name": "HighlightPort",
+						"Parameters": [ "#EF9362" ],
 						"Action": "execute"
 					}
 				]
-			}	
+			}
 		]
 	}
 

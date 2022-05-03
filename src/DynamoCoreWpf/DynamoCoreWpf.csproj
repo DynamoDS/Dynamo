@@ -21,6 +21,7 @@
     <None Remove="UI\Images\warning_16px.png" />
     <None Remove="Views\GuidedTour\HtmlPages\getStartedOnboarding.html" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\emptyImage.png" />
+    <None Remove="Views\Menu\TrustedPathView.xaml" />
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
@@ -128,6 +129,7 @@
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
     <Compile Include="UI\GuidedTour\GuidesValidationMethods.cs" />
+    <Compile Include="UI\GuidedTour\GuideUtilities.cs" />
     <Compile Include="UI\GuidedTour\HightlightArea.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
     <Compile Include="UI\GuidedTour\PreValidation.cs" />
@@ -266,6 +268,7 @@
     <Compile Include="ViewModels\GuidedTour\ExitGuideWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
+    <Compile Include="ViewModels\Menu\TrustedPathViewModel.cs" />
     <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
@@ -337,6 +340,7 @@
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\Menu\TrustedPathView.xaml.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
     <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
       <DependentUpon>PackagePathView.xaml</DependentUpon>
@@ -505,6 +509,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Core\ConnectorPinView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Menu\TrustedPathView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
