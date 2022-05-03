@@ -3123,4 +3123,7 @@ To install the latest version of a package, click Install. \n
   <data name="OnboardingNodesTitle" xml:space="preserve">
     <value>Nodes</value>
   </data>
+  <data name="OnboardingGuideWelcomeText" xml:space="preserve">
+    <value>Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide.</value>
+  </data>
 </root>
