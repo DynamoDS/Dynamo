@@ -66,6 +66,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
+        internal static string OnboardingGuideWorkspaceEmbeededResource
+        {
+            get
+            {
+                return @"Dynamo.Wpf.UI.GuidedTour.DynamoOnboardingGuide_HouseCreationDS.dyn";
+            }
+        }
+
         /// <summary>
         /// GuidesManager Constructor 
         /// </summary>

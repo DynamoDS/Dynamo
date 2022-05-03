@@ -78,6 +78,7 @@
     <controls:PortTypeToGridColumnConverter x:Key="PortTypeToGridColumnConverter" />
     <controls:PortTypeToClipConverter x:Key="PortTypeToClipConverter" />
     <controls:ConsoleHeightConverter x:Key="ConsoleHeightConverter" />
+    <controls:NodeAutocompleteWidthConverter x:Key="NodeAutocompleteWidthConverter" />
     <controls:BoolToFullscreenWatchVisibilityConverter x:Key="BoolToFullscreenWatchVisibilityConverter" />
     <controls:BoolToCanvasCursorConverter x:Key="BoolToCanvasCursorConverter" />
     <controls:LacingToVisibilityConverter x:Key="LacingToVisibilityConverter" />

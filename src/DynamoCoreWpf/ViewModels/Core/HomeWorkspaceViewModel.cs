@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using DSCore;
+using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Newtonsoft.Json;
@@ -20,6 +25,9 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         private NotificationLevel curentNotificationLevel;
         private string currentNotificationMessage;
+        private ObservableCollection<FooterNotificationItem> footerNotificationItems;
+        private int notificationsCounter = 0;
+        private FooterNotificationItem.FooterNotificationType footerNotificationType;
 
         #endregion
 
@@ -30,6 +38,9 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         [JsonIgnore]
         public DelegateCommand StopPeriodicTimerCommand { get; set; }
+
+        [JsonIgnore]
+        public DelegateCommand SelectIssuesCommand { get; set; }
 
         #endregion
 
@@ -55,6 +66,20 @@ namespace Dynamo.Wpf.ViewModels.Core
             }
         }
 
+        /// <summary>
+        /// Contains all footer notification item bindings
+        /// </summary>
+        [JsonIgnore]
+        public ObservableCollection<FooterNotificationItem> FooterNotificationItems
+        {
+            get { return footerNotificationItems; }
+            set
+            {
+                footerNotificationItems = value;
+                RaisePropertyChanged(nameof(FooterNotificationItems));
+            }
+        }
+
         public HomeWorkspaceViewModel(HomeWorkspaceModel model, DynamoViewModel dynamoViewModel)
             : base(model, dynamoViewModel)
         {
@@ -63,6 +88,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             StartPeriodicTimerCommand = new DelegateCommand(StartPeriodicTimer, CanStartPeriodicTimer);
             StopPeriodicTimerCommand = new DelegateCommand(StopPeriodicTimer, CanStopPeriodicTimer);
+            SelectIssuesCommand = new DelegateCommand(SelectIssues);
 
             CheckAndSetPeriodicRunCapability();
 
@@ -72,6 +98,43 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
 
             dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
+
+            SetupFooterNotificationItems();
+        }
+
+        /// <summary>
+        /// Setup the initial collection of FooterNotificationItems
+        /// </summary>
+        private void SetupFooterNotificationItems()
+        {
+            CurrentNotificationMessage =
+                Properties.Resources.RunReady; // Default value of the notification text block on opening
+
+            FooterNotificationItem[]
+                footerItems = new FooterNotificationItem[3]; 
+            footerItems[0] = new FooterNotificationItem()
+            {
+                NotificationCount = 0,
+                NotificationImage = "/DynamoCoreWpf;component/UI/Images/error.png",
+                NotificationToolTip = "Click to cycle through nodes with errors.",
+                NotificationType = FooterNotificationItem.FooterNotificationType.Error
+            };
+            footerItems[1] = new FooterNotificationItem()
+            {
+                NotificationCount = 0,
+                NotificationImage = "/DynamoCoreWpf;component/UI/Images/warning_16px.png",
+                NotificationToolTip = "Click to cycle through nodes with warnings.",
+                NotificationType = FooterNotificationItem.FooterNotificationType.Warning
+            };
+            footerItems[2] = new FooterNotificationItem()
+            {
+                NotificationCount = 0,
+                NotificationImage = "/DynamoCoreWpf;component/UI/Images/info.png",
+                NotificationToolTip = "Click to cycle through nodes with info states.",
+                NotificationType = FooterNotificationItem.FooterNotificationType.Information
+            };
+
+            footerNotificationItems = new ObservableCollection<FooterNotificationItem>(footerItems);
         }
 
         void Model_ShutdownStarted(DynamoModel model)
@@ -163,9 +226,11 @@ namespace Dynamo.Wpf.ViewModels.Core
                 UpdateNodeInfoBubbleContent(e);
             }
         
+            bool hasInfo = Model.Nodes.Any(n => n.State == ElementState.Info);
             bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
+            bool hasErrors = Model.Nodes.Any(n => n.State == ElementState.Error);
 
-            if (!hasWarnings)
+            if (!hasWarnings && !hasErrors)
             {
                 if (Model.ScaleFactorChanged)
                 {
@@ -176,7 +241,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                     SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunCompletedMessage);
                 }
             }
-            else
+            else if(hasWarnings && !hasErrors)
             {
                 if (Model.ScaleFactorChanged)
                 {
@@ -187,6 +252,42 @@ namespace Dynamo.Wpf.ViewModels.Core
                     SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage);
                 }
             }
+            else
+            {
+                if (Model.ScaleFactorChanged)
+                {
+                    SetCurrentWarning(NotificationLevel.Error, Properties.Resources.RunCompletedWithScaleChangeAndErrorsMessage);
+                }
+                else
+                {
+                    SetCurrentWarning(NotificationLevel.Error, Properties.Resources.RunCompletedWithErrorsMessage);
+                }
+            }
+
+            UpdateFooterItems(hasInfo, hasWarnings, hasErrors);
+        }
+
+        /// <summary>
+        /// Updates the Info, Warning and Error footer notification items
+        /// </summary>
+        /// <param name="hasInfo"></param>
+        /// <param name="hasWarnings"></param>
+        /// <param name="hasErrors"></param>
+        private void UpdateFooterItems(bool hasInfo, bool hasWarnings, bool hasErrors)
+        {
+            
+            if (hasErrors)
+                FooterNotificationItems[0].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Error);
+            else
+                if(FooterNotificationItems[0].NotificationCount != 0) FooterNotificationItems[0].NotificationCount = 0;
+            if (hasWarnings)
+                FooterNotificationItems[1].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
+            else
+                if (FooterNotificationItems[1].NotificationCount != 0) FooterNotificationItems[1].NotificationCount = 0;
+            if (hasInfo)
+                FooterNotificationItems[2].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Info);
+            else
+                if (FooterNotificationItems[2].NotificationCount != 0) FooterNotificationItems[2].NotificationCount = 0;
         }
 
         private void UpdateNodeInfoBubbleContent(EvaluationCompletedEventArgs evalargs)
@@ -260,7 +361,76 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             return true;
         }
+        
+        /// <summary> 
+        /// Fit the current workspace view to the current selection
+        /// </summary>
+        private void SelectIssues(object parameter)
+        {
+            switch ((FooterNotificationItem.FooterNotificationType)parameter)
+            {
+                case FooterNotificationItem.FooterNotificationType.Error:
+                    var nodes = Model.Nodes.Where(n => n.State == ElementState.Error);
+                    FitSelection(nodes, (FooterNotificationItem.FooterNotificationType)parameter);
+                    break;
+                case FooterNotificationItem.FooterNotificationType.Warning:
+                    nodes = Model.Nodes.Where(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
+                    FitSelection(nodes, (FooterNotificationItem.FooterNotificationType)parameter);
+                    break;
+                case FooterNotificationItem.FooterNotificationType.Information:
+                    nodes = Model.Nodes.Where(n => n.State == ElementState.Info);
+                    FitSelection(nodes, (FooterNotificationItem.FooterNotificationType)parameter);
+                    break;
+            }
+        }
+        /// <summary>
+        /// A sequence of methods to zoom around a selection of nodes 
+        /// </summary>
+        /// <param name="selectedNodes"></param>
+        private void FitSelection(IEnumerable<NodeModel> selectedNodes, FooterNotificationItem.FooterNotificationType currentNotificationType)
+        {
+            // Don't allow prior to evaluation 
+            if ((Model as HomeWorkspaceModel).EvaluationCount == 0) return;
+            var nodeModels = selectedNodes as NodeModel[] ?? selectedNodes.ToArray();
+            if (!nodeModels.Any()) return;
 
+            // Reset the counter if you swap to a different notification type
+            if (!currentNotificationType.Equals(this.footerNotificationType))
+            {
+                this.notificationsCounter = 0;
+                this.footerNotificationType = currentNotificationType;
+            }
+
+            // Clear the selection then set the nodes to selection
+            DynamoSelection.Instance.ClearSelection();
+
+            // If we have reached the maximum nodes for this type, select all and reset the counter
+            int maxCount = nodeModels.Length;
+            if (IsMaxNotificationCounter(this.notificationsCounter, maxCount))
+            {
+                DynamoSelection.Instance.Selection.AddRange(nodeModels);
+                this.notificationsCounter = 0;
+            }
+            else
+            {
+                var node = nodeModels.ElementAt(this.notificationsCounter);
+                DynamoSelection.Instance.Selection.Add(node);
+                this.notificationsCounter++;
+            }
+
+            // Execute the FitViewCommand 
+            this.DynamoViewModel.CurrentSpaceViewModel.FitViewInternal();
+            this.DynamoViewModel.CurrentSpaceViewModel.ResetFitViewToggle(null);
+            //this.DynamoViewModel.FitViewCommand.Execute(null);
+            // Clean up the selection after
+            DynamoSelection.Instance.ClearSelection();
+        }
+
+        private bool IsMaxNotificationCounter(int counter, int max)
+        {
+            if (counter >= max) return true;
+            return false;
+        }
         /// <summary>
         /// Object dispose function
         /// </summary>
@@ -288,11 +458,11 @@ namespace Dynamo.Wpf.ViewModels.Core
             switch (level)
             {
                 case NotificationLevel.Mild:
-                    return new SolidColorBrush(Colors.Gray);
+                    return (SolidColorBrush)(new BrushConverter().ConvertFrom("#989898"));
                 case NotificationLevel.Moderate:
-                    return new SolidColorBrush(Colors.Gold);
+                    return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FAA21B"));
                 case NotificationLevel.Error:
-                    return new SolidColorBrush(Colors.Tomato);
+                    return (SolidColorBrush)(new BrushConverter().ConvertFrom("#EB5555"));
                 default:
                     return new SolidColorBrush(Colors.Gray);
             }
@@ -302,5 +472,88 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             throw new NotImplementedException();
         }
+    }
+
+    /// <summary>
+    /// Value converter from 0 to Visibility Collapsed
+    /// </summary>
+    public class ZeroToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ("Inverse".Equals((string)parameter))
+            {
+                if ((int) value == 0)
+                {
+                    return Visibility.Visible;
+                }
+                return Visibility.Collapsed;
+            }
+
+            if ((int) value == 0)
+            {
+                return Visibility.Collapsed;
+            }
+            return Visibility.Visible;
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    /// <summary>
+    /// An object that contains information about the number of 
+    /// Info, Warning or Error Nodes after a Run 
+    /// </summary>
+    public class FooterNotificationItem : NotificationObject
+    {
+        private int _notificationCount;
+        private string _notificationImage;
+
+        /// <summary>
+        /// Represents the different types of item - Error, Warning or Info
+        /// </summary>
+        public enum FooterNotificationType
+        {
+            Error,
+            Warning,
+            Information,
+        }
+
+        /// <summary>
+        /// The number of Warnings, Errors or Info Nodes
+        /// </summary>
+        public int NotificationCount 
+        { 
+            get { return _notificationCount; }
+            set
+            {
+                _notificationCount = value;
+                RaisePropertyChanged(nameof(NotificationCount));
+            }
+        }
+
+        /// <summary>
+        /// The glyph associated with this footer item
+        /// </summary>
+        public string NotificationImage
+        {
+            get { return _notificationImage; }
+            set
+            {
+                _notificationImage = value;
+                RaisePropertyChanged(nameof(NotificationImage));
+            }
+        }
+        /// <summary>
+        /// The tooltip associated with the respective item
+        /// The tooltip message stays the same, no update required
+        /// </summary>
+        public string NotificationToolTip { get; set; }
+
+        /// <summary>
+        /// The type of control, either Error, Warning or Info
+        /// </summary>
+        public FooterNotificationType NotificationType { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -4414,7 +4414,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This is the workspace, where you develop visual programs and preview the results.\n This graph shows the building blocks of Dynamo:\n Nodes perform operations, such as storing a number or creating geometry\n Wires connect nodes\n Together, nodes and wires form a set of instructions for processing data or building geometry..
+        ///   Looks up a localized string similar to This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** , which is made up of nodes and wires. Graphs can process data, create geometry, and more. In this guide, we’ll work with a premade sample graph..
         /// </summary>
         public static string OnboardingWorkspaceText {
             get {
@@ -6868,6 +6868,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run completed with errors..
+        /// </summary>
+        public static string RunCompletedWithErrorsMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithErrorsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with errors on setting new working range..
+        /// </summary>
+        public static string RunCompletedWithScaleChangeAndErrorsMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithScaleChangeAndErrorsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run completed with warnings on setting new working range..
         /// </summary>
         public static string RunCompletedWithScaleChangeAndWarningsMessage {
@@ -6891,6 +6909,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RunCompletedWithWarningsMessage {
             get {
                 return ResourceManager.GetString("RunCompletedWithWarningsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ready to run..
+        /// </summary>
+        public static string RunReady {
+            get {
+                return ResourceManager.GetString("RunReady", resourceCulture);
             }
         }
         
@@ -7948,6 +7975,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ZeroTouchTypeShortString {
             get {
                 return ResourceManager.GetString("ZeroTouchTypeShortString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.4.
+        /// </summary>
+        public static string ZoomLevel {
+            get {
+                return ResourceManager.GetString("ZoomLevel", resourceCulture);
             }
         }
     }
