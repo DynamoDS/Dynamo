@@ -380,7 +380,7 @@ namespace Dynamo.Models
 
         internal static DynamoUtilities.DynamoFeatureFlagsManager FeatureFlags { get; private set; }
 
-        internal TrustedLocatationsManager TrustedLocatationsManager => TrustedLocatationsManager.Instance;
+        internal TrustedLocationsManager TrustedLocationsManager => TrustedLocationsManager.Instance;
         #endregion
 
         #region initialization and disposal
@@ -791,7 +791,7 @@ namespace Dynamo.Models
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
-            TrustedLocatationsManager.Initialize(PreferenceSettings);
+            TrustedLocationsManager.Initialize(PreferenceSettings);
 
             SearchModel = new NodeSearchModel(Logger);
             SearchModel.ItemProduced +=

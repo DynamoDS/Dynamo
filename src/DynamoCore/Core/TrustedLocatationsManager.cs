@@ -10,15 +10,15 @@ namespace Dynamo.Core
     /// <summary>
     /// Manages trusted locations for Dynamo
     /// </summary>
-    public class TrustedLocatationsManager
+    public class TrustedLocationsManager
     {
         /// <summary>
-        /// Use Lazy&lt;TrustedLocatationsManager&gt; to make sure the Singleton class is only initialized once
+        /// Use Lazy&lt;TrustedLocationsManager&gt; to make sure the Singleton class is only initialized once
         /// </summary>
-        internal static readonly Lazy<TrustedLocatationsManager>
+        internal static readonly Lazy<TrustedLocationsManager>
             lazy =
-            new Lazy<TrustedLocatationsManager>
-            (() => new TrustedLocatationsManager());
+            new Lazy<TrustedLocationsManager>
+            (() => new TrustedLocationsManager());
 
         private PreferenceSettings settings;
 
@@ -37,15 +37,6 @@ namespace Dynamo.Core
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             trustedLocations = settings.TrustedLocations?.ToList() ?? new List<string>();
-        }
-
-        #region Public members
-        /// <summary>
-        /// The actual instance stored in the Singleton class
-        /// </summary>
-        public static TrustedLocatationsManager Instance
-        {
-            get { return lazy.Value; }
         }
 
         /// <summary>
@@ -78,7 +69,7 @@ namespace Dynamo.Core
         internal bool RemoveTrustedLocation(string path)
         {
             string location = ValidateTrustedLocation(path);
-            if (settings!= null && trustedLocations.RemoveAll(x => x.Equals(location)) >= 0)
+            if (settings != null && trustedLocations.RemoveAll(x => x.Equals(location)) >= 0)
             {
                 settings.TrustedLocations = trustedLocations;
                 return true;
@@ -93,14 +84,22 @@ namespace Dynamo.Core
         internal void SetTrustedLocations(IEnumerable<string> paths)
         {
             trustedLocations.Clear();
-            foreach(var item in paths)
+            foreach (var item in paths)
             {
                 AddTrustedLocation(item);
             }
             settings.TrustedLocations = trustedLocations;
         }
 
-        // 
+        #region Public members
+        /// <summary>
+        /// The actual instance stored in the Singleton class
+        /// </summary>
+        public static TrustedLocationsManager Instance
+        {
+            get { return lazy.Value; }
+        }
+
         /// <summary>
         /// Checks is the path is considered valid for Dynamo's trusted locations.
         /// An exception is thrown if the path is considered invalid.
