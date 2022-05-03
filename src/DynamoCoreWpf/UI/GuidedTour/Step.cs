@@ -124,7 +124,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         [JsonProperty("ExitGuide")]
         internal ExitGuide ExitGuide { get; set; }
 
-        public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT, BOTTOM_DOWN };
+        public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT, BOTTOM_DOWN, NONE };
 
         /// <summary>
         /// This will contains the 3 points needed for drawing the Tooltip pointer direction

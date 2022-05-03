@@ -1238,6 +1238,11 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
+            if (value is string && value.ToString().Length > 25)
+            {
+                return 400;
+            }
+
             if (value is string && value.ToString().Length > 15)
             {
                 return 350;
@@ -1614,7 +1619,7 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number <= Double.Parse(Wpf.Properties.Resources.ZoomLevel))
+            if (number <= Configurations.ZoomThreshold)
                 return false;
 
             return true;
@@ -1632,7 +1637,7 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number <= Double.Parse(Wpf.Properties.Resources.ZoomLevel))
+            if (number <= Configurations.ZoomThreshold)
                 return 0.0;
 
             return 0.5;
@@ -1653,7 +1658,7 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number > Double.Parse(Wpf.Properties.Resources.ZoomLevel))
+            if (number > Configurations.ZoomThreshold)
                 return Visibility.Collapsed;
 
             return Visibility.Visible;    
