@@ -13,7 +13,7 @@ namespace Dynamo.Core
     public class TrustedLocatationsManager
     {
         /// <summary>
-        /// Use Lazy&lt;PythonEngineManager&gt; to make sure the Singleton class is only initialized once
+        /// Use Lazy&lt;TrustedLocatationsManager&gt; to make sure the Singleton class is only initialized once
         /// </summary>
         internal static readonly Lazy<TrustedLocatationsManager>
             lazy =
@@ -55,6 +55,7 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="path">An absolute path to a folder or file on disk</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException">Input argument is null or empty.</exception>
         /// <exception cref="ArgumentException">Input argument is not an absolute path.</exception>
         /// <exception cref="ArgumentException">Path directory does not exist</exception>
         /// <exception cref="System.Security.SecurityException">Dynamo does not have the required permissions.</exception>
