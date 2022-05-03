@@ -264,7 +264,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests"), Category("Failure")]
+        [Category("UnitTests")]
         public void NodeSearchElementLoadedType()
         {
             var fullname = "abc.xyz.something";
@@ -279,7 +279,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests"), Category("Failure")]
+        [Category("UnitTests")]
         public void PackagedNodeSearchElementLoadedType()
         {
             var category = "abc.xyz.somepackage";
@@ -303,7 +303,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests"), Category("Failure")]
+        [Category("UnitTests")]
         public void CustomNodeSearchElementLoadedType()
         {
             var category = "abc.xyz.somepackage";
@@ -327,7 +327,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests"), Category("Failure")]
+        [Category("UnitTests")]
         public void PackagedCustomNodeSearchElementLoadedType()
         {
             var category = "abc.xyz.somepackage";
