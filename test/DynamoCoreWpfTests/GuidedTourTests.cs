@@ -79,7 +79,7 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// This test will validate that all the control names read from the json file for the GetStarted Guide exists in DynamoView
+        /// This test will validate that all the control names read from the json file for the Onboard Guide exists in DynamoView
         /// </summary>
         [Test]
         public void OnboardingGuideFirstStep_ValidateTexts()
@@ -97,19 +97,15 @@ namespace DynamoCoreWpfTests
             Assert.DoesNotThrow(() => testGuide.LaunchTour(DynamoView.OnboardingGuideName));
 
             //Find the Get Started guide in the list
-            var getStartedGuide = (from guide in testGuide.Guides
+            var OnboardingGuide = (from guide in testGuide.Guides
                                    where guide.Name.ToUpper().Equals(DynamoView.OnboardingGuideName.ToUpper())
                                    select guide).FirstOrDefault();
 
             //Validate that the GetStarted guide exists
-            Assert.IsNotNull(getStartedGuide, "Get Started guide doesn't exists in the guides json file");
+            Assert.IsNotNull(OnboardingGuide, "Onboarding guide doesn't exists in the guides json file");
 
-            Assert.IsTrue(getStartedGuide.GuideSteps.Count > 1);
-            Assert.IsTrue(getStartedGuide.GuideSteps[0].StepUIPopup.IsOpen);
-            
-            Assert.AreEqual("Start your visual programming journey with this short guide. \r\n\r\nHere you'll learn some basics about the Dynamo interface and features."
-                ,getStartedGuide.GuideSteps[0].StepContent.FormattedText);
-            Assert.AreEqual("Get started with Dynamo", getStartedGuide.GuideSteps[0].StepContent.Title);
+            Assert.IsTrue(OnboardingGuide.GuideSteps.Count > 1);
+            Assert.IsTrue(OnboardingGuide.GuideSteps[0].StepUIPopup.IsOpen);
         }
     }
 }
