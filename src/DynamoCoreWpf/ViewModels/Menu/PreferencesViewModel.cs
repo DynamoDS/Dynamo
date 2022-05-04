@@ -374,6 +374,26 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Flag specifying whether trust warnings should be shown
+        /// when opening .dyn files from unstrusted locations.
+        /// </summary>
+        public bool DisableTrustWarnings
+        {
+            get
+            {
+                return preferenceSettings.DisableTrustWarnings;
+            }
+            // We keep this setter private to avoid view extensions calling it directly.
+            // Access modifiers are not intended for security, but it's simple enough to hook a toggle to the UI
+            // without binding, and this makes it clear it's not an API.
+            private set
+            {
+                //TODO add setDisableWarnings internal method of prop instead of field.
+                preferenceSettings.disableTrustWarnings = value;
+            }
+        }
+
+        /// <summary>
         /// FontSizesList contains the list of sizes for fonts defined (the ones defined are Small, Medium, Large, Extra Large)
         /// </summary>
         public ObservableCollection<string> FontSizeList
@@ -1065,6 +1085,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(ShowCodeBlockLineNumber):
                     description = Res.PreferencesViewShowCodeBlockNodeLineNumber;
+                    goto default;
+                case nameof(DisableTrustWarnings):
+                    description = Res.PreferencesViewTrustWarningHeader;
                     goto default;
                 default:
                     if (!string.IsNullOrEmpty(description))

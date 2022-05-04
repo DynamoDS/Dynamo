@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Utilities;
+using DynamoUtilities;
 
 namespace Dynamo.Configuration
 {
@@ -22,7 +25,7 @@ namespace Dynamo.Configuration
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
-
+        internal bool disableTrustWarnings;
         #region Constants
         /// <summary>
         /// Indicates the maximum number of files shown in Recent Files
@@ -291,7 +294,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// If true, trust warnings for opening .dyn files from untrusted locations will not be shown.
         /// </summary>
-        public bool DisableTrustWarnings{ get; private set; }
+        public bool DisableTrustWarnings => disableTrustWarnings;
 
         /// <summary>
         /// Backing store for TrustedLocations
@@ -304,9 +307,9 @@ namespace Dynamo.Configuration
         /// Instead use Dynamo.Core.TrustedLocationsManager to manage for trusted locations.
         /// </summary>
         public List<string> TrustedLocations 
-        { 
+        {
             get => trustedLocations.ToList(); //Copy of the internal list
-            internal set 
+            internal set
             {
                 trustedLocations = value;
             }
@@ -550,7 +553,7 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             CustomPackageFolders = new List<string>();
-            DisableTrustWarnings = false;
+            disableTrustWarnings = false;
             TrustedLocations = new List<string>();
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
@@ -639,9 +642,15 @@ namespace Dynamo.Configuration
             }
 
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
-            settings.TrustedLocations = settings.TrustedLocations.Distinct().ToList();
+            settings.trustedLocations = settings.TrustedLocations.Distinct().ToList();
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
+
+            //manually load some xml we don't want to create public setters for.
+            var doc = new System.Xml.XmlDocument();
+            doc.Load(filePath);
+            var fresult = new XmlElementHelper(doc.ChildNodes.Cast<XmlElement>().ToList().Where(x => x.Name == nameof(DisableTrustWarnings)).FirstOrDefault()).ReadBoolean("");
+
             return settings;
         }
 

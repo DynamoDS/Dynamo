@@ -161,6 +161,12 @@ namespace Dynamo.Core
             var trustedLoc = TrustedLocations.FirstOrDefault(x => location.StartsWith(x));
             return !string.IsNullOrEmpty(trustedLoc);
         }
+
+        /// <summary>
+        /// If true, trust warnings for opening .dyn files from untrusted locations will not be shown.
+        /// </summary>
+        public bool TrustWarningsDisabled => settings.DisableTrustWarnings;
+        
         #endregion
     }
 }
