@@ -649,7 +649,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //The action that will be triggered when the node is created
             Action<NodeModel> func = (nodeModel) =>
             {
-                GuideFlowEvents_GuidedTourNodeCreated(nodeModel, nodeCreationName);
+                GuideFlowEvents_GuidedTourNodeCreated(nodeModel, nodeCreationName, uiAutomationData.NodePosition);
             };
 
             //If any backward action is triggered, the created needs to be deleted 
@@ -670,11 +670,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         //This function compares if the created node is the expected one to move to the next step by comparing it's name.
-        private static void GuideFlowEvents_GuidedTourNodeCreated(NodeModel createdNode, string uiAutomationElementName)
+        private static void GuideFlowEvents_GuidedTourNodeCreated(NodeModel createdNode, string uiAutomationElementName, Point2D nodePosition)
         {
             lastCreatedNode = createdNode;
             if (createdNode.Name.Equals(uiAutomationElementName))
             {
+                createdNode.X = nodePosition.X;
+                createdNode.Y = nodePosition.Y;
                 CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
             }
         }
