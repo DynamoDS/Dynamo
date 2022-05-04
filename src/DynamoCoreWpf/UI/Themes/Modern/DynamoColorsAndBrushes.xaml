@@ -10,6 +10,7 @@
     <Color x:Key="PrimaryCharcoal100">#EEEEEE</Color>
     <Color x:Key="PrimaryCharcoal200">#DCDCDC</Color>
     <Color x:Key="PrimaryCharcoal300">#CCCCCC</Color>
+    <Color x:Key="LightGrey">#989898</Color>
     <Color x:Key="MidGrey">#666666</Color>
     <Color x:Key="DarkMidGrey">#535353</Color>
     <Color x:Key="DarkGrey">#4A4A4A</Color>
@@ -33,6 +34,7 @@
     <SolidColorBrush x:Key="PrimaryCharcoal100Brush" Color="{StaticResource PrimaryCharcoal100}" />
     <SolidColorBrush x:Key="PrimaryCharcoal200Brush" Color="{StaticResource PrimaryCharcoal200}" />
     <SolidColorBrush x:Key="PrimaryCharcoal300Brush" Color="{StaticResource PrimaryCharcoal300}" />
+    <SolidColorBrush x:Key="LightGreyBrush" Color="{StaticResource LightGrey}" />
     <SolidColorBrush x:Key="MidGreyBrush" Color="{StaticResource MidGrey}" />
     <SolidColorBrush x:Key="DarkMidGreyBrush" Color="{StaticResource DarkMidGrey}" />
     <SolidColorBrush x:Key="DarkGreyBrush" Color="{StaticResource DarkGrey}" />
@@ -127,7 +129,7 @@
 
     <!--  Library text colors  -->
     <SolidColorBrush x:Key="MemberButtonText" Color="#aaaaaa" />
-    <SolidColorBrush x:Key="DeafultSearchTextBlockText" Color="#C0C0C0" />
+    <SolidColorBrush x:Key="DefaultSearchTextBlockText" Color="#C0C0C0" />
     <SolidColorBrush x:Key="CommonSidebarTextColor" Color="#CCCCCC" />
     <SolidColorBrush x:Key="SearchBoxBackgroundColor" Color="#231F20" />
     <SolidColorBrush x:Key="NestedMemberTextColor" Color="#989898" />

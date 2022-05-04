@@ -4414,7 +4414,26 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nodes are the building blocks of graphs. Nodes perform operations, such as storing a number or creating geometry.\n\nYou can learn more about a node by hovering over its parts. This node is missing an input.\n\nHover over the input port to see what types of data it accepts..
+        /// </summary>
+        public static string OnboardingNodesText {
+            get {
+                return ResourceManager.GetString("OnboardingNodesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nodes.
+        /// </summary>
+        public static string OnboardingNodesTitle {
+            get {
+                return ResourceManager.GetString("OnboardingNodesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This is the workspace, where you develop visual programs and preview the results.\n This graph shows the building blocks of Dynamo:\n Nodes perform operations, such as storing a number or creating geometry\n Wires connect nodes\n Together, nodes and wires form a set of instructions for processing data or building geometry..
+        ///   Looks up a localized string similar to This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** , which is made up of nodes and wires. Graphs can process data, create geometry, and more. In this guide, we’ll work with a premade sample graph..
         /// </summary>
         public static string OnboardingWorkspaceText {
             get {
@@ -6868,6 +6887,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run completed with errors..
+        /// </summary>
+        public static string RunCompletedWithErrorsMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithErrorsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with errors on setting new working range..
+        /// </summary>
+        public static string RunCompletedWithScaleChangeAndErrorsMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithScaleChangeAndErrorsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run completed with warnings on setting new working range..
         /// </summary>
         public static string RunCompletedWithScaleChangeAndWarningsMessage {
@@ -6891,6 +6928,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RunCompletedWithWarningsMessage {
             get {
                 return ResourceManager.GetString("RunCompletedWithWarningsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ready to run..
+        /// </summary>
+        public static string RunReady {
+            get {
+                return ResourceManager.GetString("RunReady", resourceCulture);
             }
         }
         
@@ -7948,6 +7994,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ZeroTouchTypeShortString {
             get {
                 return ResourceManager.GetString("ZeroTouchTypeShortString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.4.
+        /// </summary>
+        public static string ZoomLevel {
+            get {
+                return ResourceManager.GetString("ZoomLevel", resourceCulture);
             }
         }
     }

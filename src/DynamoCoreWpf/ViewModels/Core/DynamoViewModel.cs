@@ -145,6 +145,7 @@ namespace Dynamo.ViewModels
             get { return Workspaces.FirstOrDefault(w => w.Model is HomeWorkspaceModel); }
         }
 
+
         public EngineController EngineController { get { return Model.EngineController; } }
 
         public WorkspaceModel CurrentSpace
@@ -1625,6 +1626,12 @@ namespace Dynamo.ViewModels
                 return;
             }
             this.ShowStartPage = false; // Hide start page if there's one.
+        }
+
+        internal void OpenOnboardingGuideFile()
+        {  
+            var jsonDynFile = ResourceUtilities.LoadContentFromResources(GuidesManager.OnboardingGuideWorkspaceEmbeededResource, GetType().Assembly, false, false);
+            OpenFromJson(new Tuple<string, bool>(jsonDynFile, true));
         }
 
         private bool CanOpen(object parameters)
