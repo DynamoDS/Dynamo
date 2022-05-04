@@ -60,7 +60,7 @@
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <ReferenceCopyLocalPaths>
-      <!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
+      <!--Copy all assembly references to a specific folder (test/test_dependencies) that will not pollute Dynamo deploys -->
       <DestinationSubDirectory>../../../test/test_dependencies/</DestinationSubDirectory>
     </ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
