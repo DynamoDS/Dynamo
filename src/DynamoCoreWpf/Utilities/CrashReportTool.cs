@@ -10,7 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace Dynamo.Core
+namespace Dynamo.Wpf.Utilities
 {
     internal class CrashReportArgs : EventArgs
     {
@@ -115,7 +115,7 @@ namespace Dynamo.Core
         // If input argument "outputDir" is null or empty,
         // the crash report file (name = %processName%_%processId%.dmp) will be created
         // in the temp folder path (%TMP% on windows)
-        private static string CreateMiniDumpFile(string outputDir = null)
+        internal static string CreateMiniDumpFile(string outputDir = null)
         {
             Process process = Process.GetCurrentProcess();
             MINIDUMP_TYPE DumpType = MINIDUMP_TYPE.MiniDumpNormal;
