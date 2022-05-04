@@ -916,8 +916,7 @@
 					"Title": "OnboardingWorkspaceTitle",
 					"FormattedText": "OnboardingWorkspaceText"
 				},
-				"HostPopupInfo":
-				{
+				"HostPopupInfo": {
 					"VerticalPopupOffset": 300,
 					"HorizontalPopupOffset": 100,
 					"PopupPlacement": "bottom",
@@ -930,7 +929,61 @@
 						"HeightBoxDelta": 0
 					}
 				}
-			}		
+			},
+			{
+				"Sequence": 2,
+				"Name": "library",
+				"Type": "tooltip",
+				"ShowLibrary": false,
+				"TooltipPointerDirection": "none",
+				"Width": 480,
+				"Height": 480,
+				"StepContent": {
+					"Title": "OnboardingConnectTheNodesTitle",
+					"FormattedText": "OnboardingConnectTheNodesText"
+				},
+				"HostPopupInfo": {
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 100,
+					"PopupPlacement": "relative",
+					"HostUIElementString": "background_grid",
+					"HtmlPage": {
+						"FileName": "connectTheNodes.html",
+						"Resources": {
+							"#ConnectTheNodes": "ConnectTheNode.gif"
+						}
+					},
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362"
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "HighlightPort",
+						"Parameters": [ "#EF9362" ],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "button",
+						"WindowName": "PopupWindow",
+						"Name": "NextButton",
+						"Action": "disable"
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ChangeNextButtonBasedInConnection",
+						"Action": "execute"
+					}
+				]
+			}
 		]
 	}
 

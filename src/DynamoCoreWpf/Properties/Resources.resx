@@ -3104,4 +3104,10 @@ To install the latest version of a package, click Install. \n
   <data name="ZoomLevel" xml:space="preserve">
     <value>0.4</value>
   </data>
+  <data name="OnboardingConnectTheNodesText" xml:space="preserve">
+    <value>This new node needs to be connected to another to make it part of the graph. Give it a try!</value>
+  </data>
+  <data name="OnboardingConnectTheNodesTitle" xml:space="preserve">
+    <value>Connect the nodes</value>
+  </data>
 </root>

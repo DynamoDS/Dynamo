@@ -4,6 +4,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Dynamo.Controls;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
@@ -392,6 +395,28 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 }
             }
             return findWindow;
+        }
+
+        /// <summary>
+        /// This method will find a Node in the Workspace based in the Node ID provided
+        /// </summary>
+        /// <param name="mainWindow">Dynamo Window</param>
+        /// <param name="nodeID">ID of the node to be found</param>
+        /// <returns>The instance of the NodeView found</returns>
+        internal static NodeView FindNodeByID(UIElement mainWindow, string nodeID)
+        {
+            var nodeViewChildren = mainWindow.ChildrenOfType<NodeView>();
+
+            //Means that we don't have nodes in the Workspace
+            if (nodeViewChildren == null || nodeViewChildren.Count() == 0) return null;
+
+            //Get the first CoordinateSystem.ByOrigin node
+            var byOriginNode = (from nodeView in nodeViewChildren
+                                where (nodeView.DataContext is NodeViewModel) &&
+                                      (nodeView.DataContext as NodeViewModel).Id.ToString().Replace("-", "") == nodeID
+                                select nodeView).FirstOrDefault();
+
+            return byOriginNode;
         }
 
         /// <summary>

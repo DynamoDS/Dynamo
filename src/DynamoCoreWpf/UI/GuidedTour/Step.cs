@@ -759,7 +759,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="targetElement">the element in which the rectangle will be animated (basically is for creating the Scope)</param>
         /// <param name="recColor">string representing the rectangle color</param>
         /// <returns>The Rectangle with the animation started</returns>
-        private Rectangle CreateRectangle(FrameworkElement targetElement, string recColor)
+        internal Rectangle CreateRectangle(FrameworkElement targetElement, string recColor)
         {
             //This is the effect that will be animated with the StoryBoard
             var blur = new BlurEffect()

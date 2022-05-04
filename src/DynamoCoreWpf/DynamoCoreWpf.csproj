@@ -20,6 +20,8 @@
     <None Remove="UI\Images\NodeStates\info-64px.png" />
     <None Remove="UI\Images\warning_16px.png" />
     <None Remove="Views\GuidedTour\HtmlPages\getStartedOnboarding.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\nodePackage - Copy.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\emptyImage.png" />
   </ItemGroup>
   <ItemGroup>
@@ -570,6 +572,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\getStartedOnboarding.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage - Copy.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -1402,7 +1406,7 @@
     <Resource Include="UI\Images\minimize-default-16px.png" />
     <Resource Include="UI\Images\maximize-hover.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\PackageNodes.gif" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\connectTheNodes.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\installedPackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\successIcon.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\filterIcon.png" />
