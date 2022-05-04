@@ -930,7 +930,42 @@
 						"HeightBoxDelta": 0
 					}
 				}
-			}		
+			},
+			{
+				"Sequence": 2,
+				"Name": "nodes",
+				"Type": "tooltip",
+				"ShowLibrary": false,
+				"TooltipPointerDirection": "none",
+				"Width": 480,
+				"Height": 300,
+				"StepContent": {
+					"Title": "OnboardingNodesTitle",
+					"FormattedText": "OnboardingNodesText"
+				},
+				"HostPopupInfo": {
+					"HostUIElementString": "background_grid",
+					"PopupPlacement": "bottom",
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 100,
+					"CutOffRectArea": {
+						"NodeId": "a20a93da6af14deebe2df37c1662349f",
+						"XPosOffset": -30,
+						"YPosOffset": -20,
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "HighlightPort",
+						"Parameters": [ "#EF9362" ],
+						"Action": "execute"
+					}
+				]
+			}
 		]
 	}
 
