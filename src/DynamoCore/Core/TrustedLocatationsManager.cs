@@ -48,7 +48,7 @@ namespace Dynamo.Core
         {
             try
             {
-                string location = ValidateTrustedLocation(path);
+                string location = ValidateLocation(path);
                 var existing = TrustedLocations.FirstOrDefault(x => x.Equals(location));
                 if (settings != null && string.IsNullOrEmpty(existing))
                 {
@@ -68,7 +68,7 @@ namespace Dynamo.Core
         /// <returns>The true if the path was removed and false otherwise</returns>
         internal bool RemoveTrustedLocation(string path)
         {
-            string location = ValidateTrustedLocation(path);
+            string location = ValidateLocation(path);
             if (settings != null && trustedLocations.RemoveAll(x => x.Equals(location)) >= 0)
             {
                 settings.TrustedLocations = trustedLocations;
@@ -91,15 +91,6 @@ namespace Dynamo.Core
             settings.TrustedLocations = trustedLocations;
         }
 
-        #region Public members
-        /// <summary>
-        /// The actual instance stored in the Singleton class
-        /// </summary>
-        public static TrustedLocationsManager Instance
-        {
-            get { return lazy.Value; }
-        }
-
         /// <summary>
         /// Checks is the path is considered valid for Dynamo's trusted locations.
         /// An exception is thrown if the path is considered invalid.
@@ -116,7 +107,7 @@ namespace Dynamo.Core
         /// <exception cref="ArgumentException">Input argument is not an absolute path.</exception>
         /// <exception cref="ArgumentException">Path directory does not exist</exception>
         /// <exception cref="System.Security.SecurityException">Dynamo does not have the required permissions.</exception>
-        public string ValidateTrustedLocation(string path)
+        internal string ValidateLocation(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -147,6 +138,15 @@ namespace Dynamo.Core
             return location;
         }
 
+        #region Public members
+        /// <summary>
+        /// The actual instance stored in the Singleton class
+        /// </summary>
+        public static TrustedLocationsManager Instance
+        {
+            get { return lazy.Value; }
+        }
+
         /// <summary>
         /// Checkes whether the input argument (path) is among Dynamo's trusted locations
         /// Only directories are supported (if a file path is used, its root directry will be checked).
@@ -155,7 +155,7 @@ namespace Dynamo.Core
         /// <returns>True if the path is a trusted location, false otherwise</returns>
         public bool IsTrustedLocation(string path)
         {
-            string location = ValidateTrustedLocation(path);
+            string location = ValidateLocation(path);
 
             // All subdirectories are considered trusted if the parent directory is trusted.
             var trustedLoc = TrustedLocations.FirstOrDefault(x => location.StartsWith(x));
