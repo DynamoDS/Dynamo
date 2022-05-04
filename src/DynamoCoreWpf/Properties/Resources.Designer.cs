@@ -4405,6 +4405,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide..
+        /// </summary>
+        public static string OnboardingGuideWelcomeText {
+            get {
+                return ResourceManager.GetString("OnboardingGuideWelcomeText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Get started with Dynamo.
         /// </summary>
         public static string OnboardingGuideWelcomeTitle {
@@ -4432,7 +4441,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This is the workspace, where you develop visual programs and preview the results.\n This graph shows the building blocks of Dynamo:\n Nodes perform operations, such as storing a number or creating geometry\n Wires connect nodes\n Together, nodes and wires form a set of instructions for processing data or building geometry..
         ///   Looks up a localized string similar to This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** , which is made up of nodes and wires. Graphs can process data, create geometry, and more. In this guide, we’ll work with a premade sample graph..
         /// </summary>
         public static string OnboardingWorkspaceText {
