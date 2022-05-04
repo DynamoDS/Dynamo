@@ -587,7 +587,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         {
             GuideFlowEvents.OnUpdatePopupLocation();
         }
-     
+
         /// <summary>
         /// Convenience method for logging to Dynamo Console.
         /// </summary>

@@ -625,7 +625,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 Grid.SetRow(portRectangle, 0);
             }
             else
-            { 
+            {
                 //When moving to the next/previous or exiting the guide, then the Rectangle previously added will be removed
                 var buttonRectangle = mainGrid.Children.OfType<Rectangle>().Where(rect => rect.Name.Equals("HighlightRectangle")).FirstOrDefault();
                 if (buttonRectangle != null)
