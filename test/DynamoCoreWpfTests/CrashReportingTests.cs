@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Threading;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -178,10 +179,17 @@ namespace Dynamo.Tests
         [Test]
         public void TestCERTool()
         {
-            var dumpLocation = CrashReportTool.CreateMiniDumpFile();
-            Assert.IsFalse(string.IsNullOrEmpty(dumpLocation));
-
-            Assert.IsTrue(File.Exists(dumpLocation));
+            try
+            {
+                throw new Exception("test");
+            }
+            catch
+            {
+                var dumpLocation = CrashReportTool.CreateMiniDumpFile();
+                Assert.IsFalse(string.IsNullOrEmpty(dumpLocation));
+                Assert.IsTrue(File.Exists(dumpLocation));
+                File.Delete(dumpLocation);//cleanup
+            }
         }
     }
 }
