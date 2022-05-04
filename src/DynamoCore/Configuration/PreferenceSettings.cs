@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
@@ -301,6 +302,32 @@ namespace Dynamo.Configuration
         {
             trustedLocations.Clear();
             foreach (var loc in locs) trustedLocations.Add(loc);
+        }
+
+        // This function is used to deserialize the trusted locations manually
+        // so that the TrustedLocation propertie's setter does not need to be public.
+        private List<string> DeserializeTrustedLocations(string path)
+        {
+            List<string> output = new List<string>();
+            try
+            {
+                var doc = new XmlDocument();
+                doc.Load(path);
+                if (doc != null)
+                {
+                    XmlNode root = doc.SelectSingleNode("//PreferenceSettings");
+                    var parentNode = root.SelectSingleNode("//TrustedLocations");
+                    foreach (XmlNode value in parentNode.ChildNodes)
+                    {
+                        output.Add(value.InnerText);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return output;
         }
 
         /// <summary>
@@ -642,8 +669,9 @@ namespace Dynamo.Configuration
 
             // Manually deserialize the TrustedLocations property from the PreferencesSettings file.
             // This is done so that we can avoid exposing the TrustedLocations setter to the public API.
-            // <Pending Mike's work>
-            settings.SetTrustedLocations(settings.TrustedLocations.Distinct());
+            var trustedLocations = settings.DeserializeTrustedLocations(filePath);
+            settings.SetTrustedLocations(trustedLocations.Distinct());
+
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
             return settings;
