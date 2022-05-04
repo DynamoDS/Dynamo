@@ -639,7 +639,8 @@ namespace Dynamo.Configuration
                     fs.Close(); // Release file lock
                 }
             }
-            catch {
+            catch
+            {
                 if (settings == null)
                 {
                     return new PreferenceSettings();
@@ -655,12 +656,26 @@ namespace Dynamo.Configuration
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
 
-            //manually load some xml we don't want to create public setters for.
-            var doc = new System.Xml.XmlDocument();
-            doc.Load(filePath);
-            var fresult = new XmlElementHelper(doc.ChildNodes.Cast<XmlElement>().ToList().Where(x => x.Name == nameof(DisableTrustWarnings)).FirstOrDefault()).ReadBoolean("");
+            DeserializeInternalPrefs(filePath);
 
             return settings;
+        }
+
+        private void DeserializeInternalPrefs(string filePath)
+        {
+            try
+            {
+                //manually load some xml we don't want to create public setters for.
+                var doc = new System.Xml.XmlDocument();
+                doc.Load(filePath);
+                //preferenceSettings//DisableTrustWarnings
+                var dtresult = new XmlElementHelper(doc.ChildNodes[0].ChildNodes.Cast<XmlElement>().ToList().Where(x => x.Name == nameof(DisableTrustWarnings)).FirstOrDefault()).ReadBoolean("");
+                disableTrustWarnings = dtresult;
+            }
+            catch(Exception ex)
+            {
+
+            }
         }
 
         /// <summary>
