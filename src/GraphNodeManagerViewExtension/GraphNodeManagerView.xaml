@@ -81,7 +81,7 @@
             <Button x:Name="ClearFiltersButton"
                     DockPanel.Dock="Right"
                     Content="Clear all" 
-                    Margin="0 2 0 15"
+                    Margin="0 3 0 15"
                     Width="60"
                     HorizontalAlignment="Right"
                     Style="{StaticResource ButtonStyle1}" 
@@ -111,6 +111,7 @@
                   CanUserResizeColumns="True" 
                   CanUserSortColumns="True"
                   HeadersVisibility="Column"
+                  MinColumnWidth="60"
                   SelectionChanged="NodeTable_SelectionChanged">
 
             <DataGrid.GroupStyle>
