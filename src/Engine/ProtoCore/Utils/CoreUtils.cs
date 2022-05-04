@@ -7,6 +7,9 @@ namespace ProtoCore.Utils
 {
     public static class CoreUtils
     {
+        public static readonly string FunctionObjectClass = "Function";        
+        public static readonly string FunctionObjectLibrary = "FunctionObject.ds";
+
         public static void InsertPredefinedAndBuiltinMethods(Core core, CodeBlockNode root)
         {
             if (DSASM.InterpreterMode.Normal == core.Options.RunMode)

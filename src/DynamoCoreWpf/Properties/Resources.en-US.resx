@@ -3117,4 +3117,13 @@ To install the latest version of a package, click Install. \n
   <data name="ZoomLevel" xml:space="preserve">
     <value>0.4</value>
   </data>
+  <data name="OnboardingNodesText" xml:space="preserve">
+    <value>Nodes are the building blocks of graphs. Nodes perform operations, such as storing a number or creating geometry.\n\nYou can learn more about a node by hovering over its parts. This node is missing an input.\n\nHover over the input port to see what types of data it accepts.</value>
+  </data>
+  <data name="OnboardingNodesTitle" xml:space="preserve">
+    <value>Nodes</value>
+  </data>
+  <data name="OnboardingGuideWelcomeText" xml:space="preserve">
+    <value>Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide.</value>
+  </data>
 </root>
