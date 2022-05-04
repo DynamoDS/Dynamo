@@ -24,7 +24,6 @@ namespace Dynamo.GraphNodeManager.ViewModels
             internal set
             {
                 isFilterOn = value;
-
                 RaisePropertyChanged(nameof(IsFilterOn));
             }
         }

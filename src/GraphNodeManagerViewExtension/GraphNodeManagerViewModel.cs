@@ -38,7 +38,6 @@ namespace Dynamo.GraphNodeManager
         private Dictionary<string, FilterViewModel> filterDictionary = new Dictionary<string, FilterViewModel>();
 
         private bool isEditingEnabled = true;
-        private bool isRecomputeEnabled = true;
 
         private HomeWorkspaceModel CurrentWorkspace
         {
@@ -86,13 +85,15 @@ namespace Dynamo.GraphNodeManager
         public CollectionViewSource NodesCollection { get; set; }
 
         public DelegateCommand NodeSelectCommand { get; set; }
+        public DelegateCommand ClearFiltersCommand { get; set; }
         public DelegateCommand<string> ExportCommand { get; set; }
 
+
+        public string searchText;
         /// <summary>
         /// Search Box Text binding
         /// </summary>
         [JsonIgnore]
-        public string searchText;
         public string SearchText
         {
             get { return searchText; }
@@ -106,14 +107,13 @@ namespace Dynamo.GraphNodeManager
             }
         }
 
+        public GraphNodeManagerView GraphNodeManagerView;
+
+        public string searchBoxPrompt = "Search..";
         /// <summary>
         /// Search Box Prompt binding
         /// </summary>
         [JsonIgnore]
-        public string searchBoxPrompt = "Search..";
-
-        public GraphNodeManagerView GraphNodeManagerView;
-
         public string SearchBoxPrompt
         {
             get { return searchBoxPrompt; }
@@ -124,6 +124,7 @@ namespace Dynamo.GraphNodeManager
             }
         }
 
+        private bool isRecomputeEnabled = true;
         /// <summary>
         /// Is the recomputeAll button enabled in the UI. Users should not be able to force a 
         /// reset of the engine and re-execution of the graph if one is still ongoing. This causes...trouble.
@@ -140,6 +141,16 @@ namespace Dynamo.GraphNodeManager
                     isRecomputeEnabled = value;
                     RaisePropertyChanged(nameof(IsRecomputeEnabled));
                 }
+            }
+        }
+
+        private bool isAnyFilterOn;
+        [JsonIgnore]
+        public bool IsAnyFilterOn
+        {
+            get
+            {
+                return FilterItems.Any(f => f.IsFilterOn);
             }
         }
         #endregion
@@ -171,6 +182,7 @@ namespace Dynamo.GraphNodeManager
             InitializeFilters();
 
             NodeSelectCommand = new DelegateCommand(NodeSelect);
+            ClearFiltersCommand = new DelegateCommand(ClearAllFilters);
             ExportCommand = new DelegateCommand<string>(ExportGraph);
         }
 
@@ -255,9 +267,24 @@ namespace Dynamo.GraphNodeManager
             viewModelCommandExecutive.FindByIdCommand(nodeViewModel.NodeModel.GUID.ToString());
         }
         /// <summary>
-        /// Export the current graph to CSV or JSON
+        /// Switches off all filters
         /// </summary>
         /// <param name="obj"></param>
+        internal void ClearAllFilters(object obj)
+        {
+            if (!FilterItems.Any()) return;
+
+            foreach (FilterViewModel fvm in FilterItems)
+            {
+                fvm.IsFilterOn = false;
+            }
+            // Refresh the view 
+            NodesCollectionFilter_Changed();
+        }
+        /// <summary>
+        /// Export the current graph to CSV or JSON
+        /// </summary>
+        /// <param name="parameter"></param>
         /// <exception cref="NotImplementedException"></exception>
         internal void ExportGraph(object parameter)
         {
@@ -280,6 +307,7 @@ namespace Dynamo.GraphNodeManager
         internal void NodesCollectionFilter_Changed()
         {
             // Refresh the view to apply filters.
+            RaisePropertyChanged(nameof(IsAnyFilterOn));
             CollectionViewSource.GetDefaultView(GraphNodeManagerView.NodesInfoDataGrid.ItemsSource).Refresh();
         }
 

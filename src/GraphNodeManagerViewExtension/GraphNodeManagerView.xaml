@@ -40,8 +40,8 @@
         <DockPanel Grid.Row="1">
             <Grid x:Name="FilterGrid" DockPanel.Dock="Top">
                 <ItemsControl x:Name="FilterItemControl"
-                              Margin="5"
-                              ItemsSource="{Binding FilterItems, UpdateSourceTrigger=PropertyChanged}">
+                                  Margin="5"
+                                  ItemsSource="{Binding FilterItems, UpdateSourceTrigger=PropertyChanged}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <controls:FilterItemControl/>
@@ -54,31 +54,39 @@
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
             </Grid>
-
             <Image x:Name="ExportImage"
-                   DockPanel.Dock="Right"
-                   Width="16px"
-                   Height="16px"
-                   Margin="15 0 15 15"
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Center"
-                   Source="/GraphNodeManagerViewExtension;component/Images/Export.png"
-                   Stretch="UniformToFill"
-                   MouseUp="ExportImage_OnMouseUp"
-                   Cursor="Hand">
+                       DockPanel.Dock="Right" 
+                       Width="16px"
+                       Height="16px"
+                       Margin="0 0 15 15"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Source="/GraphNodeManagerViewExtension;component/Images/Export.png"
+                       Stretch="UniformToFill"
+                       MouseUp="ExportImage_OnMouseUp"
+                       Cursor="Hand">
                 <Image.ContextMenu>
                     <ContextMenu Name="MainContextMenu"
-                                 Margin="0 -10"
-                                 Style="{StaticResource ContextMenuStyle}"
-                                 Background="#666666"
-                                 Width="170">
+                                     Margin="0 -10"
+                                     Style="{StaticResource ContextMenuStyle}"
+                                     Background="#666666"
+                                     Width="170">
                         <MenuItem x:Name="CSVItem" Header="Export as CSV" Padding="10" FontSize="12"
-                                  Command="{Binding ExportCommand}" CommandParameter="CSV"/>
+                                      Command="{Binding ExportCommand}" CommandParameter="CSV"/>
                         <MenuItem x:Name="JSONItem" Header="Export as JSON" Padding="10" FontSize="12"
-                                  Command="{Binding ExportCommand}" CommandParameter="JSON"/>
+                                      Command="{Binding ExportCommand}" CommandParameter="JSON"/>
                     </ContextMenu>
                 </Image.ContextMenu>
             </Image>
+            <Button x:Name="ClearFiltersButton"
+                    DockPanel.Dock="Right"
+                    Content="Clear all" 
+                    Margin="0 2 0 15"
+                    Width="60"
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource ButtonStyle1}" 
+                    Command="{Binding ClearFiltersCommand}" 
+                    Visibility="{Binding IsAnyFilterOn, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"/>
         </DockPanel>
 
         <!-- Node Data Grid -->
