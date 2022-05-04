@@ -72,7 +72,7 @@ namespace DynamoCoreWpfTests
             foreach (var step in getStartedGuide.GuideSteps)
             {
                 //Validate that for each Step, the HostUIElementString element exists in the Dynamo VisualTree
-                var childFound = Guide.FindChild(View, step.HostPopupInfo.HostUIElementString);
+                var childFound = GuideUtilities.FindChild(View, step.HostPopupInfo.HostUIElementString);
                 elementNotFoundMessage = string.Format("The UIElement: {0} was not found in the DynamoView VisualTree", step.HostPopupInfo.HostUIElementString);
                 Assert.IsNotNull(childFound, elementNotFoundMessage);
             }

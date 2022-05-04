@@ -885,6 +885,7 @@
 				"Sequence": 0,
 				"Name": "welcome",
 				"Type": "welcome",
+				"ShowLibrary": false,
 				"Width": 480,
 				"Height": 320,
 				"StepContent": {
@@ -908,18 +909,63 @@
 				"Name": "library",
 				"Type": "tooltip",
 				"ShowLibrary": false,
-				"TooltipPointerDirection": "top_left",
+				"TooltipPointerDirection": "none",
 				"Width": 480,
-				"Height": 432,
+				"Height": 280,
 				"StepContent": {
 					"Title": "OnboardingWorkspaceTitle",
 					"FormattedText": "OnboardingWorkspaceText"
 				},
-				"HostPopupInfo": {					
-					"VerticalPopupOffset": 100,
-					"HorizontalPopupOffset": 50
+				"HostPopupInfo":
+				{
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 100,
+					"PopupPlacement": "bottom",
+					"HostUIElementString": "background_grid",
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362"
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
 				}
-			}		
+			},
+			{
+				"Sequence": 2,
+				"Name": "nodes",
+				"Type": "tooltip",
+				"ShowLibrary": false,
+				"TooltipPointerDirection": "none",
+				"Width": 480,
+				"Height": 300,
+				"StepContent": {
+					"Title": "OnboardingNodesTitle",
+					"FormattedText": "OnboardingNodesText"
+				},
+				"HostPopupInfo": {
+					"HostUIElementString": "background_grid",
+					"PopupPlacement": "bottom",
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 100,
+					"CutOffRectArea": {
+						"NodeId": "a20a93da6af14deebe2df37c1662349f",
+						"XPosOffset": -30,
+						"YPosOffset": -20,
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "HighlightPort",
+						"Parameters": [ "#EF9362" ],
+						"Action": "execute"
+					}
+				]
+			}
 		]
 	}
 

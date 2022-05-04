@@ -30,6 +30,7 @@ namespace Dynamo.ViewModels
         Large,
         ExtraLarge
     }
+
     public class PreferencesViewModel : ViewModelBase, INotifyPropertyChanged
     {
         #region Private Properties
@@ -791,6 +792,11 @@ namespace Dynamo.ViewModels
         public PackagePathViewModel PackagePathsViewModel { get; set; }
 
         /// <summary>
+        /// Trusted Paths view model.
+        /// </summary>
+        public TrustedPathViewModel TrustedPathsViewModel { get; set; }
+
+        /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
         /// </summary>
         public PreferencesViewModel(DynamoViewModel dynamoViewModel)
@@ -882,6 +888,7 @@ namespace Dynamo.ViewModels
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
+            TrustedPathsViewModel = new TrustedPathViewModel();
 
             WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
 

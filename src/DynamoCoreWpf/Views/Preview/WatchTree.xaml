@@ -311,7 +311,10 @@
                                         <Setter Property="Margin" Value="-10,5,5,5" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsOneRowContent}" Value="False">
-                                        <Setter Property="Margin" Value="5,5,5,5" />
+                                        <Setter Property="Margin" Value="5,0,5,5" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsCollection}" Value="false">
+                                        <Setter Property="Margin" Value="-5,0,0,0" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -377,7 +380,7 @@
                 CornerRadius="0,0,2,2"
                 BorderThickness="0">
 
-            <DockPanel Name="ListLevelsDisplay" Height="27px">
+            <DockPanel Name="ListLevelsDisplay" Height="27px" Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                 <!--  A draggable control to resize the Watch window  -->
                 <Thumb Name="resizeThumb"
@@ -446,7 +449,7 @@
                                 <TextBlock Name="indivListLevel"
                                            FontFamily="{StaticResource SourceCodePro}"
                                            FontSize="10">
-                                    L<Run Foreground="#D3D3D3" Text="{Binding Path=.}" />
+                                    <Run Foreground="#D3D3D3" Text="{Binding Path=.}" />
                                 </TextBlock>
                             </StackPanel>
                         </DataTemplate>
