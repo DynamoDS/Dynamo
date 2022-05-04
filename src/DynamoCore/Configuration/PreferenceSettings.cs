@@ -289,6 +289,25 @@ namespace Dynamo.Configuration
         public List<string> CustomPackageFolders { get; set; }
 
         /// <summary>
+        /// Backing store for TrustedLocations
+        /// </summary>
+        private List<string> trustedLocations { get; set; }
+
+        /// <summary>
+        /// A list of trusted locations (folders) as recorded in the preferences file.
+        /// Do not directly use this property when trying to check for trusted locations.
+        /// Instead use Dynamo.Core.TrustedLocationsManager to manage for trusted locations.
+        /// </summary>
+        public List<string> TrustedLocations 
+        { 
+            get => trustedLocations.ToList(); //Copy of the internal list
+            internal set 
+            {
+                trustedLocations = value;
+            }
+        }
+
+        /// <summary>
         /// A list of packages used by the Package Manager to determine
         /// which packages are marked for deletion.
         /// </summary>
@@ -526,6 +545,9 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             CustomPackageFolders = new List<string>();
+      
+            TrustedLocations = new List<string>();
+
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
@@ -605,8 +627,15 @@ namespace Dynamo.Configuration
                     fs.Close(); // Release file lock
                 }
             }
-            catch (Exception) { }
+            catch {
+                if (settings == null)
+                {
+                    return new PreferenceSettings();
+                }
+            }
+
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
+            settings.TrustedLocations = settings.TrustedLocations.Distinct().ToList();
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
             return settings;
