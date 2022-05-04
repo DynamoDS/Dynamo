@@ -53,7 +53,7 @@ namespace Dynamo.Core
                 if (settings != null && string.IsNullOrEmpty(existing))
                 {
                     trustedLocations.Add(location);
-                    settings.TrustedLocations = trustedLocations;
+                    settings.SetTrustedLocations(trustedLocations);
                     return true;
                 }
             }
@@ -71,7 +71,7 @@ namespace Dynamo.Core
             string location = ValidateLocation(path);
             if (settings != null && trustedLocations.RemoveAll(x => x.Equals(location)) >= 0)
             {
-                settings.TrustedLocations = trustedLocations;
+                settings.SetTrustedLocations(trustedLocations);
                 return true;
             }
             return false;
@@ -88,7 +88,7 @@ namespace Dynamo.Core
             {
                 AddTrustedLocation(item);
             }
-            settings.TrustedLocations = trustedLocations;
+            settings.SetTrustedLocations(trustedLocations);
         }
 
         /// <summary>
