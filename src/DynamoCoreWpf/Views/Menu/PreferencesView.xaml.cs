@@ -160,6 +160,7 @@ namespace Dynamo.Wpf.Views
             viewModel.IsVisibleAddStyleBorder = true;
             viewModel.IsEnabledAddStyleButton = false;
             groupNameBox.Focus();
+            Logging.Analytics.TrackEvent(Actions.New, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
         private void ResetGroupStyleForm()
@@ -202,12 +203,14 @@ namespace Dynamo.Wpf.Views
             {
                 viewModel.AddStyle(newItem);
                 viewModel.ResetAddStyleControl();
+                Logging.Analytics.TrackEvent(Actions.Save, Categories.GroupStyleOperations, nameof(GroupStyleItem));
             }          
         }
 
         private void AddStyle_CancelButton_Click(object sender, RoutedEventArgs e)
         {
             viewModel.ResetAddStyleControl();
+            Logging.Analytics.TrackEvent(Actions.Cancel, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
         private void RemoveStyle_Click(object sender, RoutedEventArgs e)
@@ -222,6 +225,7 @@ namespace Dynamo.Wpf.Views
 
             //Remove the selected style from the list
             viewModel.RemoveStyleEntry(groupNameLabel.Content.ToString());
+            Logging.Analytics.TrackEvent(Actions.Delete, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
         private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)
