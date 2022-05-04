@@ -13,6 +13,8 @@
     <DocumentationFile>..\..\..\bin\AnyCPU\Debug\en-US\FFITarget.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />

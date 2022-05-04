@@ -8,16 +8,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TestUINodes</RootNamespace>
     <AssemblyName>TestUINodes</AssemblyName>
-	  <OutputPath>$(OutputPath)\nodes\</OutputPath>
+    <OutputPath>$(OutputPath)\nodes\</OutputPath>
   </PropertyGroup>
-  <ItemDefinitionGroup>
-    <ReferenceCopyLocalPaths>
-      <!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
-      <DestinationSubDirectory>..\</DestinationSubDirectory>
-	</ReferenceCopyLocalPaths>
-  </ItemDefinitionGroup>
   <ItemGroup>
-	  <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />

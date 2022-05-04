@@ -21,7 +21,7 @@ namespace Dynamo.Tests
             {
                 // These tests need "CoreNodeModels.dll" under "nodes" folder.
                 Path.Combine(moduleRootFolder, "nodes"),
-                Path.Combine(new DirectoryInfo(assemblyPath).Parent.Parent.Parent.Parent.FullName, "test", "packages")
+                Path.Combine(new DirectoryInfo(assemblyPath).Parent.Parent.Parent.Parent.FullName, "test", "test_dependencies")
             };
 
             assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
