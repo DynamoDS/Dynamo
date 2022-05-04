@@ -11,7 +11,7 @@ bin/
 obj/
 int/
 packages/
-/test/test_dependencies/*.xml
+**/test_dependencies/*
 
 #find -type d -name bin -exec git rm -r {} \;
 
