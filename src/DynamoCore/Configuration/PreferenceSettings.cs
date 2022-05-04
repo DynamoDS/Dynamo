@@ -299,20 +299,26 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Backing store for TrustedLocations
         /// </summary>
-        private List<string> trustedLocations { get; set; }
+        private List<string> trustedLocations { get; set; } = new List<string>();
 
         /// <summary>
-        /// A list of trusted locations (folders) as recorded in the preferences file.
+        /// Set trusted locations in the PreferenceSettings configuration.
+        /// </summary>
+        /// <param name="locs"></param>
+        internal void SetTrustedLocations(IEnumerable<string> locs)
+        {
+            trustedLocations.Clear();
+            foreach (var loc in locs) trustedLocations.Add(loc);
+        }
+
+        /// <summary>
+        /// A copy of the list of trusted locations (folders) as recorded in the preferences file.
         /// Do not directly use this property when trying to check for trusted locations.
         /// Instead use Dynamo.Core.TrustedLocationsManager to manage for trusted locations.
         /// </summary>
         public List<string> TrustedLocations 
         {
             get => trustedLocations.ToList(); //Copy of the internal list
-            internal set
-            {
-                trustedLocations = value;
-            }
         }
 
         /// <summary>
@@ -553,8 +559,7 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             CustomPackageFolders = new List<string>();
-            disableTrustWarnings = false;
-            TrustedLocations = new List<string>();
+
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
@@ -642,7 +647,11 @@ namespace Dynamo.Configuration
             }
 
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
-            settings.trustedLocations = settings.TrustedLocations.Distinct().ToList();
+
+            // Manually deserialize the TrustedLocations property from the PreferencesSettings file.
+            // This is done so that we can avoid exposing the TrustedLocations setter to the public API.
+            // <Pending Mike's work>
+            settings.SetTrustedLocations(settings.TrustedLocations.Distinct());
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
 

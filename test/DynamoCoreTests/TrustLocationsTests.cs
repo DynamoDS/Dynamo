@@ -19,10 +19,10 @@ namespace Dynamo.Tests
             base.Setup();
 
             settings = new PreferenceSettings();
-            settings.TrustedLocations = new List<string>() {
+            settings.SetTrustedLocations(new List<string>() {
                 Path.Combine(TestDirectory, "ShouldNotExist"),
                 ExecutingDirectory
-            };
+            });
 
             TrustedLocationsManager.Instance.Initialize(settings);
         }
