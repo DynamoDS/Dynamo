@@ -75,9 +75,9 @@ namespace Dynamo.Configuration
         /// </summary>
         [XmlIgnore]
         [Obsolete("Setter is obsolete - ADP consent should not be set directly, it should be set using the consent dialog.")]
-        public bool IsADPAnalyticsReportingApproved { 
+        public bool IsADPAnalyticsReportingApproved {
             get { return Logging.AnalyticsService.IsADPOptedIn; }
-            set { throw new Exception("do not use"); } 
+            set { throw new Exception("do not use"); }
         }
         #endregion
 
@@ -287,6 +287,11 @@ namespace Dynamo.Configuration
         /// A list of folders packages, custom nodes or direct paths to .dll and .ds files.
         /// </summary>
         public List<string> CustomPackageFolders { get; set; }
+
+        /// <summary>
+        /// If true, trust warnings for opening .dyn files from untrusted locations will not be shown.
+        /// </summary>
+        public bool DisableTrustWarnings{ get; private set; }
 
         /// <summary>
         /// Backing store for TrustedLocations
@@ -545,9 +550,8 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             CustomPackageFolders = new List<string>();
-      
+            DisableTrustWarnings = false;
             TrustedLocations = new List<string>();
-
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
