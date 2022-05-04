@@ -210,17 +210,15 @@ namespace Dynamo.GraphNodeManager
             Nodes.Clear();
             foreach (var node in CurrentWorkspace.Nodes)
             {
-                var profiledNode = new NodeViewModel(node);
-                nodeDictionary[node.GUID] = profiledNode;
-                Nodes.Add(profiledNode);
+                var graphNode = new NodeViewModel(node);
+                nodeDictionary[node.GUID] = graphNode;
+                Nodes.Add(graphNode);
             }
 
             NodesCollection = new CollectionViewSource();
             NodesCollection.Source = Nodes;
             NodesCollection.Filter += NodesCollectionViewSource_Filter;
-            // Sort the data by execution state
-            //NodesCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(NodeViewModel.StateDescription)));
-            //NodesCollection.SortDescriptions.Add(new SortDescription(nameof(NodeViewModel.State), ListSortDirection.Ascending));
+
             NodesCollection.View?.Refresh();
 
             RaisePropertyChanged(nameof(NodesCollection));
@@ -390,8 +388,6 @@ namespace Dynamo.GraphNodeManager
             NodesCollection.Dispatcher.Invoke(() =>
             {
                 NodesCollection.SortDescriptions.Clear();
-                // Sort nodes into execution group
-                //NodesCollection.SortDescriptions.Add(new SortDescription(nameof(NodeViewModel.State), ListSortDirection.Ascending));
                 
                 if (NodesCollection.View != null)
                     NodesCollection.View.Refresh();
