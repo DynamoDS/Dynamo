@@ -72,7 +72,7 @@ clr.setPreload(True)
 
         private object ExecutePythonScriptCode(string code)
         {
-            Python.Included.Installer.SetupPython().Wait();
+            DSCPython.CPythonEvaluator.InstallPython();
 
             if (!PythonEngine.IsInitialized)
             {
@@ -376,7 +376,7 @@ clr.setPreload(True)
             BasicVariableTypes.Add(Tuple.Create(LIST_VARIABLE, typeof(PyList)));
             BasicVariableTypes.Add(Tuple.Create(DICT_VARIABLE, typeof(PyDict)));
 
-            Python.Included.Installer.SetupPython().Wait();
+            DSCPython.CPythonEvaluator.InstallPython();
 
             if (!PythonEngine.IsInitialized)
             {
