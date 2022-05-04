@@ -887,21 +887,15 @@
 				"Type": "welcome",
 				"ShowLibrary": false,
 				"Width": 480,
-				"Height": 320,
+				"Height": 230,
 				"StepContent": {
 					"Title": "OnboardingGuideWelcomeTitle",
-					"FormattedText": "GetStartedGuideWelcomeText"
+					"FormattedText": "OnboardingGuideWelcomeText"
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "center",
 					"VerticalPopupOffset": 0,
-					"HorizontalPopupOffset": 0,
-					"HtmlPage": {
-						"FileName": "getStartedOnboarding.html",
-						"Resources": {
-							"#GetStartedImage": "emptyImage.png"
-						}
-					}
+					"HorizontalPopupOffset": 0
 				}
 			},
 			{
