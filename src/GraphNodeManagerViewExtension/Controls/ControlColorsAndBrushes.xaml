@@ -9,9 +9,7 @@
     <Color x:Key="MidLightBlue">#366a81</Color>
     <Color x:Key="MidBlue">#365868</Color>
     <Color x:Key="MidDarkBlue">#375f71</Color>
-
     <Color x:Key="TextColor">#F5F5F5</Color>
-
 
     <!--  Brushes  -->
     <SolidColorBrush x:Key="MidGrayBrush" Color="{StaticResource MidGray}" />
@@ -22,7 +20,91 @@
     <SolidColorBrush x:Key="MidDarkBlueBrush" Color="{StaticResource MidDarkBlue}" />
     <SolidColorBrush x:Key="GrayBrush" Color="{StaticResource Gray}" />
     <SolidColorBrush x:Key="MidLightGrayBrush" Color="{StaticResource MidLightGray}" />
-
     <SolidColorBrush x:Key="TextColorBrush" Color="{StaticResource TextColor}" />
+
+    <!-- DataGrid style -->
+    <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
+        <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle1}"/>
+        <Setter Property="RowStyle" Value="{DynamicResource RowStyle1}"/>
+        <Setter Property="CellStyle" Value="{DynamicResource CellStyle1}"/>
+        <Setter Property="RowHeaderWidth" Value="0"/>
+        <Setter Property="BorderThickness" Value="0.5" />
+        <Setter Property="BorderBrush" Value="#555555"/>
+        <Setter Property="ColumnWidth" Value="Auto"/>
+        <Setter Property="GridLinesVisibility" Value="Vertical"/>
+        <Setter Property="VerticalGridLinesBrush" Value="#555555"/>
+        <Setter Property="UseLayoutRounding" Value="True"></Setter>
+    </Style>
+
+    <!-- DataGridColumnHeader style -->
+    <Style x:Key="ColumnHeaderStyle1" TargetType="DataGridColumnHeader">
+        <Setter Property="Height" Value="20"/>
+        <Setter Property="Background" Value="#333333"/>
+        <Setter Property="Foreground" Value="#999999"/>
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderBrush" Value="#555555"/>
+        <Setter Property="Margin" Value="10,0,10,0"/>
+    </Style>
+
+    <!-- DataGridRow style -->
+    <Style x:Key="RowStyle1" TargetType="DataGridRow">
+        <Setter Property="Background" Value="#333333"/>
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Height" Value="24"></Setter>
+        <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+        <Setter Property="BorderBrush" Value="#555555"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="#555555" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#555555" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Cell style -->
+    <Style x:Key="CellStyle1" TargetType="DataGridCell">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Margin" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentPresenter VerticalAlignment="Center" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="#555555" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Group Style -->
+    <Style x:Key="GroupHeaderStyle" TargetType="{x:Type GroupItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GroupItem}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Name}"/>
+                        <ItemsPresenter/>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Image Style -->
+    <Style x:Key="ImageStyle" TargetType="Image">
+        <Setter Property="Width" Value="12"></Setter>
+        <Setter Property="Height" Value="12"></Setter>
+        <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
+        <Setter Property="UseLayoutRounding" Value="True"></Setter>
+        <Setter Property="Margin" Value="3 0"></Setter>
+    </Style>
 
 </ResourceDictionary>
