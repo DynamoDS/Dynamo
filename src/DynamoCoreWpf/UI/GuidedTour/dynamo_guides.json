@@ -1065,6 +1065,57 @@
 					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 0
 				}
+			},
+			{
+				"Sequence": 5,
+				"Name": "runGraph",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "none",
+				"ShowLibrary": false,
+				"Width": 480,
+				"Height": 233,
+				"StepContent": {
+					"Title": "OnboardingGuideRunGraphTitle",
+					"FormattedText": "OnboardingGuideRunGraphText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "top",
+					"HostUIElementString": "RunButton",
+					"VerticalPopupOffset": -100,
+					"HorizontalPopupOffset": 100,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 15
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 15
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "button",
+						"WindowName": "PopupWindow",
+						"Name": "NextButton",
+						"Action": "disable"
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "RunButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
+					}
+				]
 			}
 		]
 	}
