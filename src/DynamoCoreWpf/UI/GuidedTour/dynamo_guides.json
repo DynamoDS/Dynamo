@@ -937,14 +937,14 @@
 				"ShowLibrary": false,
 				"TooltipPointerDirection": "none",
 				"Width": 480,
-				"Height": 480,
+				"Height": 380,
 				"StepContent": {
 					"Title": "OnboardingConnectTheNodesTitle",
 					"FormattedText": "OnboardingConnectTheNodesText"
 				},
 				"HostPopupInfo": {
-					"VerticalPopupOffset": 300,
-					"HorizontalPopupOffset": 100,
+					"VerticalPopupOffset": 250,
+					"HorizontalPopupOffset": 50,
 					"PopupPlacement": "relative",
 					"HostUIElementString": "background_grid",
 					"HtmlPage": {
@@ -952,9 +952,6 @@
 						"Resources": {
 							"#ConnectTheNodes": "ConnectTheNode.gif"
 						}
-					},
-					"HighlightRectArea": {
-						"HighlightColor": "#EF9362"
 					},
 					"CutOffRectArea": {
 						"WidthBoxDelta": 0,
@@ -966,20 +963,21 @@
 						"Sequence": 1,
 						"ControlType": "function",
 						"Name": "HighlightPort",
-						"Parameters": [ "#EF9362" ],
+						"Parameters": [ "#EF9362", "outputPortControl", "a20a93da6af14deebe2df37c1662349f" ],
 						"Action": "execute"
 					},
 					{
 						"Sequence": 2,
-						"ControlType": "button",
-						"WindowName": "PopupWindow",
-						"Name": "NextButton",
-						"Action": "disable"
+						"ControlType": "function",
+						"Name": "ManagePortConnectionEvents",
+						"Parameters": [ "NextButton", "outputPortControl", "a20a93da6af14deebe2df37c1662349f" ],
+						"Action": "execute"
 					},
 					{
-						"Sequence": 2,
+						"Sequence": 3,
 						"ControlType": "function",
-						"Name": "ChangeNextButtonBasedInConnection",
+						"Name": "RemovePortConnector",
+						"Parameters": [ "NextButton", "outputPortControl", "a20a93da6af14deebe2df37c1662349f" ],
 						"Action": "execute"
 					}
 				]
