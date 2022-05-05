@@ -3119,4 +3119,10 @@ To install the latest version of a package, click Install. \n
   <data name="OnboardingPlaceNodeTitle" xml:space="preserve">
     <value>Search the library and place a node</value>
   </data>
+  <data name="OnboardingGuideConnectNodesText" xml:space="preserve">
+    <value>This new node needs to be connected to another to make it part of the graph. Give it a try!</value>
+  </data>
+  <data name="OnboardingGuideConnectNodesTitle" xml:space="preserve">
+    <value>Connect the nodes</value>
+  </data>
 </root>

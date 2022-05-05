@@ -4405,6 +4405,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This new node needs to be connected to another to make it part of the graph. Give it a try!.
+        /// </summary>
+        public static string OnboardingGuideConnectNodesText {
+            get {
+                return ResourceManager.GetString("OnboardingGuideConnectNodesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect the nodes.
+        /// </summary>
+        public static string OnboardingGuideConnectNodesTitle {
+            get {
+                return ResourceManager.GetString("OnboardingGuideConnectNodesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide..
         /// </summary>
         public static string OnboardingGuideWelcomeText {
@@ -4441,7 +4459,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This is the workspace, where you develop visual programs and preview the results.\n This graph shows the building blocks of Dynamo:\n Nodes perform operations, such as storing a number or creating geometry\n Wires connect nodes\n Together, nodes and wires form a set of instructions for processing data or building geometry..
         ///   Looks up a localized string similar to This node needs a [xyz] input. You can find a node to use as the input in the library by using search or browsing. The node is x, so you’ll find it under the x category.\n\n Click the node to place it in the workspace..
         /// </summary>
         public static string OnboardingPlaceNodeText {

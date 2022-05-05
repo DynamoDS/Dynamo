@@ -97,7 +97,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This property is the position of the node that will be placed
         /// </summary>
-        public Point2D NodePosition { get; set; }
+        internal Point2D NodePosition { get; set; }
     }
 
     public class AutomaticHandlers
