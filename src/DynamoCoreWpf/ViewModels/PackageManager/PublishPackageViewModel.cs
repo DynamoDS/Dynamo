@@ -1343,7 +1343,7 @@ namespace Dynamo.PackageManager
             }
 
             PackageContents.Remove(PackageContents
-                .First(x => x.FileInfo.FullName == packageItemRootViewModel.FileInfo.FullName));
+                .First(x => x.FileInfo?.FullName == packageItemRootViewModel.FileInfo.FullName));
         }
 
         private bool CanShowAddFileDialogAndAdd()
