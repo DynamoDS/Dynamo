@@ -930,6 +930,10 @@ namespace Dynamo.PackageManager
                 }
             }
 
+            //after dependencies are loaded refresh package contents
+            vm.RefreshPackageContents();
+            vm.UpdateDependencies();
+
             if (assembliesLoadedTwice.Any())
             {
                 vm.UploadState = PackageUploadHandle.State.Error;
