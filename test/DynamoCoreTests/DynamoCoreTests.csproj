@@ -19,7 +19,7 @@
     <PackageReference Include="Greg" Version="2.1.8122.28281" />
 	  <PackageReference Include="Moq" Version="4.2.1507.0118" GeneratePathProperty="true" />
     <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
-    <PackageReference Include="NUnit" Version="2.6.3" ExcludeAssets="none" CopyXML="true" />
+    <PackageReference Include="NUnit" Version="2.6.3" GeneratePathProperty="true" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
     <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="2.0.226801" ExcludeAssets="none" />
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" ExcludeAssets="none" />
@@ -144,11 +144,12 @@
     <Content Include="Crypto\AnAlteredFile.txt" />
     <Content Include="Crypto\AnImportantFile.txt" />
   </ItemGroup>
-  <!--CopyMoqToDynamoOutputFolder is used to keep binary compatibility-->
-  <Target Name="CopyMoqToDynamoOutputFolder" AfterTargets="Build">
+  <!--BinaryCompatibility is used to keep binary compatibility-->
+  <Target Name="BinaryCompatibility" AfterTargets="Build">
     <ItemGroup>
       <MoqFiles Include="$(PkgMoq)\lib\net40\*.*" />
+      <NUnitFiles Include="$(PkgNUnit)\lib\*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(MoqFiles)" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(MoqFiles);@(NUnitFiles)" DestinationFolder="$(OutputPath)" />
   </Target>
 </Project>
