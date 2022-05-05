@@ -13,6 +13,14 @@
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="UI\Images\Alignment\align_bottom.png" />
+    <None Remove="UI\Images\Alignment\align_left.png" />
+    <None Remove="UI\Images\Alignment\align_right.png" />
+    <None Remove="UI\Images\Alignment\align_top.png" />
+    <None Remove="UI\Images\Alignment\align_x_average.png" />
+    <None Remove="UI\Images\Alignment\align_x_distribute.png" />
+    <None Remove="UI\Images\Alignment\align_y_average.png" />
+    <None Remove="UI\Images\Alignment\align_y_distribute.png" />
     <None Remove="UI\Images\NodeStates\alert-64px.png" />
     <None Remove="UI\Images\NodeStates\error-64px.png" />
     <None Remove="UI\Images\NodeStates\frozen-64px.png" />
@@ -626,6 +634,14 @@
     <EmbeddedResource Include="UI\GuidedTour\DynamoOnboardingGuide_HouseCreationDS.dyn">
 	</EmbeddedResource>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
+    <Resource Include="UI\Images\Alignment\align_bottom.png" />
+    <Resource Include="UI\Images\Alignment\align_left.png" />
+    <Resource Include="UI\Images\Alignment\align_right.png" />
+    <Resource Include="UI\Images\Alignment\align_top.png" />
+    <Resource Include="UI\Images\Alignment\align_x_average.png" />
+    <Resource Include="UI\Images\Alignment\align_x_distribute.png" />
+    <Resource Include="UI\Images\Alignment\align_y_average.png" />
+    <Resource Include="UI\Images\Alignment\align_y_distribute.png" />
     <Resource Include="UI\Images\caret_up.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
     <Resource Include="UI\Images\cursors.psd" />
