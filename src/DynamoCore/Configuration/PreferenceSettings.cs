@@ -306,21 +306,15 @@ namespace Dynamo.Configuration
 
         // This function is used to deserialize the trusted locations manually
         // so that the TrustedLocation propertie's setter does not need to be public.
-        private List<string> DeserializeTrustedLocations(string path)
+        private List<string> DeserializeTrustedLocations(XmlNode preferenceSettingsElement)
         {
             List<string> output = new List<string>();
             try
             {
-                var doc = new XmlDocument();
-                doc.Load(path);
-                if (doc != null)
+                var parentNode = preferenceSettingsElement.SelectSingleNode($@"//{nameof(TrustedLocations)}");
+                foreach (XmlNode value in parentNode.ChildNodes)
                 {
-                    XmlNode root = doc.SelectSingleNode("//PreferenceSettings");
-                    var parentNode = root.SelectSingleNode("//TrustedLocations");
-                    foreach (XmlNode value in parentNode.ChildNodes)
-                    {
-                        output.Add(value.InnerText);
-                    }
+                    output.Add(value.InnerText);
                 }
             }
             catch (Exception ex)
@@ -328,6 +322,27 @@ namespace Dynamo.Configuration
                 Console.WriteLine(ex.Message);
             }
             return output;
+        }
+
+        /// <summary>
+        /// Manually deserialize some preferences from the PreferencesSettings file.
+        /// This is done so that we can avoid exposing these property setters to the public API.
+        /// </summary>
+        /// <param name="prefsFilePath"></param>
+        private void DeserializeInternalPrefs(string prefsFilePath)
+        {
+            try
+            {
+                //manually load some xml we don't want to create public setters for.
+                var doc = new System.Xml.XmlDocument();
+                doc.Load(prefsFilePath);
+                var prefs = doc.SelectSingleNode($@"//{nameof(PreferenceSettings)}");
+
+                var trustedLocations = DeserializeTrustedLocations(prefs);
+                SetTrustedLocations(trustedLocations.Distinct());
+            }
+            catch
+            {}
         }
 
         /// <summary>
@@ -666,14 +681,9 @@ namespace Dynamo.Configuration
             }
 
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
-
-            // Manually deserialize the TrustedLocations property from the PreferencesSettings file.
-            // This is done so that we can avoid exposing the TrustedLocations setter to the public API.
-            var trustedLocations = settings.DeserializeTrustedLocations(filePath);
-            settings.SetTrustedLocations(trustedLocations.Distinct());
-
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
+            settings.DeserializeInternalPrefs(filePath);
             return settings;
         }
 
