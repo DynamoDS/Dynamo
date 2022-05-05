@@ -931,20 +931,23 @@
 				"ShowLibrary": false,
 				"TooltipPointerDirection": "none",
 				"Width": 480,
-				"Height": 300,
+				"Height": 380,
 				"StepContent": {
-					"Title": "OnboardingNodesTitle",
-					"FormattedText": "OnboardingNodesText"
+					"Title": "OnboardingConnectTheNodesTitle",
+					"FormattedText": "OnboardingConnectTheNodesText"
 				},
 				"HostPopupInfo": {
+					"VerticalPopupOffset": 250,
+					"HorizontalPopupOffset": 50,
+					"PopupPlacement": "relative",
 					"HostUIElementString": "background_grid",
-					"PopupPlacement": "bottom",
-					"VerticalPopupOffset": 300,
-					"HorizontalPopupOffset": 100,
+					"HtmlPage": {
+						"FileName": "connectTheNodes.html",
+						"Resources": {
+							"#ConnectTheNodes": "ConnectTheNode.gif"
+						}
+					},
 					"CutOffRectArea": {
-						"NodeId": "a20a93da6af14deebe2df37c1662349f",
-						"XPosOffset": -30,
-						"YPosOffset": -20,
 						"WidthBoxDelta": 0,
 						"HeightBoxDelta": 0
 					}
@@ -1064,7 +1067,7 @@
 					"PopupPlacement": "center",
 					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 0
-				}
+				}				
 			}
 		]
 	}

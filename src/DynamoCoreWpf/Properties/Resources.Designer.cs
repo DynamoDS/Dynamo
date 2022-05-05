@@ -4396,6 +4396,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This new node needs to be connected to another to make it part of the graph. Give it a try!.
+        /// </summary>
+        public static string OnboardingConnectTheNodesText {
+            get {
+                return ResourceManager.GetString("OnboardingConnectTheNodesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect the nodes.
+        /// </summary>
+        public static string OnboardingConnectTheNodesTitle {
+            get {
+                return ResourceManager.GetString("OnboardingConnectTheNodesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Onboarding.
         /// </summary>
         public static string OnboardingGuide {
