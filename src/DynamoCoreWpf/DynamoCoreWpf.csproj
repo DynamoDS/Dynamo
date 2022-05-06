@@ -21,7 +21,6 @@
     <None Remove="UI\Images\warning_16px.png" />
     <None Remove="Views\GuidedTour\HtmlPages\nodePackage.html" />
     <None Remove="Views\Menu\TrustedPathView.xaml" />
-    <None Remove="Views\GuidedTour\HtmlPages\getStartedOnboarding.html" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\emptyImage.png" />
   </ItemGroup>
