@@ -3,4 +3,4 @@ Symbol.ByTypeID retrieves a symbol given the type id (string).
 ___
 ## Example File
 
-![Symbol.ByTypeID](./DynamoUnits.Symbol.TypeId_img.png)
+![Symbol.ByTypeID](./DynamoUnits.Symbol.ByTypeID_img.png)
