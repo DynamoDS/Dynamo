@@ -21,7 +21,6 @@
     <None Remove="UI\Images\warning_16px.png" />
     <None Remove="Views\Menu\TrustedPathView.xaml" />
     <None Remove="Views\GuidedTour\HtmlPages\getStartedOnboarding.html" />
-    <None Remove="Views\GuidedTour\HtmlPages\nodePackage - Copy.html" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\emptyImage.png" />
   </ItemGroup>
@@ -580,8 +579,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\getStartedOnboarding.html" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage - Copy.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
     <None Include="App.config">
       <SubType>Designer</SubType>

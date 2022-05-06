@@ -604,6 +604,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void HighlightPort(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
+            CurrentExecutingStep.MainWindow.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             var stepMainWindow = CurrentExecutingStep.MainWindow as Window;
 
             //Parse the parameters location in the json file
@@ -611,15 +612,28 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (highlightColor == null) return;
             var portHighlighted = uiAutomationData.Parameters[1] as string;
             if (portHighlighted == null) return;
-            var nodeID = uiAutomationData.Parameters[2] as string;
-            if (nodeID == null) return;
+            string nodeID = string.Empty;
+            try
+            {
+                nodeID = uiAutomationData.Parameters[2] as string;
+            }
+            catch
+            {
+                nodeID = string.Empty;
+            }
 
-            //Find a specific node(NodeView) in the MainWindow (DynamoView)
-            var byOriginNode = Guide.FindNodeByID(stepMainWindow, nodeID);
-            if (byOriginNode == null) return;
+            //Find a specific node(NodeView) in the MainWindow (DynamoView) based by ID or by the first of a type found
+            NodeView byOriginNode = null;
+            if(!string.IsNullOrEmpty(nodeID))
+                byOriginNode = GuideUtilities.FindNodeByID(stepMainWindow, nodeID);
+            else
+            {
+                if (lastCreatedNode == null) return;
+                byOriginNode = GuideUtilities.FindNodeByID(stepMainWindow, lastCreatedNode.GUID.ToString().Replace("-",""));
+            }
 
             //Inside the NodeView try to find the ItemsControl that contains Input ports or Output ports
-            var itemsControlPort = Guide.FindChild(byOriginNode, portHighlighted) as ItemsControl;
+            var itemsControlPort = GuideUtilities.FindChild(byOriginNode, portHighlighted) as ItemsControl;
             if (itemsControlPort == null) return;
 
             //Once we have the ItemsControl we get the ContentPresenter
@@ -660,20 +674,23 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             var portHighlighted = uiAutomationData.Parameters[1] as string;
             if (portHighlighted == null) return;
-            var nodeID = uiAutomationData.Parameters[2] as string;
-            if (nodeID == null) return;
 
             //Get the button name to be enabled/disabled coming from the json file
-            var buttonName = CurrentExecutingStep.UIAutomation[2].Parameters[0] as string;
+            var buttonName = CurrentExecutingStep.UIAutomation[1].Parameters[0] as string;
             if (buttonName == null) return;
 
             //Get the Popup and search for the NextButton in the VisualTree
             var popupWindow = CurrentExecutingStep.StepUIPopup as PopupWindow;
-            var buttonFound = Guide.FindChild(popupWindow.mainPopupGrid, buttonName) as Button;
+            var buttonFound = GuideUtilities.FindChild(popupWindow.mainPopupGrid, buttonName) as Button;
             if (buttonFound == null) return;
 
             var stepMainWindow = CurrentExecutingStep.MainWindow as Window;
-            var outputPortViewModel = GetPortViewModel(stepMainWindow, nodeID, portHighlighted) as OutPortViewModel;
+
+            var byOriginNotConnected = GetNotConnectedNode(stepMainWindow, "CoordinateSystem.ByOrigin");
+            if (byOriginNotConnected == null) return;
+
+            var idString = byOriginNotConnected.ViewModel.Id.ToString().Replace("-","");
+            var outputPortViewModel = GetPortViewModel(stepMainWindow, idString, portHighlighted) as OutPortViewModel;
             if (outputPortViewModel == null) return;
 
             //If the nodes are connected then we enable the Next button otherwise will be disabled
@@ -699,7 +716,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (buttonName == null) return;
 
             var popupWindow = CurrentExecutingStep.StepUIPopup as PopupWindow;
-            var buttonFound = Guide.FindChild(popupWindow.mainPopupGrid, buttonName) as Button;
+            var buttonFound = GuideUtilities.FindChild(popupWindow.mainPopupGrid, buttonName) as Button;
             if (buttonFound == null) return;
 
             var portViewModel = sender as OutPortViewModel;
@@ -774,25 +791,41 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (buttonName == null) return;
                 var portHighlighted = uiAutomationData.Parameters[1] as string;
                 if (portHighlighted == null) return;
-                var nodeID = uiAutomationData.Parameters[2] as string;
-                if (nodeID == null) return;
+                string nodeID = string.Empty;
+                try
+                {
+                    nodeID = uiAutomationData.Parameters[2] as string;
+                }
+                catch
+                {
+                    nodeID = string.Empty;
+                }
 
                 var outputPortViewModel = GetPortViewModel(stepMainWindow, nodeID, portHighlighted) as OutPortViewModel;
                 if (outputPortViewModel == null) return;
                 var userAddedConnector = outputPortViewModel.PortModel.Connectors.FirstOrDefault();
                 if(userAddedConnector != null)
                     userAddedConnector.Delete();
+
+                CurrentExecutingStep.MainWindow.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }       
         }
 
         private static PortViewModel GetPortViewModel(Window stepMainWindow, string nodeID, string itemsControlName)
         {
-            //Find a specific node(NodeView) in the MainWindow (DynamoView)
-            var byOriginNode = Guide.FindNodeByID(stepMainWindow, nodeID);
-            if (byOriginNode == null) return null;
+
+            //Find a specific node(NodeView) in the MainWindow (DynamoView) based by ID or by the first of a type found
+            NodeView byOriginNode = null;
+            if (!string.IsNullOrEmpty(nodeID))
+                byOriginNode = GuideUtilities.FindNodeByID(stepMainWindow, nodeID);
+            else
+            {
+                byOriginNode = GetNotConnectedNode(stepMainWindow, "CoordinateSystem.ByOrigin");
+                if (byOriginNode == null) return null;
+            }
 
             //Inside the NodeView try to find the ItemsControl that contains Input ports or Output ports
-            var itemsControlOutputPort = Guide.FindChild(byOriginNode, itemsControlName) as ItemsControl;
+            var itemsControlOutputPort = GuideUtilities.FindChild(byOriginNode, itemsControlName) as ItemsControl;
             if (itemsControlOutputPort == null) return null;
 
             //Once we have the ItemsControil we try to find a specific port (OutputPortViewModel or InputPortViewModel)
@@ -801,6 +834,35 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             //Finally return the first PortViewModel
             return firstOutputPortModel as PortViewModel;
+        }
+
+
+        /// <summary>
+        /// Get the first not connected node of the type passed as parameter
+        /// </summary>
+        /// <param name="stepMainWindow">MainWindow that contains the node</param>
+        /// <param name="nodeType">Type of the node to be found</param>
+        /// <returns></returns>
+        private static NodeView GetNotConnectedNode(Window stepMainWindow, string nodeType)
+        {
+            CurrentExecutingStep.MainWindow.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+
+            var allByOriginNodes = GuideUtilities.FindNodesOfType(stepMainWindow, nodeType);
+            NodeView byOriginUserAdded = null;
+            //Try to find the ByOrigin node that doesn't have input/output connections (it means it was the one added by the user)
+            foreach (var byOriginEntry in allByOriginNodes)
+            {
+                var byOriginEntryViewModel = byOriginEntry.DataContext as NodeViewModel;
+                var outputPorts = from port in byOriginEntryViewModel.OutPorts
+                                  where port.IsConnected == false
+                                  select port;
+                if (outputPorts.Any())
+                {
+                    byOriginUserAdded = byOriginEntry;
+                    break;
+                }
+            }
+            return byOriginUserAdded;
         }
 
     }

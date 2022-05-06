@@ -269,45 +269,6 @@
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
       "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin@double,double",
-      "Id": "a20a93da6af14deebe2df37c1662349f",
-      "Inputs": [
-        {
-          "Id": "45e1ffc16595408a8b9ed92ce595bd9f",
-          "Name": "x",
-          "Description": "double\nDefault value : 0",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "35d74e5508c948e7b57d5be8d63b7cfd",
-          "Name": "y",
-          "Description": "double\nDefault value : 0",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "cc74384693f0402b86c9799417ad2886",
-          "Name": "CoordinateSystem",
-          "Description": "CoordinateSystem",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Create a CoordinateSystem with origin at X and Y locations, with X and Y Axes set as WCS X and Y Axes. Z defaults to 0.\n\nCoordinateSystem.ByOrigin (x: double = 0, y: double = 0): CoordinateSystem"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin@double,double",
       "Id": "558b9ccbc4604f4382571096a84b9a4f",
       "Inputs": [
         {
@@ -768,16 +729,6 @@
       {
         "Name": "CoordinateSystem.ByOrigin",
         "ShowGeometry": true,
-        "Id": "a20a93da6af14deebe2df37c1662349f",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 1411.06221087604,
-        "Y": 1006.43686425675
-      },
-      {
-        "Name": "CoordinateSystem.ByOrigin",
-        "ShowGeometry": true,
         "Id": "558b9ccbc4604f4382571096a84b9a4f",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -943,7 +894,6 @@
         "HeightAdjustment": 0.0,
         "Nodes": [
           "11c70bfa5ebc4d6c899bad7c0ddc48a0",
-          "a20a93da6af14deebe2df37c1662349f",
           "558b9ccbc4604f4382571096a84b9a4f",
           "3ff10ad8b3fd49988cbc2c6341e06ea0",
           "56727df20ffb4e44bf8ec1e56207dac9",
