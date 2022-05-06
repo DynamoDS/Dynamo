@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using System.Windows.Shapes;
 using System.IO;
 using static Dynamo.Models.DynamoModel;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -40,6 +41,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private static bool searchPackagesLoaded;
 
         internal static PackageManagerSearchViewModel packagesViewModel;
+
+        private static NodeModel lastCreatedNode;
 
         //This method will return a bool that describes if the Terms Of Service was accepted or not.
         internal static bool AcceptedTermsOfUse(DynamoViewModel dynViewModel)
@@ -629,6 +632,53 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     mainGrid.Children.Remove(buttonRectangle);
             }
            
+        }
+
+        /// <summary>
+        /// This method will be called when is necessary to detect a node creation command from the workspace
+        /// </summary>
+        /// <param name="stepInfo"></param>
+        /// <param name="uiAutomationData"></param>
+        /// <param name="enableFunction"></param>
+        /// <param name="currentFlow"></param>
+        internal static void CreateNode(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            //Node name that is expected to be created
+            var nodeCreationName = (string)uiAutomationData.JSParameters.FirstOrDefault();
+
+            //The action that will be triggered when the node is created
+            Action<NodeModel> func = (nodeModel) =>
+            {
+                GuideFlowEvents_GuidedTourNodeCreated(nodeModel, nodeCreationName, uiAutomationData.NodePosition);
+            };
+
+            //If any backward action is triggered, the created needs to be deleted 
+            if (currentFlow == GuideFlow.BACKWARD && lastCreatedNode != null)
+            {
+                var stepMainWindow = CurrentExecutingStep.MainWindow as Window;
+                stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.RemoveAndDisposeNode(lastCreatedNode);
+            }
+
+            if (enableFunction)
+            {              
+                stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.NodeAdded += func;
+            }
+            else
+            {
+                stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.NodeAdded -= func;
+            }
+        }
+
+        //This function compares if the created node is the expected one to move to the next step by comparing it's name.
+        private static void GuideFlowEvents_GuidedTourNodeCreated(NodeModel createdNode, string uiAutomationElementName, Point2D nodePosition)
+        {
+            lastCreatedNode = createdNode;
+            if (createdNode.Name.Equals(uiAutomationElementName))
+            {
+                createdNode.X = nodePosition.X;
+                createdNode.Y = nodePosition.Y;
+                CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
+            }
         }
     }
 }

@@ -19,8 +19,6 @@
     <None Remove="UI\Images\NodeStates\hidden-64px.png" />
     <None Remove="UI\Images\NodeStates\info-64px.png" />
     <None Remove="UI\Images\warning_16px.png" />
-    <None Remove="Views\GuidedTour\HtmlPages\getStartedOnboarding.html" />
-    <None Remove="Views\GuidedTour\HtmlPages\Resources\emptyImage.png" />
     <None Remove="Views\Menu\TrustedPathView.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +174,7 @@
       <DependentUpon>PresetPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\VisualConfigurations.cs" />
+    <Compile Include="Utilities\CrashReportTool.cs" />
     <Compile Include="Utilities\CrashUtilities.cs" />
     <Compile Include="Utilities\GroupStyleItemSelector.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
@@ -577,7 +576,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\getStartedOnboarding.html" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -1508,7 +1506,6 @@
     <Resource Include="UI\Images\bubble-arrow.png" />
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\emptyImage.png" />
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />

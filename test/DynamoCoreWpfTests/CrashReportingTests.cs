@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
+using System.Windows.Threading;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using DynamoCoreWpfTests;
 using NUnit.Framework;
 
@@ -171,6 +174,22 @@ namespace Dynamo.Tests
 
             // Verify request contains the packages information
             Assert.True(decoded.Contains(expectedString));
+        }
+
+        [Test]
+        public void TestCERTool()
+        {
+            try
+            {
+                throw new Exception("test");
+            }
+            catch
+            {
+                var dumpLocation = CrashReportTool.CreateMiniDumpFile();
+                Assert.IsFalse(string.IsNullOrEmpty(dumpLocation));
+                Assert.IsTrue(File.Exists(dumpLocation));
+                File.Delete(dumpLocation);//cleanup
+            }
         }
     }
 }
