@@ -98,45 +98,38 @@ namespace Dynamo.Core
         /// 1. Path is not null and not empty.
         /// 2. Path is an absolute path (not relative).
         /// 4. Path has valid characters.
-        /// 5. Path exists.
+        /// 5. Path exists and points to a folder.
         /// 6. Dynamo has read permissions to access the path.
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="directoryPath">The directory path that needs to be validated</param>
         /// <returns>A normalized and validated path</returns>
         /// <exception cref="ArgumentException">Input argument is null or empty.</exception>
         /// <exception cref="ArgumentException">Input argument is not an absolute path.</exception>
         /// <exception cref="ArgumentException">Path directory does not exist</exception>
         /// <exception cref="System.Security.SecurityException">Dynamo does not have the required permissions.</exception>
-        internal string ValidateLocation(string path)
+        internal string ValidateLocation(string directoryPath)
         {
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrWhiteSpace(directoryPath))
             {
                 throw new ArgumentException($"The input argument is null or empty.");
             }
 
-            string location = Path.GetFullPath(path);
-            if (!location.Equals(path))
+            if (!Path.GetFullPath(directoryPath).Equals(directoryPath))
             {
-                throw new ArgumentException($"The input argument {path} must be an absolute path");
+                throw new ArgumentException($"The input path {directoryPath} must be an absolute path");
             }
 
-            if (!File.GetAttributes(location).HasFlag(FileAttributes.Directory))
+            if (!Directory.Exists(directoryPath))
             {
-                // File path 
-                location = Directory.GetParent(location).FullName;
+                throw new ArgumentException($"The input path: {directoryPath} does not exist or is not a folder");
             }
 
-            if (!Directory.Exists(location))
+            if (!PathHelper.HasReadPermissionOnDir(directoryPath))
             {
-                throw new ArgumentException($"Folder path {location} does not exist");
+                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {directoryPath}");
             }
 
-            if (!PathHelper.HasReadPermissionOnDir(location))
-            {
-                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {location}");
-            }
-
-            return location;
+            return directoryPath;
         }
 
         #region Public members
