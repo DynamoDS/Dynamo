@@ -49,6 +49,7 @@ namespace Dynamo.Controls
                 {
                     this.Height = minHeightSize;
                 }
+                if (_vm.Children != null && _vm.Children.Count == 0) this.Width = defaultWidthSize;
             }
             else if (e.PropertyName == "Children")
             {
@@ -71,7 +72,7 @@ namespace Dynamo.Controls
                         this.Width = defaultWidthSize;
                     }
                 }
-            }
+            }            
         }
 
         internal void SetWatchNodeProperties() 
