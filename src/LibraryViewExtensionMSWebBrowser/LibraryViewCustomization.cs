@@ -145,6 +145,16 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             return ToJSONStream(root, replaceIconURLWithData, iconResourceProvider);
         }
 
+        /// <summary>
+        /// Merges the passed spec with the current spec and sets the result as the current library layout.
+        /// </summary>
+        /// <param name="specToMerge"></param>
+        internal void MergeSpecification(LayoutSpecification specToMerge)
+        {
+            var result = LayoutSpecification.MergeLayoutSpecs(GetSpecification(), specToMerge);
+            SetSpecification(result);
+        }
+
 
         /// <summary>
         /// Notifies when a resource stream is registered. This event is
