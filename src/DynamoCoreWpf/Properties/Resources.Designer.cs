@@ -4405,6 +4405,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This new node needs to be connected to another to make it part of the graph. Give it a try!.
+        /// </summary>
+        public static string OnboardingGuideConnectNodesText {
+            get {
+                return ResourceManager.GetString("OnboardingGuideConnectNodesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect the nodes.
+        /// </summary>
+        public static string OnboardingGuideConnectNodesTitle {
+            get {
+                return ResourceManager.GetString("OnboardingGuideConnectNodesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide..
         /// </summary>
         public static string OnboardingGuideWelcomeText {
@@ -4437,6 +4455,24 @@ namespace Dynamo.Wpf.Properties {
         public static string OnboardingNodesTitle {
             get {
                 return ResourceManager.GetString("OnboardingNodesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This node needs a [xyz] input. You can find a node to use as the input in the library by using search or browsing. The node is x, so you’ll find it under the x category.\n\n Click the node to place it in the workspace..
+        /// </summary>
+        public static string OnboardingPlaceNodeText {
+            get {
+                return ResourceManager.GetString("OnboardingPlaceNodeText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search the library and place a node.
+        /// </summary>
+        public static string OnboardingPlaceNodeTitle {
+            get {
+                return ResourceManager.GetString("OnboardingPlaceNodeTitle", resourceCulture);
             }
         }
         
