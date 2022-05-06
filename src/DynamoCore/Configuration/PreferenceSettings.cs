@@ -25,7 +25,7 @@ namespace Dynamo.Configuration
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
-        internal bool disableTrustWarnings = false;
+        private bool disableTrustWarnings = false;
         #region Constants
         /// <summary>
         /// Indicates the maximum number of files shown in Recent Files

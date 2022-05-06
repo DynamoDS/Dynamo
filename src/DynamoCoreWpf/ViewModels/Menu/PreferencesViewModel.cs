@@ -386,13 +386,11 @@ namespace Dynamo.ViewModels
             // We keep this setter private to avoid view extensions calling it directly.
             // Access modifiers are not intended for security, but it's simple enough to hook a toggle to the UI
             // without binding, and this makes it clear it's not an API.
-            private set
+            internal set
             {
-                //TODO add setDisableWarnings internal method of prop instead of field.
-                preferenceSettings.disableTrustWarnings = value;
+                preferenceSettings.SetTrustWarningsDisabled(value);
             }
         }
-
         /// <summary>
         /// FontSizesList contains the list of sizes for fonts defined (the ones defined are Small, Medium, Large, Extra Large)
         /// </summary>

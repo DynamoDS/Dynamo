@@ -888,7 +888,9 @@
                                                             Width="{StaticResource ToggleButtonWidth}"
                                                             Height="{StaticResource ToggleButtonHeight}"
                                                             VerticalAlignment="Center"
-                                                            IsChecked="{Binding Path=DisableTrustWarnings, Mode=OneWay}"
+                                                            IsChecked="{Binding Path=DisableTrustWarnings,Mode=OneWay}"
+                                                            Checked="DisableTrustWarningsChecked"
+                                                            Unchecked="DisableTrustWarningsChecked"
                                                             Style="{StaticResource EllipseToggleButton1}"/>
                                             <Label Content="{x:Static p:Resources.PreferencesViewTrustWarningLabel}" 
                                                     Margin="10,0,0,0"
