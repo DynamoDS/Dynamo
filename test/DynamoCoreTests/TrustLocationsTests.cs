@@ -29,7 +29,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void TestManagerAPIs()
+        public void TestTrustLocationManagerAPIs()
         {
             Assert.AreEqual(TrustedLocationsManager.Instance.TrustedLocations.Count, 2);
 

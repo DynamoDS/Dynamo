@@ -114,12 +114,12 @@ namespace Dynamo.Core
                 throw new ArgumentException($"The input argument is null or empty.");
             }
 
-            if (!Path.IsPathRooted(path))
+            string location = Path.GetFullPath(path);
+            if (!location.Equals(path))
             {
                 throw new ArgumentException($"The input argument {path} must be an absolute path");
             }
 
-            string location = Path.GetFullPath(path);
             if (!File.GetAttributes(location).HasFlag(FileAttributes.Directory))
             {
                 // File path 
@@ -133,8 +133,9 @@ namespace Dynamo.Core
 
             if (!PathHelper.HasReadPermissionOnDir(location))
             {
-                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {path}");
+                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {location}");
             }
+
             return location;
         }
 
