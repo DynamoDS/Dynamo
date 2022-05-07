@@ -75,13 +75,16 @@ namespace Dynamo.Tests
             Assert.IsTrue(TrustedLocationsManager.Instance.RemoveTrustedLocation(Path.Combine(TestDirectory, "pkgs")));
             Assert.AreEqual(1, TrustedLocationsManager.Instance.TrustedLocations.Count);
 
-            int settingsCount = 0;
-            foreach(var item in settings.TrustedLocations)
-                settingsCount++;
+            Assert.AreEqual(1, settings.TrustedLocations.Count);
 
-            Assert.AreEqual(1, settingsCount);
+            // Test that TrustedLocations (in preferenceSettings) are immutable.
+            settings.TrustedLocations.Clear();
+            Assert.AreEqual(1, settings.TrustedLocations.Count);
 
-            Assert.IsTrue(TrustedLocationsManager.Instance.AddTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd", "pkg.json")));
+            Assert.IsFalse(TrustedLocationsManager.Instance.AddTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd", "pkg.json")));
+            Assert.IsFalse(TrustedLocationsManager.Instance.IsTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd")));
+
+            Assert.IsTrue(TrustedLocationsManager.Instance.AddTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd")));
             Assert.IsTrue(TrustedLocationsManager.Instance.IsTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd")));
 
             TrustedLocationsManager.Instance.SetTrustedLocations(new List<string>() { TestDirectory });
