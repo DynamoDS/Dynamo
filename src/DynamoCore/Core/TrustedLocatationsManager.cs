@@ -121,7 +121,7 @@ namespace Dynamo.Core
 
             if (!Directory.Exists(directoryPath))
             {
-                throw new ArgumentException($"The input path: {directoryPath} does not exist or is not a folder");
+                throw new FileNotFoundException($"The input path: {directoryPath} does not exist or is not a folder");
             }
 
             if (!PathHelper.HasReadPermissionOnDir(directoryPath))
