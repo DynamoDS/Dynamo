@@ -26,7 +26,7 @@ namespace Dynamo.ViewModels
         public bool Cancel { get; set; }
 
         /// <summary>
-        /// Indicate the path to the custom packages folder
+        /// Indicate the path to be added to Dynamo's trusted locations
         /// </summary>
         public string Path { get; set; }
     }
