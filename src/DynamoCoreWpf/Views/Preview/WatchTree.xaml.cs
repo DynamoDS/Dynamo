@@ -56,6 +56,8 @@ namespace Dynamo.Controls
                 {
                     if (!_vm.Children[0].IsCollection)
                     {
+                        // We will use 7.5 as width factor for each character.
+
                         double requiredWidth = (_vm.Children[0].NodeLabel.Length * 7.5);
                         if (requiredWidth > (defaultWidthSize * 2))
                         {

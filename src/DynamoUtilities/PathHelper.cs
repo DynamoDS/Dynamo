@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Xml;
 using Newtonsoft.Json;
 
@@ -122,12 +123,16 @@ namespace DynamoUtilities
                 if (accessRules == null)
                     return false;
 
+                var curentUser = WindowsIdentity.GetCurrent();
                 foreach (FileSystemAccessRule rule in accessRules)
                 {
                     // When current rule does not contain setting related to Read, skip.
                     if ((FileSystemRights.Read & rule.FileSystemRights) != FileSystemRights.Read)
                         continue;
 
+                    if (!curentUser.Groups.Contains(rule.IdentityReference))
+                        continue;
+                    
                     if (rule.AccessControlType == AccessControlType.Allow)
                         readAllow = true;
                     else if (rule.AccessControlType == AccessControlType.Deny)
@@ -136,7 +141,7 @@ namespace DynamoUtilities
 
                 return readAllow && !readDeny;
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }
