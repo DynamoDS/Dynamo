@@ -104,12 +104,12 @@ namespace DynamoCoreWpfTests
         {
             Assert.IsFalse(ViewModel.PreferenceSettings.DisableTrustWarnings);
             Assert.IsFalse(ViewModel.Model.TrustedLocationsManager.TrustWarningsDisabled);
-            //assert setter is no-op
-            ViewModel.PreferencesViewModel.DisableTrustWarnings = true;
+            //assert model setter is no-op
+            ViewModel.PreferenceSettings.DisableTrustWarnings = true;
             Assert.IsFalse(ViewModel.PreferenceSettings.DisableTrustWarnings);
             Assert.IsFalse(ViewModel.Model.TrustedLocationsManager.TrustWarningsDisabled);
 
-            //assert set method works
+            //assert model set method works
             ViewModel.PreferenceSettings.SetTrustWarningsDisabled(true);
             Assert.True(ViewModel.PreferenceSettings.DisableTrustWarnings);
             Assert.True(ViewModel.Model.TrustedLocationsManager.TrustWarningsDisabled);
