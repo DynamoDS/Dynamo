@@ -7,6 +7,7 @@
        xmlns:ui="clr-namespace:Dynamo.UI"
        xmlns:customcontrols="clr-namespace:Dynamo.Wpf.Views.GuidedTour"
        xmlns:localui="clr-namespace:Dynamo.Wpf.UI.GuidedTour"
+       xmlns:prop="clr-namespace:Dynamo.Wpf.Properties"
        mc:Ignorable="d" 
        d:DesignHeight="450" 
        d:DesignWidth="400">
@@ -119,7 +120,29 @@
 
                     </Grid>
                 </Border>
-                <!--Link to Next Guide-->
+
+                <!-- This grid represents the link that redirects to the onboarding guide -->
+                <Grid Grid.Row="5" Name="GetStartedLink">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="10"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock                           
+                            Grid.Column="1"
+                            Text="{x:Static prop:Resources.NextGuideText}"      
+                            FontSize="14px"
+                            TextAlignment="Right"                        
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            HorizontalAlignment="Right">
+                    </TextBlock>
+                    <Button Grid.Column="2" Click="GetStartedButton_Click"
+                            Content="{x:Static prop:Resources.GetStartedLinkText}"
+                            Style="{StaticResource TextButtonLink}">
+                    </Button>
+                </Grid>
+                
                 <!--For the first release this RichTextBox will be hidden-->
                 <localui:CustomRichTextBox x:Name="NextGuideRichTextBox" 
                                            IsDocumentEnabled="True"       
@@ -127,7 +150,7 @@
                                            Grid.Row="5"
                                            Width="150"
                                            HorizontalContentAlignment="Center"
-                                           HorizontalAlignment="Center"
+                                           HorizontalAlignment="Center"                                           
                                            CustomText="{Binding LinkNexGuide}"
                                            Style="{StaticResource CustomRichTextBoxStyle}">
                 </localui:CustomRichTextBox>

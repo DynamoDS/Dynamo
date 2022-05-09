@@ -1406,7 +1406,7 @@ namespace Dynamo.ViewModels
             OnRequestZoomToFitView(this, zoomArgs);
         }
 
-        private void ResetFitViewToggle(object o)
+        internal void ResetFitViewToggle(object o)
         {
             _fitViewActualZoomToggle = false;
         }
