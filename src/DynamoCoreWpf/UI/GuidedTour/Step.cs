@@ -374,6 +374,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                     StepGuideBackground.HighlightBackgroundArea.SetHighlighRectSize(relativePoint.Y, relativePoint.X, holeWidth, holeHeight);
 
+
                     if (string.IsNullOrEmpty(highlightColor))
                     {
                         StepGuideBackground.GuideHighlightRectangle.Stroke = Brushes.Transparent;
@@ -390,7 +391,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 HighlightWindowElement(bVisible);
                 StepGuideBackground.ClearHighlightSection();
-            }             
+            }
+
+            //Hit tests is set to false so that the content inside the rectangle can be clicked
+            StepGuideBackground.GuideHighlightRectangle.IsHitTestVisible = false;
         }
 
 
@@ -788,6 +792,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             var converter = new BrushConverter();
             Rectangle menuItemHighlightRec = new Rectangle
             {
+                Focusable = false,                
                 Name = "HighlightRectangle",
                 StrokeThickness = 2,
                 Effect = blur,
