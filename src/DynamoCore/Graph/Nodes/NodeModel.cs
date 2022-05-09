@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
+using DesignScript.Builtin;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -29,7 +30,7 @@ using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 
 namespace Dynamo.Graph.Nodes
 {
-    internal class Info
+    public class Info
     {
         public string Message;
         public Nodes.ElementState State;
@@ -429,6 +430,28 @@ namespace Dynamo.Graph.Nodes
         internal ObservableHashSet<Info> Infos
         {
             get { return infos; }
+        }
+
+
+        /// <summary>
+        /// A publicly accessible collector of all Info/Warning/Error data
+        /// </summary>
+        [JsonIgnore]
+        public List<Info> NodeInfos
+        {
+            get
+            {
+                List<Info> infos = new List<Info>();
+
+                if (Infos.Count == 0) return infos;
+
+                foreach (Info info in Infos)
+                {
+                    infos.Add(new Info(info.Message, info.State));
+                }
+
+                return infos;
+            }
         }
 
         /// <summary>

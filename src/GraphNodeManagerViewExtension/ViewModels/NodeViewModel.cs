@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Deployment.Internal;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
     public class NodeViewModel : NotificationObject
     {
         #region Private Properties
-        private string name = String.Empty;
+        private string name = string.Empty;
         private bool stateIsInput = false;
         private bool stateIsOutput = false;
         private bool stateIsFunction = false;
@@ -32,7 +33,9 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private bool isNull = false;
         private int dismissedAlertsCount = 0;
         private bool isDummyNode = false;
-
+        private int infoCount = 0;
+        private string infoIcon = string.Empty;
+        private ElementState state;
         #endregion
 
         #region Public Fields
@@ -207,6 +210,63 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set => isDummyNode = value;
         }
+
+
+        /// <summary>
+        /// Test The Number of Info/Warning/Error messages 
+        /// </summary>
+        /// <returns></returns>
+        public int InfoCount
+        {
+            get
+            {
+                infoCount = NodeModel.NodeInfos.Count;
+                return infoCount;
+            }
+            internal set => infoCount = value;
+        }
+
+        /// <summary>
+        /// The correct icon for the Info Bubble
+        /// </summary>
+        public string InfoIcon
+        {
+            get
+            {
+                switch (NodeModel.State)
+                {
+                    case ElementState.Info:
+                        infoIcon = "/GraphNodeManagerViewExtension;component/Images/Info.png";
+                        break;
+                    case ElementState.Warning:
+                    case ElementState.PersistentWarning:
+                        infoIcon = "/GraphNodeManagerViewExtension;component/Images/Alert.png";
+                        break;
+                    case ElementState.Error:
+                        infoIcon = "/GraphNodeManagerViewExtension;component/Images/Error.png";
+                        break;
+                    default:
+                        infoIcon = string.Empty;
+                        break;
+                }
+                return infoIcon;
+            }
+            internal set => infoIcon = value;
+        }
+
+        /// <summary>
+        /// The state of the Node
+        /// </summary>
+        public ElementState State
+        {
+            get
+            {
+                state = NodeModel.State;
+                return state;
+            }
+            internal set => state = value;
+
+        }
         #endregion
 
         /// <summary>
@@ -235,6 +295,14 @@ namespace Dynamo.GraphNodeManager.ViewModels
             return false;
         }
 
+        /// <summary>
+        /// Test The actual Info/Warning/Error text message
+        /// </summary>
+        /// <returns></returns>
+        private List<Info> NodeInfos()
+        {
+            return NodeModel.NodeInfos;
+        }
 
 
         #region Setup and Constructors

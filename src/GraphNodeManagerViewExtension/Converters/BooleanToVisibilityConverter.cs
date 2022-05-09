@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using Dynamo.Graph.Nodes;
 using Dynamo.UI;
 
 namespace Dynamo.GraphNodeManager.Converters
@@ -28,6 +29,54 @@ namespace Dynamo.GraphNodeManager.Converters
             throw new NotImplementedException();
         }
     }
+
+    internal class IntegerToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((int)value != 0)
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    internal class StateToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var infoType = parameter as string;
+            if (infoType == null) return Visibility.Collapsed;
+
+            if ((ElementState)value == ElementState.Info && parameter.Equals("Info"))
+            {
+                return Visibility.Visible;
+            }
+            else if ((ElementState) value == ElementState.Warning ||
+                     (ElementState) value == ElementState.PersistentWarning ||
+                     (ElementState) value == ElementState.Error)
+            {
+                if (parameter.Equals("WarningOrError")) return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    
+
     internal class BooleanToForegroundColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

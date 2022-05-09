@@ -19,6 +19,8 @@
                 <ResourceDictionary Source="Controls/ControlColorsAndBrushes.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converters:IntegerToVisibilityConverter x:Key="IntegerToVisibilityConverter"/>
+            <converters:StateToVisibilityCollapsedConverter x:Key="StateToVisibilityCollapsedConverter"/>
             <converters:BooleanToBackgroundColorConverter x:Key="BooleanToBackgroundColorConverter"/>
             <converters:BooleanToBackgroundHoverColorConverter x:Key="BooleanToBackgroundHoverColorConverter"/>
             <converters:BooleanToBackgroundPressedColorConverter x:Key="BooleanToBackgroundPressedColorConverter"/>
@@ -140,10 +142,7 @@
                     FontWeight="Light"
                     Foreground="#F5F5F5"
                     IsReadOnly="True"
-                    Width="3*"></DataGridTextColumn>
-
-                <!-- TODO: Create a custom Image with a DependancyProperty to avoid repeating converter
-                    https://stackoverflow.com/questions/11121828/how-to-set-a-converter-in-a-style-but-not-the-path -->
+                    Width="2.5*"></DataGridTextColumn>
 
                 <!-- State -->
                 <DataGridTemplateColumn
@@ -194,12 +193,10 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Alert.png" 
-                                       Style="{StaticResource ImageStyle}"
-                                       Visibility="{Binding IssuesHasWarning, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
-                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Error.png"
-                                       Style="{StaticResource ImageStyle}" 
-                                       Visibility="{Binding IssuesHasError, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <controls:InfoBubbleControl 
+                                    Margin="3 0" 
+                                    Visibility="{Binding State, Converter={StaticResource StateToVisibilityCollapsedConverter}, ConverterParameter=WarningOrError}"/>
+                               
                                 <Border Height="14" Width="14" CornerRadius="7" 
                                         VerticalAlignment="Center" HorizontalAlignment="Center"
                                         Visibility="{Binding DismissedAlertsCount, Converter={StaticResource IntToVisibilityConverter}}"
@@ -227,9 +224,9 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Info.png" 
-                                       Style="{StaticResource ImageStyle}"
-                                       Visibility="{Binding IsInfo, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <controls:InfoBubbleControl 
+                                    Margin="3 0" 
+                                    Visibility="{Binding State, Converter={StaticResource StateToVisibilityCollapsedConverter}, ConverterParameter=Info}"/>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/EmptyList.png"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding IsEmptyList, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>

@@ -8,6 +8,7 @@
     <Color x:Key="MidBlue">#365868</Color>
     <Color x:Key="MidDarkBlue">#375f71</Color>
     <Color x:Key="TextColor">#F5F5F5</Color>
+    <Color x:Key="GrayOpacity">#5C5C5C5C</Color>
 
     <!--  Brushes  -->
     <SolidColorBrush x:Key="MidGrayBrush" Color="{StaticResource MidGray}" />
@@ -17,6 +18,7 @@
     <SolidColorBrush x:Key="MidBlueBrush" Color="{StaticResource MidBlue}" />
     <SolidColorBrush x:Key="MidDarkBlueBrush" Color="{StaticResource MidDarkBlue}" />
     <SolidColorBrush x:Key="TextColorBrush" Color="{StaticResource TextColor}" />
+    <SolidColorBrush x:Key="GrayOpacityBrush" Color="{StaticResource GrayOpacity}" />
 
     <!-- DataGrid style -->
     <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
@@ -101,6 +103,8 @@
         <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
         <Setter Property="UseLayoutRounding" Value="True"></Setter>
         <Setter Property="Margin" Value="3 0"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
     </Style>
 
     <!-- Button Style -->

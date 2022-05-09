@@ -87,6 +87,9 @@
     <Compile Include="Controls\FilterItemControl.xaml.cs">
       <DependentUpon>FilterItemControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\InfoBubbleControl.xaml.cs">
+      <DependentUpon>InfoBubbleControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SearchBoxControl.xaml.cs">
       <DependentUpon>SearchBoxControl.xaml</DependentUpon>
     </Compile>
@@ -118,6 +121,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\FilterItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\InfoBubbleControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
