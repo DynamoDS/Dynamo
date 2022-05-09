@@ -23,57 +23,55 @@ namespace Dynamo.Tests
                 Path.Combine(TestDirectory, "ShouldNotExist"),
                 ExecutingDirectory
             });
-
-            TrustedLocationsManager.Instance.Initialize(settings);
         }
 
         [Test]
         [Category("UnitTests")]
         public void TestTrustLocationManagerAPIs()
         {
-            Assert.AreEqual(TrustedLocationsManager.Instance.TrustedLocations.Count, 2);
+            Assert.AreEqual(settings.TrustedLocations.Count, 2);
 
             Assert.Throws<ArgumentException>(() =>
             {
-                TrustedLocationsManager.Instance.IsTrustedLocation(".//Test");
+                settings.IsTrustedLocation(".//Test");
             });
 
             Assert.Throws<ArgumentException>(() =>
             {
-                TrustedLocationsManager.Instance.IsTrustedLocation(null);
+                settings.IsTrustedLocation(null);
             });
 
             Assert.Throws<ArgumentException>(() =>
             {
-                TrustedLocationsManager.Instance.IsTrustedLocation("");
+                settings.IsTrustedLocation("");
             });
 
             Assert.Throws<NotSupportedException>(() =>
             {
-                TrustedLocationsManager.Instance.IsTrustedLocation(Path.Combine(TestDirectory,":"));
+                settings.IsTrustedLocation(Path.Combine(TestDirectory,":"));
             });
 
-            var doesNotExist = TrustedLocationsManager.Instance.TrustedLocations[0];
+            var doesNotExist = settings.TrustedLocations[0];
             Assert.Throws<FileNotFoundException>(() =>
             {
-                TrustedLocationsManager.Instance.IsTrustedLocation(doesNotExist);
+                settings.IsTrustedLocation(doesNotExist);
             });
 
             var notTrusted = Directory.GetParent(doesNotExist).FullName;
-            Assert.IsFalse(TrustedLocationsManager.Instance.IsTrustedLocation(notTrusted));
+            Assert.IsFalse(settings.IsTrustedLocation(notTrusted));
 
-            var trusted = TrustedLocationsManager.Instance.TrustedLocations[1];
-            Assert.IsTrue(TrustedLocationsManager.Instance.IsTrustedLocation(trusted));
+            var trusted = settings.TrustedLocations[1];
+            Assert.IsTrue(settings.IsTrustedLocation(trusted));
 
-            Assert.IsFalse(TrustedLocationsManager.Instance.AddTrustedLocation(ExecutingDirectory));
-            Assert.IsTrue(TrustedLocationsManager.Instance.AddTrustedLocation(Path.Combine(TestDirectory, "pkgs")));
+            Assert.IsFalse(settings.AddTrustedLocation(ExecutingDirectory));
+            Assert.IsTrue(settings.AddTrustedLocation(Path.Combine(TestDirectory, "pkgs")));
 
-            Assert.AreEqual(3, TrustedLocationsManager.Instance.TrustedLocations.Count);
-            Assert.IsTrue(TrustedLocationsManager.Instance.RemoveTrustedLocation(ExecutingDirectory));
-            Assert.AreEqual(2, TrustedLocationsManager.Instance.TrustedLocations.Count);
+            Assert.AreEqual(3, settings.TrustedLocations.Count);
+            Assert.IsTrue(settings.RemoveTrustedLocation(ExecutingDirectory));
+            Assert.AreEqual(2, settings.TrustedLocations.Count);
 
-            Assert.IsTrue(TrustedLocationsManager.Instance.RemoveTrustedLocation(Path.Combine(TestDirectory, "pkgs")));
-            Assert.AreEqual(1, TrustedLocationsManager.Instance.TrustedLocations.Count);
+            Assert.IsTrue(settings.RemoveTrustedLocation(Path.Combine(TestDirectory, "pkgs")));
+            Assert.AreEqual(1, settings.TrustedLocations.Count);
 
             Assert.AreEqual(1, settings.TrustedLocations.Count);
 
@@ -81,16 +79,16 @@ namespace Dynamo.Tests
             settings.TrustedLocations.Clear();
             Assert.AreEqual(1, settings.TrustedLocations.Count);
 
-            Assert.IsFalse(TrustedLocationsManager.Instance.AddTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd", "pkg.json")));
-            Assert.IsFalse(TrustedLocationsManager.Instance.IsTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd")));
+            Assert.IsFalse(settings.AddTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd", "pkg.json")));
+            Assert.IsFalse(settings.IsTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd")));
 
-            Assert.IsTrue(TrustedLocationsManager.Instance.AddTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd")));
-            Assert.IsTrue(TrustedLocationsManager.Instance.IsTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd")));
+            Assert.IsTrue(settings.AddTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd")));
+            Assert.IsTrue(settings.IsTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd")));
 
-            TrustedLocationsManager.Instance.SetTrustedLocations(new List<string>() { TestDirectory });
+            settings.SetTrustedLocations(new List<string>() { TestDirectory });
 
-            Assert.IsTrue(TrustedLocationsManager.Instance.IsTrustedLocation(TestDirectory));
-            Assert.AreEqual(1, TrustedLocationsManager.Instance.TrustedLocations.Count);
+            Assert.IsTrue(settings.IsTrustedLocation(TestDirectory));
+            Assert.AreEqual(1, settings.TrustedLocations.Count);
         }
     }
 }

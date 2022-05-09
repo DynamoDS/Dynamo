@@ -308,21 +308,6 @@ namespace Dynamo.Configuration
         /// </summary>
         private List<string> trustedLocations { get; set; } = new List<string>();
 
-        /// <summary>
-        /// Set trusted locations in the PreferenceSettings configuration.
-        /// </summary>
-        /// <param name="locs"></param>
-        internal void SetTrustedLocations(IEnumerable<string> locs)
-        {
-            trustedLocations.Clear();
-            foreach (var loc in locs) trustedLocations.Add(loc);
-        }
-        
-        internal void SetTrustWarningsDisabled(bool disabled)
-        {
-            disableTrustWarnings = disabled;
-        }
-
         // This function is used to deserialize the trusted locations manually
         // so that the TrustedLocation propertie's setter does not need to be public.
         private List<string> DeserializeTrustedLocations(XmlNode preferenceSettingsElement)
@@ -768,5 +753,73 @@ namespace Dynamo.Configuration
                 }
             }
         }
+
+        #region Trust Management API
+        /// <summary>
+        /// Add a path to the Dynamo's trusted locations
+        /// </summary>
+        /// <param name="path">The path to be added as a trusted location</param>
+        /// <returns></returns>
+        internal bool AddTrustedLocation(string path)
+        {
+            try
+            {
+                string location = PathHelper.ValidateDirectory(path);
+                var existing = TrustedLocations.FirstOrDefault(x => x.Equals(location));
+                if (string.IsNullOrEmpty(existing))
+                {
+                    trustedLocations.Add(location);
+                    return true;
+                }
+            }
+            catch { }
+            return false;
+        }
+
+        /// <summary>
+        /// Remove a path from the Dynamo's trusted locations
+        /// </summary>
+        /// <param name="path">The path to be removed from the trusted locations</param>
+        /// <returns>The true if the path was removed and false otherwise</returns>
+        internal bool RemoveTrustedLocation(string path)
+        {
+            string location = PathHelper.ValidateDirectory(path);
+            if (trustedLocations.RemoveAll(x => x.Equals(location)) >= 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Set trusted locations in the PreferenceSettings configuration.
+        /// </summary>
+        /// <param name="locs"></param>
+        internal void SetTrustedLocations(IEnumerable<string> locs)
+        {
+            trustedLocations.Clear();
+            foreach (var loc in locs) trustedLocations.Add(loc);
+        }
+
+        internal void SetTrustWarningsDisabled(bool disabled)
+        {
+            disableTrustWarnings = disabled;
+        }
+
+        /// <summary>
+        /// Checkes whether the input argument (path) is among Dynamo's trusted locations
+        /// Only directories are supported (if a file path is used, its root directry will be checked).
+        /// </summary>
+        /// <param name="path">An absolute path to a folder or file on disk</param>
+        /// <returns>True if the path is a trusted location, false otherwise</returns>
+        public bool IsTrustedLocation(string path)
+        {
+            string location = PathHelper.ValidateDirectory(path);
+
+            // All subdirectories are considered trusted if the parent directory is trusted.
+            var trustedLoc = trustedLocations.FirstOrDefault(x => location.StartsWith(x));
+            return !string.IsNullOrEmpty(trustedLoc);
+        }
+        #endregion
     }
 }

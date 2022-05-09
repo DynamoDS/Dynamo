@@ -10,6 +10,10 @@ using System.Windows.Data;
 using System.Globalization;
 using System.Linq;
 using Dynamo.Configuration;
+using DynamoUtilities;
+using Dynamo.Wpf.Utilities;
+using Dynamo.Logging;
+using System.Windows;
 
 namespace Dynamo.ViewModels
 {
@@ -29,6 +33,9 @@ namespace Dynamo.ViewModels
 
     public class TrustedPathViewModel : ViewModelBase
     {
+        private PreferenceSettings settings;
+        private DynamoLogger logger;
+
         public ObservableCollection<string> TrustedLocations { get; private set; }
        
         public event EventHandler<TrustedPathEventArgs> RequestShowFileDialog;
@@ -45,21 +52,18 @@ namespace Dynamo.ViewModels
         public DelegateCommand UpdatePathCommand { get; private set; }
         public DelegateCommand SaveSettingCommand { get; private set; }
 
-        public TrustedPathViewModel()
-        { 
-            InitializeTrustedLocations();
-            InitializeCommands();
-        }
-
         /// <summary>
         /// This constructor overload has been added for backwards comptability.
         /// </summary>
         /// <param name="setting"></param>
-        public TrustedPathViewModel(IPreferences setting)
+        public TrustedPathViewModel(PreferenceSettings settings, DynamoLogger logger)
         {
+            this.settings = settings;
+            this.logger = logger;
             InitializeTrustedLocations();
             InitializeCommands();
         }
+
         private void InitializeCommands() 
         {
             AddPathCommand = new DelegateCommand(p => InsertPath());
@@ -100,6 +104,18 @@ namespace Dynamo.ViewModels
             if (args.Cancel)
                 return;
 
+            try
+            {
+                PathHelper.ValidateDirectory(args.Path);
+            }
+            catch(Exception ex)
+            {
+                this.logger?.LogError($"Failed to add trusted location ${args.Path} due to the following error: {ex.Message}");
+                string errorMessage = string.Format(Resources.PackageFolderNotAccessible, args.Path);
+                MessageBoxService.Show(errorMessage, Resources.UnableToAccessPackageDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            
             TrustedLocations.Insert(TrustedLocations.Count, args.Path);
             RaiseCanExecuteChanged();
         }
@@ -129,27 +145,18 @@ namespace Dynamo.ViewModels
 
         private void RemovePathAt(int index)
         {
-            var pathToRemove = TrustedLocations[index];
             TrustedLocations.RemoveAt(index);
             RaiseCanExecuteChanged();
         }
 
         private void CommitChanges(object param)
         {
-            var newpaths = CommitTrustedLocations();
-            //TODO: to be implemented
+            settings?.SetTrustedLocations(TrustedLocations);
         }
 
         internal void InitializeTrustedLocations()
         {
-            //TODO: to be implemented
-            TrustedLocations = new ObservableCollection<string>();
-        }
-
-        private List<string> CommitTrustedLocations()
-        {
-            var trustedLocations = new List<string>(TrustedLocations);
-            return trustedLocations;
+            TrustedLocations = new ObservableCollection<string>(settings?.TrustedLocations ?? new List<string>());
         }
     }
 }
