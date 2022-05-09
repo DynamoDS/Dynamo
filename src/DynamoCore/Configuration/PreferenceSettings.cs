@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
@@ -289,6 +290,72 @@ namespace Dynamo.Configuration
         public List<string> CustomPackageFolders { get; set; }
 
         /// <summary>
+        /// Backing store for TrustedLocations
+        /// </summary>
+        private List<string> trustedLocations { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Set trusted locations in the PreferenceSettings configuration.
+        /// </summary>
+        /// <param name="locs"></param>
+        internal void SetTrustedLocations(IEnumerable<string> locs)
+        {
+            trustedLocations.Clear();
+            foreach (var loc in locs) trustedLocations.Add(loc);
+        }
+
+        // This function is used to deserialize the trusted locations manually
+        // so that the TrustedLocation propertie's setter does not need to be public.
+        private List<string> DeserializeTrustedLocations(XmlNode preferenceSettingsElement)
+        {
+            List<string> output = new List<string>();
+            try
+            {
+                var parentNode = preferenceSettingsElement.SelectSingleNode($@"//{nameof(TrustedLocations)}");
+                foreach (XmlNode value in parentNode.ChildNodes)
+                {
+                    output.Add(value.InnerText);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// Manually deserialize some preferences from the PreferencesSettings file.
+        /// This is done so that we can avoid exposing these property setters to the public API.
+        /// </summary>
+        /// <param name="prefsFilePath"></param>
+        private void DeserializeInternalPrefs(string prefsFilePath)
+        {
+            try
+            {
+                //manually load some xml we don't want to create public setters for.
+                var doc = new System.Xml.XmlDocument();
+                doc.Load(prefsFilePath);
+                var prefs = doc.SelectSingleNode($@"//{nameof(PreferenceSettings)}");
+
+                var trustedLocations = DeserializeTrustedLocations(prefs);
+                SetTrustedLocations(trustedLocations.Distinct());
+            }
+            catch
+            {}
+        }
+
+        /// <summary>
+        /// A copy of the list of trusted locations (folders) as recorded in the preferences file.
+        /// Do not directly use this property when trying to check for trusted locations.
+        /// Instead use Dynamo.Core.TrustedLocationsManager to manage for trusted locations.
+        /// </summary>
+        public List<string> TrustedLocations 
+        { 
+            get => trustedLocations.ToList(); //Copy of the internal list
+        }
+
+        /// <summary>
         /// A list of packages used by the Package Manager to determine
         /// which packages are marked for deletion.
         /// </summary>
@@ -526,6 +593,7 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             CustomPackageFolders = new List<string>();
+
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
@@ -605,10 +673,17 @@ namespace Dynamo.Configuration
                     fs.Close(); // Release file lock
                 }
             }
-            catch (Exception) { }
+            catch {
+                if (settings == null)
+                {
+                    return new PreferenceSettings();
+                }
+            }
+
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
+            settings.DeserializeInternalPrefs(filePath);
             return settings;
         }
 
