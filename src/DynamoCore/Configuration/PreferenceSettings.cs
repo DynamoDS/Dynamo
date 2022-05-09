@@ -303,7 +303,6 @@ namespace Dynamo.Configuration
             set { }
         }
 
-
         /// <summary>
         /// Backing store for TrustedLocations
         /// </summary>
@@ -318,6 +317,7 @@ namespace Dynamo.Configuration
             trustedLocations.Clear();
             foreach (var loc in locs) trustedLocations.Add(loc);
         }
+        
         internal void SetTrustWarningsDisabled(bool disabled)
         {
             disableTrustWarnings = disabled;
@@ -342,6 +342,7 @@ namespace Dynamo.Configuration
             }
             return output;
         }
+
         private bool DeserializeDisableTrustWarnings(XmlNode preferenceSettingsElement)
         {
             try
@@ -355,8 +356,9 @@ namespace Dynamo.Configuration
             }
             return false;
         }
+
         /// <summary>
-        /// Manually deserialize the some preferences from the PreferencesSettings file.
+        /// Manually deserialize some preferences from the PreferencesSettings file.
         /// This is done so that we can avoid exposing these property setters to the public API.
         /// </summary>
         /// <param name="prefsFilePath"></param>
@@ -373,12 +375,9 @@ namespace Dynamo.Configuration
                 SetTrustedLocations(trustedLocations.Distinct());
                 var trustWarningsDisabled = DeserializeDisableTrustWarnings(prefs);
                 SetTrustWarningsDisabled(trustWarningsDisabled);
-
             }
-            catch (Exception ex)
-            {
-
-            }
+            catch
+            { }
         }
 
         /// <summary>
@@ -719,9 +718,6 @@ namespace Dynamo.Configuration
             }
 
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
-
-
-
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
 
