@@ -4,17 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dynamo.GraphNodeManager.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="100">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ControlColorsAndBrushes.xaml"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <local:BooleanToBorderColorConverter x:Key="BooleanToBorderColorConverter" ToggleBrush="{StaticResource BlueBrush}"/>
             <local:BooleanToColorConverter x:Key="BooleanToColorConverter" 
-                                           DefaultBrush="{StaticResource GrayBrush}" 
-                                           HoverBrush="{StaticResource MidLightGrayBrush}" 
+                                           DefaultBrush="{StaticResource DarkGreyBrush}" 
+                                           HoverBrush="{StaticResource DarkMidGreyBrush}" 
                                            PressedBrush="{StaticResource LightGrayBrush}" 
                                            ToggleDefaultBrush="{StaticResource MidBlueBrush}" 
                                            ToggleHoverBrush="{StaticResource MidDarkBlueBrush}" 

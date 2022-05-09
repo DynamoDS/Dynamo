@@ -1,8 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- Colors -->
-    <Color x:Key="Gray">#494949</Color>
-    <Color x:Key="MidLightGray">#5D5D5D</Color>
     <Color x:Key="MidGray">#999999</Color>
     <Color x:Key="LightGray">#CCCCCC</Color>
     <Color x:Key="Blue">#38abdf</Color>
@@ -18,8 +16,6 @@
     <SolidColorBrush x:Key="MidLightBlueBrush" Color="{StaticResource MidLightBlue}" />
     <SolidColorBrush x:Key="MidBlueBrush" Color="{StaticResource MidBlue}" />
     <SolidColorBrush x:Key="MidDarkBlueBrush" Color="{StaticResource MidDarkBlue}" />
-    <SolidColorBrush x:Key="GrayBrush" Color="{StaticResource Gray}" />
-    <SolidColorBrush x:Key="MidLightGrayBrush" Color="{StaticResource MidLightGray}" />
     <SolidColorBrush x:Key="TextColorBrush" Color="{StaticResource TextColor}" />
 
     <!-- DataGrid style -->
