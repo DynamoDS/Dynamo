@@ -607,6 +607,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             CurrentExecutingStep.MainWindow.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             var stepMainWindow = CurrentExecutingStep.MainWindow as Window;
 
+            if (uiAutomationData.Parameters == null || uiAutomationData.Parameters.Count < 2)
+                return;
             //Parse the parameters location in the json file
             var highlightColor = uiAutomationData.Parameters[0] as string;
             if (highlightColor == null) return;
@@ -629,7 +631,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             else
             {
                 if (lastCreatedNode == null) return;
-                byOriginNode = GuideUtilities.FindNodeByID(stepMainWindow, lastCreatedNode.GUID.ToString().Replace("-",""));
+                byOriginNode = GuideUtilities.FindNodeByID(stepMainWindow, lastCreatedNode.GUID.ToString("N"));
             }
 
             //Inside the NodeView try to find the ItemsControl that contains Input ports or Output ports
@@ -672,12 +674,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             CurrentExecutingStep = stepInfo;
 
+            if (uiAutomationData.Parameters == null || uiAutomationData.Parameters.Count < 3)
+                return;
+
             var portHighlighted = uiAutomationData.Parameters[1] as string;
             if (portHighlighted == null) return;
 
             //Get the button name to be enabled/disabled coming from the json file
-            var buttonName = CurrentExecutingStep.UIAutomation[1].Parameters[0] as string;
+            var buttonName = uiAutomationData.Parameters[0] as string;
             if (buttonName == null) return;
+
+            var nodeName = uiAutomationData.Parameters[2] as string;
+            if (nodeName == null) return;
 
             //Get the Popup and search for the NextButton in the VisualTree
             var popupWindow = CurrentExecutingStep.StepUIPopup as PopupWindow;
@@ -686,22 +694,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             var stepMainWindow = CurrentExecutingStep.MainWindow as Window;
 
-            var byOriginNotConnected = GetNotConnectedNode(stepMainWindow, "CoordinateSystem.ByOrigin");
+            var byOriginNotConnected = GetNotConnectedNode(stepMainWindow, nodeName);
             if (byOriginNotConnected == null) return;
 
-            var idString = byOriginNotConnected.ViewModel.Id.ToString().Replace("-","");
-            var outputPortViewModel = GetPortViewModel(stepMainWindow, idString, portHighlighted) as OutPortViewModel;
+            var idString = byOriginNotConnected.ViewModel.Id.ToString("N");
+            var outputPortViewModel = GetPortViewModel(stepMainWindow, idString, portHighlighted, nodeName) as OutPortViewModel;
             if (outputPortViewModel == null) return;
 
             //If the nodes are connected then we enable the Next button otherwise will be disabled
-            if (outputPortViewModel.IsConnected)
-            {
-                buttonFound.IsEnabled = true;
-            }
-            else
-            {
-                buttonFound.IsEnabled = false;
-            }
+            buttonFound.IsEnabled = outputPortViewModel.IsConnected;
 
             //Subscribe/Unsubscribe to the PropertyChanged event based if we are passing to the Step "Connect the Nodes" or we are leaving this Step.
             if (enableFunction)
@@ -787,10 +788,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             if(currentFlow == GuideFlow.BACKWARD && enableFunction == false)
             {
+                if (uiAutomationData.Parameters == null || uiAutomationData.Parameters.Count < 4)
+                    return;
                 var buttonName = uiAutomationData.Parameters[0] as string;
                 if (buttonName == null) return;
                 var portHighlighted = uiAutomationData.Parameters[1] as string;
                 if (portHighlighted == null) return;
+
                 string nodeID = string.Empty;
                 try
                 {
@@ -801,7 +805,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     nodeID = string.Empty;
                 }
 
-                var outputPortViewModel = GetPortViewModel(stepMainWindow, nodeID, portHighlighted) as OutPortViewModel;
+                var nodeName = uiAutomationData.Parameters[3] as string;
+                if (nodeName == null) return;
+
+                var outputPortViewModel = GetPortViewModel(stepMainWindow, nodeID, portHighlighted, nodeName) as OutPortViewModel;
                 if (outputPortViewModel == null) return;
                 var userAddedConnector = outputPortViewModel.PortModel.Connectors.FirstOrDefault();
                 if(userAddedConnector != null)
@@ -811,7 +818,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }       
         }
 
-        private static PortViewModel GetPortViewModel(Window stepMainWindow, string nodeID, string itemsControlName)
+        private static PortViewModel GetPortViewModel(Window stepMainWindow, string nodeID, string itemsControlName, string nodeName)
         {
 
             //Find a specific node(NodeView) in the MainWindow (DynamoView) based by ID or by the first of a type found
@@ -820,7 +827,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 byOriginNode = GuideUtilities.FindNodeByID(stepMainWindow, nodeID);
             else
             {
-                byOriginNode = GetNotConnectedNode(stepMainWindow, "CoordinateSystem.ByOrigin");
+                byOriginNode = GetNotConnectedNode(stepMainWindow, nodeName);
                 if (byOriginNode == null) return null;
             }
 

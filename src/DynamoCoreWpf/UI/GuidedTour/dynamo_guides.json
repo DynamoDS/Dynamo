@@ -1088,14 +1088,14 @@
 						"Sequence": 2,
 						"ControlType": "function",
 						"Name": "ManagePortConnectionEvents",
-						"Parameters": [ "NextButton", "outputPortControl" ],
+						"Parameters": [ "NextButton", "outputPortControl", "CoordinateSystem.ByOrigin" ],
 						"Action": "execute"
 					},
 					{
 						"Sequence": 3,
 						"ControlType": "function",
 						"Name": "RemovePortConnector",
-						"Parameters": [ "NextButton", "outputPortControl" ],
+						"Parameters": [ "NextButton", "outputPortControl", "CoordinateSystem.ByOrigin" ],
 						"Action": "execute"
 					}
 				]
