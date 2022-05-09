@@ -293,12 +293,8 @@ namespace Dynamo.ViewModels
         {
             //This variable checks if the node is a function class
             var isCachedValueNull = node.NodeModel.CachedValue == null || node.NodeModel.CachedValue.Data == null;
-            //isFunctionNode = isCachedValueNull && node.NodeModel.IsPartiallyApplied
-            //    || !isCachedValueNull && node.NodeModel.CachedValue.IsFunction;
-
-            isFunctionNode = node.NodeModel.IsPartiallyApplied &&
-                             node.NodeModel.CachedValue != null &&
-                             node.NodeModel.CachedValue.IsFunction;
+            isFunctionNode = isCachedValueNull && node.NodeModel.IsPartiallyApplied
+                || !isCachedValueNull && node.NodeModel.CachedValue.IsFunction;
 
             if (isFunctionNode)
             {
