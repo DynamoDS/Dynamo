@@ -1102,18 +1102,13 @@
 						"Action": "disable"
 					},
 					{
-						"Sequence": 2,
+						"Sequence": 1,
 						"ControlType": "function",
-						"Name": "ExecuteClosePackagesSearch",
-						"Action": "execute",
-						"AutomaticHandlers": [
-							{
-								"HandlerElement": "RunButton",
-								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "CloseButton_Click"
-							}
+						"Name": "SubscribeRunButtonNextStep",
+						"Parameters": [
+							"RunButton"
 						],
-						"UpdatePlacementTarget": true
+						"Action": "execute"
 					}
 				]
 			}

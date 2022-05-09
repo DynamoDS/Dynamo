@@ -643,6 +643,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="currentFlow"></param>
         internal static void CreateNode(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
+            CurrentExecutingStep = stepInfo;
             //Node name that is expected to be created
             var nodeCreationName = (string)uiAutomationData.JSParameters.FirstOrDefault();
 
@@ -679,6 +680,32 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 createdNode.Y = nodePosition.Y;
                 CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
             }
+        }
+
+        internal static void SubscribeRunButtonNextStep(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+            if (uiAutomationData.Parameters.Any() && uiAutomationData.Parameters[0] is string)
+            {
+                Button nextButton = GuideUtilities.FindChildInVisualTree(stepInfo.MainWindow, uiAutomationData.Parameters[0].ToString()) as Button;
+
+                if(nextButton != null)
+                {
+                    if (enableFunction)
+                    {
+                        nextButton.Click += NextButton_Click;
+                    }
+                    else
+                    {
+                        nextButton.Click -= NextButton_Click;
+                    }
+                }
+            }
+        }
+
+        private static void NextButton_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
         }
     }
 }
