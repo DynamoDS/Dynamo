@@ -806,17 +806,25 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// Checkes whether the input argument (path) is among Dynamo's trusted locations
-        /// Only directories are supported (if a file path is used, its root directry will be checked).
+        /// Only directories are supported.
         /// </summary>
         /// <param name="path">An absolute path to a folder or file on disk</param>
         /// <returns>True if the path is a trusted location, false otherwise</returns>
         public bool IsTrustedLocation(string path)
         {
-            string location = PathHelper.ValidateDirectory(path);
+            try
+            {
+                string location = PathHelper.ValidateDirectory(path);
 
-            // All subdirectories are considered trusted if the parent directory is trusted.
-            var trustedLoc = trustedLocations.FirstOrDefault(x => location.StartsWith(x));
-            return !string.IsNullOrEmpty(trustedLoc);
+                // All subdirectories are considered trusted if the parent directory is trusted.
+                var trustedLoc = trustedLocations.FirstOrDefault(x => location.StartsWith(x));
+                return !string.IsNullOrEmpty(trustedLoc);
+            }
+            catch
+            {
+                return false;
+            }
+            
         }
         #endregion
     }
