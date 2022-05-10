@@ -367,8 +367,6 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// A copy of the list of trusted locations (folders) as recorded in the preferences file.
-        /// Do not directly use this property when trying to check for trusted locations.
-        /// Instead use Dynamo.Core.TrustedLocationsManager to manage for trusted locations.
         /// </summary>
         public List<string> TrustedLocations
         {

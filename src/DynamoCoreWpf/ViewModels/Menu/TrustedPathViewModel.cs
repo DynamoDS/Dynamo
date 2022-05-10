@@ -53,9 +53,10 @@ namespace Dynamo.ViewModels
         public DelegateCommand SaveSettingCommand { get; private set; }
 
         /// <summary>
-        /// This constructor overload has been added for backwards comptability.
+        /// The main constructor of the TrustedPathViewModel class.
         /// </summary>
-        /// <param name="setting"></param>
+        /// <param name="settings">Dynamo's preference settings</param>
+        /// <param name="logger">Dynamo's logging tool</param>
         public TrustedPathViewModel(PreferenceSettings settings, DynamoLogger logger)
         {
             this.settings = settings;
@@ -110,7 +111,15 @@ namespace Dynamo.ViewModels
             }
             catch(Exception ex)
             {
-                this.logger?.LogError($"Failed to add trusted location ${args.Path} due to the following error: {ex.Message}");
+                if (string.IsNullOrEmpty(args.Path))
+                {
+                    this.logger?.LogError("Failed to add trusted location because the selected path was null or empty");
+                }
+                else
+                {
+                    this.logger?.LogError($"Failed to add trusted location ${args.Path} due to the following error: {ex.Message}");
+                }
+
                 string errorMessage = string.Format(Resources.PackageFolderNotAccessible, args.Path);
                 MessageBoxService.Show(errorMessage, Resources.UnableToAccessPackageDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
