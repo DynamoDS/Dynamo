@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using ProtoCore.AssociativeGraph;
-using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Lang;
 using ProtoCore.Lang.Replication;
@@ -333,21 +332,6 @@ namespace ProtoCore
             TimeSpan ts = StopWatch.Elapsed;
             return ts;
         }
-
-        /// <summary>
-        /// Set the value of a variable at runtime
-        /// Returns the entry pc
-        /// </summary>
-        /// <param name="astID"></param>
-        /// <param name="sv"></param>
-        /// <returns></returns>
-        //public int SetValue(List<AssociativeNode> modifiedNodes, StackValue sv)
-        //{
-        //    ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(sv);
-        //    GraphNode gnode = AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope(this, modifiedNodes);
-        //    Validity.Assert(gnode != null);
-        //    return gnode.updateBlock.startpc;
-        //}
 
         /// <summary>
         /// This function determines what the starting pc should be for the next execution session

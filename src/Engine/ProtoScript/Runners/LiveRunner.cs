@@ -330,21 +330,13 @@ namespace ProtoScript.Runners
         /// <param name="modifiedNodes"></param>
         private void SetValueForModifiedNodes(List<AssociativeNode> modifiedNodes)
         {
-            // Currently only supports 1 input node
-            //Validity.Assert(modifiedNodes.Count <= 1);
-
-            //if (modifiedNodes.Count > 0)
             foreach(var node in modifiedNodes)
             {
-                //AssociativeNode node = modifiedNodes[0];
                 var bnode = node as BinaryExpressionNode;
                 if (bnode == null) continue;
 
                 StackValue sv = GetStackValueForRuntime(bnode);
                 runtimeCore.ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(bnode.OriginalAstID, sv);
-                //int startPC = runtimeCore.SetValue(modifiedNodes, sv);
-                //Validity.Assert(startPC != Constants.kInvalidIndex);
-                //runtimeCore.SetStartPC(startPC);
             }
             GraphNode gnode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope(runtimeCore, modifiedNodes);
             if (gnode == null) return;
@@ -812,8 +804,6 @@ namespace ProtoScript.Runners
                 if (modifiedSubTree.DeltaComputation)
                 {
                     // Get modified statements
-                    // TODO: Change to csData.ModifiedNodesForRuntimeSetValue.Add(node) for each subtree so that we collect all modified nodes
-                    // for all subtrees and don't overwrite this list with the changed node in the last subtree.
                     List<AssociativeNode> modifiedInputAST;
                     var modifiedASTList = GetModifiedNodes(modifiedSubTree, redefinitionAllowed, out modifiedInputAST);
                     csData.ModifiedNodesForRuntimeSetValue.AddRange(modifiedInputAST);
