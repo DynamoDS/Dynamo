@@ -1102,24 +1102,6 @@
 			},
 			{
 				"Sequence": 5,
-				"Name": "run",
-				"Type": "tooltip",
-				"ShowLibrary": false,
-				"Width": 480,
-				"Height": 220,
-				"StepContent": {
-					"Title": "OnboardingGuideRunGraphTitle",
-					"FormattedText": "OnboardingGuideRunGraphText"
-				},
-				"HostPopupInfo": {
-					"VerticalPopupOffset": 450,
-					"HorizontalPopupOffset": 0,
-					"PopupPlacement": "relative",
-					"HostUIElementString": "background_grid"
-				}
-			},
-			{
-				"Sequence": 5,
 				"Name": "runGraph",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "none",
@@ -1163,6 +1145,29 @@
 						"Action": "execute"
 					}
 				]
+			},
+			{
+				"Sequence": 6,
+				"Name": "success",
+				"Type": "tooltip",
+				"ShowLibrary": false,
+				"TooltipPointerDirection": "none",
+				"Width": 480,
+				"Height": 280,
+				"StepContent": {
+					"Title": "OnboardingSuccessTitle",
+					"FormattedText": "OnboardingSuccessText"
+				},
+				"HostPopupInfo": {
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 100,
+					"PopupPlacement": "bottom",
+					"HostUIElementString": "background_grid",
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				}
 			}
 		]
 	}

@@ -713,6 +713,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private static void OutputPortViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            if (CurrentExecutingStep.UIAutomation == null
+                || CurrentExecutingStep.UIAutomation.Count() < 3
+                || CurrentExecutingStep.UIAutomation[2].Parameters == null) return;
+
             var buttonName = CurrentExecutingStep.UIAutomation[2].Parameters[0] as string;
             if (buttonName == null) return;
 
@@ -744,42 +748,52 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void CreateNode(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
-            //Node name that is expected to be created
-            var nodeCreationName = (string)uiAutomationData.JSParameters.FirstOrDefault();
-
-            //The action that will be triggered when the node is created
-            Action<NodeModel> func = (nodeModel) =>
-            {
-                GuideFlowEvents_GuidedTourNodeCreated(nodeModel, nodeCreationName, uiAutomationData.NodePosition);
-            };
 
             //If any backward action is triggered, the created needs to be deleted 
             if (currentFlow == GuideFlow.BACKWARD && lastCreatedNode != null)
             {
                 var stepMainWindow = CurrentExecutingStep.MainWindow as Window;
+
+                foreach (var connector in lastCreatedNode.AllConnectors.ToList())
+                {
+                    connector.Delete();
+                }
+
                 stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.RemoveAndDisposeNode(lastCreatedNode);
+
+                lastCreatedNode = null;
             }
 
             if (enableFunction)
-            {              
-                stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.NodeAdded += func;
+            {
+                stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.NodeAdded += Model_NodeAdded;
             }
             else
             {
-                stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.NodeAdded -= func;
+                stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.NodeAdded -= Model_NodeAdded;
+            }
+        }
+
+        private static void Model_NodeAdded(NodeModel createdNode)
+        {
+            if (CurrentExecutingStep.UIAutomation == null || CurrentExecutingStep.UIAutomation.Count < 6) return;
+
+            lastCreatedNode = createdNode;
+            var uiAutomationData = CurrentExecutingStep.UIAutomation[5];
+            var uiAutomationElementName = (string)uiAutomationData.JSParameters.FirstOrDefault();
+
+            if (createdNode.Name.Equals(uiAutomationElementName))
+            {
+                createdNode.X = uiAutomationData.NodePosition.X;
+                createdNode.Y = uiAutomationData.NodePosition.Y;
+                CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
             }
         }
 
         //This function compares if the created node is the expected one to move to the next step by comparing it's name.
         private static void GuideFlowEvents_GuidedTourNodeCreated(NodeModel createdNode, string uiAutomationElementName, Point2D nodePosition)
         {
-            lastCreatedNode = createdNode;
-            if (createdNode.Name.Equals(uiAutomationElementName))
-            {
-                createdNode.X = nodePosition.X;
-                createdNode.Y = nodePosition.Y;
-                CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
-            }
+           
         }
         
         internal static void RemovePortConnector(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
@@ -879,23 +893,23 @@ namespace Dynamo.Wpf.UI.GuidedTour
             CurrentExecutingStep = stepInfo;
             if (uiAutomationData.Parameters.Any() && uiAutomationData.Parameters[0] is string)
             {
-                Button nextButton = GuideUtilities.FindChildInVisualTree(stepInfo.MainWindow, uiAutomationData.Parameters[0].ToString()) as Button;
+                Button runButton = GuideUtilities.FindChildInVisualTree(stepInfo.MainWindow, uiAutomationData.Parameters[0].ToString()) as Button;
 
-                if(nextButton != null)
+                if(runButton != null)
                 {
                     if (enableFunction)
                     {
-                        nextButton.Click += NextButton_Click;
+                        runButton.Click += RunButton_Click;
                     }
                     else
                     {
-                        nextButton.Click -= NextButton_Click;
+                        runButton.Click -= RunButton_Click;
                     }
                 }
             }
         }
 
-        private static void NextButton_Click(object sender, RoutedEventArgs e)
+        private static void RunButton_Click(object sender, RoutedEventArgs e)
         {
             CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
         }
