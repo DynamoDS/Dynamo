@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using Analytics.NET.Google;
-using Analytics.NET.ADP;
+using Autodesk.Analytics.Google;
+using Autodesk.Analytics.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
 using Dynamo.Interfaces;
