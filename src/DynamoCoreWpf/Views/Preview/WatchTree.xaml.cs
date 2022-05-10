@@ -76,7 +76,16 @@ namespace Dynamo.Controls
                         this.Width = defaultWidthSize;
                     }
                 }
-            }            
+            }
+            else if (e.PropertyName == "IsOneRowContent")
+            {
+                if (_vm.IsOneRowContent)
+                {
+                    // Forcing not to display the Levels content when is being used for display info from another node like the Color Range
+                    this.ListLevelsDisplay.Visibility = Visibility.Hidden;
+                    this.ListLevelsDisplay.Height = 0;
+                }
+            }
         }
 
         internal void SetWatchNodeProperties() 
