@@ -374,7 +374,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                     StepGuideBackground.HighlightBackgroundArea.SetHighlighRectSize(relativePoint.Y, relativePoint.X, holeWidth, holeHeight);
 
-
                     if (string.IsNullOrEmpty(highlightColor))
                     {
                         StepGuideBackground.GuideHighlightRectangle.Stroke = Brushes.Transparent;

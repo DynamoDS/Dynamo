@@ -774,6 +774,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
+        //This function compares if the created node is the expected one to move to the next step by comparing it's name.
         private static void Model_NodeAdded(NodeModel createdNode)
         {
             if (CurrentExecutingStep.UIAutomation == null || CurrentExecutingStep.UIAutomation.Count < 6) return;
@@ -789,13 +790,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
             }
         }
-
-        //This function compares if the created node is the expected one to move to the next step by comparing it's name.
-        private static void GuideFlowEvents_GuidedTourNodeCreated(NodeModel createdNode, string uiAutomationElementName, Point2D nodePosition)
-        {
-           
-        }
-        
+                
         internal static void RemovePortConnector(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
