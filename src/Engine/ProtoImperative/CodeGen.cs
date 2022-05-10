@@ -147,39 +147,19 @@ namespace ProtoImperative
             if (core.ClassTable.IndexOf(ident) != ProtoCore.DSASM.Constants.kInvalidIndex)
                 buildStatus.LogSemanticError(String.Format(Resources.ClassNameAsVariableError,ident));
 
-            SymbolNode symbolnode;
-            if(cb == null)
-            {
-                 symbolnode = new SymbolNode(
+            SymbolNode symbolnode = new SymbolNode(
                  ident,
                  Constants.kInvalidIndex,
                  funcIndex,
                  datatype,
                  false,
-                 codeBlock.symbolTable.RuntimeIndex,
+                 cb == null ? codeBlock.symbolTable.RuntimeIndex : cb.symbolTable.RuntimeIndex,
                  MemoryRegion.MemStack,
                  globalClassIndex,
                  ProtoCore.CompilerDefinitions.AccessModifier.Public,
                  false,
-                 codeBlock.codeBlockId);
-            }
-            else
-            {
-               symbolnode = new SymbolNode(
-               ident,
-               Constants.kInvalidIndex,
-               funcIndex,
-               datatype,
-               false,
-               cb.symbolTable.RuntimeIndex,
-               MemoryRegion.MemStack,
-               globalClassIndex,
-               ProtoCore.CompilerDefinitions.AccessModifier.Public,
-               false,
-               cb.codeBlockId);
-            }
+                 cb == null ? codeBlock.codeBlockId : cb.codeBlockId);
            
-
             if (isEmittingImportNode)
                 symbolnode.ExternLib = core.CurrentDSFileName;
 

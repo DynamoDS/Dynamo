@@ -12,6 +12,8 @@ namespace Dynamo.ViewModels
         {
             OpenCommand = new DelegateCommand(Open, CanOpen);
             OpenIfSavedCommand = new DelegateCommand(OpenIfSaved, CanOpen);
+            OpenFromJsonCommand = new DelegateCommand(OpenFromJson, CanOpenFromJson);
+            OpenFromJsonIfSavedCommand = new DelegateCommand(OpenFromJsonIfSaved, CanOpenFromJson);
             OpenRecentCommand = new DelegateCommand(OpenRecent, CanOpenRecent);
             SaveCommand = new DelegateCommand(Save, CanSave);
             SaveAsCommand = new DelegateCommand(SaveAs, CanSaveAs);
@@ -84,6 +86,8 @@ namespace Dynamo.ViewModels
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             OpenDocumentationLinkCommand = new DelegateCommand(OpenDocumentationLink);
         }
+        public DelegateCommand OpenFromJsonIfSavedCommand { get; set; }
+        public DelegateCommand OpenFromJsonCommand { get; set; }
         public DelegateCommand OpenIfSavedCommand { get; set; }
         public DelegateCommand OpenCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }

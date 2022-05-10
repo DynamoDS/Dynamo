@@ -26,6 +26,8 @@
     <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
   </DeleteModelCommand>
   <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
   <SelectModelCommand Modifiers="0">
     <ModelGuid>eb506dff-f1b7-4bfd-8b53-a7562362c9e7</ModelGuid>
   </SelectModelCommand>

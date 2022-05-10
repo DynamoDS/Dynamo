@@ -16,6 +16,7 @@ using TextBox = System.Windows.Controls.TextBox;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Graph.Annotations;
 using Dynamo.Logging;
+using Dynamo.Configuration;
 
 namespace Dynamo.Nodes
 {
@@ -437,6 +438,36 @@ namespace Dynamo.Nodes
         private void GroupDescriptionControls_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             SetTextHeight();
+        }
+
+        /// <summary>
+        /// According to the current GroupStyle selected (or not selected) in the ContextMenu several actions can be executed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GroupStyleCheckmark_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItemSelected = sender as MenuItem;
+            if (menuItemSelected == null) return;
+
+            var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItem;
+            if (groupStyleItemSelected == null) return;
+
+            ViewModel.UpdateGroupStyle(groupStyleItemSelected);
+            // Tracking selecting group style item and if it is a default style by Dynamo
+            Logging.Analytics.TrackEvent(Actions.Select, Categories.GroupStyleOperations, nameof(GroupStyleItem), groupStyleItemSelected.IsDefault ? 1 : 0);
+        }
+
+        /// <summary>
+        /// When the GroupStyle Submenu is opened then we need to re-load the GroupStyles in the ContextMenu (in case more Styles were added in Preferences panel).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GroupStyleAnnotation_SubmenuOpened(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ReloadGroupStyles();
+            // Tracking loading group style items
+            Logging.Analytics.TrackEvent(Actions.Load, Categories.GroupStyleOperations, nameof(GroupStyleItem) + "s");
         }
     }
 }

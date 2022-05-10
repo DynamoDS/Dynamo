@@ -423,7 +423,7 @@ namespace ProtoCore.DSASM
             //  Entering a nested block requires all the nodes of that block to be executed
             if (executingBlock > 0)
             {
-                ProtoCore.AssociativeEngine.Utils.MarkAllGraphNodesDirty(executingBlock, graphNodesInProgramScope);
+                ProtoCore.AssociativeEngine.Utils.MarkAllGraphNodesDirty(graphNodesInProgramScope);
             }
 
             if (fepRun)
@@ -1227,9 +1227,7 @@ namespace ProtoCore.DSASM
 
                 if (runtimeCore.Options.IsDeltaExecution)
                 {
-                    // COmment Jun: start from graphnodes whose update blocks are in the range of the entry point
-                    bool inStartRange = graphNode.updateBlock.startpc >= entrypoint;
-                    if (graphNode.isDirty && inStartRange)
+                    if (graphNode.isDirty)
                     {
                         pc = graphNode.updateBlock.startpc;
                         graphNode.isDirty = false;
@@ -4522,6 +4520,20 @@ namespace ProtoCore.DSASM
                 if (opdata1.IsPointer)
                 {
                     pc += 1;
+                }
+                else if (opdata1.IsString)
+                {
+                    Validity.Assert(runtimeCore != null && runtimeCore.Heap != null);
+
+                    var dsString = runtimeCore.Heap.ToHeapObject<DSString>(opdata1);
+                    if (string.IsNullOrEmpty(dsString.Value))
+                    {
+                        pc = instruction.op1.LabelIndex;
+                    }
+                    else
+                    {
+                        pc += 1;
+                    }
                 }
                 else if (0 == opdata1.RawData)
                 {

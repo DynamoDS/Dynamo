@@ -651,6 +651,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File load failure.
+        /// </summary>
+        public static string FileLoadFailureMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("FileLoadFailureMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your file may not open correctly.
         /// </summary>
         public static string FileNotOpenedCorrectly {
@@ -737,6 +746,78 @@ namespace Dynamo.Properties {
         public static string GroupNameDefaultText {
             get {
                 return ResourceManager.GetString("GroupNameDefaultText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Actions.
+        /// </summary>
+        public static string GroupStyleDefaultActions {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultActions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to B9F9E1.
+        /// </summary>
+        public static string GroupStyleDefaultActionsColor {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultActionsColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inputs.
+        /// </summary>
+        public static string GroupStyleDefaultInputs {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultInputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FFB8D8.
+        /// </summary>
+        public static string GroupStyleDefaultInputsColor {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultInputsColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outputs.
+        /// </summary>
+        public static string GroupStyleDefaultOutputs {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultOutputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FFC999.
+        /// </summary>
+        public static string GroupStyleDefaultOutputsColor {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultOutputsColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review.
+        /// </summary>
+        public static string GroupStyleDefaultReview {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A4E1FF.
+        /// </summary>
+        public static string GroupStyleDefaultReviewColor {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultReviewColor", resourceCulture);
             }
         }
         
@@ -1831,6 +1912,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input Data.
+        /// </summary>
+        public static string ToolTipInputData {
+            get {
+                return ResourceManager.GetString("ToolTipInputData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Output #.
         /// </summary>
         public static string ToolTipOutput {
@@ -1840,20 +1930,20 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Output Data.
+        /// </summary>
+        public static string ToolTipOutputData {
+            get {
+                return ResourceManager.GetString("ToolTipOutputData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to return value.
         /// </summary>
         public static string ToolTipReturnValue {
             get {
                 return ResourceManager.GetString("ToolTipReturnValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Symbol.
-        /// </summary>
-        public static string ToolTipSymbol {
-            get {
-                return ResourceManager.GetString("ToolTipSymbol", resourceCulture);
             }
         }
         

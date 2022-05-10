@@ -26,14 +26,14 @@ namespace DynamoPythonTests
         [Test]
         public void SharedCoreCanFindLoadedProviders()
         {
-            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.CPython3, "");
+            var provider = new SharedCompletionProvider(PythonEngineManager.CPython3EngineName, "");
             Assert.IsNotNull(provider);
         }
 
         [Test]
         public void SharedCoreCanReturnCLRCompletionData()
         {
-            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.CPython3, "");
+            var provider = new SharedCompletionProvider(PythonEngineManager.CPython3EngineName, "");
             Assert.IsNotNull(provider);
             var str = "\nimport System.Collections\nSystem.Collections.";
 
@@ -326,7 +326,7 @@ namespace DynamoPythonTests
         [Category("UnitTests")]
         public void CanFindDifferentTypesOfImportsAndLoad()
         {
-            var str = "from itertools import *\nimport math\nfrom sys import callstats\n";
+            var str = "from itertools import *\nimport math\nfrom sys import exit\n";
 
             var completionProvider = new DSCPythonCodeCompletionProviderCore();
             try
@@ -339,7 +339,7 @@ namespace DynamoPythonTests
             Assert.AreEqual(3, completionProvider.ImportedTypes.Count);
             Assert.IsTrue(completionProvider.ScopeHasVariable("repeat"));
             Assert.IsTrue(completionProvider.ScopeHasVariable("math"));
-            Assert.IsTrue(completionProvider.ScopeHasVariable("callstats"));
+            Assert.IsTrue(completionProvider.ScopeHasVariable("exit"));
         }
 
         [Test]

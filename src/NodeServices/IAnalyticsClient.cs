@@ -116,6 +116,11 @@ namespace Dynamo.Logging
         /// Events Category related to connectors
         /// </summary>
         ConnectorOperations,
+
+        /// <summary>
+        /// Events Category related to group styles
+        /// </summary>
+        GroupStyleOperations,
     }
 
     /// <summary>
@@ -357,6 +362,28 @@ namespace Dynamo.Logging
         /// Hide event, e.g when a connection is hidden by user choice
         /// </summary>
         Hide,
+        /// <summary>
+        /// When a package conflict is encountered which involves at least one built-in package.
+        /// </summary>
+        BuiltInPackageConflict,
+        /// <summary>
+        /// Sort event, when user wants to sort some information
+        /// </summary>
+        Sort,
+        /// <summary>
+        /// View event, when user wants to see some information
+        /// </summary>
+        View,
+
+        /// <summary>
+        /// Show event, when user wants to view Documentation.
+        /// </summary>
+        ViewDocumentation,
+
+        /// <summary>
+        /// Cancel operation, e.g. cancel adding a new group style 
+        /// </summary>
+        Cancel,
     }
 
     /// <summary>

@@ -370,6 +370,20 @@
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
 
+                        <!--  Copyright  Holder -->
+                        <DataGridTextColumn MinWidth="150"
+                                            Binding="{Binding CopyRightHolder}"
+                                            Header="{x:Static p:Resources.PackageDetailsCopyRightHolder}"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
+                                            IsReadOnly="True" />
+
+                        <!--  Copyright  Year -->
+                        <DataGridTextColumn MinWidth="150"
+                                            Binding="{Binding CopyRightYear}"
+                                            Header="{x:Static p:Resources.PackageDetailsCopyRightYear}"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
+                                            IsReadOnly="True" />
+
                         <!--  Package  -->
                         <DataGridTextColumn x:Name="PackageColumn"
                                             Width="*"

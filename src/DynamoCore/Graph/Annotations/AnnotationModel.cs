@@ -6,6 +6,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Properties;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -615,6 +616,8 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("InitialHeight", this.InitialHeight);
             helper.SetAttribute("TextblockHeight", this.TextBlockHeight);
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));
+            helper.SetAttribute(nameof(IsSelected), IsSelected);
+
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
             foreach (var guids in this.Nodes.Select(x => x.GUID))
@@ -644,6 +647,13 @@ namespace Dynamo.Graph.Annotations
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
+            this.IsSelected = helper.ReadBoolean(nameof(IsSelected), false);            
+
+            if (IsSelected)
+                DynamoSelection.Instance.Selection.Add(this);
+            else
+                DynamoSelection.Instance.Selection.Remove(this);
+
             //Deserialize Selected models
             if (element.HasChildNodes)
             {
@@ -681,19 +691,17 @@ namespace Dynamo.Graph.Annotations
             RaisePropertyChanged("FontSize");
             RaisePropertyChanged("AnnotationText");
             RaisePropertyChanged("Nodes");
+            this.ReportPosition();
         }
 
         /// <summary>
-        /// This is called when a model is deleted from a group
-        /// and UNDO is clicked.
+        /// This is called when a model is added to or deleted from a group.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <param name="checkOverlap"> checkoverlap determines whether the selected model is 
         /// completely inside that group</param>
-        internal void AddToSelectedModels(ModelBase model, bool checkOverlap = false)
+        internal void AddToTargetAnnotationModel(ModelBase model, bool checkOverlap = false)
         {
-            //if (model.BelongsToGroup) return;
-
             var list = this.Nodes.ToList();
             if (model.GUID == this.GUID) return;
             if (list.Where(x => x.GUID == model.GUID).Any()) return;
@@ -755,11 +763,16 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         public override void Deselect()
         {           
-            foreach (var models in Nodes)
+            foreach (var model in Nodes)
             {
-                models.IsSelected = false;
-            }   
-       
+                model.IsSelected = false;
+                // De-select all elements under the deleted group if there is any nested group
+                if (model is AnnotationModel)
+                {
+                    (model as AnnotationModel).Deselect();
+                }
+            }
+
             base.Deselect();
         }
 
@@ -786,7 +799,7 @@ namespace Dynamo.Graph.Annotations
                 foreach (var model in this.Nodes)
                 {
                     model.PropertyChanged -= model_PropertyChanged;
-                    model.Disposed -= model_Disposed;                    
+                    model.Disposed -= model_Disposed;
                 }
             }
             base.Dispose();

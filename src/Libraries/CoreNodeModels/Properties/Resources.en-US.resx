@@ -620,4 +620,7 @@ Default value: {0}</value>
   <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
     <value>is obsolete, please use the new Convert Units node.</value>
   </data>
+  <data name="IntegerSliderInfoMessage" xml:space="preserve">
+    <value>The value entered is not in the int64 range.</value>
+  </data>
 </root>

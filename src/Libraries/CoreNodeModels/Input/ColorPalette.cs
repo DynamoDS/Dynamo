@@ -60,6 +60,7 @@ namespace CoreNodeModels.Input
                     Name = this.Name,
 
                     Type = NodeInputTypes.colorInput,
+                    Type2 = NodeInputTypes.colorInput,
                     Description = this.Description,
                     Value = JsonConvert.SerializeObject(colorObj),
                 };

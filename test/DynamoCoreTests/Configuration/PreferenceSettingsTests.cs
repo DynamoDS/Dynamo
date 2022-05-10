@@ -1,7 +1,7 @@
-﻿using Dynamo.Configuration;
+﻿using System.IO;
+using Dynamo.Configuration;
 using Dynamo.Models;
 using NUnit.Framework;
-using System.IO;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -101,6 +101,11 @@ namespace Dynamo.Tests.Configuration
                     Status = WindowStatus.Maximized
                 }
             });
+            settings.GroupStyleItemsList.Add(new GroupStyleItem 
+            {
+                Name = "TestGroup", 
+                HexColorString = "000000" 
+            });
 
             // Save
             settings.Save(tempPath);
@@ -127,6 +132,11 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(windowSettings.Height, 321);
             Assert.AreEqual(windowSettings.Width, 654);
             Assert.AreEqual(windowSettings.Status, WindowStatus.Maximized);
+            // Load function will only deserialize the customized style
+            Assert.AreEqual(settings.GroupStyleItemsList.Count, 1);
+            var styleItemsList = settings.GroupStyleItemsList[0];
+            Assert.AreEqual(styleItemsList.Name, "TestGroup");
+            Assert.AreEqual(styleItemsList.HexColorString, "000000");
         }
 
         [Test]
@@ -143,6 +153,25 @@ namespace Dynamo.Tests.Configuration
             var token = settings.CustomPackageFolders[1];
 
             Assert.AreEqual(DynamoModel.BuiltInPackagesToken,token);
+        }
+        [Test]
+        [Category("UnitTests")]
+        public void TestSerializationDisableTrustWarnings()
+        {
+            //create new prefs
+            var prefs = new PreferenceSettings();
+            //assert default.
+            Assert.IsFalse(prefs.DisableTrustWarnings);
+            prefs.SetTrustWarningsDisabled(true);
+            Assert.True(prefs.DisableTrustWarnings);
+            //save
+            var tempPath = GetNewFileNameOnTempPath(".xml");
+            prefs.Save(tempPath);
+
+            //load
+            var settingsLoaded = PreferenceSettings.Load(tempPath);
+            Assert.IsTrue(settingsLoaded.DisableTrustWarnings);
+
         }
     }
 }

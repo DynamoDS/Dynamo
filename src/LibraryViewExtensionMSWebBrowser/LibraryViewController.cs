@@ -287,14 +287,19 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         private string ReplaceUrlWithBase64Image(string html, string minifiedURL, bool magicreplace = true)
         {
             var ext = string.Empty;
+            var magicstringprod = "__webpack_require__.p+";
             // this depends on librariejs minification producing the same results - 
             // longterm this is fragile. We should intercept these requests and handle them instead.
             if (magicreplace)
             {
-                minifiedURL = $"n.p+\"{minifiedURL}\"";
+                minifiedURL = $"{magicstringprod}\"{minifiedURL}\"";
             }
-            var searchString = minifiedURL.Replace("n.p+", @"./dist").Replace("\"", "");
+            var searchString = minifiedURL.Replace(magicstringprod, @"./dist").Replace("\"", "");
             var base64 = iconProvider.GetResourceAsString(searchString, out ext);
+            if (string.IsNullOrEmpty(base64))
+            {
+                throw new Exception($"could not find resource {searchString}");
+            }
             //replace some urls to svg icons with base64 data.
             if (ext == "svg")
             {
@@ -320,10 +325,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
            Tuple.Create("/resources/ArtifaktElement-Regular.woff",true),
            Tuple.Create("/resources/bin.svg",true),
            Tuple.Create("/resources/default-icon.svg",true),
-           Tuple.Create("/resources/fontawesome-webfont.eot",true),
-           Tuple.Create("/resources/fontawesome-webfont.ttf",true),
-           Tuple.Create("/resources/fontawesome-webfont.woff2",true),
-           Tuple.Create("/resources/fontawesome-webfont.woff",true),
            Tuple.Create("/resources/library-action.svg",true),
            Tuple.Create("/resources/library-create.svg",true),
            Tuple.Create("/resources/library-query.svg",true),

@@ -22,8 +22,9 @@ namespace Dynamo.Wpf.Views.GuidedTour
             if (viewModel != null)
                 surveyViewModel = viewModel;
 
-            DataContext = surveyViewModel;
 
+            DataContext = surveyViewModel;
+            
             //Setting the host over which the popup will appear and the placement mode
             PlacementTarget = hInfo.HostUIElement;
             Placement = hInfo.PopupPlacement;
@@ -31,6 +32,8 @@ namespace Dynamo.Wpf.Views.GuidedTour
             //When setting a value for offset it will move the popup taking as a initial position the host control position in which the popup is shown
             HorizontalOffset = hInfo.HorizontalPopupOffSet;
             VerticalOffset = hInfo.VerticalPopupOffSet;
+
+            Focus();
         }
 
         private void CloseButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -38,6 +41,19 @@ namespace Dynamo.Wpf.Views.GuidedTour
             IsOpen = false;
             surveyViewModel.Step.OnStepClosed(surveyViewModel.Step.Name, surveyViewModel.Step.StepType);
             Logging.Analytics.TrackEvent(Logging.Actions.Rate, Logging.Categories.Command, surveyViewModel.Step.RatingTextTitle, SurveyRatingControl.Value);
+        }
+
+        private void GetStartedButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            IsOpen = false;
+            surveyViewModel.Step.OnStepClosed(surveyViewModel.Step.Name, surveyViewModel.Step.StepType);
+
+            if (surveyViewModel.Step.DynamoViewModelStep.ClearHomeWorkspaceInternal())
+            {
+                surveyViewModel.Step.DynamoViewModelStep.OpenOnboardingGuideFile();
+                surveyViewModel.Step.GuidesManager.LaunchTour(Dynamo.Controls.DynamoView.OnboardingGuideName);
+            }
+
         }
     }
 }

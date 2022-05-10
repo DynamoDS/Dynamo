@@ -129,7 +129,6 @@ namespace Dynamo.ViewModels
             // Here each node in the selection is being recorded for undo right
             // before they get updated by the drag operation.
             // 
-            RecordSelectionForUndo();
             draggedNodes.Clear();
             foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
             {
@@ -159,7 +158,9 @@ namespace Dynamo.ViewModels
 
         internal void EndDragSelection(Point2D mouseCursor)
         {
+            RecordSelectionForUndo(mouseCursor);
             UpdateDraggedSelection(mouseCursor); // Final position update.
+
             draggedNodes.Clear(); // We are no longer dragging anything.
         }
 
@@ -329,20 +330,26 @@ namespace Dynamo.ViewModels
             this.RaisePropertyChanged("ActiveConnector");
         }
 
-        private void RecordSelectionForUndo()
+        private void RecordSelectionForUndo(Point2D mousePoint)
         {
-            // This is where we attempt to store all the models in undo recorder 
-            // before they are modified (i.e. being dragged around the canvas).
-            // Note that we only do this once when the first mouse-move occurs 
-            // after a mouse-down, because mouse-down can potentially be used 
-            // just to select a node (as opposed to moving the selected nodes), in 
-            // which case we don't want any of the nodes to be recorded for undo.
-            // 
-            List<ModelBase> models = DynamoSelection.Instance.Selection.
-                Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
+            //The models are being stored with its initial position to record only the changed ones.
+            List<ModelBase> changedPositionModels = new List<ModelBase>();
+            foreach (DraggedNode draggedNode in draggedNodes)
+            {
+                //Checks if the draggednoded has changed its position
+                if (draggedNode.HasChangedPosition(mousePoint))
+                {
+                    ModelBase model = DynamoSelection.Instance.Selection.
+                        Where((x) => (x is ModelBase)).Cast<ModelBase>().FirstOrDefault(x => x.GUID == draggedNode.guid);
 
-            WorkspaceModel.RecordModelsForModification(models, Model.UndoRecorder);
+                    changedPositionModels.Add(model);
 
+                    //The nodes are being reseted to inital position for recording the model purposes 
+                    draggedNode.UpdateInitialPosition();
+                }
+            }
+
+            WorkspaceModel.RecordModelsForModification(changedPositionModels, Model.UndoRecorder);
             DynamoViewModel.RaiseCanExecuteUndoRedo();
         }
 
@@ -372,6 +379,8 @@ namespace Dynamo.ViewModels
         {
             double deltaX = 0, deltaY = 0;
             ILocatable locatable = null;
+            internal Guid guid;
+            double initialPositionX = 0, initialPositionY = 0;
 
             /// <summary>
             /// Construct a DraggedNode for a given ILocatable object.
@@ -392,6 +401,11 @@ namespace Dynamo.ViewModels
                 this.locatable = locatable;
                 deltaX = mouseCursor.X - locatable.X;
                 deltaY = mouseCursor.Y - locatable.Y;
+                initialPositionX = locatable.X;
+                initialPositionY = locatable.Y;
+
+                var modelBase = locatable as ModelBase;
+                guid = modelBase.GUID;
             }
 
             public void Update(Point2D mouseCursor)
@@ -402,6 +416,26 @@ namespace Dynamo.ViewModels
                 locatable.X = x;
                 locatable.Y = y;
                 locatable.ReportPosition();
+            }
+
+            internal bool HasChangedPosition(Point2D mousePoint)
+            {
+                //This boolean is for cases when the model has already changed its position before ending the drag action
+                bool hasAlreadyChanged = !(initialPositionX == locatable.X && initialPositionY == locatable.Y);
+
+                double x = mousePoint.X - deltaX;
+                double y = mousePoint.Y - deltaY;
+
+                //This is  boolean is to check if the model will change its position after recording its properties in the undo stack
+                bool willChange = initialPositionX != x || initialPositionY != y;
+
+                return hasAlreadyChanged || willChange;
+            }
+
+            public void UpdateInitialPosition()
+            {
+                locatable.X = initialPositionX;
+                locatable.Y = initialPositionY;
             }
         }
 
@@ -613,8 +647,8 @@ namespace Dynamo.ViewModels
                     var element = sender as IInputElement;
                     mouseDownPos = e.GetPosition(element);
 
-                    // We'll see if there is any node being clicked on. If so, 
-                    // then the state machine should initiate a drag operation.
+                    // Check if there is any Dynamo Element (e.g. node, note, group) being clicked on. If so, 
+                    // then the state machine should initiate a drag operation if user keeps dragging the mouse .
                     if (null != GetSelectableFromPoint(mouseDownPos))
                     {
                         InitiateDragSequence();
@@ -838,7 +872,9 @@ namespace Dynamo.ViewModels
                     // the nested group and the parent group, as the mouse coursor will be inside
                     // both of there rects. In these cases we want to get group that is nested
                     // inside the parent group.
-                    var dropGroup = dropGroups.FirstOrDefault(x => !x.AnnotationModel.HasNestedGroups) ?? dropGroups.FirstOrDefault();
+                    var dropGroup = dropGroups
+                        .FirstOrDefault(x => !x.AnnotationModel.HasNestedGroups) ?? dropGroups.FirstOrDefault();
+
 
                     // If the dropGroup is null or any of the selected items is already in the dropGroup,
                     // we disable the drop border by setting NodeHoveringState to false
@@ -881,6 +917,15 @@ namespace Dynamo.ViewModels
                             .ToList()
                             .ForEach(x => x.NodeHoveringState = false);
 
+                        // If the dropGroup belongs to another group
+                        // we need to check if the parent group is collapsed
+                        // if it is we dont want to be able to add new
+                        // models to the drop group.
+                        var parentGroup = owningWorkspace.Annotations
+                            .Where(x => x.AnnotationModel.ContainsModel(dropGroup.AnnotationModel))
+                            .FirstOrDefault();
+                        if (parentGroup != null && !parentGroup.IsExpanded) return false;
+                        
                         dropGroup.NodeHoveringState = true;
                     }
 
@@ -1042,6 +1087,22 @@ namespace Dynamo.ViewModels
                 if (this.currentState != State.None)
                     throw new InvalidOperationException();
 
+                // Before setting the drag state,
+                // Alt + left click triggers removal of group node or note belongs to
+                if (Keyboard.IsKeyDown(Key.LeftAlt) && !DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any())
+                {
+                    foreach (var model in DynamoSelection.Instance.Selection.OfType<ModelBase>())
+                    {
+                        var parentGroup = owningWorkspace.Annotations
+                            .Where(x => x.AnnotationModel.ContainsModel(model))
+                            .FirstOrDefault();
+                        if (parentGroup != null)
+                        {
+                            owningWorkspace.DynamoViewModel.UngroupModelCommand.Execute(null);
+                        }
+                    }
+                }
+
                 SetCurrentState(State.DragSetup);
             }
 
@@ -1085,8 +1146,7 @@ namespace Dynamo.ViewModels
 
                 // Update the selection box and make it visible 
                 // but with an initial dimension of zero.
-                SelectionBoxUpdateArgs args = null;
-                args = new SelectionBoxUpdateArgs(mouseDownPos.X, mouseDownPos.Y, 0, 0);
+                SelectionBoxUpdateArgs args = new SelectionBoxUpdateArgs(mouseDownPos.X, mouseDownPos.Y, 0, 0);
                 args.SetVisibility(Visibility.Visible);
 
                 this.owningWorkspace.OnRequestSelectionBoxUpdate(this, args);

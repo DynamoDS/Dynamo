@@ -322,7 +322,7 @@
     <value>Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
-    <value>There is no version of {0} that accepts argument type(s) ({1}).</value>
+    <value>There is no version of {0} that accepts argument type(s) ({1}). href=NonOverloadMethodResolutionError.html</value>
   </data>
   <data name="kMethodStackOverflow" xml:space="preserve">
     <value>'{0}()' recursed until Dynamo ran out of memory, please add a base case.</value>

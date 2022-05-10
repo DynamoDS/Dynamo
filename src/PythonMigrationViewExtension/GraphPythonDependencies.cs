@@ -46,7 +46,7 @@ namespace Dynamo.PythonMigration
 
         private static bool IsIronPythonPackageLoaded()
         {
-            return PythonEngineManager.Instance.AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2);
+            return PythonEngineManager.Instance.AvailableEngines.Any(x => x.Name == PythonEngineManager.IronPython2EngineName);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace Dynamo.PythonMigration
             if (!(obj is PythonNodeBase pythonNode))
                 return false;
 
-            return pythonNode.Engine == PythonEngineVersion.IronPython2;
+            return pythonNode.EngineName == PythonEngineManager.IronPython2EngineName;
         }
 
         internal static bool IsCPythonNode(NodeModel obj)
@@ -167,7 +167,7 @@ namespace Dynamo.PythonMigration
             if (!(obj is PythonNodeBase pythonNode))
                 return false;
 
-            return pythonNode.Engine == PythonEngineVersion.CPython3;
+            return pythonNode.EngineName == PythonEngineManager.CPython3EngineName;
         }
     }
 }

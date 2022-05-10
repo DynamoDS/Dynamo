@@ -245,10 +245,12 @@ namespace Dynamo.PackageManager
             // Prevent loading packages that have been specifically marked as unloaded
             if (package.LoadState.State == PackageLoadState.StateTypes.Unloaded) return;
 
-            List<Assembly> loadedAssemblies = new List<Assembly>();
+            List<Assembly> loadedNodeLibs = new List<Assembly>();
+            List<Assembly> failedNodeLibs = new List<Assembly>();
             try
             {
-                // load node libraries
+                List<Assembly> blockedAssemblies = new List<Assembly>();
+                // Try to load node libraries from all assemblies
                 foreach (var assem in package.EnumerateAndLoadAssembliesInBinDirectory())
                 {
                     if (assem.IsNodeLibrary)
@@ -256,13 +258,40 @@ namespace Dynamo.PackageManager
                         try
                         {
                             OnRequestLoadNodeLibrary(assem.Assembly);
-                            loadedAssemblies.Add(assem.Assembly);
+                            loadedNodeLibs.Add(assem.Assembly);
                         }
                         catch (LibraryLoadFailedException ex)
                         {
+                            // Managed exception
+                            // We can still try to load other parts of the package
                             Log(ex.GetType() + ": " + ex.Message);
                         }
+                        catch (DynamoServices.AssemblyBlockedException)
+                        {
+                            blockedAssemblies.Add(assem.Assembly);
+                        }
+                        catch (Exception)
+                        {
+                            failedNodeLibs.Add(assem.Assembly);
+                        }
                     }
+                }
+
+                if (loadedNodeLibs.Count > 0)
+                {
+                    // Try to load any valid node libraries regardless package state
+                    PackagesLoaded?.Invoke(loadedNodeLibs);
+                }
+
+                if (blockedAssemblies.Count > 0)
+                {
+                    throw new DynamoServices.AssemblyBlockedException("The following assemblies are blocked : " + string.Join(", ", blockedAssemblies.Select(x => Path.GetFileName(x.Location))));
+                }
+
+                // Generic fatal error
+                if (failedNodeLibs.Count > 0)
+                {
+                    throw new Exception("Failed to load the following assemblies : " + string.Join(", ", failedNodeLibs.Select(x => Path.GetFileName(x.Location))));
                 }
 
                 // load custom nodes
@@ -287,7 +316,9 @@ namespace Dynamo.PackageManager
 
                 package.SetAsLoaded();
                 PackgeLoaded?.Invoke(package);
-                PackagesLoaded?.Invoke(loadedAssemblies);
+
+                PythonServices.PythonEngineManager.Instance.
+                    LoadPythonEngine(package.LoadedAssemblies.Select(x => x.Assembly));
             }
             catch (CustomNodePackageLoadException e)
             {

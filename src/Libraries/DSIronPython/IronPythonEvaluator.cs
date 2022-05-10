@@ -7,6 +7,7 @@ using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Events;
 using Dynamo.Logging;
+using Dynamo.PythonServices;
 using Dynamo.PythonServices.EventHandlers;
 using Dynamo.Session;
 using Dynamo.Utilities;
@@ -54,7 +55,16 @@ namespace DSIronPython
         /// </summary>
         public const string packageExtraFolderName = @"extra";
 
-        public override string Name => PythonNodeModels.PythonEngineVersion.IronPython2.ToString();
+        // Do not reference 'PythonEngineManager.IronPython2EngineName' here
+        // because it will break compatibility with Dynamo2.13.X
+        //
+        //public override string Name => PythonEngineManager.IronPython2EngineName;
+        
+        /// <summary>
+        /// Returns the name of this Python engine implementation.
+        /// This name will appear in the Dynamo's UI.
+        /// </summary>
+        public override string Name => "IronPython2";
 
         /// <summary>
         /// Use Lazy&lt;PythonEngineManager&gt; to make sure the Singleton class is only initialized once

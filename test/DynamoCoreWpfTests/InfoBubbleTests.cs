@@ -7,6 +7,8 @@ using System.Linq;
 using System.Windows;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using CoreNodeModels.Input;
+using Dynamo.Graph;
 
 namespace DynamoCoreWpfTests
 {
@@ -164,6 +166,27 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(info1, userFacingInfo.First().Message);
             Assert.AreEqual(warning1, userFacingWarnings.First().Message);
             Assert.AreEqual(error1, userFacingErrors.First().Message);
+        }
+
+        [Test]
+        public void TestInfoState()
+        {
+            var slider = new IntegerSlider64Bit();
+            Assert.NotNull(slider);
+
+            DynamoModel model = GetModel();
+            model.ExecuteCommand(new DynamoModel.CreateNodeCommand(slider, 0, 0, true, true));
+
+            NodeViewModel sliderNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
+                .FirstOrDefault(x => x.NodeModel.GUID == slider.GUID);
+
+            NodeModel sliderNodeModel = sliderNodeViewModel.NodeModel;
+
+            var param = new UpdateValueParams("Value", "9223372036854775808");
+            slider.UpdateValue(param);
+
+            Assert.AreEqual(sliderNodeModel.Infos.Count, 1);
+            Assert.AreEqual(slider.Value, Int64.MaxValue);
         }
 
         /// <summary>

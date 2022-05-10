@@ -13,6 +13,7 @@ using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
@@ -445,6 +446,8 @@ namespace Dynamo.PackageManager
                 list.Reverse();
             }
 
+            Analytics.TrackEvent(Actions.Sort, Categories.PackageManagerOperations, $"{SortingDirection}");
+
             // temporarily hide binding
             var temp = this.SearchResults;
             this.SearchResults = null;
@@ -522,6 +525,8 @@ namespace Dynamo.PackageManager
             PackageManagerClientViewModel
                 .DynamoViewModel
                 .OnViewExtensionOpenWithParameterRequest("C71CA1B9-BF9F-425A-A12C-53DF56770406", packageManagerSearchElement);
+
+            Analytics.TrackEvent(Actions.View, Categories.PackageManagerOperations, $"{packageManagerSearchElement?.Name}");
         }
 
         /// <summary>
@@ -705,7 +710,7 @@ namespace Dynamo.PackageManager
             var message = string.Format(Resources.MessageUninstallCustomNodeToContinue,
                 installed.Name + " " + installed.VersionName, conflicting.Name + " " + conflicting.VersionName);
 
-            var dialogResult = MessageBox.Show(message,
+            var dialogResult = MessageBoxService.Show(message,
                 Resources.CannotDownloadPackageMessageBoxTitle,
                 MessageBoxButton.YesNo, MessageBoxImage.Error);
 
@@ -866,11 +871,10 @@ namespace Dynamo.PackageManager
             // No need to filter by host if nothing selected
             if (SelectedHosts.Count == 0) return list;
             IEnumerable<PackageManagerSearchElementViewModel> filteredList = null;
-            foreach (var host in SelectedHosts)
-            {
-                filteredList = (filteredList ?? Enumerable.Empty<PackageManagerSearchElementViewModel>()).Union(
-                    list.Where(x => x.Model.Hosts != null && x.Model.Hosts.Contains(host)) ?? Enumerable.Empty<PackageManagerSearchElementViewModel>());
-            }
+
+            filteredList = filteredList ??
+                           list.Where(x => x.Model.Hosts != null && SelectedHosts.Intersect(x.Model.Hosts).Count() == SelectedHosts.Count()) ?? Enumerable.Empty<PackageManagerSearchElementViewModel>();
+
             return filteredList;
         }
 

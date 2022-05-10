@@ -8,14 +8,13 @@ using System.Text.RegularExpressions;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.PythonServices.EventHandlers;
-using PythonNodeModels;
 
 namespace PythonNodeModels
 {
-    /// TODO: Remove when dynamic loading logic is there then we no longer need a hard copy of the options
     /// <summary>
     /// Enum of possible values of python engine versions.
     /// </summary>
+    [Obsolete("This Enum will be remove in Dynamo 3.0")]
     public enum PythonEngineVersion
     {
         Unspecified,
@@ -81,8 +80,6 @@ namespace Dynamo.PythonServices
             get;
         }
 
-        internal PythonEngineVersion Version => Enum.TryParse(Name, out PythonEngineVersion version) ? version : PythonEngineVersion.Unspecified;
-
         /// <summary>
         /// Add an event handler before the Python evaluation begins
         /// </summary>
@@ -135,7 +132,17 @@ namespace Dynamo.PythonServices
         public ObservableCollection<PythonEngine> AvailableEngines;
 
         #region Constant strings
-        // TODO: The following fields might be removed after dynamic loading applied
+        
+        /// <summary>
+        /// CPython Engine name
+        /// </summary>
+        internal static readonly string CPython3EngineName = "CPython3";
+
+        /// <summary>
+        /// IronPython2 Engine name
+        /// </summary>
+        internal static readonly string IronPython2EngineName = "IronPython2";
+
         internal static string PythonEvaluatorSingletonInstance = "Instance";
 
         internal static string IronPythonEvaluatorClass = "IronPythonEvaluator";
@@ -164,16 +171,30 @@ namespace Dynamo.PythonServices
         {
             AvailableEngines = new ObservableCollection<PythonEngine>();
 
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                ScanPythonEngine(assembly);
-            }
-            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(AssemblyLoadEventHandler);
+            // We check only for the default python engine because it is the only one loaded by static references.
+            // Other engines can only be loaded through package manager
+            LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
+               FirstOrDefault(a => a != null && a.GetName().Name == CPythonAssemblyName));
+
+            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => LoadDefaultPythonEngine(args.LoadedAssembly));
         }
 
-        private PythonEngine GetEngine(PythonEngineVersion version)
+        private void LoadDefaultPythonEngine(Assembly a)
         {
-            return GetEngine(version.ToString());
+            if (a == null ||
+                a.GetName().Name != CPythonAssemblyName)
+            {
+                return;
+            }
+
+            try
+            {
+                LoadPythonEngine(a);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load {CPythonAssemblyName} with error: {e.Message}");
+            }
         }
 
         private PythonEngine GetEngine(string version)
@@ -181,53 +202,20 @@ namespace Dynamo.PythonServices
             return AvailableEngines.FirstOrDefault(x => x.Name == version);
         }
 
-        /// <summary>
-        /// The shared logic for Python node evaluation
-        /// </summary>
-        /// <param name="engine"></param>
-        /// <param name="evaluatorClass"></param>
-        /// <param name="evaluationMethod"></param>
-        internal void GetEvaluatorInfo(PythonEngineVersion engine, out string evaluatorClass, out string evaluationMethod)
+        // This method can throw exceptions.
+        internal void LoadPythonEngine(IEnumerable<Assembly> assemblies)
         {
-            // Provide evaluator info when the selected engine is loaded
-            if (engine == PythonEngineVersion.IronPython2 && GetEngine(PythonEngineVersion.IronPython2) != null)
+            foreach (var a in assemblies)
             {
-                evaluatorClass = IronPythonEvaluatorClass;
-                evaluationMethod = IronPythonEvaluationMethod;
-                return;
+                LoadPythonEngine(a);
             }
-            if (engine == PythonEngineVersion.CPython3 && GetEngine(PythonEngineVersion.CPython3) != null)
-            {
-                evaluatorClass = CPythonEvaluatorClass;
-                evaluationMethod = CPythonEvaluationMethod;
-                return;
-            }
-
-            // Throwing at the compilation stage is handled as a non-retryable error by the Dynamo engine.
-            // Instead, we want to produce an error at the evaluation stage, so we can eventually recover.
-            // We handle this by providing a dummy Python evaluator that will evaluate to an error message.
-            evaluatorClass = DummyEvaluatorClass;
-            evaluationMethod = DummyEvaluatorMethod;
         }
 
-        private void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args)
-        {
-            Instance.ScanPythonEngine(args.LoadedAssembly);
-        }
-
-        private void ScanPythonEngine(Assembly assembly)
+        // This method can throw exceptions.
+        private void LoadPythonEngine(Assembly assembly)
         {
             if (assembly == null)
             {
-                return;
-            }
-
-            var assemblyName = assembly.GetName().Name;
-            if (assemblyName != IronPythonAssemblyName && assemblyName != CPythonAssemblyName)
-            {
-                // Remove this condition once Python engines are truly dynamic (VM execution and UI)
-                // Until then, check for specific assemblies to prevent any performance degradation
-                // TODO: Check performance of Dynamo load time after removing this condition.
                 return;
             }
 
@@ -235,17 +223,35 @@ namespace Dynamo.PythonServices
             // but we can optimize by checking all loaded types against evaluators interface later
             try
             {
-                var eType = assembly.GetTypes().FirstOrDefault(x => typeof(PythonEngine).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
-                PythonEngine engine = (PythonEngine)eType?.GetProperty(PythonEvaluatorSingletonInstance, BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
+                Type eType = null;
+                PropertyInfo instanceProp = null;
+                try
+                {
+                    eType = assembly.GetTypes().FirstOrDefault(x => typeof(PythonEngine).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
+                    if (eType == null) return;
 
-                if (engine != null && GetEngine(engine.Name) == null)
+                    instanceProp = eType?.GetProperty(PythonEvaluatorSingletonInstance, BindingFlags.NonPublic | BindingFlags.Static);
+                    if (instanceProp == null) return;
+                }
+                catch {
+                    // Ignore exceptions from iterating assembly types.
+                    return;
+                }
+
+                PythonEngine engine = (PythonEngine)instanceProp.GetValue(null);
+                if (engine == null) 
+                {
+                    throw new Exception($"Could not get a valid PythonEngine instance by calling the {eType.Name}.{PythonEvaluatorSingletonInstance} method");
+                }
+
+                if (GetEngine(engine.Name) == null)
                 {
                     AvailableEngines.Add(engine);
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                //Do nothing for now
+                throw new Exception($"Failed to add a Python engine from assembly {assembly.GetName().Name}.dll with error: {ex.Message}");
             }
         }
     }

@@ -750,8 +750,10 @@ namespace Dynamo.Graph.Workspaces
                 var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node == null)
                     continue;
-
-                node.Warning(message.Value); // Update node warning message.
+                using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                {
+                    node.Warning(message.Value); // Update node warning message.
+                }
             }
 
             // Notify listeners (optional) of completion.
@@ -767,8 +769,8 @@ namespace Dynamo.Graph.Workspaces
             // Dispatch the failure message display for execution on UI thread.
             // 
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
-                ? new EvaluationCompletedEventArgs(true)
-                : new EvaluationCompletedEventArgs(true, task.Exception);
+                ? new EvaluationCompletedEventArgs(true,messages.Keys,null)
+                : new EvaluationCompletedEventArgs(true, messages.Keys, task.Exception);
 
             EvaluationCount ++;
 
@@ -840,14 +842,6 @@ namespace Dynamo.Graph.Workspaces
                 // The workspace has been built for the first time
                 silenceNodeModifications = false;
 
-                // An event handler we can listen to on the NodeViewModel, to update the 
-                // node's informational state. This is required because Errors and Warnings 
-                // currently fire differently from one another. 
-                foreach (NodeModel nodeModel in task.ModifiedNodes)
-                {
-                    nodeModel.OnNodeMessagesClearing();
-                }
-
                 OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
 
@@ -900,6 +894,8 @@ namespace Dynamo.Graph.Workspaces
                 OnSetNodeDeltaState(deltaComputeStateArgs);               
             }            
         }
+
+
        
         #endregion
 

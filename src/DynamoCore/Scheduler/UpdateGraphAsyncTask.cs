@@ -139,13 +139,17 @@ namespace Dynamo.Scheduler
                         executedNodes.Add(node);
                     }
                 }
-
                 foreach (var node in executedNodes)
                 {
                     node.WasInvolvedInExecution = true;
                     node.WasRenderPackageUpdatedAfterExecution = false;
                     if (node.State == ElementState.Warning)
-                        node.ClearErrorsAndWarnings();
+                    {
+                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                        {
+                            node.ClearErrorsAndWarnings();
+                        }
+                    }
                 }
 
                 engineController.RemoveRecordedAstGuidsForSession(graphSyncData.SessionID);

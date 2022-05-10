@@ -66,6 +66,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
+        internal static string OnboardingGuideWorkspaceEmbeededResource
+        {
+            get
+            {
+                return @"Dynamo.Wpf.UI.GuidedTour.DynamoOnboardingGuide_HouseCreationDS.dyn";
+            }
+        }
+
         /// <summary>
         /// GuidesManager Constructor 
         /// </summary>
@@ -75,7 +83,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             mainRootElement = root;
             dynamoViewModel = dynViewModel;
-            guideBackgroundElement = Guide.FindChild(root, guideBackgroundName) as GuideBackground;
+            guideBackgroundElement = GuideUtilities.FindChild(root, guideBackgroundName) as GuideBackground;
         }
 
         /// <summary>
@@ -116,7 +124,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     Visibility = Visibility.Hidden
                 };
 
-                Grid mainGrid = Guide.FindChild(mainRootElement, mainGridName) as Grid;
+                Grid mainGrid = GuideUtilities.FindChild(mainRootElement, mainGridName) as Grid;
                 mainGrid.Children.Add(guideBackgroundElement);
                 Grid.SetColumnSpan(guideBackgroundElement, 5);
                 Grid.SetRowSpan(guideBackgroundElement, 6);
@@ -170,7 +178,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 guideBackgroundElement.Visibility = Visibility.Visible;
                 currentGuide.GuideBackgroundElement = guideBackgroundElement;
                 currentGuide.MainWindow = mainRootElement;
-                currentGuide.LibraryView = Guide.FindChild(mainRootElement, libraryViewName);
+                currentGuide.LibraryView = GuideUtilities.FindChild(mainRootElement, libraryViewName);
                 currentGuide.Initialize();
                 currentGuide.Play();
                 GuidesValidationMethods.CurrentExecutingGuide = currentGuide;
@@ -352,8 +360,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 popupInfo.CutOffRectArea = new CutOffArea()
                 {
+                    WindowElementNameString = jsonHostControlInfo.CutOffRectArea.WindowElementNameString,
+                    NodeId = jsonHostControlInfo.CutOffRectArea.NodeId,
                     WidthBoxDelta = jsonHostControlInfo.CutOffRectArea.WidthBoxDelta,
-                    HeightBoxDelta = jsonHostControlInfo.CutOffRectArea.HeightBoxDelta
+                    HeightBoxDelta = jsonHostControlInfo.CutOffRectArea.HeightBoxDelta,
+                    XPosOffset = jsonHostControlInfo.CutOffRectArea.XPosOffset,
+                    YPosOffset = jsonHostControlInfo.CutOffRectArea.YPosOffset
                 };
             }
 
@@ -365,7 +377,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
 
             //The host_ui_element read from the json file need to exists otherwise the host will be null
-            UIElement hostUIElement = Guide.FindChild(mainRootElement, popupInfo.HostUIElementString);
+            UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, popupInfo.HostUIElementString);
             if (hostUIElement != null)
                 popupInfo.HostUIElement = hostUIElement;
 
@@ -415,7 +427,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         {
                             FormattedText = formattedText,
                             Title = title
-                        }
+                        },
+                        GuidesManager = this
                     };
 
                     //Due that the RatingTextTitle property is just for Survey then we need to set the property using reflection
@@ -467,7 +480,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal void CreateRealTimeInfoWindow(string content)
         {
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
-            UIElement hostUIElement = Guide.FindChild(mainRootElement, "statusBarPanel");
+            UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
 
             // When popup already exist, replace the content
             if ( exitTourPopup != null && exitTourPopup.IsOpen)

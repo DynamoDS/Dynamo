@@ -61,8 +61,9 @@ namespace Dynamo.Controls
         public const string BackgroundPreviewName = "BackgroundPreview";
 
         //The "Packages" and "Get Started" strings needs to be hardcoded due that are hardcoded in the json file (no need localization)
-        private static string GetStartedGuideName = "Get Started";
-        private static string PackagesGuideName = "Packages";
+        internal static string GetStartedGuideName = "Get Started";
+        internal static string PackagesGuideName = "Packages";
+        internal static string OnboardingGuideName = "Onboarding";
 
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
@@ -119,7 +120,7 @@ namespace Dynamo.Controls
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;
 
             //Initialize the ViewExtensionManager with the CommonDataDirectory so that view extensions found here are checked first for dll's with signed certificates
-            viewExtensionManager = new ViewExtensionManager(new[] {dynamoViewModel.Model.PathManager.CommonDataDirectory });
+            viewExtensionManager = new ViewExtensionManager(dynamoViewModel.Model.ExtensionManager,new[] { dynamoViewModel.Model.PathManager.CommonDataDirectory });
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -219,7 +220,6 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
             FocusableGrid.InputBindings.Clear();
         }
-
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
             if (!(workspace is HomeWorkspaceModel hws))
@@ -1005,20 +1005,61 @@ namespace Dynamo.Controls
             // will not work. Instead, we have to check if the Owner Window (DynamoView) is deactivated or not.  
             if (Application.Current == null)
             {
-                this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(); };
+                this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(null); };
             }
             loaded = true;
+
+            
+            //The following code illustrates use of FeatureFlagsManager.
+            //safe to remove.
+            if (DynamoModel.FeatureFlags != null)
+            {
+                CheckTestFlags();
+            }
+            //if feature flags is not yet initalized, subscribe to the event and wait.
+            else
+            {
+                DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckTestFlags;
+            }
+           
         }
 
         /// <summary>
         /// Close Popup when the Dynamo window is not in the foreground.
         /// </summary>
 
-        private void HidePopupWhenWindowDeactivated()
+        private void HidePopupWhenWindowDeactivated(object obj)
         {
             var workspace = this.ChildOfType<WorkspaceView>();
             if (workspace != null)
-                workspace.HidePopUp();
+                workspace.HideAllPopUp(obj);
+        }
+        /// <summary>
+        /// check some test flags from launch darkly.
+        /// code is safe to remove at any time.
+        /// </summary>
+        private void CheckTestFlags()
+        {
+
+            //feature flag test.
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("EasterEggIcon1", false) == true)
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true from view");
+            }
+            else
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is false from view");
+            }
+
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is string ffs && ffs != "NA")
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is enabled from view");
+                MessageBoxService.Show(this, ffs, "EasterEggMessage1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+            }
+            else
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is disabled from view");
+            }
         }
 
         private void TrackStartupAnalytics()
@@ -1200,7 +1241,7 @@ namespace Dynamo.Controls
             }
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
-            var result = System.Windows.MessageBox.Show(this, dialogText,
+            var result = MessageBoxService.Show(this, dialogText,
                 Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle,
                 buttons, MessageBoxImage.Question);
 
@@ -1212,14 +1253,14 @@ namespace Dynamo.Controls
                 else
                     e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
             }
-            else if (result == MessageBoxResult.Cancel)
+            else if (result == MessageBoxResult.No)
             {
-                //return false;
-                e.Success = false;
+                //return true;
+                e.Success = true;
             }
             else
             {
-                e.Success = true;
+                e.Success = false;
             }
         }
 
@@ -1573,6 +1614,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
+            DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckTestFlags;
 
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
@@ -2366,9 +2408,9 @@ namespace Dynamo.Controls
         private void Window_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             //if original sender was scroll bar(i.e Thumb) don't close the popup.
-            if(!(e.OriginalSource is Thumb))
+            if(!(e.OriginalSource is Thumb) && !(e.OriginalSource is TextBox))
             {
-                HidePopupWhenWindowDeactivated();
+                HidePopupWhenWindowDeactivated(sender);
             }
         }
 
@@ -2405,6 +2447,22 @@ namespace Dynamo.Controls
             try
             {
                 dynamoViewModel.MainGuideManager.LaunchTour(PackagesGuideName);
+            }
+            catch (Exception)
+            {
+                sidebarGrid.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void OnBoardingMenuGuide_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if(dynamoViewModel.ClearHomeWorkspaceInternal())
+                {
+                    dynamoViewModel.OpenOnboardingGuideFile();
+                    dynamoViewModel.MainGuideManager.LaunchTour(OnboardingGuideName);
+                }
             }
             catch (Exception)
             {

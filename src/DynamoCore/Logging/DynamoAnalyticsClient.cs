@@ -12,9 +12,6 @@ namespace Dynamo.Logging
 {
     class DynamoAnalyticsSession : IAnalyticsSession
     {
-        private Heartbeat heartbeat;
-        private UsageLog logger;
-
         public DynamoAnalyticsSession()
         {
             UserId = GetUserID();
@@ -24,10 +21,6 @@ namespace Dynamo.Logging
         public void Start(DynamoModel model)
         {
             StabilityCookie.Startup();
-
-            heartbeat = Heartbeat.GetInstance(model);
-
-            logger = new UsageLog("Dynamo", UserId, SessionId);
         }
 
         public void Dispose()
@@ -37,24 +30,13 @@ namespace Dynamo.Logging
                 StabilityCookie.WriteCrashingShutdown();
             else
                 StabilityCookie.WriteCleanShutdown();
-
-            if (null != heartbeat)
-                Heartbeat.DestroyInstance();
-            heartbeat = null;
-
-            if (null != logger)
-                logger.Dispose();
-            logger = null;
-        }
-
-        public ILogger Logger
-        {
-            get { return logger; }
         }
 
         public string UserId { get; private set; }
 
         public string SessionId { get; private set; }
+        [Obsolete("Do not use, will be removed, was only used by legacy instrumentation.")]
+        public ILogger Logger => throw new NotImplementedException();
 
         public static String GetUserID()
         {
@@ -178,7 +160,7 @@ namespace Dynamo.Logging
 
             if (Session == null) Session = new DynamoAnalyticsSession();
 
-            //Setup Analytics service, StabilityCookie, Heartbeat and UsageLog.
+            //Setup Analytics service, and StabilityCookie.
             Session.Start(dynamoModel);
 
             //Dynamo app version.
@@ -371,12 +353,6 @@ namespace Dynamo.Logging
         [Obsolete("Function will be removed in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
         public void LogPiiInfo(string tag, string data)
         {
-            if (!ReportingUsage) return;
-
-            if (Session != null && Session.Logger != null)
-            {
-                Session.Logger.Log(tag, data);
-            }
         }
 
         public void Dispose()

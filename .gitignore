@@ -9,6 +9,7 @@
 *.so
 bin/
 obj/
+int/
 packages/
 
 #find -type d -name bin -exec git rm -r {} \;

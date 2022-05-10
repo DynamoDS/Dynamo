@@ -56,7 +56,7 @@ namespace NodeDocumentationMarkdownGenerator
                     (FromDirectoryOptions opts) => CommandHandler.HandleFromDirectory(opts),
                     (FromPackageOptions opts) => CommandHandler.HandleFromPackage(opts),
                     err => "1");
-            Console.WriteLine($"docs generation took {sw.Elapsed.TotalSeconds}");
+            Console.WriteLine($"docs generation tool {sw.Elapsed.TotalSeconds}");
 # if DEBUG
             Console.ReadLine();
 #endif

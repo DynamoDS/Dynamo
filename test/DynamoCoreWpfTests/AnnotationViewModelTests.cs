@@ -164,6 +164,57 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(true, ViewModel.CanUngroupModel(null));
         }
 
+
+        [Test]
+        [Category("DynamoUI")]
+        public void CanUngroupNodeFromAGroupIfGroupContainsNote()
+        {
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
+
+            //Select the node for group
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            //Create a Group around that node
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
+
+            //Check if the group is created
+            Assert.IsNotNull(annotation);
+
+            //Clear the selection
+            DynamoSelection.Instance.ClearSelection();
+
+            //create a note.
+            ViewModel.AddNoteCommand.Execute(null);
+            var note = ViewModel.Model.CurrentWorkspace.Notes.FirstOrDefault();
+            Assert.IsNotNull(note);
+
+            //Select the note 
+            DynamoSelection.Instance.Selection.Add(note);
+            DynamoSelection.Instance.Selection.Add(annotation);
+
+            ViewModel.AddModelsToGroupModelCommand.Execute(null);
+
+            //Clear the selection
+            DynamoSelection.Instance.ClearSelection();
+            //Select the node 
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            Assert.AreEqual(2, annotation.Nodes.Count());
+            //remove it
+            Assert.DoesNotThrow(() =>
+            {
+                ViewModel.UngroupModelCommand.Execute(null);
+              
+            });
+            Assert.AreEqual(1, annotation.Nodes.Count());
+        }
+
         [Test]
         [Category("DynamoUI")]
         public void CanUngroupNodeWhichIsNotInAGroup()
@@ -746,6 +797,80 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void CheckEmptySelectionListAfterUndos()
+        {
+            //Add a Node
+            var model = GetModel();
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            Guid groupid = Guid.NewGuid();
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 1);
+            Assert.AreNotEqual(0, annotation.Width);
+            Assert.AreEqual(string.Empty, annotation.AnnotationText);
+
+            //Update the Annotation Text
+            model.ExecuteCommand(
+                    new DynamoModel.UpdateModelValueCommand(
+                        Guid.Empty, annotation.GUID, "TextBlockText",
+                        "This is a unit test"));
+
+            var annotationCenterPoint = new Point2D(addNode.CenterX, addNode.CenterY);
+
+            //Deselects the group
+            ViewModel.ExecuteCommand(
+                    new DynamoModel.SelectModelCommand(Guid.Empty, Dynamo.Utilities.ModifierKeys.None));
+
+            //Selects the group
+            DynamoSelection.Instance.Selection.Add(addNode);
+            ViewModel.ExecuteCommand(
+             new DynamoModel.DragSelectionCommand(annotationCenterPoint, DynamoModel.DragSelectionCommand.Operation.BeginDrag));
+
+            //Deselects the group
+            ViewModel.ExecuteCommand(
+                    new DynamoModel.SelectModelCommand(Guid.Empty, Dynamo.Utilities.ModifierKeys.None));
+
+            //Selects the group
+            DynamoSelection.Instance.Selection.Add(addNode);
+            ViewModel.ExecuteCommand(
+              new DynamoModel.DragSelectionCommand(annotationCenterPoint, DynamoModel.DragSelectionCommand.Operation.BeginDrag));
+
+            //Deselects the group
+            ViewModel.ExecuteCommand(
+                    new DynamoModel.SelectModelCommand(Guid.Empty, Dynamo.Utilities.ModifierKeys.None));
+
+            model.CurrentWorkspace.Undo();
+            model.CurrentWorkspace.Undo();
+
+            Assert.IsTrue(DynamoSelection.Instance.Selection.Any(x => x.IsSelected));
+            Assert.IsTrue(model.CurrentWorkspace.Nodes.Any(x => x.IsSelected));
+
+            model.CurrentWorkspace.Undo();
+            model.CurrentWorkspace.Undo();
+            model.CurrentWorkspace.Undo();
+            model.CurrentWorkspace.Undo();
+
+            //Deselects the group
+            ViewModel.ExecuteCommand(
+                 new DynamoModel.SelectModelCommand(Guid.Empty, Dynamo.Utilities.ModifierKeys.None));
+
+            Assert.IsFalse(model.CurrentWorkspace.Nodes.Any(x => x.IsSelected));
+            Assert.IsFalse(DynamoSelection.Instance.Selection.Any(x => x.IsSelected));
+        }
+
+        [Test]
         public void TestOpeningMalformedAnnotation()
         {
             OpenModel("core\\MalformedGroup.dyn");
@@ -811,11 +936,27 @@ namespace DynamoCoreWpfTests
                 DynamoSelection.Instance.Selection.Contains(group2ViewModel.AnnotationModel)
                 );
 
+            //Assert HasUnsavedChanges is false
+            Assert.AreEqual(false, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
+
             group1ViewModel.AddGroupToGroupCommand.Execute(null);
 
             // Assert
             Assert.That(group1ContentBefore.Count != group1ViewModel.Nodes.Count());
             Assert.That(group1ViewModel.Nodes.Contains(group2ViewModel.AnnotationModel));
+
+            //Assert HasUnsavedChanges is true
+            Assert.AreEqual(true, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
+
+            ViewModel.CurrentSpaceViewModel.Save(ViewModel.CurrentSpaceViewModel.FileName);
+
+            //Assert HasUnsavedChanges is false
+            Assert.AreEqual(false, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
+
+            ViewModel.CurrentSpace.Undo();
+
+            //Assert HasUnsavedChanges is true
+            Assert.AreEqual(true, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
         }
 
         [Test]
