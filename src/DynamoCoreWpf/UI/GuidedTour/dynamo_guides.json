@@ -942,7 +942,7 @@
 					"VerticalPopupOffset": 300,
 					"HorizontalPopupOffset": 100,
 					"CutOffRectArea": {
-						"NodeId": "a20a93da6af14deebe2df37c1662349f",
+						"NodeId": "558b9ccbc4604f4382571096a84b9a4f",
 						"XPosOffset": -30,
 						"YPosOffset": -20,
 						"WidthBoxDelta": 0,
@@ -954,7 +954,7 @@
 						"Sequence": 1,
 						"ControlType": "function",
 						"Name": "HighlightPort",
-						"Parameters": [ "#EF9362" ],
+						"Parameters": [ "#EF9362", "outputPortControl", "558b9ccbc4604f4382571096a84b9a4f" ],
 						"Action": "execute"
 					}
 				]
@@ -1041,8 +1041,8 @@
 						"JSParameters": [ "CoordinateSystem.ByOrigin" ],
 						"Action": "execute",
 						"NodePosition": {
-							"X": 1434.2043220875935,
-							"Y": 808.94462405707634
+							"X": 1390.2043220875935,
+							"Y": 1000.94462405707634
 						},
 						"ExecuteCleanUpForward": false,
 						"ExecuteCleanUpBackward": true
@@ -1055,15 +1055,67 @@
 				"Type": "tooltip",
 				"ShowLibrary": false,
 				"Width": 480,
-				"Height": 320,
+				"Height": 380,
 				"StepContent": {
 					"Title": "OnboardingGuideConnectNodesTitle",
 					"FormattedText": "OnboardingGuideConnectNodesText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "center",
-					"VerticalPopupOffset": 0,
-					"HorizontalPopupOffset": 0
+					"VerticalPopupOffset": 250,
+					"HorizontalPopupOffset": 50,
+					"PopupPlacement": "relative",
+					"HostUIElementString": "background_grid",
+					"HtmlPage": {
+						"FileName": "connectTheNodes.html",
+						"Resources": {
+							"#ConnectTheNodes": "ConnectTheNode.gif"
+						}
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "HighlightPort",
+						"Parameters": [ "#EF9362", "outputPortControl" ],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ManagePortConnectionEvents",
+						"Parameters": [ "NextButton", "outputPortControl", "CoordinateSystem.ByOrigin" ],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "RemovePortConnector",
+						"Parameters": [ "NextButton", "outputPortControl", "CoordinateSystem.ByOrigin" ],
+						"Action": "execute"
+					}
+				]
+			},
+			{
+				"Sequence": 5,
+				"Name": "run",
+				"Type": "tooltip",
+				"ShowLibrary": false,
+				"Width": 480,
+				"Height": 220,
+				"StepContent": {
+					"Title": "OnboardingGuideRunGraphTitle",
+					"FormattedText": "OnboardingGuideRunGraphText"
+				},
+				"HostPopupInfo": {
+					"VerticalPopupOffset": 450,
+					"HorizontalPopupOffset": 0,
+					"PopupPlacement": "relative",
+					"HostUIElementString": "background_grid"
 				}
 			}
 		]

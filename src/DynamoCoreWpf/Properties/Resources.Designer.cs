@@ -4423,6 +4423,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Let’s run the graph and see the results of the adjustments you made. Click Run..
+        /// </summary>
+        public static string OnboardingGuideRunGraphText {
+            get {
+                return ResourceManager.GetString("OnboardingGuideRunGraphText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run the graph.
+        /// </summary>
+        public static string OnboardingGuideRunGraphTitle {
+            get {
+                return ResourceManager.GetString("OnboardingGuideRunGraphTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide..
         /// </summary>
         public static string OnboardingGuideWelcomeText {

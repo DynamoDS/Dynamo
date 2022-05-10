@@ -3125,4 +3125,10 @@ To install the latest version of a package, click Install. \n
   <data name="OnboardingGuideConnectNodesTitle" xml:space="preserve">
     <value>Connect the nodes</value>
   </data>
+  <data name="OnboardingGuideRunGraphText" xml:space="preserve">
+    <value>Let’s run the graph and see the results of the adjustments you made. Click Run.</value>
+  </data>
+  <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
+    <value>Run the graph</value>
+  </data>
 </root>

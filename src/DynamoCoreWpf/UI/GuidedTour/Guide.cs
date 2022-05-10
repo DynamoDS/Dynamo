@@ -4,6 +4,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Dynamo.Controls;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
