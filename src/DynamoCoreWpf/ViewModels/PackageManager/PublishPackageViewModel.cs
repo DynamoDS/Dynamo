@@ -930,6 +930,10 @@ namespace Dynamo.PackageManager
                 }
             }
 
+            //after dependencies are loaded refresh package contents
+            vm.RefreshPackageContents();
+            vm.UpdateDependencies();
+
             if (assembliesLoadedTwice.Any())
             {
                 vm.UploadState = PackageUploadHandle.State.Error;
@@ -1339,7 +1343,7 @@ namespace Dynamo.PackageManager
             }
 
             PackageContents.Remove(PackageContents
-                .First(x => x.FileInfo.FullName == packageItemRootViewModel.FileInfo.FullName));
+                .First(x => x.FileInfo?.FullName == packageItemRootViewModel.FileInfo.FullName));
         }
 
         private bool CanShowAddFileDialogAndAdd()

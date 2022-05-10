@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -325,6 +326,14 @@ namespace Dynamo.Wpf.Views
         private void GroupStylesListBox_LostFocus(object sender, RoutedEventArgs e)
         {
             GroupStylesListBox.UnselectAll();
+        }
+
+        private void DisableTrustWarningsChecked(object sender, RoutedEventArgs e)
+        {
+            if (viewModel != null)
+            {
+                viewModel.DisableTrustWarnings = (bool)(sender as ToggleButton).IsChecked;
+            }
         }
     }
 }

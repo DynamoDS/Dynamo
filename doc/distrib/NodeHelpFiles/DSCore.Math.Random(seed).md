@@ -1,7 +1,6 @@
 ## In Depth
-Random with a given seed allows the user to input a seed number to produce a pseudo-random number. Every Rand node with the same seed number will produce the same pseudo-random number. In the example below, we use an integer slider as the input seed into a Rand node.
+Math.Random will produce a single number between 0 and 1. This node includes an input titled, "seed". A seed is a value that initiates the randomize function (allowing for additional options for each seed input), and allows you to "recall" random values by using the same value for seed.
 ___
 ## Example File
 
-![Random (seed)](./DSCore.Math.Random(seed)_img.jpg)
-
+![Math.Random](./DSCore.Math.Random(seed)_img.png)

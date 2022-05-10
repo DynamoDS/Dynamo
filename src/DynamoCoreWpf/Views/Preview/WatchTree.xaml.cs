@@ -49,6 +49,11 @@ namespace Dynamo.Controls
                 {
                     this.Height = minHeightSize;
                 }
+                // When it doesn't have any element, it should be set back the width to the default.
+                if (_vm.Children != null && _vm.Children.Count == 0)
+                {
+                    this.Width = defaultWidthSize;
+                }
             }
             else if (e.PropertyName == "Children")
             {
@@ -71,7 +76,7 @@ namespace Dynamo.Controls
                         this.Width = defaultWidthSize;
                     }
                 }
-            }
+            }            
         }
 
         internal void SetWatchNodeProperties() 

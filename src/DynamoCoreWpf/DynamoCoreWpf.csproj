@@ -13,13 +13,23 @@
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="UI\Images\Alignment\align_bottom.png" />
+    <None Remove="UI\Images\Alignment\align_left.png" />
+    <None Remove="UI\Images\Alignment\align_right.png" />
+    <None Remove="UI\Images\Alignment\align_top.png" />
+    <None Remove="UI\Images\Alignment\align_x_average.png" />
+    <None Remove="UI\Images\Alignment\align_x_distribute.png" />
+    <None Remove="UI\Images\Alignment\align_y_average.png" />
+    <None Remove="UI\Images\Alignment\align_y_distribute.png" />
     <None Remove="UI\Images\NodeStates\alert-64px.png" />
     <None Remove="UI\Images\NodeStates\error-64px.png" />
     <None Remove="UI\Images\NodeStates\frozen-64px.png" />
     <None Remove="UI\Images\NodeStates\hidden-64px.png" />
     <None Remove="UI\Images\NodeStates\info-64px.png" />
     <None Remove="UI\Images\warning_16px.png" />
+    <None Remove="Views\GuidedTour\HtmlPages\nodePackage.html" />
     <None Remove="Views\Menu\TrustedPathView.xaml" />
+    <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
@@ -576,6 +586,8 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -627,6 +639,14 @@
     <EmbeddedResource Include="UI\GuidedTour\DynamoOnboardingGuide_HouseCreationDS.dyn">
 	</EmbeddedResource>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
+    <Resource Include="UI\Images\Alignment\align_bottom.png" />
+    <Resource Include="UI\Images\Alignment\align_left.png" />
+    <Resource Include="UI\Images\Alignment\align_right.png" />
+    <Resource Include="UI\Images\Alignment\align_top.png" />
+    <Resource Include="UI\Images\Alignment\align_x_average.png" />
+    <Resource Include="UI\Images\Alignment\align_x_distribute.png" />
+    <Resource Include="UI\Images\Alignment\align_y_average.png" />
+    <Resource Include="UI\Images\Alignment\align_y_distribute.png" />
     <Resource Include="UI\Images\caret_up.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
     <Resource Include="UI\Images\cursors.psd" />
@@ -1408,7 +1428,7 @@
     <Resource Include="UI\Images\minimize-default-16px.png" />
     <Resource Include="UI\Images\maximize-hover.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\PackageNodes.gif" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\connectTheNodes.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\installedPackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\successIcon.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\filterIcon.png" />
