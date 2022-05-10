@@ -39,7 +39,7 @@ namespace Dynamo.Controls
 
         private void _vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsCollection")
+            if (e.PropertyName == nameof(WatchViewModel.IsCollection))
             {
                 if (_vm.IsCollection)
                 {
@@ -55,7 +55,7 @@ namespace Dynamo.Controls
                     this.Width = defaultWidthSize;
                 }
             }
-            else if (e.PropertyName == "Children")
+            else if (e.PropertyName == nameof(WatchViewModel.Children))
             {
                 if (_vm.Children != null)
                 {
@@ -77,7 +77,7 @@ namespace Dynamo.Controls
                     }
                 }
             }
-            else if (e.PropertyName == "IsOneRowContent")
+            else if (e.PropertyName == nameof(WatchViewModel.IsOneRowContent))
             {
                 if (_vm.IsOneRowContent)
                 {
