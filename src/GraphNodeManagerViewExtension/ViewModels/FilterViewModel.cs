@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dynamo.Core;
-using Dynamo.UI.Commands;
+﻿using Dynamo.Core;
 
 namespace Dynamo.GraphNodeManager.ViewModels
 {

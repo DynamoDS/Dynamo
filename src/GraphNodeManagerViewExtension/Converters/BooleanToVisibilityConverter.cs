@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
+using Dynamo.GraphNodeManager.ViewModels;
 using Dynamo.UI;
+using NUnit.Framework;
 
 namespace Dynamo.GraphNodeManager.Converters
 {
@@ -48,6 +51,54 @@ namespace Dynamo.GraphNodeManager.Converters
         }
     }
 
+    internal class StateToColorBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            switch ((ElementState) value)
+            {
+                case ElementState.Info:
+                    return SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue400Brush"];
+                case ElementState.Warning:
+                case ElementState.PersistentWarning:
+                    return SharedDictionaryManager.DynamoColorsAndBrushesDictionary["YellowOrange500Brush"];
+                case ElementState.Error:
+                    return SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Red500Brush"];
+                default:
+                    return new SolidColorBrush(Colors.Transparent);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    internal class StateToImageSourceConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            switch ((ElementState)value)
+            {
+                case ElementState.Info:
+                    return "/GraphNodeManagerViewExtension;component/Images/Info.png";
+                case ElementState.Warning:
+                case ElementState.PersistentWarning:
+                    return "/GraphNodeManagerViewExtension;component/Images/Alert.png";
+                case ElementState.Error:
+                    return "/GraphNodeManagerViewExtension;component/Images/Error.png";
+                default:
+                    return new SolidColorBrush(Colors.Transparent);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     internal class StateToVisibilityCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -74,7 +125,6 @@ namespace Dynamo.GraphNodeManager.Converters
             throw new NotImplementedException();
         }
     }
-
     
 
     internal class BooleanToForegroundColorConverter : IValueConverter

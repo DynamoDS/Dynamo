@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="GraphNodeManager_ViewExtensionDefinition.xml" />
+    <Resource Include="Images\Copy.png" />
     <Resource Include="Images\Export.png" />
     <Resource Include="Images\Search.png" />
     <Resource Include="Images\MissingNode.png" />

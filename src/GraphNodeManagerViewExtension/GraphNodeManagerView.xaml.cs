@@ -10,6 +10,18 @@ namespace Dynamo.GraphNodeManager
     public partial class GraphNodeManagerView : UserControl
     {
         /// <summary>
+        /// A persistent handle of the currently selected row
+        /// </summary>
+        private DataGridRow selectedRow;
+
+        /// <summary>
+        /// Allows to handle the selection of the DataGrid element
+        /// </summary>
+        private bool allowSelection = false;
+
+        private bool mouseHandeled = false;
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="viewModel"></param>
@@ -28,21 +40,19 @@ namespace Dynamo.GraphNodeManager
         /// <param name="e"></param>
         private void NodeTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!allowSelection) return;
+            allowSelection = false;
+
             var vm = this.DataContext as GraphNodeManagerViewModel;
             if ((sender as DataGrid) == null) return;
             vm.NodeSelect((sender as DataGrid).SelectedItem);
         }
 
-        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            var vm = this.DataContext as GraphNodeManagerViewModel;
-            if (vm == null) return;
-
-            MenuItem mi = sender as MenuItem;
-            if (mi.Name.Equals("ExportToCSV")) vm.ExportGraph("CSV");
-            if (mi.Name.Equals("ExportToJSON")) vm.ExportGraph("JSON");
-        }
-
+        /// <summary>
+        /// Handles export image click function
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ExportImage_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -53,6 +63,55 @@ namespace Dynamo.GraphNodeManager
                 contextMenu.IsOpen = true;
                 e.Handled = true;
             }
+        }
+
+        /// <summary>
+        /// Handles DataGrid row click 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Row_PreviewClickHandler(object sender, MouseButtonEventArgs e)
+        {
+            if (mouseHandeled)
+            {
+                mouseHandeled = false;
+                return;
+            }
+
+            DataGridRow row = sender as DataGridRow;
+            if (row == null) return;
+            if (selectedRow != null && row != selectedRow)
+            {
+                ResetRows();
+            }
+
+            row.DetailsVisibility = row.DetailsVisibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+            allowSelection = true;
+
+            if (row.DetailsVisibility == Visibility.Collapsed) selectedRow = null;
+            else selectedRow = row;
+        }
+
+        /// <summary>
+        /// Resets the selected row details visibility
+        /// </summary>
+        private void ResetRows()
+        {
+            if (selectedRow != null) selectedRow.DetailsVisibility = Visibility.Collapsed;
+            selectedRow = null;
+        }
+
+        /// <summary>
+        /// Handles Clipboard Button Click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnClipboardButtonClick(object sender, RoutedEventArgs e)
+        {
+            mouseHandeled = true;
+            var clipboardMessage = (string)((Button)sender).Tag;
+
+            Clipboard.SetText(clipboardMessage);
         }
     }
 }

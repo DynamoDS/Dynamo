@@ -11,6 +11,7 @@ using Dynamo.GraphNodeManager.ViewModels;
 using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Extensions;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
 using Newtonsoft.Json;
@@ -260,11 +261,15 @@ namespace Dynamo.GraphNodeManager
             if (nodeViewModel == null) return;
 
             // Select
-            var command = new DynamoModel.SelectModelCommand(nodeViewModel.NodeModel.GUID, ModifierKeys.None);  // Cannot resolve constructor error?
+            var command = new DynamoModel.SelectModelCommand(nodeViewModel.NodeModel.GUID, ModifierKeys.None);  
             commandExecutive.ExecuteCommand(command, uniqueId, "GraphNodeManager");
 
             // Focus on selected
             viewModelCommandExecutive.FindByIdCommand(nodeViewModel.NodeModel.GUID.ToString());
+
+            // Deselect how? TODO Find a way to deselect as it causes some issues when running (performs zoom)
+            // Cannot access DynamoSelection class here, it's internal
+            //DynamoSelection.Instance.ClearSelection(); 
         }
         /// <summary>
         /// Switches off all filters

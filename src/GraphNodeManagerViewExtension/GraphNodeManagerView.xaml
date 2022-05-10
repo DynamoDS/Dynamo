@@ -19,12 +19,9 @@
                 <ResourceDictionary Source="Controls/ControlColorsAndBrushes.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            <converters:IntegerToVisibilityConverter x:Key="IntegerToVisibilityConverter"/>
             <converters:StateToVisibilityCollapsedConverter x:Key="StateToVisibilityCollapsedConverter"/>
-            <converters:BooleanToBackgroundColorConverter x:Key="BooleanToBackgroundColorConverter"/>
-            <converters:BooleanToBackgroundHoverColorConverter x:Key="BooleanToBackgroundHoverColorConverter"/>
-            <converters:BooleanToBackgroundPressedColorConverter x:Key="BooleanToBackgroundPressedColorConverter"/>
-            <converters:BooleanToForegroundColorConverter x:Key="BooleanToForegroundColorConverter"/>
+            <converters:StateToColorBrushConverter x:Key="StateToColorBrushConverter"/>
+            <converters:StateToImageSourceConverter x:Key="StateToImageSourceConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid x:Name="MainGrid">
@@ -114,8 +111,15 @@
                   CanUserSortColumns="True"
                   HeadersVisibility="Column"
                   MinColumnWidth="60"
+                  RowDetailsVisibilityMode="Collapsed"
+                  IsReadOnly="True"
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
                   SelectionChanged="NodeTable_SelectionChanged">
-
+            <DataGrid.Resources>
+                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                    <EventSetter Event="PreviewMouseLeftButtonUp" Handler="Row_PreviewClickHandler"/>
+                </Style>
+            </DataGrid.Resources>
             <DataGrid.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.HeaderTemplate>
@@ -239,6 +243,83 @@
                 </DataGridTemplateColumn>
 
             </DataGrid.Columns>
+
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="3 0 0 0" 
+                            Background="#353535"
+                            Margin="0 0 -2 0"
+                            BorderBrush="{Binding State, Converter={StaticResource StateToColorBrushConverter}}" 
+                            Width="{Binding ActualWidth, ElementName=NodesInfoDataGrid}">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding Package}" 
+                                       VerticalAlignment="Center" 
+                                       Margin="13 10" 
+                                       Foreground="{StaticResource MidGrayBrush}"/>
+                            <ItemsControl x:Name="DetailedRowItemControl"
+                                          ItemsSource="{Binding NodeInfos, UpdateSourceTrigger=PropertyChanged}"
+                                          AlternationCount="50">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderThickness="0 1 0 0" BorderBrush="{StaticResource GrayOpacityBrush}">
+                                                <Grid VerticalAlignment="Center" Margin="10 15 10 20" >
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                <Image Grid.Column="0" 
+                                                           Margin="5 0"
+                                                           Source="{Binding State, Converter={StaticResource StateToImageSourceConverter}}" 
+                                                           Style="{StaticResource ImageStyle}"
+                                                           VerticalAlignment="Top"></Image>
+                                                <TextBlock Grid.Column="1" Margin="10 -2 10 0" 
+                                                               TextWrapping="Wrap" 
+                                                               VerticalAlignment="Top"
+                                                               SnapsToDevicePixels="True"
+                                                               FontWeight="UltraLight"
+                                                               FontStyle="Italic"
+                                                               Foreground="{StaticResource MidGrayBrush}"
+                                                               FontSize="11">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} {1}">
+                                                            <Binding Path="Index" />
+                                                            <Binding Path="Message" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                                <Button Grid.Column="2"
+                                                            Margin="5 0"
+                                                            PreviewMouseLeftButtonDown="OnClipboardButtonClick" 
+                                                            Style="{StaticResource ButtonStyle1}"
+                                                            Width="24"
+                                                            VerticalAlignment="Top"
+                                                            ToolTip="Copy issue text to clipboard"
+                                                            Cursor="Hand">
+                                                    <Button.Tag>
+                                                        <MultiBinding StringFormat="{}{0} {1}">
+                                                            <Binding Path="Index" />
+                                                            <Binding Path="Message" />
+                                                        </MultiBinding>
+                                                    </Button.Tag>
+                                                    <Image Source="/GraphNodeManagerViewExtension;component/Images/Copy.png" 
+                                                           Style="{StaticResource ImageStyle}"/>
+                                                    </Button>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical"></StackPanel>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+
         </DataGrid>
     </Grid>
 </UserControl>

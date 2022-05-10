@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Deployment.Internal;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Navigation;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Workspaces;
-using Dynamo.UI.Commands;
-using Dynamo.Selection;
 using ProtoCore.Mirror;
 
 namespace Dynamo.GraphNodeManager.ViewModels
 {
+    public class NodeInfo
+    {
+        public string Message { get; set; }
+        public ElementState State { get; set; }
+        public int HashCode { get; set; }
+        public string Index { get; set; }
+        public bool Dismissed { get; set; }
+    }
     /// <summary>
     /// The ViewModel class to represent a Dynamo Node 
     /// </summary>
@@ -36,6 +36,8 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private int infoCount = 0;
         private string infoIcon = string.Empty;
         private ElementState state;
+        private ObservableCollection<NodeInfo> nodeInfos = new ObservableCollection<NodeInfo>();
+        private string package;
         #endregion
 
         #region Public Fields
@@ -210,8 +212,6 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set => isDummyNode = value;
         }
-
-
         /// <summary>
         /// Test The Number of Info/Warning/Error messages 
         /// </summary>
@@ -225,7 +225,6 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set => infoCount = value;
         }
-
         /// <summary>
         /// The correct icon for the Info Bubble
         /// </summary>
@@ -253,7 +252,6 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set => infoIcon = value;
         }
-
         /// <summary>
         /// The state of the Node
         /// </summary>
@@ -266,6 +264,16 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set => state = value;
 
+        }
+
+        public string Package
+        {
+            get
+            {
+                package = NodeModel.Category;
+                return package;
+            }
+            internal set => package = value;
         }
         #endregion
 
@@ -299,11 +307,17 @@ namespace Dynamo.GraphNodeManager.ViewModels
         /// Test The actual Info/Warning/Error text message
         /// </summary>
         /// <returns></returns>
-        private List<Info> NodeInfos()
+        public ObservableCollection<NodeInfo> NodeInfos
         {
-            return NodeModel.NodeInfos;
+            get
+            {
+                int i = 0;
+                nodeInfos.Clear();
+                NodeModel.NodeInfos.ForEach(ni => nodeInfos.Add(new NodeInfo(){ Message = ni.Message, Index = $"{++i}/{NodeModel.NodeInfos.Count}", State = ni.State, HashCode = ni.GetHashCode()}));
+                return nodeInfos;
+            }
+            internal set => nodeInfos = value;
         }
-
 
         #region Setup and Constructors
         internal NodeModel NodeModel { get; set; }
