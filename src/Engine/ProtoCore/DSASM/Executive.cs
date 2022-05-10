@@ -1647,7 +1647,6 @@ namespace ProtoCore.DSASM
             int fp = rmem.FramePointer;
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
-                //LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
                 RX = rmem.GetAtRelative(StackFrame.FrameIndexRX);
                 TX = rmem.GetAtRelative(StackFrame.FrameIndexTX);
             }
