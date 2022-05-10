@@ -3090,7 +3090,7 @@ To install the latest version of a package, click Install. \n
     <value>Disable receiving trust warning</value>
   </data>
   <data name="PreferencesViewTrustWarningTooltipText" xml:space="preserve">
-    <value>We recommend keeping this toggle off to reduce security risks.</value>
+    <value>This applys to Dynamo, Dynamo Player and Generative Design Player. We recommend keeping this toggle off to avoid inadvertently opening a file from an untrusted location.</value>
   </data>
   <data name="SecurityPathAddPathButtonName" xml:space="preserve">
     <value>Add Path</value>
