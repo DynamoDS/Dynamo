@@ -807,6 +807,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Checkes whether the input argument (path) is among Dynamo's trusted locations
         /// Only directories are supported.
+        /// Subdirectories of a trusted directory are considered trusted.
         /// </summary>
         /// <param name="path">An absolute path to a folder or file on disk</param>
         /// <returns>True if the path is a trusted location, false otherwise</returns>
