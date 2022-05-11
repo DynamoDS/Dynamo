@@ -3,4 +3,4 @@ Cuboid.ByLengths (coordinateSystem,width,length,height) will create a cuboid obj
 ___
 ## Example File
 
-![Cuboid.ByLengths](./Autodesk.DesignScript.Geometry.Cuboid.ByLengths(coordinateSystem, width, length, height)_img.png)
+![Cuboid.ByLengths](./Autodesk.DesignScript.Geometry.Cuboid.ByLengths(coordinateSystem,%20width,%20length,%20height)_img.png)
