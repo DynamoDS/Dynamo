@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
+using ProtoCore.AST;
 using ProtoCore.Mirror;
 
 namespace Dynamo.GraphNodeManager.ViewModels
@@ -330,12 +331,31 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             get
             {
-                int i = 0;
                 nodeInfos.Clear();
-                NodeModel.NodeInfos.ForEach(ni => nodeInfos.Add(new NodeInfo(){ Message = ni.Message, Index = $"{++i}/{NodeModel.NodeInfos.Count}", State = ni.State, HashCode = ni.GetHashCode()}));
+                PopulateNodeInfos();
                 return nodeInfos;
             }
             internal set => nodeInfos = value;
+        }
+
+        /// <summary>
+        /// Populate NodeInfos for this Node
+        /// </summary>
+        private void PopulateNodeInfos()
+        {
+            int i = 0;
+            NodeModel.NodeInfos.ForEach(ni => nodeInfos.Add(new NodeInfo() { Message = GetNodeMessage(ni.Message), Index = $"{++i}/{NodeModel.NodeInfos.Count}", State = ni.State, HashCode = ni.GetHashCode() }));
+        }
+
+        /// <summary>
+        /// If the message is included in the DismissedAlerts, add the '(dismissed)' prefix to the info message
+        /// TODO It is prone to errors, as multiple infos can have the same message
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private string GetNodeMessage(string message)
+        {
+            return NodeModel.DismissedAlerts.Contains(message) ? $"{message} (dismissed)" : message;
         }
 
         #region Setup and Constructors
