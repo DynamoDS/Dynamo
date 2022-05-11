@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
@@ -41,6 +42,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private ElementState state;
         private ObservableCollection<NodeInfo> nodeInfos = new ObservableCollection<NodeInfo>();
         private string package;
+        private Guid nodeGuid;
         #endregion
 
         #region Public Fields
@@ -280,6 +282,18 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set => package = value;
         }
+        /// <summary>
+        /// The GUID of the Node
+        /// </summary>
+        public Guid NodeGuid
+        {
+            get
+            {
+                nodeGuid = NodeModel.GUID;
+                return nodeGuid;
+            }
+            internal set => nodeGuid = value;
+        }
         #endregion
 
         /// <summary>
@@ -309,7 +323,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         }
 
         /// <summary>
-        /// Test The actual Info/Warning/Error text message
+        /// The actual Info/Warning/Error text message
         /// </summary>
         /// <returns></returns>
         public ObservableCollection<NodeInfo> NodeInfos
