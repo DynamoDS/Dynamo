@@ -46,6 +46,8 @@ using System.Windows;
 [assembly: InternalsVisibleTo("GraphMetadataViewExtension")]
 [assembly: InternalsVisibleTo("PackageDetailsViewExtension")]
 [assembly: InternalsVisibleTo("IronPythonTests")]
+[assembly: InternalsVisibleTo("DynamoPackagesWPF")]
+
 
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSpecification))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSection))]

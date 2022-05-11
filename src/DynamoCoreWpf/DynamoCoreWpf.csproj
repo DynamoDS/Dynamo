@@ -13,6 +13,14 @@
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="UI\Images\Alignment\align_bottom.png" />
+    <None Remove="UI\Images\Alignment\align_left.png" />
+    <None Remove="UI\Images\Alignment\align_right.png" />
+    <None Remove="UI\Images\Alignment\align_top.png" />
+    <None Remove="UI\Images\Alignment\align_x_average.png" />
+    <None Remove="UI\Images\Alignment\align_x_distribute.png" />
+    <None Remove="UI\Images\Alignment\align_y_average.png" />
+    <None Remove="UI\Images\Alignment\align_y_distribute.png" />
     <None Remove="UI\Images\NodeStates\alert-64px.png" />
     <None Remove="UI\Images\NodeStates\error-64px.png" />
     <None Remove="UI\Images\NodeStates\frozen-64px.png" />
@@ -21,6 +29,9 @@
     <None Remove="UI\Images\warning_16px.png" />
     <None Remove="Views\GuidedTour\HtmlPages\getStartedOnboarding.html" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\emptyImage.png" />
+    <None Remove="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <None Remove="Views\Menu\TrustedPathView.xaml" />
+    <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
@@ -124,10 +135,11 @@
     <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
     <Compile Include="UI\GuidedTour\CutOffArea.cs" />
     <Compile Include="UI\GuidedTour\ExitGuide.cs" />
-    <Compile Include="UI\GuidedTour\Guide.cs" />
+	<Compile Include="UI\GuidedTour\Guide.cs" />
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
     <Compile Include="UI\GuidedTour\GuidesValidationMethods.cs" />
+    <Compile Include="UI\GuidedTour\GuideUtilities.cs" />
     <Compile Include="UI\GuidedTour\HightlightArea.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
     <Compile Include="UI\GuidedTour\PreValidation.cs" />
@@ -174,6 +186,7 @@
       <DependentUpon>PresetPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\VisualConfigurations.cs" />
+    <Compile Include="Utilities\CrashReportTool.cs" />
     <Compile Include="Utilities\CrashUtilities.cs" />
     <Compile Include="Utilities\GroupStyleItemSelector.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
@@ -266,6 +279,7 @@
     <Compile Include="ViewModels\GuidedTour\ExitGuideWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
+    <Compile Include="ViewModels\Menu\TrustedPathViewModel.cs" />
     <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
@@ -337,6 +351,7 @@
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\Menu\TrustedPathView.xaml.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
     <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
       <DependentUpon>PackagePathView.xaml</DependentUpon>
@@ -508,6 +523,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Menu\TrustedPathView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Menu\PreferencesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -569,7 +588,8 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\getStartedOnboarding.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -618,7 +638,17 @@
     <None Include="UI\GuidedTour\dynamo_guides.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <EmbeddedResource Include="UI\GuidedTour\DynamoOnboardingGuide_HouseCreationDS.dyn">
+	</EmbeddedResource>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
+    <Resource Include="UI\Images\Alignment\align_bottom.png" />
+    <Resource Include="UI\Images\Alignment\align_left.png" />
+    <Resource Include="UI\Images\Alignment\align_right.png" />
+    <Resource Include="UI\Images\Alignment\align_top.png" />
+    <Resource Include="UI\Images\Alignment\align_x_average.png" />
+    <Resource Include="UI\Images\Alignment\align_x_distribute.png" />
+    <Resource Include="UI\Images\Alignment\align_y_average.png" />
+    <Resource Include="UI\Images\Alignment\align_y_distribute.png" />
     <Resource Include="UI\Images\caret_up.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
     <Resource Include="UI\Images\cursors.psd" />
@@ -1400,7 +1430,7 @@
     <Resource Include="UI\Images\minimize-default-16px.png" />
     <Resource Include="UI\Images\maximize-hover.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\PackageNodes.gif" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\connectTheNodes.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\installedPackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\successIcon.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\filterIcon.png" />
@@ -1498,7 +1528,6 @@
     <Resource Include="UI\Images\bubble-arrow.png" />
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\emptyImage.png" />
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />

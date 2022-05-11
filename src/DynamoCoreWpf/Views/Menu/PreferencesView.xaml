@@ -13,6 +13,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:fa="http://schemas.fontawesome.io/icons/" 
         xmlns:packagemanager="clr-namespace:Dynamo.Wpf.Views.PackageManager"
+        xmlns:trustedpaths="clr-namespace:Dynamo.Wpf.Views"
         xmlns:wpfControls="clr-namespace:Dynamo.Wpf.Controls"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
@@ -887,7 +888,9 @@
                                                             Width="{StaticResource ToggleButtonWidth}"
                                                             Height="{StaticResource ToggleButtonHeight}"
                                                             VerticalAlignment="Center"
-                                                            IsChecked="False"
+                                                            IsChecked="{Binding Path=DisableTrustWarnings,Mode=OneWay}"
+                                                            Checked="DisableTrustWarningsChecked"
+                                                            Unchecked="DisableTrustWarningsChecked"
                                                             Style="{StaticResource EllipseToggleButton1}"/>
                                             <Label Content="{x:Static p:Resources.PreferencesViewTrustWarningLabel}" 
                                                     Margin="10,0,0,0"
@@ -922,17 +925,9 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <StackPanel Orientation="Vertical" Margin="0,6,0,0" Grid.Row="0">
-                                        <Button x:Name="AddPath"
-                                            HorizontalAlignment="Left"
-                                            Margin="0"
-                                            Content="{x:Static p:Resources.SecurityPathAddPathButtonName}"
-                                            Command="{}">
-                                            <Button.Style>
-                                                <Style BasedOn="{StaticResource SolidButtonStyle}" TargetType="{x:Type Button}">
-                                                    <Setter Property="IsEnabled" Value="True"/>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
+                                        <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
+                                            <trustedpaths:TrustedPathView x:Name="TrustedPathView" DataContext="{Binding TrustedPathsViewModel}"/>
+                                        </ScrollViewer>
                                     </StackPanel>
                                 </Grid>
                             </Expander>

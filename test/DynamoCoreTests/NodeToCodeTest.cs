@@ -1364,6 +1364,102 @@ namespace Dynamo.Tests
             Assert.IsTrue(cbn.Code.Contains(@"D:\\foo\\bar"));
         }
 
+        [Test, Category("Failure")]
+        public void ImperativeArrayIndexingInCodeBlockToCode()
+        {
+            OpenModel(@"core\node2code\imperative_indexing.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            SelectAll(nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.Code.Contains("return = p[0].DistanceTo(p[1]);"));
+        }
+
+        [Test]
+        public void ArrayIndexingInCodeBlockToCode()
+        {
+            OpenModel(@"core\node2code\array_indexing.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            SelectAll(nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.Code.Contains("p[0].DistanceTo(p[1]);"));
+        }
+
+        [Test]
+        public void StringIndexingInCodeBlockToCode()
+        {
+            OpenModel(@"core\node2code\string_indexing.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            SelectAll(nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.Code.Contains("t1 = s[1..2];"));
+        }
+
+        [Test]
+        public void DictIndexingInCodeBlockToCode()
+        {
+            OpenModel(@"core\node2code\dict_indexing.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            SelectAll(nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.Code.Contains("dict[\"abc\"];"));
+        }
+
+        [Test]
+        public void NestedIndexingInCodeBlockToCode1()
+        {
+            OpenModel(@"core\node2code\func()[][].dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            SelectAll(nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.Code.Contains("Point.ByCoordinates(x<1>, y<2>)[0][0];"));
+        }
+
+        [Test]
+        public void NestedIndexingInCodeBlockToCode2()
+        {
+            OpenModel(@"core\node2code\func()[func()[]].dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            SelectAll(nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.Code.Contains("Math.Pow(x<1>, y<2>)[0][Math.Round(1..2)[0]];"));
+        }
+
         [Test]
         public void TestDirectoryToCode()
         {

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Xml;
 using Newtonsoft.Json;
 
@@ -97,6 +98,50 @@ namespace DynamoUtilities
                 return writeAllow && !writeDeny;
             }
             catch(Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Returns whether current user has read access to the folder path.
+        /// </summary>
+        /// <param name="folderPath">Folder path</param>
+        /// <returns></returns>
+        internal static bool HasReadPermissionOnDir(string folderPath)
+        {
+            try
+            {
+                var readAllow = false;
+                var readDeny = false;
+                var accessControlList = Directory.GetAccessControl(folderPath);
+                if (accessControlList == null)
+                    return false;
+
+                var accessRules = accessControlList.GetAccessRules(true, true,
+                                            typeof(System.Security.Principal.SecurityIdentifier));
+                if (accessRules == null)
+                    return false;
+
+                var curentUser = WindowsIdentity.GetCurrent();
+                foreach (FileSystemAccessRule rule in accessRules)
+                {
+                    // When current rule does not contain setting related to Read, skip.
+                    if ((FileSystemRights.Read & rule.FileSystemRights) != FileSystemRights.Read)
+                        continue;
+
+                    if (!curentUser.Groups.Contains(rule.IdentityReference))
+                        continue;
+                    
+                    if (rule.AccessControlType == AccessControlType.Allow)
+                        readAllow = true;
+                    else if (rule.AccessControlType == AccessControlType.Deny)
+                        readDeny = true;
+                }
+
+                return readAllow && !readDeny;
+            }
+            catch
             {
                 return false;
             }
@@ -245,6 +290,12 @@ namespace DynamoUtilities
                 fileExists = false;
                 size = string.Empty;
             }
+        }
+
+        internal static Char[] SpecialAndInvalidCharacters()
+        {
+            // Excluding white spaces and uncommon characters, only keeping the displayed in the Windows alert
+            return System.IO.Path.GetInvalidFileNameChars().Where(x => !char.IsWhiteSpace(x) && (int)x > 31).ToArray();
         }
     }
 }
