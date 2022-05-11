@@ -19,6 +19,7 @@ using System.IO;
 using static Dynamo.Models.DynamoModel;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Connectors;
+using System.ComponentModel;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -93,6 +94,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     if (element != null)
                         ManageEventHandler(element, handler.HandlerElementEvent, handler.ExecuteMethod);
                 }
+
+                ownedWindow.Closed += CloseGuidedTour;
             }
             //When enableFunction = false, means we are hiding (closing) the TermsOfUse Window due that we are moving to the next Step or we are exiting the Guide
             else
@@ -102,6 +105,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
                 GuideUtilities.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+            }
+        }
+
+        private static void CloseGuidedTour(object sender, EventArgs e)
+        {
+            bool acceptedTermsOfUse = (sender as TermsOfUseView).AcceptedTermsOfUse;
+
+            if (!acceptedTermsOfUse)
+            {
+                CloseTour();
             }
         }
 
@@ -249,7 +262,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="e"></param>
         internal void DeclineButton_Click(object sender, RoutedEventArgs e)
         {
-            CloseTour();
+            if (!CurrentExecutingGuidesManager.exitGuideWindow.IsOpen)
+            {
+                CloseTour();
+            }
         }
 
         /// <summary>
