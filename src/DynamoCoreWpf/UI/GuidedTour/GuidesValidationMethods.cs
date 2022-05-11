@@ -110,7 +110,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private static void OnPackageManagerTouClosed(object sender, EventArgs e)
         {
-            bool acceptedTermsOfUse = (sender as TermsOfUseView).AcceptedTermsOfUse;
+            bool acceptedTermsOfUse = false;
+            var window = sender as TermsOfUseView;
+
+            if (window != null)
+            {
+               acceptedTermsOfUse = window.AcceptedTermsOfUse;
+            }
 
             if (!acceptedTermsOfUse)
             {
