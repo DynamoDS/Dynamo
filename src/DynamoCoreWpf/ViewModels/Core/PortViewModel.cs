@@ -23,7 +23,7 @@ namespace Dynamo.ViewModels
         private bool showUseLevelMenu;
         private const double autocompletePopupSpacing = 2.5;
         internal bool inputPortDisconnectedByConnectCommand = false;
-        protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(59, 68, 83));
+        protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(102, 102, 102));
         protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
@@ -379,6 +379,7 @@ namespace Dynamo.ViewModels
             {
                 case "ActiveConnector":
                     RaisePropertyChanged(nameof(IsHitTestVisible));
+                    RefreshPortColors();
                     break;
                 default:
                     break;
@@ -394,6 +395,7 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(State):
                     RaisePropertyChanged(nameof(State));
+                    RefreshPortColors();
                     break;
                 case nameof(ToolTipContent):
                     RaisePropertyChanged(nameof(ToolTipContent));
@@ -505,6 +507,12 @@ namespace Dynamo.ViewModels
 
         private void NodePortContextMenu(object obj)
         {
+            // If this port does not display a Chevron button to open the context menu and it doesn't
+            // have a default value then using right-click to open the context menu should also do nothing.
+            if (obj is InPortViewModel inPortViewModel &&
+                inPortViewModel.UseLevelVisibility == Visibility.Collapsed &&
+                !inPortViewModel.DefaultValueEnabled) return;
+            
             var wsViewModel = node.WorkspaceViewModel;
             
             wsViewModel.CancelActiveState();
@@ -574,7 +582,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         protected virtual void RefreshPortColors()
         {
-            PortBackgroundColor = node.IsVisible ? PortBackgroundColorDefault : PortBackgroundColorPreviewOff;
+            PortBackgroundColor = PortBackgroundColorDefault;
             PortBorderBrushColor = PortBorderBrushColorDefault;
         }
 

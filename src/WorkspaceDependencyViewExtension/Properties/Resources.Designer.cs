@@ -183,6 +183,15 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to External files are external documents in the graph space, such as images or text files. These are computed when the graph is run or by clicking the refresh icon incase the graph is already executed..
+        /// </summary>
+        public static string ExternalFilesToolTip {
+            get {
+                return ResourceManager.GetString("ExternalFilesToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap ImageIcon {
@@ -230,7 +239,16 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Workspace References.
+        ///   Looks up a localized string similar to Local definitions are Dynamo-specific files corresponding to local custom nodes and local packages. These are computed when the graph is saved or by clicking the refresh icon..
+        /// </summary>
+        public static string LocalDefinitionsToolTip {
+            get {
+                return ResourceManager.GetString("LocalDefinitionsToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show _Workspace References.
         /// </summary>
         public static string MenuItemString {
             get {
@@ -283,6 +301,15 @@ namespace Dynamo.WorkspaceDependency.Properties {
         public static string PackageHeaderText {
             get {
                 return ResourceManager.GetString("PackageHeaderText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packages extend Dynamo&apos;s core functionality and are available in the Package Manager. These are computed when the graph is saved or by clicking the refresh icon..
+        /// </summary>
+        public static string PackagesToolTip {
+            get {
+                return ResourceManager.GetString("PackagesToolTip", resourceCulture);
             }
         }
         

@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
@@ -87,7 +89,7 @@ namespace Dynamo.PackageManager
             /// Constructor
             /// </summary>
             /// <param name="filterName">Filter name, same as host name</param>
-            /// <param name="pmSearchViewModel">a reference of the PackageManagerSearchViewModel</param>
+            /// <param name="packageManagerSearchViewModel">a reference of the PackageManagerSearchViewModel</param>
             public FilterEntry(string filterName, PackageManagerSearchViewModel packageManagerSearchViewModel)
             {
                 FilterName = filterName;
@@ -121,6 +123,11 @@ namespace Dynamo.PackageManager
                 {
                     pmSearchViewModel.SelectedHosts.Remove(obj as string);
                 }
+                // Send filter event with what host filter user using
+                Dynamo.Logging.Analytics.TrackEvent(
+                    Actions.Filter,
+                    Categories.PackageManagerOperations,
+                    string.Join(",", pmSearchViewModel.SelectedHosts));
                 pmSearchViewModel.SearchAndUpdateResults();
                 return;
             }
@@ -412,7 +419,7 @@ namespace Dynamo.PackageManager
             ClearDownloadToastNotificationCommand = new DelegateCommand<object>(ClearDownloadToastNotification);
             SearchText = string.Empty;
             SortingKey = PackageSortingKey.LastUpdate;
-            SortingDirection = PackageSortingDirection.Ascending;
+            SortingDirection = PackageSortingDirection.Descending;
             HostFilter = new List<FilterEntry>();
             SelectedHosts = new List<string>();
         }
@@ -427,7 +434,7 @@ namespace Dynamo.PackageManager
         }
         
         /// <summary>
-        /// Sort the search results
+        /// Sort the search results in the view based on the sorting key and sorting direction.
         /// </summary>
         public void Sort()
         {
@@ -438,6 +445,8 @@ namespace Dynamo.PackageManager
             {
                 list.Reverse();
             }
+
+            Analytics.TrackEvent(Actions.Sort, Categories.PackageManagerOperations, $"{SortingDirection}");
 
             // temporarily hide binding
             var temp = this.SearchResults;
@@ -515,7 +524,9 @@ namespace Dynamo.PackageManager
 
             PackageManagerClientViewModel
                 .DynamoViewModel
-                .OnViewExtensionOpenWithParameterRequest("Package Details", packageManagerSearchElement);
+                .OnViewExtensionOpenWithParameterRequest("C71CA1B9-BF9F-425A-A12C-53DF56770406", packageManagerSearchElement);
+
+            Analytics.TrackEvent(Actions.View, Categories.PackageManagerOperations, $"{packageManagerSearchElement?.Name}");
         }
 
         /// <summary>
@@ -604,6 +615,7 @@ namespace Dynamo.PackageManager
         }
 
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
+        public event EventHandler<PackagePathEventArgs> RequestDisableTextSearch;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
         {
             if (RequestShowFileDialog != null)
@@ -698,7 +710,7 @@ namespace Dynamo.PackageManager
             var message = string.Format(Resources.MessageUninstallCustomNodeToContinue,
                 installed.Name + " " + installed.VersionName, conflicting.Name + " " + conflicting.VersionName);
 
-            var dialogResult = MessageBox.Show(message,
+            var dialogResult = MessageBoxService.Show(message,
                 Resources.CannotDownloadPackageMessageBoxTitle,
                 MessageBoxButton.YesNo, MessageBoxImage.Error);
 
@@ -796,6 +808,8 @@ namespace Dynamo.PackageManager
                 this.AddToSearchResults(result);
             }
 
+            this.Sort();
+
             SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
         }
 
@@ -857,11 +871,10 @@ namespace Dynamo.PackageManager
             // No need to filter by host if nothing selected
             if (SelectedHosts.Count == 0) return list;
             IEnumerable<PackageManagerSearchElementViewModel> filteredList = null;
-            foreach (var host in SelectedHosts)
-            {
-                filteredList = (filteredList ?? Enumerable.Empty<PackageManagerSearchElementViewModel>()).Union(
-                    list.Where(x => x.Model.Hosts != null && x.Model.Hosts.Contains(host)) ?? Enumerable.Empty<PackageManagerSearchElementViewModel>());
-            }
+
+            filteredList = filteredList ??
+                           list.Where(x => x.Model.Hosts != null && SelectedHosts.Intersect(x.Model.Hosts).Count() == SelectedHosts.Count()) ?? Enumerable.Empty<PackageManagerSearchElementViewModel>();
+
             return filteredList;
         }
 
@@ -895,7 +908,13 @@ namespace Dynamo.PackageManager
                         PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
                         CanInstallPackage(x.Name), isEnabledForInstall)))
                     .ToList();
+
                 Sort(list, this.SortingKey);
+
+                if (SortingDirection == PackageSortingDirection.Descending)
+                {
+                    list.Reverse();
+                }
             }
 
             foreach (var x in list)
@@ -965,6 +984,17 @@ namespace Dynamo.PackageManager
                 return;
 
             SearchResults[SelectedIndex].Model.Execute();
+        }
+
+        /// <summary>
+        /// Once the sample package is filled in the textbox search we rise the event to the view to disable the actions to change it , filter and sort it.
+        /// </summary>
+        public void DisableSearchTextBox()
+        {
+            if (RequestDisableTextSearch != null)
+            {
+                RequestDisableTextSearch(null, null);
+            }
         }
     }
 }

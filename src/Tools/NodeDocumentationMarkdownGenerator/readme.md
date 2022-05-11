@@ -52,7 +52,7 @@ Eventually Dictionary website can be refactored to consume markdown files from c
 
 ### FromDirectory examples
 
-generate docs for CoreNodeModels.dll, importing dictionary content, and compressing images.
+generate docs for CoreNodeModels.dll, importing dictionary content, and compressing images. For a list of OOTB Dynamo node binaries, refer to `DynamoPathResolver` class in Dynamo code base.
 
 ```bash
 fromdirectory 

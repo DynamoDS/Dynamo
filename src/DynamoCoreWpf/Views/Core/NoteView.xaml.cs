@@ -98,7 +98,8 @@ namespace Dynamo.Nodes
            if (this.ViewModel.Model.PinnedNode != null)
             {
             var nodeGuid = this.ViewModel.Model.PinnedNode.GUID;
-                DynamoSelection.Instance.Selection.Add(ViewModel.Model.PinnedNode);
+                //We have to use AddUnique due that otherwise the node will be added several times when we click right over the note
+                DynamoSelection.Instance.Selection.AddUnique(ViewModel.Model.PinnedNode);
             }
             BringToFront();
 

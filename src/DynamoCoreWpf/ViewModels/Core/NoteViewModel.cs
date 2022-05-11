@@ -185,6 +185,7 @@ namespace Dynamo.ViewModels
         public void UpdateSizeFromView(double w, double h)
         {
             this._model.SetSize(w,h);
+            MoveNoteAbovePinnedNode();
         }
 
         private bool CanSelect(object parameter)
@@ -216,6 +217,7 @@ namespace Dynamo.ViewModels
                 case nameof(NoteModel.PinnedNode):
                     RaisePropertyChanged(nameof(this.PinnedNode));
                     PinToNodeCommand.RaiseCanExecuteChanged();
+                    UnpinFromNodeCommand.RaiseCanExecuteChanged();
                     break;
 
             }
@@ -294,22 +296,23 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
+
             var nodeGroup = WorkspaceViewModel.Annotations
                 .FirstOrDefault(x => x.AnnotationModel.ContainsModel(nodeToPin));
 
             if (nodeGroup != null)
             {
-                nodeGroup.AnnotationModel.AddToSelectedModels(this.Model);
+                nodeGroup.AnnotationModel.AddToTargetAnnotationModel(this.Model);
             }
 
             Model.PinnedNode = nodeToPin;
+            Model.UndoRequest += UnpinFromNode;
 
             MoveNoteAbovePinnedNode();
             SubscribeToPinnedNode();
 
-            WorkspaceModel.RecordModelsForModification(new List<ModelBase> { this.Model }, WorkspaceViewModel.Model.UndoRecorder);
             WorkspaceViewModel.HasUnsavedChanges = true;
-
         }
 
         private bool CanPinToNode(object parameters)
@@ -342,9 +345,24 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// This method will be executed for validate if the "Unpin from node" option should be shown or not in the context menu (when clicking right over the note)
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        private bool CanUnpinFromNode(object parameters)
+        {
+            if (PinnedNode != null)
+                return true;
+
+            return false;
+        }
+
         private void UnpinFromNode(object parameters)
         {
             UnsuscribeFromPinnedNode();
+            Model.UndoRequest -= UnpinFromNode;
+
             Model.PinnedNode = null;
             WorkspaceViewModel.HasUnsavedChanges = true;
         }

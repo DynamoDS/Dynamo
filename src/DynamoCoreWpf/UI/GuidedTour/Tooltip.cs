@@ -12,8 +12,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
     {
         double PointerHeight = 30;
         double PointerWidth = 15;
+        double PointerDownWidth = 20;
+        double PointerDownHeight = 10;
         double PointerTooltipOverlap = 5;
         double PointerVerticalOffset;
+        double PointerHorizontalOffset;
+        enum SHADOW_DIRECTION { LEFT = 180, RIGHT = 0, BOTTOM = 270, TOP = 90};
 
         /// <summary>
         /// The Tooltip constructor
@@ -29,6 +33,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             //The offset represent the distance vertically from the top/bottom for showing the tooltip pointer (a triangle)
             PointerVerticalOffset = (Height / 8) + verticalTooltipOffset;
+            PointerHorizontalOffset = (Width / 8);
             DrawPointerDirection(direction);
         }
 
@@ -54,6 +59,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             //Due that we are drawing the 2 direction pointers we need to add 20 to the current width (Width + PointerWidth*2 - PointerTooltipOverlap*2)
             double realWidth = Width + PointerWidth * 2 - PointerTooltipOverlap * 2;
+            double realHeight = Height + PointerHeight * 2 - PointerTooltipOverlap * 2;
 
             //For each Y coordinate we add the Vertical offset otherwise the pointer will be always at the top or the botton
             if (direction == PointerDirection.TOP_LEFT)
@@ -66,6 +72,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 pointX3 = 0;
                 pointY3 = PointerHeight / 2 + PointerVerticalOffset;
+                //Left Shadow
+                ShadowTooltipDirection = (double)SHADOW_DIRECTION.LEFT;
 
             }
             else if (direction == PointerDirection.BOTTOM_LEFT)
@@ -78,6 +86,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 pointX3 = 0;
                 pointY3 = Height - PointerHeight / 2 - PointerVerticalOffset;
+                //Left Shadow
+                ShadowTooltipDirection = (double)SHADOW_DIRECTION.LEFT;
             }
             else if (direction == PointerDirection.TOP_RIGHT)
             {
@@ -89,6 +99,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 pointX3 = realWidth;
                 pointY3 = PointerHeight / 2 + PointerVerticalOffset;
+                //Right Shadow
+                ShadowTooltipDirection = (double)SHADOW_DIRECTION.RIGHT;
 
             }
             else if (direction == PointerDirection.BOTTOM_RIGHT)
@@ -101,6 +113,27 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 pointX3 = realWidth;
                 pointY3 = Height - PointerHeight / 2 - PointerVerticalOffset;
+                //Right Shadow
+                ShadowTooltipDirection = (double)SHADOW_DIRECTION.RIGHT;
+            }
+            else if (direction == PointerDirection.BOTTOM_DOWN)
+            {
+                pointX1 = PointerHorizontalOffset;
+                pointY1 = Height + PointerDownHeight;
+
+                pointX2 = PointerDownWidth + PointerHorizontalOffset;
+                pointY2 = Height + PointerDownHeight;
+
+                pointX3 = PointerDownWidth / 2 + PointerHorizontalOffset;
+                pointY3 = realHeight - PointerHeight;
+                //Bottom Shadow
+                ShadowTooltipDirection = (double)SHADOW_DIRECTION.BOTTOM;
+            }
+            else if(direction == PointerDirection.NONE)
+            {
+                pointX1 = 0;
+                pointX2 = 0;
+                pointX3 = 0;
             }
 
             TooltipPointerPoints = new PointCollection(new[] { new Point(pointX1, pointY1),

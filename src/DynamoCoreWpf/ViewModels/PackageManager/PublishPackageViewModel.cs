@@ -18,6 +18,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
+using DynamoUtilities;
 using Greg.Requests;
 using Microsoft.Practices.Prism.Commands;
 using PythonNodeModels;
@@ -36,6 +37,11 @@ namespace Dynamo.PackageManager
         #region Properties/Fields
 
         private readonly DynamoViewModel dynamoViewModel;
+
+        /// <summary>
+        /// Default license type for each package, no need to localize
+        /// </summary>
+        private readonly string defaultLicense = "MIT";
 
         /// <summary>
         /// reference of DynamoViewModel
@@ -330,12 +336,11 @@ namespace Dynamo.PackageManager
             }
         }
 
-
+        private string _license;
         /// <summary>
-        /// License property </summary>
-        /// <value>
-        /// The license for the package </value>
-        private string _license = "";
+        /// License property
+        /// </summary>
+        /// <value> The license for the package </value>
         public string License
         {
             get { return _license; }
@@ -344,8 +349,36 @@ namespace Dynamo.PackageManager
                 if (_license != value)
                 {
                     _license = value;
-                    RaisePropertyChanged("License");
+                    RaisePropertyChanged(nameof(License));
                 }
+            }
+        }
+
+        private string copyrightHolder;
+        /// <summary>
+        /// The name of the author who holds this package's copyright.
+        /// </summary>
+        public string CopyrightHolder
+        {
+            get => copyrightHolder;
+            set
+            {
+                copyrightHolder = value;
+                RaisePropertyChanged(nameof(CopyrightHolder));
+            }
+        }
+
+        private string copyrightYear;
+        /// <summary>
+        /// The year of this package's copyright.
+        /// </summary>
+        public string CopyrightYear
+        {
+            get => copyrightYear;
+            set
+            {
+                copyrightYear = value;
+                RaisePropertyChanged(nameof(CopyrightYear));
             }
         }
 
@@ -664,6 +697,40 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private bool isWarningEnabled;
+        /// <summary>
+        /// This flag will be in true when the package name is invalid
+        /// </summary>
+        public bool IsWarningEnabled
+        {
+            get
+            {
+                return isWarningEnabled;
+            }
+            set
+            {
+                isWarningEnabled = value;
+                RaisePropertyChanged(nameof(IsWarningEnabled));
+            }
+        }
+
+        private string currentWarningMessage;
+        /// <summary>
+        /// This property will hold the warning message that has to be shown in the warning icon next to the TextBox
+        /// </summary>
+        public string CurrentWarningMessage
+        {
+            get
+            {
+                return currentWarningMessage;
+            }
+            set
+            {
+                currentWarningMessage = value;
+                RaisePropertyChanged(nameof(CurrentWarningMessage));
+            }
+        }
+
         #endregion
 
         internal PublishPackageViewModel()
@@ -678,15 +745,12 @@ namespace Dynamo.PackageManager
             RemoveItemCommand = new Dynamo.UI.Commands.DelegateCommand(RemoveItem);
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
             Dependencies.CollectionChanged += DependenciesOnCollectionChanged;
-            PackageContents.CollectionChanged += PackageContentsOnCollectionChanged;
             Assemblies = new List<PackageAssembly>();
             PropertyChanged += ThisPropertyChanged;
             RefreshPackageContents();
             RefreshDependencyNames();
         }
 
-        private void PackageContentsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RefreshPackageContents();
-        
         private void DependenciesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RefreshDependencyNames();
         
         private void RefreshDependencyNames()
@@ -701,12 +765,16 @@ namespace Dynamo.PackageManager
 
         private void RefreshPackageContents()
         {
-            PackageContents = CustomNodeDefinitions.Select(
-                    (def) => new PackageItemRootViewModel(def))
+            PackageContents.Clear();
+            
+            var itemsToAdd = CustomNodeDefinitions
+                .Select(def => new PackageItemRootViewModel(def))
                 .Concat(Assemblies.Select((pa) => new PackageItemRootViewModel(pa)))
                 .Concat(AdditionalFiles.Select((s) => new PackageItemRootViewModel(new FileInfo(s))))
                 .ToList()
                 .ToObservableCollection();
+
+            foreach (var item in itemsToAdd) PackageContents.Add(item);
         }
 
         /// <summary>
@@ -737,22 +805,23 @@ namespace Dynamo.PackageManager
         {
             this.dynamoViewModel = dynamoViewModel;
             KnownHosts = initializeHostSelections();
+            isWarningEnabled = false;
         }
 
         private void ClearAllEntries()
         {
             // this function clears all the entries of the publish package dialog
-            this.Name = "";
-            this.RepositoryUrl = "";
-            this.SiteUrl = "";
-            this.License = "";
-            this.Keywords = "";
-            this.Description = "";
-            this.Group = "";
+            this.Name = string.Empty;
+            this.RepositoryUrl = string.Empty;
+            this.SiteUrl = string.Empty;
+            this.License = string.Empty;
+            this.Keywords = string.Empty;
+            this.Description = string.Empty;
+            this.Group = string.Empty;
             this.MajorVersion = "0";
             this.MinorVersion = "0";
             this.BuildVersion = "0";
-            this.ErrorString = "";
+            this.ErrorString = string.Empty;
             this.Uploading = false;
             this.UploadHandle = null;
             this.IsNewVersion = false;
@@ -764,6 +833,8 @@ namespace Dynamo.PackageManager
             this.Assemblies = new List<PackageAssembly>();
             this.SelectedHosts = new List<String>();
             this.SelectedHostsString = string.Empty;
+            this.copyrightHolder = string.Empty;
+            this.copyrightYear = string.Empty;
         }
 
         private void ClearPackageContents()
@@ -812,7 +883,9 @@ namespace Dynamo.PackageManager
                 SiteUrl = l.SiteUrl ?? "",
                 Package = l,
                 License = l.License,
-                SelectedHosts = l.HostDependencies as List<string>
+                SelectedHosts = l.HostDependencies as List<string>,
+                CopyrightHolder = l.CopyrightHolder,
+                CopyrightYear = l.CopyrightYear
             };
 
             // add additional files
@@ -856,6 +929,10 @@ namespace Dynamo.PackageManager
                         }
                 }
             }
+
+            //after dependencies are loaded refresh package contents
+            vm.RefreshPackageContents();
+            vm.UpdateDependencies();
 
             if (assembliesLoadedTwice.Any())
             {
@@ -1087,9 +1164,8 @@ namespace Dynamo.PackageManager
             var pythonEngineDirectDep = workspaces
                 .SelectMany(x => x.Nodes)
                 .Where(x => x is PythonNode)
-                .Select(x => ((PythonNode)x).Engine)
-                .Distinct()
-                .Select(x => x.ToString());
+                .Select(x => ((PythonNode)x).EngineName)
+                .Distinct();
 
             return pythonEngineDirectDep.Union(allDepPackagesPythonEngine).ToList();
 
@@ -1267,7 +1343,7 @@ namespace Dynamo.PackageManager
             }
 
             PackageContents.Remove(PackageContents
-                .First(x => x.FileInfo.FullName == packageItemRootViewModel.FileInfo.FullName));
+                .First(x => x.FileInfo?.FullName == packageItemRootViewModel.FileInfo.FullName));
         }
 
         private bool CanShowAddFileDialogAndAdd()
@@ -1317,8 +1393,7 @@ namespace Dynamo.PackageManager
                     }
                 }
 
-                CustomNodeDefinition funcDef;
-                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, DynamoModel.IsTestMode, out funcDef)
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, DynamoModel.IsTestMode, out CustomNodeDefinition funcDef)
                     && CustomNodeDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
                 {
                     CustomNodeDefinitions.Add(funcDef);
@@ -1346,11 +1421,9 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                Assembly assem;
-
                 // we're not sure if this is a managed assembly or not
                 // we try to load it, if it fails - we add it as an additional file
-                var result = PackageLoader.TryLoadFrom(filename, out assem);
+                var result = PackageLoader.TryLoadFrom(filename, out Assembly assem);
                 if (result)
                 {
                     var assemName = assem.GetName().Name;
@@ -1388,7 +1461,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Delegate used to submit the element</summary>
+        /// Delegate used to submit the publish online request</summary>
         private void Submit()
         {
             var files = BuildPackage();
@@ -1472,9 +1545,9 @@ namespace Dynamo.PackageManager
                     }
                     string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
                     UploadState = PackageUploadHandle.State.Error;
-                    DialogResult response = DynamoModel.IsTestMode ? DialogResult.OK : System.Windows.Forms.MessageBox.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    if (response == DialogResult.OK)
+                    if (response == MessageBoxResult.OK)
                     {
                         this.ClearPackageContents();
                         UploadState = PackageUploadHandle.State.Ready;
@@ -1497,9 +1570,9 @@ namespace Dynamo.PackageManager
                 if (UploadState == PackageUploadHandle.State.Uploaded)
                 {
                     // For test mode, presume the dialog input to be No and proceed.
-                    DialogResult dialogResult = DynamoModel.IsTestMode ? DialogResult.No : System.Windows.Forms.MessageBox.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information); ;
+                    MessageBoxResult dialogResult = DynamoModel.IsTestMode ? MessageBoxResult.No : MessageBoxService.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButton.YesNo, MessageBoxImage.Information); ;
 
-                    if (dialogResult == DialogResult.Yes)
+                    if (dialogResult == MessageBoxResult.Yes)
                     { 
                         this.ClearAllEntries();
                         Uploading = false;
@@ -1539,9 +1612,11 @@ namespace Dynamo.PackageManager
                 Package.Description = Description;
                 Package.Group = Group;
                 Package.Keywords = KeywordList;
-                Package.License = License;
+                Package.License = string.IsNullOrEmpty(License) ? defaultLicense : License;
                 Package.SiteUrl = SiteUrl;
-                Package.RepositoryUrl = RepositoryUrl;                
+                Package.RepositoryUrl = RepositoryUrl;
+                Package.CopyrightHolder = string.IsNullOrEmpty(CopyrightHolder) ? dynamoViewModel.Model.AuthenticationManager?.Username : CopyrightHolder;
+                Package.CopyrightYear = string.IsNullOrEmpty(CopyrightYear) ? DateTime.Now.Year.ToString() : copyrightYear;
 
                 AppendPackageContents();
 
@@ -1550,13 +1625,13 @@ namespace Dynamo.PackageManager
 
                 Package.HostDependencies = Enumerable.Empty<string>();
                 Package.HostDependencies = SelectedHosts;
-                foreach (var py in GetPythonDependency()) 
+                foreach (string py in GetPythonDependency()) 
                 {
                     if (!Package.HostDependencies.Contains(py)) 
                     {
                         Package.HostDependencies = Package.HostDependencies.Concat(new[] { py });
                     }
-                }                                
+                }
 
                 var files = GetAllFiles().ToList();
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
@@ -1567,7 +1642,7 @@ namespace Dynamo.PackageManager
                 }
 
                 Package.AddAssemblies(Assemblies);
-
+                Package.LoadState.SetAsLoaded();
                 return files;
             }
             catch (Exception e)
@@ -1575,6 +1650,7 @@ namespace Dynamo.PackageManager
                 UploadState = PackageUploadHandle.State.Error;
                 ErrorString = e.Message;
                 dynamoViewModel.Model.Logger.Log(e);
+                Package?.LoadState.SetAsError(ErrorString);
             }
 
             return new string[] {};
@@ -1625,11 +1701,8 @@ namespace Dynamo.PackageManager
             {
                 ErrorString = String.Format(Resources.FolderNotWritableError, folder);
                 var ErrorMessage = ErrorString + "\n" + Resources.SolutionToFolderNotWritatbleError;
-                DialogResult response = DynamoModel.IsTestMode ? DialogResult.OK : System.Windows.Forms.MessageBox.Show(ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                if (response == DialogResult.OK)
-                {
-                    return string.Empty;
-                }
+                Dynamo.Wpf.Utilities.MessageBoxService.Show(ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                return string.Empty;
             }
 
             var pkgSubFolder = Path.Combine(folder, PathManager.PackagesDirectoryName);
@@ -1691,10 +1764,15 @@ namespace Dynamo.PackageManager
 
         private bool CheckPackageValidity()
         {
-            if (Name.Contains(@"\") || Name.Contains(@"/") || Name.Contains(@"*"))
+            if (!string.IsNullOrEmpty(Name) && Name.IndexOfAny(PathHelper.SpecialAndInvalidCharacters()) >= 0)
             {
-                ErrorString = Resources.PackageNameCannotContainTheseCharacters;
+                ErrorString = Resources.PackageNameCannotContainTheseCharacters + " " + new String(PathHelper.SpecialAndInvalidCharacters());
+                EnableInvalidNameWarningState(ErrorString);
                 return false;
+            }
+            else
+            {
+                IsWarningEnabled = false;
             }
 
             if (Name.Length < 3)
@@ -1745,6 +1823,15 @@ namespace Dynamo.PackageManager
 
             return true;
         }
-    }
 
+        /// <summary>
+        /// This method will enable the warning icon next to the Package Name TextBox
+        /// </summary>
+        /// <param name="warningMessage">Message that will be displayed when the mouse is over the warning</param>
+        internal void EnableInvalidNameWarningState(string warningMessage)
+        {
+            CurrentWarningMessage = warningMessage;
+            IsWarningEnabled = true;
+        }
+    }
 }

@@ -4,6 +4,7 @@
 <head>
 
     <meta http-equiv="x-ua-compatible" content="IE=11">
+    <meta charset="UTF-8">
 
     <style>
 
@@ -20,18 +21,20 @@
             height: auto;
         }
 
-        .filterIcon {
-            background: url(data:image/png;base64,#filterIcon);
+        span {
             height: 1rem;
             width: 1rem;
             display: inline-block;
         }
 
+        .filterIcon {
+            background: url(data:image/png;base64,#filterIcon);
+            background-size: cover;
+        }
+
         .sortIcon {
             background: url(data:image/png;base64,#sortIcon);
-            height: 1rem;
-            width: 1rem;
-            display: inline-block;
+            background-size: cover;
         }
 
         body {

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Windows;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using CoreNodeModels.Input;
+using Dynamo.Graph;
 
 namespace DynamoCoreWpfTests
 {
@@ -72,6 +74,23 @@ namespace DynamoCoreWpfTests
             AssertParsedLinkIsEqualTo(content + i + partialRemoteLink, NullIfSystemUriCannotParseValue(partialRemoteLink));
             AssertParsedLinkIsEqualTo(content + badIdentifierIncomplete + goodLink, null);
             AssertParsedLinkIsEqualTo(content + badIdentifierTypo + goodLink, null);
+        }
+        [Test]
+        public void DataPacketConstructorCanParseLinksCorrectly_ContainingMultipleHREFs()
+        {
+            // Arrange
+            const string i = "href=";
+            var goodLink = "ExcelNotInstalled.html";
+
+            string content = "This is the base bubble message.";
+
+            // Assert
+            AssertParsedLinkIsEqualTo(content + i + goodLink + Environment.NewLine +
+                content + i + goodLink + Environment.NewLine +
+                content + i + goodLink + Environment.NewLine, goodLink);
+            AssertParsedLinkIsEqualTo(content + i + goodLink + Environment.NewLine +
+              content + i + goodLink + Environment.NewLine +
+              content + i + goodLink, goodLink);
         }
 
         /// <summary>
@@ -147,6 +166,27 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(info1, userFacingInfo.First().Message);
             Assert.AreEqual(warning1, userFacingWarnings.First().Message);
             Assert.AreEqual(error1, userFacingErrors.First().Message);
+        }
+
+        [Test]
+        public void TestInfoState()
+        {
+            var slider = new IntegerSlider64Bit();
+            Assert.NotNull(slider);
+
+            DynamoModel model = GetModel();
+            model.ExecuteCommand(new DynamoModel.CreateNodeCommand(slider, 0, 0, true, true));
+
+            NodeViewModel sliderNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
+                .FirstOrDefault(x => x.NodeModel.GUID == slider.GUID);
+
+            NodeModel sliderNodeModel = sliderNodeViewModel.NodeModel;
+
+            var param = new UpdateValueParams("Value", "9223372036854775808");
+            slider.UpdateValue(param);
+
+            Assert.AreEqual(sliderNodeModel.Infos.Count, 1);
+            Assert.AreEqual(slider.Value, Int64.MaxValue);
         }
 
         /// <summary>
@@ -252,6 +292,57 @@ namespace DynamoCoreWpfTests
             infoBubbleViewModel.DismissMessageCommand.Execute(infoBubbleDataPacket1);
 
             Assert.IsFalse(infoBubbleViewModel.NodeInfoIteratorVisible);
+        }
+
+        /// <summary>
+        /// Tests whether the node's warning bar appears when the node has info/warning/error messages to display.
+        /// </summary>
+        [Test]
+        public void NodeWarningBarVisibility()
+        {
+            OpenModel(@"core\Home.dyn");
+
+            var info = "Information";
+
+            // Arrange
+            var dummyNode = new DummyNode();
+            DynamoModel model = GetModel();
+            model.ExecuteCommand(new DynamoModel.CreateNodeCommand(dummyNode, 0, 0, true, true));
+
+            NodeViewModel dummyNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
+                .FirstOrDefault(x => x.NodeModel.GUID == dummyNode.GUID);
+
+            NodeModel dummyNodeModel = dummyNodeViewModel.NodeModel;
+            
+            if (dummyNodeViewModel.ErrorBubble == null)
+            {
+                dummyNodeViewModel.ErrorBubble = new InfoBubbleViewModel(ViewModel);
+            }
+
+            InfoBubbleViewModel infoBubbleViewModel = dummyNodeViewModel.ErrorBubble;
+
+            ObservableCollection<InfoBubbleDataPacket> nodeMessages = infoBubbleViewModel.NodeMessages;
+
+            // Assert
+            Assert.IsFalse(dummyNodeViewModel.NodeWarningBarVisible);
+
+            // Act
+            InfoBubbleDataPacket infoBubbleDataPacket = new InfoBubbleDataPacket
+            (
+                InfoBubbleViewModel.Style.Info,
+                new Point(dummyNodeModel.X, dummyNodeModel.Y),
+                new Point(dummyNodeModel.X + dummyNodeModel.Width, dummyNodeModel.Y + dummyNodeModel.Height),
+                info,
+                InfoBubbleViewModel.Direction.Top
+            );
+
+            nodeMessages.Add(infoBubbleDataPacket);
+
+            Assert.IsTrue(infoBubbleViewModel.NodeInfoVisible);
+
+            infoBubbleViewModel.DismissMessageCommand.Execute(infoBubbleDataPacket);
+
+            Assert.IsFalse(dummyNodeViewModel.NodeWarningBarVisible);
         }
 
         #region Helpers

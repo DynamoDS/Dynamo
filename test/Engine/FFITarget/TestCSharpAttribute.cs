@@ -44,5 +44,11 @@ namespace FFITarget
         {
 
         }
+
+        [Obsolete]
+        public string Test2()
+        {
+            return "this node is obsolete.";
+        }
     }
 }

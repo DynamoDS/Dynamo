@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
@@ -23,7 +24,9 @@ namespace Dynamo.Manipulation
 
         private TranslationGizmo gizmo;
 
-        private Dictionary<int, Tuple<Vector, NodeModel>> indexedAxisNodePairs;
+        // Holds manipulator axis and input node pair for each input port.
+        // This collection is accessed from multiple threads
+        private ConcurrentDictionary<int, Tuple<Vector, NodeModel>> indexedAxisNodePairs = new ConcurrentDictionary<int, Tuple<Vector, NodeModel>>();
 
         internal MousePointManipulator(DSFunction node, DynamoManipulationExtension manipulatorContext)
             : base(node, manipulatorContext)
@@ -36,8 +39,8 @@ namespace Dynamo.Manipulation
         {
             //Default axes
             var axes = new Vector[] { Vector.XAxis(), Vector.YAxis(), Vector.ZAxis() };
-            //Holds manipulator axis and input node pair for each input port.
-            indexedAxisNodePairs = new Dictionary<int, Tuple<Vector, NodeModel>>(3);
+
+            indexedAxisNodePairs.Clear();
 
             for (int i = 0; i < 3; i++)
             {
@@ -51,7 +54,7 @@ namespace Dynamo.Manipulation
                 //Input can be manipulated but there is not input node yet.
                 if (node == null)
                 {
-                    indexedAxisNodePairs.Add(i, Tuple.Create(axes[i], node));
+                    indexedAxisNodePairs.TryAdd(i, Tuple.Create(axes[i], node));
                     continue;
                 }
 
@@ -73,7 +76,7 @@ namespace Dynamo.Manipulation
                 }
                 if (axis == null) //Didn't find matching node.
                 {
-                    indexedAxisNodePairs.Add(i, Tuple.Create(axes[i], node));
+                    indexedAxisNodePairs.TryAdd(i, Tuple.Create(axes[i], node));
                 }
                 else
                 {
@@ -178,21 +181,29 @@ namespace Dynamo.Manipulation
             var offsetPos = origin.Add(offset);
             origin.Dispose();
             origin = offsetPos;
+        }
 
+        protected override List<(NodeModel inputNode, double amount)> InputNodesToUpdateAfterMove(Vector offset)
+        {
+            var inputNodes = new List<(NodeModel, double)>();
             foreach (var item in indexedAxisNodePairs)
             {
+                if (item.Value.Item2 == null) continue;
+
                 // When more than one input is connected to the same slider, this
                 // method will decompose the axis corresponding to each input.
                 using (var v = GetFirstAxisComponent(item.Value.Item1))
                 {
                     var amount = offset.Dot(v);
 
-                    if (Math.Abs(amount) > 0.001)
+                    if (Math.Abs(amount) > MIN_OFFSET_VAL)
                     {
-                        ModifyInputNode(item.Value.Item2, amount);
+                        dynamic uiNode = item.Value.Item2;
+                        inputNodes.Add((uiNode, uiNode.Value + amount));
                     }
                 }
             }
+            return inputNodes;
         }
 
         /// <summary>
@@ -264,22 +275,6 @@ namespace Dynamo.Manipulation
                 return v2.Normalized();
 
             return vector.Normalized();
-        }
-
-        /// <summary>
-        /// Updates input node by specified amount.
-        /// </summary>
-        /// <param name="inputNode">Input node</param>
-        /// <param name="amount">Amount by which it needs to be modified.</param>
-        private static void ModifyInputNode(NodeModel inputNode, double amount)
-        {
-            if (inputNode == null) return;
-
-            if (Math.Abs(amount) < 0.001) return;
-
-            dynamic uiNode = inputNode;
-
-            uiNode.Value = Math.Round(uiNode.Value + amount, 3);
         }
 
         #endregion

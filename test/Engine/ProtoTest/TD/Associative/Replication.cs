@@ -2014,7 +2014,7 @@ list1 = [ true, null, a1, 0, 0.0, 1.5, 0.5, -1 ];
 list2 = !list1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { false, null, null, true, true, false, false, false };
+            Object[] v1 = new Object[] { false, true, true, true, true, false, false, false };
             thisTest.Verify("list2", v1);
         }
 
@@ -2028,7 +2028,7 @@ list1 = [ [ true, null], 0, 1 ];
 list2 = !list1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { new Object[] { false, null }, true, false };
+            Object[] v1 = new Object[] { new Object[] { false, true }, true, false };
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
             thisTest.Verify("list2", v1);
         }

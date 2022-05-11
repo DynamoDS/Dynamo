@@ -60,6 +60,15 @@ namespace Dynamo.ViewModels
             return (automationSettings.CurrentState == AutomationSettings.State.Recording);
         }
 
+        /// <summary>
+        /// Saves all recorded commands on disk (%TMP%/Commands-{0:yyyyMMdd-hhmmss}.xml)
+        /// </summary>
+        /// <returns>The path to the commands file</returns>
+        internal string DumpRecordedCommands()
+        {
+            return automationSettings.SaveRecordedCommands();
+        }
+
         #endregion
 
         #region Workspace Command Entry Point
@@ -139,6 +148,7 @@ namespace Dynamo.ViewModels
                 case "CreateCustomNodeCommand":
                 case "AddPresetCommand":
                 case "ApplyPresetCommand":
+                case "OpenFileFromJsonCommand":
                     // for this commands there is no need
                     // to do anything after execution
                     break;
@@ -147,7 +157,7 @@ namespace Dynamo.ViewModels
                     throw new InvalidOperationException("Unhandled command name");
             }
 
-            if (Dynamo.Logging.Analytics.ReportingAnalytics && !command.IsInPlaybackMode)
+            if (Logging.Analytics.ReportingAnalytics && !command.IsInPlaybackMode)
             {
                 command.TrackAnalytics();
             }
@@ -167,6 +177,7 @@ namespace Dynamo.ViewModels
                     break;
 
                 case "OpenFileCommand":
+                case "OpenFileFromJsonCommand":
                 case "RunCancelCommand":
                 case "ForceRunCancelCommand":
                 case "CreateNodeCommand":

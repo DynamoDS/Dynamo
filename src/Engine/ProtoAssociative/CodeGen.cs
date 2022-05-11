@@ -264,10 +264,10 @@ namespace ProtoAssociative
         // http://en.wikipedia.org/wiki/Tarjan's_strongly_connected_components_algorithm
         // 
         // Returns the first strongly connected component
-        private List<GraphNode> StrongConnectComponent(GraphNode node, ref int index, Dictionary<GraphNode, int> lowlinkMap, Dictionary<GraphNode, int> indexMap, Stack<GraphNode> S)
+        private List<GraphNode> StrongConnectComponent(GraphNode node, ref int index, Dictionary<int, int> lowlinkMap, int[] indexList, Stack<GraphNode> S)
         {
-            indexMap[node] = index;
-            lowlinkMap[node] = index;
+            indexList[node.dependencyGraphListID] = index;
+            lowlinkMap[node.dependencyGraphListID] = index;
             index++;
             S.Push(node);
 
@@ -300,18 +300,18 @@ namespace ProtoAssociative
 
                 subNode = GetFinanlStatementOfSSA(subNode, ref n);
 
-                if (indexMap[subNode] == Constants.kInvalidIndex)
+                if (indexList[subNode.dependencyGraphListID] == Constants.kInvalidIndex)
                 {
-                    StrongConnectComponent(subNode, ref index, lowlinkMap, indexMap, S);
-                    lowlinkMap[node] = Math.Min(lowlinkMap[node], lowlinkMap[subNode]);
+                    StrongConnectComponent(subNode, ref index, lowlinkMap, indexList, S);
+                    lowlinkMap[node.dependencyGraphListID] = Math.Min(lowlinkMap[node.dependencyGraphListID], lowlinkMap[subNode.dependencyGraphListID]);
                 }
                 else if (S.Contains(subNode))
                 {
-                    lowlinkMap[node] = Math.Min(lowlinkMap[node], indexMap[subNode]);
+                    lowlinkMap[node.dependencyGraphListID] = Math.Min(lowlinkMap[node.dependencyGraphListID], indexList[subNode.dependencyGraphListID]);
                 }
             }
 
-            if (lowlinkMap[node] == indexMap[node] && S.Count > 1)
+            if (lowlinkMap[node.dependencyGraphListID] == indexList[node.dependencyGraphListID] && S.Count > 1)
             {
                 List<GraphNode> dependencyList = new List<GraphNode>();
                 while (true)
@@ -338,17 +338,17 @@ namespace ProtoAssociative
                 return true;
             }
 
-            var indexMap = new Dictionary<GraphNode, int>();
-            var lowlinkMap = new Dictionary<GraphNode, int>();
+            var indexList = new int[codeBlock.instrStream.dependencyGraph.GraphList.Count];
+            var lowlinkMap = new Dictionary<int, int>();
             var s = new Stack<GraphNode>();
             int index = 0;
 
-            foreach (var subNode in codeBlock.instrStream.dependencyGraph.GraphList)
+            for (int n = 0; n < codeBlock.instrStream.dependencyGraph.GraphList.Count; ++n)
             {
-                indexMap[subNode] = Constants.kInvalidIndex;
+                indexList[n] = Constants.kInvalidIndex;
             }
 
-            var dependencyList = StrongConnectComponent(node, ref index, lowlinkMap, indexMap, s);
+            var dependencyList = StrongConnectComponent(node, ref index, lowlinkMap, indexList, s);
             if (dependencyList == null)
             {
                 return true;

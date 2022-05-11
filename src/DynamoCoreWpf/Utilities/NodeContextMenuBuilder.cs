@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
+using Dynamo.Logging;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.Utilities
@@ -83,6 +84,7 @@ namespace Dynamo.Wpf.Utilities
         /// <param name="isChecked"></param>
         /// <param name="visibility"></param>
         /// <param name="isEnabled"></param>
+        /// <param name="itemsSource"></param>
         /// <returns></returns>
         internal static MenuItem CreateMenuItem
         (
@@ -371,6 +373,8 @@ namespace Dynamo.Wpf.Utilities
             if (!(e.OriginalSource is MenuItem menuItem)) return;
 
             NodeViewModel.ErrorBubble.UndismissMessageCommand.Execute(menuItem.Header);
+
+            Analytics.TrackEvent(Actions.Undismiss, Categories.NodeContextMenuOperations, "NodeAlerts");
         }
 
         /// <summary>
@@ -445,7 +449,7 @@ namespace Dynamo.Wpf.Utilities
             Properties.Resources.NodeContextMenuShowLabels,
             Properties.Resources.NodeContextMenuRenameNode,
             Properties.Resources.ContextMenuLacing,
-            //Wpf.Properties.Resources.NodeInformationalStateDismissedAlerts,
+            Properties.Resources.NodeInformationalStateDismissedAlerts,
             Properties.Resources.NodeContextMenuIsInput,
             Properties.Resources.NodeContextMenuIsOutput,
             Properties.Resources.NodeContextMenuHelp

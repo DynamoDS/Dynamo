@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Utilities;
+using DynamoUtilities;
 
 namespace Dynamo.Configuration
 {
@@ -22,7 +25,7 @@ namespace Dynamo.Configuration
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
-
+        private bool disableTrustWarnings = false;
         #region Constants
         /// <summary>
         /// Indicates the maximum number of files shown in Recent Files
@@ -74,9 +77,11 @@ namespace Dynamo.Configuration
         /// Indicates whether ADP analytics reporting is approved or not.
         /// </summary>
         [XmlIgnore]
-        public bool IsADPAnalyticsReportingApproved { 
+        [Obsolete("Setter is obsolete - ADP consent should not be set directly, it should be set using the consent dialog.")]
+        public bool IsADPAnalyticsReportingApproved
+        {
             get { return Logging.AnalyticsService.IsADPOptedIn; }
-            set { Logging.AnalyticsService.IsADPOptedIn = value; } 
+            set { throw new Exception("do not use"); }
         }
         #endregion
 
@@ -288,6 +293,104 @@ namespace Dynamo.Configuration
         public List<string> CustomPackageFolders { get; set; }
 
         /// <summary>
+        /// If true, trust warnings for opening .dyn files from untrusted locations will not be shown.
+        /// Do not use this property setter, it does nothing. Exists only to support serialization.
+        /// </summary>
+        public bool DisableTrustWarnings
+        {
+            get => disableTrustWarnings;
+            //no-op
+            set { }
+        }
+
+        /// <summary>
+        /// Backing store for TrustedLocations
+        /// </summary>
+        private List<string> trustedLocations { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Set trusted locations in the PreferenceSettings configuration.
+        /// </summary>
+        /// <param name="locs"></param>
+        internal void SetTrustedLocations(IEnumerable<string> locs)
+        {
+            trustedLocations.Clear();
+            foreach (var loc in locs) trustedLocations.Add(loc);
+        }
+        
+        internal void SetTrustWarningsDisabled(bool disabled)
+        {
+            disableTrustWarnings = disabled;
+        }
+
+        // This function is used to deserialize the trusted locations manually
+        // so that the TrustedLocation propertie's setter does not need to be public.
+        private List<string> DeserializeTrustedLocations(XmlNode preferenceSettingsElement)
+        {
+            List<string> output = new List<string>();
+            try
+            {
+                var parentNode = preferenceSettingsElement.SelectSingleNode($@"//{nameof(TrustedLocations)}");
+                foreach (XmlNode value in parentNode.ChildNodes)
+                {
+                    output.Add(value.InnerText);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return output;
+        }
+
+        private bool DeserializeDisableTrustWarnings(XmlNode preferenceSettingsElement)
+        {
+            try
+            {
+                return bool.Parse(preferenceSettingsElement.SelectSingleNode($@"//{nameof(DisableTrustWarnings)}").InnerText);
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Manually deserialize some preferences from the PreferencesSettings file.
+        /// This is done so that we can avoid exposing these property setters to the public API.
+        /// </summary>
+        /// <param name="prefsFilePath"></param>
+        private void DeserializeInternalPrefs(string prefsFilePath)
+        {
+            try
+            {
+                //manually load some xml we don't want to create public setters for.
+                var doc = new System.Xml.XmlDocument();
+                doc.Load(prefsFilePath);
+                var prefs = doc.SelectSingleNode($@"//{nameof(PreferenceSettings)}");
+
+                var trustedLocations = DeserializeTrustedLocations(prefs);
+                SetTrustedLocations(trustedLocations.Distinct());
+                var trustWarningsDisabled = DeserializeDisableTrustWarnings(prefs);
+                SetTrustWarningsDisabled(trustWarningsDisabled);
+            }
+            catch
+            { }
+        }
+
+        /// <summary>
+        /// A copy of the list of trusted locations (folders) as recorded in the preferences file.
+        /// Do not directly use this property when trying to check for trusted locations.
+        /// Instead use Dynamo.Core.TrustedLocationsManager to manage for trusted locations.
+        /// </summary>
+        public List<string> TrustedLocations
+        {
+            get => trustedLocations.ToList(); //Copy of the internal list
+        }
+
+        /// <summary>
         /// A list of packages used by the Package Manager to determine
         /// which packages are marked for deletion.
         /// </summary>
@@ -377,7 +480,7 @@ namespace Dynamo.Configuration
         /// will be installed. The default package path for install is the user data directory
         /// currently used by the Dynamo environment.
         /// </summary>
-        public string SelectedPackagePathForInstall 
+        public string SelectedPackagePathForInstall
         {
             get
             {
@@ -414,27 +517,28 @@ namespace Dynamo.Configuration
         /// <summary>
         /// If enabled Dynamo Built-In Packages will not be loaded.
         /// </summary>
-        public bool DisableBuiltinPackages { 
+        public bool DisableBuiltinPackages
+        {
             get { return disableBuiltinPackages; }
-            set 
+            set
             {
                 disableBuiltinPackages = value;
-                RaisePropertyChanged(nameof(DisableBuiltinPackages)); 
-            } 
+                RaisePropertyChanged(nameof(DisableBuiltinPackages));
+            }
         }
 
         private bool disableCustomPackageLocations;
         /// <summary>
         /// If enabled user's custom package locations will not be loaded.
         /// </summary>
-        public bool DisableCustomPackageLocations 
-        { 
-            get { return disableCustomPackageLocations; } 
-            set 
-            { 
+        public bool DisableCustomPackageLocations
+        {
+            get { return disableCustomPackageLocations; }
+            set
+            {
                 disableCustomPackageLocations = value;
                 RaisePropertyChanged(nameof(DisableCustomPackageLocations));
-            } 
+            }
         }
         /// <summary>
         /// Defines the default run type when opening a workspace
@@ -446,6 +550,12 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool ShowRunPreview { get; set; }
 
+
+        /// <summary>
+        /// Stores the group styles added in the preference settings
+        /// </summary>
+        public List<GroupStyleItem> GroupStyleItemsList { get; set; }
+
         /// <summary>
         /// Limits the size of the tags used by the SearchDictionary
         /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value 
@@ -456,10 +566,26 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Limits the size of the tags used by the SearchDictionary
         /// </summary>
-        public int NodeSearchTagSizeLimit 
-        { 
-            get { return NodeSearchTagSizeLimitValue; } 
-            set { NodeSearchTagSizeLimitValue = value; } 
+        public int NodeSearchTagSizeLimit
+        {
+            get { return NodeSearchTagSizeLimitValue; }
+            set { NodeSearchTagSizeLimitValue = value; }
+        }
+
+        /// <summary>
+        /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
+        /// This static property is not serialized and is assigned IronPythonResolveTargetVersion's value 
+        /// if found at deserialize time.
+        /// </summary>
+        internal static Version IronPythonResolveVersion = new Version(2, 4, 0);
+
+        /// <summary>
+        /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
+        /// </summary>
+        public string IronPythonResolveTargetVersion
+        {
+            get { return IronPythonResolveVersion.ToString(); }
+            set { IronPythonResolveVersion = Version.TryParse(value, out Version newVal) ? newVal : IronPythonResolveVersion; }
         }
         #endregion
 
@@ -503,13 +629,14 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             CustomPackageFolders = new List<string>();
+
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
-
+            GroupStyleItemsList = new List<GroupStyleItem>();
         }
 
         /// <summary>
@@ -558,7 +685,7 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// Loads PreferenceSettings from specified XML file if possible,
-        /// else initialises PreferenceSettings with default values.
+        /// else initializes PreferenceSettings with default values.
         /// </summary>
         /// <param name="filePath">Path of the XML File</param>
         /// <returns>
@@ -567,10 +694,11 @@ namespace Dynamo.Configuration
         /// </returns>
         public static PreferenceSettings Load(string filePath)
         {
-            var settings = new PreferenceSettings();
+            // Constructor will be called anyway in either condition below so no need to initialize now.
+            PreferenceSettings settings = null;
 
             if (String.IsNullOrEmpty(filePath) || (!File.Exists(filePath)))
-                return settings;
+                return new PreferenceSettings();
 
             try
             {
@@ -581,10 +709,19 @@ namespace Dynamo.Configuration
                     fs.Close(); // Release file lock
                 }
             }
-            catch (Exception) { }
+            catch
+            {
+                if (settings == null)
+                {
+                    return new PreferenceSettings();
+                }
+            }
 
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
+            settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
+
+            settings.DeserializeInternalPrefs(filePath);
 
             return settings;
         }
@@ -622,7 +759,7 @@ namespace Dynamo.Configuration
         //migrate old path token to new path token
         private static void MigrateStdLibTokenToBuiltInToken(PreferenceSettings settings)
         {
-            for(var i = 0; i< settings.CustomPackageFolders.Count;i++)
+            for (var i = 0; i < settings.CustomPackageFolders.Count; i++)
             {
                 var path = settings.CustomPackageFolders[i];
                 if (path == DynamoModel.StandardLibraryToken)

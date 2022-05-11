@@ -2,7 +2,9 @@
 using System.Linq;
 using Dynamo.PackageDetails;
 using Dynamo.PackageManager;
+using Dynamo.PythonServices;
 using Greg.Responses;
+using Moq;
 using NUnit.Framework;
 using PythonNodeModels;
 using SystemTestServices;
@@ -94,12 +96,12 @@ namespace DynamoCoreWpfTests
             };
             PackageVersion packageVersionWithPython2Dependency = new PackageVersion
             {
-                host_dependencies = new List<string> {PythonEngineVersion.IronPython2.ToString()},
+                host_dependencies = new List<string> { PythonEngineManager.IronPython2EngineName },
                 full_dependency_ids = new List<Dependency>()
             };
             PackageVersion packageVersionWithPython3Dependency = new PackageVersion
             {
-                host_dependencies = new List<string> {PythonEngineVersion.CPython3.ToString()},
+                host_dependencies = new List<string> { PythonEngineManager.CPython3EngineName },
                 full_dependency_ids = new List<Dependency>()
             };
             PackageVersion packageVersionWithHostDependency = new PackageVersion
@@ -153,11 +155,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailItemNoDependencies.PythonVersion);
 
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailWithPython2Dependency.Hosts);
-            Assert.AreEqual(PythonEngineVersion.IronPython2.ToString(),
+            Assert.AreEqual(PythonEngineManager.IronPython2EngineName,
                 packageDetailWithPython2Dependency.PythonVersion);
 
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailWithPython3Dependency.Hosts);
-            Assert.AreEqual(PythonEngineVersion.CPython3.ToString(), packageDetailWithPython3Dependency.PythonVersion);
+            Assert.AreEqual(PythonEngineManager.CPython3EngineName, packageDetailWithPython3Dependency.PythonVersion);
 
             Assert.AreEqual(hostName1, packageDetailWithHostDependency.Hosts);
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailWithHostDependency.PythonVersion);
@@ -253,14 +255,54 @@ namespace DynamoCoreWpfTests
                 maintainers = UsersList,
                 keywords = null
             };
+
+            var depPackageHeader = new PackageHeader
+            {
+                _id = null,
+                name =packageToOpen,
+                versions = PackageVersions,
+                latest_version_update = System.DateTime.Now,
+                num_versions = PackageVersions.Count,
+                comments = null,
+                num_comments = 0,
+                latest_comment = null,
+                votes = 0,
+                downloads = 0,
+                repository_url = null,
+                site_url = null,
+                banned = false,
+                deprecated = false,
+                @group = null,
+                engine = null,
+                license = null,
+                used_by = null,
+                host_dependencies = Hosts,
+                num_dependents = 0,
+                description = packageDescription,
+                maintainers = new List<User> {new User() { _id = "3", username = "DynamoTeam" } },
+                keywords = null
+            };
+
             PackageManagerSearchElement packageManagerSearchElement = new PackageManagerSearchElement(packageHeader);
+            PackageManagerSearchElement depPackageManagerSearchElement = new PackageManagerSearchElement(depPackageHeader);
+
             PackageDetailsViewExtension.OpenPackageDetails(packageManagerSearchElement);
             PackageDetailsView packageDetailsView = PackageDetailsViewExtension.PackageDetailsView;
             Assert.IsInstanceOf<PackageDetailsViewModel>(packageDetailsView.DataContext);
-            PackageDetailsViewModel packageDetailsViewModel = packageDetailsView.DataContext as PackageDetailsViewModel;
+            var originalViewModel = packageDetailsView.DataContext as PackageDetailsViewModel;
+
+            var mockViewModel = new Mock<PackageDetailsViewModel>(MockBehavior.Default, PackageDetailsViewExtension, packageManagerSearchElement);
+            mockViewModel.CallBase = true;
+            mockViewModel.Setup(x => x.GetPackageByName(It.IsAny<string>()))
+                .Returns<string>(
+                (s) => {
+                    return depPackageManagerSearchElement;
+                } );
+            packageDetailsView.DataContext = mockViewModel;
+
 
             // Act
-            packageDetailsViewModel.OpenDependencyDetails(packageToOpen);
+            mockViewModel.Object.OpenDependencyDetails(packageToOpen);
 
             // Assert
             PackageDetailsView newPackageDetailsView = PackageDetailsViewExtension.PackageDetailsView;

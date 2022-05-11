@@ -624,44 +624,60 @@ namespace ProtoCore.DSASM
             }
         }
 
+        //cache ClassIndex and ProcdureNode for repeated calls of the same type object.
+        private int previousClassIndex;
+        private ProcedureNode disposeProcedureNode;
+        private bool isDSObject;
+
         private void GCDisposeObject(StackValue svPtr, Executive exe)
         {
             int classIndex = svPtr.metaData.type;
-            ClassNode cn = exe.exe.classTable.ClassNodes[classIndex];
 
-            ProcedureNode pn = cn.GetDisposeMethod();
-            while (pn == null)
+            if (this.disposeProcedureNode == null || classIndex != previousClassIndex)
             {
-                if (cn.Base != Constants.kInvalidIndex)
+                previousClassIndex = classIndex;
+                ClassNode cn = exe.exe.classTable.ClassNodes[classIndex];
+
+                isDSObject = !string.IsNullOrEmpty(cn.ExternLib) && cn.ExternLib.Contains(".ds");
+
+                disposeProcedureNode = cn.GetDisposeMethod();
+                while (disposeProcedureNode == null)
                 {
-                    classIndex = cn.Base;
-                    cn = exe.exe.classTable.ClassNodes[classIndex];
-                    pn = cn.GetDisposeMethod();
-                }
-                else
-                {
-                    break;
+                    if (cn.Base != Constants.kInvalidIndex)
+                    {
+                        classIndex = cn.Base;
+                        cn = exe.exe.classTable.ClassNodes[classIndex];
+                        disposeProcedureNode = cn.GetDisposeMethod();
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
 
-            if (pn != null)
+            //legacy dispose for design script objects.  This may be very rare
+            if (disposeProcedureNode != null && isDSObject)
             {
                 // TODO Jun/Jiong: Use build pointer utilities 
-                exe.rmem.Push(StackValue.BuildArrayDimension(0));
                 exe.rmem.Push(StackValue.BuildPointer(svPtr.Pointer, svPtr.metaData));
                 exe.rmem.Push(StackValue.BuildInt(1));
-                
+
                 ++exe.RuntimeCore.FunctionCallDepth;
 
                 // TODO: Need to move IsExplicitCall to DebugProps and come up with a more elegant solution for this
                 // fix for IDE-963 - pratapa
                 bool explicitCall = exe.IsExplicitCall;
                 bool tempFlag = explicitCall;
-                exe.Callr(pn.RuntimeIndex, pn.ID, classIndex, ref explicitCall);
+                exe.Callr(disposeProcedureNode.RuntimeIndex, disposeProcedureNode.ID, classIndex, ref explicitCall);
 
                 exe.IsExplicitCall = tempFlag;
 
                 --exe.RuntimeCore.FunctionCallDepth;
+            }
+            else if (disposeProcedureNode != null)
+            {
+                exe.CallDispose(disposeProcedureNode, svPtr, classIndex);
             }
         }
 

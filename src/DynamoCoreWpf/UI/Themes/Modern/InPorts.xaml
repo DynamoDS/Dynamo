@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
-                    xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                    xmlns:interactivity="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors"
                     xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
                     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
                     xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
@@ -81,14 +81,14 @@
                        IsHitTestVisible="False"
                        SnapsToDevicePixels="True" />
 
-            <!--  A circular marker indicating that the port has a default value  -->
+            <!--  A rectangular marker indicating that the port has a default value  -->
             <Border x:Name="PortDefaultValueMarker"
                     Grid.Column="0"
-                    Width="5"
-                    Height="12"
+                    Width="4"
+                    Height="27px"
+                    Margin="0,0,1,0"
                     HorizontalAlignment="Right"
-                    Background="{StaticResource Blue300Brush}"
-                    CornerRadius="6,0,0,6"
+                    Background="{Binding PortValueMarkerColor, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding PortDefaultValueMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
             <!--  The name of this port  -->

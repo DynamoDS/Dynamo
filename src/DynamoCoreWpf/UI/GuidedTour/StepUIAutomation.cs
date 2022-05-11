@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using Dynamo.Utilities;
+using System.Collections.Generic;
+using System.Windows;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -15,7 +17,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Represent all Control Types that can be used in UI Automation for executing actions like disable or open
         /// </summary>
-        public enum UIControlType { MENUITEM, BUTTON, FUNCTION };
+        public enum UIControlType { MENUITEM, BUTTON, FUNCTION, JSFUNCTION };
 
         /// <summary>
         /// This Sequence will be unique for each automation step
@@ -36,7 +38,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This will represent the action that will be executed as part of the UI Automation
         /// </summary>
         public UIAction Action { get; set; }
-        
+
+        /// <summary>
+        /// The list of arguments sent to the function to be executed
+        /// </summary>
+        public List<object> Parameters { get; set; }
 
         /// <summary>
         /// This will be the WPF UI Element in which the Action will be executed
@@ -63,5 +69,52 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         public string WindowName { get; set; }
 
+        /// <summary>
+        /// This is a list of events to be trigerred and methods subscribed to those events
+        /// </summary>
+        public List<AutomaticHandlers> AutomaticHandlers { get; set; }
+
+        /// <summary>
+        /// The javascript function name (located in library.html) to be executed if is the case
+        /// </summary>
+        public string JSFunctionName { get; set; }
+
+        /// <summary>
+        /// The list of arguments sent to the javascript function
+        /// </summary>
+        public List<object> JSParameters { get; set; }
+
+        /// <summary>
+        /// This flag checks if is necessary to enable next step button only if packages list is already loaded
+        /// </summary>
+        public bool CheckPackagesListEnableNextStep { get; set; }
+
+        /// <summary>
+        /// This string contains the element to execute the Automatic Function
+        /// </summary>
+        public string ElementName { get; set; }
+
+        /// <summary>
+        /// This property is the position of the node that will be placed
+        /// </summary>
+        public Point2D NodePosition { get; set; }
+    }
+
+    public class AutomaticHandlers
+    {
+        /// <summary>
+        /// Name of the element to get the event
+        /// </summary>
+        public string HandlerElement { get; set; }
+
+        /// <summary>
+        /// Name of the event
+        /// </summary>
+        public string HandlerElementEvent { get; set; }
+
+        /// <summary>
+        /// Method to be subscribed 
+        /// </summary>
+        public string ExecuteMethod { get; set; }
     }
 }

@@ -13,6 +13,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using System.Linq;
 using Dynamo.DynamoSandbox.Properties;
+using Dynamo.Wpf.Utilities;
 
 namespace DynamoSandbox
 {
@@ -34,6 +35,12 @@ namespace DynamoSandbox
             var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
             var locale = StartupUtils.SetLocale(cmdLineArgs);
             _putenv(locale);
+
+            if (cmdLineArgs.DisableAnalytics)
+            {
+                Analytics.DisableAnalytics = true;
+            }
+
             commandFilePath = cmdLineArgs.CommandFilePath;
             ASMPath = cmdLineArgs.ASMPath;
             analyticsInfo = cmdLineArgs.AnalyticsInfo;
@@ -70,7 +77,15 @@ namespace DynamoSandbox
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
 
             }
+            catch(DynamoServices.AssemblyBlockedException e)
+            {
+                var failureMessage = string.Format(Dynamo.Properties.Resources.CoreLibraryLoadFailureForBlockedAssembly, e.Message);
+                Dynamo.Wpf.Utilities.MessageBoxService.Show(
+                    failureMessage, Dynamo.Properties.Resources.CoreLibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Error);
 
+                Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.StackTrace);
+            }
             catch (Exception e)
             {
                 try
@@ -83,14 +98,23 @@ namespace DynamoSandbox
 #endif
 
                     DynamoModel.IsCrashing = true;
-                    Dynamo.Logging.Analytics.TrackException(e, true);
+                    Analytics.TrackException(e, true);
 
                     if (viewModel != null)
                     {
-                        // Show the unhandled exception dialog so user can copy the 
-                        // crash details and report the crash if she chooses to.
-                        viewModel.Model.OnRequestsCrashPrompt(null,
-                            new CrashPromptArgs(e));
+
+
+                        if (CrashReportTool.IsCEREnabled())
+                        {
+                            CrashReportTool.OnCrashReportWindow(new CrashReportArgs(viewModel));
+                        }
+                        else
+                        {
+                            // Show the unhandled exception dialog so user can copy the 
+                            // crash details and report the crash if she chooses to.
+                            viewModel.Model.OnRequestsCrashPrompt(null,
+                                new CrashPromptArgs(e));
+                        }
 
                         // Give user a chance to save (but does not allow cancellation)
                         viewModel.Exit(allowCancel: false);
@@ -101,16 +125,14 @@ namespace DynamoSandbox
                         //can effectively report the issue.
                         var shortStackTrace = String.Join(Environment.NewLine, e.StackTrace.Split(Environment.NewLine.ToCharArray()).Take(10));
 
-                        var result = MessageBox.Show($"{Resources.SandboxCrashMessage} {Environment.NewLine} {e.Message}" +
+                        var result = Dynamo.Wpf.Utilities.MessageBoxService.Show(e.Message +
                             $"  {Environment.NewLine} {e.InnerException?.Message} {Environment.NewLine} {shortStackTrace} {Environment.NewLine} " +
                              Environment.NewLine + string.Format(Resources.SandboxBuildsPageDialogMessage, sandboxWikiPage),
-
-                            "DynamoSandbox",
-                            MessageBoxButton.YesNo, MessageBoxImage.Error);
+                             Resources.SandboxCrashMessage, MessageBoxButton.YesNo, MessageBoxImage.Error);
 
                         if (result == MessageBoxResult.Yes)
                         {
-                            System.Diagnostics.Process.Start(sandboxWikiPage);
+                            Process.Start(sandboxWikiPage);
                         }
                     }
                 }
@@ -126,7 +148,7 @@ namespace DynamoSandbox
 
         private void ASMPreloadFailureHandler(string failureMessage)
         {
-            MessageBox.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBoxService.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         void OnDynamoViewLoaded(object sender, RoutedEventArgs e)

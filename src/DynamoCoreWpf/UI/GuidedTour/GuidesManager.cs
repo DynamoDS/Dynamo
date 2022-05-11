@@ -66,6 +66,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
+        internal static string OnboardingGuideWorkspaceEmbeededResource
+        {
+            get
+            {
+                return @"Dynamo.Wpf.UI.GuidedTour.DynamoOnboardingGuide_HouseCreationDS.dyn";
+            }
+        }
+
         /// <summary>
         /// GuidesManager Constructor 
         /// </summary>
@@ -75,7 +83,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             mainRootElement = root;
             dynamoViewModel = dynViewModel;
-            guideBackgroundElement = Guide.FindChild(root, guideBackgroundName) as GuideBackground;
+            guideBackgroundElement = GuideUtilities.FindChild(root, guideBackgroundName) as GuideBackground;
         }
 
         /// <summary>
@@ -92,7 +100,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Due that we are passing the GuideBackground for each Step we need to create first the background and then Create the Steps
             CreateBackground();
             CreateGuideSteps(GuidesJsonFilePath);
-            
+
+            GuidesValidationMethods.CurrentExecutingGuidesManager = this;
 
             guideBackgroundElement.ClearCutOffSection();
             guideBackgroundElement.ClearHighlightSection();
@@ -115,7 +124,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     Visibility = Visibility.Hidden
                 };
 
-                Grid mainGrid = Guide.FindChild(mainRootElement, mainGridName) as Grid;
+                Grid mainGrid = GuideUtilities.FindChild(mainRootElement, mainGridName) as Grid;
                 mainGrid.Children.Add(guideBackgroundElement);
                 Grid.SetColumnSpan(guideBackgroundElement, 5);
                 Grid.SetRowSpan(guideBackgroundElement, 6);
@@ -127,6 +136,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal void UpdateGuideStepsLocation()
         {
+            //If there is no guide being executed then we shouldn't do anything
+            if (!GuideFlowEvents.IsAnyGuideActive) return;
+
             if (currentGuide != null)
             {
                 currentGuide.CurrentStep.UpdateLocation();
@@ -166,7 +178,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 guideBackgroundElement.Visibility = Visibility.Visible;
                 currentGuide.GuideBackgroundElement = guideBackgroundElement;
                 currentGuide.MainWindow = mainRootElement;
-                currentGuide.LibraryView = Guide.FindChild(mainRootElement, libraryViewName);
+                currentGuide.LibraryView = GuideUtilities.FindChild(mainRootElement, libraryViewName);
                 currentGuide.Initialize();
                 currentGuide.Play();
                 GuidesValidationMethods.CurrentExecutingGuide = currentGuide;
@@ -182,7 +194,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             currentGuide = (from guide in Guides where guide.Name.Equals(args.GuideName) select guide).FirstOrDefault();
 
             //Check if it's packages guide to open the exit modal 
-            if (args.GuideName == "Packages")
+            if (args.GuideName == "Packages" && currentGuide.CurrentStep.StepType != Step.StepTypes.SURVEY)
             {
                 guideBackgroundElement.ClearHighlightSection();
                 guideBackgroundElement.ClearCutOffSection();
@@ -228,7 +240,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// Creates the exit modal when close button is pressed
         /// </summary>
         /// <param name="exitGuide">This parameter contains the properties to build exit guide modal</param>
-        private void CreateExitModal(ExitGuide exitGuide)
+        internal void CreateExitModal(ExitGuide exitGuide)
         {
             var viewModel = new ExitGuideWindowViewModel(exitGuide);
             exitGuideWindow = new ExitGuideWindow((FrameworkElement)mainRootElement, viewModel);
@@ -340,44 +352,32 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <returns></returns>
         private HostControlInfo CreateHostControl(HostControlInfo jsonHostControlInfo)
         {
-            var popupInfo = new HostControlInfo()
-            {
-                PopupPlacement = jsonHostControlInfo.PopupPlacement,
-                HostUIElementString = jsonHostControlInfo.HostUIElementString,
-                HostUIElement = mainRootElement,
-                VerticalPopupOffSet = jsonHostControlInfo.VerticalPopupOffSet,
-                HorizontalPopupOffSet = jsonHostControlInfo.HorizontalPopupOffSet,
-                HtmlPage = jsonHostControlInfo.HtmlPage,
-                WindowName = jsonHostControlInfo.WindowName,
-                DynamicHostWindow = jsonHostControlInfo.DynamicHostWindow
-            };
+            //We use the HostControlInfo copy construtor
+            var popupInfo = new HostControlInfo(jsonHostControlInfo, mainRootElement);
 
             //If the CutOff area was defined in the json file then a section of the background overlay will be removed
             if (jsonHostControlInfo.CutOffRectArea != null)
             {
                 popupInfo.CutOffRectArea = new CutOffArea()
                 {
+                    WindowElementNameString = jsonHostControlInfo.CutOffRectArea.WindowElementNameString,
+                    NodeId = jsonHostControlInfo.CutOffRectArea.NodeId,
                     WidthBoxDelta = jsonHostControlInfo.CutOffRectArea.WidthBoxDelta,
-                    HeightBoxDelta = jsonHostControlInfo.CutOffRectArea.HeightBoxDelta
+                    HeightBoxDelta = jsonHostControlInfo.CutOffRectArea.HeightBoxDelta,
+                    XPosOffset = jsonHostControlInfo.CutOffRectArea.XPosOffset,
+                    YPosOffset = jsonHostControlInfo.CutOffRectArea.YPosOffset
                 };
             }
 
             //If the Highlight area was defined in the json file then a rectangle will be highlighted in the Overlay
             if (jsonHostControlInfo.HighlightRectArea != null)
             {
-                popupInfo.HighlightRectArea = new HighlightArea()
-                {
-                    HighlightColor = jsonHostControlInfo.HighlightRectArea.HighlightColor,
-                    WidthBoxDelta = jsonHostControlInfo.HighlightRectArea.WidthBoxDelta,
-                    HeightBoxDelta = jsonHostControlInfo.HighlightRectArea.HeightBoxDelta,
-                    WindowName = jsonHostControlInfo.HighlightRectArea.WindowName,
-                    WindowElementNameString = jsonHostControlInfo.HighlightRectArea.WindowElementNameString,
-                    UIElementTypeString = jsonHostControlInfo.HighlightRectArea.UIElementTypeString
-                };
+                //We use the HighlightArea copy construtor
+                popupInfo.HighlightRectArea = new HighlightArea(jsonHostControlInfo.HighlightRectArea);
             }
 
             //The host_ui_element read from the json file need to exists otherwise the host will be null
-            UIElement hostUIElement = Guide.FindChild(mainRootElement, popupInfo.HostUIElementString);
+            UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, popupInfo.HostUIElementString);
             if (hostUIElement != null)
                 popupInfo.HostUIElement = hostUIElement;
 
@@ -427,7 +427,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         {
                             FormattedText = formattedText,
                             Title = title
-                        }
+                        },
+                        GuidesManager = this
                     };
 
                     //Due that the RatingTextTitle property is just for Survey then we need to set the property using reflection
@@ -479,7 +480,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal void CreateRealTimeInfoWindow(string content)
         {
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
-            UIElement hostUIElement = Guide.FindChild(mainRootElement, "statusBarPanel");
+            UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
 
             // When popup already exist, replace the content
             if ( exitTourPopup != null && exitTourPopup.IsOpen)

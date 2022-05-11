@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Xml;
 using Newtonsoft.Json;
 
@@ -103,6 +104,50 @@ namespace DynamoUtilities
         }
 
         /// <summary>
+        /// Returns whether current user has read access to the folder path.
+        /// </summary>
+        /// <param name="folderPath">Folder path</param>
+        /// <returns></returns>
+        internal static bool HasReadPermissionOnDir(string folderPath)
+        {
+            try
+            {
+                var readAllow = false;
+                var readDeny = false;
+                var accessControlList = Directory.GetAccessControl(folderPath);
+                if (accessControlList == null)
+                    return false;
+
+                var accessRules = accessControlList.GetAccessRules(true, true,
+                                            typeof(System.Security.Principal.SecurityIdentifier));
+                if (accessRules == null)
+                    return false;
+
+                var curentUser = WindowsIdentity.GetCurrent();
+                foreach (FileSystemAccessRule rule in accessRules)
+                {
+                    // When current rule does not contain setting related to Read, skip.
+                    if ((FileSystemRights.Read & rule.FileSystemRights) != FileSystemRights.Read)
+                        continue;
+
+                    if (!curentUser.Groups.Contains(rule.IdentityReference))
+                        continue;
+                    
+                    if (rule.AccessControlType == AccessControlType.Allow)
+                        readAllow = true;
+                    else if (rule.AccessControlType == AccessControlType.Deny)
+                        readDeny = true;
+                }
+
+                return readAllow && !readDeny;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// This is a utility method for checking if given path contains valid XML document.
         /// </summary>
         /// <param name="path">path to the target xml file</param>
@@ -128,6 +173,42 @@ namespace DynamoUtilities
         }
 
         /// <summary>
+        /// This is a utility method for checking if a given string represents a valid Json document.
+        /// </summary>
+        /// <param name="fileContents"> string contents of target json file</param>
+        /// <returns>Return true if fileContents is Json, false if file is not Json, exception as out param</returns>
+        public static bool isFileContentsValidJson(string fileContents, out Exception ex)
+        {
+            ex = null;
+            if (string.IsNullOrEmpty(fileContents))
+            {
+                ex = new JsonReaderException();
+                return false;
+            }
+            
+            try
+            {
+                fileContents = fileContents.Trim();
+                if ((fileContents.StartsWith("{") && fileContents.EndsWith("}")) || //For object
+                    (fileContents.StartsWith("[") && fileContents.EndsWith("]"))) //For array
+                {
+                    var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
+                    return true;
+                }
+                else 
+                {
+                    ex = new JsonReaderException();
+                }
+            }
+            catch(Exception e)
+            {
+                ex = e;
+            }
+            
+            return false;
+        }
+
+        /// <summary>
         /// This is a utility method for checking if given path contains valid Json document.
         /// </summary>
         /// <param name="path">path to the target json file</param>
@@ -139,16 +220,7 @@ namespace DynamoUtilities
             try
             {
                 fileContents = File.ReadAllText(path);
-                fileContents = fileContents.Trim();
-                if ((fileContents.StartsWith("{") && fileContents.EndsWith("}")) || //For object
-                    (fileContents.StartsWith("[") && fileContents.EndsWith("]"))) //For array
-                {
-                    var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
-                    ex = null;
-                    return true;
-                }
-                ex = new JsonReaderException();
-                return false;
+                return isFileContentsValidJson(fileContents, out ex);
             }
             catch (Exception e) //some other exception
             {
@@ -218,6 +290,12 @@ namespace DynamoUtilities
                 fileExists = false;
                 size = string.Empty;
             }
+        }
+
+        internal static Char[] SpecialAndInvalidCharacters()
+        {
+            // Excluding white spaces and uncommon characters, only keeping the displayed in the Windows alert
+            return System.IO.Path.GetInvalidFileNameChars().Where(x => !char.IsWhiteSpace(x) && (int)x > 31).ToArray();
         }
     }
 }

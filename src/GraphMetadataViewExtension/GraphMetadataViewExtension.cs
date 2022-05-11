@@ -12,7 +12,6 @@ namespace Dynamo.GraphMetadata
 {
     public class GraphMetadataViewExtension : ViewExtensionBase, IExtensionStorageAccess
     {
-        internal static string extensionName = "Properties";
         internal GraphMetadataViewModel viewModel;
         private GraphMetadataView graphMetadataView;
         private ViewLoadedParams viewLoadedParamsReference;
@@ -20,13 +19,11 @@ namespace Dynamo.GraphMetadata
 
         public override string UniqueId => "28992e1d-abb9-417f-8b1b-05e053bee670";
 
-        public override string Name => extensionName;
+        public override string Name => Resources.ExtensionName;
 
         public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
-
-            this.viewLoadedParamsReference = viewLoadedParams;
+            this.viewLoadedParamsReference = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
             this.viewModel = new GraphMetadataViewModel(viewLoadedParams, this);
             this.graphMetadataView = new GraphMetadataView();
             graphMetadataView.DataContext = viewModel;

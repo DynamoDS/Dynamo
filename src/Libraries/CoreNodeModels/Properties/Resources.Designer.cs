@@ -232,6 +232,15 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to is obsolete, please use the new Convert Units node..
+        /// </summary>
+        public static string ConversionNodeObsoleteMessage {
+            get {
+                return ResourceManager.GetString("ConversionNodeObsoleteMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Item Index #0.
         /// </summary>
         public static string CreateListPortDataIndex0ToolTip {
@@ -652,6 +661,15 @@ namespace CoreNodeModels.Properties {
         public static string IntegerSliderDescription {
             get {
                 return ResourceManager.GetString("IntegerSliderDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value entered is not in the int64 range..
+        /// </summary>
+        public static string IntegerSliderInfoMessage {
+            get {
+                return ResourceManager.GetString("IntegerSliderInfoMessage", resourceCulture);
             }
         }
         

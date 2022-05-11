@@ -10,6 +10,7 @@
     <Color x:Key="PrimaryCharcoal100">#EEEEEE</Color>
     <Color x:Key="PrimaryCharcoal200">#DCDCDC</Color>
     <Color x:Key="PrimaryCharcoal300">#CCCCCC</Color>
+    <Color x:Key="LightGrey">#989898</Color>
     <Color x:Key="MidGrey">#666666</Color>
     <Color x:Key="DarkMidGrey">#535353</Color>
     <Color x:Key="DarkGrey">#4A4A4A</Color>
@@ -33,6 +34,7 @@
     <SolidColorBrush x:Key="PrimaryCharcoal100Brush" Color="{StaticResource PrimaryCharcoal100}" />
     <SolidColorBrush x:Key="PrimaryCharcoal200Brush" Color="{StaticResource PrimaryCharcoal200}" />
     <SolidColorBrush x:Key="PrimaryCharcoal300Brush" Color="{StaticResource PrimaryCharcoal300}" />
+    <SolidColorBrush x:Key="LightGreyBrush" Color="{StaticResource LightGrey}" />
     <SolidColorBrush x:Key="MidGreyBrush" Color="{StaticResource MidGrey}" />
     <SolidColorBrush x:Key="DarkMidGreyBrush" Color="{StaticResource DarkMidGrey}" />
     <SolidColorBrush x:Key="DarkGreyBrush" Color="{StaticResource DarkGrey}" />
@@ -68,14 +70,16 @@
     <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#3C3C3C" />
 
     <!--  Nodes  -->
-    <SolidColorBrush x:Key="NodeFrozenOverlayBackground" Color="#BCD3EE" />
+    <SolidColorBrush x:Key="NodeFrozenOverlayColor" Color="{StaticResource DarkBlue200}" />
+    <SolidColorBrush x:Key="NodeInfoColor" Color="{StaticResource Blue300}" />
+    <SolidColorBrush x:Key="NodeWarningColor" Color="{StaticResource YellowOrange500}" />
+    <SolidColorBrush x:Key="NodeErrorColor" Color="{StaticResource Red500}" />
+    <SolidColorBrush x:Key="NodePreviewColor" Color="#BBBBBB"/>
+
     <SolidColorBrush x:Key="NodeOptionsButtonBackground" Color="#282828" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphForeground" Color="#4B4B4B" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphBackground" Color="#EBEBEB" />
     <SolidColorBrush x:Key="NodeLacingGlyphBackground" Color="#EBEBEB" />
-
-    <SolidColorBrush x:Key="NodeBodyPreviewOffBackground" Color="#3B4453" />
-    <SolidColorBrush x:Key="NodeHeaderPreviewOffBackground" Color="#454F61" />
 
     <SolidColorBrush x:Key="NodeContextMenuForeground" Color="{StaticResource PrimaryCharcoal100}" />
     <SolidColorBrush x:Key="NodeContextMenuBackground" Color="{StaticResource MidGrey}" />
@@ -87,7 +91,7 @@
 
     <!-- Node Autocomplete -->
     <SolidColorBrush x:Key="autocompletionWindow" Color="#535353" />
-    <SolidColorBrush x:Key="autocompletionWindowFont" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="AutocompletionWindowFontColor" Color="#F5F5F5" />
 
     <!--  Update Manager  -->
     <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed" />
@@ -111,6 +115,8 @@
 <!--  Extensions Sidebar  -->
     <SolidColorBrush x:Key="BorderBrushWhite" Color="#FF3F4040" />
     <SolidColorBrush x:Key="FeedbackSectionBackground" Color="#4192D9" />
+    <SolidColorBrush x:Key="ExtensionBackgroundColor" Color="#353535" />
+    <SolidColorBrush x:Key="ExtensionButtonBackgroundColor" Color="#535353" />
 
     <!--  Library background  -->
     <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#444444" />
@@ -123,7 +129,7 @@
 
     <!--  Library text colors  -->
     <SolidColorBrush x:Key="MemberButtonText" Color="#aaaaaa" />
-    <SolidColorBrush x:Key="DeafultSearchTextBlockText" Color="#C0C0C0" />
+    <SolidColorBrush x:Key="DefaultSearchTextBlockText" Color="#C0C0C0" />
     <SolidColorBrush x:Key="CommonSidebarTextColor" Color="#CCCCCC" />
     <SolidColorBrush x:Key="SearchBoxBackgroundColor" Color="#231F20" />
     <SolidColorBrush x:Key="NestedMemberTextColor" Color="#989898" />
@@ -144,11 +150,13 @@
 
     <!--  Bubble preview  -->
     <SolidColorBrush x:Key="BubblePreviewBorderColor" Color="#aaaaaa" />
-    <SolidColorBrush x:Key="UnpinnedIconForegroundColor" Color="#808080" />
+    <SolidColorBrush x:Key="UnpinnedIconForegroundColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="PinnedIconForegroundColor" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="UnpinnedIconBackgroundColor" Color="White" />
-    <SolidColorBrush x:Key="PinnedIconBackgroundColor" Color="#FF5E5C5A" />
-    <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#c6c6c6" />
+    <SolidColorBrush x:Key="UnpinnedIconBackgroundColor" Color="#6AC0E7" />
+    <SolidColorBrush x:Key="PinnedIconBackgroundColor" Color="#666666" />
+    <Color x:Key="PinnedIconBackgroundColorAnimation">#666666</Color>
+    <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#6AC0E7" />
+    <SolidColorBrush x:Key="PinnedIconHoverBorderBrushColor" Color="#38ABDF" />
 
     <!--  Port color  -->
     <SolidColorBrush x:Key="PortKeepListStructureBackground" Color="#537E91" />
