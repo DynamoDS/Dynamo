@@ -803,7 +803,7 @@ namespace Dynamo.Wpf.Rendering
         /// <summary>
         /// A list of mesh vertices ranges that have associated instance references
         /// </summary>
-        private Dictionary<Guid, Tuple<int, int>> MeshVertexRangesAssociatedWithInstancing { get; }
+        internal Dictionary<Guid, (int start, int end)> MeshVertexRangesAssociatedWithInstancing { get; }
        
         /// <summary>
         /// Set an instance reference for a specific range of mesh vertices
@@ -823,13 +823,13 @@ namespace Dynamo.Wpf.Rendering
                 throw new Exception("The reference to the mesh range for this ID already exists.");
             }
 
-            MeshVertexRangesAssociatedWithInstancing.Add(id, new Tuple<int, int>(startIndex, endIndex));
+            MeshVertexRangesAssociatedWithInstancing.Add(id, (startIndex, endIndex));
         }
 
         /// <summary>
         /// A list of line vertices ranges that have associated instance references
         /// </summary>
-        private Dictionary<Guid, Tuple<int, int>> LineVertexRangesAssociatedWithInstancing { get; }
+        internal Dictionary<Guid, (int start, int end)> LineVertexRangesAssociatedWithInstancing { get; }
 
         /// <summary>
         /// Set an instance reference for a specific range of line vertices
@@ -849,7 +849,7 @@ namespace Dynamo.Wpf.Rendering
                 throw new Exception("The reference to the line range for this ID already exists.");
             }
 
-            LineVertexRangesAssociatedWithInstancing.Add(id, new Tuple<int, int>(startIndex, endIndex));
+            LineVertexRangesAssociatedWithInstancing.Add(id, (startIndex, endIndex));
         }
 
         /// <summary>

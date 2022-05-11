@@ -225,8 +225,8 @@ namespace Dynamo.Scheduler
                 }
                 else if (graphicItem is IInstanceableItem instanceableItem && instanceableItem.InstanceInfoAvailable)
                 {
-                    if (!packageWithInstances.MeshVerticesRangesAssociatedWithInstancing.ContainsKey(instanceableItem.BaseTessellationGuid) 
-                        && !packageWithInstances.LineVerticesRangesAssociatedWithInstancing.ContainsKey(instanceableItem.BaseTessellationGuid))
+                    if (!packageWithInstances.ContainsTessellationId(instanceableItem.BaseTessellationGuid))
+                  
                     {
                         instanceableItem.AddBaseTessellation(package, factory.TessellationParameters);
                     }

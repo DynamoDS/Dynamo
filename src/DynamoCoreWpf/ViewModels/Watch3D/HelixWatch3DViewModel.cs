@@ -1771,11 +1771,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         id = baseId + LinesKey;
 
-                        //If we are using IInstancingRenderPackage data then we need to create a unique Geometry3D object for each instancable item and add instance transforms.
-                        //If we any mesh geometry was not associated with am instance, remove the previously added line data from the render package so the remaining lines can be added to the scene.
-                        if (rp.LineVerticesRangesAssociatedWithInstancing.Any())
+                        //If we are using IInstancingRenderPackage data then we need to create a unique Geometry3D object
+                        //for each instancable item and add instance transforms.
+                        //If we have any line geometry that was not associated with an instance,
+                        //remove the previously added line data from the render package so the remaining lines can be added to the scene.
+                        if (rp.LineVertexRangesAssociatedWithInstancing.Any())
                         {
-                            //For each range of mesh vertices add the mesh data and instances to the scene
+                            //For each range of line vertices add the line data and instances to the scene
                             var lineVertexCountTotal = 0;
                             var j = 0;
                             foreach (var item in rp.LineVertexRangesAssociatedWithInstancing)
@@ -1796,15 +1798,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                                 j++;
                             }
 
-                            //If all the line regions had texture map data then we are done with line data.
-                            if (lineVertexCountTotal == l.Positions.Count  & !rp.Mesh.Positions.Any())
+                            //If all the line regions had instancing data then we are done with the line data.
+                            if (lineVertexCountTotal == l.Positions.Count  && !rp.Mesh.Positions.Any())
                             {
                                 continue;
                             }
 
                             //Otherwise, clean up the remaining line geometry data in the render package to exclude the regions already generated.
                             var verticesRange =
-                                new List<Tuple<int, int>>(rp.LineVerticesRangesAssociatedWithInstancing.Values.ToList());
+                                new List<(int start, int end)>(rp.LineVertexRangesAssociatedWithInstancing.Values.ToList());
 
                             RemoveLineGeometryByRange(verticesRange, l);
                         }
@@ -1843,7 +1845,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                         //Otherwise, clean up the remaining mesh geometry data in the render package to exclude the regions already generated.
                         var verticesRange =
-                            new List<Tuple<int, int>>(rp.MeshVerticesRangesAssociatedWithTextureMaps);
+                            rp.MeshVerticesRangesAssociatedWithTextureMaps.Select(x=>(x.Item1,x.Item2)).ToList();
                         
                         RemoveMeshGeometryByRange(verticesRange, m);
                     }
@@ -1882,7 +1884,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                         //Otherwise, clean up the remaining mesh geometry data in the render package to exclude the regions already generated.
                         var verticesRange =
-                            new List<Tuple<int, int>>(rp.MeshVertexRangesAssociatedWithInstancing.Values.ToList());
+                            new List<(int start, int end)>(rp.MeshVertexRangesAssociatedWithInstancing.Values.ToList());
 
                         RemoveMeshGeometryByRange(verticesRange, m);
                     }
@@ -1892,7 +1894,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private static void RemoveMeshGeometryByRange(List<Tuple<int, int>> verticesRange, MeshGeometry3D m)
+        private static void RemoveMeshGeometryByRange(List<(int start, int end)> verticesRange, MeshGeometry3D m)
         {
             //First sort the range data
             verticesRange.Sort();
@@ -1901,8 +1903,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             //Remove already generated mesh geometry from render package
             foreach (var range in verticesRange)
             {
-                var i = range.Item1;
-                var c = range.Item2 - range.Item1 + 1;
+                var i = range.start;
+                var c = range.end - range.start + 1;
                 m.Positions.RemoveRange(i, c);
                 m.Colors.RemoveRange(i, c);
                 m.Normals.RemoveRange(i, c);
@@ -1916,7 +1918,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             m.Indices = newIndices;
         }
 
-        private static void RemoveLineGeometryByRange(List<Tuple<int, int>> verticesRange, LineGeometry3D l)
+        private static void RemoveLineGeometryByRange(List<(int start, int end)> verticesRange, LineGeometry3D l)
         {
             //First sort the range data
             verticesRange.Sort();
@@ -1928,14 +1930,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             //Remove already generated line geometry from render package
             foreach (var range in verticesRange)
             {
-                var i = range.Item1;
-                var c = range.Item2 - range.Item1 + 1;
+                var i = range.start;
+                var c = range.end - range.start + 1;
                 l.Positions.RemoveRange(i, c);
                 l.Colors.RemoveRange(i, c);
                 totalRemoved += c;
 
-                var firstIndicesIndex = l.Indices.IndexOf(range.Item1);
-                var indicesCount = l.Indices.IndexOf(range.Item2) - firstIndicesIndex + 1;
+                var firstIndicesIndex = l.Indices.IndexOf(range.start);
+                var indicesCount = l.Indices.IndexOf(range.end) - firstIndicesIndex + 1;
                 l.Indices.RemoveRange(firstIndicesIndex, indicesCount);
             }
 
