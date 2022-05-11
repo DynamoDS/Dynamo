@@ -22,6 +22,7 @@
             <controls:NegativeIntToZeroConverter x:Key="NegativeIntToZeroConverter" />
             <controls:InverseBooleanConverter x:Key="InverseBooleanConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
+            <controls:EmptyStringToHiddenConverter x:Key="EmptyStringToHiddenConverter" />
             <Style x:Key="LabelStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementBold}" />
                 <Setter Property="FontWeight" Value="Bold" />
@@ -434,6 +435,43 @@
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
+                <!--  Links  -->
+                <StackPanel MinWidth="200"
+                            Margin="0,10,0,10"
+                            Orientation="Horizontal"
+                            Visibility="{Binding PackageSiteURL, Converter={StaticResource EmptyStringToHiddenConverter}}">
+                    <Rectangle Name="PackageLinkIcon"
+                               Width="16px"
+                               Height="16px">
+                        <Rectangle.Fill>
+                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/link-16px.png" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Name="PackageWebsiteLink"
+                               Margin="8,0,0,0"
+                               FontSize="14px"
+                               Foreground="#C7C7C7"
+                               Style="{StaticResource BodyTextStyle}"
+                               Text="{Binding PackageSiteURL}" />
+                </StackPanel>
+                <StackPanel MinWidth="200"
+                            Margin="0,0,0,10"
+                            Orientation="Horizontal"
+                            Visibility="{Binding PackageRepositoryURL, Converter={StaticResource EmptyStringToHiddenConverter}}">
+                    <Rectangle Name="RepositoryLinkIcon"
+                               Width="16px"
+                               Height="16px">
+                        <Rectangle.Fill>
+                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/link-16px.png" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Name="PackageRepositoryLink"
+                               Margin="8,0,0,0"
+                               FontSize="14px"
+                               Foreground="#C7C7C7"
+                               Style="{StaticResource BodyTextStyle}"
+                               Text="{Binding PackageRepositoryURL}" />
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>
