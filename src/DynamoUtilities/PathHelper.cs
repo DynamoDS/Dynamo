@@ -130,7 +130,8 @@ namespace DynamoUtilities
                     if ((FileSystemRights.Read & rule.FileSystemRights) != FileSystemRights.Read)
                         continue;
 
-                    if (!curentUser.Groups.Contains(rule.IdentityReference))
+                    if (!curentUser.User.Equals(rule.IdentityReference) &&
+                        !curentUser.Groups.Contains(rule.IdentityReference))
                         continue;
                     
                     if (rule.AccessControlType == AccessControlType.Allow)

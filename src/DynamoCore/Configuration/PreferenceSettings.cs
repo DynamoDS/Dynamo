@@ -304,7 +304,12 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Backing store for TrustedLocations
+        /// Default trusted locations. A fixed list of locations (This field should not be serializable or public)
+        /// </summary>
+        private List<string> defaultTrustedLocations { get; set; } = new List<string>();
+
+        /// <summary>
+        /// This represents the user modifiable list of locations.
         /// </summary>
         private List<string> trustedLocations { get; set; } = new List<string>();
 
@@ -316,9 +321,15 @@ namespace Dynamo.Configuration
             try
             {
                 var parentNode = preferenceSettingsElement.SelectSingleNode($@"//{nameof(TrustedLocations)}");
-                foreach (XmlNode value in parentNode.ChildNodes)
+                if (parentNode != null)
                 {
-                    output.Add(value.InnerText);
+                    foreach (XmlNode value in parentNode.ChildNodes)
+                    {
+                        if (string.IsNullOrEmpty(value?.InnerText))
+                        {
+                            output.Add(value.InnerText);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -356,8 +367,8 @@ namespace Dynamo.Configuration
                 doc.Load(prefsFilePath);
                 var prefs = doc.SelectSingleNode($@"//{nameof(PreferenceSettings)}");
 
-                var trustedLocations = DeserializeTrustedLocations(prefs);
-                SetTrustedLocations(trustedLocations.Distinct());
+                var deserializedLocations = DeserializeTrustedLocations(prefs);
+                SetTrustedLocations(deserializedLocations.Distinct());
                 var trustWarningsDisabled = DeserializeDisableTrustWarnings(prefs);
                 SetTrustWarningsDisabled(trustWarningsDisabled);
             }
@@ -370,7 +381,7 @@ namespace Dynamo.Configuration
         /// </summary>
         public List<string> TrustedLocations
         {
-            get => trustedLocations.ToList(); //Copy of the internal list
+            get => trustedLocations.Union(defaultTrustedLocations).ToList(); //Copy of the internal list
         }
 
         /// <summary>
@@ -762,16 +773,20 @@ namespace Dynamo.Configuration
         {
             try
             {
-                string location = PathHelper.ValidateDirectory(path);
-                var existing = TrustedLocations.FirstOrDefault(x => x.Equals(location));
-                if (string.IsNullOrEmpty(existing))
+                if (defaultTrustedLocations.Contains(path) ||
+                    trustedLocations.Contains(path))
                 {
-                    trustedLocations.Add(location);
-                    return true;
+                    return false;
                 }
+
+                string location = PathHelper.ValidateDirectory(path);
+                trustedLocations.Add(location);
+                return true;
             }
-            catch { }
-            return false;
+            catch 
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -781,8 +796,12 @@ namespace Dynamo.Configuration
         /// <returns>The true if the path was removed and false otherwise</returns>
         internal bool RemoveTrustedLocation(string path)
         {
-            string location = PathHelper.ValidateDirectory(path);
-            if (trustedLocations.RemoveAll(x => x.Equals(location)) >= 0)
+            if (defaultTrustedLocations.Contains(path))
+            {
+                return false;
+            }
+
+            if (trustedLocations.RemoveAll(x => x.Equals(path)) >= 0)
             {
                 return true;
             }
@@ -796,7 +815,32 @@ namespace Dynamo.Configuration
         internal void SetTrustedLocations(IEnumerable<string> locs)
         {
             trustedLocations.Clear();
-            foreach (var loc in locs) trustedLocations.Add(loc);
+            foreach (var loc in locs)
+            {
+                AddTrustedLocation(loc);
+            }
+        }
+
+        /// <summary>
+        /// Set trusted locations in the PreferenceSettings configuration without checking if inputs are valid.
+        /// Use this method only in tests.
+        /// </summary>
+        /// <param name="locs"></param>
+        internal void SetTrustedLocationsUnsafe(IEnumerable<string> locs)
+        {
+            trustedLocations.Clear();
+            trustedLocations.AddRange(locs);
+        }
+
+        /// <summary>
+        /// Set the default trusted locations in the PreferenceSettings configuration without checking if inputs are valid.
+        /// Use this method only in tests.
+        /// </summary>
+        /// <param name="locs"></param>
+        internal void SetDefaultTrustedLocationsUnsafe(IEnumerable<string> locs)
+        {
+            defaultTrustedLocations.Clear();
+            defaultTrustedLocations.AddRange(locs);
         }
 
         internal void SetTrustWarningsDisabled(bool disabled)
@@ -818,8 +862,7 @@ namespace Dynamo.Configuration
                 string location = PathHelper.ValidateDirectory(path);
 
                 // All subdirectories are considered trusted if the parent directory is trusted.
-                var trustedLoc = trustedLocations.FirstOrDefault(x => location.StartsWith(x));
-                return !string.IsNullOrEmpty(trustedLoc);
+                return TrustedLocations.FirstOrDefault(x => location.StartsWith(x)) != null;
             }
             catch
             {
