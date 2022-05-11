@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.GraphNodeManager.ViewModels;
+using Dynamo.Utilities;
 
 namespace Dynamo.GraphNodeManager
 {
@@ -19,7 +21,10 @@ namespace Dynamo.GraphNodeManager
         /// </summary>
         private bool allowSelection = false;
 
-        private bool mouseHandeled = false;
+        /// <summary>
+        /// Helps to stop bubbling of the event when mouse click on a button inside a datagrid row
+        /// </summary>
+        private bool mouseHandled = false;
 
         /// <summary>
         /// Constructor
@@ -72,9 +77,9 @@ namespace Dynamo.GraphNodeManager
         /// <param name="e"></param>
         private void Row_PreviewClickHandler(object sender, MouseButtonEventArgs e)
         {
-            if (mouseHandeled)
+            if (mouseHandled)
             {
-                mouseHandeled = false;
+                mouseHandled = false;
                 return;
             }
 
@@ -108,10 +113,18 @@ namespace Dynamo.GraphNodeManager
         /// <param name="e"></param>
         private void OnClipboardButtonClick(object sender, RoutedEventArgs e)
         {
-            mouseHandeled = true;
-            var clipboardMessage = (string)((Button)sender).Tag;
+            mouseHandled = true;
 
-            Clipboard.SetText(clipboardMessage);
+            var node = (NodeViewModel)((Button)sender).Tag;
+            var info = ((Button)sender).DataContext as NodeInfo;
+            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString();
+            var hostProgram = ""; // How do we get the Host Program? Wouldn't that be the same as Dynamo?
+
+            if (node == null || info == null) return;
+
+            var message = $"Node Name: {node.Name}\nPackage: {node.Package}\nDynamo Version: {dynamoVersion}\nHost Program:\nMessages: {info.Message}\nState: {info.State}";
+
+            Clipboard.SetText(message);
         }
     }
 }

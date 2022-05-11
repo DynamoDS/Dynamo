@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Dynamo.GraphNodeManager"
-             xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:converters="clr-namespace:Dynamo.GraphNodeManager.Converters"
              xmlns:controls="clr-namespace:Dynamo.GraphNodeManager.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
@@ -291,20 +289,16 @@
                                                 <Button Grid.Column="2"
                                                             Margin="5 0"
                                                             PreviewMouseLeftButtonDown="OnClipboardButtonClick" 
+                                                            Name="ClipboardButton"
                                                             Style="{StaticResource ButtonStyle1}"
+                                                            Tag="{Binding ElementName=DetailedRowItemControl, Path=DataContext}"
                                                             Width="24"
                                                             VerticalAlignment="Top"
                                                             ToolTip="Copy issue text to clipboard"
                                                             Cursor="Hand">
-                                                    <Button.Tag>
-                                                        <MultiBinding StringFormat="{}{0} {1}">
-                                                            <Binding Path="Index" />
-                                                            <Binding Path="Message" />
-                                                        </MultiBinding>
-                                                    </Button.Tag>
                                                     <Image Source="/GraphNodeManagerViewExtension;component/Images/Copy.png" 
                                                            Style="{StaticResource ImageStyle}"/>
-                                                    </Button>
+                                                </Button>
                                             </Grid>
                                         </Border>
                                     </DataTemplate>

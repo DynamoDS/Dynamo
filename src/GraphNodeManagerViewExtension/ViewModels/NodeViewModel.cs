@@ -6,6 +6,9 @@ using ProtoCore.Mirror;
 
 namespace Dynamo.GraphNodeManager.ViewModels
 {
+    /// <summary>
+    /// An extension class representing the original Dynamo NodeInfo NodeModel class
+    /// </summary>
     public class NodeInfo
     {
         public string Message { get; set; }
@@ -265,7 +268,9 @@ namespace Dynamo.GraphNodeManager.ViewModels
             internal set => state = value;
 
         }
-
+        /// <summary>
+        /// Contains Node Package information
+        /// </summary>
         public string Package
         {
             get
