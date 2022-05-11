@@ -95,7 +95,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         ManageEventHandler(element, handler.HandlerElementEvent, handler.ExecuteMethod);
                 }
 
-                ownedWindow.Closed += CloseGuidedTour;
+                ownedWindow.Closed += OnPackageManagerTouClosed;
             }
             //When enableFunction = false, means we are hiding (closing) the TermsOfUse Window due that we are moving to the next Step or we are exiting the Guide
             else
@@ -108,7 +108,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
-        private static void CloseGuidedTour(object sender, EventArgs e)
+        private static void OnPackageManagerTouClosed(object sender, EventArgs e)
         {
             bool acceptedTermsOfUse = (sender as TermsOfUseView).AcceptedTermsOfUse;
 
