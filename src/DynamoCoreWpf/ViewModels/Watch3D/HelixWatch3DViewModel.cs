@@ -1771,14 +1771,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         id = baseId + LinesKey;
 
-                        //If we are using IRenderInstances data then we need to create a unique Geometry3D object for each instancable item and add instance transforms.
+                        //If we are using IInstancingRenderPackage data then we need to create a unique Geometry3D object for each instancable item and add instance transforms.
                         //If we any mesh geometry was not associated with am instance, remove the previously added line data from the render package so the remaining lines can be added to the scene.
                         if (rp.LineVerticesRangesAssociatedWithInstancing.Any())
                         {
                             //For each range of mesh vertices add the mesh data and instances to the scene
                             var lineVertexCountTotal = 0;
                             var j = 0;
-                            foreach (var item in rp.LineVerticesRangesAssociatedWithInstancing)
+                            foreach (var item in rp.LineVertexRangesAssociatedWithInstancing)
                             {
                                 var range = item.Value;
                                 var index = range.Item1; //Start line vertex index
@@ -1786,7 +1786,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                                 var uniqueId = baseId + ":" + j + LinesKey;
 
                                 List<Matrix> instances;
-                                if (rp.instances.TryGetValue(item.Key, out instances))
+                                if (rp.instanceTransforms.TryGetValue(item.Key, out instances))
                                 {
                                     AddLineData(uniqueId, rp, index, count, drawDead, baseId, instances);
                                 }
@@ -1848,14 +1848,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         RemoveMeshGeometryByRange(verticesRange, m);
                     }
 
-                    //If we are using IRenderInstances data then we need to create a unique Geometry3D object for each instancable item and add instance transforms.  
+                    //If we are using IInstancingRenderPackage data then we need to create a unique Geometry3D object for each instancable item and add instance transforms.  
                     //If we any mesh geometry was not associated with an instance, remove the previously added mesh data from the render package so the remaining mesh can be added to the scene.
-                    if (rp.MeshVerticesRangesAssociatedWithInstancing.Any())
+                    if (rp.MeshVertexRangesAssociatedWithInstancing.Any())
                     {
                         //For each range of mesh vertices add the mesh data and instances to the scene
                         var meshVertexCountTotal = 0;
                         var j = 0;
-                        foreach (var item in rp.MeshVerticesRangesAssociatedWithInstancing)
+                        foreach (var item in rp.MeshVertexRangesAssociatedWithInstancing)
                         {
                             var range = item.Value;
                             var index = range.Item1; //Start mesh vertex index
@@ -1863,7 +1863,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             var uniqueId = baseId + ":" + j + MeshKey;
 
                             List<Matrix> instances;
-                            if (rp.instances.TryGetValue(item.Key, out instances))
+                            if (rp.instanceTransforms.TryGetValue(item.Key, out instances))
                             {
                                 AddMeshData(uniqueId, rp, index, count, drawDead, baseId, rp.Colors,
                                     rp.ColorsStride, instances);
@@ -1882,7 +1882,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                         //Otherwise, clean up the remaining mesh geometry data in the render package to exclude the regions already generated.
                         var verticesRange =
-                            new List<Tuple<int, int>>(rp.MeshVerticesRangesAssociatedWithInstancing.Values.ToList());
+                            new List<Tuple<int, int>>(rp.MeshVertexRangesAssociatedWithInstancing.Values.ToList());
 
                         RemoveMeshGeometryByRange(verticesRange, m);
                     }

@@ -345,12 +345,15 @@ namespace Autodesk.DesignScript.Interfaces
     /// <summary>
     /// Represents instance matrices and references to tessellated geometry in the RenderPackage
     /// </summary>
-    public interface IRenderInstances
+    public interface IInstancingRenderPackage
     {
         /// <summary>
-        /// A list of mesh vertices ranges that have associated instance references
+        /// Checks if a base tessellation guid has already been registered with this <see cref="IInstancingRenderPackage"/>.
+        /// Both Line and Mesh ids are checked.
         /// </summary>
-        Dictionary<Guid,Tuple<int, int>> MeshVerticesRangesAssociatedWithInstancing { get; }
+        /// <param name="id"></param>
+        /// <returns></returns>
+        bool ContainsTessellationId(Guid id);
 
         /// <summary>
         /// Set an instance reference for a specific range of mesh vertices
@@ -358,12 +361,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices
         /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices
         /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
-        void AddInstanceGuidForMeshVerticesRange(int startIndex, int endIndex, Guid id);
-
-        /// <summary>
-        /// A list of line vertices ranges that have associated instance references
-        /// </summary>
-        Dictionary<Guid, Tuple<int, int>> LineVerticesRangesAssociatedWithInstancing { get; }
+        void AddInstanceGuidForMeshVertexRange(int startIndex, int endIndex, Guid id);
 
         /// <summary>
         /// Set an instance reference for a specific range of line vertices
@@ -371,7 +369,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with the instance matrices
         /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with the instance matrices
         /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
-        void AddInstanceGuidForLineVerticesRange(int startIndex, int endIndex, Guid id);
+        void AddInstanceGuidForLineVertexRange(int startIndex, int endIndex, Guid id);
 
         /// <summary>
         /// Set the transform using a series of floats. The resulting transform is applied to all geometry in the renderPackage.

@@ -210,7 +210,7 @@ namespace Dynamo.Scheduler
         private void GetTessellationDataFromGraphicItem(Guid outputPortId, IGraphicItem graphicItem, string labelKey, ref IRenderPackage package)
         {
             var packageWithTransform = package as ITransformable;
-            var packageInstances = package as IRenderInstances;
+            var packageWithInstances = package as IInstancingRenderPackage;
 
             try
             {
@@ -225,8 +225,8 @@ namespace Dynamo.Scheduler
                 }
                 else if (graphicItem is IInstanceableItem instanceableItem && instanceableItem.InstanceInfoAvailable)
                 {
-                    if (!packageInstances.MeshVerticesRangesAssociatedWithInstancing.ContainsKey(instanceableItem.BaseTessellationGuid) 
-                        && !packageInstances.LineVerticesRangesAssociatedWithInstancing.ContainsKey(instanceableItem.BaseTessellationGuid))
+                    if (!packageWithInstances.MeshVerticesRangesAssociatedWithInstancing.ContainsKey(instanceableItem.BaseTessellationGuid) 
+                        && !packageWithInstances.LineVerticesRangesAssociatedWithInstancing.ContainsKey(instanceableItem.BaseTessellationGuid))
                     {
                         instanceableItem.AddBaseTessellation(package, factory.TessellationParameters);
                     }
