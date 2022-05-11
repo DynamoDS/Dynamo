@@ -75,6 +75,29 @@ namespace Dynamo.GraphNodeManager.Converters
         }
     }
 
+    internal class StateToTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            switch ((ElementState)value)
+            {
+                case ElementState.Info:
+                    return "Information";
+                case ElementState.Warning:
+                case ElementState.PersistentWarning:
+                    return "Warning";
+                case ElementState.Error:
+                    return "Error";
+                default:
+                    return string.Empty;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
     internal class StateToImageSourceConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

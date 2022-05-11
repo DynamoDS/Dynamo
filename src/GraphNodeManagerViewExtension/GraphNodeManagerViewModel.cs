@@ -11,11 +11,14 @@ using Dynamo.GraphNodeManager.ViewModels;
 using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Extensions;
+using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.Commands;
 using Newtonsoft.Json;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
+using NodeViewModel = Dynamo.GraphNodeManager.ViewModels.NodeViewModel;
 
 namespace Dynamo.GraphNodeManager
 {
@@ -39,6 +42,7 @@ namespace Dynamo.GraphNodeManager
         private Dictionary<string, FilterViewModel> filterDictionary = new Dictionary<string, FilterViewModel>();
 
         private bool isEditingEnabled = true;
+        private bool isAnyFilterOn = false;
 
         private HomeWorkspaceModel CurrentWorkspace
         {
@@ -145,7 +149,9 @@ namespace Dynamo.GraphNodeManager
             }
         }
 
-        private bool isAnyFilterOn;
+        internal string DynamoVersion;
+        internal string HostName;
+
         [JsonIgnore]
         public bool IsAnyFilterOn
         {
@@ -185,6 +191,15 @@ namespace Dynamo.GraphNodeManager
             NodeSelectCommand = new DelegateCommand(NodeSelect);
             ClearFiltersCommand = new DelegateCommand(ClearAllFilters);
             ExportCommand = new DelegateCommand<string>(ExportGraph);
+
+            DynamoVersion = p.StartupParams.DynamoVersion.ToString();
+
+            var dynamoViewModel = p.DynamoWindow.DataContext as DynamoViewModel;
+            HostName = dynamoViewModel.Model.HostName;  // will become obsolete in Dynamo 3.0
+
+            // For node package info
+            var pmExtension = viewLoadedParams.ViewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+
         }
 
 

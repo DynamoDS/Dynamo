@@ -117,12 +117,16 @@ namespace Dynamo.GraphNodeManager
 
             var node = (NodeViewModel)((Button)sender).Tag;
             var info = ((Button)sender).DataContext as NodeInfo;
-            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString();
-            var hostProgram = ""; // How do we get the Host Program? Wouldn't that be the same as Dynamo?
+            var vm = this.DataContext as GraphNodeManagerViewModel;
+
+            var dynamoVersion = vm.DynamoVersion;
+            var hostProgram = vm.HostName; // How do we get the Host Program? Wouldn't that be the same as Dynamo?
+
+            // Package - package manager
 
             if (node == null || info == null) return;
 
-            var message = $"Node Name: {node.Name}\nPackage: {node.Package}\nDynamo Version: {dynamoVersion}\nHost Program:\nMessages: {info.Message}\nState: {info.State}";
+            var message = $"Node Name: {node.Name}\nPackage: {node.Package}\nDynamo Version: {dynamoVersion}\nHost: {hostProgram}\nMessages: {info.Message}\nState: {info.State}";
 
             Clipboard.SetText(message);
         }
