@@ -713,11 +713,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private static void OutputPortViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (CurrentExecutingStep.UIAutomation == null
-                || CurrentExecutingStep.UIAutomation.Count() < 3
-                || CurrentExecutingStep.UIAutomation[2].Parameters == null) return;
+            if (CurrentExecutingStep.UIAutomation == null) return;
 
-            var buttonName = CurrentExecutingStep.UIAutomation[2].Parameters[0] as string;
+            var currentUiAutomation = CurrentExecutingStep.UIAutomation.FirstOrDefault(x => x.Sequence == 3);
+            
+            if (currentUiAutomation == null) return;
+            if (currentUiAutomation.Parameters == null) return;
+            if (currentUiAutomation.Parameters.Count == 0) return;
+
+            var buttonName = currentUiAutomation.Parameters[0] as string;
             if (buttonName == null) return;
 
             var popupWindow = CurrentExecutingStep.StepUIPopup as PopupWindow;
@@ -890,17 +894,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Button runButton = GuideUtilities.FindChildInVisualTree(stepInfo.MainWindow, uiAutomationData.Parameters[0].ToString()) as Button;
 
-                if(runButton != null)
+                if (runButton == null) return;
+                
+                if (enableFunction)
                 {
-                    if (enableFunction)
-                    {
-                        runButton.Click += RunButton_Click;
-                    }
-                    else
-                    {
-                        runButton.Click -= RunButton_Click;
-                    }
+                    runButton.Click += RunButton_Click;
                 }
+                else
+                {
+                    runButton.Click -= RunButton_Click;
+                }
+                
             }
         }
 
