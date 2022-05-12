@@ -372,7 +372,7 @@ namespace Autodesk.DesignScript.Interfaces
         void AddInstanceGuidForLineVertexRange(int startIndex, int endIndex, Guid id);
 
         /// <summary>
-        /// Set the transform using a series of floats. The resulting transform is applied to all geometry in the renderPackage.
+        /// Set the transform using a series of floats. The resulting transform is applied to the range of geometry specified by the id.
         /// Following conventional matrix notation, m11 is the value of the first row and first column, and m12
         /// is the value of the first row and second column.
         /// NOTE: This method should set the matrix exactly as described by the caller.
@@ -399,7 +399,7 @@ namespace Autodesk.DesignScript.Interfaces
            float m41, float m42, float m43, float m44, Guid id);
 
         /// <summary>
-        /// Set the transform as a float array, this transform is applied to all geometry in the renderPackage.
+        /// Set the transform as a float array, The resulting transform is applied to the range of geometry specified by the id.
         /// This matrix should be laid out as follows in row vector order:
         /// [Xx,Xy,Xz, 0,
         ///  Yx, Yy, Yz, 0,
@@ -495,9 +495,9 @@ namespace Autodesk.DesignScript.Interfaces
     }
 
     /// <summary>
-    /// An interface that defines items which graphics are defined by a single base tessellation and instance locations defined by 4x4 transformation matrices.
+    /// An interface that defines items whose graphics are defined by a single base tessellation and instance transforms defined by 4x4 transformation matrices.
     /// </summary>
-    public interface IInstanceableItem
+    public interface IInstanceableGraphicItem
     {
         /// <summary>
         /// A Guid used to reference the base tessellation geometry that will be transformed for all related instances
@@ -515,7 +515,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// <param name="package">The render package, where graphics data to be
         /// pushed.</param>
         /// <param name="parameters"></param>
-        void AddBaseTessellation(IRenderPackage package, TessellationParameters parameters);
+        void AddBaseTessellation(IInstancingRenderPackage package, TessellationParameters parameters);
 
         /// <summary>
         /// Adds an instance matrix for this geometry.
@@ -524,7 +524,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// pushed.</param>
         /// <param name="parameters"></param>
         /// <param name="labelKey"></param>
-        void AddInstance(IRenderPackage package, TessellationParameters parameters, string labelKey);
+        void AddInstance(IInstancingRenderPackage package, TessellationParameters parameters, string labelKey);
     }
 
 

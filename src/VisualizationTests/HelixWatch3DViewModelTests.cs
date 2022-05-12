@@ -368,30 +368,6 @@ namespace WpfVisualizationTests
             Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisiblePoints(), 0);
         }
 
-        [Test]
-        public void ColorCache_Updated_OnNode_Removed()
-        {
-            var model = ViewModel.Model;
-            OpenVisualizationTest("Display.ByGeometryColorPoints_Selection.dyn");
-            var ws = model.CurrentWorkspace;
-            RunCurrentModel();
-            DispatcherUtil.DoEvents();
-
-            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(1547, 0, 0));
-            //should have 2 entires, one for each point node.
-            Assert.AreEqual(2, (ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel).colorCache.Keys.Count);
-            //remove one of the points and assert cache has one less key
-            var redPtsNode = ws.Nodes.Where(x => x.Name == "red").FirstOrDefault();
-            var greenPtsNode = ws.Nodes.Where(x => x.Name == "green").FirstOrDefault();
-            ws.RemoveAndDisposeNode(redPtsNode);
-
-            //assert less points are drawn.
-            DispatcherUtil.DoEvents();
-            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(1331, 0, 0));
-            Assert.AreEqual(1, (ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel).colorCache.Keys.Count);
-
-        }
-
         #endregion
 
         #region workspace tests

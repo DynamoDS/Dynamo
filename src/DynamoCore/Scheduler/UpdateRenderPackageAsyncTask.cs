@@ -223,15 +223,17 @@ namespace Dynamo.Scheduler
                 {
                     CreatePlaneTessellation(package, plane);
                 }
-                else if (graphicItem is IInstanceableItem instanceableItem && instanceableItem.InstanceInfoAvailable)
+                else if (graphicItem is IInstanceableGraphicItem instanceableItem &&
+                    instanceableItem.InstanceInfoAvailable 
+                    && package is IInstancingRenderPackage instancingPackage)
                 {
                     if (!packageWithInstances.ContainsTessellationId(instanceableItem.BaseTessellationGuid))
                   
                     {
-                        instanceableItem.AddBaseTessellation(package, factory.TessellationParameters);
+                        instanceableItem.AddBaseTessellation(instancingPackage, factory.TessellationParameters);
                     }
 
-                    instanceableItem.AddInstance(package, factory.TessellationParameters, labelKey);
+                    instanceableItem.AddInstance(instancingPackage, factory.TessellationParameters, labelKey);
 
                     return;
                 }
