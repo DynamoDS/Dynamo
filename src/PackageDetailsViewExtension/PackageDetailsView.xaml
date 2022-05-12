@@ -40,6 +40,16 @@
                 <Setter Property="Margin" Value="0,0,0,5" />
                 <Setter Property="TextWrapping" Value="Wrap" />
             </Style>
+            <Style x:Key="BodyLinkStyle" TargetType="Hyperlink">
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="FontSize" Value="14px" />
+                <Setter Property="Foreground" Value="{StaticResource Blue300Brush}" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource Blue400Brush}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
             <Style x:Key="BorderStyle" TargetType="Border">
                 <Setter Property="CornerRadius" Value="3" />
                 <Setter Property="Margin" Value="0,0,11,0" />
@@ -448,11 +458,15 @@
                         </Rectangle.Fill>
                     </Rectangle>
                     <TextBlock Name="PackageWebsiteLink"
-                               Margin="8,0,0,0"
-                               FontSize="14px"
-                               Foreground="#C7C7C7"
-                               Style="{StaticResource BodyTextStyle}"
-                               Text="{Binding PackageSiteURL}" />
+                               Margin="8,0,0,0">
+                        <Hyperlink NavigateUri="{Binding PackageSiteURL}" 
+                                   RequestNavigate="Hyperlink_RequestNavigate" 
+                                   TextDecorations="None" 
+                                   Style="{StaticResource BodyLinkStyle}">
+                            <TextBlock Name="PackageWebsiteLinkText" Text="{x:Static p:Resources.PackageWebsiteLabel}" />
+                        </Hyperlink>
+                    </TextBlock>
+
                 </StackPanel>
                 <StackPanel MinWidth="200"
                             Margin="0,0,0,10"
@@ -466,11 +480,14 @@
                         </Rectangle.Fill>
                     </Rectangle>
                     <TextBlock Name="PackageRepositoryLink"
-                               Margin="8,0,0,0"
-                               FontSize="14px"
-                               Foreground="#C7C7C7"
-                               Style="{StaticResource BodyTextStyle}"
-                               Text="{Binding PackageRepositoryURL}" />
+                               Margin="8,0,0,0">
+                        <Hyperlink NavigateUri="{Binding PackageRepositoryURL}" 
+                                   RequestNavigate="Hyperlink_RequestNavigate" 
+                                   TextDecorations="None" 
+                                   Style="{StaticResource BodyLinkStyle}">
+                            <TextBlock Name="PackageRepositoryLinkText" Text="{x:Static p:Resources.PackageRepositoryLabel}" />
+                        </Hyperlink>
+                    </TextBlock>                        
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

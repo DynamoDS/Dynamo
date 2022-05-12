@@ -5056,6 +5056,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Repository.
+        /// </summary>
+        public static string PackageRepositoryLabel {
+            get {
+                return ResourceManager.GetString("PackageRepositoryLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search for packages.
         /// </summary>
         public static string PackageSearchHeader {
@@ -5852,6 +5861,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageWarningMessageBoxTitle {
             get {
                 return ResourceManager.GetString("PackageWarningMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Website.
+        /// </summary>
+        public static string PackageWebsiteLabel {
+            get {
+                return ResourceManager.GetString("PackageWebsiteLabel", resourceCulture);
             }
         }
         
