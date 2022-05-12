@@ -550,6 +550,66 @@ namespace WpfVisualizationTests
             Assert.AreEqual(0, p.MeshVertexColorCount);
         }
 
+        [Test]
+        public void SetBaseTessellationRange_SetsDataCorrectly()
+        {
+            var p = new HelixRenderPackage();
+            var id = Guid.NewGuid();
+            p.AddTriangleVertex(0, 0, 0);
+            p.AddTriangleVertex(0, 0, 1);
+            p.AddTriangleVertex(1, 0, 0);
+            p.AddInstanceGuidForMeshVerticesRange(0, 2, id);
+            p.AddInstanceMatrix(new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, id);
+            p.AddInstanceMatrix(new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, id);
+            Assert.AreEqual(0, p.MeshVerticesRangesAssociatedWithInstancing[id].Item1);
+            Assert.AreEqual(2, p.MeshVerticesRangesAssociatedWithInstancing[id].Item2);
+            Assert.AreEqual(3, p.MeshVertexCount);
+        }
+        [Test]
+        public void SetBaseTessellationRange_ThrowsWhenIDAlreadyExists()
+        {
+            var p = new HelixRenderPackage();
+            var id = Guid.NewGuid();
+            p.AddTriangleVertex(0, 0, 0);
+            p.AddTriangleVertex(0, 0, 1);
+            p.AddTriangleVertex(1, 0, 0);
+            Assert.Throws<Exception>(() =>
+            {
+                p.AddInstanceGuidForMeshVerticesRange(0, 2, id);
+                p.AddInstanceGuidForMeshVerticesRange(0, 2, id);
+                p.AddInstanceMatrix(new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, id);
+
+            });
+
+        }
+        [Test]
+        public void AddInstanceMatrix_ThrowsWhenIDDoesNotExist()
+        {
+            var p = new HelixRenderPackage();
+            var id = Guid.NewGuid();
+            p.AddTriangleVertex(0, 0, 0);
+            p.AddTriangleVertex(0, 0, 1);
+            p.AddTriangleVertex(1, 0, 0);
+            Assert.Throws<Exception>(() =>
+            {
+                p.AddInstanceMatrix(new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, id);
+            });
+
+        }
+        [Test]
+        public void SetBaseTessellationRange_ThrowsWithBadRange()
+        {
+            var p = new HelixRenderPackage();
+            var id = Guid.NewGuid();
+            Assert.Throws<Exception>(() =>
+            {
+                p.AddInstanceGuidForMeshVerticesRange(0, 2, id);
+                p.AddInstanceMatrix(new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, id);
+
+            });
+          
+        }
+
         /// <summary>
         /// Pushes an uncolored quad into a package.
         /// </summary>

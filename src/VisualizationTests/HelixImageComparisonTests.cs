@@ -298,6 +298,23 @@ namespace WpfVisualizationTests
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
+        [Test]
+        public void RenderMeshInstances()
+        {
+            //This DYN renders a class in FFITarget that implements instancing.
+            OpenVisualizationTest("instancing_pyramids.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void RenderMeshInstances_noInstanceData()
+        {
+            //This DYN renders a class in FFITarget that implements instancing.
+            OpenVisualizationTest("instancing_no_instance_data.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+
         #endregion
 
         #region pointsAndLines
