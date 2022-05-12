@@ -345,7 +345,7 @@ namespace Autodesk.DesignScript.Interfaces
     /// <summary>
     /// Represents instance matrices and references to tessellated geometry in the RenderPackage
     /// </summary>
-    public interface IInstancingRenderPackage
+    internal interface IInstancingRenderPackage
     {
         /// <summary>
         /// Checks if a base tessellation guid has already been registered with this <see cref="IInstancingRenderPackage"/>.
@@ -497,7 +497,7 @@ namespace Autodesk.DesignScript.Interfaces
     /// <summary>
     /// An interface that defines items whose graphics are defined by a single base tessellation and instance transforms defined by 4x4 transformation matrices.
     /// </summary>
-    public interface IInstanceableGraphicItem
+    internal interface IInstanceableGraphicItem
     {
         /// <summary>
         /// A Guid used to reference the base tessellation geometry that will be transformed for all related instances
@@ -512,18 +512,19 @@ namespace Autodesk.DesignScript.Interfaces
         /// <summary>
         /// Adds the base graphics/tesselation data in given render package object.
         /// </summary>
-        /// <param name="package">The render package, where graphics data to be
+        /// <param name="package">The render package, where base tessellation will be
         /// pushed.</param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">tessellation parameters for the instance. Can be used to generate the
+        /// correct shared base tessellation</param>
         void AddBaseTessellation(IInstancingRenderPackage package, TessellationParameters parameters);
 
         /// <summary>
         /// Adds an instance matrix for this geometry.
         /// </summary>
-        /// <param name="package">The render package, where graphics data to be
+        /// <param name="package">The render package, where instance will be
         /// pushed.</param>
-        /// <param name="parameters"></param>
-        /// <param name="labelKey"></param>
+        /// <param name="parameters">tessellation parameters for the instance, only scale factor is generally applicable.</param>
+        /// <param name="labelKey">the strig label key that specifices which result this instance represents in a node's output.</param>
         void AddInstance(IInstancingRenderPackage package, TessellationParameters parameters, string labelKey);
     }
 
