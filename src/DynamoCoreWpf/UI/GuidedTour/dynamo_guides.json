@@ -1,6 +1,8 @@
 [
 	{
 		"Name": "Get Started",
+		"SequenceOrder": 1,
+		"GuideNameResource": "GetStartedGuide",
 		"GuideSteps": [
 			{
 				"Sequence": 0,
@@ -191,6 +193,8 @@
 	},
 	{
 		"Name": "Packages",
+		"SequenceOrder": 3,
+		"GuideNameResource": "PackagesGuide",
 		"GuideSteps": [
 			{
 				"Sequence": 1,
@@ -880,6 +884,8 @@
 	},
 	{
 		"Name": "Onboarding",
+		"SequenceOrder": 2,
+		"GuideNameResource": "OnboardingGuide",
 		"GuideSteps": [
 			{
 				"Sequence": 0,
@@ -1116,6 +1122,28 @@
 					"HorizontalPopupOffset": 0,
 					"PopupPlacement": "relative",
 					"HostUIElementString": "background_grid"
+				}
+			},
+			{
+				"Sequence": 6,
+				"Name": "survey",
+				"Type": "survey",
+				"Width": 400,
+				"Height": 450,
+				"StepContent": {
+					"Title": "PackagesGuideSurveyTitle",
+					"FormattedText": "PackagesGuideSurveyText"
+				},
+				"ExtraContent": [
+					{
+						"Property": "RatingTextTitle",
+						"Value": "GetStartedGuideRatingTextTitle"
+					}
+				],
+				"HostPopupInfo": {
+					"PopupPlacement": "center",
+					"HostUIElementString": "WorkspaceTabs",
+					"VerticalPopupOffset": 0
 				}
 			}
 		]

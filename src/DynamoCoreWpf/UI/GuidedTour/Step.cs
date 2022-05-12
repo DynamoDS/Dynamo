@@ -124,6 +124,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         [JsonProperty("ExitGuide")]
         internal ExitGuide ExitGuide { get; set; }
 
+        internal GuidesManager GuidesManager { get; set; }
+
         public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT, BOTTOM_DOWN, NONE };
 
         /// <summary>
@@ -185,6 +187,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         [JsonProperty("PointerVerticalOffset")]
         public double PointerVerticalOffset { get; set; }
+        public GuidesManager GuideManager { get; internal set; }
         #endregion
 
         #region Public Methods

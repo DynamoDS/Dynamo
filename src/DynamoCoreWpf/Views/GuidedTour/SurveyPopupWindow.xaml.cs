@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls.Primitives;
+﻿using System;
+using System.Linq;
+using Res = Dynamo.Wpf.Properties.Resources;
+using System.Windows.Controls.Primitives;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 
@@ -10,6 +13,8 @@ namespace Dynamo.Wpf.Views.GuidedTour
     public partial class SurveyPopupWindow : Popup
     {
         private readonly SurveyPopupViewModel surveyViewModel;
+
+        private Guide nextGuide;
 
         /// <summary>
         /// Constructor
@@ -36,6 +41,27 @@ namespace Dynamo.Wpf.Views.GuidedTour
             Focus();
         }
 
+        protected override void OnOpened(EventArgs e)
+        {
+            base.OnOpened(e);
+            SetupNextGuideLink();
+        }
+
+        private void SetupNextGuideLink()
+        {
+            nextGuide = surveyViewModel.Step.GuideManager.GetNextGuide();
+            
+            if(nextGuide != null)
+            {
+                GetStartedLink.Visibility = System.Windows.Visibility.Visible;
+                NextGuideNameLink.Content = Res.ResourceManager.GetString(nextGuide.GuideNameResource);
+            }
+            else
+            {
+                GetStartedLink.Visibility = System.Windows.Visibility.Hidden;
+            }
+        }
+
         private void CloseButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             IsOpen = false;
@@ -51,9 +77,11 @@ namespace Dynamo.Wpf.Views.GuidedTour
             if (surveyViewModel.Step.DynamoViewModelStep.ClearHomeWorkspaceInternal())
             {
                 surveyViewModel.Step.DynamoViewModelStep.OpenOnboardingGuideFile();
-                surveyViewModel.Step.GuidesManager.LaunchTour(Dynamo.Controls.DynamoView.OnboardingGuideName);
+                surveyViewModel.Step.GuideManager.LaunchTour(nextGuide.Name);
             }
 
         }
+        
+        
     }
 }
