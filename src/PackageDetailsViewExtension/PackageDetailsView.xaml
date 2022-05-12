@@ -457,13 +457,14 @@
                             <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/link-16px.png" />
                         </Rectangle.Fill>
                     </Rectangle>
-                    <TextBlock Name="PackageWebsiteLink"
+                    <TextBlock Name="PackageWebsiteLinkText"
                                Margin="8,0,0,0">
-                        <Hyperlink NavigateUri="{Binding PackageSiteURL}" 
+                        <Hyperlink Name="PackageWebsiteLink"
+                                   NavigateUri="{Binding PackageSiteURL}" 
                                    RequestNavigate="Hyperlink_RequestNavigate" 
                                    TextDecorations="None" 
                                    Style="{StaticResource BodyLinkStyle}">
-                            <TextBlock Name="PackageWebsiteLinkText" Text="{x:Static p:Resources.PackageWebsiteLabel}" />
+                            <TextBlock Text="{x:Static p:Resources.PackageWebsiteLabel}" />
                         </Hyperlink>
                     </TextBlock>
 
@@ -479,13 +480,14 @@
                             <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/link-16px.png" />
                         </Rectangle.Fill>
                     </Rectangle>
-                    <TextBlock Name="PackageRepositoryLink"
+                    <TextBlock Name="PackageRepositoryLinkText"
                                Margin="8,0,0,0">
-                        <Hyperlink NavigateUri="{Binding PackageRepositoryURL}" 
+                        <Hyperlink Name="PackageRepositoryLink" 
+                                   NavigateUri="{Binding PackageRepositoryURL}" 
                                    RequestNavigate="Hyperlink_RequestNavigate" 
                                    TextDecorations="None" 
                                    Style="{StaticResource BodyLinkStyle}">
-                            <TextBlock Name="PackageRepositoryLinkText" Text="{x:Static p:Resources.PackageRepositoryLabel}" />
+                            <TextBlock Text="{x:Static p:Resources.PackageRepositoryLabel}" />
                         </Hyperlink>
                     </TextBlock>                        
                 </StackPanel>
