@@ -609,6 +609,29 @@ namespace WpfVisualizationTests
             });
           
         }
+        [Test]
+        public void InstancePackage_ContainsChecksAllInternalCollection()
+        {
+            var p = new HelixRenderPackage();
+            var id = Guid.NewGuid();
+            Assert.IsFalse(p.ContainsTessellationId(id));
+
+            p.AddTriangleVertex(0, 0, 0);
+            p.AddTriangleVertex(0, 0, 1);
+            p.AddTriangleVertex(1, 0, 0);
+            p.AddInstanceGuidForMeshVertexRange(0, 2, id);
+            p.AddInstanceMatrix(new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, id);
+            Assert.IsTrue(p.ContainsTessellationId(id));
+
+            p = new HelixRenderPackage();
+            Assert.IsFalse(p.ContainsTessellationId(id));
+            p.AddLineStripVertex(0, 0, 0);
+            p.AddLineStripVertex(0, 0, 1);
+            p.AddLineStripVertex(1, 0, 0);
+            p.AddInstanceGuidForLineVertexRange(0, 2, id);
+            p.AddInstanceMatrix(new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, id);
+            Assert.IsTrue(p.ContainsTessellationId(id));
+        }
 
         /// <summary>
         /// Pushes an uncolored quad into a package.

@@ -1,4 +1,5 @@
-﻿using Autodesk.DesignScript.Interfaces;
+﻿using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,6 +98,74 @@ namespace FFITarget
         {
             throw new NotImplementedException();
         }
+    }
+
+    public class InstanceAndTransformable : InstanceableClass, IInstanceableGraphicItem
+    {
+        private CoordinateSystem transform;
+        public static InstanceAndTransformable ByPositionAndAxes(double[] position_x_y_z_axes, double[] width_length_height,CoordinateSystem transform )
+        {
+            var inst = new InstanceAndTransformable();
+            inst.position_axes = position_x_y_z_axes;
+            inst.width_length_height = width_length_height;
+            inst.transform = transform;
+            return inst;
+        }
+
+        void IInstanceableGraphicItem.AddBaseTessellation(IInstancingRenderPackage instancingPkg, TessellationParameters parameters)
+        {
+
+            if (instancingPkg is IRenderPackage renderPackage)
+            {
+                var previousMeshVertexCount = renderPackage.MeshVertexCount;
+
+                renderPackage.AddTriangleVertex(0, 0, 0);
+                renderPackage.AddTriangleVertex(-.5, .5, 1);
+                renderPackage.AddTriangleVertex(0, 1, 0);
+
+                renderPackage.AddTriangleVertex(-1, 0, 0);
+                renderPackage.AddTriangleVertex(-.5, .5, 1);
+                renderPackage.AddTriangleVertex(0, 0, 0);
+
+                renderPackage.AddTriangleVertex(-1, 1, 0);
+                renderPackage.AddTriangleVertex(-.5, .5, 1);
+                renderPackage.AddTriangleVertex(-1, 0, 0);
+
+                renderPackage.AddTriangleVertex(0, 1, 0);
+                renderPackage.AddTriangleVertex(-.5, .5, 1);
+                renderPackage.AddTriangleVertex(-1, 1, 0);
+
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+
+
+
+                instancingPkg.AddInstanceGuidForMeshVertexRange(previousMeshVertexCount, renderPackage.MeshVertexCount - 1, BaseTessellationGuid);
+            }
+            if(instancingPkg is ITransformable transpkg)
+            {
+                var xaxis = transform.XAxis;
+                var yaxis = transform.YAxis;
+                var zaxis = transform.ZAxis;
+                var org = transform.Origin;
+
+                transpkg.SetTransform(xaxis.X, xaxis.Z, -xaxis.Y, 0,
+                                                                        zaxis.X, zaxis.Z, -zaxis.Y, 0,
+                                                                        -yaxis.X, -yaxis.Z, yaxis.Y, 0,
+                                                                          org.X, org.Z, -org.Y, 1);
+            }
+        }
+
     }
 
     /// <summary>
