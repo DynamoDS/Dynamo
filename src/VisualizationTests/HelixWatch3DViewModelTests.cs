@@ -1260,10 +1260,22 @@ namespace WpfVisualizationTests
             //this graph displays a plane and the instances
             Assert.AreEqual(2, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
             //6x6x6 instances
-            Assert.AreEqual(6 * 6 * 6, BackgroundPreviewGeometry.TotalInstancesToRender());
+            Assert.AreEqual(6 * 6 * 6, BackgroundPreviewGeometry.TotalMeshInstancesToRender());
 
         }
+        [Test]
+        public void InstancedLinesAreAddedToBackGroundPreviewForEachMatrix()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            OpenVisualizationTest("instancing_lines.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            //this graph displays a grid and the instances
+            Assert.AreEqual(2, BackgroundPreviewGeometry.NumberOfVisibleCurves());
+            //6x6x6 instances
+            Assert.AreEqual(6 * 6 * 6, BackgroundPreviewGeometry.TotalLineInstancesToRender());
 
+        }
     }
 
     internal static class GeometryDictionaryExtensions
@@ -1448,11 +1460,17 @@ namespace WpfVisualizationTests
 
             return geoms.Any()? geoms.SelectMany(g=>g.Geometry.Positions).Count() : 0;
         }
-        public static int TotalInstancesToRender(this IEnumerable<Element3D> dictionary)
+        public static int TotalMeshInstancesToRender(this IEnumerable<Element3D> dictionary)
         {
             var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
 
             return geoms.Any() ? geoms.Where(g => g.Instances!=null &&g.Instances.Any()).SelectMany(g=>g.Instances).Count() : 0;
+        }
+        public static int TotalLineInstancesToRender(this IEnumerable<Element3D> dictionary)
+        {
+            var geoms = dictionary.Where(g => g is DynamoLineGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoLineGeometryModel3D>();
+
+            return geoms.Any() ? geoms.Where(g => g.Instances != null && g.Instances.Any()).SelectMany(g => g.Instances).Count() : 0;
         }
 
         public static bool HasAnyMeshVerticesOfColor(this IEnumerable<Element3D> dictionary, Color4 color)
