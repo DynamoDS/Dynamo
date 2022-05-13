@@ -761,7 +761,7 @@ namespace Dynamo.Wpf.Rendering
         /// <summary>
         /// A list of mesh vertices ranges that have associated texture maps
         /// </summary>
-        public List<Tuple<int, int>> MeshVerticesRangesAssociatedWithTextureMaps { get; }
+        public List<Tuple<int, int>> MeshVerticesRangesAssociatedWithTextureMaps { get; } = new List<Tuple<int, int>>();
 
         /// <summary>
         /// Set a color texture map for a specific range of mesh vertices
@@ -803,7 +803,7 @@ namespace Dynamo.Wpf.Rendering
         /// <summary>
         /// A list of mesh vertices ranges that have associated instance references
         /// </summary>
-        internal Dictionary<Guid, (int start, int end)> MeshVertexRangesAssociatedWithInstancing { get; }
+        internal Dictionary<Guid, (int start, int end)> MeshVertexRangesAssociatedWithInstancing { get; } = new Dictionary<Guid, (int start, int end)>();
        
         /// <summary>
         /// Set an instance reference for a specific range of mesh vertices
@@ -829,7 +829,7 @@ namespace Dynamo.Wpf.Rendering
         /// <summary>
         /// A list of line vertices ranges that have associated instance references
         /// </summary>
-        internal Dictionary<Guid, (int start, int end)> LineVertexRangesAssociatedWithInstancing { get; }
+        internal Dictionary<Guid, (int start, int end)> LineVertexRangesAssociatedWithInstancing { get; } = new Dictionary<Guid, (int start, int end)>();
 
         /// <summary>
         /// Set an instance reference for a specific range of line vertices

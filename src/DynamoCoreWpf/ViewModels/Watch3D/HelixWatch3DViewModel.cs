@@ -1680,6 +1680,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             lock (element3DDictionaryMutex)
             {
+                //TODO add try/catch
                 foreach (var rp in packages)
                 {
                     // Each node can produce multiple render packages. We want all the geometry of the
@@ -1942,7 +1943,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void AddMeshData(string id, HelixRenderPackage rp, int index, int count, bool drawDead, string baseId, IEnumerable<byte> colors, int stride, List<Matrix> instances = null)
+        private void AddMeshData(string id, HelixRenderPackage rp,
+            int index, int count, bool drawDead, string baseId, IEnumerable<byte> colors, int stride, List<Matrix> instances = null)
         {
             FastList<Vector3> mPositions;
             FastList<Color4> mColors;
@@ -2023,7 +2025,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void AddLineData(string id, HelixRenderPackage rp, int index, int count, bool drawDead, string baseId, List<Matrix> intances = null)
+        private void AddLineData(string id, HelixRenderPackage rp, int index, int count, bool drawDead, string baseId, List<Matrix> instances = null)
         {
             FastList<Vector3> lPositions;
             FastList<Color4> lColors;
@@ -2077,9 +2079,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                  ? lColors
                  : Enumerable.Repeat(defaultLineColor, lColors.Count));
             }
-
-            //colorCache[id] = lineSet.Colors;
-
             var adjustment = previousPositionCount - lIndices[0];
 
             lineSet.Indices.AddRange(lIndices.Select(i => i + adjustment));
@@ -2087,9 +2086,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             lineGeometry3D.Geometry = lineSet;
             lineGeometry3D.Name = baseId;
 
-            if (intances != null)
+            if (instances != null)
             {
-                lineGeometry3D.Instances = intances;
+                lineGeometry3D.Instances = instances;
             }
         }
 

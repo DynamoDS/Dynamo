@@ -10,7 +10,7 @@ namespace FFITarget
     /// <summary>
     /// A test class that creates a pyramid using instancing.
     /// </summary>
-    public class InstanceableClass : IInstanceableItem, IGraphicItem
+    public class InstanceableClass : IInstanceableGraphicItem, IGraphicItem
     {
         public static InstanceableClass ByPositionAndAxes(double[] position_x_y_z_axes,double[] width_length_height)
         {
@@ -27,53 +27,52 @@ namespace FFITarget
 
         public bool InstanceInfoAvailable => true;
 
-        public void AddBaseTessellation(IRenderPackage package, TessellationParameters parameters)
+         void IInstanceableGraphicItem.AddBaseTessellation(IInstancingRenderPackage instancingPkg, TessellationParameters parameters)
         {
 
-            if (package is IRenderInstances packageInstances)
+            if (instancingPkg is IRenderPackage renderPackage)
             {
-                var previousMeshVertexCount = package.MeshVertexCount;
+                var previousMeshVertexCount = renderPackage.MeshVertexCount;
 
-                package.AddTriangleVertex(0, 0, 0);
-                package.AddTriangleVertex(-.5, .5, 1);
-                package.AddTriangleVertex(0, 1, 0);
+                renderPackage.AddTriangleVertex(0, 0, 0);
+                renderPackage.AddTriangleVertex(-.5, .5, 1);
+                renderPackage.AddTriangleVertex(0, 1, 0);
 
-                package.AddTriangleVertex(-1, 0, 0);
-                package.AddTriangleVertex(-.5,.5, 1);
-                package.AddTriangleVertex(0, 0, 0);
+                renderPackage.AddTriangleVertex(-1, 0, 0);
+                renderPackage.AddTriangleVertex(-.5,.5, 1);
+                renderPackage.AddTriangleVertex(0, 0, 0);
 
-                package.AddTriangleVertex(-1, 1, 0);
-                package.AddTriangleVertex(-.5, .5, 1);
-                package.AddTriangleVertex(-1, 0, 0);
+                renderPackage.AddTriangleVertex(-1, 1, 0);
+                renderPackage.AddTriangleVertex(-.5, .5, 1);
+                renderPackage.AddTriangleVertex(-1, 0, 0);
 
-                package.AddTriangleVertex(0, 1, 0);
-                package.AddTriangleVertex(-.5, .5, 1);
-                package.AddTriangleVertex(-1, 1, 0);
+                renderPackage.AddTriangleVertex(0, 1, 0);
+                renderPackage.AddTriangleVertex(-.5, .5, 1);
+                renderPackage.AddTriangleVertex(-1, 1, 0);
 
-                package.AddTriangleVertexNormal(0, 0, 1);
-                package.AddTriangleVertexNormal(0, 0, 1);
-                package.AddTriangleVertexNormal(0, 0, 1);
-                package.AddTriangleVertexNormal(0, 0, 1);
-                package.AddTriangleVertexNormal(0, 0, 1);
-                package.AddTriangleVertexNormal(0, 0, 1);
-                package.AddTriangleVertexNormal(0, 0, 1);
-                package.AddTriangleVertexNormal(0, 0, 1);
-                package.AddTriangleVertexNormal(0, 0, 1);
-                package.AddTriangleVertexNormal(0, 0, 1);
-                package.AddTriangleVertexNormal(0, 0, 1);
-                package.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
+                renderPackage.AddTriangleVertexNormal(0, 0, 1);
 
 
 
-                packageInstances.AddInstanceGuidForMeshVerticesRange(previousMeshVertexCount, package.MeshVertexCount - 1, BaseTessellationGuid);
+                instancingPkg.AddInstanceGuidForMeshVertexRange(previousMeshVertexCount, renderPackage.MeshVertexCount - 1, BaseTessellationGuid);
             }
         }
 
         //actually create the matrix.
-        public void AddInstance(IRenderPackage package, TessellationParameters parameters, string labelKey)
+        void IInstanceableGraphicItem.AddInstance(IInstancingRenderPackage package, TessellationParameters parameters, string labelKey)
         {
-            if (package is IRenderInstances rpinst)
-            {
+            
                 var Origin = (x: position_axes[0], y: position_axes[1], z: position_axes[2]);
 
                 var XAxis = (x: position_axes[3], y: position_axes[4], z: position_axes[5]);
@@ -85,13 +84,112 @@ namespace FFITarget
                 var h = (float)width_length_height[2];
                 var s = (float)1;
 
-                rpinst.AddInstanceMatrix(
+                package.AddInstanceMatrix(
                     (float)XAxis.x * w, (float)XAxis.z * w, -(float)XAxis.y * w, 0,
                     (float)ZAxis.x * h, (float)ZAxis.z * h, -(float)ZAxis.y * h, 0,
                     -(float)YAxis.x * l, -(float)YAxis.z * l, (float)YAxis.y * l, 0,
                     (float)Origin.x * s, (float)Origin.z * s, -(float)Origin.y * s, 1,
                     BaseTessellationGuid);
+            
+        }
+
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// A test class that creates a pyramid using instancing.
+    /// </summary>
+    public class InstanceableLineClass : IInstanceableGraphicItem, IGraphicItem
+    {
+        public static InstanceableLineClass ByPositionAndAxes(double[] position_x_y_z_axes, double[] width_length_height)
+        {
+            var inst = new InstanceableLineClass();
+            inst.position_axes = position_x_y_z_axes;
+            inst.width_length_height = width_length_height;
+            return inst;
+        }
+
+        internal double[] position_axes { get; set; }
+        internal double[] width_length_height { get; set; }
+
+        public Guid BaseTessellationGuid => Guid.Parse("fe63b3fd-f44a-47a2-a002-58538dbbf818");
+
+        public bool InstanceInfoAvailable => true;
+
+        void IInstanceableGraphicItem.AddBaseTessellation(IInstancingRenderPackage instancingPkg, TessellationParameters parameters)
+        {
+
+            if (instancingPkg is IRenderPackage renderPackage)
+            {
+                var prevLineCount = renderPackage.LineVertexCount;
+
+                renderPackage.AddLineStripVertex(0, 0, 0);
+                renderPackage.AddLineStripVertex(-.5, .5, 1);
+                renderPackage.AddLineStripVertex(0, 1, 0);
+                renderPackage.AddLineStripVertex(0, 0, 0);
+
+                renderPackage.AddLineStripVertex(-1, 0, 0);
+                renderPackage.AddLineStripVertex(-.5, .5, 1);
+                renderPackage.AddLineStripVertex(0, 0, 0);
+                renderPackage.AddLineStripVertex(-1, 0, 0);
+
+                renderPackage.AddLineStripVertex(-1, 1, 0);
+                renderPackage.AddLineStripVertex(-.5, .5, 1);
+                renderPackage.AddLineStripVertex(-1, 0, 0);
+                renderPackage.AddLineStripVertex(-1, 1, 0);
+
+
+                renderPackage.AddLineStripVertex(0, 1, 0);
+                renderPackage.AddLineStripVertex(-.5, .5, 1);
+                renderPackage.AddLineStripVertex(-1, 1, 0);
+                renderPackage.AddLineStripVertex(0, 1, 0);
+                
+
+                renderPackage.AddLineStripVertexColor(0, 0, 0, 255);
+                renderPackage.AddLineStripVertexColor(0, 0, 0, 255);
+                renderPackage.AddLineStripVertexColor(0, 0, 0, 255);
+                renderPackage.AddLineStripVertexColor(0, 0, 0, 255);
+                renderPackage.AddLineStripVertexColor(0, 0, 0, 255);
+                renderPackage.AddLineStripVertexColor(0, 0, 0, 255);
+                renderPackage.AddLineStripVertexColor(0, 0, 0, 255);
+                renderPackage.AddLineStripVertexColor(0, 0, 0, 255);
+                renderPackage.AddLineStripVertexColor(0, 0, 0, 255);
+                renderPackage.AddLineStripVertexColor(0, 0, 0, 255);
+                renderPackage.AddLineStripVertexColor(0, 0, 0, 255);
+                renderPackage.AddLineStripVertexColor(0, 0, 0, 255);
+
+                renderPackage.AddLineStripVertexCount(16);
+
+
+                instancingPkg.AddInstanceGuidForLineVertexRange(prevLineCount, renderPackage.LineVertexCount - 1, BaseTessellationGuid);
             }
+        }
+
+        //actually create the matrix.
+        void IInstanceableGraphicItem.AddInstance(IInstancingRenderPackage package, TessellationParameters parameters, string labelKey)
+        {
+
+            var Origin = (x: position_axes[0], y: position_axes[1], z: position_axes[2]);
+
+            var XAxis = (x: position_axes[3], y: position_axes[4], z: position_axes[5]);
+            var YAxis = (x: position_axes[6], y: position_axes[7], z: position_axes[8]);
+            var ZAxis = (x: position_axes[9], y: position_axes[10], z: position_axes[11]);
+
+            var w = (float)width_length_height[0];
+            var l = (float)width_length_height[1];
+            var h = (float)width_length_height[2];
+            var s = (float)1;
+
+            package.AddInstanceMatrix(
+                (float)XAxis.x * w, (float)XAxis.z * w, -(float)XAxis.y * w, 0,
+                (float)ZAxis.x * h, (float)ZAxis.z * h, -(float)ZAxis.y * h, 0,
+                -(float)YAxis.x * l, -(float)YAxis.z * l, (float)YAxis.y * l, 0,
+                (float)Origin.x * s, (float)Origin.z * s, -(float)Origin.y * s, 1,
+                BaseTessellationGuid);
+
         }
 
         public void Tessellate(IRenderPackage package, TessellationParameters parameters)
@@ -103,7 +201,7 @@ namespace FFITarget
     /// <summary>
     /// This class is instanceable, but it returns false for instanceInfoAvailable so it will use regular tessellation.
     /// </summary>
-    public class InstanceableClass_NoInstanceData : IInstanceableItem, IGraphicItem
+    public class InstanceableClass_NoInstanceData : IInstanceableGraphicItem, IGraphicItem
     {
         public static InstanceableClass_NoInstanceData ByPositionAndAxes(double[] position)
         {
@@ -117,12 +215,12 @@ namespace FFITarget
 
         public bool InstanceInfoAvailable => false;
 
-        public void AddBaseTessellation(IRenderPackage package, TessellationParameters parameters)
+        void IInstanceableGraphicItem.AddBaseTessellation(IInstancingRenderPackage package, TessellationParameters parameters)
         {
             throw new NotImplementedException();
         }
 
-        public void AddInstance(IRenderPackage package, TessellationParameters parameters, string labelKey)
+        void IInstanceableGraphicItem.AddInstance(IInstancingRenderPackage package, TessellationParameters parameters, string labelKey)
         {
             throw new NotImplementedException();
         }

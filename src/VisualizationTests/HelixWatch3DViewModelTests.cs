@@ -58,7 +58,8 @@ namespace WpfVisualizationTests
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("GeometryColor.dll");
             libraries.Add("VMDataBridge.dll");
-            libraries.Add("FFITarget.dll");
+            //don't import FFITarget for all tests, it currently causes a conflict with many geometry nodes.
+            //libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -603,7 +604,7 @@ namespace WpfVisualizationTests
             var view = FindFirstWatch3DNodeView();
             var vm = view.ViewModel as HelixWatch3DNodeViewModel;
 
-            Assert.AreEqual(vm.SceneItems.Count(), 4);
+            Assert.AreEqual(4, vm.SceneItems.Count());
         }
 
         [Test]
@@ -1252,6 +1253,7 @@ namespace WpfVisualizationTests
         [Test]
         public void InstancesAreAddedToBackGroundPreviewForEachMatrix()
         {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
             OpenVisualizationTest("instancing_pyramids.dyn");
             RunCurrentModel();
             DispatcherUtil.DoEvents();

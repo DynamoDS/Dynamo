@@ -23,50 +23,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>AssemblySharedInfo.cs</Link>
-    </Compile>
-    <Compile Include="AbstractDisposeTracert.cs" />
-    <Compile Include="AtLevelTestClass.cs" />
-    <Compile Include="ClassFunctionality.cs" />
-    <Compile Include="ClassWithMigratedMembers.cs" />
-    <Compile Include="ClassWithRefParams.cs" />
-    <Compile Include="CodeCompletionClass.cs" />
-    <Compile Include="CustomLabel.cs" />
-    <Compile Include="DefaultArguments.cs" />
-    <Compile Include="DisposeTest.cs" />
-    <Compile Include="DummyMath.cs" />
-    <Compile Include="DummyZeroTouchClass.cs" />
-    <Compile Include="ElementResolverTarget.cs" />
-    <Compile Include="GlobalClass.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="InstanceableClass.cs" />
-    <Compile Include="NamespaceConflictResolution.cs" />
-    <Compile Include="ReferenceThisTest.cs" />
-    <Compile Include="ReplicationTest.cs" />
-    <Compile Include="TestCSharpAttribute.cs" />
-    <Compile Include="DisposeTracer.cs" />
-    <Compile Include="DummyCollection.cs" />
-    <Compile Include="DummyGeometry.cs" />
-    <Compile Include="InheritenceTests.cs" />
-    <Compile Include="ManagedElementExample.cs" />
-    <Compile Include="Minimal.cs" />
-    <Compile Include="MinimalTraceTargets.cs" />
-    <Compile Include="OverloadTarget.cs" />
-    <Compile Include="ProtoFFITests.cs" />
-    <Compile Include="RegressionTargets.cs" />
-    <Compile Include="TestDefaultArgumentAttributes.cs" />
-    <Compile Include="TestMessageLog.cs" />
-    <Compile Include="TestMethodOverload.cs" />
-    <Compile Include="TestNamespaceConflict.cs" />
-    <Compile Include="TestNamespaceResolution.cs" />
-    <Compile Include="TestObjects.cs" />
-    <Compile Include="TestPersistentNodeValues.cs" />
-    <Compile Include="TestThisOverload.cs" />
-    <Compile Include="TestUpdateCount.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
