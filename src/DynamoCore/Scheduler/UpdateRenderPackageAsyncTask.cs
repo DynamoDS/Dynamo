@@ -6,7 +6,9 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
+using Dynamo.Models;
 using Dynamo.Visualization;
+using DynamoUtilities;
 using ProtoCore.Mirror;
 
 namespace Dynamo.Scheduler
@@ -225,7 +227,8 @@ namespace Dynamo.Scheduler
                 }
                 else if (graphicItem is IInstanceableGraphicItem instanceableItem &&
                     instanceableItem.InstanceInfoAvailable 
-                    && package is IInstancingRenderPackage instancingPackage)
+                    && package is IInstancingRenderPackage instancingPackage
+                    && DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("graphics-primitive-instancing",false))
                 {
                     if (!packageWithInstances.ContainsTessellationId(instanceableItem.BaseTessellationGuid))
                   
