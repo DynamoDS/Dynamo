@@ -3150,4 +3150,10 @@ To install the latest version of a package, click Install. \n
   <data name="RunCompletedWithWarningsDismissedMessage" xml:space="preserve">
     <value>Run completed with dismissed warnings.</value>
   </data>
+  <data name="PackageRepositoryLabel" xml:space="preserve">
+    <value>Repository</value>
+  </data>
+  <data name="PackageWebsiteLabel" xml:space="preserve">
+    <value>Website</value>
+  </data>
 </root>
