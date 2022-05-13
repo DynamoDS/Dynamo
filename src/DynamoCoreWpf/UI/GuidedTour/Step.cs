@@ -13,6 +13,7 @@ using Dynamo.Controls;
 using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
@@ -246,7 +247,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 if (GuideUtilities.FindChild((popupWindow).mainPopupGrid, NextButton) is Button nextbuttonFound)
                 {
-                    nextbuttonFound.Focus();
+                    if (popupWindow.TitleLabel.Content.Equals(Resources.PackagesGuideTermsOfServiceTitle))
+                    {
+                        nextbuttonFound.IsEnabled = false;
+                    }
+                    else
+                    {
+                        nextbuttonFound.Focus();
+                    }
                 }
             }
         }

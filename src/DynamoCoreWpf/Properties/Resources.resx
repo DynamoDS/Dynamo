@@ -3087,10 +3087,10 @@ To install the latest version of a package, click Install. \n
     <value>Trust warning</value>
   </data>
   <data name="PreferencesViewTrustWarningLabel" xml:space="preserve">
-    <value>Disable receiving trust warning</value>
+    <value>Disable trust warning</value>
   </data>
   <data name="PreferencesViewTrustWarningTooltipText" xml:space="preserve">
-    <value>We recommend keeping this toggle off to reduce security risks.</value>
+    <value>This applies to Dynamo, Dynamo Player and Generative Design Player. We recommend keeping this toggle off to avoid inadvertently opening a file from an untrusted location.</value>
   </data>
   <data name="SecurityPathAddPathButtonName" xml:space="preserve">
     <value>Add Path</value>
@@ -3130,6 +3130,12 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
     <value>Run the graph</value>
+  </data>
+  <data name="PackageRepositoryLabel" xml:space="preserve">
+    <value>Repository</value>
+  </data>
+  <data name="PackageWebsiteLabel" xml:space="preserve">
+    <value>Website</value>
   </data>
   <data name="OnboardingSuccessText" xml:space="preserve">
     <value>Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in Dynamo Primer.</value>
