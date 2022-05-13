@@ -715,7 +715,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             if (CurrentExecutingStep.UIAutomation == null) return;
 
-            var currentUiAutomation = CurrentExecutingStep.UIAutomation.FirstOrDefault(x => x.Sequence == 3);
+            var currentUiAutomation = CurrentExecutingStep.UIAutomation.FirstOrDefault(x => x.Name.Equals(nameof(ManagePortConnectionEvents)));
             
             if (currentUiAutomation == null) return;
             if (currentUiAutomation.Parameters == null) return;
