@@ -250,7 +250,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Temporarily dismiss all messages on this node. This state is not saved into the graph..
+        ///   Looks up a localized string similar to Temporarily dismiss all messages on this node, this state is not saved into the graph though..
         /// </summary>
         public static string BubbleDismissAllButtonTooltip {
             get {
