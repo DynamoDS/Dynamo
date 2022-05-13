@@ -3132,7 +3132,7 @@ To install the latest version of a package, click Install. \n
     <value>Run the graph</value>
   </data>
   <data name="BubbleDismissAllButtonTooltip" xml:space="preserve">
-    <value>Temporarily dismiss all messages on this node, this state is not saved into the graph though.</value>
+    <value>Temporarily dismiss all warnings of this node.</value>
   </data>
   <data name="RunCompletedWithWarningsDismissedMessage" xml:space="preserve">
     <value>Run completed with dismissed warnings.</value>
