@@ -8,7 +8,6 @@ using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Visualization;
-using DynamoUtilities;
 using ProtoCore.Mirror;
 
 namespace Dynamo.Scheduler
