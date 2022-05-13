@@ -547,6 +547,7 @@
                                         Click="DismissAllWarningsButton_Click"
                                         Content="{x:Static p:Resources.NodeInformationalStateDismissAll}"
                                         Foreground="#0696D7"
+                                        ToolTip="{x:Static p:Resources.BubbleDismissAllButtonTooltip}"
                                         Visibility="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.NodeWarningsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                                 <Button Name="ShowAllWarningsButton"
                                         Margin="0,0,10,0"

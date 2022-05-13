@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using Dynamo.Wpf.ViewModels.Core;
 
 namespace Dynamo.ViewModels
 {
@@ -623,6 +624,7 @@ namespace Dynamo.ViewModels
                 DismissedMessages.Remove(DismissedMessages[i]);
             }
             RefreshNodeInformationalStateDisplay();
+            ValidateWorkspaceRunStatusMsg();
         }
 
 
@@ -985,6 +987,18 @@ namespace Dynamo.ViewModels
             for (int i = 0; i < displayMessages.Count; i++) targetCollection.Add(displayMessages[i]);
         }
         
+        /// <summary>
+        /// Validate and update workspace run status message
+        /// </summary>
+        internal void ValidateWorkspaceRunStatusMsg()
+        {
+            // if current workspace is not a home workspace, skip this step
+            if(DynamoViewModel.CurrentSpaceViewModel.IsHomeSpace)
+            {
+                (DynamoViewModel.CurrentSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
+            }
+        }
+
         /// <summary>
         /// Unsubscribes from any events this class is subscribed to.
         /// </summary>

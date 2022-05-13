@@ -3144,4 +3144,10 @@ To install the latest version of a package, click Install. \n
   <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
     <value>Run the graph</value>
   </data>
+  <data name="BubbleDismissAllButtonTooltip" xml:space="preserve">
+    <value>Temporarily dismiss all messages on this node. This state is not saved into the graph.</value>
+  </data>
+  <data name="RunCompletedWithWarningsDismissedMessage" xml:space="preserve">
+    <value>Run completed with dismissed warnings.</value>
+  </data>
 </root>

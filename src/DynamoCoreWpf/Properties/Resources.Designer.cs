@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -246,6 +246,15 @@ namespace Dynamo.Wpf.Properties {
         public static string BrowserWindowLoading {
             get {
                 return ResourceManager.GetString("BrowserWindowLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Temporarily dismiss all messages on this node. This state is not saved into the graph..
+        /// </summary>
+        public static string BubbleDismissAllButtonTooltip {
+            get {
+                return ResourceManager.GetString("BubbleDismissAllButtonTooltip", resourceCulture);
             }
         }
         
@@ -6981,6 +6990,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RunCompletedWithScaleChangeMessage {
             get {
                 return ResourceManager.GetString("RunCompletedWithScaleChangeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with dismissed warnings..
+        /// </summary>
+        public static string RunCompletedWithWarningsDismissedMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithWarningsDismissedMessage", resourceCulture);
             }
         }
         
