@@ -633,13 +633,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             //Inside the NodeView try to find the ItemsControl that contains Input ports or Output ports
             var itemsControlPort = GuideUtilities.FindChild(byOriginNode, portHighlighted) as ItemsControl;
-            var inPorts = itemsControlPort.Items.Cast<InPortViewModel>().ToList();
+            var inPorts = itemsControlPort.Items.Cast<PortViewModel>().ToList();
             if (itemsControlPort == null) return;
 
             //Once we have the ItemsControl we get the ContentPresenter
-            var itemContainer = itemsControlPort.ItemContainerGenerator.ContainerFromIndex(0);
-            //var itemContainer = inPorts.FirstOrDefault(x => x.PortName == (string)uiAutomationData.Parameters[3]);
-            var mainGrid = itemContainer.ChildOfType<Grid>();
+            var inputViewModel = inPorts.FirstOrDefault(x => x.PortName == (string)uiAutomationData.Parameters[3]);
+            var dependencyObject = itemsControlPort.ItemContainerGenerator.ContainerFromItem(inputViewModel);
+
+
+            Grid mainGrid = dependencyObject.ChildOfType<Grid>();
 
             if (enableFunction)
             {
@@ -648,8 +650,19 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 //The Rectangle will be added dynamically in a specific step and then when passing to next step we will remove it
                 mainGrid.Children.Add(portRectangle);
-                Grid.SetColumn(portRectangle, 0);
-                Grid.SetColumnSpan(portRectangle, 2);
+
+                if(portHighlighted.Contains("input"))
+                {
+                    Grid.SetColumn(portRectangle, 1);
+                    Grid.SetColumnSpan(portRectangle, 7);
+                }
+                else if(portHighlighted.Contains("output"))
+                {
+                    Grid.SetColumn(portRectangle, 0);
+                    Grid.SetColumnSpan(portRectangle, 2);
+                }
+
+                
                 Grid.SetRow(portRectangle, 0);
             }
             else

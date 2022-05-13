@@ -1087,7 +1087,7 @@
 						"Sequence": 1,
 						"ControlType": "function",
 						"Name": "HighlightPort",
-						"Parameters": [ "#EF9362", "outputPortControl" ],
+						"Parameters": [ "#EF9362", "outputPortControl", "", "CoordinateSystem" ],
 						"Action": "execute"
 					},
 					{
