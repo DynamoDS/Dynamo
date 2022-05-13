@@ -948,7 +948,7 @@
 					"VerticalPopupOffset": 300,
 					"HorizontalPopupOffset": 100,
 					"CutOffRectArea": {
-						"NodeId": "558b9ccbc4604f4382571096a84b9a4f",
+						"NodeId": "11c70bfa5ebc4d6c899bad7c0ddc48a0",
 						"XPosOffset": -30,
 						"YPosOffset": -20,
 						"WidthBoxDelta": 0,
@@ -960,7 +960,7 @@
 						"Sequence": 1,
 						"ControlType": "function",
 						"Name": "HighlightPort",
-						"Parameters": [ "#EF9362", "outputPortControl", "558b9ccbc4604f4382571096a84b9a4f" ],
+						"Parameters": [ "#EF9362", "inputPortControl", "11c70bfa5ebc4d6c899bad7c0ddc48a0", "fromCoordinateSystem" ],
 						"Action": "execute"
 					}
 				]

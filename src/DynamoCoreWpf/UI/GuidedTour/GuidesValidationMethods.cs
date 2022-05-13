@@ -15,10 +15,7 @@ using Dynamo.Wpf.Views.GuidedTour;
 using Dynamo.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Windows.Shapes;
-using System.IO;
-using static Dynamo.Models.DynamoModel;
 using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Connectors;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -636,10 +633,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             //Inside the NodeView try to find the ItemsControl that contains Input ports or Output ports
             var itemsControlPort = GuideUtilities.FindChild(byOriginNode, portHighlighted) as ItemsControl;
+            var inPorts = itemsControlPort.Items.Cast<InPortViewModel>().ToList();
             if (itemsControlPort == null) return;
 
             //Once we have the ItemsControl we get the ContentPresenter
             var itemContainer = itemsControlPort.ItemContainerGenerator.ContainerFromIndex(0);
+            //var itemContainer = inPorts.FirstOrDefault(x => x.PortName == (string)uiAutomationData.Parameters[3]);
             var mainGrid = itemContainer.ChildOfType<Grid>();
 
             if (enableFunction)
