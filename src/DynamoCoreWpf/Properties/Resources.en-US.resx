@@ -3144,4 +3144,10 @@ To install the latest version of a package, click Install. \n
   <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
     <value>Run the graph</value>
   </data>
+  <data name="PackageRepositoryLabel" xml:space="preserve">
+    <value>Repository</value>
+  </data>
+  <data name="PackageWebsiteLabel" xml:space="preserve">
+    <value>Website</value>
+  </data>
 </root>
