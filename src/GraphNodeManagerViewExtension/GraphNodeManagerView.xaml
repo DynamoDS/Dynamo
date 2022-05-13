@@ -106,7 +106,7 @@
                   SelectionUnit="FullRow"
                   SelectionMode="Single"
                   ScrollViewer.CanContentScroll="False" 
-                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   CanUserResizeColumns="True" 
                   CanUserSortColumns="True"
@@ -147,12 +147,12 @@
                     FontWeight="Light"
                     Foreground="#F5F5F5"
                     IsReadOnly="True"
-                    Width="2.5*"></DataGridTextColumn>
+                    Width="6*"></DataGridTextColumn>
 
-                <!-- State -->
+                <!-- Type -->
                 <DataGridTemplateColumn
-                    Header="State" 
-                    Width="*"
+                    Header="Type" 
+                    Width="3*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -174,10 +174,10 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!-- Status -->
+                <!-- State -->
                 <DataGridTemplateColumn
-                    Header="Status" 
-                    Width="*"
+                    Header="State" 
+                    Width="4*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -190,6 +190,10 @@
                                        ToolTip="Preview Off"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding StatusIsHidden, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <controls:InfoBubbleControl 
+                                    Margin="3 0" 
+                                    ToolTip="Information"
+                                    Visibility="{Binding State, Converter={StaticResource StateToVisibilityCollapsedConverter}, ConverterParameter=Info}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -198,7 +202,7 @@
                 <!-- Issues -->
                 <DataGridTemplateColumn
                     Header="Issues" 
-                    Width="*"
+                    Width="4*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -231,15 +235,11 @@
                 <!-- Info -->
                 <DataGridTemplateColumn
                     Header="Info" 
-                    Width="*"
+                    Width="Auto"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <controls:InfoBubbleControl 
-                                    Margin="3 0" 
-                                    ToolTip="Information"
-                                    Visibility="{Binding State, Converter={StaticResource StateToVisibilityCollapsedConverter}, ConverterParameter=Info}"/>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/EmptyList.png"
                                        ToolTip="Empty list"
                                        Style="{StaticResource ImageStyle}" 
@@ -255,6 +255,7 @@
 
             </DataGrid.Columns>
 
+            <!-- Expanded Node Info -->
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <Border BorderThickness="3 0 0 0" 

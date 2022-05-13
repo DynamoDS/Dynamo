@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Windows.Data;
 //using System.Windows.Input;
 using Dynamo.Core;
@@ -205,9 +206,10 @@ namespace Dynamo.GraphNodeManager
 
         private void InitializeFilters()
         {
-            FilterItems.Add(new FilterViewModel(this){Name = "Empty List"});
+            FilterItems.Add(new FilterViewModel(this){Name = "Empty list"});
             FilterItems.Add(new FilterViewModel(this){Name = "Error"});
             FilterItems.Add(new FilterViewModel(this){Name = "Frozen"});
+            FilterItems.Add(new FilterViewModel(this){Name = "Missing content"});
             FilterItems.Add(new FilterViewModel(this){Name = "Function"});
             FilterItems.Add(new FilterViewModel(this){Name = "Information"});
             FilterItems.Add(new FilterViewModel(this){Name = "Is Input"});
@@ -342,7 +344,7 @@ namespace Dynamo.GraphNodeManager
             if (!filterDictionary.Any()) return;
 
             // Boolean Toggle Filters
-            if (!nvm.IsEmptyList && filterDictionary["Empty List"].IsFilterOn)
+            if (!nvm.IsEmptyList && filterDictionary["Empty list"].IsFilterOn)
             {
                 e.Accepted = false;
                 return;
@@ -353,6 +355,11 @@ namespace Dynamo.GraphNodeManager
                 return;
             }
             if (!nvm.StatusIsFrozen && filterDictionary["Frozen"].IsFilterOn)
+            {
+                e.Accepted = false;
+                return;
+            }
+            if (!nvm.IsDummyNode && filterDictionary["Missing content"].IsFilterOn)
             {
                 e.Accepted = false;
                 return;
@@ -430,16 +437,27 @@ namespace Dynamo.GraphNodeManager
         {
             IsRecomputeEnabled = true;
 
-            RaisePropertyChanged(nameof(NodesCollection));
             RaisePropertyChanged(nameof(Nodes));
+            RaisePropertyChanged(nameof(NodesCollection));
 
-            NodesCollection.Dispatcher.Invoke(() =>
+            try
             {
-                NodesCollection.SortDescriptions.Clear();
-                
-                if (NodesCollection.View != null)
-                    NodesCollection.View.Refresh();
-            });
+                NodesCollection.Dispatcher.Invoke(() =>
+                {
+                    NodesCollection.SortDescriptions.Clear();
+
+                    if (NodesCollection.View != null)
+                        NodesCollection.View.Refresh();
+                });
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                return;
+            }
+            catch (Exception exception)
+            {
+                return;
+            }
         }
 
         /// <summary>
