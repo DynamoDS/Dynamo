@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using DynamoUtilities;
@@ -19,7 +20,7 @@ namespace Dynamo.Configuration
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings are saved back into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences
+    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences, ILogSource
     {
         private string numberFormat;
         private string lastUpdateDownloadPath;
@@ -783,8 +784,9 @@ namespace Dynamo.Configuration
                 trustedLocations.Add(location);
                 return true;
             }
-            catch 
+            catch(Exception e)
             {
+                OnMessageLogged(LogMessage.Error($"Could not add path {path} to {nameof(TrustedLocations)} due to the following error {e.Message}"));
                 return false;
             }
         }
@@ -869,6 +871,19 @@ namespace Dynamo.Configuration
                 return false;
             }
             
+        }
+        #endregion
+
+        #region ILogSource
+
+        /// <summary>
+        /// Log message event
+        /// </summary>
+        public event Action<ILogMessage> MessageLogged;
+
+        internal void OnMessageLogged(ILogMessage msg)
+        {
+            MessageLogged?.Invoke(msg);
         }
         #endregion
     }
