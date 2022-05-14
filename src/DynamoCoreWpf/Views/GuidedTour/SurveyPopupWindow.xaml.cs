@@ -74,9 +74,16 @@ namespace Dynamo.Wpf.Views.GuidedTour
             IsOpen = false;
             surveyViewModel.Step.OnStepClosed(surveyViewModel.Step.Name, surveyViewModel.Step.StepType);
 
-            if (surveyViewModel.Step.DynamoViewModelStep.ClearHomeWorkspaceInternal())
+            if (nextGuide.Name.Equals(Dynamo.Controls.DynamoView.OnboardingGuideName))
             {
-                surveyViewModel.Step.DynamoViewModelStep.OpenOnboardingGuideFile();
+                if (surveyViewModel.Step.DynamoViewModelStep.ClearHomeWorkspaceInternal())
+                {
+                    surveyViewModel.Step.DynamoViewModelStep.OpenOnboardingGuideFile();
+                    surveyViewModel.Step.GuideManager.LaunchTour(nextGuide.Name);
+                }
+            }
+            else
+            {
                 surveyViewModel.Step.GuideManager.LaunchTour(nextGuide.Name);
             }
 
