@@ -344,7 +344,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     }
                 }
                 Guides.Add(newGuide);
-            }             
+            }
         }
 
         /// <summary>

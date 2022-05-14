@@ -151,8 +151,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Means that we don't have nodes in the Workspace
             if (nodeViewChildren == null || nodeViewChildren.Count() == 0) return null;
 
-            var node = nodeViewChildren.FirstOrDefault(x => x.ViewModel.NodeModel.Name == "Geometry.Transform");
-
             //Get the first CoordinateSystem.ByOrigin node
             var byOriginNode = (from nodeView in nodeViewChildren
                                 where (nodeView.DataContext is NodeViewModel) &&
