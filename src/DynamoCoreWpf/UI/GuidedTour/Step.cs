@@ -13,6 +13,7 @@ using Dynamo.Controls;
 using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
@@ -249,7 +250,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 if (GuideUtilities.FindChild((popupWindow).mainPopupGrid, NextButton) is Button nextbuttonFound)
                 {
-                    nextbuttonFound.Focus();
+                    if (popupWindow.TitleLabel.Content.Equals(Resources.PackagesGuideTermsOfServiceTitle))
+                    {
+                        nextbuttonFound.IsEnabled = false;
+                    }
+                    else
+                    {
+                        nextbuttonFound.Focus();
+                    }
                 }
             }
         }
@@ -393,7 +401,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 HighlightWindowElement(bVisible);
                 StepGuideBackground.ClearHighlightSection();
-            }             
+            }
+
+            //Hit tests is set to false so that the content inside the rectangle can be clicked
+            StepGuideBackground.GuideHighlightRectangle.IsHitTestVisible = false;
         }
 
 
@@ -791,6 +802,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             var converter = new BrushConverter();
             Rectangle menuItemHighlightRec = new Rectangle
             {
+                Focusable = false,                
                 Name = "HighlightRectangle",
                 StrokeThickness = 2,
                 Effect = blur,

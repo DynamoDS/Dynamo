@@ -33,7 +33,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private DynamoViewModel dynamoViewModel;
 
-        private ExitGuideWindow exitGuideWindow;
+        internal ExitGuideWindow exitGuideWindow;
 
         private RealTimeInfoWindow exitTourPopup;
 
