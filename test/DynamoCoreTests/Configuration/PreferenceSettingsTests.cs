@@ -154,5 +154,24 @@ namespace Dynamo.Tests.Configuration
 
             Assert.AreEqual(DynamoModel.BuiltInPackagesToken,token);
         }
+        [Test]
+        [Category("UnitTests")]
+        public void TestSerializationDisableTrustWarnings()
+        {
+            //create new prefs
+            var prefs = new PreferenceSettings();
+            //assert default.
+            Assert.IsFalse(prefs.DisableTrustWarnings);
+            prefs.SetTrustWarningsDisabled(true);
+            Assert.True(prefs.DisableTrustWarnings);
+            //save
+            var tempPath = GetNewFileNameOnTempPath(".xml");
+            prefs.Save(tempPath);
+
+            //load
+            var settingsLoaded = PreferenceSettings.Load(tempPath);
+            Assert.IsTrue(settingsLoaded.DisableTrustWarnings);
+
+        }
     }
 }

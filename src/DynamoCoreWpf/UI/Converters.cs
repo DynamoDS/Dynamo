@@ -358,6 +358,9 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// If the given string is empty, collapsed visibility enum is returned, otherwise visible enum is returned.
+    /// </summary>
     public class EmptyStringToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -369,6 +372,29 @@ namespace Dynamo.Controls
             }
 
             return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// If the given string is empty, hidden visibility enum is returned, otherwise visible enum is returned.
+    /// </summary>
+    public class EmptyStringToHiddenConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is string && !string.IsNullOrEmpty(value as string))
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Hidden;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
