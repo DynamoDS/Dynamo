@@ -27,8 +27,6 @@
     <None Remove="UI\Images\NodeStates\hidden-64px.png" />
     <None Remove="UI\Images\NodeStates\info-64px.png" />
     <None Remove="UI\Images\warning_16px.png" />
-    <None Remove="Views\GuidedTour\HtmlPages\getStartedOnboarding.html" />
-    <None Remove="Views\GuidedTour\HtmlPages\Resources\emptyImage.png" />
     <None Remove="Views\GuidedTour\HtmlPages\nodePackage.html" />
     <None Remove="Views\Menu\TrustedPathView.xaml" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
