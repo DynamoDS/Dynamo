@@ -30,11 +30,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal string Name { get; set; }
 
         /// <summary>
-        /// 
+        /// This property represents the sequence order that the guides will follow
+        /// I.E: 
+        /// 1 - User interface Guide
+        /// 2 - Onboarding guide
         /// </summary>
         [JsonProperty("SequenceOrder")]
         internal int SequenceOrder { get; set; }
 
+        /// <summary>
+        /// This property has the resource key string for the guide
+        /// </summary>
         [JsonProperty("GuideNameResource")]
         internal string GuideNameResource { get; set; }
 
