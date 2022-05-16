@@ -305,11 +305,6 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Default trusted locations. A fixed list of locations (This field should not be serializable or public)
-        /// </summary>
-        private List<string> defaultTrustedLocations { get; set; } = new List<string>();
-
-        /// <summary>
         /// This represents the user modifiable list of locations.
         /// </summary>
         private List<string> trustedLocations { get; set; } = new List<string>();
@@ -382,7 +377,7 @@ namespace Dynamo.Configuration
         /// </summary>
         public List<string> TrustedLocations
         {
-            get => trustedLocations.Union(defaultTrustedLocations).ToList(); //Copy of the internal list
+            get => trustedLocations.ToList(); //Copy of the internal list
         }
 
         /// <summary>
@@ -774,8 +769,7 @@ namespace Dynamo.Configuration
         {
             try
             {
-                if (defaultTrustedLocations.Contains(path) ||
-                    trustedLocations.Contains(path))
+                if (trustedLocations.Contains(path))
                 {
                     return false;
                 }
@@ -798,11 +792,6 @@ namespace Dynamo.Configuration
         /// <returns>The true if the path was removed and false otherwise</returns>
         internal bool RemoveTrustedLocation(string path)
         {
-            if (defaultTrustedLocations.Contains(path))
-            {
-                return false;
-            }
-
             if (trustedLocations.RemoveAll(x => x.Equals(path)) >= 0)
             {
                 return true;
@@ -832,17 +821,6 @@ namespace Dynamo.Configuration
         {
             trustedLocations.Clear();
             trustedLocations.AddRange(locs);
-        }
-
-        /// <summary>
-        /// Set the default trusted locations in the PreferenceSettings configuration without checking if inputs are valid.
-        /// Use this method only in tests.
-        /// </summary>
-        /// <param name="locs"></param>
-        internal void SetDefaultTrustedLocationsUnsafe(IEnumerable<string> locs)
-        {
-            defaultTrustedLocations.Clear();
-            defaultTrustedLocations.AddRange(locs);
         }
 
         internal void SetTrustWarningsDisabled(bool disabled)

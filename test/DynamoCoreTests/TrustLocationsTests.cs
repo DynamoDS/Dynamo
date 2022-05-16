@@ -23,15 +23,13 @@ namespace Dynamo.Tests
                 Path.Combine(TestDirectory, "ShouldNotExist"),
                 ExecutingDirectory
             });
-
-            settings.SetDefaultTrustedLocationsUnsafe(new List<string>() { Path.GetTempPath() });
         }
 
         [Test]
         [Category("UnitTests")]
         public void TestTrustLocationManagerAPIs()
         {
-            Assert.AreEqual(settings.TrustedLocations.Count, 3);
+            Assert.AreEqual(settings.TrustedLocations.Count, 2);
 
             Assert.IsFalse(settings.IsTrustedLocation(".//Test"));
 
@@ -39,7 +37,9 @@ namespace Dynamo.Tests
 
             Assert.IsFalse(settings.IsTrustedLocation(""));
 
-            Assert.IsTrue(settings.IsTrustedLocation(Path.GetTempPath()));
+            Assert.IsFalse(settings.IsTrustedLocation(Path.GetTempPath()));
+
+            Assert.IsTrue(settings.AddTrustedLocation(Path.GetTempPath()));
 
             Assert.IsFalse(settings.IsTrustedLocation(Path.Combine(TestDirectory, ":")));
 
@@ -61,14 +61,14 @@ namespace Dynamo.Tests
             Assert.IsTrue(settings.RemoveTrustedLocation(ExecutingDirectory));
             Assert.AreEqual(3, settings.TrustedLocations.Count);
 
-            Assert.IsFalse(settings.RemoveTrustedLocation(Path.GetTempPath()));
+            Assert.IsTrue(settings.RemoveTrustedLocation(Path.GetTempPath()));
 
             Assert.IsTrue(settings.RemoveTrustedLocation(Path.Combine(TestDirectory, "pkgs")));
-            Assert.AreEqual(2, settings.TrustedLocations.Count);
+            Assert.AreEqual(1, settings.TrustedLocations.Count);
 
             // Test that TrustedLocations (in preferenceSettings) are immutable.
             settings.TrustedLocations.Clear();
-            Assert.AreEqual(2, settings.TrustedLocations.Count);
+            Assert.AreEqual(1, settings.TrustedLocations.Count);
 
             Assert.IsFalse(settings.AddTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd", "pkg.json")));
             Assert.IsFalse(settings.IsTrustedLocation(Path.Combine(TestDirectory, "pkgs", "EvenOdd")));
@@ -79,7 +79,7 @@ namespace Dynamo.Tests
             settings.SetTrustedLocations(new List<string>() { TestDirectory });
 
             Assert.IsTrue(settings.IsTrustedLocation(TestDirectory));
-            Assert.AreEqual(2, settings.TrustedLocations.Count);
+            Assert.AreEqual(1, settings.TrustedLocations.Count);
         }
     }
 }
