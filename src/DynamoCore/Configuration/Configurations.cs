@@ -116,6 +116,11 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly double ZoomIncrement = 0.05;
 
+        /// <summary>
+        /// Global zoom threshold level for node overlay to apply (zoom-in/out behavior) 
+        /// </summary>
+        public static readonly double ZoomThreshold = 0.4;
+
         #endregion
 
         #region Tab Bar Configurations

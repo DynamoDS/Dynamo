@@ -6,6 +6,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.UI.Commands;
+using ProtoCore.Utils;
 
 namespace Dynamo.ViewModels
 {
@@ -19,7 +20,7 @@ namespace Dynamo.ViewModels
 
         private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
 
-        private static SolidColorBrush PortValueMarkerGrey = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+        internal static SolidColorBrush PortValueMarkerGrey = new SolidColorBrush(Color.FromRgb(153, 153, 153));
 
         private bool showContextMenu;
         private bool areConnectorsHidden;
@@ -87,7 +88,7 @@ namespace Dynamo.ViewModels
             get => areConnectorsHidden;
             set
             {
-                areConnectorsHidden = value; 
+                areConnectorsHidden = value;
                 RaisePropertyChanged(nameof(AreConnectorsHidden));
             }
         }
@@ -100,7 +101,7 @@ namespace Dynamo.ViewModels
             get => hideWiresButtonEnabled;
             set
             {
-                hideWiresButtonEnabled = value; 
+                hideWiresButtonEnabled = value;
                 RaisePropertyChanged(nameof(HideWiresButtonEnabled));
             }
         }
@@ -119,7 +120,7 @@ namespace Dynamo.ViewModels
         }
 
 
-        public bool PortDefaultValueMarkerVisible 
+        public bool PortDefaultValueMarkerVisible
         {
             get => portDefaultValueMarkerVisible;
             set
@@ -151,14 +152,27 @@ namespace Dynamo.ViewModels
         public OutPortViewModel(NodeViewModel node, PortModel port) :base(node, port)
         {
             port.PropertyChanged += PortPropertyChanged;
+            node.NodeModel.PropertyChanged += NodeModel_PropertyChanged;
 
             RefreshHideWiresState();
         }
 
         public override void Dispose()
         {
-            port.PropertyChanged -= PortPropertyChanged;
+            port.PropertyChanged -= PortPropertyChanged; 
+            node.NodeModel.PropertyChanged -= NodeModel_PropertyChanged;
+
             base.Dispose();
+        }
+
+        private void NodeModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(node.NodeModel.CachedValue):
+                    RefreshPortColors();
+                    break;
+            }
         }
 
         private void PortPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -228,7 +242,7 @@ namespace Dynamo.ViewModels
                 }
 
                 connectorViewModel.BreakConnectionCommand.Execute(null);
-            }            
+            }
         }
 
         /// <summary>
@@ -294,8 +308,13 @@ namespace Dynamo.ViewModels
         }
 
         protected override void RefreshPortColors()
-        {            
-            if (node.NodeModel.IsPartiallyApplied)
+        {
+            //This variable checks if the node is a function class
+            var isCachedValueNull = node.NodeModel.CachedValue == null || node.NodeModel.CachedValue.Data == null;
+            var isFunctionNode = isCachedValueNull && node.NodeModel.IsPartiallyApplied
+                || !isCachedValueNull && node.NodeModel.CachedValue.IsFunction;
+
+            if (isFunctionNode)
             {
                 PortDefaultValueMarkerVisible = true;
                 portValueMarkerColor = PortValueMarkerGrey;

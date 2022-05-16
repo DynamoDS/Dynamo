@@ -30,6 +30,7 @@ namespace Dynamo.ViewModels
         Large,
         ExtraLarge
     }
+
     public class PreferencesViewModel : ViewModelBase, INotifyPropertyChanged
     {
         #region Private Properties
@@ -372,6 +373,24 @@ namespace Dynamo.ViewModels
             } 
         }
 
+        /// <summary>
+        /// Flag specifying whether trust warnings should be shown
+        /// when opening .dyn files from unstrusted locations.
+        /// </summary>
+        public bool DisableTrustWarnings
+        {
+            get
+            {
+                return preferenceSettings.DisableTrustWarnings;
+            }
+            // We keep this setter private to avoid view extensions calling it directly.
+            // Access modifiers are not intended for security, but it's simple enough to hook a toggle to the UI
+            // without binding, and this makes it clear it's not an API.
+            internal set
+            {
+                preferenceSettings.SetTrustWarningsDisabled(value);
+            }
+        }
         /// <summary>
         /// FontSizesList contains the list of sizes for fonts defined (the ones defined are Small, Medium, Large, Extra Large)
         /// </summary>
@@ -791,6 +810,11 @@ namespace Dynamo.ViewModels
         public PackagePathViewModel PackagePathsViewModel { get; set; }
 
         /// <summary>
+        /// Trusted Paths view model.
+        /// </summary>
+        public TrustedPathViewModel TrustedPathsViewModel { get; set; }
+
+        /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
         /// </summary>
         public PreferencesViewModel(DynamoViewModel dynamoViewModel)
@@ -882,6 +906,7 @@ namespace Dynamo.ViewModels
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
+            TrustedPathsViewModel = new TrustedPathViewModel();
 
             WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
 
@@ -1058,6 +1083,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(ShowCodeBlockLineNumber):
                     description = Res.PreferencesViewShowCodeBlockNodeLineNumber;
+                    goto default;
+                case nameof(DisableTrustWarnings):
+                    description = Res.PreferencesViewTrustWarningHeader;
                     goto default;
                 default:
                     if (!string.IsNullOrEmpty(description))

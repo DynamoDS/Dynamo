@@ -3057,7 +3057,7 @@ To install the latest version of a package, click Install. \n
     <value>Get started with Dynamo</value>
   </data>
   <data name="OnboardingWorkspaceText" xml:space="preserve">
-    <value>This is the workspace, where you develop visual programs and preview the results.\n This graph shows the building blocks of Dynamo:\n Nodes perform operations, such as storing a number or creating geometry\n Wires connect nodes\n Together, nodes and wires form a set of instructions for processing data or building geometry.</value>
+    <value>This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** , which is made up of nodes and wires. Graphs can process data, create geometry, and more. In this guide, we’ll work with a premade sample graph.</value>
   </data>
   <data name="OnboardingWorkspaceTitle" xml:space="preserve">
     <value>Workspace</value>
@@ -3087,10 +3087,10 @@ To install the latest version of a package, click Install. \n
     <value>Trust warning</value>
   </data>
   <data name="PreferencesViewTrustWarningLabel" xml:space="preserve">
-    <value>Disable receiving trust warning</value>
+    <value>Disable trust warning</value>
   </data>
   <data name="PreferencesViewTrustWarningTooltipText" xml:space="preserve">
-    <value>We recommend keeping this toggle off to reduce security risks.</value>
+    <value>This applies to Dynamo, Dynamo Player and Generative Design Player. We recommend keeping this toggle off to avoid inadvertently opening a file from an untrusted location.</value>
   </data>
   <data name="SecurityPathAddPathButtonName" xml:space="preserve">
     <value>Add Path</value>
@@ -3103,5 +3103,44 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="ZoomLevel" xml:space="preserve">
     <value>0.4</value>
+  </data>
+  <data name="OnboardingNodesText" xml:space="preserve">
+    <value>Nodes are the building blocks of graphs. Nodes perform operations, such as storing a number or creating geometry.\n\nYou can learn more about a node by hovering over its parts. This node is missing an input.\n\nHover over the input port to see what types of data it accepts.</value>
+  </data>
+  <data name="OnboardingNodesTitle" xml:space="preserve">
+    <value>Nodes</value>
+  </data>
+  <data name="OnboardingGuideWelcomeText" xml:space="preserve">
+    <value>Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide.</value>
+  </data>
+  <data name="OnboardingPlaceNodeText" xml:space="preserve">
+    <value>This node needs a [xyz] input. You can find a node to use as the input in the library by using search or browsing. The node is x, so you’ll find it under the x category.\n\n Click the node to place it in the workspace.</value>
+  </data>
+  <data name="OnboardingPlaceNodeTitle" xml:space="preserve">
+    <value>Search the library and place a node</value>
+  </data>
+  <data name="OnboardingGuideConnectNodesText" xml:space="preserve">
+    <value>This new node needs to be connected to another to make it part of the graph. Give it a try!</value>
+  </data>
+  <data name="OnboardingGuideConnectNodesTitle" xml:space="preserve">
+    <value>Connect the nodes</value>
+  </data>
+  <data name="OnboardingGuideRunGraphText" xml:space="preserve">
+    <value>Let’s run the graph and see the results of the adjustments you made. Click Run.</value>
+  </data>
+  <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
+    <value>Run the graph</value>
+  </data>
+  <data name="PackageRepositoryLabel" xml:space="preserve">
+    <value>Repository</value>
+  </data>
+  <data name="PackageWebsiteLabel" xml:space="preserve">
+    <value>Website</value>
+  </data>
+  <data name="OnboardingSuccessText" xml:space="preserve">
+    <value>Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in Dynamo Primer.</value>
+  </data>
+  <data name="OnboardingSuccessTitle" xml:space="preserve">
+    <value>Success</value>
   </data>
 </root>

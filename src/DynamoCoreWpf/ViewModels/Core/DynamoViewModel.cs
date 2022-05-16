@@ -1628,6 +1628,12 @@ namespace Dynamo.ViewModels
             this.ShowStartPage = false; // Hide start page if there's one.
         }
 
+        internal void OpenOnboardingGuideFile()
+        {  
+            var jsonDynFile = ResourceUtilities.LoadContentFromResources(GuidesManager.OnboardingGuideWorkspaceEmbeededResource, GetType().Assembly, false, false);
+            OpenFromJson(new Tuple<string, bool>(jsonDynFile, true));
+        }
+
         private bool CanOpen(object parameters)
         {
             var filePath = parameters as string;

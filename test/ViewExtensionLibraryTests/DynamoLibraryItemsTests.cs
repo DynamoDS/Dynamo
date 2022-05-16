@@ -4,12 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using CefSharp;
 using Dynamo;
 using Dynamo.Controls;
-using Dynamo.Interfaces;
-using Dynamo.LibraryUI;
-using Dynamo.LibraryUI.Handlers;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Moq;
@@ -31,7 +27,7 @@ namespace ViewExtensionLibraryTests
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }
-
+        /*
         [Test]
         [Category("UnitTests"), Category("Failure")]
         public void VerifyIconsForLibraryItems()
@@ -123,5 +119,6 @@ namespace ViewExtensionLibraryTests
                 return (LoadedTypeData< LoadedTypeItem>)serializer.Deserialize(sr, typeof(LoadedTypeData<LoadedTypeItem>));
             }
         }
+        */
     }
 }

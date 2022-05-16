@@ -129,6 +129,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 //Bottom Shadow
                 ShadowTooltipDirection = (double)SHADOW_DIRECTION.BOTTOM;
             }
+            else if(direction == PointerDirection.NONE)
+            {
+                pointX1 = 0;
+                pointX2 = 0;
+                pointX3 = 0;
+            }
 
             TooltipPointerPoints = new PointCollection(new[] { new Point(pointX1, pointY1),
                                                                new Point(pointX2, pointY2),

@@ -4405,6 +4405,51 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This new node needs to be connected to another to make it part of the graph. Give it a try!.
+        /// </summary>
+        public static string OnboardingGuideConnectNodesText {
+            get {
+                return ResourceManager.GetString("OnboardingGuideConnectNodesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect the nodes.
+        /// </summary>
+        public static string OnboardingGuideConnectNodesTitle {
+            get {
+                return ResourceManager.GetString("OnboardingGuideConnectNodesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Let’s run the graph and see the results of the adjustments you made. Click Run..
+        /// </summary>
+        public static string OnboardingGuideRunGraphText {
+            get {
+                return ResourceManager.GetString("OnboardingGuideRunGraphText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run the graph.
+        /// </summary>
+        public static string OnboardingGuideRunGraphTitle {
+            get {
+                return ResourceManager.GetString("OnboardingGuideRunGraphTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide..
+        /// </summary>
+        public static string OnboardingGuideWelcomeText {
+            get {
+                return ResourceManager.GetString("OnboardingGuideWelcomeText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Get started with Dynamo.
         /// </summary>
         public static string OnboardingGuideWelcomeTitle {
@@ -4414,7 +4459,61 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This is the workspace, where you develop visual programs and preview the results.\n This graph shows the building blocks of Dynamo:\n Nodes perform operations, such as storing a number or creating geometry\n Wires connect nodes\n Together, nodes and wires form a set of instructions for processing data or building geometry..
+        ///   Looks up a localized string similar to Nodes are the building blocks of graphs. Nodes perform operations, such as storing a number or creating geometry.\n\nYou can learn more about a node by hovering over its parts. This node is missing an input.\n\nHover over the input port to see what types of data it accepts..
+        /// </summary>
+        public static string OnboardingNodesText {
+            get {
+                return ResourceManager.GetString("OnboardingNodesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nodes.
+        /// </summary>
+        public static string OnboardingNodesTitle {
+            get {
+                return ResourceManager.GetString("OnboardingNodesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This node needs a [xyz] input. You can find a node to use as the input in the library by using search or browsing. The node is x, so you’ll find it under the x category.\n\n Click the node to place it in the workspace..
+        /// </summary>
+        public static string OnboardingPlaceNodeText {
+            get {
+                return ResourceManager.GetString("OnboardingPlaceNodeText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search the library and place a node.
+        /// </summary>
+        public static string OnboardingPlaceNodeTitle {
+            get {
+                return ResourceManager.GetString("OnboardingPlaceNodeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in Dynamo Primer..
+        /// </summary>
+        public static string OnboardingSuccessText {
+            get {
+                return ResourceManager.GetString("OnboardingSuccessText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success.
+        /// </summary>
+        public static string OnboardingSuccessTitle {
+            get {
+                return ResourceManager.GetString("OnboardingSuccessTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** , which is made up of nodes and wires. Graphs can process data, create geometry, and more. In this guide, we’ll work with a premade sample graph..
         /// </summary>
         public static string OnboardingWorkspaceText {
             get {
@@ -4971,6 +5070,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagePathViewToolTipUp {
             get {
                 return ResourceManager.GetString("PackagePathViewToolTipUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository.
+        /// </summary>
+        public static string PackageRepositoryLabel {
+            get {
+                return ResourceManager.GetString("PackageRepositoryLabel", resourceCulture);
             }
         }
         
@@ -5775,6 +5883,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Website.
+        /// </summary>
+        public static string PackageWebsiteLabel {
+            get {
+                return ResourceManager.GetString("PackageWebsiteLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Periodic.
         /// </summary>
         public static string Periodic {
@@ -6081,7 +6198,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disable receiving trust warning.
+        ///   Looks up a localized string similar to Disable trust warning.
         /// </summary>
         public static string PreferencesViewTrustWarningLabel {
             get {
@@ -6090,7 +6207,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We recommend keeping this toggle off to reduce security risks..
+        ///   Looks up a localized string similar to This applies to Dynamo, Dynamo Player and Generative Design Player. We recommend keeping this toggle off to avoid inadvertently opening a file from an untrusted location..
         /// </summary>
         public static string PreferencesViewTrustWarningTooltipText {
             get {

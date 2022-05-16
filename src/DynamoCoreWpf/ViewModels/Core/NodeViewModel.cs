@@ -1232,6 +1232,7 @@ namespace Dynamo.ViewModels
         private static SolidColorBrush errorColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#EB5555"));
         // SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeWarningColor"];
         private static SolidColorBrush warningColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FAA21B"));
+        private static SolidColorBrush infoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));
         // SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
         private static SolidColorBrush noPreviewColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
 
@@ -1259,6 +1260,11 @@ namespace Dynamo.ViewModels
                 return warningColor;
             }
 
+            if (NodeModel.State == ElementState.Info)
+            {
+                return infoColor;
+            }
+
             return noPreviewColor;
         }
         /// <summary>
@@ -1270,8 +1276,6 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         internal SolidColorBrush GetBorderColor()
         {
-            // TODO: What defines 'info' state?
-            bool infoState = false;
             SolidColorBrush result = null;
 
             /*
@@ -1301,10 +1305,10 @@ namespace Dynamo.ViewModels
                     ImgGlyphTwoSource = previewGlyph;
                 }
             }
-            if (infoState)
+            if (NodeModel.State == ElementState.Info)
             {
                 result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInfoColor"];
-                if (ImgGlyphTwoSource != null)
+                if (ImgGlyphTwoSource == null)
                 {
                     ImgGlyphTwoSource = infoGlyph;
                 }
@@ -1313,6 +1317,7 @@ namespace Dynamo.ViewModels
                     ImgGlyphThreeSource = infoGlyph;
                 }
             }
+
             if (NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning)
             {
                 result = warningColor;
