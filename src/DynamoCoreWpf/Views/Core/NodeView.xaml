@@ -146,7 +146,7 @@
                                                                                                                 TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                                         <Grid RenderOptions.ClearTypeHint="Enabled">
                                                             <ItemsPresenter x:Name="ItemsPresenter"
-                                                                            Margin="2"
+                                                                            Margin="0"
                                                                             Grid.IsSharedSizeScope="true"
                                                                             KeyboardNavigation.DirectionalNavigation="Cycle"
                                                                             KeyboardNavigation.TabNavigation="Cycle"
