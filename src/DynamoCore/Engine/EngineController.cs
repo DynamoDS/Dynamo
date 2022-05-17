@@ -439,7 +439,10 @@ namespace Dynamo.Engine
                     {
                         if (subtrees[i].GUID == node.GUID)
                         {
-                            subtrees[i].IsInput = true;
+                            subtrees[i] = new Subtree(subtrees[i])
+                            {
+                                IsInput = true
+                            };
                         }
                     }
                 }
