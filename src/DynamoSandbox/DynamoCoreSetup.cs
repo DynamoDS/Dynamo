@@ -13,6 +13,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using System.Linq;
 using Dynamo.DynamoSandbox.Properties;
+using Dynamo.Wpf.Utilities;
 
 namespace DynamoSandbox
 {
@@ -101,10 +102,19 @@ namespace DynamoSandbox
 
                     if (viewModel != null)
                     {
-                        // Show the unhandled exception dialog so user can copy the 
-                        // crash details and report the crash if she chooses to.
-                        viewModel.Model.OnRequestsCrashPrompt(null,
-                            new CrashPromptArgs(e));
+
+
+                        if (CrashReportTool.IsCEREnabled())
+                        {
+                            CrashReportTool.OnCrashReportWindow(new CrashReportArgs(viewModel));
+                        }
+                        else
+                        {
+                            // Show the unhandled exception dialog so user can copy the 
+                            // crash details and report the crash if she chooses to.
+                            viewModel.Model.OnRequestsCrashPrompt(null,
+                                new CrashPromptArgs(e));
+                        }
 
                         // Give user a chance to save (but does not allow cancellation)
                         viewModel.Exit(allowCancel: false);
@@ -138,7 +148,7 @@ namespace DynamoSandbox
 
         private void ASMPreloadFailureHandler(string failureMessage)
         {
-            MessageBox.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBoxService.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         void OnDynamoViewLoaded(object sender, RoutedEventArgs e)

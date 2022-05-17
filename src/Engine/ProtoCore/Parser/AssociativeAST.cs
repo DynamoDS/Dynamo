@@ -716,7 +716,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override string ToString()
         {
-            return LeftNode + "." + RightNode;
+            return LeftNode + "." + RightNode + base.ToString();
         }
 
         public override AstKind Kind
@@ -2764,7 +2764,7 @@ namespace ProtoCore.AST.AssociativeAST
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [Obsolete("The DS language supports 32 bit integers since Dynamo 2.0. This method will be removed in a future version of Dynamo.")]
+        [Obsolete("The DS language supports 64 bit integers since Dynamo 2.0. This method will be removed in a future version of Dynamo.")]
         public static IntNode BuildIntNode(int value)
         {
             return new IntNode(value);

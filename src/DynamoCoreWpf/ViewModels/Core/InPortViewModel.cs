@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.UI;
 using Dynamo.UI.Commands;
+using ProtoCore.Utils;
 
 namespace Dynamo.ViewModels
 {
@@ -18,9 +21,13 @@ namespace Dynamo.ViewModels
         private bool showUseLevelMenu;
 
         private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
+
         private bool portDefaultValueMarkerVisible;
-        private static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-        private static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
+        private bool isFunctionNode;
+
+        internal static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+        internal static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
+        private static SolidColorBrush PortValueMarkerGrey = new SolidColorBrush(Color.FromRgb(153, 153, 153));
 
         private static readonly SolidColorBrush PortBackgroundColorKeepListStructure = new SolidColorBrush(Color.FromRgb(83, 126, 145));
         private static readonly SolidColorBrush PortBorderBrushColorKeepListStructure = new SolidColorBrush(Color.FromRgb(168, 181, 187));
@@ -146,12 +153,26 @@ namespace Dynamo.ViewModels
         public InPortViewModel(NodeViewModel node, PortModel port) : base(node, port)
         {
             port.PropertyChanged += PortPropertyChanged;
+            node.NodeModel.PropertyChanged += NodeModel_PropertyChanged;
+
             RefreshPortDefaultValueMarkerVisible();
+        }
+
+        private void NodeModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(node.NodeModel.CachedValue):
+                    RefreshPortColors();
+                    break;
+            }
         }
 
         public override void Dispose()
         {
             port.PropertyChanged -= PortPropertyChanged;
+            node.NodeModel.PropertyChanged -= NodeModel_PropertyChanged;
+
             base.Dispose();
         }
 
@@ -205,7 +226,7 @@ namespace Dynamo.ViewModels
             var useLevel = (bool)parameter;
             var command = new DynamoModel.UpdateModelValueCommand(
                 Guid.Empty, node.NodeLogic.GUID, "UseLevels", string.Format("{0}:{1}", port.Index, useLevel));
-            
+
             node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
             RaisePropertyChanged(nameof(UseLevelSpinnerVisible));
         }
@@ -227,7 +248,7 @@ namespace Dynamo.ViewModels
             var keepListStructure = (bool)parameter;
             var command = new DynamoModel.UpdateModelValueCommand(
                 Guid.Empty, node.NodeLogic.GUID, "KeepListStructure", string.Format("{0}:{1}", port.Index, keepListStructure));
-            
+
             node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -270,6 +291,48 @@ namespace Dynamo.ViewModels
         /// </summary>
         protected override void RefreshPortColors()
         {
+            //This variable checks if the node is a function class
+            var isCachedValueNull = node.NodeModel.CachedValue == null || node.NodeModel.CachedValue.Data == null;
+            isFunctionNode = isCachedValueNull && node.NodeModel.IsPartiallyApplied
+                || !isCachedValueNull && node.NodeModel.CachedValue.IsFunction;
+
+            if (isFunctionNode)
+            {
+                if (node.NodeModel.AreAllOutputsConnected)
+                {
+                    PortValueMarkerColor = PortValueMarkerGrey;
+                    PortBackgroundColor = PortBackgroundColorDefault;
+                    PortBorderBrushColor = PortBorderBrushColorDefault;
+                }
+                else
+                {
+                    SetupDefaultPortColorValues();
+                }
+            }
+            else
+            {
+                SetupDefaultPortColorValues();
+            }
+        }
+
+        internal void RefreshInputPortsByOutputConnectionChanged(bool isOutputConnected)
+        {
+            if (node.NodeModel.IsPartiallyApplied)
+            {
+                if (isOutputConnected)
+                {
+                    PortValueMarkerColor = PortValueMarkerGrey;
+                }
+                else
+                {
+                    SetupDefaultPortColorValues();
+                }
+            }
+        }
+
+        private void SetupDefaultPortColorValues()
+        {
+            
             // Special case for keeping list structure visual appearance
             if (port.UseLevels && port.KeepListStructure && port.IsConnected)
             {
@@ -278,7 +341,7 @@ namespace Dynamo.ViewModels
                 PortBorderBrushColor = PortBorderBrushColorKeepListStructure;
             }
             // Port has a default value, shows blue marker
-            else if (UsingDefaultValue && DefaultValueEnabled)
+            else if ((UsingDefaultValue && DefaultValueEnabled) || !isFunctionNode)
             {
                 PortValueMarkerColor = PortValueMarkerBlue;
                 PortBackgroundColor = PortBackgroundColorDefault;

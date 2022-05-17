@@ -6,10 +6,11 @@ namespace Dynamo.Wpf.Utilities
 {
     // Wrapper over MessageBox.Show
     // Useful for testing
-    internal class MessageBoxService {
+    public class MessageBoxService {
         internal interface IMessageBox
         {
             MessageBoxResult Show(string msg, string title, MessageBoxButton button, MessageBoxImage img);
+            MessageBoxResult Show(Window owner,string msg, string title, MessageBoxButton button, MessageBoxImage img);
             MessageBoxResult Show(string msg, string title, MessageBoxButton button, IEnumerable<string> buttonNames, MessageBoxImage img);
         }
 
@@ -21,6 +22,12 @@ namespace Dynamo.Wpf.Utilities
             {
                 return DynamoMessageBox.Show(msg, title, button, img);
             }
+
+            public MessageBoxResult Show(Window owner, string msg, string title, MessageBoxButton button, MessageBoxImage img)
+            {
+                return DynamoMessageBox.Show(owner,msg, title, button, img);
+            }
+
             MessageBoxResult IMessageBox.Show(string msg, string title, MessageBoxButton button, IEnumerable<string> buttonNames, MessageBoxImage img)
             {
                 return DynamoMessageBox.Show(msg, title, button,buttonNames, img);
@@ -32,11 +39,15 @@ namespace Dynamo.Wpf.Utilities
         // Use this method to override the internal IMessageBox interface with a mocked implementation.
         internal static void OverrideMessageBoxDuringTests(IMessageBox msgBox) { msg_box = msgBox; }
 
-        internal static MessageBoxResult Show(string msg, string title, MessageBoxButton button, MessageBoxImage img)
+        public static MessageBoxResult Show(string msg, string title, MessageBoxButton button, MessageBoxImage img)
         {
             return (msg_box ?? (msg_box = new DefaultMessageBox())).Show(msg, title, button, img);
         }
-        internal static MessageBoxResult Show(string msg, string title, MessageBoxButton button, IEnumerable<string> buttonNames, MessageBoxImage img)
+        public static MessageBoxResult Show(Window owner,string msg, string title, MessageBoxButton button, MessageBoxImage img)
+        {
+            return (msg_box ?? (msg_box = new DefaultMessageBox())).Show(owner,msg, title, button, img);
+        }
+        public static MessageBoxResult Show(string msg, string title, MessageBoxButton button, IEnumerable<string> buttonNames, MessageBoxImage img)
         {
             return (msg_box ?? (msg_box = new DefaultMessageBox())).Show(msg, title, button, buttonNames, img);
         }

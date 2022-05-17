@@ -25,6 +25,7 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using PythonNodeModels;
+using SharpDX.DXGI;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -357,6 +358,9 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// If the given string is empty, collapsed visibility enum is returned, otherwise visible enum is returned.
+    /// </summary>
     public class EmptyStringToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -368,6 +372,29 @@ namespace Dynamo.Controls
             }
 
             return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// If the given string is empty, hidden visibility enum is returned, otherwise visible enum is returned.
+    /// </summary>
+    public class EmptyStringToHiddenConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is string && !string.IsNullOrEmpty(value as string))
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Hidden;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -1232,6 +1259,31 @@ namespace Dynamo.Controls
         }
     }
 
+    public class NodeAutocompleteWidthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is string && value.ToString().Length > 25)
+            {
+                return 400;
+            }
+
+            if (value is string && value.ToString().Length > 15)
+            {
+                return 350;
+            }
+
+            return 250;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class BoolToFullscreenWatchVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1284,10 +1336,53 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
+    /// Evaluates if the value is null and converts it to Visible or Collapsed state
+    /// </summary>
+    public class EmptyToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value != null)
+                return Visibility.Visible;
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Takes a value and if the value is not null returns Unity Type Auto (*) as a length value
+    /// Returns 0 length if the value is null
+    /// To be used in Grid Column/Row width 
+    /// </summary>
+    public class EmptyToZeroLengthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value != null)
+            {
+                return new GridLength(1, GridUnitType.Auto);
+            }
+            else
+            {
+                return new GridLength(0);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
     /// Used in the Dynamo package manager search window to hide or show a label next to each package's name.
     /// The label only appears if the package has been recently created/updated (in the last 30 days).
     /// Label text is set via the DateToPackageLabelConverter.
-    /// </summary>
+    /// </summary>  
     public class DateToVisibilityCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1550,10 +1645,49 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number <= 0.4)
+            if (number <= Configurations.ZoomThreshold)
                 return false;
 
             return true;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+    
+    public class ZoomToOpacityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            double number = (double)System.Convert.ChangeType(value, typeof(double));
+
+            if (number <= Configurations.ZoomThreshold)
+                return 0.0;
+
+            return 0.5;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Hides (collapses) if the zoom level is larger than the designated value
+    /// </summary>
+    public class ZoomToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            double number = (double)System.Convert.ChangeType(value, typeof(double));
+
+            if (number > Configurations.ZoomThreshold)
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;    
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

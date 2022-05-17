@@ -773,6 +773,34 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void NodeWithInputTypeFromTheFutureShouldNotBreakFileDeserialization()
+        {
+            // When an input node has a type from the future, we don't deserialize that inputData, but 
+            // the node and the rest of graph should still deserialize correctly.
+
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\input_type_from_future.dyn");
+            OpenModel(testFile);
+            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            var selectionNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.ToList().Where(x => x.GUID == Guid.Parse("da7f5c18d72d4f649602197e0aa0d0fa")).FirstOrDefault();
+            //this is still set true as its also serialized on the nodeView and deserialized in the workspaceReadConverter.
+            Assert.AreEqual(selectionNode.IsSetAsInput, true);
+        }
+        [Test]
+        public void NodeWithInputTypeAndType2FromTheFutureShouldNotBreakFileDeserialization()
+        {
+            // When an input node has a type from the future, we don't deserialize that inputData, but 
+            // the node and the rest of graph should still deserialize correctly.
+
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\type1and2_future.dyn");
+            OpenModel(testFile);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            var selectionNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.ToList().Where(x => x.GUID == Guid.Parse("60316051425445ab8728f099bdf6f0d1")).FirstOrDefault();
+            //this is still set true as its also serialized on the nodeView and deserialized in the workspaceReadConverter.
+            Assert.AreEqual(selectionNode.IsSetAsInput, true);
+        }
+
+
+        [Test]
         public void NodeIsSetAsOutputStateDeserilizationTest()
         {
             // The IsSetAsOutput state of the node is saved in node view block. However the property on node model

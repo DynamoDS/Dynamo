@@ -18,6 +18,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
+using DynamoUtilities;
 using Greg.Requests;
 using Microsoft.Practices.Prism.Commands;
 using PythonNodeModels;
@@ -696,6 +697,40 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private bool isWarningEnabled;
+        /// <summary>
+        /// This flag will be in true when the package name is invalid
+        /// </summary>
+        public bool IsWarningEnabled
+        {
+            get
+            {
+                return isWarningEnabled;
+            }
+            set
+            {
+                isWarningEnabled = value;
+                RaisePropertyChanged(nameof(IsWarningEnabled));
+            }
+        }
+
+        private string currentWarningMessage;
+        /// <summary>
+        /// This property will hold the warning message that has to be shown in the warning icon next to the TextBox
+        /// </summary>
+        public string CurrentWarningMessage
+        {
+            get
+            {
+                return currentWarningMessage;
+            }
+            set
+            {
+                currentWarningMessage = value;
+                RaisePropertyChanged(nameof(CurrentWarningMessage));
+            }
+        }
+
         #endregion
 
         internal PublishPackageViewModel()
@@ -770,6 +805,7 @@ namespace Dynamo.PackageManager
         {
             this.dynamoViewModel = dynamoViewModel;
             KnownHosts = initializeHostSelections();
+            isWarningEnabled = false;
         }
 
         private void ClearAllEntries()
@@ -893,6 +929,10 @@ namespace Dynamo.PackageManager
                         }
                 }
             }
+
+            //after dependencies are loaded refresh package contents
+            vm.RefreshPackageContents();
+            vm.UpdateDependencies();
 
             if (assembliesLoadedTwice.Any())
             {
@@ -1303,7 +1343,7 @@ namespace Dynamo.PackageManager
             }
 
             PackageContents.Remove(PackageContents
-                .First(x => x.FileInfo.FullName == packageItemRootViewModel.FileInfo.FullName));
+                .First(x => x.FileInfo?.FullName == packageItemRootViewModel.FileInfo.FullName));
         }
 
         private bool CanShowAddFileDialogAndAdd()
@@ -1505,9 +1545,9 @@ namespace Dynamo.PackageManager
                     }
                     string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
                     UploadState = PackageUploadHandle.State.Error;
-                    DialogResult response = DynamoModel.IsTestMode ? DialogResult.OK : System.Windows.Forms.MessageBox.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    if (response == DialogResult.OK)
+                    if (response == MessageBoxResult.OK)
                     {
                         this.ClearPackageContents();
                         UploadState = PackageUploadHandle.State.Ready;
@@ -1530,9 +1570,9 @@ namespace Dynamo.PackageManager
                 if (UploadState == PackageUploadHandle.State.Uploaded)
                 {
                     // For test mode, presume the dialog input to be No and proceed.
-                    DialogResult dialogResult = DynamoModel.IsTestMode ? DialogResult.No : System.Windows.Forms.MessageBox.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information); ;
+                    MessageBoxResult dialogResult = DynamoModel.IsTestMode ? MessageBoxResult.No : MessageBoxService.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButton.YesNo, MessageBoxImage.Information); ;
 
-                    if (dialogResult == DialogResult.Yes)
+                    if (dialogResult == MessageBoxResult.Yes)
                     { 
                         this.ClearAllEntries();
                         Uploading = false;
@@ -1602,7 +1642,7 @@ namespace Dynamo.PackageManager
                 }
 
                 Package.AddAssemblies(Assemblies);
-
+                Package.LoadState.SetAsLoaded();
                 return files;
             }
             catch (Exception e)
@@ -1610,6 +1650,7 @@ namespace Dynamo.PackageManager
                 UploadState = PackageUploadHandle.State.Error;
                 ErrorString = e.Message;
                 dynamoViewModel.Model.Logger.Log(e);
+                Package?.LoadState.SetAsError(ErrorString);
             }
 
             return new string[] {};
@@ -1723,10 +1764,15 @@ namespace Dynamo.PackageManager
 
         private bool CheckPackageValidity()
         {
-            if (Name.Contains(@"\") || Name.Contains(@"/") || Name.Contains(@"*"))
+            if (!string.IsNullOrEmpty(Name) && Name.IndexOfAny(PathHelper.SpecialAndInvalidCharacters()) >= 0)
             {
-                ErrorString = Resources.PackageNameCannotContainTheseCharacters;
+                ErrorString = Resources.PackageNameCannotContainTheseCharacters + " " + new String(PathHelper.SpecialAndInvalidCharacters());
+                EnableInvalidNameWarningState(ErrorString);
                 return false;
+            }
+            else
+            {
+                IsWarningEnabled = false;
             }
 
             if (Name.Length < 3)
@@ -1777,6 +1823,15 @@ namespace Dynamo.PackageManager
 
             return true;
         }
-    }
 
+        /// <summary>
+        /// This method will enable the warning icon next to the Package Name TextBox
+        /// </summary>
+        /// <param name="warningMessage">Message that will be displayed when the mouse is over the warning</param>
+        internal void EnableInvalidNameWarningState(string warningMessage)
+        {
+            CurrentWarningMessage = warningMessage;
+            IsWarningEnabled = true;
+        }
+    }
 }

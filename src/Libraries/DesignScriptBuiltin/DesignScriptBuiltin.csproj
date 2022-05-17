@@ -10,11 +10,14 @@
     <AssemblyName>DesignScriptBuiltin</AssemblyName>
     <DocumentationFile>$(OutputPath)\$(UICulture)\DesignScriptBuiltin.xml</DocumentationFile>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" >
-      <ExcludeAssets>runtime</ExcludeAssets>
+  <ItemGroup Label="System.Collections.Immutable@portable-net45+win8+wp8+wpa81">
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0">
       <GeneratePathProperty>true</GeneratePathProperty>
+      <IncludeAssets>none</IncludeAssets>
     </PackageReference>
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>$(PkgSystem_Collections_Immutable)\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
@@ -44,10 +47,6 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="CopyImmutable" BeforeTargets="Build">
-    <Copy SourceFiles="$(PkgSystem_Collections_Immutable)\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="$(PkgSystem_Collections_Immutable)\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.xml" DestinationFolder="$(OutputPath)" />
-  </Target>
   <Target Name="GenerateFiles" AfterTargets="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get System.Drawing.dll -->
     <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">

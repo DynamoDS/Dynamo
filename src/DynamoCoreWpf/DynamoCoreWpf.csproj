@@ -13,17 +13,36 @@
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.6925" />
-	<PackageReference Include="Greg" Version="2.1.8012.31283" />
+    <None Remove="UI\Images\Alignment\align_bottom.png" />
+    <None Remove="UI\Images\Alignment\align_left.png" />
+    <None Remove="UI\Images\Alignment\align_right.png" />
+    <None Remove="UI\Images\Alignment\align_top.png" />
+    <None Remove="UI\Images\Alignment\align_x_average.png" />
+    <None Remove="UI\Images\Alignment\align_x_distribute.png" />
+    <None Remove="UI\Images\Alignment\align_y_average.png" />
+    <None Remove="UI\Images\Alignment\align_y_distribute.png" />
+    <None Remove="UI\Images\NodeStates\alert-64px.png" />
+    <None Remove="UI\Images\NodeStates\error-64px.png" />
+    <None Remove="UI\Images\NodeStates\frozen-64px.png" />
+    <None Remove="UI\Images\NodeStates\hidden-64px.png" />
+    <None Remove="UI\Images\NodeStates\info-64px.png" />
+    <None Remove="UI\Images\warning_16px.png" />
+    <None Remove="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <None Remove="Views\Menu\TrustedPathView.xaml" />
+    <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
+  </ItemGroup>
+  <ItemGroup>
+	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
+	<PackageReference Include="Greg" Version="2.1.8122.28281" />
 	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
 	<PackageReference Include="RestSharp" Version="106.12.0" />
-	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" CopyXML="true"/>
+	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" CopyXML="true" />
 	<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
 	<PackageReference Include="HelixToolkit" Version="2.17.0" />
 	<PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
 	<PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
 	<PackageReference Include="SharpDX" Version="4.2.0" />
-	<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" >
+	<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0">
 	  <IncludeAssets>none</IncludeAssets>
 	</PackageReference>
 	<PackageReference Include="SharpDX.Direct2D1" Version="4.2.0">
@@ -114,10 +133,11 @@
     <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
     <Compile Include="UI\GuidedTour\CutOffArea.cs" />
     <Compile Include="UI\GuidedTour\ExitGuide.cs" />
-    <Compile Include="UI\GuidedTour\Guide.cs" />
+	<Compile Include="UI\GuidedTour\Guide.cs" />
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
     <Compile Include="UI\GuidedTour\GuidesValidationMethods.cs" />
+    <Compile Include="UI\GuidedTour\GuideUtilities.cs" />
     <Compile Include="UI\GuidedTour\HightlightArea.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
     <Compile Include="UI\GuidedTour\PreValidation.cs" />
@@ -164,7 +184,9 @@
       <DependentUpon>PresetPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\VisualConfigurations.cs" />
+    <Compile Include="Utilities\CrashReportTool.cs" />
     <Compile Include="Utilities\CrashUtilities.cs" />
+    <Compile Include="Utilities\GroupStyleItemSelector.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\MessageBoxUtilities.cs" />
     <Compile Include="Utilities\NodeContextMenuBuilder.cs" />
@@ -255,6 +277,7 @@
     <Compile Include="ViewModels\GuidedTour\ExitGuideWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
+    <Compile Include="ViewModels\Menu\TrustedPathViewModel.cs" />
     <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
@@ -326,6 +349,7 @@
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\Menu\TrustedPathView.xaml.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
     <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
       <DependentUpon>PackagePathView.xaml</DependentUpon>
@@ -497,6 +521,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Menu\TrustedPathView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Menu\PreferencesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -558,6 +586,8 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -606,7 +636,17 @@
     <None Include="UI\GuidedTour\dynamo_guides.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <EmbeddedResource Include="UI\GuidedTour\DynamoOnboardingGuide_HouseCreationDS.dyn">
+	</EmbeddedResource>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
+    <Resource Include="UI\Images\Alignment\align_bottom.png" />
+    <Resource Include="UI\Images\Alignment\align_left.png" />
+    <Resource Include="UI\Images\Alignment\align_right.png" />
+    <Resource Include="UI\Images\Alignment\align_top.png" />
+    <Resource Include="UI\Images\Alignment\align_x_average.png" />
+    <Resource Include="UI\Images\Alignment\align_x_distribute.png" />
+    <Resource Include="UI\Images\Alignment\align_y_average.png" />
+    <Resource Include="UI\Images\Alignment\align_y_distribute.png" />
     <Resource Include="UI\Images\caret_up.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
     <Resource Include="UI\Images\cursors.psd" />
@@ -740,6 +780,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\closetab_normal.png" />
+    <Resource Include="UI\Images\NodeStates\alert-64px.png" />
+    <Resource Include="UI\Images\NodeStates\error-64px.png" />
+    <Resource Include="UI\Images\NodeStates\frozen-64px.png" />
+    <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
+    <Resource Include="UI\Images\NodeStates\info-64px.png" />
+    <Resource Include="UI\Images\warning_16px.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\whiteclosetab.png" />
@@ -1382,7 +1428,7 @@
     <Resource Include="UI\Images\minimize-default-16px.png" />
     <Resource Include="UI\Images\maximize-hover.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\PackageNodes.gif" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\connectTheNodes.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\installedPackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\successIcon.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\filterIcon.png" />
@@ -1449,11 +1495,15 @@
     <Resource Include="UI\Images\watch_hidden_16_16.png" />
     <Resource Include="UI\Images\alert.png" />
     <Resource Include="UI\Images\menu_16_16.png" />
+    <Resource Include="UI\Images\menu-hover-16px.png" />
     <Resource Include="UI\Images\caret_down.png" />
-    <Resource Include="UI\Images\PackageManager\close_16_16.png" />
-    <Resource Include="UI\Images\PackageManager\down_16_16.png" />
-    <Resource Include="UI\Images\PackageManager\folder_16_16.png" />
-    <Resource Include="UI\Images\PackageManager\up_16_16.png" />
+    <Resource Include="UI\Images\down-hover-16px.png" />
+    <Resource Include="UI\Images\down_16_16.png" />
+    <Resource Include="UI\Images\folder_16_16.png" />
+    <Resource Include="UI\Images\folder-hover-16px.png" />
+    <Resource Include="UI\Images\up_16_16.png" />
+    <Resource Include="UI\Images\up-hover-16px.png" />
+    <Resource Include="UI\Images\link-16px.png" />
     <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1478,7 +1528,6 @@
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
   </ItemGroup>
-  <ItemGroup />
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
   </Target>

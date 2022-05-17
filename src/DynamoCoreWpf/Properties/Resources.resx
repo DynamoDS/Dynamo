@@ -191,7 +191,7 @@
     <comment>Context menu item</comment>
   </data>
   <data name="ContextAddGroupFromSelection" xml:space="preserve">
-    <value>Add To Group</value>
+    <value>Add Node To Group</value>
     <comment>Context menu item</comment>
   </data>
   <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
@@ -1211,19 +1211,19 @@ You will get a chance to save your work.</value>
     <value>Installed Packages</value>
   </data>
   <data name="LacingCrossProductToolTip" xml:space="preserve">
-    <value>For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3}.</value>
+    <value>For two lists [a,b,c][1,2,3] returns [a1,a2,a3][b1,b2,b3][c1,c2,c3].</value>
   </data>
   <data name="LacingDisabledToolTip" xml:space="preserve">
     <value>Argument lacing is disabled for this node.</value>
   </data>
   <data name="LacingFirstToolTip" xml:space="preserve">
-    <value>For two lists {a,b,c}{1,2,3} returns {a1}.</value>
+    <value>For two lists [a,b,c][1,2,3] returns {a1}.</value>
   </data>
   <data name="LacingLongestToolTip" xml:space="preserve">
-    <value>For two lists {a,b,c}{1,2} returns {a1,b2,c2}.</value>
+    <value>For two lists [a,b,c][1,2] returns [a1,b2,c2].</value>
   </data>
   <data name="LacingShortestToolTip" xml:space="preserve">
-    <value>For two lists {a,b,c}{1,2} returns {a1,b2}.</value>
+    <value>For two lists [a,b,c][1,2] returns [a1,b2].</value>
   </data>
   <data name="LibraryViewContextMenuEditNode" xml:space="preserve">
     <value>Edit...</value>
@@ -1280,6 +1280,14 @@ You will get a chance to save your work.</value>
   </data>
   <data name="PackageDetailsPython" xml:space="preserve">
     <value>Python</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsCopyRightHolder" xml:space="preserve">
+    <value>Copyright Holder</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsCopyRightYear" xml:space="preserve">
+    <value>Copyright Year</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
   </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
@@ -1632,7 +1640,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <comment>ErrorString</comment>
   </data>
   <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
-    <value>The name of the package cannot contain /,\, or *.</value>
+    <value>The name of the package cannot contain</value>
     <comment>ErrorString</comment>
   </data>
   <data name="PackageNeedAtLeastOneFile" xml:space="preserve">
@@ -2584,7 +2592,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Render Precision</value>
     <comment>Expander Header Name</comment>
   </data>
-  <data name="PreferencesViewStyleWarning" xml:space="preserve">
+  <data name="PreferencesViewAlreadyExistingStyleWarning" xml:space="preserve">
     <value>Style name already in use</value>
   </data>
   <data name="PreferencesViewVisualSettingsDisplaySettings" xml:space="preserve">
@@ -2708,7 +2716,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Edit Path</value>
   </data>
   <data name="GetStartedGuide" xml:space="preserve">
-    <value>Get Started</value>
+    <value>User Interface Tour</value>
     <comment>Get Started Dynamo Tour</comment>
   </data>
   <data name="InteractiveGuides" xml:space="preserve">
@@ -2758,7 +2766,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Rate this guide</value>
   </data>
   <data name="GetStartedGuideSurveyText" xml:space="preserve">
-    <value>Learn more about Dynamo in the #online help=https://primer.dynamobim.org/</value>
+    <value>Learn more about Dynamo in the #online help=https://primer2.dynamobim.org/</value>
   </data>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
@@ -2767,7 +2775,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>&lt;Double click here to edit group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
-    <value>Add Group to Group</value>
+    <value>Add Group to This Group</value>
   </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this guide later from the Help menu.</value>
@@ -3023,5 +3031,116 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="PackagesGuideInstallAPackageTitle" xml:space="preserve">
     <value>Install a package</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
+    <value>Style Name</value>
+  </data>
+  <data name="PreferencesViewEmptyStyleWarning" xml:space="preserve">
+    <value>Please enter a valid name</value>
+  </data>
+  <data name="GroupStyleContextAnnotation" xml:space="preserve">
+    <value>Group Style</value>
+  </data>
+  <data name="ContextPinToNodeTooltip" xml:space="preserve">
+    <value>Select a node to pin to this note.</value>
+  </data>
+  <data name="GroupStylesCancelButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="GroupStylesSaveButtonText" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="OnboardingGuide" xml:space="preserve">
+    <value>Onboarding</value>
+  </data>
+  <data name="OnboardingGuideWelcomeTitle" xml:space="preserve">
+    <value>Get started with Dynamo</value>
+  </data>
+  <data name="OnboardingWorkspaceText" xml:space="preserve">
+    <value>This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** , which is made up of nodes and wires. Graphs can process data, create geometry, and more. In this guide, we’ll work with a premade sample graph.</value>
+  </data>
+  <data name="OnboardingWorkspaceTitle" xml:space="preserve">
+    <value>Workspace</value>
+  </data>
+  <data name="GetStartedLinkText" xml:space="preserve">
+    <value>Get Started</value>
+  </data>
+  <data name="NextGuideText" xml:space="preserve">
+    <value>Next guide: </value>
+  </data>
+  <data name="GroupContextMenuColor" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="RunCompletedWithErrorsMessage" xml:space="preserve">
+    <value>Run completed with errors.</value>
+  </data>
+  <data name="RunCompletedWithScaleChangeAndErrorsMessage" xml:space="preserve">
+    <value>Run completed with errors on setting new working range.</value>
+  </data>
+  <data name="RunReady" xml:space="preserve">
+    <value>Ready to run.</value>
+  </data>
+  <data name="PreferencesSecuritySettingsTab" xml:space="preserve">
+    <value>Security</value>
+  </data>
+  <data name="PreferencesViewTrustWarningHeader" xml:space="preserve">
+    <value>Trust warning</value>
+  </data>
+  <data name="PreferencesViewTrustWarningLabel" xml:space="preserve">
+    <value>Disable trust warning</value>
+  </data>
+  <data name="PreferencesViewTrustWarningTooltipText" xml:space="preserve">
+    <value>This applies to Dynamo, Dynamo Player and Generative Design Player. We recommend keeping this toggle off to avoid inadvertently opening a file from an untrusted location.</value>
+  </data>
+  <data name="SecurityPathAddPathButtonName" xml:space="preserve">
+    <value>Add Path</value>
+  </data>
+  <data name="SecurityWarningExpanderName" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="TrustedPathsExpanderName" xml:space="preserve">
+    <value>Trusted location</value>
+  </data>
+  <data name="ZoomLevel" xml:space="preserve">
+    <value>0.4</value>
+  </data>
+  <data name="OnboardingNodesText" xml:space="preserve">
+    <value>Nodes are the building blocks of graphs. Nodes perform operations, such as storing a number or creating geometry.\n\nYou can learn more about a node by hovering over its parts. This node is missing an input.\n\nHover over the input port to see what types of data it accepts.</value>
+  </data>
+  <data name="OnboardingNodesTitle" xml:space="preserve">
+    <value>Nodes</value>
+  </data>
+  <data name="OnboardingGuideWelcomeText" xml:space="preserve">
+    <value>Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide.</value>
+  </data>
+  <data name="OnboardingPlaceNodeText" xml:space="preserve">
+    <value>This node needs a [xyz] input. You can find a node to use as the input in the library by using search or browsing. The node is x, so you’ll find it under the x category.\n\n Click the node to place it in the workspace.</value>
+  </data>
+  <data name="OnboardingPlaceNodeTitle" xml:space="preserve">
+    <value>Search the library and place a node</value>
+  </data>
+  <data name="OnboardingGuideConnectNodesText" xml:space="preserve">
+    <value>This new node needs to be connected to another to make it part of the graph. Give it a try!</value>
+  </data>
+  <data name="OnboardingGuideConnectNodesTitle" xml:space="preserve">
+    <value>Connect the nodes</value>
+  </data>
+  <data name="OnboardingGuideRunGraphText" xml:space="preserve">
+    <value>Let’s run the graph and see the results of the adjustments you made. Click Run.</value>
+  </data>
+  <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
+    <value>Run the graph</value>
+  </data>
+  <data name="PackageRepositoryLabel" xml:space="preserve">
+    <value>Repository</value>
+  </data>
+  <data name="PackageWebsiteLabel" xml:space="preserve">
+    <value>Website</value>
+  </data>
+  <data name="OnboardingSuccessText" xml:space="preserve">
+    <value>Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in Dynamo Primer.</value>
+  </data>
+  <data name="OnboardingSuccessTitle" xml:space="preserve">
+    <value>Success</value>
   </data>
 </root>

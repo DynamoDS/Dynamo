@@ -56,17 +56,21 @@
         }
 
         #glow_active {
-            border: 1px;
+            border: 3px;
             background-color: transparent;
             box-shadow: 0px 0px 20px 2px orange;
             transition: box-shadow 2s ease-in-out;
+            border-style: solid;
+            border-color: rgba(239, 147, 98, 0.7);
         }
 
         #glow_inactive {
-            border: 1px;
+            border: 3px;
             background-color: transparent;
             box-shadow: 0px 0px 2px 0px orange;
             transition: box-shadow 2s ease-in-out;
+            border-style: solid;
+            border-color: rgba(239, 147, 98, 0.7);
         }
 
         .overlay {
@@ -77,6 +81,7 @@
             right: 0;
             bottom: 0;
             left: 0;
+            border: 2px;
         }
 
         .hole {
@@ -150,8 +155,9 @@
 
         function replaceImages() {
             var allimages = document.getElementsByTagName("img");
+            for(var j = 0; j < allimages.length; j++){
 
-            allimages.forEach(function (element) {
+                var element = allimages[j];
                 currentImage = element;
                 var src = element.src
                 if (element.orgSrc != null) {
@@ -159,12 +165,11 @@
                 }
                 //the icon is already set - bail.
                 if (src.startsWith("data:image")) {
-                    return;
+                     continue;
                 }
                 //request the icon from the extension.
                 window.external.GetBase64StringFromPath(src);
-               
-            });
+            }
         }
 
         function completeReplaceImages(base64String) {

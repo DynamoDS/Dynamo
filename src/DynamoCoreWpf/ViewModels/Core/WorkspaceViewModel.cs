@@ -899,7 +899,12 @@ namespace Dynamo.ViewModels
 
         internal bool CanNodeToCode(object parameters)
         {
-            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
+            var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>();
+            if (!nodeModels.Any() || nodeModels.Any(x => x.IsInErrorState))
+            {
+                return false;
+            }
+            return true;
         }
 
         internal void SelectInRegion(Rect2D region, bool isCrossSelect)
@@ -912,7 +917,8 @@ namespace Dynamo.ViewModels
 
             foreach (var n in childlessModels)
             {
-                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed)
+                // if target is within selection area but does not belong to a collapsed group
+                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed && !IsModelInCollapsedGroup(n))
                 {
                     selection.AddUnique(n);
                 }
@@ -924,7 +930,8 @@ namespace Dynamo.ViewModels
 
             foreach (var n in Model.Annotations)
             {
-                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed)
+                // if target is within selection area but does not belong to a collapsed group
+                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed && !IsModelInCollapsedGroup(n))
                 {
                     selection.AddUnique(n);
                     // if annotation is selected its children should be added to selection too
@@ -940,12 +947,42 @@ namespace Dynamo.ViewModels
                         selection.AddUnique(m);
                     }
                 }
-                else if (n.IsSelected &&
-                    !Model.Annotations.ContainsModel(n))
+                // only remove current selection if ClearSelectionDisabled flag is false
+                // This prevents group getting removed when user press shift to add more groups
+                else if (n.IsSelected && !Model.Annotations.ContainsModel(n)
+                    && !DynamoSelection.Instance.ClearSelectionDisabled)
                 {
                     selection.Remove(n);
                 }
             }
+        }
+
+        /// <summary>
+        /// Determine if a Dynamo element belongs to a collapsed group or sub group of a collapsed group
+        /// </summary>
+        /// <param name="model">Target node, note, annotation</param>
+        /// <returns></returns>
+        private bool IsModelInCollapsedGroup(ModelBase model)
+        {
+            bool IsInCollapsedGroup = false;
+            // Check all the collapsed groups and their sub groups
+            foreach (var group in Model.Annotations.Where(x => !x.IsExpanded))
+            {
+                if (group.Nodes.Contains(model))
+                {
+                    IsInCollapsedGroup = true;
+                    break;
+                }
+                foreach (var nestGroup in group.Nodes.OfType<AnnotationModel>())
+                {
+                    if (nestGroup.Nodes.Contains(model))
+                    {
+                        IsInCollapsedGroup = true;
+                        break;
+                    }
+                }
+            }
+            return IsInCollapsedGroup;
         }
 
         private static bool IsInRegion(Rect2D region, ILocatable locatable, bool fullyEnclosed)
@@ -1369,7 +1406,7 @@ namespace Dynamo.ViewModels
             OnRequestZoomToFitView(this, zoomArgs);
         }
 
-        private void ResetFitViewToggle(object o)
+        internal void ResetFitViewToggle(object o)
         {
             _fitViewActualZoomToggle = false;
         }

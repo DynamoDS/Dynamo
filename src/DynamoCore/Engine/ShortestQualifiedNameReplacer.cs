@@ -16,11 +16,14 @@ namespace Dynamo.Engine
     /// automatically shortened to partial namespaces so that they can still be resolved uniquely.
     /// E.g., given {"A.B.C.D.E", "X.Y.A.B.E.C.E", "X.Y.A.C.B.E"}, all with the same class E,
     /// their shortest unique names would be: {"D.E", "E.E", "C.B.E"}.
+    /// 
+    /// Also replaces DesignScript.BuiltIn.Get.ValueAtIndex(exp1, exp2) calls to exp1[exp2] expressions.
     /// </summary>
     internal class ShortestQualifiedNameReplacer : AstReplacer
     {
         private readonly ClassTable classTable;
         private readonly ElementResolver resolver;
+        private delegate void SetArrayDimensionsDelegate(ref ArrayNameNode indxExp, AssociativeNode indx);
 
         public ShortestQualifiedNameReplacer(ClassTable classTable, ElementResolver resolver)
         {
@@ -69,11 +72,83 @@ namespace Dynamo.Engine
             return node;
         }
 
+        /// <summary>
+        /// If node is a DesignScript.BuiltIn.Get.ValueAtIndex(exp1, exp2) function call node.
+        /// it is transformed into a node with indexing operator e.g. exp1[exp2].
+        /// </summary>
+        /// <param name="node">input node</param>
+        /// <param name="indexExp">output node</param>
+        /// <returns>true if input expression is of the form DesignScript.BuiltIn.Get.ValueAtIndex(exp1, exp2), false otherwise</returns>
+        private bool TryBuildIndexingExpression(IdentifierListNode node, out ArrayNameNode indexExp)
+        {
+            // If indxExp already has a rank >= 1, we need to append another [] to it with indx.
+            SetArrayDimensionsDelegate setArrayDimensions = (ref ArrayNameNode indxExp, AssociativeNode indx) =>
+            {
+                if (indxExp.ArrayDimensions != null)
+                {
+                    if (indxExp is IdentifierListNode iln)
+                    {
+                        if (iln.RightNode is ArrayNameNode arr)
+                        {
+                            arr.ArrayDimensions = indxExp.ArrayDimensions;
+                        }
+                    }
+                    else indxExp = new IdentifierNode(indxExp.ToString());
+                }
+                indxExp.ArrayDimensions = new ArrayNode(indx, null);
+            };
+
+            indexExp = null;
+            if(node.RightNode is FunctionCallNode fcn)
+            {
+                if(fcn.Function.Name == ProtoCore.AST.Node.BuiltinValueAtIndexMethodName)
+                {
+                    if(node.LeftNode.ToString() == ProtoCore.AST.Node.BuiltinGetValueAtIndexTypeName)
+                    {
+                        var exp1 = fcn.FormalArguments[0];
+                        var exp2 = fcn.FormalArguments[1];
+                        
+                        // exp1 = expression to be indexed.
+                        // Only expressions of ArrayNameNode type can be indexed.
+                        if (exp1 is ArrayNameNode ann)
+                        {
+                            if (exp1 is IdentifierListNode iln1)
+                            {
+                                if (!TryBuildIndexingExpression(iln1, out indexExp))
+                                {
+                                    indexExp = iln1;
+                                }
+                            }
+                            else indexExp = ann;
+
+                            // exp2 = expression that evaluates to an index.
+                            if (exp2 is IdentifierListNode iln2)
+                            {
+                                if (TryBuildIndexingExpression(iln2, out ArrayNameNode index))
+                                {
+                                    setArrayDimensions(ref indexExp, index);
+                                    return true;
+                                }
+                            }
+                            setArrayDimensions(ref indexExp, exp2);
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
 
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
             if (node == null)
                 return null;
+
+            if (TryBuildIndexingExpression(node, out ArrayNameNode indexExp))
+            {
+                if (indexExp is IdentifierListNode iln) node = iln;
+                else return indexExp;
+            }
 
             // First pass attempt to resolve the node class name 
             // and shorten it before traversing it deeper
@@ -93,7 +168,8 @@ namespace Dynamo.Engine
             {
                 LeftNode = newLeftNode,
                 RightNode = rightNode,
-                Optr = Operator.dot
+                Optr = Operator.dot,
+                ArrayDimensions = node.ArrayDimensions
             };
             return node;
         }

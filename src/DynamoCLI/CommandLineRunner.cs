@@ -31,10 +31,11 @@ namespace DynamoCLI
         {
             var evalComplete = false;
 
-            if (!cmdLineArgs.KeepAlive && string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
+            if (string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
             {
                 return null;
             }
+
             if (!(string.IsNullOrEmpty(cmdLineArgs.CommandFilePath)))
             {
                 Console.WriteLine("commandFilePath option is only available when running DynamoSandbox, not DynamoCLI");
@@ -44,31 +45,13 @@ namespace DynamoCLI
             {
                 Console.WriteLine("geometryFilePath option is only available when running DynamoWPFCLI, not DynamoCLI");
             }
+
             model.HostAnalyticsInfo = cmdLineArgs.AnalyticsInfo;
 
             cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
             {
                 ImportAssembly(model, path);
             });
-
-            // KeepAlive mode -- allow loaded extensions to control the process lifetime
-            // and issue commands until the extension calls model.Shutdown().
-            if (cmdLineArgs.KeepAlive)
-            {
-                bool running = true;
-
-                model.ShutdownCompleted += (m) =>
-                {
-                    running = false;
-                };
-
-                while (running)
-                {
-                    Thread.Sleep(3000);
-                }
-
-                return null;
-            }
 
             model.OpenFileFromPath(cmdLineArgs.OpenFilePath, true);
             Console.WriteLine("loaded file");
@@ -110,7 +93,7 @@ namespace DynamoCLI
         /// </summary>
         /// <param name="model"></param>
         /// <param name="path"></param>
-        protected static void ImportAssembly(DynamoModel model, string path)
+        protected internal static void ImportAssembly(DynamoModel model, string path)
         {
             try
             {
@@ -123,7 +106,7 @@ namespace DynamoCLI
                 {
                     Console.WriteLine($"attempting to import assembly {path}");
                     var assembly = System.Reflection.Assembly.LoadFile(path);
-                    model.LoadNodeLibrary(assembly,true);
+                    model.LoadNodeLibrary(assembly, true);
                 }
             }
             catch (Exception e)
@@ -137,7 +120,7 @@ namespace DynamoCLI
             var items = string.Join(",",
                 value.GetElements().Select(x =>
                 {
-                    if(x.IsCollection) return GetStringRepOfCollection(x);
+                    if (x.IsCollection) return GetStringRepOfCollection(x);
                     return x.IsDictionary ? GetStringRepOfDictionary(x.Data) : x.StringData;
                 }));
             return "{" + items + "}";

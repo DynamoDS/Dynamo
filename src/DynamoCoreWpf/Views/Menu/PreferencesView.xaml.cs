@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Logging;
-using Dynamo.Models;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -36,6 +35,7 @@ namespace Dynamo.Wpf.Views
         public PreferencesView(DynamoView dynamoView)
         {
             dynViewModel = dynamoView.DataContext as DynamoViewModel;
+            
             SetupPreferencesViewModel(dynViewModel);
 
             DataContext = dynViewModel.PreferencesViewModel;
@@ -46,6 +46,7 @@ namespace Dynamo.Wpf.Views
                 Categories.Preferences);
 
             Owner = dynamoView;
+            dynViewModel.Owner = this;
             if (DataContext is PreferencesViewModel viewModelTemp)
             {
                 viewModel = viewModelTemp;
@@ -55,6 +56,7 @@ namespace Dynamo.Wpf.Views
 
             //We need to store the ScaleFactor value in a temporary variable always when the Preferences dialog is created.
             scaleValue = dynViewModel.ScaleFactorLog;
+            ResetGroupStyleForm();
         }
 
         /// <summary>
@@ -67,6 +69,7 @@ namespace Dynamo.Wpf.Views
             dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
             dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
             dynamoViewModel.PreferencesViewModel.PackagePathsViewModel?.InitializeRootLocations();
+            dynamoViewModel.PreferencesViewModel.TrustedPathsViewModel?.InitializeTrustedLocations();
 
             // Init package paths for install 
             dynamoViewModel.PreferencesViewModel.InitPackagePathsForInstall();
@@ -100,6 +103,7 @@ namespace Dynamo.Wpf.Views
             managePackageCommandEvent?.Dispose();
             Analytics.TrackEvent(Actions.Close, Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            viewModel.TrustedPathsViewModel?.SaveSettingCommand?.Execute(null);
             viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
 
@@ -155,9 +159,19 @@ namespace Dynamo.Wpf.Views
 
         private void AddStyleButton_Click(object sender, RoutedEventArgs e)
         {
-            AddStyleBorder.Visibility = Visibility.Visible;
-            AddStyleButton.IsEnabled = false;
+            viewModel.IsVisibleAddStyleBorder = true;
+            viewModel.IsEnabledAddStyleButton = false;
             groupNameBox.Focus();
+            Logging.Analytics.TrackEvent(Actions.New, Categories.GroupStyleOperations, nameof(GroupStyleItem));
+        }
+
+        private void ResetGroupStyleForm()
+        {
+            viewModel.CurrentWarningMessage = string.Empty;
+            viewModel.IsWarningEnabled = false;
+            viewModel.IsSaveButtonEnabled = true;
+            viewModel.IsVisibleAddStyleBorder = false;
+            viewModel.IsEnabledAddStyleButton = true;
         }
 
         private void AddStyle_SaveButton_Click(object sender, RoutedEventArgs e)
@@ -171,31 +185,34 @@ namespace Dynamo.Wpf.Views
 
             var colorHexString = grid.FindName("colorHexVal") as Label;
 
-            var newItem = new StyleItem() { GroupName = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString() };
+            var newItem = new StyleItem() { Name = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString() };
 
-            if (string.IsNullOrEmpty(newItem.GroupName))
-                newItem.GroupName = "Input";
+            if (string.IsNullOrEmpty(newItem.Name))
+                newItem.Name = "Input";
 
             //if the validation returns false it means that the new style that will be added doesn't exists
-            if (viewModel.ValidateExistingStyle(newItem) == false)
+            if (string.IsNullOrEmpty(groupNameLabel.Text))
+            {
+                viewModel.EnableGroupStyleWarningState(Res.PreferencesViewEmptyStyleWarning);
+            }
+            //Means that the Style name to be created already exists
+            else if (viewModel.IsStyleNameValid(newItem))
+            {
+                viewModel.EnableGroupStyleWarningState(Res.PreferencesViewAlreadyExistingStyleWarning);
+            }
+            //Means that the Style will be created successfully.
+            else
             {
                 viewModel.AddStyle(newItem);
                 viewModel.ResetAddStyleControl();
-                AddStyleBorder.Visibility = Visibility.Collapsed;
-                AddStyleButton.IsEnabled = true;
-            }
-            else
-            {
-                viewModel.IsWarningEnabled = true;
-            }
-            
+                Logging.Analytics.TrackEvent(Actions.Save, Categories.GroupStyleOperations, nameof(GroupStyleItem));
+            }          
         }
 
         private void AddStyle_CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            AddStyleBorder.Visibility = Visibility.Collapsed;
-            AddStyleButton.IsEnabled = true;
             viewModel.ResetAddStyleControl();
+            Logging.Analytics.TrackEvent(Actions.Cancel, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
         private void RemoveStyle_Click(object sender, RoutedEventArgs e)
@@ -210,6 +227,7 @@ namespace Dynamo.Wpf.Views
 
             //Remove the selected style from the list
             viewModel.RemoveStyleEntry(groupNameLabel.Content.ToString());
+            Logging.Analytics.TrackEvent(Actions.Delete, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
         private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)
@@ -287,6 +305,35 @@ namespace Dynamo.Wpf.Views
             if (e.OriginalSource == e.Source)
             {
                 managePackageCommandEvent?.Dispose();
+            }
+        }
+
+        private void groupNameBox_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            var groupNameTextBox = sender as TextBox;
+            if (groupNameBox == null) return;
+            if (string.IsNullOrEmpty(groupNameBox.Text))
+            {
+                viewModel.IsSaveButtonEnabled = false;
+            }
+            else
+            {
+                viewModel.IsSaveButtonEnabled = true;
+                viewModel.CurrentWarningMessage = string.Empty;
+                viewModel.IsWarningEnabled = false;
+            }
+        }
+
+        private void GroupStylesListBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            GroupStylesListBox.UnselectAll();
+        }
+
+        private void DisableTrustWarningsChecked(object sender, RoutedEventArgs e)
+        {
+            if (viewModel != null)
+            {
+                viewModel.DisableTrustWarnings = (bool)(sender as ToggleButton).IsChecked;
             }
         }
     }

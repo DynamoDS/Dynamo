@@ -16,6 +16,7 @@
     <NoWarn>CS3008, CS3003</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj" />
     <ProjectReference Include="..\..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj" />
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj" />
   </ItemGroup>

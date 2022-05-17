@@ -12,6 +12,7 @@ using System.Windows.Input;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
@@ -186,6 +187,8 @@ namespace Dynamo.ViewModels
 
         #region Properties/Fields
 
+        public PackageManagerSearchView Owner { get; set; }
+
         ObservableCollection<PackageUploadHandle> _uploads = new ObservableCollection<PackageUploadHandle>();
         public ObservableCollection<PackageUploadHandle> Uploads
         {
@@ -298,7 +301,7 @@ namespace Dynamo.ViewModels
                 }
             }
             
-            MessageBox.Show(Resources.MessageSelectSymbolNotFound, 
+            MessageBoxService.Show(Resources.MessageSelectSymbolNotFound, 
                     Resources.SelectionErrorMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Question);
         }
@@ -363,7 +366,7 @@ namespace Dynamo.ViewModels
 
             if (!nodeList.Any())
             {
-                MessageBox.Show(Resources.MessageSelectAtLeastOneNode,
+                MessageBoxService.Show(Resources.MessageSelectAtLeastOneNode,
                    Resources.SelectionErrorMessageBoxTitle,
                    MessageBoxButton.OK, MessageBoxImage.Question);
                 return;
@@ -384,7 +387,7 @@ namespace Dynamo.ViewModels
                         continue;
                     }
                 }
-                MessageBox.Show(Resources.MessageGettingNodeError, 
+                MessageBoxService.Show(Resources.MessageGettingNodeError, 
                     Resources.SelectionErrorMessageBoxTitle, 
                     MessageBoxButton.OK, MessageBoxImage.Question);
             }
@@ -420,10 +423,11 @@ namespace Dynamo.ViewModels
 
                 if (pkg != null)
                 {
-                    var m = Dynamo.Wpf.Utilities.MessageBoxService.Show(String.Format(Resources.MessageSubmitSameNamePackage,
-                            DynamoViewModel.BrandingResourceProvider.ProductName, pkg.Name),
-                            Resources.PackageWarningMessageBoxTitle,
-                            MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    var m = Dynamo.Wpf.Utilities.MessageBoxService.Show(Owner, 
+                        String.Format(Resources.MessageSubmitSameNamePackage,
+                        DynamoViewModel.BrandingResourceProvider.ProductName, pkg.Name),
+                        Resources.PackageWarningMessageBoxTitle,
+                        MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                     if (m == MessageBoxResult.Yes)
                     {
@@ -482,7 +486,7 @@ namespace Dynamo.ViewModels
             }
             catch
             {
-                MessageBox.Show(
+                MessageBoxService.Show(
                     string.Format(Resources.MessagePackageVersionNotFound, packageInfo.Version.ToString(), packageInfo.Name),
                     Resources.PackageDownloadErrorMessageBoxTitle,
                     MessageBoxButton.OK,
@@ -519,7 +523,7 @@ namespace Dynamo.ViewModels
                     {
                         var message = string.Format(Resources.MessageSamePackageSameVersInBuiltinPackages, packageToDownload);
 
-                        MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
+                        MessageBoxService.Show(Owner, message, Resources.CannotDownloadPackageMessageBoxTitle,
                             MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
@@ -527,16 +531,17 @@ namespace Dynamo.ViewModels
                         var message = string.Format(Resources.MessageSamePackageDiffVersInBuiltinPackages, packageToDownload, dupPkg,
                             DynamoViewModel.BrandingResourceProvider.ProductName);
 
-                        MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
+                        MessageBoxService.Show(Owner, message, Resources.CannotDownloadPackageMessageBoxTitle,
                             MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
+                    Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, packageToDownload);
                     return false;// All conflicts with built-in packages must be first resolved manually before continuing to download.
                 }
 
                 if (package.version == duplicatePackage.VersionName)
                 {
                     var message = string.Format(Resources.MessageSamePackageSameVersInLocalPackages, packageToDownload);
-                    MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
+                    MessageBoxService.Show(Owner, message, Resources.CannotDownloadPackageMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Information);
 
                     return false;
@@ -546,7 +551,7 @@ namespace Dynamo.ViewModels
                     MessageBoxResult dialogResult;
 
                     if (duplicatePackage.InUse(DynamoViewModel.Model))
-                    {// Loaded assemblies or pacakge in use in workspace
+                    {// Loaded assemblies or package in use in workspace
                         dialogResult = MessageBoxService.Show(string.Format(Resources.MessageSamePackageDiffVersInLocalPackages, packageToDownload, dupPkg, DynamoViewModel.BrandingResourceProvider.ProductName),
                             Resources.LoadedPackagesConflictMessageBoxTitle,
                             MessageBoxButton.OKCancel, new string[] { Resources.UninstallLoadedPackage, Resources.GenericTaskDialogOptionCancel }, MessageBoxImage.Exclamation);
@@ -609,8 +614,8 @@ namespace Dynamo.ViewModels
                 // Conflicts with builtin packages
                 var message = string.Format(Resources.MessagePackageDepsInBuiltinPackages, packageToDownload,
                         JoinPackageNames(builtinPackages));
-
-                var dialogResult = MessageBoxService.Show(message,
+                Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, packageToDownload);
+                var dialogResult = MessageBoxService.Show(Owner, message,
                     Resources.BuiltInPackageConflictMessageBoxTitle,
                     MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
@@ -623,7 +628,7 @@ namespace Dynamo.ViewModels
                 var message = string.Format(Resources.MessageForceInstallOrUninstallToContinue, packageToDownload, conflictingPkgs,
                     DynamoViewModel.BrandingResourceProvider.ProductName);
                 
-                var dialogResult = MessageBoxService.Show(message,
+                var dialogResult = MessageBoxService.Show(Owner, message,
                     Resources.PackagesInUseConflictMessageBoxTitle,
                     MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
 
@@ -657,7 +662,7 @@ namespace Dynamo.ViewModels
                     DynamoViewModel.BrandingResourceProvider.ProductName,
                     JoinPackageNames(immediateUninstalls), packageToDownload);
 
-                var dialogResult = MessageBoxService.Show(message,
+                var dialogResult = MessageBoxService.Show(Owner, message,
                     Resources.DownloadWarningMessageBoxTitle, MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None)
                 {
@@ -673,7 +678,7 @@ namespace Dynamo.ViewModels
                 String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
                 String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, installPath);
 
-            var result = MessageBoxService.Show(msg,
+            var result = MessageBoxService.Show(Owner, msg,
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
@@ -700,6 +705,7 @@ namespace Dynamo.ViewModels
                     catch
                     {
                         MessageBoxService.Show(
+                            Owner,
                             String.Format(Resources.MessageFailedToDownloadPackageVersion, depVersion, dep._id),
                             Resources.PackageDownloadErrorMessageBoxTitle,
                             MessageBoxButton.OK, MessageBoxImage.Error);
@@ -790,7 +796,8 @@ namespace Dynamo.ViewModels
                 // if any do, notify user and allow cancellation
                 if (containsBinariesOrPythonScripts)
                 {
-                    var res = MessageBoxService.Show(Resources.MessagePackageContainPythonScript,
+                    var res = MessageBoxService.Show(Owner, 
+                        Resources.MessagePackageContainPythonScript,
                         Resources.PackageDownloadMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
@@ -806,7 +813,8 @@ namespace Dynamo.ViewModels
                 // allowing them to cancel the package download
                 if (futureDeps.Any())
                 {
-                    var res = MessageBoxService.Show(string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName),
+                    var res = MessageBoxService.Show(Owner,
+                        string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName),
                         string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Warning);
@@ -918,7 +926,7 @@ namespace Dynamo.ViewModels
                         }
                         catch
                         {
-                            MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage,
+                            MessageBoxService.Show(String.Format(Resources.MessageFailToUninstallPackage,
                                 DynamoViewModel.BrandingResourceProvider.ProductName,
                                 packageDownloadHandle.Name),
                                 Resources.DeleteFailureMessageBoxTitle,
@@ -926,6 +934,7 @@ namespace Dynamo.ViewModels
                         }
                     }
                     SetPackageState(packageDownloadHandle, installPath);
+                    Analytics.TrackEvent(Actions.Installed, Categories.PackageManagerOperations, $"{packageDownloadHandle?.Name}");
                 }
                 catch (Exception e)
                 {

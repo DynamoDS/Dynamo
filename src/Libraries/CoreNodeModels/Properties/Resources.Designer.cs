@@ -665,6 +665,15 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value entered is not in the int64 range..
+        /// </summary>
+        public static string IntegerSliderInfoMessage {
+            get {
+                return ResourceManager.GetString("IntegerSliderInfoMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A slider that produces integer values..
         /// </summary>
         public static string IntegerSliderNodeDescription {
