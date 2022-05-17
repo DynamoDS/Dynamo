@@ -358,6 +358,9 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// If the given string is empty, collapsed visibility enum is returned, otherwise visible enum is returned.
+    /// </summary>
     public class EmptyStringToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -369,6 +372,29 @@ namespace Dynamo.Controls
             }
 
             return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// If the given string is empty, hidden visibility enum is returned, otherwise visible enum is returned.
+    /// </summary>
+    public class EmptyStringToHiddenConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is string && !string.IsNullOrEmpty(value as string))
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Hidden;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -1238,6 +1264,11 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
+            if (value is string && value.ToString().Length > 25)
+            {
+                return 400;
+            }
+
             if (value is string && value.ToString().Length > 15)
             {
                 return 350;
@@ -1614,7 +1645,7 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number <= Double.Parse(Wpf.Properties.Resources.ZoomLevel))
+            if (number <= Configurations.ZoomThreshold)
                 return false;
 
             return true;
@@ -1632,7 +1663,7 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number <= Double.Parse(Wpf.Properties.Resources.ZoomLevel))
+            if (number <= Configurations.ZoomThreshold)
                 return 0.0;
 
             return 0.5;
@@ -1653,7 +1684,7 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number > Double.Parse(Wpf.Properties.Resources.ZoomLevel))
+            if (number > Configurations.ZoomThreshold)
                 return Visibility.Collapsed;
 
             return Visibility.Visible;    

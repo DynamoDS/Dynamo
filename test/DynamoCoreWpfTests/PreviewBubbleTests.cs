@@ -111,7 +111,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
             var watchTree = nodeView.PreviewControl.ChildOfType<WatchTree>();
             Assert.NotNull(watchTree);
-            Assert.AreEqual(new System.Windows.Thickness(5, 5, 5, 5), watchTree.ChildOfType<VirtualizingPanel>().Margin);
+            Assert.AreEqual(new System.Windows.Thickness(5, 0, 5, 5), watchTree.ChildOfType<VirtualizingPanel>().Margin);
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
             var watchTree = nodeView.PreviewControl.ChildOfType<WatchTree>();
             Assert.NotNull(watchTree);
-            Assert.AreEqual(new System.Windows.Thickness(-10, 5, 5, 5), watchTree.ChildOfType<VirtualizingPanel>().Margin);
+            Assert.AreEqual(new System.Windows.Thickness(-5, 0, 0, 0), watchTree.ChildOfType<VirtualizingPanel>().Margin);
         }
 
         [Test]

@@ -98,5 +98,18 @@ namespace DynamoCoreWpfTests
             var paths = ViewModel.PreferencesViewModel.PackagePathsForInstall;
             Assert.False(paths.Contains(@"C:\DoesNotExist\DoesNotExist.DLL"));
         }
+
+        [Test]
+        public void SecurityPrefs_DisableTrustWarnings()
+        {
+            Assert.IsFalse(ViewModel.PreferenceSettings.DisableTrustWarnings);
+            //assert model setter is no-op
+            ViewModel.PreferenceSettings.DisableTrustWarnings = true;
+            Assert.IsFalse(ViewModel.PreferenceSettings.DisableTrustWarnings);
+
+            //assert model set method works
+            ViewModel.PreferenceSettings.SetTrustWarningsDisabled(true);
+            Assert.True(ViewModel.PreferenceSettings.DisableTrustWarnings);
+        }
     }
 }

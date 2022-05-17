@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Dynamo.Utilities;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace Dynamo.Wpf.UI.GuidedTour
@@ -36,7 +37,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This will represent the action that will be executed as part of the UI Automation
         /// </summary>
-        public UIAction Action { get; set; }        
+        public UIAction Action { get; set; }
+
+        /// <summary>
+        /// The list of arguments sent to the function to be executed
+        /// </summary>
+        public List<object> Parameters { get; set; }
 
         /// <summary>
         /// This will be the WPF UI Element in which the Action will be executed
@@ -87,6 +93,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This string contains the element to execute the Automatic Function
         /// </summary>
         public string ElementName { get; set; }
+
+        /// <summary>
+        /// This property is the position of the node that will be placed
+        /// </summary>
+        public Point2D NodePosition { get; set; }
     }
 
     public class AutomaticHandlers

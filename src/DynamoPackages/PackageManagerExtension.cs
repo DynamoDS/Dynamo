@@ -13,7 +13,7 @@ using Greg;
 
 namespace Dynamo.PackageManager
 {
-    public class PackageManagerExtension : IExtension, ILogSource, IExtensionSource
+    public class PackageManagerExtension : IExtension, ILogSource, IExtensionSource 
     {
         #region Fields & Properties
 
@@ -24,7 +24,6 @@ namespace Dynamo.PackageManager
        
         public event Func<string, IExtension> RequestLoadExtension;
         public event Action<IExtension> RequestAddExtension;
-
         public event Action<ILogMessage> MessageLogged;
 
         private IWorkspaceModel currentWorkspace;
@@ -62,6 +61,7 @@ namespace Dynamo.PackageManager
         ///     Dynamo Package Manager Instance.
         /// </summary>
         public PackageManagerClient PackageManagerClient { get; private set; }
+
 
         #endregion
 
