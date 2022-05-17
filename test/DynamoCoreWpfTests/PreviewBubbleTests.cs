@@ -71,7 +71,7 @@ namespace DynamoCoreWpfTests
             Open(@"core\DetailedPreviewMargin_Test.dyn");
             var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
-
+            
             RaiseMouseEnterOnNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsCondensed);
@@ -92,7 +92,7 @@ namespace DynamoCoreWpfTests
             RaiseMouseEnterOnNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
-        }      
+        }
 
         [Test]
         public void PreviewBubble_ListMargin()
@@ -165,16 +165,16 @@ namespace DynamoCoreWpfTests
             this.Model.AddNodeToCurrentWorkspace(code, true);
             this.Run();
             var nodeView = NodeViewWithGuid(code.GUID.ToString());
-
+            
             Assert.IsNotNull(nodeView);
             View.Dispatcher.Invoke(() =>
             {
-                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
+                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) 
                 { RoutedEvent = Mouse.MouseEnterEvent });
                 nodeView.PreviewControl.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
                 { RoutedEvent = Mouse.MouseEnterEvent });
             });
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();            
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
@@ -190,9 +190,9 @@ namespace DynamoCoreWpfTests
             // Click on DragCanvas.
             View.ChildOfType<DragCanvas>().RaiseEvent(
                 new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
-                {
-                    RoutedEvent = Mouse.MouseDownEvent
-                });
+            {
+                RoutedEvent = Mouse.MouseDownEvent
+            });
             var nodeView = NodeViewWithGuid(code.GUID.ToString());
             Assert.IsNotNull(nodeView);
 
