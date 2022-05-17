@@ -302,12 +302,12 @@ namespace DynamoCoreWpfTests
         public void Watch_SingleValueSize()
         {
             OpenAndRun(@"core\WatchTree.dyn");
-
+            
             string watchNodeGuid = "6d19ccc0-0d5e-41e0-a53e-53852a1f428a";
             var singleValueWatchNode = NodeViewWithGuid(watchNodeGuid);
             WatchTree rawSingleValueWatchNode = singleValueWatchNode.ChildOfType<WatchTree>();
 
-            var singleValueWatchNodeModel = GetNode(watchNodeGuid) as NodeModel;
+            var singleValueWatchNodeModel = GetNodeModel(watchNodeGuid);
             string watchNodeValue = singleValueWatchNodeModel.CachedValue.Data.ToString();
 
             // Fire transition on dynamo main ui thread.
@@ -333,7 +333,7 @@ namespace DynamoCoreWpfTests
             var listWatchNode = NodeViewWithGuid(watchNodeGuid);
             WatchTree rawListWatchNode = listWatchNode.ChildOfType<WatchTree>();
 
-            var listWatchNodeModel = GetNode(watchNodeGuid) as NodeModel;
+            var listWatchNodeModel = GetNodeModel(watchNodeGuid);
 
             CodeBlockNodeModel codeBlockNodeModel = (CodeBlockNodeModel)listWatchNodeModel.InputNodes[0].Item2;
             VirtualizingPanel Panel = rawListWatchNode.ChildOfType<VirtualizingPanel>();
@@ -371,7 +371,7 @@ namespace DynamoCoreWpfTests
             var longLineWatchNode = NodeViewWithGuid(watchNodeGuid);
             WatchTree rawLongLinetWatchNode = longLineWatchNode.ChildOfType<WatchTree>();
 
-            var listWatchNodeModel = GetNode(watchNodeGuid) as NodeModel;
+            var listWatchNodeModel = GetNodeModel(watchNodeGuid);
 
             CodeBlockNodeModel codeBlockNodeModel = (CodeBlockNodeModel)listWatchNodeModel.InputNodes[0].Item2;
             VirtualizingPanel Panel = rawLongLinetWatchNode.ChildOfType<VirtualizingPanel>();
@@ -399,10 +399,10 @@ namespace DynamoCoreWpfTests
         {
             OpenAndRun(@"core\WatchTree.dyn");
 
-            string watchNodeColorRange = "a781a6fb-dbe8-4d7e-9ccf-2dfcf56a6ec4";
-            var colorRangeWatchNode = NodeViewWithGuid(watchNodeColorRange);
+            string watchNodeGuid = "a781a6fb-dbe8-4d7e-9ccf-2dfcf56a6ec4";
+            var colorRangeWatchNode = NodeViewWithGuid(watchNodeGuid);
 
-            NodeModel colorRangeWatchNodeModel = GetNode(watchNodeColorRange) as NodeModel;
+            NodeModel colorRangeWatchNodeModel = GetNodeModel(watchNodeGuid);
             string nodeDescription = colorRangeWatchNodeModel.Description;
 
             // Fire transition on dynamo main ui thread.
@@ -870,10 +870,9 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
-        protected ModelBase GetNode(string guid)
-        {
-            Guid id = Guid.Parse(guid);
-            return ViewModel.Model.CurrentWorkspace.GetModelInternal(id);
+        protected NodeModel GetNodeModel(string guid)
+        {            
+            return Model.CurrentWorkspace.Nodes.First(n => n.GUID == Guid.Parse(guid));
         }
     }
 }
