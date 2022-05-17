@@ -321,7 +321,7 @@ namespace Dynamo.Configuration
                 {
                     foreach (XmlNode value in parentNode.ChildNodes)
                     {
-                        if (string.IsNullOrEmpty(value?.InnerText))
+                        if (!string.IsNullOrEmpty(value?.InnerText))
                         {
                             output.Add(value.InnerText);
                         }
