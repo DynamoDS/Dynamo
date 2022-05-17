@@ -152,8 +152,7 @@ namespace Dynamo.Wpf.Utilities
                     {
                         Source = NodeViewModel,
                         Path = new PropertyPath(nameof(NodeViewModel.UngroupCommand))
-                    },
-                    hotkey: "F2"
+                    }
                 )
             );
             groupsMenuItem.Items.Add(CreateMenuItem
