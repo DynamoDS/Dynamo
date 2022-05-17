@@ -2676,6 +2676,24 @@ namespace Dynamo.ViewModels
             OnRequestOpenDocumentationLink((OpenDocumentationLinkEventArgs)parameter);
         }
 
+        internal void ShowNodeDocumentation(object parameter)
+        {
+            var node = DynamoSelection.Instance.Selection.OfType<NodeModel>().LastOrDefault();
+
+            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this);
+            OpenDocumentationLink(nodeAnnotationEventArgs);
+        }
+        internal bool CanShowNodeDocumentation(object parameter)
+        {
+            var node = DynamoSelection.Instance.Selection.OfType<NodeModel>().LastOrDefault();
+
+            if (node == null || !(node is NodeModel))
+            {
+                return false;
+            }
+            return true;
+        }
+
         private bool CanZoomIn(object parameter)
         {
             return CurrentSpaceViewModel.CanZoomIn;
