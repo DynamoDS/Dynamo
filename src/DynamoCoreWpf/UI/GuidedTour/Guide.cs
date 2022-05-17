@@ -4,6 +4,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Dynamo.Controls;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
@@ -25,6 +28,22 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         [JsonProperty("Name")]
         internal string Name { get; set; }
+
+        /// <summary>
+        /// This property represents the workflow of the guides
+        /// I.E: 
+        /// 1 - User interface guide
+        /// 2 - Onboarding guide
+        /// </summary>
+        [JsonProperty("SequenceOrder")]
+        internal int SequenceOrder { get; set; }
+
+        /// <summary>
+        /// This property has the resource key string for the guide
+        /// </summary>
+        [JsonProperty("GuideNameResource")]
+        internal string GuideNameResource { get; set; }
+
 
         /// <summary>
         /// This variable will contain the current step according to the steps flow in the Guide

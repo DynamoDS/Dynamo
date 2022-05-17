@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -157,6 +158,22 @@ namespace Dynamo.Wpf.UI.GuidedTour
                                 select nodeView).FirstOrDefault();
 
             return byOriginNode;
+        }
+
+        internal static List<NodeView> FindNodesOfType(UIElement mainWindow, string nodeType)
+        {
+            var nodeViewChildren = mainWindow.ChildrenOfType<NodeView>();
+
+            //Means that we don't have nodes in the Workspace
+            if (nodeViewChildren == null || nodeViewChildren.Count() == 0) return null;
+
+            //Get all the ByOrigin nodes in the Workspace
+            var nodeViewsByOrigin = (from nodeView in nodeViewChildren
+                             where (nodeView.DataContext is NodeViewModel) &&
+                                   (nodeView.DataContext as NodeViewModel).Name.Equals(nodeType)
+                             select nodeView).ToList();
+
+            return nodeViewsByOrigin;
         }
 
         /// <summary>
