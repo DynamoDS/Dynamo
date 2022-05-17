@@ -379,8 +379,6 @@ namespace Dynamo.Models
         internal static string DefaultPythonEngine { get; private set; }
 
         internal static DynamoUtilities.DynamoFeatureFlagsManager FeatureFlags { get; private set; }
-
-        internal TrustedLocationsManager TrustedLocationsManager => TrustedLocationsManager.Instance;
         #endregion
 
         #region initialization and disposal
@@ -618,7 +616,8 @@ namespace Dynamo.Models
             if (preferences is PreferenceSettings settings)
             {
                 PreferenceSettings = settings;
-                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;             
+                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+                PreferenceSettings.MessageLogged += LogMessage;
             }
 
             if (config is DefaultStartConfiguration defaultStartConfiguration)
@@ -783,8 +782,6 @@ namespace Dynamo.Models
 
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
-
-            TrustedLocationsManager.Initialize(PreferenceSettings);
 
             SearchModel = new NodeSearchModel(Logger);
             SearchModel.ItemProduced +=
@@ -1251,6 +1248,7 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
                 PreferenceSettings.RequestUserDataFolder -= pathManager.GetUserDataFolder;
+                PreferenceSettings.MessageLogged -= LogMessage;
             }
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;

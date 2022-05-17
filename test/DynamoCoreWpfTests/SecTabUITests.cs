@@ -24,13 +24,11 @@ namespace DynamoCoreWpfTests
             trustToggle.IsChecked = true;
             DispatcherUtil.DoEvents();
             Assert.IsTrue(trustToggle.IsChecked.Value);
-            Assert.IsTrue(Model.TrustedLocationsManager.TrustWarningsDisabled);
             Assert.IsTrue(Model.PreferenceSettings.DisableTrustWarnings);
             Assert.IsTrue(ViewModel.PreferencesViewModel.DisableTrustWarnings);
             trustToggle.IsChecked = false;
             DispatcherUtil.DoEvents();
             Assert.IsFalse(trustToggle.IsChecked.Value);
-            Assert.IsFalse(Model.TrustedLocationsManager.TrustWarningsDisabled);
             Assert.IsFalse(Model.PreferenceSettings.DisableTrustWarnings);
             Assert.IsFalse(ViewModel.PreferencesViewModel.DisableTrustWarnings);
 

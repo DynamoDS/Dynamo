@@ -103,6 +103,7 @@ namespace Dynamo.Wpf.Views
             managePackageCommandEvent?.Dispose();
             Analytics.TrackEvent(Actions.Close, Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            viewModel.TrustedPathsViewModel?.SaveSettingCommand?.Execute(null);
             viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
 

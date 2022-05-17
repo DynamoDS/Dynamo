@@ -130,7 +130,8 @@ namespace DynamoUtilities
                     if ((FileSystemRights.Read & rule.FileSystemRights) != FileSystemRights.Read)
                         continue;
 
-                    if (!curentUser.Groups.Contains(rule.IdentityReference))
+                    if (!curentUser.User.Equals(rule.IdentityReference) &&
+                        !curentUser.Groups.Contains(rule.IdentityReference))
                         continue;
                     
                     if (rule.AccessControlType == AccessControlType.Allow)
@@ -296,6 +297,56 @@ namespace DynamoUtilities
         {
             // Excluding white spaces and uncommon characters, only keeping the displayed in the Windows alert
             return System.IO.Path.GetInvalidFileNameChars().Where(x => !char.IsWhiteSpace(x) && (int)x > 31).ToArray();
+        }
+
+        /// <summary>
+        /// Checks is the path is considered valid directory path.
+        /// An exception is thrown if the path is considered invalid.
+        /// A path is considered valid if the following conditions are true:
+        /// 1. Path is not null and not empty.
+        /// 2. Path is an absolute path (not relative).
+        /// 4. Path has valid characters.
+        /// 5. Path exists and points to a folder.
+        /// 6. Dynamo has read permissions to access the path.
+        /// </summary>
+        /// <param name="directoryPath">The directory path that needs to be validated</param>
+        /// <param name="absolutePath"></param>
+        /// <param name="mustExist"></param>
+        /// <param name="read"></param>
+        /// <param name="write"></param>
+        /// <returns>A normalized and validated path</returns>
+        /// <exception cref="ArgumentNullException">Input argument is null or empty.</exception>
+        /// <exception cref="ArgumentException">Input argument is not an absolute path.</exception>
+        /// <exception cref="DirectoryNotFoundException">Path directory does not exist</exception>
+        /// <exception cref="System.Security.SecurityException">Dynamo does not have the required permissions.</exception>
+        internal static string ValidateDirectory(string directoryPath, bool absolutePath = true, bool mustExist = true, bool read = true, bool write = false)
+        {
+            if (string.IsNullOrWhiteSpace(directoryPath))
+            {
+                throw new ArgumentNullException($"The input argument is null or empty.");
+            }
+
+            if (absolutePath && !Path.GetFullPath(directoryPath).Equals(directoryPath))
+            {
+                throw new ArgumentException($"The input path {directoryPath} must be an absolute path");
+            }
+
+            if (mustExist && !Directory.Exists(directoryPath))
+            {
+                throw new DirectoryNotFoundException($"The input path: {directoryPath} does not exist or is not a folder");
+            }
+
+            if (read && !PathHelper.HasReadPermissionOnDir(directoryPath))
+            {
+                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {directoryPath}");
+            }
+
+            if (write && !PathHelper.HasWritePermissionOnDir(directoryPath))
+            {
+                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {directoryPath}");
+            }
+
+            return directoryPath;
         }
     }
 }
