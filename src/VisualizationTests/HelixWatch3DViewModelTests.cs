@@ -1276,6 +1276,28 @@ namespace WpfVisualizationTests
             Assert.AreEqual(6 * 6 * 6, BackgroundPreviewGeometry.TotalLineInstancesToRender());
 
         }
+        [Test]
+        [Category("Failure")]
+        public void InstancedMeshesAndLinesAreAddedToBackGroundPreviewForEachMatrixWhenShowEdgesEnabled()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            OpenVisualizationTest("instancing_cubes_cones_edges.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(0, BackgroundPreviewGeometry.NumberOfVisibleCurves());
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
+            //this graph displays a grid, cones, cone edges, cube instances, cube edge instances.
+            Assert.AreEqual(3, BackgroundPreviewGeometry.NumberOfVisibleCurves());
+            //cone and mesh
+            Assert.AreEqual(2, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
+            
+           // cube instance edges
+            Assert.AreEqual(5 * 5 * 5, BackgroundPreviewGeometry.TotalLineInstancesToRender());
+            // cube instance meshes
+            Assert.AreEqual(5 * 5 * 5, BackgroundPreviewGeometry.TotalMeshInstancesToRender());
+
+        }
     }
 
     internal static class GeometryDictionaryExtensions

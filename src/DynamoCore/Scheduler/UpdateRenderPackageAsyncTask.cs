@@ -220,22 +220,41 @@ namespace Dynamo.Scheduler
                 var previousMeshVertexCount = package.MeshVertexCount;
 
                 //Todo Plane tessellation needs to be handled here vs in LibG currently
+                bool instancingEnabled = DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("graphics-primitive-instancing", false);
                 if (graphicItem is Plane plane)
                 {
                     CreatePlaneTessellation(package, plane);
                 }
                 else if (graphicItem is IInstanceableGraphicItem instanceableItem &&
                     instanceableItem.InstanceInfoAvailable 
-                    && package is IInstancingRenderPackage instancingPackage
-                    && DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("graphics-primitive-instancing",false))
+                    && packageWithInstances != null
+                    && instancingEnabled)
                 {
+                    //if we have not generated the base tessellation for this type yet, generate it
                     if (!packageWithInstances.ContainsTessellationId(instanceableItem.BaseTessellationGuid))
                   
                     {
-                        instanceableItem.AddBaseTessellation(instancingPackage, factory.TessellationParameters);
+                        instanceableItem.AddBaseTessellation(packageWithInstances, factory.TessellationParameters);
+                        var prevLineIndex = package.LineVertexCount;
+                        //if edges is on, then also add edges to base tessellation.
+                        if (factory.TessellationParameters.ShowEdges)
+                        {
+                            if (graphicItem is Topology topology)
+                            {
+                                var edges = topology.Edges;
+                                foreach (var geom in edges.Select(edge => edge.CurveGeometry))
+                                {
+                                    geom.Tessellate(package, factory.TessellationParameters);
+                                    geom.Dispose();
+                                }
+
+                                edges.ForEach(x => x.Dispose());
+                                packageWithInstances.AddInstanceGuidForLineVertexRange(prevLineIndex, package.LineVertexCount - 1, instanceableItem.BaseTessellationGuid);
+                            }
+                        }
                     }
 
-                    instanceableItem.AddInstance(instancingPackage, factory.TessellationParameters, labelKey);
+                    instanceableItem.AddInstance(packageWithInstances, factory.TessellationParameters, labelKey);
 
                     return;
                 }
