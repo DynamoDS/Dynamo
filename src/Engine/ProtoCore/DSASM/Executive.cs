@@ -82,10 +82,7 @@ namespace ProtoCore.DSASM
 
         internal void DeleteUpdateRegister(long astID)
         {
-            if(updateRegisters.ContainsKey(astID))
-            {
-                updateRegisters.Remove(astID);
-            }
+            updateRegisters.Remove(astID);
         }
 
         public Executive(RuntimeCore runtimeCore, bool isFep = false)

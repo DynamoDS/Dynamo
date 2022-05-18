@@ -18,7 +18,7 @@ namespace ProtoScript.Runners
     /// <summary>
     /// A subtree represents a node in graph. It contains a list of AST node.
     /// </summary>
-    public struct Subtree
+    public class Subtree
     {
         /// <summary>
         /// The GUID of corresponding UI node.
@@ -48,16 +48,6 @@ namespace ProtoScript.Runners
             DeltaComputation = true;
             ModifiedAstNodes = new List<AssociativeNode>();
             IsInput = false;
-        }
-
-        internal Subtree(Subtree other)
-        {
-            GUID = other.GUID;
-            AstNodes = other.AstNodes;
-            ForceExecution = other.ForceExecution;
-            DeltaComputation = other.DeltaComputation;
-            ModifiedAstNodes = other.ModifiedAstNodes;
-            IsInput = other.IsInput;
         }
 
         public override string ToString()
