@@ -294,7 +294,7 @@
                                                                Foreground="{StaticResource MidGrayBrush}"
                                                                FontSize="11">
                                                     <TextBlock.Text>
-                                                        <MultiBinding StringFormat="{}{0} {1}">
+                                                        <MultiBinding StringFormat="{}{0} {1}" >
                                                             <Binding Path="Index" />
                                                             <Binding Path="Message" />
                                                         </MultiBinding>
