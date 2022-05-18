@@ -80,6 +80,14 @@ namespace ProtoCore.DSASM
             else updateRegisters.Add(astID, sv);
         }
 
+        internal void DeleteUpdateRegister(long astID)
+        {
+            if(updateRegisters.ContainsKey(astID))
+            {
+                updateRegisters.Remove(astID);
+            }
+        }
+
         public Executive(RuntimeCore runtimeCore, bool isFep = false)
         {
             IsExplicitCall = false;

@@ -228,6 +228,7 @@ namespace ProtoScript.Runners
         {
             DeactivateGraphnodes(changeSet.DeletedBinaryExprASTNodes);
             ReActivateGraphNodesInCycle(changeSet.DeletedBinaryExprASTNodes);
+            RemoveValuesForDeletedNodes(changeSet.DeletedBinaryExprASTNodes);
             UndefineFunctions(changeSet.DeletedFunctionDefASTNodes);
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(runtimeCore, changeSet.DeletedFunctionDefASTNodes);
         }
@@ -354,6 +355,15 @@ namespace ProtoScript.Runners
             var startPC = gnode.updateBlock.startpc;
             Validity.Assert(startPC != Constants.kInvalidIndex);
             runtimeCore.SetStartPC(startPC);
+        }
+
+        private void RemoveValuesForDeletedNodes(List<AssociativeNode> deletedNodes)
+        {
+            var bNodes = deletedNodes.OfType<BinaryExpressionNode>();
+            foreach (var node in bNodes)
+            {
+                runtimeCore.ExecutionInstance.CurrentDSASMExec.DeleteUpdateRegister(node.OriginalAstID);
+            }
         }
 
         /// <summary>
