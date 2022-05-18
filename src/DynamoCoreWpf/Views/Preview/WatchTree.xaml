@@ -313,7 +313,7 @@
                                     <DataTrigger Binding="{Binding IsOneRowContent}" Value="False">
                                         <Setter Property="Margin" Value="5,0,5,5" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsCollection}" Value="false">
+                                    <DataTrigger Binding="{Binding IsCollection}" Value="False">
                                         <Setter Property="Margin" Value="-5,0,0,0" />
                                     </DataTrigger>
                                 </Style.Triggers>
