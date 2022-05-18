@@ -428,19 +428,30 @@ namespace Dynamo.Engine
                 }
             }
 
-            var subtrees = new List<Subtree>();
-            subtrees.AddRange(graphSyncdata.AddedSubtrees);
-            subtrees.AddRange(graphSyncdata.ModifiedSubtrees);
             foreach (var node in nodes)
             {
-                if (node.IsInputNode)
+                if (!node.IsInputNode) continue;
+                
+                for (int i = 0; i < graphSyncdata.AddedSubtrees.Count; i++)
                 {
-                    for (int i = 0; i < subtrees.Count; i++)
+                    if (graphSyncdata.AddedSubtrees[i].GUID == node.GUID)
                     {
-                        if (subtrees[i].GUID == node.GUID)
+                        graphSyncdata.AddedSubtrees[i] = new Subtree(graphSyncdata.AddedSubtrees[i])
                         {
-                            subtrees[i].IsInput = true;
-                        }
+                            IsInput = true
+                        };
+                        break;
+                    }
+                }
+                for (int i = 0; i < graphSyncdata.ModifiedSubtrees.Count; i++)
+                {
+                    if (graphSyncdata.ModifiedSubtrees[i].GUID == node.GUID)
+                    {
+                        graphSyncdata.ModifiedSubtrees[i] = new Subtree(graphSyncdata.ModifiedSubtrees[i])
+                        {
+                            IsInput = true
+                        };
+                        break;
                     }
                 }
             }

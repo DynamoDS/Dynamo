@@ -9,5 +9,6 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCulture("")]
 [assembly: Guid("B352654C-51C9-490B-A5E1-F5F65E866F63")]
 [assembly: InternalsVisibleTo("DynamoCore")]
+[assembly: InternalsVisibleTo("ProtoTest")]
 // [assembly: InternalsVisibleTo("ProtoTest,PublicKey=59290779bfb1c866")]
 // [assembly: AssemblyKeyFile("ProtoScript.snk")]
