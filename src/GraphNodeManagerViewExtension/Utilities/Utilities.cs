@@ -21,8 +21,7 @@ namespace Dynamo.GraphNodeManager.Utilities
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
                 Stream myStream;
-
-                saveFileDialog.InitialDirectory = "c:\\";
+                
                 saveFileDialog.Filter = "csv files (*.csv)|*.json|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 2;
                 saveFileDialog.Title = "Save CSV file";
@@ -52,8 +51,7 @@ namespace Dynamo.GraphNodeManager.Utilities
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
                 Stream myStream;
-
-                saveFileDialog.InitialDirectory = "c:\\";
+                
                 saveFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 2;
                 saveFileDialog.Title = "Save JSON file";

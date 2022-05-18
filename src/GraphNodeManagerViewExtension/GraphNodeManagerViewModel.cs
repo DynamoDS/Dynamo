@@ -268,6 +268,7 @@ namespace Dynamo.GraphNodeManager
             }
             RaisePropertyChanged(nameof(NodesCollection));
         }
+
         /// <summary>
         /// Zoom around the currently selected Node
         /// </summary>
@@ -283,11 +284,8 @@ namespace Dynamo.GraphNodeManager
 
             // Focus on selected
             viewModelCommandExecutive.FindByIdCommand(nodeViewModel.NodeModel.GUID.ToString());
-
-            // Deselect how? TODO Find a way to deselect as it causes some issues when running (performs zoom)
-            // Cannot access DynamoSelection class here, it's internal
-            //DynamoSelection.Instance.ClearSelection(); 
         }
+
         /// <summary>
         /// Switches off all filters
         /// </summary>
@@ -303,6 +301,7 @@ namespace Dynamo.GraphNodeManager
             // Refresh the view 
             NodesCollectionFilter_Changed();
         }
+
         /// <summary>
         /// Export the current graph to CSV or JSON
         /// </summary>
@@ -323,6 +322,7 @@ namespace Dynamo.GraphNodeManager
                     break;
             }
         }
+
         /// <summary>
         /// On changing a condition that affects the filter
         /// </summary>
