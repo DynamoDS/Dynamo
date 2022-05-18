@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Windows.Data;
 //using System.Windows.Input;
 using Dynamo.Core;
@@ -13,7 +12,6 @@ using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Extensions;
 using Dynamo.PackageManager;
-using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.Commands;

@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.GraphNodeManager.ViewModels;
-using Dynamo.Utilities;
 
 namespace Dynamo.GraphNodeManager
 {

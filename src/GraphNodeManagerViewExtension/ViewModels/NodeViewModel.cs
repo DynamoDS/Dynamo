@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
-using ProtoCore.AST;
 using ProtoCore.Mirror;
 
 namespace Dynamo.GraphNodeManager.ViewModels

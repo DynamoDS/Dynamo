@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
-using Dynamo.GraphNodeManager.ViewModels;
 using Dynamo.UI;
-using NUnit.Framework;
 
 namespace Dynamo.GraphNodeManager.Converters
 {
