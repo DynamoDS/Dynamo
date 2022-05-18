@@ -239,6 +239,7 @@ namespace Dynamo.Scheduler
                         //if edges is on, then also add edges to base tessellation.
                         if (factory.TessellationParameters.ShowEdges)
                         {
+                            //TODO if we start to instance more types, expand this edge generation.
                             if (graphicItem is Topology topology)
                             {
                                 var edges = topology.Edges;
