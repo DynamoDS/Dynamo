@@ -6,6 +6,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
+using Dynamo.Models;
 using Dynamo.Visualization;
 using ProtoCore.Mirror;
 
@@ -210,6 +211,7 @@ namespace Dynamo.Scheduler
         private void GetTessellationDataFromGraphicItem(Guid outputPortId, IGraphicItem graphicItem, string labelKey, ref IRenderPackage package)
         {
             var packageWithTransform = package as ITransformable;
+            var packageWithInstances = package as IInstancingRenderPackage;
 
             try
             {
@@ -218,9 +220,44 @@ namespace Dynamo.Scheduler
                 var previousMeshVertexCount = package.MeshVertexCount;
 
                 //Todo Plane tessellation needs to be handled here vs in LibG currently
+                bool instancingEnabled = DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("graphics-primitive-instancing", false);
                 if (graphicItem is Plane plane)
                 {
                     CreatePlaneTessellation(package, plane);
+                }
+                else if (graphicItem is IInstanceableGraphicItem instanceableItem &&
+                    instanceableItem.InstanceInfoAvailable 
+                    && packageWithInstances != null
+                    && instancingEnabled)
+                {
+                    //if we have not generated the base tessellation for this type yet, generate it
+                    if (!packageWithInstances.ContainsTessellationId(instanceableItem.BaseTessellationGuid))
+                  
+                    {
+                        instanceableItem.AddBaseTessellation(packageWithInstances, factory.TessellationParameters);
+                        var prevLineIndex = package.LineVertexCount;
+                        //if edges is on, then also add edges to base tessellation.
+                        if (factory.TessellationParameters.ShowEdges)
+                        {
+                            //TODO if we start to instance more types, expand this edge generation.
+                            if (graphicItem is Topology topology)
+                            {
+                                var edges = topology.Edges;
+                                foreach (var geom in edges.Select(edge => edge.CurveGeometry))
+                                {
+                                    geom.Tessellate(package, factory.TessellationParameters);
+                                    geom.Dispose();
+                                }
+
+                                edges.ForEach(x => x.Dispose());
+                                packageWithInstances.AddInstanceGuidForLineVertexRange(prevLineIndex, package.LineVertexCount - 1, instanceableItem.BaseTessellationGuid);
+                            }
+                        }
+                    }
+
+                    instanceableItem.AddInstance(packageWithInstances, factory.TessellationParameters, labelKey);
+
+                    return;
                 }
                 else
                 {

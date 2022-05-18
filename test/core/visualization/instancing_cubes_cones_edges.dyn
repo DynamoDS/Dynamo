@@ -1,0 +1,316 @@
+{
+  "Uuid": "9efa7484-d303-4c24-81f2-0cf775d59c0a",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "instancing_cubes_cones_edges",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Autodesk.Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Autodesk.DesignScript.Geometry.Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cuboid.ByLengths@Autodesk.DesignScript.Geometry.Point,double,double,double",
+      "Id": "6478787711bc4df5acac49307229215b",
+      "Inputs": [
+        {
+          "Id": "4d8d33b6f377435aaa6a59ab43140e3a",
+          "Name": "origin",
+          "Description": "Origin point\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8590e9444a98497f92e3e860e6666fe1",
+          "Name": "width",
+          "Description": "Width of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "025fe5b287e54fd7a030ef5c98b2bbf4",
+          "Name": "length",
+          "Description": "Length of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "41841f0187734c64ac79bf2475d71a22",
+          "Name": "height",
+          "Description": "Height of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f37069fd4d5e4c43a65a10ea5c1ba271",
+          "Name": "Cuboid",
+          "Description": "Cuboid created by lengths",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Cuboid centered at input Point, with specified width, length, and height.\n\nCuboid.ByLengths (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), width: double = 1, length: double = 1, height: double = 1): Cuboid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "33227cb51adb42ecb3b11c345aa9d1f8",
+      "Inputs": [
+        {
+          "Id": "eb7147a99785420a9ddbc852e57b1577",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "568f2bb845f74077aa2cbdbb3497a296",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bd15cfa7c44542aea1ca7dd4a63fe557",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "aa622829bf7940a1a179a64476018290",
+          "Name": "Point",
+          "Description": "Point created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..20..5;",
+      "Id": "35cb91301e564b85ac49db9cf0176c36",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f1789f03056c43ffb8180f0fdebdca3a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cone.ByPointsRadius@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "be5d20261c8e444382a931d1826e4fdb",
+      "Inputs": [
+        {
+          "Id": "022805cbd26f4461853477fece87ce48",
+          "Name": "startPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2655a098deba4cc985a0700cf547fea7",
+          "Name": "endPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a0e6e7a871fc4476b1ee643fd6ceb60f",
+          "Name": "startRadius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d5ac84be718e4df095554957be1a2dae",
+          "Name": "Cone",
+          "Description": "Cone",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Cone with given base radius at start Point, extending to a apex at end Point.\n\nCone.ByPointsRadius (startPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), endPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 1), startRadius: double = 1): Cone"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "aa622829bf7940a1a179a64476018290",
+      "End": "4d8d33b6f377435aaa6a59ab43140e3a",
+      "Id": "92c742ed87cb44bca046526c52368580",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "aa622829bf7940a1a179a64476018290",
+      "End": "022805cbd26f4461853477fece87ce48",
+      "Id": "60ba5bb035614a87be42af7f14fd3d36",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f1789f03056c43ffb8180f0fdebdca3a",
+      "End": "eb7147a99785420a9ddbc852e57b1577",
+      "Id": "ca0a3ea9186d479caa6a95129275285c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f1789f03056c43ffb8180f0fdebdca3a",
+      "End": "568f2bb845f74077aa2cbdbb3497a296",
+      "Id": "6c79e89a4d6a4e4794ec9509da9a87b1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f1789f03056c43ffb8180f0fdebdca3a",
+      "End": "bd15cfa7c44542aea1ca7dd4a63fe557",
+      "Id": "20639e0049914290bc21f8140c151adf",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.15",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.15.0.5027",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 23.716814041137695,
+      "EyeY": 22.23890495300293,
+      "EyeZ": 19.300704956054688,
+      "LookX": -13.812013626098633,
+      "LookY": -12.32354736328125,
+      "LookZ": -29.205509185791016,
+      "UpX": -0.063192009925842285,
+      "UpY": 0.98901593685150146,
+      "UpZ": -0.13362027704715729
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Cuboid.ByLengths",
+        "ShowGeometry": true,
+        "Id": "6478787711bc4df5acac49307229215b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 642.8764713677615,
+        "Y": 74.964391691394638
+      },
+      {
+        "Name": "Point.ByCoordinates",
+        "ShowGeometry": false,
+        "Id": "33227cb51adb42ecb3b11c345aa9d1f8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 319.0,
+        "Y": 99.0
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "35cb91301e564b85ac49db9cf0176c36",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 82.0,
+        "Y": 293.0
+      },
+      {
+        "Name": "Cone.ByPointsRadius",
+        "ShowGeometry": true,
+        "Id": "be5d20261c8e444382a931d1826e4fdb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 332.82195845697333,
+        "Y": 384.97032640949556
+      }
+    ],
+    "Annotations": [],
+    "X": 113.3851958186786,
+    "Y": -63.856724123373084,
+    "Zoom": 1.2520174179462746
+  }
+}
