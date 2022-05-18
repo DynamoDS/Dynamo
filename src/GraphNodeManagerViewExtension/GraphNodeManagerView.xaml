@@ -1,0 +1,333 @@
+﻿<UserControl x:Class="Dynamo.GraphNodeManager.GraphNodeManagerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:Dynamo.GraphNodeManager.Converters"
+             xmlns:controls="clr-namespace:Dynamo.GraphNodeManager.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             x:Name="UserControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ResourceDictionary Source="Controls/ControlColorsAndBrushes.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converters:StateToVisibilityCollapsedConverter x:Key="StateToVisibilityCollapsedConverter"/>
+            <converters:StateToColorBrushConverter x:Key="StateToColorBrushConverter"/>
+            <converters:StateToImageSourceConverter x:Key="StateToImageSourceConverter"/>
+            <converters:StateToTextConverter x:Key="StateToTextConverter"/>
+            <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource GenericToolTipLight}"></Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!-- Search Bar -->
+        <controls:SearchBoxControl Grid.Row="0" Margin="10 5 20 5"/>
+
+        <!-- Contains all filter icons -->
+        <DockPanel Grid.Row="1">
+            <Grid x:Name="FilterGrid" DockPanel.Dock="Top">
+                <ItemsControl x:Name="FilterItemControl"
+                                  Margin="5"
+                                  ItemsSource="{Binding FilterItems, UpdateSourceTrigger=PropertyChanged}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <controls:FilterItemControl/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Grid>
+            <Image x:Name="ExportImage"
+                       DockPanel.Dock="Right" 
+                       Width="16px"
+                       Height="16px"
+                       Margin="0 0 15 15"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Source="/GraphNodeManagerViewExtension;component/Images/Export.png"
+                       Stretch="UniformToFill"
+                       MouseUp="ExportImage_OnMouseUp"
+                       ToolTip="Export to Excel"
+                       Cursor="Hand">
+                <Image.ContextMenu>
+                    <ContextMenu Name="MainContextMenu"
+                                     Margin="0 -10"
+                                     Style="{StaticResource ContextMenuStyle}"
+                                     Background="#666666"
+                                     Width="170">
+                        <MenuItem x:Name="CSVItem" Header="Export as CSV" Padding="10" FontSize="12"
+                                      Command="{Binding ExportCommand}" CommandParameter="CSV"/>
+                        <MenuItem x:Name="JSONItem" Header="Export as JSON" Padding="10" FontSize="12"
+                                      Command="{Binding ExportCommand}" CommandParameter="JSON"/>
+                    </ContextMenu>
+                </Image.ContextMenu>
+            </Image>
+            <Button x:Name="ClearFiltersButton"
+                    DockPanel.Dock="Right"
+                    Content="Clear all" 
+                    Margin="0 3 0 15"
+                    Width="60"
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource ButtonStyle1}" 
+                    Command="{Binding ClearFiltersCommand}" 
+                    Visibility="{Binding IsAnyFilterOn, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+        </DockPanel>
+
+        <!-- Node Data Grid -->
+        <DataGrid x:Name="NodesInfoDataGrid"
+                  Grid.Row="2"
+                  ItemsSource="{Binding Path=NodesCollection.View}" 
+                  IsSynchronizedWithCurrentItem="True"
+                  Style="{StaticResource DataGridStyle1}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  Background="#353535"
+                  AlternatingRowBackground="#3C3C3C"
+                  AlternationCount="2"
+                  FontSize="10"
+                  Foreground="#F5F5F5"
+                  VerticalAlignment="Center"
+                  SelectionUnit="FullRow"
+                  SelectionMode="Single"
+                  ScrollViewer.CanContentScroll="False" 
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  CanUserResizeColumns="True" 
+                  CanUserSortColumns="True"
+                  HeadersVisibility="Column"
+                  MinColumnWidth="60"
+                  RowDetailsVisibilityMode="Collapsed"
+                  IsReadOnly="True"
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+                  SelectionChanged="NodeTable_SelectionChanged">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                    <EventSetter Event="PreviewMouseLeftButtonUp" Handler="Row_PreviewClickHandler"/>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock 
+                                    Text="{Binding Name}"
+                                    Foreground="#BBBBBB"
+                                    Margin="3"
+                                    FontSize="12"
+                                />
+                            </StackPanel>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </DataGrid.GroupStyle>
+
+            <DataGrid.Columns>
+
+                <!-- Node Name -->
+                <DataGridTextColumn
+                    Header="Name"
+                    Binding="{Binding Name}"
+                    FontWeight="Light"
+                    Foreground="#F5F5F5"
+                    IsReadOnly="True"
+                    Width="6*"></DataGridTextColumn>
+
+                <!-- Type -->
+                <DataGridTemplateColumn
+                    Header="Type" 
+                    Width="3*"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Function.png" 
+                                       ToolTip="Function"
+                                       Style="{StaticResource ImageStyle}"
+                                       Visibility="{Binding StateIsFunction, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/IsInput.png"
+                                       ToolTip="Is Input"
+                                       Style="{StaticResource ImageStyle}" 
+                                       Visibility="{Binding StateIsInput, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/IsOutput.png"
+                                       ToolTip="Is Output"
+                                       Style="{StaticResource ImageStyle}" 
+                                       Visibility="{Binding StateIsOutput, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- State -->
+                <DataGridTemplateColumn
+                    Header="State" 
+                    Width="4*"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Frozen.png" 
+                                       ToolTip="Frozen"
+                                       Style="{StaticResource ImageStyle}"
+                                       Visibility="{Binding StatusIsFrozen, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Hidden.png"
+                                       ToolTip="Preview Off"
+                                       Style="{StaticResource ImageStyle}" 
+                                       Visibility="{Binding StatusIsHidden, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <controls:InfoBubbleControl 
+                                    Margin="3 0" 
+                                    ToolTip="Information"
+                                    Visibility="{Binding State, Converter={StaticResource StateToVisibilityCollapsedConverter}, ConverterParameter=Info}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Issues -->
+                <DataGridTemplateColumn
+                    Header="Issues" 
+                    Width="4*"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <controls:InfoBubbleControl 
+                                    Margin="3 0" 
+                                    ToolTip="{Binding State, Converter={StaticResource StateToTextConverter}}"
+                                    Visibility="{Binding State, Converter={StaticResource StateToVisibilityCollapsedConverter}, ConverterParameter=WarningOrError}"/>
+                                <Border Height="14" Width="14" CornerRadius="7" 
+                                        VerticalAlignment="Center" HorizontalAlignment="Center"
+                                        ToolTip="Dismissed warnings"
+                                        Visibility="{Binding DismissedAlertsCount, Converter={StaticResource IntToVisibilityConverter}}"
+                                        Background="{StaticResource PrimaryCharcoal100Brush}">
+                                    <TextBlock Text="{Binding DismissedAlertsCount}" 
+                                               Foreground="{StaticResource DarkGreyBrush}" 
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               Margin="-1 0 0 0"
+                                               FontSize="8"/>
+                                </Border>
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/MissingNode.png"
+                                       ToolTip="Missing content"
+                                       Style="{StaticResource ImageStyle}" 
+                                       Visibility="{Binding IsDummyNode, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Info -->
+                <DataGridTemplateColumn
+                    Header="Info" 
+                    Width="Auto"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/EmptyList.png"
+                                       ToolTip="Empty list"
+                                       Style="{StaticResource ImageStyle}" 
+                                       Visibility="{Binding IsEmptyList, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                <Image Source="/GraphNodeManagerViewExtension;component/Images/Null.png"
+                                       ToolTip="Null"
+                                       Style="{StaticResource ImageStyle}" 
+                                       Visibility="{Binding IsNull, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+
+            <!-- Expanded Node Info -->
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="3 0 0 0" 
+                            Background="#353535"
+                            Margin="0 0 -2 0"
+                            BorderBrush="{Binding State, Converter={StaticResource StateToColorBrushConverter}}" 
+                            Width="{Binding ActualWidth, ElementName=NodesInfoDataGrid}">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding Package}" 
+                                       VerticalAlignment="Center" 
+                                       Margin="13 10" 
+                                       Foreground="{StaticResource MidGrayBrush}"/>
+                            <ItemsControl x:Name="DetailedRowItemControl"
+                                          ItemsSource="{Binding NodeInfos, UpdateSourceTrigger=PropertyChanged}"
+                                          AlternationCount="50">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderThickness="0 1 0 0" BorderBrush="{StaticResource GrayOpacityBrush}">
+                                                <Grid VerticalAlignment="Center" Margin="10 15 10 20" >
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                <Image Grid.Column="0" 
+                                                           Margin="5 0"
+                                                           Source="{Binding State, Converter={StaticResource StateToImageSourceConverter}}" 
+                                                           Style="{StaticResource ImageStyle}"
+                                                           VerticalAlignment="Top"></Image>
+                                                <TextBlock Grid.Column="1" Margin="10 -2 10 0" 
+                                                               TextWrapping="Wrap" 
+                                                               VerticalAlignment="Top"
+                                                               SnapsToDevicePixels="True"
+                                                               FontWeight="UltraLight"
+                                                               FontStyle="Italic"
+                                                               Foreground="{StaticResource MidGrayBrush}"
+                                                               FontSize="11">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} {1}" >
+                                                            <Binding Path="Index" />
+                                                            <Binding Path="Message" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                                <Button Grid.Column="2"
+                                                            Margin="5 0"
+                                                            PreviewMouseLeftButtonDown="OnClipboardButtonClick" 
+                                                            Name="ClipboardButton"
+                                                            Style="{StaticResource ButtonStyle1}"
+                                                            Tag="{Binding ElementName=DetailedRowItemControl, Path=DataContext}"
+                                                            Width="24"
+                                                            VerticalAlignment="Top"
+                                                            ToolTip="Copy to clipboard"
+                                                            Cursor="Hand">
+                                                    <Image Source="/GraphNodeManagerViewExtension;component/Images/Copy.png" 
+                                                           Style="{StaticResource ImageStyle}"/>
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical"></StackPanel>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+
+        </DataGrid>
+    </Grid>
+</UserControl>
