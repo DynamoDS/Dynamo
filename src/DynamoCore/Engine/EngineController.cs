@@ -431,7 +431,9 @@ namespace Dynamo.Engine
             foreach (var node in nodes)
             {
                 if (!node.IsInputNode) continue;
-                
+
+                // Only one or the other of the two lists, Added or Modified, will match the node GUID if they do. 
+                bool isAdded = false;
                 for (int i = 0; i < graphSyncdata.AddedSubtrees.Count; i++)
                 {
                     if (graphSyncdata.AddedSubtrees[i].GUID == node.GUID)
@@ -440,9 +442,12 @@ namespace Dynamo.Engine
                         {
                             IsInput = true
                         };
+                        isAdded = true;
                         break;
                     }
                 }
+                if (isAdded) continue;
+
                 for (int i = 0; i < graphSyncdata.ModifiedSubtrees.Count; i++)
                 {
                     if (graphSyncdata.ModifiedSubtrees[i].GUID == node.GUID)
