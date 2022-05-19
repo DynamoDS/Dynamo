@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -49,6 +50,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private const string guideBackgroundName = "GuidesBackground";
         private const string mainGridName = "mainGrid";
         private const string libraryViewName = "Browser";
+        private Stopwatch stopwatch;
 
         internal static string GuidesExecutingDirectory
         {
@@ -105,7 +107,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             guideBackgroundElement.ClearCutOffSection();
             guideBackgroundElement.ClearHighlightSection();
-        }
+            stopwatch = Stopwatch.StartNew();
+    }
 
         /// <summary>
         /// Creates the background for the GuidedTour
@@ -160,6 +163,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
+                Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
                 Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, currentGuide.GuideNameResource, currentGuide.SequenceOrder);
             }
         }
@@ -219,7 +223,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     tmpStep.StepClosed -= Popup_StepClosed;
                 }
-                Logging.Analytics.TrackEvent(Logging.Actions.End, Logging.Categories.GuidedTourOperations, currentGuide.SequenceOrder.ToString());
+                Logging.Analytics.TrackEvent(Logging.Actions.End, Logging.Categories.GuidedTourOperations, currentGuide.GuideNameResource, currentGuide.SequenceOrder);
+                Logging.Analytics.TrackTimedEvent(Logging.Categories.GuidedTourOperations, Logging.Actions.TimeElapsed.ToString(), stopwatch.Elapsed, currentGuide.GuideNameResource);
                 currentGuide.ClearGuide();
                 GuideFlowEvents.GuidedTourStart -= TourStarted;
                 GuideFlowEvents.GuidedTourFinish -= TourFinished;

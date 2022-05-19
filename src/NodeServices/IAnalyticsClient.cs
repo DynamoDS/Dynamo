@@ -399,6 +399,11 @@ namespace Dynamo.Logging
         /// Next event, e.g. when a user clicks next on a guided tour
         /// </summary>
         Next,
+
+        /// <summary>
+        /// Next event, e.g. when a user clicks next on a guided tour
+        /// </summary>
+        TimeElapsed,
     }
 
     /// <summary>
