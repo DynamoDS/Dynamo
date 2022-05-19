@@ -209,6 +209,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 CalculateStep(GuideFlow.FORWARD, CurrentStepSequence);
                 CurrentStep.Show(GuideFlow.FORWARD);
+                Logging.Analytics.TrackEvent(Logging.Actions.Next, Logging.Categories.GuidedTourOperations, GuideNameResource, CurrentStep.Sequence);
             }
         }
 

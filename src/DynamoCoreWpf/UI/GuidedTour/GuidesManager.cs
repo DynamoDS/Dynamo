@@ -160,6 +160,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
+                Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, currentGuide.GuideNameResource, currentGuide.SequenceOrder);
             }
         }
 
@@ -218,6 +219,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     tmpStep.StepClosed -= Popup_StepClosed;
                 }
+                Logging.Analytics.TrackEvent(Logging.Actions.End, Logging.Categories.GuidedTourOperations, currentGuide.SequenceOrder.ToString());
                 currentGuide.ClearGuide();
                 GuideFlowEvents.GuidedTourStart -= TourStarted;
                 GuideFlowEvents.GuidedTourFinish -= TourFinished;
