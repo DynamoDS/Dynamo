@@ -14,8 +14,10 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
@@ -389,6 +391,8 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// <param name="selectedNodes"></param>
         private void FitSelection(IEnumerable<NodeModel> selectedNodes, FooterNotificationItem.FooterNotificationType currentNotificationType)
         {
+            Guid nodeToSelect = Guid.Empty;
+
             // Don't allow prior to evaluation 
             if ((Model as HomeWorkspaceModel).EvaluationCount == 0) return;
             var nodeModels = selectedNodes as NodeModel[] ?? selectedNodes.ToArray();
@@ -400,30 +404,25 @@ namespace Dynamo.Wpf.ViewModels.Core
                 this.notificationsCounter = 0;
                 this.footerNotificationType = currentNotificationType;
             }
-
-            // Clear the selection then set the nodes to selection
-            DynamoSelection.Instance.ClearSelection();
-
+            
             // If we have reached the maximum nodes for this type, select all and reset the counter
             int maxCount = nodeModels.Length;
             if (IsMaxNotificationCounter(this.notificationsCounter, maxCount))
             {
-                DynamoSelection.Instance.Selection.AddRange(nodeModels);
                 this.notificationsCounter = 0;
             }
-            else
-            {
-                var node = nodeModels.ElementAt(this.notificationsCounter);
-                DynamoSelection.Instance.Selection.Add(node);
-                this.notificationsCounter++;
-            }
+            
+            var node = nodeModels.ElementAt(this.notificationsCounter);
+            nodeToSelect = node.GUID;
+            this.notificationsCounter++;
+            
 
-            // Execute the FitViewCommand 
-            this.DynamoViewModel.CurrentSpaceViewModel.FitViewInternal();
-            this.DynamoViewModel.CurrentSpaceViewModel.ResetFitViewToggle(null);
-            //this.DynamoViewModel.FitViewCommand.Execute(null);
-            // Clean up the selection after
-            DynamoSelection.Instance.ClearSelection();
+            // Select
+            var command = new DynamoModel.SelectModelCommand(nodeToSelect, ModifierKeys.None);
+            this.DynamoViewModel.ExecuteCommand(command);
+
+            // Fit
+            this.DynamoViewModel.CurrentSpaceViewModel.FindByIdCommand.Execute(nodeToSelect.ToString());
         }
 
         private bool IsMaxNotificationCounter(int counter, int max)

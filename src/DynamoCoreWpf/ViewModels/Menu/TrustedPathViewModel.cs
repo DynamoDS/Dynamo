@@ -10,6 +10,10 @@ using System.Windows.Data;
 using System.Globalization;
 using System.Linq;
 using Dynamo.Configuration;
+using DynamoUtilities;
+using Dynamo.Wpf.Utilities;
+using Dynamo.Logging;
+using System.Windows;
 
 namespace Dynamo.ViewModels
 {
@@ -22,13 +26,16 @@ namespace Dynamo.ViewModels
         public bool Cancel { get; set; }
 
         /// <summary>
-        /// Indicate the path to the custom packages folder
+        /// Indicate the path to be added to Dynamo's trusted locations
         /// </summary>
         public string Path { get; set; }
     }
 
     public class TrustedPathViewModel : ViewModelBase
     {
+        private PreferenceSettings settings;
+        private DynamoLogger logger;
+
         public ObservableCollection<string> TrustedLocations { get; private set; }
        
         public event EventHandler<TrustedPathEventArgs> RequestShowFileDialog;
@@ -45,21 +52,19 @@ namespace Dynamo.ViewModels
         public DelegateCommand UpdatePathCommand { get; private set; }
         public DelegateCommand SaveSettingCommand { get; private set; }
 
-        public TrustedPathViewModel()
-        { 
+        /// <summary>
+        /// The main constructor of the TrustedPathViewModel class.
+        /// </summary>
+        /// <param name="settings">Dynamo's preference settings</param>
+        /// <param name="logger">Dynamo's logging tool</param>
+        public TrustedPathViewModel(PreferenceSettings settings, DynamoLogger logger)
+        {
+            this.settings = settings;
+            this.logger = logger;
             InitializeTrustedLocations();
             InitializeCommands();
         }
 
-        /// <summary>
-        /// This constructor overload has been added for backwards comptability.
-        /// </summary>
-        /// <param name="setting"></param>
-        public TrustedPathViewModel(IPreferences setting)
-        {
-            InitializeTrustedLocations();
-            InitializeCommands();
-        }
         private void InitializeCommands() 
         {
             AddPathCommand = new DelegateCommand(p => InsertPath());
@@ -100,6 +105,26 @@ namespace Dynamo.ViewModels
             if (args.Cancel)
                 return;
 
+            try
+            {
+                PathHelper.ValidateDirectory(args.Path);
+            }
+            catch(Exception ex)
+            {
+                if (string.IsNullOrEmpty(args.Path))
+                {
+                    this.logger?.LogError("Failed to add trusted location because the selected path was null or empty");
+                }
+                else
+                {
+                    this.logger?.LogError($"Failed to add trusted location ${args.Path} due to the following error: {ex.Message}");
+                }
+
+                string errorMessage = string.Format(Resources.PackageFolderNotAccessible, args.Path);
+                MessageBoxService.Show(errorMessage, Resources.UnableToAccessPackageDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            
             TrustedLocations.Insert(TrustedLocations.Count, args.Path);
             RaiseCanExecuteChanged();
         }
@@ -129,27 +154,18 @@ namespace Dynamo.ViewModels
 
         private void RemovePathAt(int index)
         {
-            var pathToRemove = TrustedLocations[index];
             TrustedLocations.RemoveAt(index);
             RaiseCanExecuteChanged();
         }
 
         private void CommitChanges(object param)
         {
-            var newpaths = CommitTrustedLocations();
-            //TODO: to be implemented
+            settings?.SetTrustedLocations(TrustedLocations);
         }
 
         internal void InitializeTrustedLocations()
         {
-            //TODO: to be implemented
-            TrustedLocations = new ObservableCollection<string>();
-        }
-
-        private List<string> CommitTrustedLocations()
-        {
-            var trustedLocations = new List<string>(TrustedLocations);
-            return trustedLocations;
+            TrustedLocations = new ObservableCollection<string>(settings?.TrustedLocations ?? new List<string>());
         }
     }
 }

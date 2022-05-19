@@ -152,7 +152,27 @@
             </Style>
         </Style.Resources>
     </Style>
-    
+
+    <Style x:Key="GenericToolTipLightTop" TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
+        <Setter Property="Placement" Value="Top"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Grid x:Name="PopupGrid">
+                        <Grid x:Name="ShadowBackground" Background="Transparent">
+                            <Path Margin="5 0 0 0" x:Name="TooltipPointer" Width="20" Height="6" HorizontalAlignment="Left" VerticalAlignment="Bottom" Data="M0,0 L6,6 12,0Z" Stroke="Gray" Fill="White" Stretch="None"/>
+                            <Border BorderThickness="1 1 1 0" CornerRadius="3" Margin="0 7 7 5" BorderBrush="#999999" Background="white" Padding="10,8">
+                                <ContentPresenter/>
+                            </Border>
+                            <Border BorderThickness="0 0 0 1" CornerRadius="0 0 3 0" Margin="16 0 9 5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="7" BorderBrush="#999999" />
+                            <Border BorderThickness="0 0 0 1" CornerRadius="0 0 0 3" Margin="0 0 0 5"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="7" Width="6" BorderBrush="#999999" />
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Image x:Key="ComboDownIcon_normal" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/tick_selected.png" />
 
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
@@ -3378,7 +3398,6 @@
                                                                                             TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                     <Grid RenderOptions.ClearTypeHint="Enabled">
                                         <ItemsPresenter x:Name="ItemsPresenter"
-                                                        Margin="2"
                                                         Grid.IsSharedSizeScope="true"
                                                         KeyboardNavigation.DirectionalNavigation="Cycle"
                                                         KeyboardNavigation.TabNavigation="Cycle"
@@ -3479,7 +3498,6 @@
                                                                                             TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                     <Grid RenderOptions.ClearTypeHint="Enabled">
                                         <ItemsPresenter x:Name="ItemsPresenter"
-                                                        Margin="2"
                                                         Grid.IsSharedSizeScope="true"
                                                         KeyboardNavigation.DirectionalNavigation="Cycle"
                                                         KeyboardNavigation.TabNavigation="Cycle"
@@ -4726,7 +4744,6 @@
                                                                                             TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                     <Grid RenderOptions.ClearTypeHint="Enabled">
                                         <ItemsPresenter x:Name="ItemsPresenter"
-                                                        Margin="2"
                                                         Grid.IsSharedSizeScope="true"
                                                         KeyboardNavigation.DirectionalNavigation="Cycle"
                                                         KeyboardNavigation.TabNavigation="Cycle"

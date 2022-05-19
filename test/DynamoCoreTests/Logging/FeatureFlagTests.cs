@@ -60,7 +60,7 @@ namespace Dynamo.Tests.Logging
             testflagsManager.CacheAllFlags();
 
             testflagsManager.MessageLogged -= TestflagsManager_MessageLogged;
-            Assert.AreEqual("LD startup: testmode true, no LD connection. LD startup time: 0 <<<<<InitDone>>>>>feature flag exe starting<<<<<Sod>>>>>{\"TestFlag1\":true,\"TestFlag2\":\"I am a string\"}<<<<<Eod>>>>>", log);
+            Assert.AreEqual("LD startup: testmode true, no LD connection. LD startup time: 0 <<<<<InitDone>>>>>feature flag exe starting<<<<<Sod>>>>>{\"TestFlag1\":true,\"TestFlag2\":\"I am a string\",\"graphics-primitive-instancing\":true}<<<<<Eod>>>>>", log);
         }
 
         private void DynamoFeatureFlagsManager_FlagsRetrieved()

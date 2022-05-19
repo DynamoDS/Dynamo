@@ -298,6 +298,43 @@ namespace WpfVisualizationTests
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
+        [Test]
+        public void RenderMeshInstances()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            //This DYN renders a class in FFITarget that implements instancing.
+            OpenVisualizationTest("instancing_pyramids.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void RenderLineInstances()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            //This DYN renders a class in FFITarget that implements instancing.
+            OpenVisualizationTest("instancing_lines.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void RenderMeshInstancingAndITransformable()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            //This DYN renders a class in FFITarget that implements instancing.
+            OpenVisualizationTest("instancing_transformables.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void RenderMeshInstances_noInstanceData()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            //This DYN renders a class in FFITarget that implements instancing.
+            OpenVisualizationTest("instancing_no_instance_data.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+
         #endregion
 
         #region pointsAndLines

@@ -906,7 +906,7 @@ namespace Dynamo.ViewModels
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
-            TrustedPathsViewModel = new TrustedPathViewModel();
+            TrustedPathsViewModel = new TrustedPathViewModel(this.preferenceSettings, this.dynamoViewModel?.Model?.Logger);
 
             WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
 

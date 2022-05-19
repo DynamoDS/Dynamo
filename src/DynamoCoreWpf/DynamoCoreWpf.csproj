@@ -27,7 +27,9 @@
     <None Remove="UI\Images\NodeStates\hidden-64px.png" />
     <None Remove="UI\Images\NodeStates\info-64px.png" />
     <None Remove="UI\Images\warning_16px.png" />
+    <None Remove="Views\GuidedTour\HtmlPages\nodePackage.html" />
     <None Remove="Views\Menu\TrustedPathView.xaml" />
+    <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
@@ -584,6 +586,8 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -1424,7 +1428,7 @@
     <Resource Include="UI\Images\minimize-default-16px.png" />
     <Resource Include="UI\Images\maximize-hover.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\PackageNodes.gif" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\connectTheNodes.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\installedPackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\successIcon.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\filterIcon.png" />
@@ -1499,6 +1503,7 @@
     <Resource Include="UI\Images\folder-hover-16px.png" />
     <Resource Include="UI\Images\up_16_16.png" />
     <Resource Include="UI\Images\up-hover-16px.png" />
+    <Resource Include="UI\Images\link-16px.png" />
     <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

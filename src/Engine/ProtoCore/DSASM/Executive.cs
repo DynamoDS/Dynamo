@@ -36,6 +36,10 @@ namespace ProtoCore.DSASM
         private InstructionStream istream;
         public RuntimeMemory rmem { get; set; }
 
+        // Collection of registers that cache values of input literals that can be modified
+        // and simply accessed in an update execution cycle. 
+        private Dictionary<long, StackValue> updateRegisters = new Dictionary<long, StackValue>();
+
         public StackValue RX { get; set; }
         public StackValue TX { get; set; }
 
@@ -66,7 +70,21 @@ namespace ProtoCore.DSASM
         /// This is updated for every bounce and function call
         /// </summary>
         private List<AssociativeGraph.GraphNode> graphNodesInProgramScope;
-        
+
+        internal void SetAssociativeUpdateRegister(long astID, StackValue sv)
+        {
+            if(updateRegisters.ContainsKey(astID))
+            {
+                updateRegisters[astID] = sv;
+            }
+            else updateRegisters.Add(astID, sv);
+        }
+
+        internal void DeleteUpdateRegister(long astID)
+        {
+            updateRegisters.Remove(astID);
+        }
+
         public Executive(RuntimeCore runtimeCore, bool isFep = false)
         {
             IsExplicitCall = false;
@@ -731,15 +749,14 @@ namespace ProtoCore.DSASM
             CallSite callsite = runtimeCore.RuntimeData.GetCallSite(classIndex, fNode.Name, exe, runtimeCore);
             Validity.Assert(null != callsite);
 
-            List<StackValue> registers = GetRegisters();
-
             // Get the execution states of the current stackframe
             int currentScopeClass = Constants.kInvalidIndex;
             int currentScopeFunction = Constants.kInvalidIndex;
             GetCallerInformation(out currentScopeClass, out currentScopeFunction);
 
             // Handle execution states at the FEP
-            var stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, blockDeclId, registers, 0);
+            var stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, runtimeCore.RunningBlock, 
+                fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, blockDeclId, GetRegisters(), 0);
             StackValue sv = StackValue.Null;
 
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.Expression)
@@ -880,9 +897,8 @@ namespace ProtoCore.DSASM
                 return StackValue.Null;
             }
 
-            var registers = GetRegisters();
-
-            var stackFrame = new StackFrame(thisObject, classIndex, procIndex, pc + 1, 0, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, 0, registers, 0);
+            var stackFrame = new StackFrame(thisObject, classIndex, procIndex, pc + 1, 0, runtimeCore.RunningBlock, 
+                fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, 0, GetRegisters(), 0);
 
             var callsite = runtimeCore.RuntimeData.GetCallSite(classIndex, procNode.Name, exe, runtimeCore);
 
@@ -2339,6 +2355,13 @@ namespace ProtoCore.DSASM
                 case AddressType.Register:
                     switch (opSymbol.Register)
                     {
+                        case Registers.LX:
+                            if (updateRegisters.TryGetValue(opClass.IntegerValue, out StackValue sv))
+                            {
+                                data = sv;
+                            }
+                            else data = opSymbol;
+                            break;
                         case Registers.RX:
                             data = RX;
                             break;
@@ -2452,6 +2475,13 @@ namespace ProtoCore.DSASM
                         StackValue data = opVal;
                         switch (op1.Register)
                         {
+                            case Registers.LX:
+                                if (updateRegisters.TryGetValue(op2.IntegerValue, out StackValue sv))
+                                {
+                                    opPrev = sv;
+                                }
+                                SetAssociativeUpdateRegister(op2.IntegerValue, data);
+                                break;
                             case Registers.RX:
                                 opPrev = RX;
                                 RX = data;
@@ -4252,19 +4282,14 @@ namespace ProtoCore.DSASM
             StackValue svCallConvention = StackValue.BuildCallingConversion((int)CallingConvention.CallType.ExplicitBase);
             TX = svCallConvention;
 
-
-            // On implicit call, the SX is set in JIL Fep
-            // On explicit call, the SX should be directly set here
-
-            List<StackValue> registers = GetRegisters();
-
             // Comment Jun: the depth is always 0 for a function call as we are reseting this for each function call
             // This is only incremented for every language block bounce
             int depth = 0;
 
             StackFrameType type = StackFrameType.Function;
 
-            StackFrame stackFrame = new StackFrame(svThisPointer, ci, fi, pc + 1, blockDecl, blockCaller, callerType, type, depth, rmem.FramePointer, blockDecl, registers, 0);
+            StackFrame stackFrame = new StackFrame(svThisPointer, ci, fi, pc + 1, blockDecl, blockCaller, 
+                callerType, type, depth, rmem.FramePointer, blockDecl, GetRegisters(), 0);
 
             rmem.PushFrameForLocals(fNode.LocalCount);
             rmem.PushStackFrame(stackFrame);
