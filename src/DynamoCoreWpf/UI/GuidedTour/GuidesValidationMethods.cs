@@ -44,6 +44,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private static NodeModel lastCreatedNode;
 
+        private static Window PackageManagerWindow;
+
         //This method will return a bool that describes if the Terms Of Service was accepted or not.
         internal static bool AcceptedTermsOfUse(DynamoViewModel dynViewModel)
         {
@@ -81,44 +83,55 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 //If the TermsOfService is not accepted yet it will show the TermsOfUseView otherwise it will show the PackageManagerSearchView
                 stepInfo.DynamoViewModelStep.ShowPackageManagerSearch(null);
-                Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
-
+                PackageManagerWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
                 foreach (var handler in uiAutomationData.AutomaticHandlers)
                 {
-                    if (ownedWindow == null) return;
-                    UIElement element = GuideUtilities.FindChild(ownedWindow, handler.HandlerElement);
+                    if (PackageManagerWindow == null) return;
+                    UIElement element = GuideUtilities.FindChild(PackageManagerWindow, handler.HandlerElement);
 
                     //When the Accept button is pressed in the TermsOfUseView then we need to move to the next Step
                     if (element != null)
                         ManageEventHandler(element, handler.HandlerElementEvent, handler.ExecuteMethod);
                 }
 
-                ownedWindow.Closed += OnPackageManagerTouClosed;
+                PackageManagerWindow.Closed += OnPackageManagerTourClosed;
+                GuideFlowEvents.GuidedTourFinish += GuideFlowEvents_GuidedTourFinish;
             }
-            //When enableFunction = false, means we are hiding (closing) the TermsOfUse Window due that we are moving to the next Step or we are exiting the Guide
             else
             {
-                Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
-                if (ownedWindow == null) return;
+                PackageManagerWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+                if (PackageManagerWindow != null)
+                {
+                    PackageManagerWindow.Closed -= OnPackageManagerTourClosed;
+                    PackageManagerWindow = null;
+                }
+
+                GuideFlowEvents.GuidedTourFinish -= GuideFlowEvents_GuidedTourFinish;
 
                 //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
                 GuideUtilities.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
             }
         }
 
-        private static void OnPackageManagerTouClosed(object sender, EventArgs e)
+        private static void GuideFlowEvents_GuidedTourFinish(GuidedTourStateEventArgs args)
         {
-            bool acceptedTermsOfUse = false;
-            var window = sender as TermsOfUseView;
+            if(PackageManagerWindow != null)
+            {
+                PackageManagerWindow.Closed -= OnPackageManagerTourClosed;
+                PackageManagerWindow.Close();
+            }
+        }
 
+        private static void OnPackageManagerTourClosed(object sender, EventArgs e)
+        {
+            var window = sender as TermsOfUseView;
             if (window != null)
             {
-               acceptedTermsOfUse = window.AcceptedTermsOfUse;
-            }
-
-            if (!acceptedTermsOfUse)
-            {
-                CloseTour();
+                var acceptedTermsOfUse = window.AcceptedTermsOfUse;
+                if (!acceptedTermsOfUse)
+                {
+                    CloseTour();
+                }
             }
         }
 
