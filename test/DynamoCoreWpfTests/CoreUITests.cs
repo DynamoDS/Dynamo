@@ -996,6 +996,7 @@ namespace DynamoCoreWpfTests
             (searchControl.DataContext as SearchViewModel).SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
             searchControl.SearchTextBox.Text = "dsfdf";
             
+            DispatcherUtil.DoEvents();
 
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
             Assert.AreEqual(count, 1);
