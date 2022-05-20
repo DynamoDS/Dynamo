@@ -127,14 +127,14 @@
   </Choose>
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
     <PropertyGroup>
-      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\libg_locale</LibGProtoGeometryLibGLocale>
+      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\netstandard2.0\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>
-      <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\LibG.Interface.dll" />
-      <LibGProtoGeometryXml Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\lib\net48\ProtoGeometry.XML" />
-      <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\$(UICulture)\*" />
-      <LibG227 Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\tools\net48\LibG_227_0_0\*" />
-      <LibG228 Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\LibG_228_0_0\*" />
+      <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\netstandard2.0\LibG.Interface.dll" />
+      <LibGProtoGeometryXml Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\lib\netstandard2.0\ProtoGeometry.XML" />
+      <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\netstandard2.0\$(UICulture)\*" />
+      <LibG227 Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\tools\netstandard2.0\LibG_227_0_0\*" />
+      <LibG228 Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\netstandard2.0\LibG_228_0_0\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
