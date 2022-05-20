@@ -1277,7 +1277,6 @@ namespace WpfVisualizationTests
 
         }
         [Test]
-        [Category("Failure")]
         public void InstancedMeshesAndLinesAreAddedToBackGroundPreviewForEachMatrixWhenShowEdgesEnabled()
         {
             Model.LibraryServices.ImportLibrary("FFITarget.dll");
