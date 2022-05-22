@@ -212,6 +212,7 @@ namespace Dynamo.Scheduler
         {
             var packageWithTransform = package as ITransformable;
             var packageWithInstances = package as IInstancingRenderPackage;
+            var packageWithLabelInstances = package as IRenderInstancedLabels;
 
             try
             {
@@ -256,7 +257,26 @@ namespace Dynamo.Scheduler
                     }
 
                     instanceableItem.AddInstance(packageWithInstances, factory.TessellationParameters, labelKey);
-
+                    //for the instance we just added we need to add labels if autogen labels is true.
+                    if (package is IRenderLabels labelPackage && labelPackage.AutoGenerateLabels && packageWithLabelInstances != null)
+                    {
+                        if (package.MeshVertexCount > 0)
+                        {
+                            packageWithLabelInstances.AddInstancedLabel(labelKey,
+                                VertexType.MeshInstance,
+                                package.MeshVertexCount, 
+                                packageWithLabelInstances.InstanceCount(instanceableItem.BaseTessellationGuid),
+                                instanceableItem.BaseTessellationGuid) ;
+                        }
+                        else if (package.LineVertexCount > 0)
+                        {
+                            packageWithLabelInstances.AddInstancedLabel(labelKey, 
+                                VertexType.LineInstance,
+                                package.LineVertexCount,
+                                packageWithLabelInstances.InstanceCount(instanceableItem.BaseTessellationGuid),
+                                instanceableItem.BaseTessellationGuid);
+                        }
+                    }
                     return;
                 }
                 else
