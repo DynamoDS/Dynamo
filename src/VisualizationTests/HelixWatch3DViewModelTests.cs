@@ -752,7 +752,9 @@ namespace WpfVisualizationTests
             //total points are the two strips of points at the top and
             //bottom of the mesh, duplicated 11x2x2 plus the one mesh
             Assert.AreEqual(1000, BackgroundPreviewGeometry.TotalPoints());
-            Assert.AreEqual(1000 * 36, BackgroundPreviewGeometry.TotalMeshVerticesToRender());
+            //because verts for cuboids are instanced, we only need to render 36 verts.
+            Assert.AreEqual(36, BackgroundPreviewGeometry.TotalMeshVerticesToRender());
+            Assert.AreEqual(1000, BackgroundPreviewGeometry.TotalMeshInstancesToRender());
         }
 
         [Test]
