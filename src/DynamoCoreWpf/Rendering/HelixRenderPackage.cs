@@ -614,7 +614,7 @@ namespace Dynamo.Wpf.Rendering
                 case VertexType.LineInstance:
                     //
                     if (vertIndex > Lines.Positions.Count) { return; }
-                    position = Mesh.Positions[vertIndex - 1];
+                    position = Lines.Positions[vertIndex - 1];
                     break;
             }
             if (instanceTransforms.ContainsKey(BaseTessellationId) && instanceIndex <= instanceTransforms[BaseTessellationId].Count)
