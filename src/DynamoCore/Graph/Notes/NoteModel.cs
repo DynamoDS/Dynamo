@@ -16,6 +16,8 @@ namespace Dynamo.Graph.Notes
         /// </summary>
         internal event Action<ModelBase> UndoRequest;
 
+        internal event Action<ModelBase, Guid> RedoRequest;
+
         private string text;
 
         /// <summary>
@@ -120,13 +122,21 @@ namespace Dynamo.Graph.Notes
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
 
-            if(pinnedNode != null)
-                pinnedNode.GUID = helper.ReadGuid("pinnedNode");
+            Guid nodeToSelect = Guid.Empty;
+
+            if(pinnedNode != null && !helper.ReadGuid("pinnedNode").Equals(Guid.Empty))
+                pinnedNode.GUID = helper.ReadGuid("pinnedNode");    
+            else
+            {
+                // If we are here, we want to redo and pin back a node to the note
+                nodeToSelect = helper.ReadGuid("pinnedNode");
+            }
 
             // Notify listeners that the position of the note has changed, 
             // then parent group will also redraw itself.
             ReportPosition();
-            TryToSubscribeUndoNote();
+            if(!TryToSubscribeRedoNote(nodeToSelect))
+                TryToSubscribeUndoNote();
         }
 
         /// <summary>
@@ -134,10 +144,21 @@ namespace Dynamo.Graph.Notes
         /// </summary>
         internal void TryToSubscribeUndoNote()
         {
-            if (pinnedNode!=null && pinnedNode.GUID == Guid.Empty && UndoRequest != null)
+            if (pinnedNode!=null && UndoRequest != null)
             {
                 UndoRequest(this);
             }
+        }
+
+        internal bool TryToSubscribeRedoNote(Guid nodeToSelect)
+        {
+            if (pinnedNode == null && !nodeToSelect.Equals(Guid.Empty) && RedoRequest != null)
+            {
+                RedoRequest(this, nodeToSelect);
+                return true;
+            }
+
+            return false;
         }
 
         #endregion

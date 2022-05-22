@@ -127,6 +127,7 @@ namespace Dynamo.ViewModels
         /// if you select and move one the other one 
         /// moves as well.
         /// </summary>
+        [JsonIgnore]
         public NodeViewModel PinnedNode
         {
             get
@@ -284,6 +285,18 @@ namespace Dynamo.ViewModels
             return false;
         }
 
+        private void RePinToNode(ModelBase model, Guid nodeGuid)
+        {
+            if(!WorkspaceViewModel.Model.Nodes.Any()) return;
+
+            NodeModel pinnedNode =  WorkspaceViewModel.Model.Nodes.FirstOrDefault(n => n.GUID.Equals(nodeGuid));
+            if (pinnedNode.GUID.Equals(Guid.Empty)) return;
+
+            DynamoSelection.Instance.Selection.Add(pinnedNode);
+
+            PinToNode(model);
+        }
+
         private void PinToNode(object parameters)
         {
 
@@ -296,7 +309,6 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
 
             var nodeGroup = WorkspaceViewModel.Annotations
                 .FirstOrDefault(x => x.AnnotationModel.ContainsModel(nodeToPin));
@@ -308,6 +320,9 @@ namespace Dynamo.ViewModels
 
             Model.PinnedNode = nodeToPin;
             Model.UndoRequest += UnpinFromNode;
+            Model.RedoRequest -= RePinToNode;
+
+            WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
 
             MoveNoteAbovePinnedNode();
             SubscribeToPinnedNode();
@@ -360,8 +375,11 @@ namespace Dynamo.ViewModels
 
         private void UnpinFromNode(object parameters)
         {
+            WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
+
             UnsuscribeFromPinnedNode();
             Model.UndoRequest -= UnpinFromNode;
+            Model.RedoRequest += RePinToNode;
 
             Model.PinnedNode = null;
             WorkspaceViewModel.HasUnsavedChanges = true;
