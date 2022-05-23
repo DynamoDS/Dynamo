@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
+using System;
 
 namespace Dynamo.Controls
 {
@@ -14,7 +15,9 @@ namespace Dynamo.Controls
     {
         private WatchViewModel _vm;
         private WatchViewModel prevWatchViewModel;
-        private readonly int defaultWidthSize = 200;
+        private readonly double defaultWidthSize = 200;
+        private readonly double extraWidthSize = 20;
+        private readonly double widthPerCharacter = 7.5;
         private readonly int defaultHeightSize = 200;
         private readonly int minWidthSize = 100;
         private readonly int minHeightSize = 38;
@@ -25,6 +28,12 @@ namespace Dynamo.Controls
             this.Loaded += WatchTree_Loaded;
             this.Unloaded += WatchTree_Unloaded;
         }
+
+        internal double DefaultWidthSize { get { return defaultWidthSize; } }
+        internal double DefaultHeightSize { get { return defaultHeightSize; } }
+        internal double ExtratWidthSize { get { return extraWidthSize; } }
+        internal double WidthPerCharacter { get { return widthPerCharacter; } }
+        internal double MaxWidthSize { get { return defaultWidthSize * 2; } }
 
         private void WatchTree_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -39,7 +48,7 @@ namespace Dynamo.Controls
 
         private void _vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsCollection")
+            if (e.PropertyName == nameof(WatchViewModel.IsCollection))
             {
                 if (_vm.IsCollection)
                 {
@@ -48,6 +57,13 @@ namespace Dynamo.Controls
                 else
                 {
                     this.Height = minHeightSize;
+                    if (_vm.Children.Count !=0)
+                    {
+                        if (_vm.Children[0].NodeLabel.Contains(Environment.NewLine))
+                        {
+                            this.Height = defaultHeightSize;
+                        }
+                    }                    
                 }
                 // When it doesn't have any element, it should be set back the width to the default.
                 if (_vm.Children != null && _vm.Children.Count == 0)
@@ -55,7 +71,7 @@ namespace Dynamo.Controls
                     this.Width = defaultWidthSize;
                 }
             }
-            else if (e.PropertyName == "Children")
+            else if (e.PropertyName == nameof(WatchViewModel.Children))
             {
                 if (_vm.Children != null)
                 {
@@ -63,20 +79,29 @@ namespace Dynamo.Controls
                     {
                         // We will use 7.5 as width factor for each character.
 
-                        double requiredWidth = (_vm.Children[0].NodeLabel.Length * 7.5);
-                        if (requiredWidth > (defaultWidthSize * 2))
+                        double requiredWidth = (_vm.Children[0].NodeLabel.Length * widthPerCharacter);
+                        if (requiredWidth > (MaxWidthSize))
                         {
-                            requiredWidth = defaultWidthSize * 2;
+                            requiredWidth = MaxWidthSize;
                         }
-                        requiredWidth += 20;
-                        this.Width = requiredWidth;
+                        requiredWidth += extraWidthSize;
+                        this.Width = requiredWidth;                        
                     }
                     else
                     {
                         this.Width = defaultWidthSize;
                     }
                 }
-            }            
+            }
+            else if (e.PropertyName == nameof(WatchViewModel.IsOneRowContent))
+            {
+                if (_vm.IsOneRowContent)
+                {
+                    // Forcing not to display the Levels content when is being used for display info from another node like the Color Range
+                    this.ListLevelsDisplay.Visibility = Visibility.Hidden;
+                    this.ListLevelsDisplay.Height = 0;
+                }
+            }
         }
 
         internal void SetWatchNodeProperties() 

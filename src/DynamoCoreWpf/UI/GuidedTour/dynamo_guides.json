@@ -1,6 +1,6 @@
 [
 	{
-		"Name": "Get Started",
+		"Name": "User Interface Tour",
 		"SequenceOrder": 1,
 		"GuideNameResource": "GetStartedGuide",
 		"GuideSteps": [
@@ -883,7 +883,7 @@
 		]
 	},
 	{
-		"Name": "Onboarding",
+		"Name": "Getting Started",
 		"SequenceOrder": 2,
 		"GuideNameResource": "OnboardingGuide",
 		"GuideSteps": [

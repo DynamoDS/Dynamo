@@ -746,8 +746,8 @@ namespace ProtoCore.AssociativeEngine
         /// <param name="core"></param>
         /// <param name="nodeList"></param>
         /// <returns></returns>
-        public static AssociativeGraph.GraphNode MarkGraphNodesDirtyAtGlobalScope
-(RuntimeCore core, IEnumerable<AST.AssociativeAST.AssociativeNode> nodeList)
+        public static AssociativeGraph.GraphNode MarkGraphNodesDirtyAtGlobalScope(
+            RuntimeCore core, IEnumerable<AST.AssociativeAST.AssociativeNode> nodeList)
         {
             if (nodeList == null)
             {
@@ -767,9 +767,7 @@ namespace ProtoCore.AssociativeEngine
                 {
                     if (gnode.isActive && gnode.OriginalAstID == bNode.OriginalAstID)
                     {
-                        
                         gnode.isDirty = true;
-                        gnode.isActive = true;
                         if (gnode.updateBlock.updateRegisterStartPC != Constants.kInvalidIndex)
                         {
                             gnode.updateBlock.startpc = gnode.updateBlock.updateRegisterStartPC;

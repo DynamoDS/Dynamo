@@ -60,10 +60,10 @@ namespace Dynamo.Controls
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
 
-        //The "Packages" and "Get Started" strings needs to be hardcoded due that are hardcoded in the json file (no need localization)
-        internal static string GetStartedGuideName = "Get Started";
+        //The list of guide name strings are hardcoded to match Json definition of guides (no need localization)
+        internal static string GetStartedGuideName = "User Interface Tour";
         internal static string PackagesGuideName = "Packages";
-        internal static string OnboardingGuideName = "Onboarding";
+        internal static string OnboardingGuideName = "Getting Started";
 
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down

@@ -865,11 +865,11 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="showRunPreview">This parameter controls the delta state computation </param>
         internal void GetExecutingNodes(bool showRunPreview)
         {
-            var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
-                        
             //The Graph is executed and Show node execution is checked on the Settings menu
             if (graphExecuted && showRunPreview)
             {
+                var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
+
                 if (task.Initialize(EngineController, this) != null)
                 {
                     task.Completed += OnPreviewGraphCompleted;

@@ -85,6 +85,7 @@ namespace Dynamo.ViewModels
             ShowNewPresetsDialogCommand = new DelegateCommand(ShowNewPresetStateDialogAndMakePreset, CanShowNewPresetStateDialog);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             OpenDocumentationLinkCommand = new DelegateCommand(OpenDocumentationLink);
+            ShowNodeDocumentationCommand = new DelegateCommand(ShowNodeDocumentation, CanShowNodeDocumentation);
         }
         public DelegateCommand OpenFromJsonIfSavedCommand { get; set; }
         public DelegateCommand OpenFromJsonCommand { get; set; }
@@ -167,5 +168,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowNewPresetsDialogCommand { get; set; }
         public DelegateCommand NodeFromSelectionCommand { get; set; }
         public DelegateCommand OpenDocumentationLinkCommand { get; set; }
+        public DelegateCommand ShowNodeDocumentationCommand { get; set; }
+        
     }
 }
