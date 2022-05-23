@@ -241,17 +241,31 @@ namespace Dynamo.Scheduler
                         if (factory.TessellationParameters.ShowEdges)
                         {
                             //TODO if we start to instance more types, expand this edge generation.
+                            //and the swtich case below.
                             if (graphicItem is Topology topology)
                             {
-                                var edges = topology.Edges;
-                                foreach (var geom in edges.Select(edge => edge.CurveGeometry))
+                                Topology topologyInIdentityCS = null;
+                                switch (topology)
                                 {
-                                    geom.Tessellate(package, factory.TessellationParameters);
-                                    geom.Dispose();
+                                    case Cuboid _:
+                                        topologyInIdentityCS = Cuboid.ByLengths();
+                                        break;
                                 }
+                                //if topologyInIdentityCS is still null or Edges is null 
+                                //don't attempt to add any graphic edges.
+                                var edges = topologyInIdentityCS?.Edges;
+                                if (edges != null)
+                                {
+                                    foreach (var geom in edges.Select(edge => edge.CurveGeometry))
+                                    {
+                                        geom.Tessellate(package, factory.TessellationParameters);
+                                        geom.Dispose();
+                                    }
 
-                                edges.ForEach(x => x.Dispose());
-                                packageWithInstances.AddInstanceGuidForLineVertexRange(prevLineIndex, package.LineVertexCount - 1, instanceableItem.BaseTessellationGuid);
+                                    edges.ForEach(x => x.Dispose());
+                                    packageWithInstances.AddInstanceGuidForLineVertexRange(prevLineIndex, package.LineVertexCount - 1, instanceableItem.BaseTessellationGuid);
+                                }
+                                topologyInIdentityCS?.Dispose();
                             }
                         }
                     }

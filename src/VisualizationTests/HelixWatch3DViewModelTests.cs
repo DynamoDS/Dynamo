@@ -1299,6 +1299,53 @@ namespace WpfVisualizationTests
             Assert.AreEqual(5 * 5 * 5, BackgroundPreviewGeometry.TotalMeshInstancesToRender());
 
         }
+        [Test]
+        public void InstancedShowEdgesAreCorrect()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            OpenVisualizationTest("instancing_cubes_edges.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            //assert cube is created not at origin.
+            var result = GetPreviewValue("2264fad6b59640d0b753ba81c1f53f43").ToString();
+            Assert.AreEqual("Point(X = 2.000, Y = 2.000, Z = 2.000)",result);
+           
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
+
+            // assert that the cube edges have been tessellated back at origin.
+            // not at the location of the first cube.
+            var edgeVerts = BackgroundPreviewGeometry.Curves().SelectMany(x => x.Geometry.Positions);
+            edgeVerts.ToList().ForEach(x => Console.WriteLine(x));
+
+        Assert.AreEqual(@"X:0.5 Y:0.5 Z:0.5
+X: 0.5 Y: 0.5 Z: -0.5
+X: 0.5 Y: 0.5 Z: -0.5
+X: -0.5 Y: 0.5 Z: -0.5
+X: -0.5 Y: 0.5 Z: -0.5
+X: -0.5 Y: 0.5 Z: 0.5
+X: -0.5 Y: 0.5 Z: 0.5
+X: 0.5 Y: 0.5 Z: 0.5
+X: 0.5 Y: -0.5 Z: -0.5
+X: 0.5 Y: -0.5 Z: 0.5
+X: 0.5 Y: -0.5 Z: 0.5
+X: -0.5 Y: -0.5 Z: 0.5
+X: -0.5 Y: -0.5 Z: 0.5
+X: -0.5 Y: -0.5 Z: -0.5
+X: -0.5 Y: -0.5 Z: -0.5
+X: 0.5 Y: -0.5 Z: -0.5
+X: -0.5 Y: 0.5 Z: 0.5
+X: -0.5 Y: -0.5 Z: 0.5
+X: 0.5 Y: 0.5 Z: 0.5
+X: 0.5 Y: -0.5 Z: 0.5
+X: -0.5 Y: 0.5 Z: -0.5
+X: -0.5 Y: -0.5 Z: -0.5
+X: 0.5 Y: 0.5 Z: -0.5
+X: 0.5 Y: -0.5 Z: -0.5".Replace(" ",string.Empty),
+                System.String.Join(Environment.NewLine, edgeVerts.Select(x=>x.ToString())).Replace(" ",string.Empty));
+        }
+
+
+
     }
 
     internal static class GeometryDictionaryExtensions
