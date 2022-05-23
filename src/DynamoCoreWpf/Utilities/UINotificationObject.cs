@@ -5,6 +5,10 @@ using System.Linq;
 
 namespace Dynamo.Wpf.Utilities
 {
+    /// <summary>
+    /// Wrapper over Microsoft.Practices.Prism.ViewModel.NotificationObject
+    /// Provides more controls over notifications at UI level
+    /// </summary>
     public class UINotificationObject : NotificationObject
     {
         internal Core.PropertyChangeManager PropertyChangeManager { get; } = new Core.PropertyChangeManager();
