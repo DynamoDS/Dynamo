@@ -250,6 +250,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Temporarily dismiss all warnings of this node..
+        /// </summary>
+        public static string BubbleDismissAllButtonTooltip {
+            get {
+                return ResourceManager.GetString("BubbleDismissAllButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must provide a Build version as a non-negative integer..
         /// </summary>
         public static string BuildVersionNonNegative {
@@ -7017,6 +7026,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RunCompletedWithScaleChangeMessage {
             get {
                 return ResourceManager.GetString("RunCompletedWithScaleChangeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with dismissed warnings..
+        /// </summary>
+        public static string RunCompletedWithWarningsDismissedMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithWarningsDismissedMessage", resourceCulture);
             }
         }
         
