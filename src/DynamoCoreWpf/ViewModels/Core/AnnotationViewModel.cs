@@ -1026,7 +1026,10 @@ namespace Dynamo.ViewModels
             //with many nodes selected at the same time - which makes moving the group very slow
 
             var groupedGroupsNodes = this.AnnotationModel.Nodes.OfType<AnnotationModel>().SelectMany(x => x.Nodes);
-            DynamoSelection.Instance.Selection.AddRange(this.AnnotationModel.Nodes.Concat(groupedGroupsNodes));
+            foreach (var item in this.AnnotationModel.Nodes.Concat(groupedGroupsNodes))
+            {
+                DynamoSelection.Instance.Selection.AddUnique(item);
+            }
         }
 
         internal void SelectGroupOnly()

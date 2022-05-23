@@ -16,6 +16,8 @@ namespace Dynamo.Core
     {
         //TODO lock field during these accessors or use concurrent structure?
         protected IEnumerable<string> PropertyNames { get; set; }
+        internal List<string> DeferedNotifications { get; set; }
+
         /// <summary>
         /// Disable property change notifications for a list of a props.
         /// The previous set of suppressed notifications will be cleared.
@@ -36,6 +38,7 @@ namespace Dynamo.Core
         {
             PropertyNames = null;
         }
+
         /// <summary>
         /// Checks if notifications are suppressed for a specific property.
         /// </summary>
@@ -48,6 +51,23 @@ namespace Dynamo.Core
                 return true;
             }
             return !PropertyNames.Contains(prop);
+        }
+
+        /// <summary>
+        /// Checks if notifications are defered.
+        /// Adds property to deferred list if deferring is enabled.
+        /// </summary>
+        /// <param name="prop"></param>
+        /// <returns></returns>
+        internal bool ShouldDeferNotification(string prop)
+        {
+            if (DeferedNotifications != null)
+            {
+                if (!DeferedNotifications.Contains(prop))
+                    DeferedNotifications.Add(prop);
+                return true;
+            }
+            return false;
         }
     }
 }

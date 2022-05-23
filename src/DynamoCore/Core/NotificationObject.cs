@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Dynamo.Core
 {
-
     /// <summary>
     /// This class notifies the View when there is a change.    
     /// </summary>
@@ -16,6 +17,27 @@ namespace Dynamo.Core
         /// </summary>        
         public event PropertyChangedEventHandler PropertyChanged;
 
+        internal static IDisposable DeferPropertyChanges(NotificationObject obj)
+        {
+            if (obj == null) return null;
+
+            return Scheduler.Disposable.Create(
+                () => { 
+                    obj.PropertyChangeManager.DeferedNotifications = new List<string>();
+                }, 
+                () => {
+                    if (obj.PropertyChangeManager.DeferedNotifications != null)
+                    {
+                        var properties = obj.PropertyChangeManager.DeferedNotifications.ToList();
+                        obj.PropertyChangeManager.DeferedNotifications = null;
+                        foreach (var item in properties)
+                        {
+                            obj.RaisePropertyChanged(item);
+                        }
+                    }
+                });
+        }
+
         /// <summary>
         /// Raises this object's PropertyChanged event.
         /// </summary>
@@ -27,6 +49,12 @@ namespace Dynamo.Core
             {
                 return;
             }
+
+            if (PropertyChangeManager.ShouldDeferNotification(propertyName))
+            {
+                return;
+            }
+
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null)
             {

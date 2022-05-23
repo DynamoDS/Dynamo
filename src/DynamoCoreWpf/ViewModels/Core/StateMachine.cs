@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Core;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -152,8 +153,15 @@ namespace Dynamo.ViewModels
                     "UpdateDraggedSelection cannot be called now");
             }
 
-            foreach (DraggedNode draggedNode in draggedNodes)
-                draggedNode.Update(mouseCursor);
+            var parentAnnotation = DynamoSelection.Instance.Selection.OfType<AnnotationModel>().FirstOrDefault(x => x.HasNestedGroups);
+            var parentAnnotationVM = parentAnnotation != null ? Annotations.FirstOrDefault(x => x.AnnotationModel.GUID == parentAnnotation.GUID) : null;
+
+            using (UINotificationObject.DeferPropertyChanges(parentAnnotationVM))
+            using (NotificationObject.DeferPropertyChanges(parentAnnotation))
+            {
+                foreach (DraggedNode draggedNode in draggedNodes)
+                    draggedNode.Update(mouseCursor);
+            }
         }
 
         internal void EndDragSelection(Point2D mouseCursor)
@@ -381,6 +389,8 @@ namespace Dynamo.ViewModels
             ILocatable locatable = null;
             internal Guid guid;
             double initialPositionX = 0, initialPositionY = 0;
+            // Tolerance used to decide if an object has changed position during drag operations
+            private readonly double dragTol = .0001;
 
             /// <summary>
             /// Construct a DraggedNode for a given ILocatable object.
@@ -410,24 +420,32 @@ namespace Dynamo.ViewModels
 
             public void Update(Point2D mouseCursor)
             {
+                if (!HasChangedPosition(mouseCursor))
+                {
+                    return;
+                }
                 // Make sure the nodes do not go beyond the region.
-                double x = mouseCursor.X - deltaX;
-                double y = mouseCursor.Y - deltaY;
-                locatable.X = x;
-                locatable.Y = y;
+                locatable.X = mouseCursor.X - deltaX;
+                locatable.Y = mouseCursor.Y - deltaY;
                 locatable.ReportPosition();
+            }
+
+            private bool AreAlmostEqual(double a, double b)
+            {
+                return Math.Abs(a - b) < dragTol;
             }
 
             internal bool HasChangedPosition(Point2D mousePoint)
             {
                 //This boolean is for cases when the model has already changed its position before ending the drag action
-                bool hasAlreadyChanged = !(initialPositionX == locatable.X && initialPositionY == locatable.Y);
+                bool hasAlreadyChanged = !AreAlmostEqual(initialPositionX, locatable.X) || 
+                    !AreAlmostEqual(initialPositionY, locatable.Y);
 
                 double x = mousePoint.X - deltaX;
                 double y = mousePoint.Y - deltaY;
 
                 //This is  boolean is to check if the model will change its position after recording its properties in the undo stack
-                bool willChange = initialPositionX != x || initialPositionY != y;
+                bool willChange = !AreAlmostEqual(initialPositionX, x) || !AreAlmostEqual(initialPositionY, y);
 
                 return hasAlreadyChanged || willChange;
             }

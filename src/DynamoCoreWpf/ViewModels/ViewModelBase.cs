@@ -1,11 +1,10 @@
 ﻿using System;
-using Dynamo.Configuration;
-using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Wpf.Utilities;
 using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
 {
-    public abstract class ViewModelBase : NotificationObject,IDisposable
+    public abstract class ViewModelBase : UINotificationObject, IDisposable
     {
         [JsonIgnore]
         public bool IsDebugBuild
