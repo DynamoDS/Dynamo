@@ -7,6 +7,7 @@ using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
@@ -209,7 +210,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 CalculateStep(GuideFlow.FORWARD, CurrentStepSequence);
                 CurrentStep.Show(GuideFlow.FORWARD);
-                Logging.Analytics.TrackEvent(Logging.Actions.Next, Logging.Categories.GuidedTourOperations, GuideNameResource, CurrentStep.Sequence);
+                Logging.Analytics.TrackEvent(Logging.Actions.Next, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(GuideNameResource).Replace("_", ""), CurrentStep.Sequence);
             }
         }
 

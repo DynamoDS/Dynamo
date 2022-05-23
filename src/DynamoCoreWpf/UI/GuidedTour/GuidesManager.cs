@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
@@ -164,7 +165,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
                 Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
-                Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, currentGuide.GuideNameResource, currentGuide.SequenceOrder);
+                Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource).Replace("_", ""), currentGuide.SequenceOrder);
             }
         }
 
@@ -223,8 +224,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     tmpStep.StepClosed -= Popup_StepClosed;
                 }
-                Logging.Analytics.TrackEvent(Logging.Actions.End, Logging.Categories.GuidedTourOperations, currentGuide.GuideNameResource, currentGuide.SequenceOrder);
-                Logging.Analytics.TrackTimedEvent(Logging.Categories.GuidedTourOperations, Logging.Actions.TimeElapsed.ToString(), stopwatch.Elapsed, currentGuide.GuideNameResource);
+                string guidName = Resources.ResourceManager.GetString(currentGuide.GuideNameResource).Replace("_", "");
+                Logging.Analytics.TrackEvent(Logging.Actions.End, Logging.Categories.GuidedTourOperations, guidName, currentGuide.SequenceOrder);
+                Logging.Analytics.TrackTimedEvent(Logging.Categories.GuidedTourOperations, Logging.Actions.TimeElapsed.ToString(), stopwatch.Elapsed, guidName);
                 currentGuide.ClearGuide();
                 GuideFlowEvents.GuidedTourStart -= TourStarted;
                 GuideFlowEvents.GuidedTourFinish -= TourFinished;
