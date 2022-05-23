@@ -153,11 +153,27 @@ namespace Dynamo.ViewModels
                     "UpdateDraggedSelection cannot be called now");
             }
 
-            var parentAnnotation = DynamoSelection.Instance.Selection.OfType<AnnotationModel>().FirstOrDefault(x => x.HasNestedGroups);
-            var parentAnnotationVM = parentAnnotation != null ? Annotations.FirstOrDefault(x => x.AnnotationModel.GUID == parentAnnotation.GUID) : null;
+            IDisposable deferAnnotationNotifications = null;
+            var groupsIDs = DynamoSelection.Instance.Selection.OfType<AnnotationModel>()
+                .Where(x => x.HasNestedGroups)
+                .Select(x => x.GUID);
 
-            using (UINotificationObject.DeferPropertyChanges(parentAnnotationVM))
-            using (NotificationObject.DeferPropertyChanges(parentAnnotation))
+            if (groupsIDs.Any())
+            {// Annotations with nested groups are selected
+                var groupVMs = Annotations.Where(x => groupsIDs.Contains(x.AnnotationModel.GUID)).ToList();
+                var deferred = groupVMs.Select(x =>
+                    (model: UINotificationObject.DeferPropertyChanges(x),
+                    viewModel: NotificationObject.DeferPropertyChanges(x.AnnotationModel)
+                )).ToList();
+
+                deferAnnotationNotifications = Scheduler.Disposable.Create(() => deferred.ForEach(x =>
+                {
+                    x.model.Dispose();
+                    x.viewModel.Dispose();
+                }));
+            }
+
+            using (deferAnnotationNotifications)
             {
                 foreach (DraggedNode draggedNode in draggedNodes)
                     draggedNode.Update(mouseCursor);
