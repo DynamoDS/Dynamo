@@ -11,7 +11,7 @@ namespace Dynamo.Wpf.Utilities
     /// </summary>
     public class UINotificationObject : NotificationObject
     {
-        internal Core.PropertyChangeManager PropertyChangeManager { get; } = new Core.PropertyChangeManager();
+        internal Core.PropertyChangeManager PropertyChangeManager;
         protected override void RaisePropertyChanged(string propertyName)
         {
             if (!PropertyChangeManager.ShouldRaiseNotification(propertyName))
@@ -25,6 +25,28 @@ namespace Dynamo.Wpf.Utilities
             }
 
             base.RaisePropertyChanged(propertyName);
+        }
+
+        /// <summary>
+        /// Disable property change notifications for a list of a props.
+        /// The previous set of suppressed notifications will be cleared.
+        /// This API is meant to be used only for a short time and Dispose should be
+        /// called on the object this call returns.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="props"></param>
+        /// <returns></returns>
+        internal static IDisposable SuppressPropertyChanges(UINotificationObject obj, params string[] props)
+        {
+            if (obj == null) return null;
+
+            return Scheduler.Disposable.Create(
+                () => {
+                    obj.PropertyChangeManager.PropertiesToSuppress = new List<string>(props);
+                },
+                () => {
+                    obj.PropertyChangeManager.PropertiesToSuppress = null;
+                });
         }
 
         internal static IDisposable DeferPropertyChanges(UINotificationObject obj)

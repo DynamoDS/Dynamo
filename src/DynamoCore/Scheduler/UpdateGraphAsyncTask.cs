@@ -6,6 +6,7 @@ using ProtoCore.BuildData;
 using ProtoScript.Runners;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Core;
 
 namespace Dynamo.Scheduler
 {
@@ -145,7 +146,7 @@ namespace Dynamo.Scheduler
                     node.WasRenderPackageUpdatedAfterExecution = false;
                     if (node.State == ElementState.Warning)
                     {
-                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                        using (NotificationObject.SuppressPropertyChanges(node, nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
                         {
                             node.ClearErrorsAndWarnings();
                         }

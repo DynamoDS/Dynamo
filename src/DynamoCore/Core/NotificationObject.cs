@@ -11,11 +11,34 @@ namespace Dynamo.Core
     [Serializable]
     public abstract class NotificationObject : INotifyPropertyChanged
     {
-        internal PropertyChangeManager PropertyChangeManager { get; } = new PropertyChangeManager();
+        internal PropertyChangeManager PropertyChangeManager;
         /// <summary>
         /// Raised when a property on this object has a new value.
         /// </summary>        
         public event PropertyChangedEventHandler PropertyChanged;
+
+
+        /// <summary>
+        /// Disable property change notifications for a list of a props.
+        /// The previous set of suppressed notifications will be cleared.
+        /// This API is meant to be used only for a short time and Dispose should be
+        /// called on the object this call returns.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="props"></param>
+        /// <returns></returns>
+        internal static IDisposable SuppressPropertyChanges(NotificationObject obj, params string[] props)
+        {
+            if (obj == null) return null;
+
+            return Scheduler.Disposable.Create(
+                () => {
+                    obj.PropertyChangeManager.PropertiesToSuppress = new List<string>(props);
+                },
+                () => {
+                    obj.PropertyChangeManager.PropertiesToSuppress = null;
+                });
+        }
 
         internal static IDisposable DeferPropertyChanges(NotificationObject obj)
         {

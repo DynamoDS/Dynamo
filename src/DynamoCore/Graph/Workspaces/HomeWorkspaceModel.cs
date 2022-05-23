@@ -750,7 +750,7 @@ namespace Dynamo.Graph.Workspaces
                 var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node == null)
                     continue;
-                using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                using (NotificationObject.SuppressPropertyChanges(node, nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
                 {
                     node.Warning(message.Value); // Update node warning message.
                 }
