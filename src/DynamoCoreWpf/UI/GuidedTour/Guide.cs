@@ -30,6 +30,22 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal string Name { get; set; }
 
         /// <summary>
+        /// This property represents the workflow of the guides
+        /// I.E: 
+        /// 1 - User interface guide
+        /// 2 - Onboarding guide
+        /// </summary>
+        [JsonProperty("SequenceOrder")]
+        internal int SequenceOrder { get; set; }
+
+        /// <summary>
+        /// This property has the resource key string for the guide
+        /// </summary>
+        [JsonProperty("GuideNameResource")]
+        internal string GuideNameResource { get; set; }
+
+
+        /// <summary>
         /// This variable will contain the current step according to the steps flow in the Guide
         /// </summary>
         internal Step CurrentStep { get; set; }

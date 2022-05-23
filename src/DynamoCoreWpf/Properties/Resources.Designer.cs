@@ -250,6 +250,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Temporarily dismiss all warnings of this node..
+        /// </summary>
+        public static string BubbleDismissAllButtonTooltip {
+            get {
+                return ResourceManager.GetString("BubbleDismissAllButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must provide a Build version as a non-negative integer..
         /// </summary>
         public static string BuildVersionNonNegative {
@@ -2804,7 +2813,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User Interface Tour.
+        ///   Looks up a localized string similar to _User Interface Tour.
         /// </summary>
         public static string GetStartedGuide {
             get {
@@ -2813,7 +2822,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The library contains all default functions #(nodes)=https://www.dynamoprimer.com/03_Anatomy-of-a-Dynamo-Definition/3-1_dynamo_nodes.html of Dynamo, as well as custom nodes you may have loaded. \n\nTo find a node, search the library or browse its categories..
+        ///   Looks up a localized string similar to The library contains all default functions #(nodes)=https://primer2.dynamobim.org/4_nodes_and_wires of Dynamo, as well as custom nodes you may have loaded. \n\nTo find a node, search the library or browse its categories..
         /// </summary>
         public static string GetStartedGuideLibraryText {
             get {
@@ -4495,7 +4504,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Onboarding.
+        ///   Looks up a localized string similar to _Getting Started.
         /// </summary>
         public static string OnboardingGuide {
             get {
@@ -4590,6 +4599,24 @@ namespace Dynamo.Wpf.Properties {
         public static string OnboardingPlaceNodeTitle {
             get {
                 return ResourceManager.GetString("OnboardingPlaceNodeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in Dynamo Primer..
+        /// </summary>
+        public static string OnboardingSuccessText {
+            get {
+                return ResourceManager.GetString("OnboardingSuccessText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success.
+        /// </summary>
+        public static string OnboardingSuccessTitle {
+            get {
+                return ResourceManager.GetString("OnboardingSuccessTitle", resourceCulture);
             }
         }
         
@@ -5155,6 +5182,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Repository.
+        /// </summary>
+        public static string PackageRepositoryLabel {
+            get {
+                return ResourceManager.GetString("PackageRepositoryLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search for packages.
         /// </summary>
         public static string PackageSearchHeader {
@@ -5470,7 +5506,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages.
+        ///   Looks up a localized string similar to _Packages.
         /// </summary>
         public static string PackagesGuide {
             get {
@@ -5955,6 +5991,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Website.
+        /// </summary>
+        public static string PackageWebsiteLabel {
+            get {
+                return ResourceManager.GetString("PackageWebsiteLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Periodic.
         /// </summary>
         public static string Periodic {
@@ -6261,7 +6306,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disable receiving trust warning.
+        ///   Looks up a localized string similar to Disable trust warning.
         /// </summary>
         public static string PreferencesViewTrustWarningLabel {
             get {
@@ -6270,7 +6315,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We recommend keeping this toggle off to reduce security risks..
+        ///   Looks up a localized string similar to This applies to Dynamo, Dynamo Player and Generative Design Player. We recommend keeping this toggle off to avoid inadvertently opening a file from an untrusted location..
         /// </summary>
         public static string PreferencesViewTrustWarningTooltipText {
             get {
@@ -7080,6 +7125,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RunCompletedWithScaleChangeMessage {
             get {
                 return ResourceManager.GetString("RunCompletedWithScaleChangeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with dismissed warnings..
+        /// </summary>
+        public static string RunCompletedWithWarningsDismissedMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithWarningsDismissedMessage", resourceCulture);
             }
         }
         
