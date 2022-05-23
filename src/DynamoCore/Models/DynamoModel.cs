@@ -1657,7 +1657,8 @@ namespace Dynamo.Models
         /// <param name="markNodesAsDirty">Set this parameter to true to force
         /// reset of the execution substrate. Note that setting this parameter
         /// to true will have a negative performance impact.</param>
-        public virtual void ResetEngine(bool markNodesAsDirty = false)
+        /// <param name="forceAutomaticWithoutRun">This parameter will indicate not execute the Graph but the RunMode will be Automatic</param>
+        public virtual void ResetEngine(bool markNodesAsDirty = false, bool forceAutomaticWithoutRun = false)
         {
             // TODO(Luke): Push this into a resync call with the engine controller
             //
@@ -1675,7 +1676,7 @@ namespace Dynamo.Models
             ResetEngineInternal();
             foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
             {
-                workspaceModel.ResetEngine(EngineController, markNodesAsDirty);
+                workspaceModel.ResetEngine(EngineController, markNodesAsDirty, forceAutomaticWithoutRun);
             }
         }
 
@@ -1732,10 +1733,11 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="fileContents">Json file content</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// <param name="forceAutomaticWithoutRun">This parameter will indicate not execute the Graph but the RunMode will be Automatic</param>
         /// execution mode specified in the file and set manual mode</param>
-        public void OpenFileFromJson(string fileContents, bool forceManualExecutionMode = false)
+        public void OpenFileFromJson(string fileContents, bool forceManualExecutionMode = false, bool forceAutomaticWithoutRun = false)
         {
-            OpenJsonFileFromPath(fileContents, "", forceManualExecutionMode);
+            OpenJsonFileFromPath(fileContents, "", forceManualExecutionMode, forceAutomaticWithoutRun);
             return;
         }
 
@@ -1744,14 +1746,15 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// <param name="forceAutomaticWithoutRun">This parameter will indicate not execute the Graph but the RunMode will be Automatic</param>
         /// execution mode specified in the file and set manual mode</param>
-        public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
+        public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false, bool forceAutomaticWithoutRun = false)
         {
             XmlDocument xmlDoc;
             Exception ex;
             if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
             {
-                OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode, forceAutomaticWithoutRun);
                 return;
             }
             else
@@ -1768,7 +1771,7 @@ namespace Dynamo.Models
 
                     if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
                     {
-                        OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
+                        OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, forceAutomaticWithoutRun);
                         return;
                     }
                     else
@@ -1812,9 +1815,10 @@ namespace Dynamo.Models
         /// <param name="fileContents">Json file contents</param>
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// <param name="forceAutomaticWithoutRun">This parameter will indicate not execute the Graph but the RunMode will be Automatic</param>
         /// execution mode specified in the file and set manual mode</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode)
+        private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool forceAutomaticWithoutRun)
         {
             try
             {
@@ -1825,14 +1829,14 @@ namespace Dynamo.Models
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
                         WorkspaceModel ws;
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, forceAutomaticWithoutRun, out ws))
                         {
                             OpenWorkspace(ws);
                             //Raise an event to deserialize the view parameters before
                             //setting the graph to run
                             OnComputeModelDeserialized();
 
-                            SetPeriodicEvaluation(ws);
+                            SetPeriodicEvaluation(ws, forceAutomaticWithoutRun);
                         }
                     }
                 }
@@ -1850,9 +1854,10 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// <param name="forceAutomaticWithoutRun">This parameter will indicate not execute the Graph but the RunMode will be Automatic</param>
         /// execution mode specified in the file and set manual mode</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode)
+        private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode, bool forceAutomaticWithoutRun)
         {
             try
             {
@@ -1878,7 +1883,7 @@ namespace Dynamo.Models
 
                             // Set up workspace cameras here
                             OnWorkspaceOpening(xmlDoc);
-                            SetPeriodicEvaluation(ws);
+                            SetPeriodicEvaluation(ws, forceAutomaticWithoutRun);
                         }
                     }
                 }
@@ -1916,7 +1921,7 @@ namespace Dynamo.Models
         }
 
 
-        private void SetPeriodicEvaluation(WorkspaceModel ws)
+        private void SetPeriodicEvaluation(WorkspaceModel ws, bool forceAutomaticWithoutRun = false)
         {
             // TODO: #4258
             // The following logic to start periodic evaluation will need to be moved
@@ -1928,7 +1933,7 @@ namespace Dynamo.Models
                 // TODO: #4258
                 // Remove this ResetEngine call when multiple home workspaces is supported.
                 // This call formerly lived in DynamoViewModel
-                ResetEngine();
+                ResetEngine(false, forceAutomaticWithoutRun);
 
                 if (hws.RunSettings.RunType == RunType.Periodic)
                 {
@@ -1942,6 +1947,7 @@ namespace Dynamo.Models
           string fileContents,
           DynamoPreferencesData dynamoPreferences,
           bool forceManualExecutionMode,
+          bool forceAutomaticWithoutRun,
           out WorkspaceModel workspace)
         {
             if (!string.IsNullOrEmpty(filePath))

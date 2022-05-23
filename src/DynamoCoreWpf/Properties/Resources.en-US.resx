@@ -3144,4 +3144,37 @@ To install the latest version of a package, click Install. \n
   <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
     <value>Run the graph</value>
   </data>
+  <data name="FileTrustWarningCheckBoxText" xml:space="preserve">
+    <value>Trust this file’s location in the future.</value>
+  </data>
+  <data name="FileTrustWarningPopupNoCloseFile" xml:space="preserve">
+    <value>No, close file</value>
+  </data>
+  <data name="FileTrustWarningPopupSettings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="FileTrustWarningPopupText" xml:space="preserve">
+    <value>This file is stored in an untrusted location. Do you want to run this file?</value>
+  </data>
+  <data name="FileTrustWarningPopupTitle" xml:space="preserve">
+    <value>Run external file?</value>
+  </data>
+  <data name="FileTrustWarningPopupTooltip1" xml:space="preserve">
+    <value>External content may bring risks to your system security.</value>
+  </data>
+  <data name="FileTrustWarningPopupTooltip2" xml:space="preserve">
+    <value>Current location will be added to trusted location. You can manage in Preference -&gt;Security Settings.</value>
+  </data>
+  <data name="FileTrustWarningPopupYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
+    <value>Graph execution is suspended until warning is resolved</value>
+  </data>
+  <data name="DynamoShowFileTrustWarning" xml:space="preserve">
+    <value>Show File Trust Warning</value>
+  </data>
+  <data name="DynamoViewRunTypesComboBoxToolTipDisabled" xml:space="preserve">
+    <value>Run mode can not be changed until warning is resolved</value>
+  </data>
 </root>

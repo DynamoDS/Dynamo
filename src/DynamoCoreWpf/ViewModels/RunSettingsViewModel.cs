@@ -154,14 +154,43 @@ namespace Dynamo.Wpf.ViewModels
                     Model.RunType != RunType.Periodic;
             }
         }
+        public bool RunTypesEnabled
+        {
+            get
+            {
+                return Model.RunTypesEnabled;
+            }
+        }
+
 
         public string RunButtonToolTip
         {
             get
             {
-                return RunButtonEnabled
+                if (RunButtonEnabled == false && RunTypesEnabled == false)
+                    return Resources.DynamoViewRunButtonToolTipDisabledFileTrust;
+                else
+                {
+                    return RunButtonEnabled
                     ? Resources.DynamoViewRunButtonTooltip
                     : Resources.DynamoViewRunButtonToolTipDisabled;
+                }              
+            }
+        }
+
+        public string RunTypesComboBoxToolTip
+        {
+            get
+            {
+               return Resources.DynamoViewRunTypesComboBoxToolTipDisabled;
+            }
+        }
+
+        public bool RunTypesComboBoxToolTipIsEnabled
+        {
+            get
+            {
+                return Model.RunTypesComboBoxToolTipIsEnabled;
             }
         }
 
@@ -301,6 +330,12 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("SelectedRunTypeItem");
                     RaisePropertyChanged("RunButtonVisibility");
                     RunTypeChangedRun(null);
+                    break;
+                case "RunTypesEnabled":
+                    RaisePropertyChanged("RunTypesEnabled");
+                    break;
+                case "RunTypesComboBoxToolTipIsEnabled":
+                    RaisePropertyChanged("RunTypesComboBoxToolTipIsEnabled");
                     break;
             }
         }

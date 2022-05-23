@@ -38,6 +38,7 @@ using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
+using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
 using ISelectable = Dynamo.Selection.ISelectable;
@@ -172,6 +173,11 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("WorkspaceActualHeight");
             RaisePropertyChanged("WorkspaceActualWidth");
         }
+
+        /// <summary>
+        /// This property is the ViewModel that will be passed to the File Trust Warning popup when is created.
+        /// </summary>
+        public FileTrustWarningViewModel FileTrustWViewModel { get; set; }
 
         private WorkspaceViewModel currentWorkspaceViewModel;
         private string filePath;
@@ -732,6 +738,8 @@ namespace Dynamo.ViewModels
             {
                 model.State = DynamoModel.DynamoModelState.StartedUI;
             }
+
+            FileTrustWViewModel = new FileTrustWarningViewModel();
         }
 
         /// <summary>
@@ -1595,7 +1603,25 @@ namespace Dynamo.ViewModels
                 {
                     filePath = parameters as string;
                 }
-                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
+
+                var directoryName = Path.GetDirectoryName(filePath);
+                //Checks if the file that is being opened is in the trusted list.
+                if(!PreferenceSettings.TrustedLocations.Contains(directoryName))
+                {
+                    //The third parameter is forceAutomaticWithoutRun, so it means that if the RunType = Automatic the graph won't be executed
+                    ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, true));
+
+                    if(FileTrustWViewModel != null)
+                    {
+                        FileTrustWViewModel.DynFileDirectoryName = directoryName;
+                        FileTrustWViewModel.ShowWarningPopup = true;
+                    }                  
+                }
+                else
+                {
+                    ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
+                }
+                    
             }
             catch (Exception e)
             {

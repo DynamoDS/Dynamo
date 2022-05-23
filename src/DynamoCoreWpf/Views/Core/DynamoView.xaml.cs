@@ -44,6 +44,7 @@ using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
+using Dynamo.Wpf.Views.FileTrust;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
@@ -95,6 +96,8 @@ namespace Dynamo.Controls
         internal Dictionary<string, ExtensionWindow> ExtensionWindows { get; set; } = new Dictionary<string, ExtensionWindow>();
         internal ViewExtensionManager viewExtensionManager;
         internal Watch3DView BackgroundPreview { get; private set; }
+
+        private FileTrustWarning warningPopup = null;
 
         /// <summary>
         /// Constructor
@@ -219,6 +222,9 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
             FocusableGrid.InputBindings.Clear();
+            
+            if(warningPopup == null)
+                warningPopup = new FileTrustWarning(this);
         }
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
@@ -742,6 +748,9 @@ namespace Dynamo.Controls
             //When the Dynamo window is moved to another place we need to update the Steps location
             if(dynamoViewModel.MainGuideManager != null)
                 dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
+
+            if (warningPopup != null && warningPopup.IsOpen)
+                warningPopup.UpdatePopupLocation();
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -752,6 +761,9 @@ namespace Dynamo.Controls
             //When the Dynamo window size is changed then we need to update the Steps location
             if (dynamoViewModel.MainGuideManager != null)
                 dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
+
+            if (warningPopup != null && warningPopup.IsOpen)
+                warningPopup.UpdatePopupLocation();
         }
 
         private void InitializeLogin()
@@ -2468,6 +2480,12 @@ namespace Dynamo.Controls
             {
                 sidebarGrid.Visibility = Visibility.Visible;
             }
+        }
+
+        private void FileTrustWarning_Click(object sender, RoutedEventArgs e)
+        {
+            var dynViewModel = DataContext as DynamoViewModel;
+            dynViewModel.FileTrustWViewModel.ShowWarningPopup = true;
         }
 
         public void Dispose()

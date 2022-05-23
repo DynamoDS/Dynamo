@@ -75,6 +75,19 @@
                                             Property="BorderThickness"
                                             Value="4" />
                                 </Trigger>
+
+                                <Trigger Property="Button.IsEnabled"
+                                         Value="false">
+                                    <Setter TargetName="inner"
+                                            Property="Background"
+                                            Value="#218d81" />
+                                    <Setter TargetName="text"
+                                            Property="Foreground"
+                                            Value="#bebebe" />
+                                    <Setter TargetName="container"
+                                            Property="BorderBrush"
+                                            Value="#218d81" />
+                                </Trigger>
                             </ControlTemplate.Triggers>
 
                         </ControlTemplate>
@@ -93,9 +106,16 @@
                       HorizontalContentAlignment="Left"
                       VerticalContentAlignment="Center"
                       FontSize="14px"
+                      IsEnabled="{Binding RunTypesEnabled}"
                       ItemsSource="{Binding RunTypeItems}"
                       SelectedItem="{Binding SelectedRunTypeItem}"
+                      ToolTipService.ShowOnDisabled="True"
+                      ToolTipService.Placement="Bottom"
+                      ToolTipService.IsEnabled="{Binding RunTypesComboBoxToolTipIsEnabled}"
                       Style="{StaticResource RefreshRunSettingsComboBox}">
+                <ComboBox.ToolTip>
+                    <ToolTip Content="{Binding RunTypesComboBoxToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                </ComboBox.ToolTip>
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ComboBoxItem}">
                         <Setter Property="IsEnabled"

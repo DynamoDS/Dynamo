@@ -19,6 +19,8 @@ namespace Dynamo.Models
         private int runPeriod;
         private RunType runType;
         private bool runEnabled;
+        private bool runTypesEnabled;
+        private bool runTypesComboBoxToolTipIsEnabled;
 
         /// <summary>
         /// Default milliseconds number for the period in periodic run.
@@ -73,6 +75,36 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// This property will enable or disable the ComboBox RunTypes
+        /// </summary>
+        public bool RunTypesEnabled
+        {
+            get { return runTypesEnabled; }
+            set
+            {
+                if (runTypesEnabled == value) return;
+
+                runTypesEnabled = value;
+                RaisePropertyChangeWithDebug(nameof(RunTypesEnabled));
+            }
+        }
+
+        /// <summary>
+        /// This property will enable or disable the tooltip shown over the ComboBox RunType
+        /// </summary>
+        public bool RunTypesComboBoxToolTipIsEnabled
+        {
+            get { return runTypesComboBoxToolTipIsEnabled; }
+            set
+            {
+                if (runTypesComboBoxToolTipIsEnabled == value) return;
+
+                runTypesComboBoxToolTipIsEnabled = value;
+                RaisePropertyChangeWithDebug(nameof(RunTypesComboBoxToolTipIsEnabled));
+            }
+        }
+
         #endregion
 
         #region Constructors
@@ -85,6 +117,7 @@ namespace Dynamo.Models
             RunPeriod = DefaultRunPeriod;
             RunType = RunType.Manual;
             RunEnabled = true;
+            RunTypesEnabled = true;
         }
 
         /// <summary>
@@ -97,6 +130,7 @@ namespace Dynamo.Models
             RunPeriod = period;
             RunType = runType;
             RunEnabled = true;
+            RunTypesEnabled = true;
         }
 
         #endregion
@@ -106,6 +140,7 @@ namespace Dynamo.Models
         internal void Reset()
         {
             RunEnabled = true;
+            RunTypesEnabled = true;
             RunType = RunType.Automatic;
             RunPeriod = DefaultRunPeriod;
         }
