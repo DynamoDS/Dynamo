@@ -229,7 +229,7 @@ namespace EmitMSIL
                 {
                     throw new Exception("Left node is expected to be an identifier.");
                 }
-                if(variables.TryGetValue(lNode.Value, out _))
+                if(variables.ContainsKey(lNode.Value))
                 {
                     // variable being assigned already exists in dictionary.
                     throw new Exception("Variable redefinition is not allowed.");
