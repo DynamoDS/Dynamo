@@ -17,10 +17,7 @@
 	</ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8734">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8734"/>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Xaml" />
