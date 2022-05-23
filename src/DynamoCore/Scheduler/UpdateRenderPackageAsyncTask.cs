@@ -212,6 +212,7 @@ namespace Dynamo.Scheduler
         {
             var packageWithTransform = package as ITransformable;
             var packageWithInstances = package as IInstancingRenderPackage;
+            var packageWithLabelInstances = package as IRenderInstancedLabels;
 
             try
             {
@@ -240,23 +241,56 @@ namespace Dynamo.Scheduler
                         if (factory.TessellationParameters.ShowEdges)
                         {
                             //TODO if we start to instance more types, expand this edge generation.
+                            //and the swtich case below.
                             if (graphicItem is Topology topology)
                             {
-                                var edges = topology.Edges;
-                                foreach (var geom in edges.Select(edge => edge.CurveGeometry))
+                                Topology topologyInIdentityCS = null;
+                                switch (topology)
                                 {
-                                    geom.Tessellate(package, factory.TessellationParameters);
-                                    geom.Dispose();
+                                    case Cuboid _:
+                                        topologyInIdentityCS = Cuboid.ByLengths();
+                                        break;
                                 }
+                                //if topologyInIdentityCS is still null or Edges is null 
+                                //don't attempt to add any graphic edges.
+                                var edges = topologyInIdentityCS?.Edges;
+                                if (edges != null)
+                                {
+                                    foreach (var geom in edges.Select(edge => edge.CurveGeometry))
+                                    {
+                                        geom.Tessellate(package, factory.TessellationParameters);
+                                        geom.Dispose();
+                                    }
 
-                                edges.ForEach(x => x.Dispose());
-                                packageWithInstances.AddInstanceGuidForLineVertexRange(prevLineIndex, package.LineVertexCount - 1, instanceableItem.BaseTessellationGuid);
+                                    edges.ForEach(x => x.Dispose());
+                                    packageWithInstances.AddInstanceGuidForLineVertexRange(prevLineIndex, package.LineVertexCount - 1, instanceableItem.BaseTessellationGuid);
+                                }
+                                topologyInIdentityCS?.Dispose();
                             }
                         }
                     }
 
                     instanceableItem.AddInstance(packageWithInstances, factory.TessellationParameters, labelKey);
-
+                    //for the instance we just added we need to add labels if autogen labels is true.
+                    if (package is IRenderLabels labelPackage && labelPackage.AutoGenerateLabels && packageWithLabelInstances != null)
+                    {
+                        if (package.MeshVertexCount > 0)
+                        {
+                            packageWithLabelInstances.AddInstancedLabel(labelKey,
+                                VertexType.MeshInstance,
+                                package.MeshVertexCount, 
+                                packageWithLabelInstances.InstanceCount(instanceableItem.BaseTessellationGuid),
+                                instanceableItem.BaseTessellationGuid) ;
+                        }
+                        else if (package.LineVertexCount > 0)
+                        {
+                            packageWithLabelInstances.AddInstancedLabel(labelKey, 
+                                VertexType.LineInstance,
+                                package.LineVertexCount,
+                                packageWithLabelInstances.InstanceCount(instanceableItem.BaseTessellationGuid),
+                                instanceableItem.BaseTessellationGuid);
+                        }
+                    }
                     return;
                 }
                 else
