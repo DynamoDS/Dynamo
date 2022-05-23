@@ -131,9 +131,7 @@ namespace Dynamo.Wpf.Views.FileTrust
             {
                 if (string.IsNullOrEmpty(fileTrustWarningViewModel.DynFileDirectoryName)) return;
                 if (dynViewModel.PreferenceSettings.TrustedLocations.Contains(fileTrustWarningViewModel.DynFileDirectoryName)) return;
-                List<string> currentTrustedLocations = dynViewModel.PreferenceSettings.TrustedLocations;
-                currentTrustedLocations.Add(fileTrustWarningViewModel.DynFileDirectoryName);
-                dynViewModel.PreferenceSettings.SetTrustedLocationsUnsafe(currentTrustedLocations);
+                dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName);
             }
         }
 
