@@ -32,7 +32,7 @@
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
+	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8734"/>
 	<PackageReference Include="Greg" Version="2.1.8122.28281" />
 	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
 	<PackageReference Include="RestSharp" Version="106.12.0" />
@@ -1503,6 +1503,7 @@
     <Resource Include="UI\Images\folder-hover-16px.png" />
     <Resource Include="UI\Images\up_16_16.png" />
     <Resource Include="UI\Images\up-hover-16px.png" />
+    <Resource Include="UI\Images\link-16px.png" />
     <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

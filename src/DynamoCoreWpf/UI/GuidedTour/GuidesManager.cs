@@ -33,7 +33,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private DynamoViewModel dynamoViewModel;
 
-        private ExitGuideWindow exitGuideWindow;
+        internal ExitGuideWindow exitGuideWindow;
 
         private RealTimeInfoWindow exitTourPopup;
 
@@ -256,6 +256,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             exitGuideWindow.IsOpen = false;
             if (currentGuide != null)
             {
+                GuideFlowEvents.IsAnyGuideActive = true;
                 currentGuide.ContinueStep(currentGuide.CurrentStep.Sequence);
             }
         }
@@ -296,6 +297,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     Name = guide.Name,
                 };
+
+                newGuide.SequenceOrder = guide.SequenceOrder;
+                newGuide.GuideNameResource = guide.GuideNameResource;
 
                 totalTooltips = (from step in guide.GuideSteps
                                  where step.StepType == Step.StepTypes.TOOLTIP ||
@@ -427,8 +431,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         {
                             FormattedText = formattedText,
                             Title = title
-                        },
-                        GuidesManager = this
+                        }
                     };
 
                     //Due that the RatingTextTitle property is just for Survey then we need to set the property using reflection
@@ -460,8 +463,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     break;
             }//StepType
 
+            newStep.GuideManager = this;
+
             return newStep;
         }
+
+        internal Guide GetNextGuide()
+        {
+            var nextGuide = Guides.FirstOrDefault(x => x.SequenceOrder == currentGuide.SequenceOrder + 1);
+            return nextGuide;
+        }
+
 
         private void Popup_StepClosed(string name, Step.StepTypes stepType)
         {

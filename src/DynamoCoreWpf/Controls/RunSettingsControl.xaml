@@ -160,7 +160,7 @@
                     Visibility="{Binding RunButtonVisibility}"
                     Style="{StaticResource RunButtonStyle}">
                 <Button.ToolTip>
-                    <ToolTip Content="{Binding RunButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                    <ToolTip Content="{Binding RunButtonToolTip}" Style="{StaticResource GenericToolTipLightTop}"/>
                 </Button.ToolTip>
             </Button>
 

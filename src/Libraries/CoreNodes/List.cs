@@ -1207,7 +1207,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Creates a new list by concatenining copies of a given list.
+        ///     Creates a new list by concatenating copies of a given list.
         /// </summary>
         /// <param name="list">List to repeat.</param>
         /// <param name="amount">Number of times to repeat.</param>

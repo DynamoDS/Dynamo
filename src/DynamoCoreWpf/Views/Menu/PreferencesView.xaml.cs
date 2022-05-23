@@ -103,6 +103,7 @@ namespace Dynamo.Wpf.Views
             managePackageCommandEvent?.Dispose();
             Analytics.TrackEvent(Actions.Close, Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            viewModel.TrustedPathsViewModel?.SaveSettingCommand?.Execute(null);
             viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
 
@@ -334,6 +335,20 @@ namespace Dynamo.Wpf.Views
             {
                 viewModel.DisableTrustWarnings = (bool)(sender as ToggleButton).IsChecked;
             }
+        }
+
+        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ScrollViewer scrollviewer = sender as ScrollViewer;
+            if (e.Delta > 0)
+            {
+                scrollviewer.LineUp();
+            }
+            else
+            {
+                scrollviewer.LineDown();
+            }
+            e.Handled = true;
         }
     }
 }

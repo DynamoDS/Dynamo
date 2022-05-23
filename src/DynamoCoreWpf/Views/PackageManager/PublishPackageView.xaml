@@ -706,8 +706,8 @@
                           Style="{StaticResource DataGrid}">
                     <DataGrid.Columns>
                         <DataGridCheckBoxColumn MinWidth="85"
-                                                MaxWidth="85"
-                                                Binding="{Binding Path=IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                MaxWidth="130"
+                                                Binding="{Binding Path=IsNodeLibrary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                 ElementStyle="{StaticResource CheckBoxStyle}"
                                                 Header="{x:Static p:Resources.PublishPackageViewNodeLibrary}"
                                                 HeaderStyle="{StaticResource DataGridColumnHeaderText}"

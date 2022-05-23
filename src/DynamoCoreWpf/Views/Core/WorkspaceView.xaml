@@ -479,7 +479,6 @@
                                     <Popup x:Name="PART_Popup"
                                            AllowsTransparency="true"
                                            Focusable="false"
-                                           HorizontalOffset="-1"
                                            IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                            Placement="Right"
                                            VerticalOffset="-2">
@@ -492,7 +491,6 @@
                                                                                                         TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                                 <Grid RenderOptions.ClearTypeHint="Enabled">
                                                     <ItemsPresenter x:Name="ItemsPresenter"
-                                                                    Margin="2"
                                                                     Grid.IsSharedSizeScope="true"
                                                                     KeyboardNavigation.DirectionalNavigation="Cycle"
                                                                     KeyboardNavigation.TabNavigation="Cycle"

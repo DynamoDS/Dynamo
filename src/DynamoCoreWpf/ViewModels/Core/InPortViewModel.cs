@@ -25,8 +25,8 @@ namespace Dynamo.ViewModels
         private bool portDefaultValueMarkerVisible;
         private bool isFunctionNode;
 
-        private static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-        private static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
+        internal static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+        internal static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
         private static SolidColorBrush PortValueMarkerGrey = new SolidColorBrush(Color.FromRgb(153, 153, 153));
 
         private static readonly SolidColorBrush PortBackgroundColorKeepListStructure = new SolidColorBrush(Color.FromRgb(83, 126, 145));
@@ -292,9 +292,9 @@ namespace Dynamo.ViewModels
         protected override void RefreshPortColors()
         {
             //This variable checks if the node is a function class
-            isFunctionNode = node.NodeModel.IsPartiallyApplied && 
-                             node.NodeModel.CachedValue != null &&
-                             node.NodeModel.CachedValue.IsFunction;
+            var isCachedValueNull = node.NodeModel.CachedValue == null || node.NodeModel.CachedValue.Data == null;
+            isFunctionNode = isCachedValueNull && node.NodeModel.IsPartiallyApplied
+                || !isCachedValueNull && node.NodeModel.CachedValue.IsFunction;
 
             if (isFunctionNode)
             {

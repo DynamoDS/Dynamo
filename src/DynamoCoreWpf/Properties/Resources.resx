@@ -2716,7 +2716,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Edit Path</value>
   </data>
   <data name="GetStartedGuide" xml:space="preserve">
-    <value>User Interface Tour</value>
+    <value>_User Interface Tour</value>
     <comment>Get Started Dynamo Tour</comment>
   </data>
   <data name="InteractiveGuides" xml:space="preserve">
@@ -2724,7 +2724,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <comment>Dynamo Guided Tours</comment>
   </data>
   <data name="GetStartedGuideLibraryText" xml:space="preserve">
-    <value>The library contains all default functions #(nodes)=https://www.dynamoprimer.com/03_Anatomy-of-a-Dynamo-Definition/3-1_dynamo_nodes.html of Dynamo, as well as custom nodes you may have loaded. \n\nTo find a node, search the library or browse its categories.</value>
+    <value>The library contains all default functions #(nodes)=https://primer2.dynamobim.org/4_nodes_and_wires of Dynamo, as well as custom nodes you may have loaded. \n\nTo find a node, search the library or browse its categories.</value>
   </data>
   <data name="GetStartedGuideLibraryTitle" xml:space="preserve">
     <value>Library</value>
@@ -2893,7 +2893,7 @@ Delete the following packages: {2}?
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
   </data>
   <data name="PackagesGuide" xml:space="preserve">
-    <value>Packages</value>
+    <value>_Packages</value>
   </data>
   <data name="PackagesGuideLearnAbout" xml:space="preserve">
     <value>Learn about packages</value>
@@ -3051,7 +3051,7 @@ To install the latest version of a package, click Install. \n
     <value>Save</value>
   </data>
   <data name="OnboardingGuide" xml:space="preserve">
-    <value>Onboarding</value>
+    <value>_Getting Started</value>
   </data>
   <data name="OnboardingGuideWelcomeTitle" xml:space="preserve">
     <value>Get started with Dynamo</value>
@@ -3087,10 +3087,10 @@ To install the latest version of a package, click Install. \n
     <value>Trust warning</value>
   </data>
   <data name="PreferencesViewTrustWarningLabel" xml:space="preserve">
-    <value>Disable receiving trust warning</value>
+    <value>Disable trust warning</value>
   </data>
   <data name="PreferencesViewTrustWarningTooltipText" xml:space="preserve">
-    <value>We recommend keeping this toggle off to reduce security risks.</value>
+    <value>This applies to Dynamo, Dynamo Player and Generative Design Player. We recommend keeping this toggle off to avoid inadvertently opening a file from an untrusted location.</value>
   </data>
   <data name="SecurityPathAddPathButtonName" xml:space="preserve">
     <value>Add Path</value>
@@ -3130,5 +3130,23 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
     <value>Run the graph</value>
+  </data>
+  <data name="BubbleDismissAllButtonTooltip" xml:space="preserve">
+    <value>Temporarily dismiss all warnings of this node.</value>
+  </data>
+  <data name="RunCompletedWithWarningsDismissedMessage" xml:space="preserve">
+    <value>Run completed with dismissed warnings.</value>
+  </data>
+  <data name="PackageRepositoryLabel" xml:space="preserve">
+    <value>Repository</value>
+  </data>
+  <data name="PackageWebsiteLabel" xml:space="preserve">
+    <value>Website</value>
+  </data>
+  <data name="OnboardingSuccessText" xml:space="preserve">
+    <value>Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in Dynamo Primer.</value>
+  </data>
+  <data name="OnboardingSuccessTitle" xml:space="preserve">
+    <value>Success</value>
   </data>
 </root>
