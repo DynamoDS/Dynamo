@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -130,7 +131,9 @@ namespace Dynamo.Wpf.Views.FileTrust
             {
                 if (string.IsNullOrEmpty(fileTrustWarningViewModel.DynFileDirectoryName)) return;
                 if (dynViewModel.PreferenceSettings.TrustedLocations.Contains(fileTrustWarningViewModel.DynFileDirectoryName)) return;
-                dynViewModel.PreferenceSettings.TrustedLocations.Add(fileTrustWarningViewModel.DynFileDirectoryName);
+                List<string> currentTrustedLocations = dynViewModel.PreferenceSettings.TrustedLocations;
+                currentTrustedLocations.Add(fileTrustWarningViewModel.DynFileDirectoryName);
+                dynViewModel.PreferenceSettings.SetTrustedLocationsUnsafe(currentTrustedLocations);
             }
         }
 
