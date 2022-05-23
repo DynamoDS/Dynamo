@@ -11,7 +11,10 @@
   </PropertyGroup>
   <ItemGroup>
 	  <PackageReference Include="NUnit" Version="2.6.3" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8705"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8734">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
