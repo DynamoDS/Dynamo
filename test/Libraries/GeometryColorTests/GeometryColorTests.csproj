@@ -12,6 +12,7 @@
   <ItemGroup>
 	  <PackageReference Include="NUnit" Version="2.6.3" />
     <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8705"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8734"/>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />

@@ -420,6 +420,34 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(34, colorRangeWatchNodeModel.OutPorts[0].Height);
         }
 
+        [Test]
+        public void Watch_MultilineString()
+        {
+            OpenAndRun(@"core\WatchTree.dyn");
+
+            string watchNodeGuid = "c93374ef-5b1f-488e-9303-91b87ad20a73";
+            var multiLineStringWatchNode = NodeViewWithGuid(watchNodeGuid);
+            WatchTree rawMultiLineStringtWatchNode = multiLineStringWatchNode.ChildOfType<WatchTree>();
+
+            var multiLineStringWatchNodeModel = GetNodeModel(watchNodeGuid);            
+            string watchNodeValue = multiLineStringWatchNodeModel.CachedValue.Data.ToString();
+            bool containsNewLine = watchNodeValue.Contains(Environment.NewLine);
+
+            // Fire transition on dynamo main ui thread.
+            View.Dispatcher.Invoke(() =>
+            {
+                multiLineStringWatchNode.PreviewControl.BindToDataSource();
+                multiLineStringWatchNode.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
+                multiLineStringWatchNode.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
+            });
+
+            DispatcherUtil.DoEvents();
+
+            Assert.NotNull(multiLineStringWatchNode);
+            Assert.IsTrue(containsNewLine);
+            Assert.AreEqual(rawMultiLineStringtWatchNode.DefaultHeightSize, rawMultiLineStringtWatchNode.Height);
+        }
+
         #endregion
 
         [Test]

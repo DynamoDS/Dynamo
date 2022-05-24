@@ -18,6 +18,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8705" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8734"/>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Xaml" />
