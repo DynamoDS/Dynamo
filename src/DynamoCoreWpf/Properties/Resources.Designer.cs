@@ -250,7 +250,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Temporarily dismiss all warnings of this node..
+        ///   Looks up a localized string similar to Temporarily dismiss all warnings of this node.
         /// </summary>
         public static string BubbleDismissAllButtonTooltip {
             get {
