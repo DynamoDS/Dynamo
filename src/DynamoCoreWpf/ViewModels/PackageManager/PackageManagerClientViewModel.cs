@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -793,11 +794,50 @@ namespace Dynamo.ViewModels
 
                 });
 
+
                 // if any do, notify user and allow cancellation
                 if (containsBinariesOrPythonScripts)
                 {
                     var res = MessageBoxService.Show(Owner, 
                         Resources.MessagePackageContainPythonScript,
+                        Resources.PackageDownloadMessageBoxTitle,
+                        MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+
+                    if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None) return;
+                }
+
+                // determinate if any of the packages are targeting other hosts
+                var containsPackagesThatTargetOtherHosts = false;
+
+                // Current host, empty if sandbox
+                var host = DynamoViewModel.Model.HostAnalyticsInfo.HostName;
+
+                // Known hosts
+                var knownHosts = Model.GetKnownHosts();
+
+                // Sandbox, special case: Warn if any package targets any known host
+                if (String.IsNullOrEmpty(host))
+                {
+                    containsPackagesThatTargetOtherHosts =
+                        knownHosts.Any(x => newPackageHeaders.Any(y => y.host_dependencies != null && y.host_dependencies.Contains(x)));
+                }
+                else
+                {
+                    // Warn if there are packages targeting other hosts but not our host
+                    var otherHosts = knownHosts.Except(new List<string>() {host});
+                    containsPackagesThatTargetOtherHosts = newPackageHeaders.Any(x =>
+                    {
+                        // Is our host in the list?
+                        // If not, is any other host in the list?
+                        return x.host_dependencies != null && !x.host_dependencies.Contains(host) && otherHosts.Any(y => x.host_dependencies != null && x.host_dependencies.Contains(y));
+                    });
+                }
+
+                // if any do, notify user and allow cancellation
+                if (containsPackagesThatTargetOtherHosts)
+                {
+                    var res = MessageBoxService.Show(Owner,
+                        Resources.MessagePackageTargetOtherHosts,
                         Resources.PackageDownloadMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
