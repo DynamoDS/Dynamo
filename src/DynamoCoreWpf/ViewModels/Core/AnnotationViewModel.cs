@@ -14,6 +14,7 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
+using DynamoUtilities;
 using Newtonsoft.Json;
 using Color = System.Windows.Media.Color;
 
@@ -24,6 +25,7 @@ namespace Dynamo.ViewModels
         private AnnotationModel annotationModel;
         private IEnumerable<PortModel> originalInPorts;
         private IEnumerable<PortModel> originalOutPorts;
+        private Dictionary<Guid, int> GroupIdToCutGeometryIndex = new Dictionary<Guid, int>();
         // vertical offset accounts for the port margins
         private const int verticalOffset = 20;
         private const int portVerticalMidPoint = 17;
@@ -95,13 +97,13 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public double ZIndex
         {
-            get 
+            get
             {
                 if (BelongsToGroup())
                 {
                     return 2;
                 }
-                return 1; 
+                return 1;
             }
         }
 
@@ -323,6 +325,14 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Collection of rectangles based on AnnotationModels
+        /// that belongs to this group.
+        /// This is used to make a cutout in this groups background
+        /// where another group is placed so there wont be an overlay.
+        /// </summary>
+        public ObservableCollectionV2<Geometry> NestedGroupsGeometryCollection = new ObservableCollectionV2<Geometry>();
+
+        /// <summary>
         /// This property will be used to populate the GroupStyle context menu (the one shown when clicking right over a Group)
         /// </summary>
         [JsonIgnore]
@@ -408,11 +418,11 @@ namespace Dynamo.ViewModels
 
         private bool CanAddToGroup(object obj)
         {
-            return 
-                DynamoSelection.Instance.Selection.Count >= 0 && 
+            return
+                DynamoSelection.Instance.Selection.Count >= 0 &&
                 IsExpanded;
         }
-         
+
         private void AddToGroup(object obj)
         {
             if (annotationModel.IsSelected)
@@ -436,7 +446,7 @@ namespace Dynamo.ViewModels
             // another group
             if (!this.AnnotationModel.IsSelected ||
                 !this.IsExpanded ||
-                BelongsToGroup()) 
+                BelongsToGroup())
             {
                 return false;
             }
@@ -455,7 +465,7 @@ namespace Dynamo.ViewModels
             // not already belong to another group.
             return !selectedAnnotationModels.Any(x => x.HasNestedGroups) &&
                 !selectedAnnotationModels.All(x => WorkspaceViewModel.Model.Annotations.ContainsModel(x));
-                    
+
         }
 
         private void AddGroupToGroup(object obj)
@@ -464,9 +474,10 @@ namespace Dynamo.ViewModels
             {
                 var selectedModels = DynamoSelection.Instance.Selection
                     .OfType<AnnotationModel>()
-                    .Where(x => x.GUID != this.AnnotationModel.GUID && 
+                    .Where(x => x.GUID != this.AnnotationModel.GUID &&
                                 !WorkspaceViewModel.Model.Annotations.ContainsModel(x));
 
+                using (NestedGroupsGeometryCollection.DeferCollectionReset())
                 foreach (var model in selectedModels)
                 {
                     WorkspaceViewModel.DynamoViewModel.AddGroupToGroupModelCommand.Execute(this.AnnotationModel.GUID);
@@ -479,6 +490,7 @@ namespace Dynamo.ViewModels
                         groupViewModel.AddToGroupCommand.RaiseCanExecuteChanged();
                         groupViewModel.AddGroupToGroupCommand.RaiseCanExecuteChanged();
                         groupViewModel.RemoveGroupFromGroupCommand.RaiseCanExecuteChanged();
+                        AddToCutGeometryDictionary(groupViewModel);
                     }
                 }
             }
@@ -511,7 +523,7 @@ namespace Dynamo.ViewModels
 
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {
-            annotationModel = model;           
+            annotationModel = model;
             this.WorkspaceViewModel = workspaceViewModel;
             this.preferenceSettings = WorkspaceViewModel.DynamoViewModel.PreferenceSettings;
             model.PropertyChanged += model_PropertyChanged;
@@ -537,9 +549,11 @@ namespace Dynamo.ViewModels
             // Add all grouped AnnotaionModels to the CutGeometryDictionary.
             // And raise ZIndex changed to make sure nested groups have
             // a higher zIndex than the parent.
+            using (NestedGroupsGeometryCollection.DeferCollectionReset())
             foreach (var annotationViewModel in viewModelBases.OfType<AnnotationViewModel>())
             {
                 annotationViewModel.RaisePropertyChanged(nameof(ZIndex));
+                AddToCutGeometryDictionary(annotationViewModel);
             }
 
             if (!IsExpanded)
@@ -649,7 +663,7 @@ namespace Dynamo.ViewModels
             // not belong to a group.
             return Nodes.OfType<NodeModel>()
                 .SelectMany(x => x.InPorts
-                    .Where(p => !p.IsConnected || 
+                    .Where(p => !p.IsConnected ||
                                 !p.Connectors.Any(c => Nodes.Contains(c.Start.Owner)) ||
                                 // If the port is connected to any of the groups outports
                                 // we need to return it as well
@@ -679,7 +693,7 @@ namespace Dynamo.ViewModels
             // not belong to a group.
             return Nodes.OfType<NodeModel>()
                 .SelectMany(x => x.OutPorts
-                    .Where(p => !p.IsConnected || 
+                    .Where(p => !p.IsConnected ||
                                 !p.Connectors.Any(c => Nodes.Contains(c.End.Owner)) ||
                                 // If the port is connected to any of the groups inports
                                 // we need to return it as well
@@ -731,7 +745,7 @@ namespace Dynamo.ViewModels
 
                 // calculate new position for the proxy inports.
                 model.Center = CalculatePortPosition(model, i);
-            } 
+            }
 
             return newPortViewModels;
         }
@@ -875,7 +889,7 @@ namespace Dynamo.ViewModels
             {
                 if (viewModel is AnnotationViewModel annotationViewModel)
                 {
-                    if(annotationViewModel.Nodes.Any())
+                    if (annotationViewModel.Nodes.Any())
                     {
                         UpdateConnectorsAndPortsOnShowContents(annotationViewModel.Nodes);
                     }
@@ -937,7 +951,7 @@ namespace Dynamo.ViewModels
         {
             if (itemEntryParameter == null) return;
 
-            Background = (Color)ColorConverter.ConvertFromString("#"+itemEntryParameter.HexColorString);
+            Background = (Color)ColorConverter.ConvertFromString("#" + itemEntryParameter.HexColorString);
 
             WorkspaceViewModel.HasUnsavedChanges = true;
         }
@@ -1030,9 +1044,11 @@ namespace Dynamo.ViewModels
                 case "Width":
                     RaisePropertyChanged("Width");
                     RaisePropertyChanged(nameof(ModelAreaRect));
+                    UpdateAllGroupedGroups();
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
+                    UpdateAllGroupedGroups();
                     break;
                 case nameof(AnnotationDescriptionText):
                     RaisePropertyChanged(nameof(AnnotationDescriptionText));
@@ -1042,7 +1058,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "Background":
                     RaisePropertyChanged("Background");
-                    break;                              
+                    break;
                 case "IsSelected":
                     RaisePropertyChanged("PreviewState");
                     break;
@@ -1054,7 +1070,7 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(AnnotationModel.Nodes):
                     ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
-                    WorkspaceViewModel.HasUnsavedChanges = true;
+                    HandleNodesCollectionChanges();
                     break;
                 case nameof(AnnotationModel.ModelAreaHeight):
                     RaisePropertyChanged(nameof(ModelAreaHeight));
@@ -1081,6 +1097,81 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged(nameof(ZIndex));
         }
 
+        private void UpdateAllGroupedGroups()
+        {
+            using (NestedGroupsGeometryCollection.DeferCollectionReset())
+            {
+                ViewModelBases
+                    .OfType<AnnotationViewModel>()
+                    .ToList()
+                    .ForEach(x => UpdateGroupCutGeometry(x));
+            }
+        }
+
+        private void HandleNodesCollectionChanges()
+        {
+            var allGroupedGroups = Nodes.OfType<AnnotationModel>();
+            var removedFromGroup = GroupIdToCutGeometryIndex.Keys
+                .ToList()
+                .Except(allGroupedGroups.Select(x => x.GUID));
+
+            using (NestedGroupsGeometryCollection.DeferCollectionReset())
+            {
+                foreach (var key in removedFromGroup)
+                {
+                    RemoveKeyFromCutGeometryDictionary(key);
+                }
+
+                var addedToGroup = allGroupedGroups
+                    .Select(x => x.GUID)
+                    .Except(GroupIdToCutGeometryIndex.Keys.ToList());
+
+                foreach (var key in addedToGroup)
+                {
+                    var groupViewModel = ViewModelBases.OfType<AnnotationViewModel>()
+                        .Where(x => x.AnnotationModel.GUID == key)
+                        .FirstOrDefault();
+
+                    AddToCutGeometryDictionary(groupViewModel);
+                }
+            }
+
+            WorkspaceViewModel.HasUnsavedChanges = true;
+        }
+
+        private void RemoveKeyFromCutGeometryDictionary(Guid groupGuid)
+        {
+            if (GroupIdToCutGeometryIndex is null ||
+                !GroupIdToCutGeometryIndex.ContainsKey(groupGuid))
+            {
+                return;
+            }
+
+            NestedGroupsGeometryCollection.RemoveAt(GroupIdToCutGeometryIndex[groupGuid]);
+            GroupIdToCutGeometryIndex.Remove(groupGuid);
+
+            var groupViewModel = this.WorkspaceViewModel.Annotations
+                .Where(x => x.AnnotationModel.GUID == groupGuid)
+                .FirstOrDefault();
+
+            if (groupViewModel != null)
+            {
+                groupViewModel.PropertyChanged -= GroupViewModel_PropertyChanged;
+            }
+        }
+
+        private void AddToCutGeometryDictionary(AnnotationViewModel annotationViewModel)
+        {
+            var key = annotationViewModel.AnnotationModel.GUID;
+            if (GroupIdToCutGeometryIndex.ContainsKey(key)) return;
+
+            int nextPos = NestedGroupsGeometryCollection.Count;
+            NestedGroupsGeometryCollection.Insert(nextPos, CreateRectangleGeometry(annotationViewModel));
+            GroupIdToCutGeometryIndex[key] = nextPos;
+
+            annotationViewModel.PropertyChanged += GroupViewModel_PropertyChanged;
+        }
+
         private RectangleGeometry CreateRectangleGeometry(AnnotationViewModel annotationViewModel)
         {
             return new RectangleGeometry(
@@ -1093,17 +1184,47 @@ namespace Dynamo.ViewModels
                 );
         }
 
+        private void GroupViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(AnnotationModel.Position):
+                case nameof(Width):
+                case nameof(Height):
+                    UpdateGroupCutGeometry(sender as AnnotationViewModel);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void UpdateGroupCutGeometry(AnnotationViewModel annotationViewModel)
+        {
+            var key = annotationViewModel.AnnotationModel.GUID;
+            if (GroupIdToCutGeometryIndex == null ||
+                !GroupIdToCutGeometryIndex.ContainsKey(key))
+            {
+                return;
+            }
+            var index = GroupIdToCutGeometryIndex[key];
+            if (index >= 0 &&
+                index < NestedGroupsGeometryCollection.Count)
+            {
+                NestedGroupsGeometryCollection[index] = CreateRectangleGeometry(annotationViewModel);
+            }
+        }
+
         private bool BelongsToGroup()
         {
             return WorkspaceViewModel.Model.Annotations.ContainsModel(this.annotationModel);
         }
-        
+
         public override void Dispose()
         {
             annotationModel.PropertyChanged -= model_PropertyChanged;
             annotationModel.RemovedFromGroup -= OnModelRemovedFromGroup;
             annotationModel.AddedToGroup -= OnModelAddedToGroup;
-            
+
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
         }
