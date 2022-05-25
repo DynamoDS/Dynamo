@@ -142,7 +142,7 @@ namespace Dynamo.UI.Prompts
                 MessageBoxImage = icon
             };
 
-            if (owner.IsLoaded) 
+            if (owner != null && owner.IsLoaded)
             {
                 dynamoMessageBox.Owner = owner;
             }
