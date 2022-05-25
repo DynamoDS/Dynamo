@@ -149,6 +149,7 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel = workspaceViewModel;
             _model = model;
             model.PropertyChanged += note_PropertyChanged;
+            model.UndoRedoRequest += note_PinUnpinToNode;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             ZIndex = ++StaticZIndex; // places the note on top of all nodes/notes
 
@@ -159,6 +160,27 @@ namespace Dynamo.ViewModels
             IsOnEditMode = false;
         }
 
+        private void note_PinUnpinToNode(ModelBase obj, string context, Guid nodeGuid)
+        {
+            if (context.Equals("Unpin"))
+            {
+                UnpinFromNode(obj);
+                return;
+            }
+            if (context.Equals("Pin"))
+            {
+                NodeModel node = WorkspaceViewModel.Model.Nodes
+                    .Where(x => x.GUID.Equals(nodeGuid))
+                    .FirstOrDefault();
+
+                if (node == null) return;
+
+                DynamoSelection.Instance.Selection.Add(node);
+                PinToNode(obj);
+                return;
+            }
+        }
+
         public override void Dispose()
         {
             if (Model.PinnedNode != null)
@@ -166,6 +188,7 @@ namespace Dynamo.ViewModels
                 UnsuscribeFromPinnedNode();
             }
             _model.PropertyChanged -= note_PropertyChanged;
+            _model.UndoRedoRequest -= note_PinUnpinToNode;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
         }
 
@@ -307,7 +330,7 @@ namespace Dynamo.ViewModels
             }
 
             Model.PinnedNode = nodeToPin;
-            Model.UndoRequest += UnpinFromNode;
+            //Model.UndoRequest += UnpinFromNode;
 
             MoveNoteAbovePinnedNode();
             SubscribeToPinnedNode();
@@ -361,7 +384,7 @@ namespace Dynamo.ViewModels
         private void UnpinFromNode(object parameters)
         {
             UnsuscribeFromPinnedNode();
-            Model.UndoRequest -= UnpinFromNode;
+            //Model.UndoRequest -= UnpinFromNode;
 
             Model.PinnedNode = null;
             WorkspaceViewModel.HasUnsavedChanges = true;

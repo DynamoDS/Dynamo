@@ -14,7 +14,9 @@ namespace Dynamo.Graph.Notes
         /// <summary>
         /// This action is triggered when undo command is pressed and a node is pinned
         /// </summary>
-        internal event Action<ModelBase> UndoRequest;
+        //internal event Action<ModelBase> UndoRequest;
+
+        internal event Action<ModelBase, string, Guid> UndoRedoRequest;
 
         private string text;
 
@@ -32,6 +34,7 @@ namespace Dynamo.Graph.Notes
         }
 
         private NodeModel pinnedNode;
+        private Guid PinnedNodeGuid;
 
         /// <summary>
         /// NodeModel which this Note is pinned to
@@ -119,9 +122,10 @@ namespace Dynamo.Graph.Notes
             Text = helper.ReadString("text", "New Note");
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
+            PinnedNodeGuid = helper.ReadGuid("pinnedNode");
 
-            if(pinnedNode != null)
-                pinnedNode.GUID = helper.ReadGuid("pinnedNode");
+            //if (pinnedNode != null)
+                //pinnedNode.GUID = helper.ReadGuid("pinnedNode"); // This will actually set the GUID of the real Node to Guid.Empty!!!!           
 
             // Notify listeners that the position of the note has changed, 
             // then parent group will also redraw itself.
@@ -131,12 +135,17 @@ namespace Dynamo.Graph.Notes
 
         /// <summary>
         /// Verify if the current user action is to pin a node so the 'unpin' method can be called to undo the action
-        /// </summary>
+        /// </summary
         internal void TryToSubscribeUndoNote()
         {
-            if (pinnedNode!=null && pinnedNode.GUID == Guid.Empty && UndoRequest != null)
+            if (pinnedNode!=null && PinnedNodeGuid == Guid.Empty)
             {
-                UndoRequest(this);
+                //UndoRequest(this);
+                UndoRedoRequest(this, "Unpin", Guid.Empty);
+            }
+            else if (pinnedNode == null && PinnedNodeGuid != Guid.Empty)
+            {
+                UndoRedoRequest(this, "Pin", PinnedNodeGuid);
             }
         }
 
