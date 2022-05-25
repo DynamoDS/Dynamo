@@ -470,9 +470,7 @@ namespace EmitMSIL
             if(node is IdentifierNode idNode)
             {
                 // local variables on rhs of expression should have already been defined.
-                Tuple<int, Type> tup;
-                int index = -1;
-                if(!variables.TryGetValue(idNode.Value, out tup))
+                if(!variables.TryGetValue(idNode.Value, out Tuple<int, Type> tup))
                 {
                     throw new Exception("Variable is undefined!");
                 }

@@ -24,9 +24,9 @@ namespace EmitMSIL
         public static void Execute(IDictionary<string, IList> input, IDictionary<string, IList> output)
         {
             // Sample script for which below code is emitted:
-            // var x = 12;
-            // var y = 13;
-            // var z = 14;
+            // x = 12;
+            // y = 13;
+            // z = 14;
             // c = Point.ByCoordinates(x<1>, y<2>, z<3>);
             // d = Sphere.ByCenterPointRadius(c, x);
 
