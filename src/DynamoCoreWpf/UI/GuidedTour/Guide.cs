@@ -225,6 +225,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 CalculateStep(GuideFlow.BACKWARD, CurrentStepSequence);
                 CurrentStep.Show(GuideFlow.BACKWARD);
+                Logging.Analytics.TrackEvent(Logging.Actions.Previous, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(GuideNameResource).Replace("_", ""), CurrentStep.Sequence);
             }     
         }
 
