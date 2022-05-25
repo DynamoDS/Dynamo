@@ -105,10 +105,10 @@ namespace Dynamo.PackageManager.Wpf.Tests
 
 
         /// <summary>
-        /// A test to ensure the CanInstall property of a package updates correctly.
+        /// A test to ensure that the label converted is equal the resources when localized
         /// </summary>
         [Test]
-        public void TestPackageManagerInstallStatusCompleteByResourceName()
+        public void TestPackageManagerInstallStatusByResourceName()
         {
             var name1 = "package";
             var version = "1.0.0";         
