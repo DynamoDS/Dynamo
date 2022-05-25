@@ -601,15 +601,15 @@ You will get a chance to save your work.</value>
     <comment>File menu</comment>
   </data>
   <data name="DynamoViewFileMenuExport3DAsImage" xml:space="preserve">
-    <value>_Export Background 3D Preview as Image...</value>
+    <value>Export _Background 3D Preview as Image...</value>
     <comment>File menu | Export Background 3D Preview as image</comment>
   </data>
   <data name="DynamoViewFileMenuExportAsImage" xml:space="preserve">
-    <value>_Export Workspace As Image...</value>
+    <value>Export _Workspace As Image...</value>
     <comment>File menu | Export workspace as image</comment>
   </data>
   <data name="DynamoViewFileMenuExportToSTL" xml:space="preserve">
-    <value>_Export Model to STL...</value>
+    <value>Export _Model to STL...</value>
     <comment>File menu | Export geometry model to STL file format</comment>
   </data>
   <data name="DynamoViewFileMenuImport" xml:space="preserve">
@@ -2474,7 +2474,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Edit Path</value>
   </data>
   <data name="GetStartedGuide" xml:space="preserve">
-    <value>User Interface Tour</value>
+    <value>_User Interface Tour</value>
     <comment>Get Started Dynamo Tour</comment>
   </data>
   <data name="InteractiveGuides" xml:space="preserve">
@@ -2819,7 +2819,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>URL</value>
   </data>
   <data name="PackagesGuide" xml:space="preserve">
-    <value>Packages</value>
+    <value>_Packages</value>
   </data>
   <data name="PackagesGuideLearnAbout" xml:space="preserve">
     <value>Learn about packages</value>
@@ -3064,7 +3064,7 @@ To install the latest version of a package, click Install. \n
     <value>Save</value>
   </data>
   <data name="OnboardingGuide" xml:space="preserve">
-    <value>Onboarding</value>
+    <value>_Getting Started</value>
   </data>
   <data name="OnboardingGuideWelcomeTitle" xml:space="preserve">
     <value>Get started with Dynamo</value>
@@ -3143,6 +3143,13 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
     <value>Run the graph</value>
+  </data>
+  <data name="BubbleDismissAllButtonTooltip" xml:space="preserve">
+    <value>Temporarily dismiss all warnings of this node</value>
+    <comment>Tooltip text of Dismiss All warnong button.</comment>
+  </data>
+  <data name="RunCompletedWithWarningsDismissedMessage" xml:space="preserve">
+    <value>Run completed with dismissed warnings.</value>
   </data>
   <data name="PackageRepositoryLabel" xml:space="preserve">
     <value>Repository</value>

@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -246,6 +246,15 @@ namespace Dynamo.Wpf.Properties {
         public static string BrowserWindowLoading {
             get {
                 return ResourceManager.GetString("BrowserWindowLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Temporarily dismiss all warnings of this node.
+        /// </summary>
+        public static string BubbleDismissAllButtonTooltip {
+            get {
+                return ResourceManager.GetString("BubbleDismissAllButtonTooltip", resourceCulture);
             }
         }
         
@@ -1523,7 +1532,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Export Background 3D Preview as Image....
+        ///   Looks up a localized string similar to Export _Background 3D Preview as Image....
         /// </summary>
         public static string DynamoViewFileMenuExport3DAsImage {
             get {
@@ -1532,7 +1541,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Export Workspace As Image....
+        ///   Looks up a localized string similar to Export _Workspace As Image....
         /// </summary>
         public static string DynamoViewFileMenuExportAsImage {
             get {
@@ -1541,7 +1550,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Export Model to STL....
+        ///   Looks up a localized string similar to Export _Model to STL....
         /// </summary>
         public static string DynamoViewFileMenuExportToSTL {
             get {
@@ -2705,7 +2714,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User Interface Tour.
+        ///   Looks up a localized string similar to _User Interface Tour.
         /// </summary>
         public static string GetStartedGuide {
             get {
@@ -4396,7 +4405,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Onboarding.
+        ///   Looks up a localized string similar to _Getting Started.
         /// </summary>
         public static string OnboardingGuide {
             get {
@@ -5398,7 +5407,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages.
+        ///   Looks up a localized string similar to _Packages.
         /// </summary>
         public static string PackagesGuide {
             get {
@@ -7017,6 +7026,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RunCompletedWithScaleChangeMessage {
             get {
                 return ResourceManager.GetString("RunCompletedWithScaleChangeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with dismissed warnings..
+        /// </summary>
+        public static string RunCompletedWithWarningsDismissedMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithWarningsDismissedMessage", resourceCulture);
             }
         }
         

@@ -2,7 +2,7 @@
   "Uuid": "f8dcc4f6-a707-434a-96d9-8c081142993f",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "dyn-4843-2",
+  "Name": "WatchTree",
   "ElementResolver": {
     "ResolutionMap": {
       "Line": {
@@ -260,6 +260,55 @@
       ],
       "Replication": "Disabled",
       "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "line 1.\r\nline 2.\r\nline 3.\r\n\r\nline 4.",
+      "Id": "40d6e4a6f2474f30ac9067838445e6e5",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "22b9e3830d7140eaacbdf4a0aae0b175",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "c93374ef5b1f488e930391b87ad20a73",
+      "Inputs": [
+        {
+          "Id": "79a2a477a7144cf4aa1888f35080c103",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "35928b707fd04570939ddb59f9dfb19e",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
     }
   ],
   "Connectors": [
@@ -285,6 +334,12 @@
       "Start": "6cfc0ff747874028a02107b4d549cdb7",
       "End": "b88fb7fdcb5d45e7bd6edf07f50de1e7",
       "Id": "b6ec73a259cb44b1bee1fcd6b2e97e22",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "22b9e3830d7140eaacbdf4a0aae0b175",
+      "End": "79a2a477a7144cf4aa1888f35080c103",
+      "Id": "a8636b0b2b1e4c9ba0088c5de773290b",
       "IsHidden": "False"
     }
   ],
@@ -313,7 +368,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.15.0.4991",
+      "Version": "2.15.0.5047",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -420,6 +475,26 @@
         "Excluded": false,
         "X": 580.18936562443253,
         "Y": 721.93787111945392
+      },
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "40d6e4a6f2474f30ac9067838445e6e5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 570.362310284189,
+        "Y": 970.42198472275822
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "c93374ef5b1f488e930391b87ad20a73",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 841.30826466519318,
+        "Y": 973.22971481997047
       }
     ],
     "Annotations": [],

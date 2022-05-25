@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
+using System;
 
 namespace Dynamo.Controls
 {
@@ -56,6 +57,13 @@ namespace Dynamo.Controls
                 else
                 {
                     this.Height = minHeightSize;
+                    if (_vm.Children.Count !=0)
+                    {
+                        if (_vm.Children[0].NodeLabel.Contains(Environment.NewLine))
+                        {
+                            this.Height = defaultHeightSize;
+                        }
+                    }                    
                 }
                 // When it doesn't have any element, it should be set back the width to the default.
                 if (_vm.Children != null && _vm.Children.Count == 0)
@@ -77,7 +85,7 @@ namespace Dynamo.Controls
                             requiredWidth = MaxWidthSize;
                         }
                         requiredWidth += extraWidthSize;
-                        this.Width = requiredWidth;
+                        this.Width = requiredWidth;                        
                     }
                     else
                     {

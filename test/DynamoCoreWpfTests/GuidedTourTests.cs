@@ -62,7 +62,7 @@ namespace DynamoCoreWpfTests
 
             //Find the Get Started guide in the list
             var getStartedGuide = (from guide in testGuide.Guides 
-                                  where guide.Name.ToUpper().Equals("GET STARTED")
+                                  where guide.Name.Equals(DynamoView.GetStartedGuideName)
                                   select guide).FirstOrDefault();
 
             //Validate that the GetStarted guide exists

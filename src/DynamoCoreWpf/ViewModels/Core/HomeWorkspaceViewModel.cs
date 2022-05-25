@@ -46,6 +46,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         #endregion
 
+        #region public members
         [JsonIgnore]
         public NotificationLevel CurrentNotificationLevel
         {
@@ -69,6 +70,30 @@ namespace Dynamo.Wpf.ViewModels.Core
         }
 
         /// <summary>
+        /// Boolean indicates if home workspace run with errors
+        /// </summary>
+        public bool HasErrors
+        {
+            get { return Model.Nodes.Any(n => n.State == ElementState.Error); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if home workspace is displayed with infos
+        /// </summary>
+        public bool HasInfos
+        {
+            get { return Model.Nodes.Any(n => n.State == ElementState.Info); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if home workspace run with warnings
+        /// </summary>
+        public bool HasWarnings
+        {
+            get { return Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning); }
+        }
+
+        /// <summary>
         /// Contains all footer notification item bindings
         /// </summary>
         [JsonIgnore]
@@ -81,6 +106,8 @@ namespace Dynamo.Wpf.ViewModels.Core
                 RaisePropertyChanged(nameof(FooterNotificationItems));
             }
         }
+
+        #endregion
 
         public HomeWorkspaceViewModel(HomeWorkspaceModel model, DynamoViewModel dynamoViewModel)
             : base(model, dynamoViewModel)
@@ -227,12 +254,18 @@ namespace Dynamo.Wpf.ViewModels.Core
                 //just call it directly 
                 UpdateNodeInfoBubbleContent(e);
             }
-        
-            bool hasInfo = Model.Nodes.Any(n => n.State == ElementState.Info);
-            bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
-            bool hasErrors = Model.Nodes.Any(n => n.State == ElementState.Error);
 
-            if (!hasWarnings && !hasErrors)
+            UpdateRunStatusMsgBasedOnStates();
+            UpdateFooterItems(HasInfos, HasWarnings, HasErrors);
+        }
+
+
+        /// <summary>
+        /// Update run status message based on error/warning/info states
+        /// </summary>
+        internal void UpdateRunStatusMsgBasedOnStates()
+        {
+            if (!HasWarnings && !HasErrors)
             {
                 if (Model.ScaleFactorChanged)
                 {
@@ -243,15 +276,23 @@ namespace Dynamo.Wpf.ViewModels.Core
                     SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunCompletedMessage);
                 }
             }
-            else if(hasWarnings && !hasErrors)
+            else if (HasWarnings && !HasErrors)
             {
                 if (Model.ScaleFactorChanged)
                 {
                     SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithScaleChangeAndWarningsMessage);
                 }
+                // If all nodes with warnings dismissed and graph has no errors, update the run status msg
                 else
                 {
-                    SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage);
+                    if (Nodes.All(x => x.ErrorBubble?.DismissedMessages.Count() == x.ErrorBubble?.NodeMessages.Count()))
+                    {
+                        SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsDismissedMessage);
+                    }
+                    else
+                    {
+                        SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage);
+                    }
                 }
             }
             else
@@ -265,8 +306,6 @@ namespace Dynamo.Wpf.ViewModels.Core
                     SetCurrentWarning(NotificationLevel.Error, Properties.Resources.RunCompletedWithErrorsMessage);
                 }
             }
-
-            UpdateFooterItems(hasInfo, hasWarnings, hasErrors);
         }
 
         /// <summary>

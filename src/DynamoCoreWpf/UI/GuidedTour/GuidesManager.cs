@@ -265,6 +265,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             exitGuideWindow.IsOpen = false;
             if (currentGuide != null)
             {
+                GuideFlowEvents.IsAnyGuideActive = true;
                 currentGuide.ContinueStep(currentGuide.CurrentStep.Sequence);
             }
         }
