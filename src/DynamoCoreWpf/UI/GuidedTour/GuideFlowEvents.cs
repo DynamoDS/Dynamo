@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dynamo.Wpf.Properties;
+using System;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -50,6 +51,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 isAnyGuideActive = false;
                 GuidedTourFinish(new GuidedTourStateEventArgs(name));
+                Logging.Analytics.TrackEvent(Logging.Actions.Completed, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(name).Replace("_", ""));
             }
         }
 
