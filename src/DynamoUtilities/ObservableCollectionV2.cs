@@ -21,7 +21,8 @@ namespace DynamoUtilities
         }
 
         /// <summary>
-        /// Defers the all CollectionChanged notifications to when the returned IDisposable is destroyed.
+        /// Suppresses the all CollectionChanged notifications until the returned IDisposable is destroyed.
+        /// When the returned object is destroyed, a single NotifyCollectionChangedAction.Reset will be triggered.
         /// </summary>
         /// <returns></returns>
         internal IDisposable DeferCollectionReset()
