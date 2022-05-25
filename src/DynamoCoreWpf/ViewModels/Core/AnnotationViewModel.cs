@@ -731,7 +731,6 @@ namespace Dynamo.ViewModels
 
                 // calculate new position for the proxy inports.
                 model.Center = CalculatePortPosition(model, i);
-                model.Owner.ReportPosition();
             } 
 
             return newPortViewModels;
@@ -752,7 +751,6 @@ namespace Dynamo.ViewModels
 
                 // calculate new position for the proxy outports
                 model.Center = CalculatePortPosition(model, i);
-                model.Owner.ReportPosition();
             }
 
             return newPortViewModels;
@@ -765,48 +763,23 @@ namespace Dynamo.ViewModels
 
             if (parent != null && !parent.IsExpanded) return;
 
-            IEnumerable<NodeModel> nestedNodes = null;
-            if (annotationModel.HasNestedGroups)
+            for (int i = 0; i < inPorts.Count(); i++)
             {
-                nestedNodes = Nodes
-                    .OfType<AnnotationModel>()
-                    .SelectMany(x => x.Nodes.OfType<NodeModel>())
-                    .Concat(Nodes.OfType<NodeModel>());
-
-                // If any of the nested groups are collapsed
-                // we need to update the posistion of the 
-                // proxy ports on it.
-                foreach (var nestedGroup in ViewModelBases.OfType<AnnotationViewModel>().Where(x => !x.IsExpanded))
-                {
-                    nestedGroup.SetGroupInputPorts();
-                    nestedGroup.SetGroupOutPorts();
-                    nestedGroup.UpdateProxyPortsPosition();
-                }
-            }
-
-            var groupInports = GetGroupInPorts(IsExpanded ? null : nestedNodes);
-
-            for (int i = 0; i < groupInports.Count(); i++)
-            {
-                var model = groupInports.ElementAt(i);
+                var model = inPorts[i].PortModel;
                 if (model.IsProxyPort)
                 {
                     // calculate new position for the proxy inports.
                     model.Center = CalculatePortPosition(model, i);
-                    model.Owner.ReportPosition();
                 }
             }
 
-            var groupOutports = GetGroupOutPorts(IsExpanded ? null : nestedNodes);
-
-            for (int i = 0; i < groupOutports.Count(); i++)
+            for (int i = 0; i < outPorts.Count(); i++)
             {
-                var model = groupOutports.ElementAt(i);
+                var model = outPorts[i].PortModel;
                 if (model.IsProxyPort)
                 {
                     // calculate new position for the proxy outports.
                     model.Center = CalculatePortPosition(model, i);
-                    model.Owner.ReportPosition();
                 }
             }
         }
