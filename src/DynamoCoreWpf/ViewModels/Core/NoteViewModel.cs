@@ -175,6 +175,10 @@ namespace Dynamo.ViewModels
 
                 if (node == null) return;
 
+                // In case the user has selected a different Node before Undo
+                // We run the risk of pinning to the wrong Node
+                // Therefore clear selection before running
+                DynamoSelection.Instance.ClearSelection();
                 DynamoSelection.Instance.Selection.Add(node);
                 PinToNode(obj);
                 return;
@@ -330,7 +334,6 @@ namespace Dynamo.ViewModels
             }
 
             Model.PinnedNode = nodeToPin;
-            //Model.UndoRequest += UnpinFromNode;
 
             MoveNoteAbovePinnedNode();
             SubscribeToPinnedNode();
@@ -384,7 +387,6 @@ namespace Dynamo.ViewModels
         private void UnpinFromNode(object parameters)
         {
             UnsuscribeFromPinnedNode();
-            //Model.UndoRequest -= UnpinFromNode;
 
             Model.PinnedNode = null;
             WorkspaceViewModel.HasUnsavedChanges = true;

@@ -12,10 +12,8 @@ namespace Dynamo.Graph.Notes
     public class NoteModel : ModelBase
     {
         /// <summary>
-        /// This action is triggered when undo command is pressed and a node is pinned
+        /// This action is triggered when undo/redo command is pressed and a node was or is pinned
         /// </summary>
-        //internal event Action<ModelBase> UndoRequest;
-
         internal event Action<ModelBase, string, Guid> UndoRedoRequest;
 
         private string text;
@@ -124,9 +122,6 @@ namespace Dynamo.Graph.Notes
             Y = helper.ReadDouble("y", 0.0);
             PinnedNodeGuid = helper.ReadGuid("pinnedNode");
 
-            //if (pinnedNode != null)
-                //pinnedNode.GUID = helper.ReadGuid("pinnedNode"); // This will actually set the GUID of the real Node to Guid.Empty!!!!           
-
             // Notify listeners that the position of the note has changed, 
             // then parent group will also redraw itself.
             ReportPosition();
@@ -140,7 +135,6 @@ namespace Dynamo.Graph.Notes
         {
             if (pinnedNode!=null && PinnedNodeGuid == Guid.Empty)
             {
-                //UndoRequest(this);
                 UndoRedoRequest(this, "Unpin", Guid.Empty);
             }
             else if (pinnedNode == null && PinnedNodeGuid != Guid.Empty)
