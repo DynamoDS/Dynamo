@@ -729,15 +729,15 @@
                             <SolidColorBrush Color="{Binding Background}"></SolidColorBrush>
                         </Path.Fill>
                         <Path.Data>
-                          <CombinedGeometry GeometryCombineMode="Exclude">
-                            <CombinedGeometry.Geometry1>
-                              <RectangleGeometry Rect="{Binding ModelAreaRect}" />
-                            </CombinedGeometry.Geometry1>
-                            <CombinedGeometry.Geometry2>
-                              <GeometryGroup FillRule="EvenOdd"
-                                Children="{Binding NestedGroupsGeometryCollection}" />
-                            </CombinedGeometry.Geometry2>
-                          </CombinedGeometry>
+                            <CombinedGeometry GeometryCombineMode="Exclude">
+                                <CombinedGeometry.Geometry1>
+                                    <RectangleGeometry Rect="{Binding ModelAreaRect}" />
+                                </CombinedGeometry.Geometry1>
+                                <CombinedGeometry.Geometry2>
+                                    <GeometryGroup FillRule="EvenOdd"
+                                                   Children="{Binding NestedGroupsGeometryCollection}" />
+                                </CombinedGeometry.Geometry2>
+                            </CombinedGeometry>
                         </Path.Data>
                     </Path>
                 </Canvas>
