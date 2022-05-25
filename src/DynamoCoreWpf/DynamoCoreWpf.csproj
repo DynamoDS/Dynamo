@@ -21,11 +21,16 @@
     <None Remove="UI\Images\Alignment\align_x_distribute.png" />
     <None Remove="UI\Images\Alignment\align_y_average.png" />
     <None Remove="UI\Images\Alignment\align_y_distribute.png" />
+    <None Remove="UI\Images\checkbox.png" />
+    <None Remove="UI\Images\checkbox_blue.png" />
+    <None Remove="UI\Images\dynamonotext.png" />
     <None Remove="UI\Images\NodeStates\alert-64px.png" />
     <None Remove="UI\Images\NodeStates\error-64px.png" />
     <None Remove="UI\Images\NodeStates\frozen-64px.png" />
     <None Remove="UI\Images\NodeStates\hidden-64px.png" />
     <None Remove="UI\Images\NodeStates\info-64px.png" />
+    <None Remove="UI\Images\operator.png" />
+    <None Remove="UI\Images\operator_blue.png" />
     <None Remove="UI\Images\warning_16px.png" />
     <None Remove="Views\GuidedTour\HtmlPages\nodePackage.html" />
     <None Remove="Views\Menu\TrustedPathView.xaml" />
@@ -649,6 +654,8 @@
     <Resource Include="UI\Images\Alignment\align_y_distribute.png" />
     <Resource Include="UI\Images\caret_up.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
+    <Resource Include="UI\Images\checkbox.png" />
+    <Resource Include="UI\Images\checkbox_blue.png" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
@@ -780,11 +787,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\closetab_normal.png" />
+    <Resource Include="UI\Images\dynamonotext.png" />
     <Resource Include="UI\Images\NodeStates\alert-64px.png" />
     <Resource Include="UI\Images\NodeStates\error-64px.png" />
     <Resource Include="UI\Images\NodeStates\frozen-64px.png" />
     <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
     <Resource Include="UI\Images\NodeStates\info-64px.png" />
+    <Resource Include="UI\Images\operator.png" />
+    <Resource Include="UI\Images\operator_blue.png" />
     <Resource Include="UI\Images\warning_16px.png" />
   </ItemGroup>
   <ItemGroup>

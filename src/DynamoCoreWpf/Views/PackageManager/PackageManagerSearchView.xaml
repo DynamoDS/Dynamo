@@ -16,6 +16,7 @@
     MinHeight="300"
     MaxWidth="600"
     MaxHeight="700"
+    Style="{DynamicResource DynamoWindowStyle}"
     AllowsTransparency="True"
     ResizeMode="CanResizeWithGrip"
     WindowStartupLocation="CenterOwner"

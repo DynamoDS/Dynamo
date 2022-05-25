@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-
+using System.Windows.Media;
 using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Views
@@ -100,6 +100,9 @@ namespace Dynamo.UI.Views
                 FileStream fStream = new FileStream(inFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
                 range.Load(fStream, DataFormats.Rtf);
+                // Set text Foreground color on the actual range
+                range.ApplyPropertyValue(TextElement.ForegroundProperty, (SolidColorBrush)new BrushConverter().ConvertFrom("#3c3c3c"));    
+
                 fStream.Close();
             }
         }
