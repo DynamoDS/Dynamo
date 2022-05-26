@@ -19,11 +19,11 @@ namespace Dynamo.Wpf.Views.FileTrust
     public partial class FileTrustWarning : Popup
     {
 
-        private Window mainWindow;
+        private DynamoView mainWindow;
         private DynamoViewModel dynViewModel;
         private FileTrustWarningViewModel fileTrustWarningViewModel;
 
-        public FileTrustWarning(Window dynamoViewWindow)
+        public FileTrustWarning(DynamoView dynamoViewWindow)
         {
             InitializeComponent();
 
@@ -33,7 +33,7 @@ namespace Dynamo.Wpf.Views.FileTrust
 
             dynViewModel = dynamoView.DataContext as DynamoViewModel;
 
-            fileTrustWarningViewModel = dynViewModel.FileTrustWViewModel;
+            fileTrustWarningViewModel = dynViewModel.FileTrustViewModel;
 
             if (fileTrustWarningViewModel == null)
                 fileTrustWarningViewModel = new FileTrustWarningViewModel();
@@ -43,15 +43,14 @@ namespace Dynamo.Wpf.Views.FileTrust
             if (dynamoViewWindow == null) return;
           
             //Creating the background of the Popup
-            BackgroundRectangle.Rect = new Rect(fileTrustWarningViewModel.PopupBordersOffSet, fileTrustWarningViewModel.PopupBordersOffSet, fileTrustWarningViewModel.PopupRectangleWidth, fileTrustWarningViewModel.PopupRectangleHeight);     
-            
-            fileTrustWarningViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            BackgroundRectangle.Rect = new Rect(fileTrustWarningViewModel.PopupBordersOffSet, fileTrustWarningViewModel.PopupBordersOffSet, fileTrustWarningViewModel.PopupRectangleWidth, fileTrustWarningViewModel.PopupRectangleHeight);
+            SetUpPopup();
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             //When the ShowWarningPopup property is changed we need to enable or disable the Dynamo Run section
-            if (e.PropertyName == "ShowWarningPopup" )
+            if (e.PropertyName == nameof(FileTrustWarningViewModel.ShowWarningPopup) )
             {
                 var fileTrustWarningViewModel = sender as FileTrustWarningViewModel;
                 if (fileTrustWarningViewModel == null) return;
@@ -63,14 +62,16 @@ namespace Dynamo.Wpf.Views.FileTrust
                     DisableRunInteractivity();
                 }                   
                 else
+                {
                     EnableRunInteractivity();
+                }
+                    
             }
         }
 
         private void FindPopupPlacementTarget()
         {
-            var bottomBarGrid = mainWindow.FindName("bottomBarGrid") as Grid;
-            if (bottomBarGrid == null) return;
+            var bottomBarGrid = mainWindow.bottomBarGrid;
 
             var runSettingsControl = bottomBarGrid.FindName("RunSettingsControl") as RunSettingsControl;
             if (runSettingsControl == null) return;
@@ -98,7 +99,6 @@ namespace Dynamo.Wpf.Views.FileTrust
         {
             dynViewModel.HomeSpace.RunSettings.RunEnabled = false;
             dynViewModel.HomeSpace.RunSettings.RunTypesEnabled = false;
-            dynViewModel.HomeSpace.RunSettings.RunTypesComboBoxToolTipIsEnabled = true;
             FileTrustWarningCheckBox.IsChecked = false;
         }
 
@@ -109,7 +109,6 @@ namespace Dynamo.Wpf.Views.FileTrust
             {
                 dynViewModel.HomeSpace.RunSettings.RunTypesEnabled = true;
             }
-            dynViewModel.HomeSpace.RunSettings.RunTypesComboBoxToolTipIsEnabled = false;
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
@@ -146,6 +145,23 @@ namespace Dynamo.Wpf.Views.FileTrust
                 var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 positionMethod.Invoke(this, null);
             }
-        }   
+        }
+
+        internal void CleanPopup()
+        {
+            if (fileTrustWarningViewModel != null)
+            { 
+                fileTrustWarningViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                fileTrustWarningViewModel.DynFileDirectoryName = string.Empty;
+            }
+        }
+
+        private void SetUpPopup()
+        {
+            if (fileTrustWarningViewModel != null)
+            {
+                fileTrustWarningViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            }
+        }
     }
 }

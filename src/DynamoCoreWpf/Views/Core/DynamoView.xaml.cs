@@ -2485,7 +2485,8 @@ namespace Dynamo.Controls
         private void FileTrustWarning_Click(object sender, RoutedEventArgs e)
         {
             var dynViewModel = DataContext as DynamoViewModel;
-            dynViewModel.FileTrustWViewModel.ShowWarningPopup = true;
+            if (dynViewModel.FileTrustViewModel == null) return;
+            dynViewModel.FileTrustViewModel.ShowWarningPopup = true;
         }
 
         public void Dispose()
@@ -2498,6 +2499,9 @@ namespace Dynamo.Controls
 
             // Removing the tab items list handler
             ExtensionTabItems.CollectionChanged -= this.OnCollectionChanged;
+
+            if (warningPopup != null)
+                warningPopup.CleanPopup();
         }
     }
 }

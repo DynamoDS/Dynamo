@@ -90,21 +90,6 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        /// This property will enable or disable the tooltip shown over the ComboBox RunType
-        /// </summary>
-        public bool RunTypesComboBoxToolTipIsEnabled
-        {
-            get { return runTypesComboBoxToolTipIsEnabled; }
-            set
-            {
-                if (runTypesComboBoxToolTipIsEnabled == value) return;
-
-                runTypesComboBoxToolTipIsEnabled = value;
-                RaisePropertyChangeWithDebug(nameof(RunTypesComboBoxToolTipIsEnabled));
-            }
-        }
-
         #endregion
 
         #region Constructors

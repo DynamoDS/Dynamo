@@ -9,6 +9,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:ui="clr-namespace:Dynamo.UI"
     xmlns:viewModels="clr-namespace:Dynamo.Wpf.ViewModels"
+    xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
     d:DesignHeight="40"
     d:DesignWidth="600"
     d:DataContext="{d:DesignInstance Type=viewModels:RunSettingsViewModel}"
@@ -22,7 +23,6 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-
             <ObjectDataProvider
                 x:Key="RunTypes"
                 MethodName="GetValues"
@@ -111,7 +111,7 @@
                       SelectedItem="{Binding SelectedRunTypeItem}"
                       ToolTipService.ShowOnDisabled="True"
                       ToolTipService.Placement="Bottom"
-                      ToolTipService.IsEnabled="{Binding RunTypesComboBoxToolTipIsEnabled}"
+                      ToolTipService.IsEnabled="{Binding RunTypesEnabled,  Converter={StaticResource InverseBooleanConverter}}"
                       Style="{StaticResource RefreshRunSettingsComboBox}">
                 <ComboBox.ToolTip>
                     <ToolTip Content="{Binding RunTypesComboBoxToolTip}" Style="{StaticResource GenericToolTipLight}"/>

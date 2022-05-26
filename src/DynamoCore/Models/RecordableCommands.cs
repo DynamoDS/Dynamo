@@ -462,7 +462,7 @@ namespace Dynamo.Models
             /// </summary>
             /// <param name="filePath">The path to the file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
-            /// <param name="forceAutomaticWithoutRun">This parameter will indicate not execute the Graph but the RunMode will be Automatic</param>
+            /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
             public OpenFileCommand(string filePath, bool forceManualExecutionMode = false, bool forceAutomaticWithoutRun = false)
             {
                 FilePath = filePath;
@@ -565,7 +565,7 @@ namespace Dynamo.Models
             /// </summary>
             /// <param name="fileContents">The Json content of a file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
-            /// <param name="forceAutomaticWithoutRun">This parameter will indicate not execute the Graph but the RunMode will be Automatic</param>
+            /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
             public OpenFileFromJsonCommand(string fileContents, bool forceManualExecutionMode = false, bool forceAutomaticWithoutRun = false)
             {
                 FileContents = fileContents;

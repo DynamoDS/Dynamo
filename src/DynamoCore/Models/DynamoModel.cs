@@ -1648,7 +1648,7 @@ namespace Dynamo.Models
         /// <param name="markNodesAsDirty">Set this parameter to true to force
         /// reset of the execution substrate. Note that setting this parameter
         /// to true will have a negative performance impact.</param>
-        /// <param name="forceAutomaticWithoutRun">This parameter will indicate not execute the Graph but the RunMode will be Automatic</param>
+        /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
         public virtual void ResetEngine(bool markNodesAsDirty = false, bool forceAutomaticWithoutRun = false)
         {
             // TODO(Luke): Push this into a resync call with the engine controller
@@ -1724,7 +1724,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="fileContents">Json file content</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
-        /// <param name="forceAutomaticWithoutRun">This parameter will indicate not execute the Graph but the RunMode will be Automatic</param>
+        /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromJson(string fileContents, bool forceManualExecutionMode = false, bool forceAutomaticWithoutRun = false)
         {
@@ -1737,7 +1737,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
-        /// <param name="forceAutomaticWithoutRun">This parameter will indicate not execute the Graph but the RunMode will be Automatic</param>
+        /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false, bool forceAutomaticWithoutRun = false)
         {
@@ -1806,7 +1806,7 @@ namespace Dynamo.Models
         /// <param name="fileContents">Json file contents</param>
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
-        /// <param name="forceAutomaticWithoutRun">This parameter will indicate not execute the Graph but the RunMode will be Automatic</param>
+        /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
         /// execution mode specified in the file and set manual mode</param>
         /// <returns>True if workspace was opened successfully</returns>
         private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool forceAutomaticWithoutRun)
@@ -1845,7 +1845,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
-        /// <param name="forceAutomaticWithoutRun">This parameter will indicate not execute the Graph but the RunMode will be Automatic</param>
+        /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
         /// execution mode specified in the file and set manual mode</param>
         /// <returns>True if workspace was opened successfully</returns>
         private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode, bool forceAutomaticWithoutRun)

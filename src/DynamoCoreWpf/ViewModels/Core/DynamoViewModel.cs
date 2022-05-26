@@ -177,7 +177,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// This property is the ViewModel that will be passed to the File Trust Warning popup when is created.
         /// </summary>
-        public FileTrustWarningViewModel FileTrustWViewModel { get; set; }
+        internal FileTrustWarningViewModel FileTrustViewModel { get; set; }
 
         private WorkspaceViewModel currentWorkspaceViewModel;
         private string filePath;
@@ -739,7 +739,7 @@ namespace Dynamo.ViewModels
                 model.State = DynamoModel.DynamoModelState.StartedUI;
             }
 
-            FileTrustWViewModel = new FileTrustWarningViewModel();
+            FileTrustViewModel = new FileTrustWarningViewModel();
         }
 
         /// <summary>
@@ -1606,15 +1606,15 @@ namespace Dynamo.ViewModels
 
                 var directoryName = Path.GetDirectoryName(filePath);
                 //Checks if the file that is being opened is in the trusted list.
-                if(!PreferenceSettings.TrustedLocations.Contains(directoryName))
+                if(!PreferenceSettings.TrustedLocations.Contains(directoryName) && DynamoModel.IsTestMode == false)
                 {
                     //The third parameter is forceAutomaticWithoutRun, so it means that if the RunType = Automatic the graph won't be executed
                     ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, true));
 
-                    if(FileTrustWViewModel != null)
+                    if(FileTrustViewModel != null)
                     {
-                        FileTrustWViewModel.DynFileDirectoryName = directoryName;
-                        FileTrustWViewModel.ShowWarningPopup = true;
+                        FileTrustViewModel.DynFileDirectoryName = directoryName;
+                        FileTrustViewModel.ShowWarningPopup = true;
                     }                  
                 }
                 else

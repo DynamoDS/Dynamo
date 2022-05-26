@@ -154,6 +154,10 @@ namespace Dynamo.Wpf.ViewModels
                     Model.RunType != RunType.Periodic;
             }
         }
+
+        /// <summary>
+        /// This value will enable/disable the RunType ComboBox located in RunSettingsControl.xaml
+        /// </summary>
         public bool RunTypesEnabled
         {
             get
@@ -183,14 +187,6 @@ namespace Dynamo.Wpf.ViewModels
             get
             {
                return Resources.DynamoViewRunTypesComboBoxToolTipDisabled;
-            }
-        }
-
-        public bool RunTypesComboBoxToolTipIsEnabled
-        {
-            get
-            {
-                return Model.RunTypesComboBoxToolTipIsEnabled;
             }
         }
 

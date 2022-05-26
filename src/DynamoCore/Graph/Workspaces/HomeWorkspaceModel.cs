@@ -654,7 +654,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="markNodesAsDirty">Set this parameter to true to force 
         ///     reset of the execution substrait. Note that setting this parameter 
         ///     to true will have a negative performance impact.</param>
-        /// <param name="forceAutomaticWithoutRun">This parameter will indicate not execute the Graph but the RunMode will be Automatic</param>
+        /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
         internal void ResetEngine(EngineController controller, bool markNodesAsDirty = false, bool forceAutomaticWithoutRun = false)
         {
             if (EngineController != null)

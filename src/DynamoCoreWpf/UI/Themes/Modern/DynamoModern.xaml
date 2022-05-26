@@ -4234,6 +4234,7 @@
         </Style.Triggers>
     </Style>
 
+    <!--This Style will be used in the FileTrustWarning.xaml file (there is one already using inverted colors) specifically for the Buttons "Settings" and "No, close file"-->
     <Style x:Key="OutlinedButtonStyleInverted" TargetType="Button">
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="Template">
@@ -4278,7 +4279,7 @@
                 <Setter Property="Cursor" Value="Hand" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Foreground" Value="#BBBBBB" />
+                <Setter Property="Foreground" Value="{StaticResource DynamoStandardLabelTextBrush}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -4883,6 +4884,8 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <!--This Style is using in the FileTrustWarning.xaml file for the only checkbox in the Popup-->
     <Style x:Key="CheckBoxFileTrustStyle" TargetType="{x:Type CheckBox}">
     <Setter Property="SnapsToDevicePixels" Value="true" />
     <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -4896,7 +4899,7 @@
                                     Width="13"
                                     Height="13"
                                     Background="#373737"
-                                    BorderBrush="#666666"
+                                    BorderBrush="{StaticResource MidGreyBrush}"
                                     BorderThickness="1">
                             <Image x:Name="CheckBoxTick"
                                        Width="7"
@@ -4926,7 +4929,7 @@
                     <Setter TargetName="contentPresent" Property="TextBlock.Foreground" Value="Black" />
                     </Trigger>
                     <Trigger Property="IsEnabled" Value="False">
-                        <Setter TargetName="contentPresent" Property="TextBlock.Foreground" Value="#444444" />
+                        <Setter TargetName="contentPresent" Property="TextBlock.Foreground" Value="{StaticResource NormalBorderBrush}" />
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
