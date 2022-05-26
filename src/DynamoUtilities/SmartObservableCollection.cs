@@ -57,19 +57,15 @@ namespace DynamoUtilities
         internal void Reset(IEnumerable<T> range)
         {
             if (range == null)
-                throw new ArgumentNullException("list");
+                throw new ArgumentNullException("range");
 
-            _suppressNotification = true;
-            Items.Clear();
-            foreach (T item in range)
+            using(DeferCollectionReset())
             {
-                Add(item);
+                foreach (T item in range)
+                {
+                    Add(item);
+                }
             }
-            _suppressNotification = false;
-
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         /// <summary>
@@ -79,6 +75,9 @@ namespace DynamoUtilities
         /// <returns></returns>
         internal IDisposable DeferCollectionReset()
         {
+            if (_suppressNotification)
+                return null;// Already suppressed so we can return a "dummy"
+
             return Dynamo.Scheduler.Disposable.Create(() => {
                 _suppressNotification = true;
             },
@@ -95,17 +94,13 @@ namespace DynamoUtilities
             if (list == null)
                 throw new ArgumentNullException("list");
 
-            _suppressNotification = true;
-
-            foreach (T item in list)
+            using (DeferCollectionReset())
             {
-                Add(item);
+                foreach (T item in list)
+                {
+                    Add(item);
+                }
             }
-            _suppressNotification = false;
-
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         internal void RemoveRange(IEnumerable<T> list)
@@ -113,16 +108,13 @@ namespace DynamoUtilities
             if (list == null)
                 throw new ArgumentNullException("list");
 
-            _suppressNotification = true;
-
-            foreach (T item in list)
+            using (DeferCollectionReset())
             {
-                Remove(item);
+                foreach (T item in list)
+                {
+                    Remove(item);
+                }
             }
-            _suppressNotification = false;
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         internal void Reset(IEnumerable<T> toRemove, IEnumerable<T> toAdd)
@@ -133,22 +125,18 @@ namespace DynamoUtilities
             if (toAdd == null)
                 throw new ArgumentNullException("toAdd");
 
-            _suppressNotification = true;
-
-            foreach (T item in toRemove)
+            using (DeferCollectionReset())
             {
-                Remove(item);
-            }
+                foreach (T item in toRemove)
+                {
+                    Remove(item);
+                }
 
-            foreach (T item in toAdd)
-            {
-                Add(item);
+                foreach (T item in toAdd)
+                {
+                    Add(item);
+                }
             }
-
-            _suppressNotification = false;
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
     }
 }
