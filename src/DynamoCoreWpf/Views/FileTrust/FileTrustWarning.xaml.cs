@@ -71,24 +71,18 @@ namespace Dynamo.Wpf.Views.FileTrust
 
         private void FindPopupPlacementTarget()
         {
-            var bottomBarGrid = mainWindow.bottomBarGrid;
-
-            var runSettingsControl = bottomBarGrid.FindName("RunSettingsControl") as RunSettingsControl;
+            var runSettingsControl = mainWindow.RunSettingsControl;
             if (runSettingsControl == null) return;
-            var runSettingsViewModel = runSettingsControl.DataContext as RunSettingsViewModel;
+            var runSettingsViewModel = mainWindow.RunSettingsControl.DataContext as RunSettingsViewModel;
 
             UIElement popupPlacementTarget;
             if (runSettingsViewModel.SelectedRunTypeItem.RunType == RunType.Manual)
             {
-                var runButton = runSettingsControl.FindName("RunButton") as Button;
-                if (runButton == null) return;
-                popupPlacementTarget = runButton;
+                popupPlacementTarget = runSettingsControl.RunButton;
             }
             else
             {
-                var runTypesComboBox = runSettingsControl.FindName("RunTypesComboBox") as ComboBox;
-                if (runTypesComboBox == null) return;
-                popupPlacementTarget = runTypesComboBox;
+                popupPlacementTarget = runSettingsControl.RunTypesComboBox;
             }
 
             PlacementTarget = popupPlacementTarget;
