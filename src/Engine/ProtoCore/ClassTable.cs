@@ -494,6 +494,11 @@ namespace ProtoCore.DSASM
             symbol.Id = index;
         }
 
+        internal ClassNode GetClassNodeAtIndex(int index)
+        {
+            return index < classNodes.Count ? classNodes[index] : null;
+        }
+
         /// <summary>
         /// Find a matching class for given partial class name.
         /// </summary>
