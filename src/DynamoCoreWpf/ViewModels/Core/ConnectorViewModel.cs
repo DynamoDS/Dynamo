@@ -1218,7 +1218,7 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case nameof(PortModel.Center):
-                    RaisePropertyChanged(nameof(CurvePoint1));
+                    RaisePropertyChanged(nameof(CurvePoint3));
                     Redraw();
                     break;
             }
