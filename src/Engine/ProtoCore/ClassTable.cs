@@ -494,9 +494,14 @@ namespace ProtoCore.DSASM
             symbol.Id = index;
         }
 
+        /// <summary>
+        /// Retreive the ClassNode at the index.  
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns>ClassNode if found, else null value</returns>
         internal ClassNode GetClassNodeAtIndex(int index)
         {
-            return index < classNodes.Count ? classNodes[index] : null;
+            return index >= 0 && index < classNodes.Count ? classNodes[index] : null;
         }
 
         /// <summary>

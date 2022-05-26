@@ -150,8 +150,8 @@ namespace ProtoCore.Mirror
             if (null == runtimeCore.DSExecutable.classTable)
                 return null;
 
-            //The GetCLRObject function is typically utilized retrieve a clrObject from a StackValue of type pointer.
-            //There is an edge cases for pointers where the pointer references an  a non CLR object.  This code
+            //The GetCLRObject function is typically utilized to retrieve a ClrObject from a StackValue of type pointer.
+            //There is an edge cases for pointers where the pointer references a non CLR object.  This code
             //checks for this edge case by verifying that the requested StackValue pointer is associated with an
             //imported library.  An example is the "Function" pointer which does not have an associated CLRObject.
             //In that case, the return value should be null.
