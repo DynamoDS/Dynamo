@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Dynamo.Selection;
+using DynamoUtilities;
 using NUnit.Framework;
 
 namespace Dynamo.Tests.Core
@@ -12,7 +13,7 @@ namespace Dynamo.Tests.Core
         public void SelectionPropertyTest()
         {
             IEnumerable<ISelectable> enumerable = new List<ISelectable>();
-            SmartCollection<ISelectable> smartCollection = new SmartCollection<ISelectable>(new List<ISelectable>());
+            SmartObservableCollection<ISelectable> smartCollection = new SmartObservableCollection<ISelectable>(new List<ISelectable>());
 
             DynamoSelection.Instance.Selection = smartCollection;
 
@@ -24,13 +25,13 @@ namespace Dynamo.Tests.Core
         public void SmartCollectionConstructorTest()
         {
             IEnumerable<int> enumerable = new List<int>() { 1 };
-            SmartCollection<int> smartCollection = new SmartCollection<int>(enumerable);
+            SmartObservableCollection<int> smartCollection = new SmartObservableCollection<int>(enumerable);
 
             Assert.AreEqual(1, smartCollection.Count);
             Assert.IsTrue(smartCollection.Contains(1));
 
             var list = new List<int>() { 1, 2 };
-            smartCollection = new SmartCollection<int>(list);
+            smartCollection = new SmartObservableCollection<int>(list);
 
             Assert.AreEqual(2, smartCollection.Count);
             Assert.IsTrue(smartCollection.Contains(1));

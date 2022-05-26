@@ -330,7 +330,7 @@ namespace Dynamo.ViewModels
         /// This is used to make a cutout in this groups background
         /// where another group is placed so there wont be an overlay.
         /// </summary>
-        public ObservableCollectionV2<Geometry> NestedGroupsGeometryCollection = new ObservableCollectionV2<Geometry>();
+        public SmartObservableCollection<Geometry> NestedGroupsGeometryCollection = new SmartObservableCollection<Geometry>();
 
         /// <summary>
         /// This property will be used to populate the GroupStyle context menu (the one shown when clicking right over a Group)

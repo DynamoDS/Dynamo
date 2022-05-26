@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using Dynamo.Core;
+using DynamoUtilities;
 
 namespace Dynamo.Selection
 {
     internal class DynamoSelection : NotificationObject
     {
         private static DynamoSelection _instance;
-        private SmartCollection<ISelectable> selection = new SmartCollection<ISelectable>();
+        private SmartObservableCollection<ISelectable> selection = new SmartObservableCollection<ISelectable>();
 
         public static DynamoSelection Instance
         {
@@ -43,7 +42,7 @@ namespace Dynamo.Selection
         /// <summary>
         /// Returns a collection of ISelectable elements.
         /// </summary>
-        internal SmartCollection<ISelectable> Selection
+        internal SmartObservableCollection<ISelectable> Selection
         {
             get { return selection; }
             set
@@ -121,59 +120,4 @@ namespace Dynamo.Selection
         /// </summary>
         void Deselect();
     }
-
-    /// <summary>
-    /// A resetable observable collection
-    /// See: http://stackoverflow.com/questions/13302933/how-to-avoid-firing-observablecollection-collectionchanged-multiple-times-when-r
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    internal class SmartCollection<T> : ObservableCollection<T>
-    {
-        public SmartCollection()
-            : base()
-        {
-        }
-
-        public SmartCollection(IEnumerable<T> collection)
-            : base(collection)
-        {
-        }
-
-        public SmartCollection(List<T> list)
-            : base(list)
-        {
-        }
-
-        /// <summary>
-        /// Adds an item only if the sequence does not have it yet
-        /// </summary>
-        /// <param name="item">Item to add</param>
-        public void AddUnique(T item)
-        {
-            if (!Contains(item))
-            {
-                Add(item);
-            }
-        }
-
-        public void AddRange(IEnumerable<T> range)
-        {
-            foreach (var item in range)
-            {
-                Add(item);
-            }
-
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-        }
-
-        public void Reset(IEnumerable<T> range)
-        {
-            this.Items.Clear();
-
-            AddRange(range);
-        }
-    }
-
 }
