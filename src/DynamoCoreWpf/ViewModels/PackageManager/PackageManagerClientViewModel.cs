@@ -815,11 +815,11 @@ namespace Dynamo.ViewModels
                 // Known hosts
                 var knownHosts = Model.GetKnownHosts();
 
-                // Sandbox, special case: Warn if any package targets any known host
+                // Sandbox, special case: Warn if any package targets only one known host
                 if (String.IsNullOrEmpty(host))
                 {
                     containsPackagesThatTargetOtherHosts =
-                        knownHosts.Any(x => newPackageHeaders.Any(y => y.host_dependencies != null && y.host_dependencies.Contains(x)));
+                        newPackageHeaders.Any(y => y.host_dependencies != null && y.host_dependencies.Intersect(knownHosts).Count() == 1);
                 }
                 else
                 {
