@@ -78,7 +78,7 @@ namespace Dynamo.PackageManager
             return FailFunc.TryExecute(() => {
                 var nv = HeaderCollectionDownload.ByEngine("dynamo");
                 var pkgResponse = this.client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);                
-                CleanPackageWithWrongVersions(pkgResponse.content);
+                CleanPackagesWithWrongVersions(pkgResponse.content);
                 return pkgResponse.content;
             }, new List<PackageHeader>());
         }
@@ -87,7 +87,7 @@ namespace Dynamo.PackageManager
         /// For every package Checks its versions and exclude the ones with errors
         /// </summary>
         /// <param name="packages"></param>
-        void CleanPackageWithWrongVersions(List<PackageHeader> packages)
+        void CleanPackagesWithWrongVersions(List<PackageHeader> packages)
         {
             foreach (var package in packages)
             {
