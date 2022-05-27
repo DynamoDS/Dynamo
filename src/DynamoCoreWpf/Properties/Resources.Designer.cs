@@ -4585,7 +4585,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This node needs a [xyz] input. You can find a node to use as the input in the library by using search or browsing. The node is x, so you’ll find it under the x category.\n\n Click the node to place it in the workspace..
+        ///   Looks up a localized string similar to This node needs a **CoordinateSystem** input. You can find a node to use as the input in the library by using search or browsing. The node is **CoordinateSystem.ByOrigin**, so you’ll find it under the **CoordinateSystem** category.\n\n Click the node to place it in the workspace..
         /// </summary>
         public static string OnboardingPlaceNodeText {
             get {
