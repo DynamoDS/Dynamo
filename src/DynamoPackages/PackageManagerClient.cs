@@ -135,7 +135,7 @@ namespace Dynamo.PackageManager
         /// Make a call to Package Manager to get the known
         /// supported hosts for package publishing and filtering
         /// </summary>
-        internal IEnumerable<string> GetKnownHosts()
+        internal virtual IEnumerable<string> GetKnownHosts()
         {
             return FailFunc.TryExecute(() =>
             {

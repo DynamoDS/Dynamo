@@ -673,6 +673,9 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        // Current host, empty if sandbox, null when running tests
+        internal virtual string Host => DynamoViewModel.Model.HostAnalyticsInfo.HostName;
+
         internal async void ExecutePackageDownload(string name, PackageVersion package, string installPath)
         {
             string msg = String.IsNullOrEmpty(installPath) ?
@@ -809,14 +812,12 @@ namespace Dynamo.ViewModels
                 // determinate if any of the packages are targeting other hosts
                 var containsPackagesThatTargetOtherHosts = false;
 
-                // Current host, empty if sandbox
-                var host = DynamoViewModel.Model.HostAnalyticsInfo.HostName;
 
                 // Known hosts
                 var knownHosts = Model.GetKnownHosts();
 
                 // Sandbox, special case: Warn if any package targets only one known host
-                if (String.IsNullOrEmpty(host))
+                if (String.IsNullOrEmpty(Host))
                 {
                     containsPackagesThatTargetOtherHosts =
                         newPackageHeaders.Any(y => y.host_dependencies != null && y.host_dependencies.Intersect(knownHosts).Count() == 1);
@@ -824,12 +825,12 @@ namespace Dynamo.ViewModels
                 else
                 {
                     // Warn if there are packages targeting other hosts but not our host
-                    var otherHosts = knownHosts.Except(new List<string>() {host});
+                    var otherHosts = knownHosts.Except(new List<string>() {Host});
                     containsPackagesThatTargetOtherHosts = newPackageHeaders.Any(x =>
                     {
                         // Is our host in the list?
                         // If not, is any other host in the list?
-                        return x.host_dependencies != null && !x.host_dependencies.Contains(host) && otherHosts.Any(y => x.host_dependencies != null && x.host_dependencies.Contains(y));
+                        return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && otherHosts.Any(y => x.host_dependencies != null && x.host_dependencies.Contains(y));
                     });
                 }
 
