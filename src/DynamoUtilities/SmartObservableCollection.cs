@@ -61,6 +61,7 @@ namespace DynamoUtilities
 
             using(DeferCollectionReset())
             {
+                ClearItems();
                 foreach (T item in range)
                 {
                     Add(item);
