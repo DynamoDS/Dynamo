@@ -11,10 +11,15 @@ namespace Dynamo.Graph.Notes
     /// </summary>
     public class NoteModel : ModelBase
     {
+        public enum UndoAction
+        {
+            Pin, Unpin
+        }
+
         /// <summary>
-        /// This action is triggered when undo/redo command is pressed and a node was or is pinned
+        /// This action is triggered when undo command is pressed and a node is pinned
         /// </summary>
-        internal event Action<ModelBase, string, Guid> UndoRedoRequest;
+        internal event Action<ModelBase> UndoRequest;
 
         private string text;
 
@@ -32,7 +37,6 @@ namespace Dynamo.Graph.Notes
         }
 
         private NodeModel pinnedNode;
-        private Guid PinnedNodeGuid;
 
         /// <summary>
         /// NodeModel which this Note is pinned to
@@ -46,11 +50,33 @@ namespace Dynamo.Graph.Notes
             get { return pinnedNode; }
             set
             {
-                pinnedNode = value;               
+                pinnedNode = value;
                 RaisePropertyChanged(nameof(PinnedNode));
             }
         }
 
+        private Guid pinnedNodeGuid;
+
+        public Guid PinnedNodeGuid
+        {
+            get { return pinnedNodeGuid; }
+            set
+            {
+                pinnedNodeGuid = value;
+                RaisePropertyChanged(nameof(PinnedNodeGuid));
+            }
+        }
+
+        private UndoAction undoAction;
+        public UndoAction UndoRedoAction
+        {
+            get { return undoAction; }
+            set
+            {
+                undoAction = value;
+                RaisePropertyChanged(nameof(UndoRedoAction));
+            }
+        }
 
         /// <summary>
         /// Creates NoteModel.
@@ -92,13 +118,13 @@ namespace Dynamo.Graph.Notes
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            if (name != "Text") 
+            if (name != "Text")
                 return base.UpdateValueCore(updateValueParams);
-            
+
             Text = value;
 
             return true;
-        }        
+        }
         #endregion
 
         #region Serialization/Deserialization Methods
@@ -120,7 +146,15 @@ namespace Dynamo.Graph.Notes
             Text = helper.ReadString("text", "New Note");
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
-            PinnedNodeGuid = helper.ReadGuid("pinnedNode");
+
+            try
+            {
+                PinnedNodeGuid = helper.ReadGuid("pinnedNode");
+            }
+            catch (Exception) { }
+
+            if (pinnedNode != null && helper.ReadGuid("pinnedNode") != Guid.Empty)
+                pinnedNode.GUID = helper.ReadGuid("pinnedNode");
 
             // Notify listeners that the position of the note has changed, 
             // then parent group will also redraw itself.
@@ -130,16 +164,19 @@ namespace Dynamo.Graph.Notes
 
         /// <summary>
         /// Verify if the current user action is to pin a node so the 'unpin' method can be called to undo the action
-        /// </summary
+        /// </summary>
         internal void TryToSubscribeUndoNote()
         {
-            if (pinnedNode!=null && PinnedNodeGuid == Guid.Empty)
+            if (pinnedNode != null && PinnedNodeGuid == Guid.Empty && UndoRequest != null)
             {
-                UndoRedoRequest(this, "Unpin", Guid.Empty);
+                UndoRedoAction = UndoAction.Unpin;
+                UndoRequest(this);
+                return;
             }
-            else if (pinnedNode == null && PinnedNodeGuid != Guid.Empty)
+            else if (pinnedNode == null && PinnedNodeGuid != Guid.Empty && UndoRequest != null)
             {
-                UndoRedoRequest(this, "Pin", PinnedNodeGuid);
+                UndoRedoAction = UndoAction.Pin;
+                UndoRequest(this);
             }
         }
 
