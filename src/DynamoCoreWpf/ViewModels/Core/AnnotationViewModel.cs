@@ -838,10 +838,6 @@ namespace Dynamo.ViewModels
         /// <param name="collapseConnectors"></param>
         private void CollapseGroupContents(bool collapseConnectors)
         {
-            NestedGroups = ViewModelBases
-                .OfType<AnnotationViewModel>()
-                .ToList();
-
             foreach (var viewModel in ViewModelBases)
             {
                 if (viewModel is AnnotationViewModel annotationViewModel)
@@ -912,7 +908,8 @@ namespace Dynamo.ViewModels
             {
                 if (viewModel is AnnotationViewModel annotationViewModel)
                 {
-                    if(annotationViewModel.Nodes.Any())
+                    // Update connectors and ports if the nested group is not collapsed
+                    if(annotationViewModel.Nodes.Any() && !annotationViewModel.IsCollapsed)
                     {
                         UpdateConnectorsAndPortsOnShowContents(annotationViewModel.Nodes);
                     }
