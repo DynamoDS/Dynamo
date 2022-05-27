@@ -93,9 +93,9 @@ namespace Dynamo.Selection
         public void ClearSelection()
         {
             if (ClearSelectionDisabled) return;
-            
-            Instance.Selection.ToList().ForEach(x=>x.Deselect());
-            Instance.Selection.Reset(new List<ISelectable>());
+
+            Instance.Selection.ToList().ForEach(x => x.Deselect());
+            Instance.Selection.Clear();
         }
     }
 
