@@ -654,7 +654,8 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="markNodesAsDirty">Set this parameter to true to force 
         ///     reset of the execution substrait. Note that setting this parameter 
         ///     to true will have a negative performance impact.</param>
-        internal void ResetEngine(EngineController controller, bool markNodesAsDirty = false)
+        /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
+        internal void ResetEngine(EngineController controller, bool markNodesAsDirty = false, bool forceAutomaticWithoutRun = false)
         {
             if (EngineController != null)
             {
@@ -665,15 +666,15 @@ namespace Dynamo.Graph.Workspaces
             EngineController = controller;
             controller.MessageLogged += Log;
             controller.LibraryServices.LibraryLoaded += LibraryLoaded;
-            
+
             if (markNodesAsDirty)
             {
                 // Mark all nodes as dirty so that AST for the whole graph will be
                 // regenerated.
-                MarkNodesAsModifiedAndRequestRun(Nodes); 
+                MarkNodesAsModifiedAndRequestRun(Nodes);
             }
 
-            if (RunSettings.RunEnabled && RunSettings.RunType == RunType.Automatic)
+            if (RunSettings.RunEnabled && RunSettings.RunType == RunType.Automatic && forceAutomaticWithoutRun == false)
                 Run();
         }
 
@@ -758,6 +759,7 @@ namespace Dynamo.Graph.Workspaces
 
             // Notify listeners (optional) of completion.
             RunSettings.RunEnabled = true; // Re-enable 'Run' button.
+            RunSettings.RunTypesEnabled = true; //Re-enable Run Type ComboBox
 
             executingTask = false; // setting back to false
 

@@ -707,6 +707,10 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
                                   Click="OnDebugModesClick"
                                   IsCheckable="False" />
+                        <MenuItem Name="FileTrustWarning"
+                                  Header="{x:Static p:Resources.DynamoShowFileTrustWarning}"
+                                  Click="FileTrustWarning_Click"
+                                  IsCheckable="False" />
                     </MenuItem>
                 </Menu>
 
