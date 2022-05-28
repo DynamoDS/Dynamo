@@ -178,58 +178,6 @@ namespace Dynamo.Tests.Core
 
         [Test]
         [Category("UnitTests")]
-        public void SelectionAddRemoveTest()
-        {
-            List<ISelectable> objectsToAdd = new List<ISelectable>();
-            objectsToAdd.Add(new SelectableDummy());
-            objectsToAdd.Add(new SelectableDummy());
-            objectsToAdd.Add(new SelectableDummy());
-
-            DynamoSelection.Instance.Selection.Add(new SelectableDummy());
-
-            List<ISelectable> objectsToRemove = new List<ISelectable>();
-            objectsToRemove.Add(DynamoSelection.Instance.Selection[0]);
-
-            int eventCounter = 0;
-            NotifyCollectionChangedEventHandler handler = (object sender, NotifyCollectionChangedEventArgs e) =>
-            {
-                eventCounter++;
-
-                if (eventCounter == 1)
-                {
-                    Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
-                    Assert.AreEqual(e.OldItems.Count, objectsToRemove.Count);
-                }
-
-                if (eventCounter == 2)
-                {
-                    Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
-                    Assert.AreEqual(objectsToAdd.Count, e.NewItems.Count);
-                }
-            };
-
-            DynamoSelection.Instance.Selection.CollectionChanged += handler;
-
-            DynamoSelection.Instance.Selection.AddRemove(objectsToRemove, objectsToAdd);
-
-            foreach (var item in objectsToRemove)
-            {
-                Assert.IsFalse(item.IsSelected);
-            }
-
-            foreach (var item in objectsToAdd)
-            {
-                Assert.IsTrue(item.IsSelected);
-            }
-
-            Assert.AreEqual(objectsToAdd.Count, DynamoSelection.Instance.Selection.Count);
-
-            Assert.AreEqual(2, eventCounter);
-            DynamoSelection.Instance.Selection.CollectionChanged -= handler;
-        }
-
-        [Test]
-        [Category("UnitTests")]
         [Category("Failure")]
         public void SelectionDeferTest()
         {

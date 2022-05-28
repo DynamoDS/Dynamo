@@ -179,41 +179,5 @@ namespace DynamoUtilities
                 }
             }
         }
-
-        /// <summary>
-        /// Removes the toRemove list and adds the toAdd list to the inner collection.
-        /// Fires 2 CollectionChanged events, corresponding to the two input arguments.
-        /// Use this method when expecting to drastically change the collection.
-        /// </summary>
-        /// <param name="toRemove"></param>
-        /// <param name="toAdd"></param>
-        internal void AddRemove(IEnumerable<T> toRemove, IEnumerable<T> toAdd)
-        {
-            if (toRemove == null)
-                throw new ArgumentNullException("toRemove");
-
-            if (toAdd == null)
-                throw new ArgumentNullException("toAdd");
-
-            var removedItems = new List<T>();
-            using (DeferCollectionNotification(NotifyCollectionChangedAction.Remove, removedItems))
-            {
-                foreach (T item in toRemove)
-                {
-                    if (Remove(item))
-                    {
-                        removedItems?.Add(item);
-                    }
-                }
-            }
-
-            using (DeferCollectionNotification(NotifyCollectionChangedAction.Add, toAdd.ToList()))
-            {
-                foreach (T item in toAdd)
-                {
-                    Add(item);
-                }
-            }
-        }
     }
 }
