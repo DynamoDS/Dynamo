@@ -31,6 +31,7 @@ namespace Dynamo.Selection
                 if (_instance.selection != null)
                 {
                     _instance.selection.CollectionChanged -= selection_CollectionChanged;
+                    _instance.selection.CollectionChangedDuringDeferredReset -= selection_CollectionChanged;
                     _instance.selection.Clear();
                     _instance.selection = null;
                 }
@@ -57,6 +58,7 @@ namespace Dynamo.Selection
         private DynamoSelection()
         {
             Selection.CollectionChanged += selection_CollectionChanged;
+            Selection.CollectionChangedDuringDeferredReset += selection_CollectionChanged;
         }
 
         /// <summary>

@@ -33,6 +33,8 @@ namespace Dynamo.Tests.Core
             DynamoSelection.Instance.Selection = smartCollection;
 
             Assert.AreEqual(smartCollection, DynamoSelection.Instance.Selection);
+
+            DynamoSelection.DestroyInstance();
         }
 
         [Test]
@@ -80,6 +82,7 @@ namespace Dynamo.Tests.Core
             Assert.AreEqual(3, DynamoSelection.Instance.Selection.Count);
             Assert.AreEqual(1, eventCounter);
             DynamoSelection.Instance.Selection.CollectionChanged -= handler;
+            DynamoSelection.Instance.Selection.Clear();
         }
 
         [Test]
@@ -117,6 +120,7 @@ namespace Dynamo.Tests.Core
 
             Assert.AreEqual(1, eventCounter);
             DynamoSelection.Instance.Selection.CollectionChanged -= handler;
+            DynamoSelection.Instance.Selection.Clear();
         }
 
         [Test]
@@ -174,11 +178,11 @@ namespace Dynamo.Tests.Core
 
             Assert.AreEqual(2, eventCounter);
             DynamoSelection.Instance.Selection.CollectionChanged -= handler;
+            DynamoSelection.Instance.Selection.Clear();
         }
 
         [Test]
         [Category("UnitTests")]
-        [Category("Failure")]
         public void SelectionDeferTest()
         {
             List<ISelectable> objects = new List<ISelectable>();
@@ -188,26 +192,60 @@ namespace Dynamo.Tests.Core
             objects.Add(new SelectableDummy());
             objects.Add(new SelectableDummy());
 
+            int deferredEventCounter = 0;
+            NotifyCollectionChangedEventHandler deferredHandler = (object sender, NotifyCollectionChangedEventArgs e) =>
+            {
+                deferredEventCounter++;
+
+                if (deferredEventCounter == 1)
+                {
+                    Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
+                    Assert.AreEqual(1, e.OldItems.Count);
+                }
+
+                if (deferredEventCounter == 2)
+                {
+                    Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
+                    Assert.AreEqual(2, e.NewItems.Count);
+                }
+            };
+
+            int eventCounter = 0;
+            NotifyCollectionChangedEventHandler handler = (object sender, NotifyCollectionChangedEventArgs e) =>
+            {
+                Assert.AreEqual(NotifyCollectionChangedAction.Reset, e.Action);
+                eventCounter++;
+            };
+
+            DynamoSelection.Instance.Selection.Add(objects[0]);
+            DynamoSelection.Instance.Selection.Add(objects[1]);
+
+            DynamoSelection.Instance.Selection.CollectionChanged += handler;
+            DynamoSelection.Instance.Selection.CollectionChangedDuringDeferredReset += deferredHandler;
+
             using (DynamoSelection.Instance.Selection.DeferCollectionReset())
             {
-                DynamoSelection.Instance.Selection.Add(objects[0]);
-                DynamoSelection.Instance.Selection.Add(objects[1]);
                 DynamoSelection.Instance.Selection.Add(objects[2]);
                 DynamoSelection.Instance.Selection.Add(objects[3]);
                 DynamoSelection.Instance.Selection.Add(objects[4]);
 
-                DynamoSelection.Instance.Selection.Remove(DynamoSelection.Instance.Selection[4]);
-                DynamoSelection.Instance.Selection.Remove(DynamoSelection.Instance.Selection[3]);
+                DynamoSelection.Instance.Selection.Remove(objects[4]);
+                DynamoSelection.Instance.Selection.Remove(objects[1]);
             }
 
             Assert.AreEqual(3, DynamoSelection.Instance.Selection.Count);
+            Assert.AreEqual(1, eventCounter);
 
-            // This will fail because DynamoSelection does not yet know how to interpret
-            // Reset CollectionChanged events. Reset events do not hold on to what has changed,
-            // so DynamoSelection cannot Select what has been added or Deselect what has been removed
             Assert.IsTrue(objects[0].IsSelected);
-            Assert.IsTrue(objects[1].IsSelected);
             Assert.IsTrue(objects[2].IsSelected);
+            Assert.IsTrue(objects[3].IsSelected);
+
+            Assert.IsFalse(objects[1].IsSelected);
+            Assert.IsFalse(objects[4].IsSelected);
+
+            DynamoSelection.Instance.Selection.CollectionChanged -= handler;
+            DynamoSelection.Instance.Selection.CollectionChangedDuringDeferredReset -= deferredHandler;
+            DynamoSelection.Instance.Selection.Clear();
         }
     }
 }

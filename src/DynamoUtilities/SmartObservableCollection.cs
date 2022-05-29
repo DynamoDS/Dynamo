@@ -8,14 +8,31 @@ using System.Linq;
 namespace DynamoUtilities
 {
     /// <summary>
-    /// Wrapper over System.Collections.ObjectModel.ObservableCollection
-    /// This class supports batch operations that should defer collectionChaned notifications.
+    /// Wrapper over System.Collections.ObjectModel.ObservableCollection that fires minimal notifications.
+    /// This class supports batch operations that should defer CollectionChaned notifications.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class SmartObservableCollection<T> : ObservableCollection<T>
     {
         private bool suppressNotification = false;
         private bool anyChangesDuringSuppress = false;
+
+        /// <summary>
+        /// This event is fired when DeferCollectionReset is used
+        /// DeferCollectionReset only fires a single CollectionChanged Reset event with no added/removed data.
+        /// Use this event to get data on what was added and removed during DeferCollectionReset.
+        /// </summary>
+        internal event NotifyCollectionChangedEventHandler CollectionChangedDuringDeferredReset;
+
+        public SmartObservableCollection() : base()
+        {}
+
+        public SmartObservableCollection(List<T> list)
+            : base(list)
+        {}
+
+        public SmartObservableCollection(IEnumerable<T> collection) : base(collection)
+        {}
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs e)
         {
@@ -39,26 +56,36 @@ namespace DynamoUtilities
             base.OnCollectionChanged(e);
         }
 
-        public SmartObservableCollection() : base()
-        {}
+        private void OnCollectionDeferredResetChanged(IList<T> itemsBeforeReset)
+        {
+            if (CollectionChangedDuringDeferredReset != null &&
+                CollectionChangedDuringDeferredReset.GetInvocationList().Length > 0)
+            {
+                var wasAdded = Items.Except(itemsBeforeReset).Where(x => x != null).ToList() as System.Collections.IList;
+                var wasRemoved = itemsBeforeReset.Except(Items).Where(x => x != null).ToList() as System.Collections.IList;
 
-        public SmartObservableCollection(List<T> list)
-            : base(list)
-        {}
-
-        public SmartObservableCollection(IEnumerable<T> collection) : base(collection)
-        {}
+                CollectionChangedDuringDeferredReset(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, wasRemoved as System.Collections.IList));
+                CollectionChangedDuringDeferredReset(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, wasAdded as System.Collections.IList));
+            }
+        }
 
         /// <summary>
-        /// Suppresses the all CollectionChanged notifications until the returned IDisposable is destroyed.
+        /// Suppresses all CollectionChanged notifications until the returned IDisposable is destroyed.
         /// When the returned object is destroyed, a single NotifyCollectionChangedAction.Reset event will be triggered.
         /// In this case Reset means a major change to the Collection has happened. 
         /// Make sure that any CollectionChanged handlers know to interpret the Reset event as a major change (not only that the collection was cleared).
+        /// Optionally CollectionChangedDuringDeferredReset can be used to get notifications on what was added/removed.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>IDisposible that controls the lifetime of the deferred notifications</returns>
         internal IDisposable DeferCollectionReset()
         {
-            return DeferCollectionNotification(NotifyCollectionChangedAction.Reset);
+            IList<T> itemsBeforeReset = null;
+            if (CollectionChangedDuringDeferredReset != null &&
+                CollectionChangedDuringDeferredReset.GetInvocationList().Length > 0)
+            {
+                itemsBeforeReset = Items.ToList();
+            }
+            return DeferCollectionNotification(NotifyCollectionChangedAction.Reset, itemsBeforeReset);
         }
 
         /// <summary>
@@ -79,11 +106,19 @@ namespace DynamoUtilities
                 suppressNotification = false;
                 anyChangesDuringSuppress = false;
 
-                if (anyChanges && 
-                    (action == NotifyCollectionChangedAction.Reset || (changes != null && changes.Count > 0)))
+                if (!anyChanges)
+                    return;
+
+                OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+                OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+
+                if (action == NotifyCollectionChangedAction.Reset)
                 {
-                    this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-                    this.OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+                    OnCollectionChanged(new NotifyCollectionChangedEventArgs(action));
+                    OnCollectionDeferredResetChanged(changes);
+                }
+                else if (changes != null && changes.Count > 0)
+                {
                     OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, changes as System.Collections.IList));
                 }
             });
