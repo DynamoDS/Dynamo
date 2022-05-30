@@ -18,6 +18,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand setZoomCommand;
         private DelegateCommand resetFitViewToggleCommand;
         private DelegateCommand findByIdCommand;
+        private DelegateCommand focusNodeCommand;
         private DelegateCommand alignSelectedCommand;
         private DelegateCommand setArgumentLacingCommand;
         private DelegateCommand findNodesFromSelectionCommand;
@@ -146,6 +147,18 @@ namespace Dynamo.ViewModels
                     findByIdCommand = new DelegateCommand(FindById, CanFindById);
 
                 return findByIdCommand;
+            }
+        }
+
+        [JsonIgnore]
+        public DelegateCommand FocusNodeCommand
+        {
+            get
+            {
+                if (focusNodeCommand == null)
+                    focusNodeCommand = new DelegateCommand(FocusNode, CanFocusNode);
+
+                return focusNodeCommand;
             }
         }
 

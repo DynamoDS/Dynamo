@@ -15,9 +15,9 @@ using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.Commands;
-using Newtonsoft.Json;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 using NodeViewModel = Dynamo.GraphNodeManager.ViewModels.NodeViewModel;
+using Newtonsoft.Json;
 
 namespace Dynamo.GraphNodeManager
 {
@@ -281,7 +281,7 @@ namespace Dynamo.GraphNodeManager
             commandExecutive.ExecuteCommand(command, uniqueId, "GraphNodeManager");
 
             // Focus on selected
-            viewModelCommandExecutive.FindByIdCommand(nodeViewModel.NodeModel.GUID.ToString());
+            viewModelCommandExecutive.FocusNodeCommand(nodeViewModel.NodeModel.GUID.ToString());
         }
 
         /// <summary>
@@ -531,12 +531,25 @@ namespace Dynamo.GraphNodeManager
         public void Dispose()
         {
             UnsubscribeWorkspaceEvents(CurrentWorkspace);
+
+            DisposeNodes();
+
             viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
             viewLoadedParams.CurrentWorkspaceCleared -= OnCurrentWorkspaceCleared;
             NodesCollection.Filter -= NodesCollectionViewSource_Filter;
             GraphNodeManagerView = null;
         }
 
+        /// <summary>
+        /// Dispose of each NodeViewModel individually
+        /// </summary>
+        private void DisposeNodes()
+        {
+            foreach(var nvm in Nodes)
+            {
+                nvm.Dispose();
+            }
+        }
         #endregion
     }
 }

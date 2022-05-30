@@ -367,8 +367,63 @@ namespace Dynamo.GraphNodeManager.ViewModels
         public NodeViewModel(NodeModel node)
         {
             NodeModel = node;
+
+            NodeModel.Modified += NodeModel_Modified;
+            NodeModel.PropertyChanged += NodeModel_PropertyChanged;
         }
-        
+
+        private void NodeModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            EvaluateNode(sender as NodeModel, e.PropertyName);
+        }
+
+        private void NodeModel_Modified(NodeModel nodeModel)
+        {
+            EvaluateNode(nodeModel);
+        }
+
+        /// <summary>
+        /// In case a Node has been modified in any way, update the affected property 
+        /// </summary>
+        /// <param name="nodeModel"></param>
+        /// <param name="propertyName"></param>
+        private void EvaluateNode(NodeModel nodeModel, string propertyName = "Modified")
+        {
+            switch (propertyName)
+            {
+                case "Name":
+                    RaisePropertyChanged(nameof(Name));
+                    break;
+                case "IsVisible":
+                    RaisePropertyChanged(nameof(StatusIsHidden));
+                    break;
+                case "IsSetAsInput":
+                    RaisePropertyChanged(nameof(StateIsInput));
+                    break;
+                case "IsSetAsOutput":
+                    RaisePropertyChanged(nameof(StateIsOutput));
+                    break;
+                case "IsInErrorState":
+                    RaisePropertyChanged(nameof(IssuesHasError));
+                    break;
+                case "IsFrozen":
+                    RaisePropertyChanged(nameof(StatusIsFrozen));
+                    break;
+                case "State":
+                    RaisePropertyChanged(nameof(State));
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Detach from all event handlers
+        /// </summary>
+        public void Dispose()
+        {
+            NodeModel.Modified -= NodeModel_Modified;
+            NodeModel.PropertyChanged -= NodeModel_PropertyChanged;
+        }
+
         #endregion
 
     }
