@@ -47,6 +47,8 @@ namespace Dynamo.ViewModels
         private readonly PackageManagerClient packageManagerClient;
         private readonly AuthenticationManager authenticationManager;
 
+        private static bool isTermsOfUseCreated;
+
         public TermsOfUseHelper(TermsOfUseHelperParams touParams)
         {
             if (touParams == null)
@@ -116,11 +118,16 @@ namespace Dynamo.ViewModels
 
         internal static bool ShowTermsOfUseDialog(bool forPublishing, string additionalTerms, Window parent = null)
         {
+            if (isTermsOfUseCreated) return false;
+
             var executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
             var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
             var touFilePath = Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
-
+            
             var termsOfUseView = new TermsOfUseView(touFilePath);
+            termsOfUseView.Closed += TermsOfUseView_Closed;
+            isTermsOfUseCreated = true;
+
             if (parent == null)
                 termsOfUseView.ShowDialog();
             else
@@ -129,6 +136,7 @@ namespace Dynamo.ViewModels
                 termsOfUseView.Owner = parent;
                 termsOfUseView.Show();
             }
+
             if (!termsOfUseView.AcceptedTermsOfUse)
                 return false; // User rejected the terms, go no further.
 
@@ -152,6 +160,11 @@ namespace Dynamo.ViewModels
                 additionalTermsView.Show();
             }
             return additionalTermsView.AcceptedTermsOfUse;
+        }
+
+        private static void TermsOfUseView_Closed(object sender, EventArgs e)
+        {
+            isTermsOfUseCreated = false;
         }
 
         private void ShowTermsOfUseForPublishing()

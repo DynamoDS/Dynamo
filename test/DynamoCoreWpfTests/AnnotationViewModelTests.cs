@@ -1357,6 +1357,26 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(DynamoSelection.Instance.Selection.Contains(groupModel));
         }
 
+        [Test]
+        public void ShowGroupContentsTest()
+        {
+            // Arrange
+            var groupName = "GroupWithGroupedGroup2";
+
+            // Graph contains collapsed group as well as nodes, notes, connector pins outside of group
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var groupViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == groupName);
+            groupViewModel.ShowGroupContents();
+
+            // Get target connector
+            var connectorViewModel = ViewModel.CurrentSpaceViewModel.Connectors
+                    .Where(x => x.ConnectorModel.GUID == new Guid("a3d71f022eb94d9e9e1b1a91cb587989"))
+                    .FirstOrDefault();
+
+            Assert.IsTrue(groupViewModel.ViewModelBases.OfType<AnnotationViewModel>().FirstOrDefault().IsCollapsed);
+            Assert.IsTrue(connectorViewModel.IsCollapsed);
+        }
+
         #endregion
     }
 }
