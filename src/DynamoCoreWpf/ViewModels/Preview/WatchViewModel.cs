@@ -210,8 +210,8 @@ namespace Dynamo.ViewModels
             IsNodeExpanded = expanded;
             this.tagGeometry = tagGeometry;
             numberOfItems = 0;
-            maxListLevel = 0;            
-            isCollection = label == WatchViewModel.LIST || label == WatchViewModel.DICTIONARY;        
+            maxListLevel = 0;
+            isCollection = label == WatchViewModel.LIST || label == WatchViewModel.DICTIONARY;
         }
 
         private bool CanFindNodeForPath(object obj)
