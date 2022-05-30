@@ -924,7 +924,7 @@ namespace Dynamo.Graph.Nodes
         ///     Are all the inputs of this node disconnected?
         /// </summary>
         [JsonIgnore]
-        public bool AreAllInputsDisconnected
+        internal bool AreAllInputsDisconnected
         {
             get { return inPorts.All(p => !p.IsConnected); }
         }

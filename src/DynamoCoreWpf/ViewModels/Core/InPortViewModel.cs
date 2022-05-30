@@ -207,12 +207,12 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(IsConnected):
                     RaisePropertyChanged(nameof(IsConnected));
-                    RefreshAllPortColors();
+                    RefreshAllInportsColors();
                     break;
             }
         }
 
-        private void RefreshAllPortColors()
+        private void RefreshAllInportsColors()
         {
             foreach (InPortViewModel port in node.InPorts)
             {
