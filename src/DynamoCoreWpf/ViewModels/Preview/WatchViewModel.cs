@@ -210,8 +210,8 @@ namespace Dynamo.ViewModels
             IsNodeExpanded = expanded;
             this.tagGeometry = tagGeometry;
             numberOfItems = 0;
-            maxListLevel = 0;
-            isCollection = label == WatchViewModel.LIST || label == WatchViewModel.DICTIONARY;
+            maxListLevel = 0;            
+            isCollection = label == WatchViewModel.LIST || label == WatchViewModel.DICTIONARY;        
         }
 
         private bool CanFindNodeForPath(object obj)
@@ -237,7 +237,7 @@ namespace Dynamo.ViewModels
             var listLevelAndItemCount = GetMaximumDepthAndItemNumber(this);
             maxListLevel = listLevelAndItemCount.Item1;
             NumberOfItems = listLevelAndItemCount.Item2;
-            IsCollection = maxListLevel > 1;
+            IsCollection = maxListLevel > 1 || (this._children[0].NodeLabel == WatchViewModel.LIST);
         }
 
         private Tuple<int, int> GetMaximumDepthAndItemNumber(WatchViewModel wvm)
