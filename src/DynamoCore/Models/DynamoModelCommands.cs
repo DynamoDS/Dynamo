@@ -52,13 +52,6 @@ namespace Dynamo.Models
             //ClipBoard.Clear();
         }
 
-        protected virtual void OpenFileImplAutomaticWithoutRun(OpenFileAutomaticWithoutRun command)
-        {
-            string filePath = command.FilePath;
-            bool forceManualMode = command.ForceManualExecutionMode;
-            OpenFileFromPath(filePath, forceManualMode);
-        }
-
         protected virtual void OpenFileFromJsonImpl(OpenFileFromJsonCommand command)
         {
             string fileContents = command.FileContents;

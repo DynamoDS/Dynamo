@@ -98,10 +98,6 @@ namespace Dynamo.ViewModels
                     this.AddToRecentFiles((command as DynamoModel.OpenFileCommand).FilePath);
                     break;
 
-                case "OpenFileAutomaticWithoutRun":
-                    this.AddToRecentFiles((command as DynamoModel.OpenFileAutomaticWithoutRun).FilePath);
-                    break;
-
                 case "MutateTestCommand":
                     var mutatorDriver = new Dynamo.TestInfrastructure.MutatorDriver(this);
                     mutatorDriver.RunMutationTests();
@@ -182,7 +178,6 @@ namespace Dynamo.ViewModels
 
                 case "OpenFileCommand":
                 case "OpenFileFromJsonCommand":
-                case "OpenFileAutomaticWithoutRun":
                 case "RunCancelCommand":
                 case "ForceRunCancelCommand":
                 case "CreateNodeCommand":
