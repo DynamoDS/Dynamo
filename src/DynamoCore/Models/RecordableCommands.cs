@@ -144,6 +144,9 @@ namespace Dynamo.Models
                     case nameof(OpenFileCommand):
                         command = OpenFileCommand.DeserializeCore(element);
                         break;
+                    case nameof(OpenFileAutomaticWithoutRun):
+                        command = OpenFileAutomaticWithoutRun.DeserializeCore(element);
+                        break;
                     case nameof(OpenFileFromJsonCommand):
                         command = OpenFileFromJsonCommand.DeserializeCore(element);
                         break;
@@ -462,12 +465,10 @@ namespace Dynamo.Models
             /// </summary>
             /// <param name="filePath">The path to the file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
-            /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
-            public OpenFileCommand(string filePath, bool forceManualExecutionMode = false, bool forceAutomaticWithoutRun = false)
+            public OpenFileCommand(string filePath, bool forceManualExecutionMode = false)
             {
                 FilePath = filePath;
                 ForceManualExecutionMode = forceManualExecutionMode;
-                ForceAutomaticWithoutRun = forceAutomaticWithoutRun;
             }
 
             private static string TryFindFile(string xmlFilePath, string uriString = null)
@@ -509,7 +510,6 @@ namespace Dynamo.Models
             [DataMember]
             internal string FilePath { get; private set; }
             internal bool ForceManualExecutionMode { get; private set; }
-            internal bool ForceAutomaticWithoutRun { get; private set; }
             private DynamoModel dynamoModel;
 
             #endregion
@@ -565,12 +565,9 @@ namespace Dynamo.Models
             /// </summary>
             /// <param name="fileContents">The Json content of a file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
-            /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
-            public OpenFileFromJsonCommand(string fileContents, bool forceManualExecutionMode = false, bool forceAutomaticWithoutRun = false)
+            public OpenFileFromJsonCommand(string fileContents, bool forceManualExecutionMode = false)
             {
                 FileContents = fileContents;
-                ForceManualExecutionMode = forceManualExecutionMode;
-                ForceAutomaticWithoutRun = forceAutomaticWithoutRun;
             }
 
             internal static OpenFileFromJsonCommand DeserializeCore(XmlElement element)
@@ -587,7 +584,6 @@ namespace Dynamo.Models
             [DataMember]
             internal string FileContents { get; private set; }
             internal bool ForceManualExecutionMode { get; private set; }
-            internal bool ForceAutomaticWithoutRun { get; private set; }
             private DynamoModel dynamoModel;
 
             #endregion
@@ -632,6 +628,80 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command to open a file, if the Run Mode is Automatic the graph won't be run.
+        /// </summary>
+        public class OpenFileAutomaticWithoutRun : RecordableCommand
+        {
+            #region Public Command Properties
+
+            [DataMember]
+            internal string FilePath { get; private set; }
+            internal bool ForceManualExecutionMode { get; private set; }
+            private DynamoModel dynamoModel;
+
+            #endregion
+
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="filePath">The path to the file.</param>
+            /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
+            public OpenFileAutomaticWithoutRun(string filePath, bool forceManualExecutionMode = false)
+            {
+                FilePath = filePath;
+                ForceManualExecutionMode = forceManualExecutionMode;
+            }
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                this.dynamoModel = dynamoModel;
+                this.dynamoModel.ForceAutomaticWithoutRun = true;
+                dynamoModel.OpenFileImplAutomaticWithoutRun(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("XmlFilePath", FilePath);
+            }
+
+            private static string TryFindFile(string xmlFilePath, string uriString = null)
+            {
+                if (File.Exists(xmlFilePath))
+                    return xmlFilePath;
+
+                var xmlFileName = Path.GetFileName(xmlFilePath);
+                if (uriString != null)
+                {
+                    // Try to find the file right next to the command XML file.
+                    Uri uri = new Uri(uriString);
+                    string directory = Path.GetDirectoryName(uri.AbsolutePath);
+                    xmlFilePath = Path.Combine(directory, xmlFileName);
+
+                    // If it still cannot be resolved, fall back to system search.
+                    if (!File.Exists(xmlFilePath))
+                        xmlFilePath = Path.GetFullPath(xmlFileName);
+
+                    if (File.Exists(xmlFilePath))
+                        return xmlFilePath;
+                }
+
+                var message = "Target file cannot be found!";
+                throw new FileNotFoundException(message, xmlFileName);
+            }
+
+            internal static OpenFileCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                string xmlFilePath = TryFindFile(helper.ReadString("XmlFilePath"), element.OwnerDocument.BaseURI);
+                return new OpenFileCommand(xmlFilePath);
+            }
+
+            #endregion
+        }
         /// <summary>
         /// A command used to execute or cancel execution.
         /// </summary>

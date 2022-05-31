@@ -46,19 +46,24 @@ namespace Dynamo.Models
         {
             string filePath = command.FilePath;
             bool forceManualMode = command.ForceManualExecutionMode;
-            bool forceAutomaticWithoutRun = command.ForceAutomaticWithoutRun;
-            OpenFileFromPath(filePath, forceManualMode, forceAutomaticWithoutRun);
+            OpenFileFromPath(filePath, forceManualMode);
 
             //clear the clipboard to avoid copying between dyns
             //ClipBoard.Clear();
+        }
+
+        protected virtual void OpenFileImplAutomaticWithoutRun(OpenFileAutomaticWithoutRun command)
+        {
+            string filePath = command.FilePath;
+            bool forceManualMode = command.ForceManualExecutionMode;
+            OpenFileFromPath(filePath, forceManualMode);
         }
 
         protected virtual void OpenFileFromJsonImpl(OpenFileFromJsonCommand command)
         {
             string fileContents = command.FileContents;
             bool forceManualMode = command.ForceManualExecutionMode;
-            bool forceAutomaticWithoutRun = command.ForceAutomaticWithoutRun;
-            OpenFileFromJson(fileContents, forceManualMode, forceAutomaticWithoutRun);
+            OpenFileFromJson(fileContents, forceManualMode);
         }
 
         private void RunCancelImpl(RunCancelCommand command)

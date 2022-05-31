@@ -1608,8 +1608,7 @@ namespace Dynamo.ViewModels
                 //Checks if the file that is being opened is in the trusted list.
                 if(!PreferenceSettings.TrustedLocations.Contains(directoryName) && DynamoModel.IsTestMode == false)
                 {
-                    //The third parameter is forceAutomaticWithoutRun, so it means that if the RunType = Automatic the graph won't be executed
-                    ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, true));
+                    ExecuteCommand(new DynamoModel.OpenFileAutomaticWithoutRun(filePath, forceManualMode));
 
                     if(FileTrustViewModel != null)
                     {
@@ -2348,6 +2347,8 @@ namespace Dynamo.ViewModels
                 // If after closing the HOME workspace, and there are no other custom 
                 // workspaces opened at the time, then we should show the start page.
                 this.ShowStartPage = (Model.Workspaces.Count() <= 1);
+                if(this.Model != null)
+                    this.Model.ForceAutomaticWithoutRun = false;
             }
         }
 
