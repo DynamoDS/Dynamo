@@ -74,9 +74,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void ExecuteTermsOfServiceFlow(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
-
-            if (stepInfo.ExitGuide != null)
-                exitGuide = stepInfo.ExitGuide;
+            exitGuide = stepInfo.ExitGuide;
 
             //When enableFunction = true, means we want to show the TermsOfUse Window (this is executed in the UIAutomation step in the Show() method)
             if (enableFunction)
@@ -146,9 +144,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (enableFunction)
             {
                 CurrentExecutingStep = stepInfo;
-
-                if (stepInfo.ExitGuide != null)
-                    exitGuide = stepInfo.ExitGuide;
+                exitGuide = stepInfo.ExitGuide;
 
                 Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
 
@@ -156,8 +152,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     if (ownedWindow == null) return;
 
-                    CloseButtonSearchPackages = GuideUtilities.FindChild(ownedWindow, handler.HandlerElement) as Button;
-                    CloseButtonSearchPackages.Click += CloseButton_Click;
+                    if(CloseButtonSearchPackages == null)
+                    {
+                        CloseButtonSearchPackages = GuideUtilities.FindChild(ownedWindow, handler.HandlerElement) as Button;
+                        CloseButtonSearchPackages.Click += CloseButton_Click;
+                    }
                 }
             }
             else
@@ -291,6 +290,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="e"></param>
         internal static void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            CloseButtonSearchPackages = null;
             CloseTour();
         }
 
@@ -310,6 +310,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void ExecutePackageSearch(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
+            exitGuide = stepInfo.ExitGuide;
             //We try to find the PackageManagerSearchView window
             Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
             if (enableFunction)
