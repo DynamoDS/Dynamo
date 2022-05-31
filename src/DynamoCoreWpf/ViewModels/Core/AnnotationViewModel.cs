@@ -325,12 +325,21 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// This property getter returns an empty GeometryCollection
+        /// </summary>
+        [Obsolete("This property will be removed in Dynamo 3.0 - please use NestedGroupsGeometries instead.")]
+        public GeometryCollection NestedGroupsGeometryCollection
+        {
+            get => new GeometryCollection();
+        }
+
+        /// <summary>
         /// Collection of rectangles based on AnnotationModels
         /// that belongs to this group.
         /// This is used to make a cutout in this groups background
         /// where another group is placed so there wont be an overlay.
         /// </summary>
-        public SmartObservableCollection<Geometry> NestedGroupsGeometryCollection = new SmartObservableCollection<Geometry>();
+        public SmartObservableCollection<Geometry> NestedGroupsGeometries = new SmartObservableCollection<Geometry>();
 
         /// <summary>
         /// This property will be used to populate the GroupStyle context menu (the one shown when clicking right over a Group)
@@ -477,20 +486,22 @@ namespace Dynamo.ViewModels
                     .Where(x => x.GUID != this.AnnotationModel.GUID &&
                                 !WorkspaceViewModel.Model.Annotations.ContainsModel(x));
 
-                using (NestedGroupsGeometryCollection.DeferCollectionReset())
-                foreach (var model in selectedModels)
+                using (NestedGroupsGeometries.DeferCollectionReset())
                 {
-                    WorkspaceViewModel.DynamoViewModel.AddGroupToGroupModelCommand.Execute(this.AnnotationModel.GUID);
-                    if (Nodes.Contains(model))
+                    foreach (var model in selectedModels)
                     {
-                        var groupViewModel = ViewModelBases.OfType<AnnotationViewModel>()
-                            .Where(x => x.AnnotationModel.GUID == model.GUID)
-                            .FirstOrDefault();
+                        WorkspaceViewModel.DynamoViewModel.AddGroupToGroupModelCommand.Execute(this.AnnotationModel.GUID);
+                        if (Nodes.Contains(model))
+                        {
+                            var groupViewModel = ViewModelBases.OfType<AnnotationViewModel>()
+                                .Where(x => x.AnnotationModel.GUID == model.GUID)
+                                .FirstOrDefault();
 
-                        groupViewModel.AddToGroupCommand.RaiseCanExecuteChanged();
-                        groupViewModel.AddGroupToGroupCommand.RaiseCanExecuteChanged();
-                        groupViewModel.RemoveGroupFromGroupCommand.RaiseCanExecuteChanged();
-                        AddToCutGeometryDictionary(groupViewModel);
+                            groupViewModel.AddToGroupCommand.RaiseCanExecuteChanged();
+                            groupViewModel.AddGroupToGroupCommand.RaiseCanExecuteChanged();
+                            groupViewModel.RemoveGroupFromGroupCommand.RaiseCanExecuteChanged();
+                            AddToCutGeometryDictionary(groupViewModel);
+                        }
                     }
                 }
             }
@@ -549,11 +560,13 @@ namespace Dynamo.ViewModels
             // Add all grouped AnnotaionModels to the CutGeometryDictionary.
             // And raise ZIndex changed to make sure nested groups have
             // a higher zIndex than the parent.
-            using (NestedGroupsGeometryCollection.DeferCollectionReset())
-            foreach (var annotationViewModel in viewModelBases.OfType<AnnotationViewModel>())
+            using (NestedGroupsGeometries.DeferCollectionReset())
             {
-                annotationViewModel.RaisePropertyChanged(nameof(ZIndex));
-                AddToCutGeometryDictionary(annotationViewModel);
+                foreach (var annotationViewModel in viewModelBases.OfType<AnnotationViewModel>())
+                {
+                    annotationViewModel.RaisePropertyChanged(nameof(ZIndex));
+                    AddToCutGeometryDictionary(annotationViewModel);
+                }
             }
 
             if (!IsExpanded)
@@ -1096,7 +1109,7 @@ namespace Dynamo.ViewModels
 
         private void UpdateAllGroupedGroups()
         {
-            using (NestedGroupsGeometryCollection.DeferCollectionReset())
+            using (NestedGroupsGeometries.DeferCollectionReset())
             {
                 ViewModelBases
                     .OfType<AnnotationViewModel>()
@@ -1112,7 +1125,7 @@ namespace Dynamo.ViewModels
                 .ToList()
                 .Except(allGroupedGroups.Select(x => x.GUID));
 
-            using (NestedGroupsGeometryCollection.DeferCollectionReset())
+            using (NestedGroupsGeometries.DeferCollectionReset())
             {
                 foreach (var key in removedFromGroup)
                 {
@@ -1144,7 +1157,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            NestedGroupsGeometryCollection.RemoveAt(GroupIdToCutGeometryIndex[groupGuid]);
+            NestedGroupsGeometries.RemoveAt(GroupIdToCutGeometryIndex[groupGuid]);
             GroupIdToCutGeometryIndex.Remove(groupGuid);
 
             var groupViewModel = this.WorkspaceViewModel.Annotations
@@ -1162,8 +1175,8 @@ namespace Dynamo.ViewModels
             var key = annotationViewModel.AnnotationModel.GUID;
             if (GroupIdToCutGeometryIndex.ContainsKey(key)) return;
 
-            int nextPos = NestedGroupsGeometryCollection.Count;
-            NestedGroupsGeometryCollection.Insert(nextPos, CreateRectangleGeometry(annotationViewModel));
+            int nextPos = NestedGroupsGeometries.Count;
+            NestedGroupsGeometries.Insert(nextPos, CreateRectangleGeometry(annotationViewModel));
             GroupIdToCutGeometryIndex[key] = nextPos;
 
             annotationViewModel.PropertyChanged += GroupViewModel_PropertyChanged;
@@ -1205,9 +1218,9 @@ namespace Dynamo.ViewModels
             }
             var index = GroupIdToCutGeometryIndex[key];
             if (index >= 0 &&
-                index < NestedGroupsGeometryCollection.Count)
+                index < NestedGroupsGeometries.Count)
             {
-                NestedGroupsGeometryCollection[index] = CreateRectangleGeometry(annotationViewModel);
+                NestedGroupsGeometries[index] = CreateRectangleGeometry(annotationViewModel);
             }
         }
 

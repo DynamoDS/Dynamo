@@ -109,7 +109,7 @@ namespace DynamoUtilities
                 if (!anyChanges)
                     return;
 
-                OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(Count)));
                 OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
 
                 if (action == NotifyCollectionChangedAction.Reset)
