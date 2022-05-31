@@ -3183,4 +3183,7 @@ To install the latest version of a package, click Install. \n
   <data name="OnboardingSuccessTitle" xml:space="preserve">
     <value>Success</value>
   </data>
+  <data name="MessagePackageTargetOtherHosts" xml:space="preserve">
+    <value>The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems. Do you want to continue?</value>
+  </data>
 </root>

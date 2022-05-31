@@ -4012,6 +4012,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems. Do you want to continue?.
+        /// </summary>
+        public static string MessagePackageTargetOtherHosts {
+            get {
+                return ResourceManager.GetString("MessagePackageTargetOtherHosts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version {0} of {1} could not be found..
         /// </summary>
         public static string MessagePackageVersionNotFound {
