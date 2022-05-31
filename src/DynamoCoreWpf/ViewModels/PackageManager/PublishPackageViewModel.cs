@@ -1338,12 +1338,12 @@ namespace Dynamo.PackageManager
             string fileName = packageItemRootViewModel.FileInfo == null ? packageItemRootViewModel.Name : packageItemRootViewModel.FileInfo.FullName;
             string fileType = packageItemRootViewModel.DependencyType.ToString();
 
-            if (fileName.ToLower().EndsWith(".dll") || fileType.Equals("Assembly"))
+            if (fileName.ToLower().EndsWith(".dll") || fileType.Equals(DependencyType.Assembly))
             {
                 Assemblies.Remove(Assemblies
                     .First(x => x.Name == Path.GetFileNameWithoutExtension(fileName)));
             }
-            else if (fileType.Equals("CustomNode"))
+            else if (fileType.Equals(DependencyType.CustomNode))
             {
                 CustomNodeDefinitions.Remove(CustomNodeDefinitions
                     .First(x => x.DisplayName == fileName));
