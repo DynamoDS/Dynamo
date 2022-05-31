@@ -380,7 +380,6 @@ namespace Dynamo.Models
 
         internal static DynamoUtilities.DynamoFeatureFlagsManager FeatureFlags { get; private set; }
 
-        internal bool ForceAutomaticWithoutRun { get; set; } = false;
         #endregion
 
         #region initialization and disposal
@@ -1671,7 +1670,7 @@ namespace Dynamo.Models
             ResetEngineInternal();
             foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
             {
-                workspaceModel.ResetEngine(EngineController, markNodesAsDirty, ForceAutomaticWithoutRun);
+                workspaceModel.ResetEngine(EngineController, markNodesAsDirty);
             }
         }
 

@@ -22,6 +22,8 @@ namespace Dynamo.Models
         private bool runTypesEnabled;
         private bool runTypesComboBoxToolTipIsEnabled;
 
+        internal bool ForceAutomaticWithoutRun { get; set; } = false;
+
         /// <summary>
         /// Default milliseconds number for the period in periodic run.
         /// </summary>

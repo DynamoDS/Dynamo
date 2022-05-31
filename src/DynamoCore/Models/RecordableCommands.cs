@@ -568,6 +568,7 @@ namespace Dynamo.Models
             public OpenFileFromJsonCommand(string fileContents, bool forceManualExecutionMode = false)
             {
                 FileContents = fileContents;
+                ForceManualExecutionMode = forceManualExecutionMode;
             }
 
             internal static OpenFileFromJsonCommand DeserializeCore(XmlElement element)
@@ -658,7 +659,6 @@ namespace Dynamo.Models
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
                 this.dynamoModel = dynamoModel;
-                this.dynamoModel.ForceAutomaticWithoutRun = true;
                 dynamoModel.OpenFileImplAutomaticWithoutRun(this);
             }
 
