@@ -462,12 +462,10 @@ namespace Dynamo.Models
             /// </summary>
             /// <param name="filePath">The path to the file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
-            /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
-            public OpenFileCommand(string filePath, bool forceManualExecutionMode = false, bool forceAutomaticWithoutRun = false)
+            public OpenFileCommand(string filePath, bool forceManualExecutionMode = false)
             {
                 FilePath = filePath;
                 ForceManualExecutionMode = forceManualExecutionMode;
-                ForceAutomaticWithoutRun = forceAutomaticWithoutRun;
             }
 
             private static string TryFindFile(string xmlFilePath, string uriString = null)
@@ -509,7 +507,6 @@ namespace Dynamo.Models
             [DataMember]
             internal string FilePath { get; private set; }
             internal bool ForceManualExecutionMode { get; private set; }
-            internal bool ForceAutomaticWithoutRun { get; private set; }
             private DynamoModel dynamoModel;
 
             #endregion
@@ -565,12 +562,10 @@ namespace Dynamo.Models
             /// </summary>
             /// <param name="fileContents">The Json content of a file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
-            /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
-            public OpenFileFromJsonCommand(string fileContents, bool forceManualExecutionMode = false, bool forceAutomaticWithoutRun = false)
+            public OpenFileFromJsonCommand(string fileContents, bool forceManualExecutionMode = false)
             {
                 FileContents = fileContents;
                 ForceManualExecutionMode = forceManualExecutionMode;
-                ForceAutomaticWithoutRun = forceAutomaticWithoutRun;
             }
 
             internal static OpenFileFromJsonCommand DeserializeCore(XmlElement element)
@@ -587,7 +582,6 @@ namespace Dynamo.Models
             [DataMember]
             internal string FileContents { get; private set; }
             internal bool ForceManualExecutionMode { get; private set; }
-            internal bool ForceAutomaticWithoutRun { get; private set; }
             private DynamoModel dynamoModel;
 
             #endregion

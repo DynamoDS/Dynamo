@@ -655,7 +655,7 @@ namespace Dynamo.Graph.Workspaces
         ///     reset of the execution substrait. Note that setting this parameter 
         ///     to true will have a negative performance impact.</param>
         /// <param name="forceAutomaticWithoutRun">This parameter, if true, will prohibit the graph from executing when RunMode is set to Automatic</param>
-        internal void ResetEngine(EngineController controller, bool markNodesAsDirty = false, bool forceAutomaticWithoutRun = false)
+        internal void ResetEngine(EngineController controller, bool markNodesAsDirty = false)
         {
             if (EngineController != null)
             {
@@ -674,7 +674,7 @@ namespace Dynamo.Graph.Workspaces
                 MarkNodesAsModifiedAndRequestRun(Nodes);
             }
 
-            if (RunSettings.RunEnabled && RunSettings.RunType == RunType.Automatic && forceAutomaticWithoutRun == false)
+            if (RunSettings.RunEnabled && RunSettings.RunType == RunType.Automatic && RunSettings.ForceAutomaticWithoutRun == false)
                 Run();
         }
 

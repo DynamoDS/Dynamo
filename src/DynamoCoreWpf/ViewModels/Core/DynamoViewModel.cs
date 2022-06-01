@@ -1606,22 +1606,19 @@ namespace Dynamo.ViewModels
 
                 var directoryName = Path.GetDirectoryName(filePath);
                 //Checks if the file that is being opened is in the trusted list.
+                bool bShowFileTrustWarning = false;
                 if(!PreferenceSettings.TrustedLocations.Contains(directoryName) && DynamoModel.IsTestMode == false)
                 {
-                    //The third parameter is forceAutomaticWithoutRun, so it means that if the RunType = Automatic the graph won't be executed
-                    ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, true));
+                    HomeSpace.RunSettings.ForceAutomaticWithoutRun = true;
+                    bShowFileTrustWarning = true;
+                }
+                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
 
-                    if(FileTrustViewModel != null)
-                    {
-                        FileTrustViewModel.DynFileDirectoryName = directoryName;
-                        FileTrustViewModel.ShowWarningPopup = true;
-                    }                  
-                }
-                else
+                if (FileTrustViewModel != null && bShowFileTrustWarning == true)
                 {
-                    ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
+                    FileTrustViewModel.DynFileDirectoryName = directoryName;
+                    FileTrustViewModel.ShowWarningPopup = true;
                 }
-                    
             }
             catch (Exception e)
             {
@@ -2348,6 +2345,8 @@ namespace Dynamo.ViewModels
                 // If after closing the HOME workspace, and there are no other custom 
                 // workspaces opened at the time, then we should show the start page.
                 this.ShowStartPage = (Model.Workspaces.Count() <= 1);
+                if (HomeSpace.RunSettings != null)
+                    HomeSpace.RunSettings.ForceAutomaticWithoutRun = false;
             }
         }
 

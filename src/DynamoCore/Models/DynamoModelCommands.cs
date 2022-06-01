@@ -46,8 +46,7 @@ namespace Dynamo.Models
         {
             string filePath = command.FilePath;
             bool forceManualMode = command.ForceManualExecutionMode;
-            bool forceAutomaticWithoutRun = command.ForceAutomaticWithoutRun;
-            OpenFileFromPath(filePath, forceManualMode, forceAutomaticWithoutRun);
+            OpenFileFromPath(filePath, forceManualMode);
 
             //clear the clipboard to avoid copying between dyns
             //ClipBoard.Clear();
@@ -57,8 +56,7 @@ namespace Dynamo.Models
         {
             string fileContents = command.FileContents;
             bool forceManualMode = command.ForceManualExecutionMode;
-            bool forceAutomaticWithoutRun = command.ForceAutomaticWithoutRun;
-            OpenFileFromJson(fileContents, forceManualMode, forceAutomaticWithoutRun);
+            OpenFileFromJson(fileContents, forceManualMode);
         }
 
         private void RunCancelImpl(RunCancelCommand command)
