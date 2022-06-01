@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Dynamo.Core;
-using Dynamo.Interfaces;
-using Dynamo.Wpf.Properties;
-using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
-using Dynamo.Models;
-using System.Windows.Data;
-using System.Globalization;
-using System.Linq;
-using Dynamo.Configuration;
-using DynamoUtilities;
-using Dynamo.Wpf.Utilities;
-using Dynamo.Logging;
 using System.Windows;
+using Dynamo.Configuration;
+using Dynamo.Logging;
+using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.Utilities;
+using DynamoUtilities;
+using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 
 namespace Dynamo.ViewModels
 {
@@ -87,7 +81,7 @@ namespace Dynamo.ViewModels
 
         private bool CanDelete(int param)
         {
-            return TrustedLocations.Count > 1;
+            return TrustedLocations.Count > 0;
         }
 
         private bool CanUpdate(int param)
