@@ -142,17 +142,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Returns the state of the Preferences Window Debug Mode
-        /// </summary>
-        public bool PreferencesDebugMode
-        {
-            get
-            {
-                return DebugModes.IsEnabled("DynamoPreferencesMenuDebugMode");
-            }
-        }
-
-        /// <summary>
         /// Returns all installed packages
         /// </summary>
         public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
