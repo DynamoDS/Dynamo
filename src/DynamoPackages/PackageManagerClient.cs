@@ -91,12 +91,12 @@ namespace Dynamo.PackageManager
         {
             foreach (var package in packages)
             {
-                bool packageHasWrongVersion = package.versions.Count(v => v.full_dependency_versions == null) > 0;
+                bool packageHasWrongVersion = package.versions.Count(v => v.url == null) > 0;
 
                 if (packageHasWrongVersion)
                 {
                     List<PackageVersion> cleanVersions = new List<PackageVersion>();
-                    cleanVersions.AddRange(package.versions.Where(v => v.full_dependency_versions != null));
+                    cleanVersions.AddRange(package.versions.Where(v => v.url != null));
                     package.versions = cleanVersions;
                 }
             }
