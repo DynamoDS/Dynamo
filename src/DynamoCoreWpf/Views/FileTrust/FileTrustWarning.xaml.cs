@@ -112,7 +112,7 @@ namespace Dynamo.Wpf.Views.FileTrust
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            PreferencesPanelUtilities.OpenPreferencesPanel(mainWindow, Res.PreferencesSecuritySettingsTab, Res.TrustedPathsExpanderName);
+            PreferencesPanelUtilities.OpenPreferencesPanel(mainWindow, WindowStartupLocation.CenterOwner, Res.PreferencesSecuritySettingsTab, Res.TrustedPathsExpanderName);
         }
 
         private void CloseFileButton_Click(object sender, RoutedEventArgs e)

@@ -16,9 +16,10 @@ namespace Dynamo.Wpf.Utilities
         /// This static method will open the Preferences panel in the specified tab (if is provided) and expand the specified expander (if is provided)
         /// </summary>
         /// <param name="mainWindow">This window needs to be the DynamoView</param>
+        /// <param name="location">Location in which the Preference panel will be shown</param>
         /// <param name="tabName">Tab name in which the preference panel will be opened</param>
         /// <param name="expanderName">Expander name that will be expanded (it has to be inside the tab)</param>
-        public static void OpenPreferencesPanel(Window mainWindow, string tabName = "", string expanderName = "")
+        public static void OpenPreferencesPanel(Window mainWindow, WindowStartupLocation location, string tabName = "", string expanderName = "")
         {
             var preferencesWindow = new PreferencesView(mainWindow as DynamoView);
 
@@ -42,7 +43,7 @@ namespace Dynamo.Wpf.Utilities
                     tabExpander.IsExpanded = true;
                 }
             }
-            preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            preferencesWindow.WindowStartupLocation = location;
             preferencesWindow.ShowDialog();
         }
     }
