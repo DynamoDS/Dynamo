@@ -674,7 +674,7 @@ namespace Dynamo.Graph.Workspaces
                 MarkNodesAsModifiedAndRequestRun(Nodes);
             }
 
-            if (RunSettings.RunEnabled && RunSettings.RunType == RunType.Automatic && RunSettings.ForceAutomaticWithoutRun)
+            if (RunSettings.RunEnabled && RunSettings.RunType == RunType.Automatic && RunSettings.ForceAutomaticWithoutRun == false)
                 Run();
         }
 
