@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.UI.GuidedTour;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.FileTrust;
+using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Wpf.Views.FileTrust
 {
@@ -106,23 +112,7 @@ namespace Dynamo.Wpf.Views.FileTrust
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            const string securityTabName = "Security";
-            const string trustedTabExpanderName = "TrustedPathsExpander";
-
-            var preferencesWindow = new PreferencesView(mainWindow as DynamoView);
-            var tabControl = preferencesWindow.preferencesTabControl;
-            if (tabControl == null) return;
-            var securityTab = (from TabItem tabItem in tabControl.Items
-                               where tabItem.Header.ToString().Equals(securityTabName)
-                               select tabItem).FirstOrDefault();
-            if (securityTab == null) return;
-            tabControl.SelectedItem = securityTab;
-            var trustedPathExpander = securityTab.FindName(trustedTabExpanderName) as Expander;
-            if (trustedPathExpander == null) return;
-            trustedPathExpander.IsExpanded = true;
-
-            preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            preferencesWindow.ShowDialog();
+            PreferencesPanelUtilities.OpenPreferencesPanel(mainWindow, Res.PreferencesSecuritySettingsTab, Res.TrustedPathsExpanderName);
         }
 
         private void CloseFileButton_Click(object sender, RoutedEventArgs e)
