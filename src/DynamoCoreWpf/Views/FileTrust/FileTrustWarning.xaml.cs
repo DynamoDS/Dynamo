@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.FileTrust;
-using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Wpf.Views.FileTrust
 {
@@ -112,7 +105,9 @@ namespace Dynamo.Wpf.Views.FileTrust
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            PreferencesPanelUtilities.OpenPreferencesPanel(mainWindow, WindowStartupLocation.CenterOwner, Res.PreferencesSecuritySettingsTab, Res.TrustedPathsExpanderName);
+            var tabName = Properties.Resources.PreferencesSecuritySettingsTab;
+            var expanderName = Properties.Resources.TrustedPathsExpanderName;
+            PreferencesPanelUtilities.OpenPreferencesPanel(mainWindow, WindowStartupLocation.CenterOwner, tabName, expanderName);
         }
 
         private void CloseFileButton_Click(object sender, RoutedEventArgs e)
