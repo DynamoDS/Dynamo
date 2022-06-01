@@ -119,22 +119,22 @@ namespace Dynamo.Interfaces
                 return new WatchViewModel(((Enum)value).GetDescription(), tag, RequestSelectGeometry);
             }
 
-            return new WatchViewModel(ToString(value), tag, RequestSelectGeometry);
+            return new WatchViewModel(value, tag, RequestSelectGeometry);
         }
 
         private WatchViewModel ProcessThing(double value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
-            return new WatchViewModel(value.ToString(numberFormat, CultureInfo.InvariantCulture), tag, RequestSelectGeometry);
+            return new WatchViewModel(value, tag, RequestSelectGeometry);
         }
 
         private WatchViewModel ProcessThing(System.DateTime value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
-            return new WatchViewModel(value.ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture), tag, RequestSelectGeometry);
+            return new WatchViewModel(value, tag, RequestSelectGeometry);
         }
 
         private WatchViewModel ProcessThing(long value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
-            return new WatchViewModel(value.ToString(CultureInfo.InvariantCulture), tag, RequestSelectGeometry);
+            return new WatchViewModel(value, tag, RequestSelectGeometry);
         }
 
         private WatchViewModel ProcessThing(string value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)

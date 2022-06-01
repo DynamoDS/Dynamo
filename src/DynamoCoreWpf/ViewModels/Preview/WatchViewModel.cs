@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using Dynamo.Wpf.Properties;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Configuration;
 
 namespace Dynamo.ViewModels
 {
     public class WatchViewModel : NotificationObject
     {
+        // Formats double value into string. E.g. 1054.32179 => "1054.32179"
+        // For more info: https://msdn.microsoft.com/en-us/library/kfsatb94(v=vs.110).aspx
+        private const string numberFormat = "g";
+
         #region Events
 
         public event Action Clicked;
@@ -37,6 +44,7 @@ namespace Dynamo.ViewModels
         private bool _isOneRowContent;
         private readonly Action<string> tagGeometry;
         private bool isCollection;
+        private string valueType;
 
         // Instance variable for the number of items in the list 
         private int numberOfItems;
@@ -198,9 +206,24 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsTopLevel { get; set; }
 
+        /// <summary>
+        /// The type of the output value,
+        /// used to display value type labels on previews
+        /// </summary>
+        public string ValueType
+        {
+            get { return valueType; }
+            set { valueType = value; RaisePropertyChanged(nameof(ValueType)); }
+        }
+
         #endregion
 
         public WatchViewModel(Action<string> tagGeometry) : this(null, null, tagGeometry, true) { }
+
+        public WatchViewModel(object obj, string path, Action<string> tagGeometry, bool expanded = false) : this(GetStringFromObject(obj), path, tagGeometry, expanded)
+        {
+            ValueType = GetDisplayType(obj);
+        }
 
         public WatchViewModel(string label, string path, Action<string> tagGeometry, bool expanded = false)
         {
@@ -214,6 +237,69 @@ namespace Dynamo.ViewModels
             isCollection = label == WatchViewModel.LIST || label == WatchViewModel.DICTIONARY;
         }
 
+        private static string GetStringFromObject(object obj)
+        {
+            TypeCode type = Type.GetTypeCode(obj.GetType());
+            switch (type)
+            {
+                case TypeCode.Boolean:
+                    return ObjectToLabelString(obj);
+
+                case TypeCode.Double:
+                    return ((double)obj).ToString(numberFormat, CultureInfo.InvariantCulture);
+
+                case TypeCode.Int64:
+                    return ((long)obj).ToString(CultureInfo.InvariantCulture);
+
+                case TypeCode.DateTime:
+                    return ((DateTime)obj).ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture);
+
+                case TypeCode.Object:
+                    return ObjectToLabelString(obj);
+
+                default:
+                    return (string)obj;
+            };
+        }
+
+        private static string ObjectToLabelString(object obj)
+        {
+            if (obj == null)
+                return Resources.NullString;
+
+            else if (obj is bool)
+                return obj.ToString().ToLower();
+
+            else if (obj is double)
+                return ((double)obj).ToString(CultureInfo.InvariantCulture);
+
+            return obj.ToString();
+        }
+
+        private string GetDisplayType(object obj)
+        {
+            TypeCode typeCode = Type.GetTypeCode(obj.GetType());
+            // returning a customized user friendly string instead of just returning the name of the type 
+            switch (typeCode)
+            {
+                case TypeCode.Boolean:
+                    return "bool";
+                case TypeCode.Double:
+                    return "double";
+                case TypeCode.Int64:
+                    return "int";
+                case TypeCode.Int32:
+                    return "int";
+                case TypeCode.Object:
+                    return "object";
+                case TypeCode.String:
+                    return "string";
+                case TypeCode.Empty:
+                    return "";
+                default:
+                    return "";
+            }
+        }
         private bool CanFindNodeForPath(object obj)
         {
             return !string.IsNullOrEmpty(obj.ToString());
