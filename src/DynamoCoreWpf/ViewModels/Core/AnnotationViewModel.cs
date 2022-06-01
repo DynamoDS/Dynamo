@@ -792,8 +792,8 @@ namespace Dynamo.ViewModels
 
             for (int i = 0; i < inPorts.Count(); i++)
             {
-                var model = inPorts[i].PortModel;
-                if (model.IsProxyPort)
+                var model = inPorts[i]?.PortModel;
+                if (model != null && model.IsProxyPort)
                 {
                     // calculate new position for the proxy inports.
                     model.Center = CalculatePortPosition(model, i);
@@ -802,8 +802,8 @@ namespace Dynamo.ViewModels
 
             for (int i = 0; i < outPorts.Count(); i++)
             {
-                var model = outPorts[i].PortModel;
-                if (model.IsProxyPort)
+                var model = outPorts[i]?.PortModel;
+                if (model != null && model.IsProxyPort)
                 {
                     // calculate new position for the proxy outports.
                     model.Center = CalculatePortPosition(model, i);
