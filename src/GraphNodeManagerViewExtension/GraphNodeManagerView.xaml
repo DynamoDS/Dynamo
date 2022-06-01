@@ -28,8 +28,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
         <!-- Search Bar -->
@@ -105,7 +105,7 @@
                   VerticalAlignment="Center"
                   SelectionUnit="FullRow"
                   SelectionMode="Single"
-                  ScrollViewer.CanContentScroll="False" 
+                  ScrollViewer.CanContentScroll="True" 
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   CanUserResizeColumns="True" 
