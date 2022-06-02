@@ -373,7 +373,9 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// A copy of the list of trusted locations (folders) as recorded in the preferences file.
+        /// Represents a copy of the list of trusted locations that the user added.
+        /// Do not use this list to check if a new path is trusted or not.
+        /// To check if a new path is trusted or not please use the IsTrustedLocation API (IsTrustedLocation supports locations)
         /// </summary>
         public List<string> TrustedLocations
         {
@@ -841,8 +843,34 @@ namespace Dynamo.Configuration
             {
                 string location = PathHelper.ValidateDirectory(path);
 
+                var locationDir = new DirectoryInfo(location);
                 // All subdirectories are considered trusted if the parent directory is trusted.
-                return TrustedLocations.FirstOrDefault(x => location.StartsWith(x)) != null;
+                return TrustedLocations.FirstOrDefault(x =>
+                {
+                    if (location.Equals(x))
+                    {
+                        return true;
+                    }
+
+                    if (location.StartsWith(x))
+                    {
+                        var parent = locationDir.Parent;
+                        while(parent != null) 
+                        { 
+                            if (parent.FullName.Length < x.Length)
+                            {// Path length will only decrease so no need to check anymore.
+                                return false;
+                            }
+
+                            if (parent.FullName.Equals(x))
+                            {
+                                return true;
+                            }
+                            parent = parent.Parent;
+                        }
+                    }
+                    return false;
+                }) != null;
             }
             catch
             {

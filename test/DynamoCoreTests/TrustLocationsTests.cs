@@ -41,6 +41,12 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(settings.AddTrustedLocation(Path.GetTempPath()));
 
+            Assert.IsTrue(settings.IsTrustedLocation(Path.GetTempPath()));
+
+            var tempWithSuffix = Path.GetTempPath() + "2222";
+            Assert.IsFalse(settings.TrustedLocations.Contains(tempWithSuffix));
+            Assert.IsFalse(settings.IsTrustedLocation(tempWithSuffix));
+
             Assert.IsFalse(settings.IsTrustedLocation(Path.Combine(TestDirectory, ":")));
 
             var doesNotExist = settings.TrustedLocations[0];

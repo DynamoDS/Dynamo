@@ -123,7 +123,7 @@ namespace Dynamo.Wpf.Views.FileTrust
             if(FileTrustWarningCheckBox.IsChecked.Value == true)
             {
                 if (string.IsNullOrEmpty(fileTrustWarningViewModel.DynFileDirectoryName)) return;
-                if (dynViewModel.PreferenceSettings.TrustedLocations.Contains(fileTrustWarningViewModel.DynFileDirectoryName)) return;
+                if (dynViewModel.PreferenceSettings.IsTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName)) return;
                 dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName);
             }
         }
