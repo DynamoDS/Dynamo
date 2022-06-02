@@ -121,6 +121,16 @@ namespace ProtoCore
         public Dictionary<ProtoCore.DSASM.AddressType, int> addressTypeClassMap { get; set; }
         private static Dictionary<PrimitiveType, string> primitiveTypeNames;
 
+        private static readonly Dictionary<string, string> clrToDSTypeMap = new Dictionary<string, string>
+        {
+            { $"{nameof(System)}.{nameof(String)}", "string" },
+            { "long", "int" },
+            { $"{nameof(System)}.{nameof(Int64)}", "int" },
+            { $"{nameof(System)}.{nameof(Double)}", "double" },
+            { $"{nameof(System)}.{nameof(Boolean)}", "bool" },
+            { $"{nameof(System)}.{nameof(Char)}", "char" }
+        };
+
         public TypeSystem()
         {
             SetTypeSystem();
@@ -314,7 +324,13 @@ namespace ProtoCore
         public int GetType(string ident)
         {
             Validity.Assert(null != classTable);
-            return classTable.IndexOf(ident);
+            var index = classTable.IndexOf(ident);
+            if (index != Constants.kInvalidIndex) return index;
+
+            if(clrToDSTypeMap.TryGetValue(ident, out string dsType))
+                return classTable.IndexOf(dsType);
+
+            return Constants.kInvalidIndex;
         }
 
         public int GetType(StackValue sv)
