@@ -1960,6 +1960,16 @@ namespace Dynamo.Models
                 CustomNodeManager,
                 this.LinterManager);
 
+            var directoryName = Path.GetDirectoryName(filePath);
+            if (!PreferenceSettings.TrustedLocations.Contains(directoryName) && DynamoModel.IsTestMode == false)
+            {
+                RunSettings.ForceAutomaticWithoutRun = true;
+            }
+            else
+            {
+                RunSettings.ForceAutomaticWithoutRun = false;
+            }
+
             workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
 
