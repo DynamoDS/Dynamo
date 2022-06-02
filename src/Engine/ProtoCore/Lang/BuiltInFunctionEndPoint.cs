@@ -463,10 +463,10 @@ namespace ProtoCore.Lang
                     }
                 case BuiltInMethods.MethodID.Evaluate:
                     ret = ArrayUtilsForBuiltIns.Evaluate(
-                        formalParameters[0],
-                        formalParameters[1],
+                        formalParameters[0], 
+                        formalParameters[1], 
                         formalParameters[2],
-                        interpreter,
+                        interpreter, 
                         stackFrame);
                     break;
                 case BuiltInMethods.MethodID.NodeAstFailed:
@@ -545,7 +545,7 @@ namespace ProtoCore.Lang
 
 
             blockCaller = runtimeCore.DebugProps.CurrentBlockId;
-            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type,
+            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, 
                 depth, framePointer, 0, interpreter.runtime.GetRegisters(), 0);
 
             StackValue ret = interpreter.runtime.Bounce(blockId, 0, bounceStackFrame, 0, false, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
@@ -684,21 +684,21 @@ namespace ProtoCore.Lang
             }
 
             // Build the stackframe
-            var newStackFrame = new StackFrame(thisObject,
-                                               stackFrame.ClassScope,
-                                               procNode == null ? procIndex : procNode.ID,
-                                               stackFrame.ReturnPC,
-                                               stackFrame.FunctionBlock,
-                                               stackFrame.FunctionCallerBlock,
+            var newStackFrame = new StackFrame(thisObject, 
+                                               stackFrame.ClassScope, 
+                                               procNode == null ? procIndex : procNode.ID, 
+                                               stackFrame.ReturnPC, 
+                                               stackFrame.FunctionBlock, 
+                                               stackFrame.FunctionCallerBlock, 
                                                stackFrame.StackFrameType,
-                                               StackFrameType.Function,
+                                               StackFrameType.Function, 
                                                0,
-                                               rmem.FramePointer,
+                                               rmem.FramePointer, 
                                                0,
-                                               stackFrame.GetRegisters(),
+                                               stackFrame.GetRegisters(), 
                                                0);
 
-            ProtoCore.CallSite callsite = runtimeData.GetCallSite(thisObjectType, functionName, runtime.exe, runtimeCore);
+            ProtoCore.CallSite callsite = runtimeData.GetCallSite( thisObjectType, functionName, runtime.exe, runtimeCore);
             Validity.Assert(null != callsite);
 
             // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa
@@ -826,7 +826,7 @@ namespace ProtoCore.Lang
             {
                 if (instructions[pc].debug != null)
                 {
-                    if (!runtimeCore.Breakpoints.Contains(instructions[pc]))
+                    if(!runtimeCore.Breakpoints.Contains(instructions[pc]))
                         runtimeCore.Breakpoints.Add(instructions[pc]);
                     break;
                 }
@@ -848,7 +848,7 @@ namespace ProtoCore.Lang
         internal static string ConvertToString(StackValue st, ProtoCore.DSASM.Interpreter runtime)
         {
             string result = "";
-            if (!st.IsString)
+            if (!st.IsString) 
                 return result;
 
             result = runtime.runtime.rmem.Heap.ToHeapObject<DSString>(st).Value;
@@ -874,7 +874,7 @@ namespace ProtoCore.Lang
             string filename = ConvertToString(fn, runtime);
             string path = FileUtils.GetDSFullPathName(filename, runtime.runtime.RuntimeCore.Options);
             // File not existing.
-            if (null == path || !File.Exists(path))
+            if(null==path || !File.Exists(path))
             {
                 string message = String.Format(Resources.kFileNotFound, path);
                 runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.FileNotExist, message);
@@ -902,7 +902,7 @@ namespace ProtoCore.Lang
                                 line[count] = Double.Parse(elementStr);
                             else line[count] = Int32.Parse(elementStr);
                         }
-                        catch (Exception)
+                        catch(Exception)
                         {
                             line[count] = elementStr;
                         }
@@ -981,7 +981,7 @@ namespace ProtoCore.Lang
             ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(runtime.runtime, runtime.runtime.RuntimeCore);
             string result = mirror.GetStringValue(msg, runtime.runtime.rmem.Heap, 0, true);
 #if DEBUG
-
+            
             //For Console output
             Console.WriteLine(result);
 #endif
@@ -998,13 +998,13 @@ namespace ProtoCore.Lang
         }
     }
 
-
-
+         
+        
     internal class MapBuiltIns
     {
         internal static double Map(double rangeMin, double rangeMax, double inputValue)
         {
-            double result = (inputValue - rangeMin) / (rangeMax - rangeMin);
+            double result =  (inputValue - rangeMin) / (rangeMax - rangeMin);
             if (result < 0)
             {
                 return 0.0;
@@ -1024,9 +1024,9 @@ namespace ProtoCore.Lang
             double rangeMax,
             double inputValue,
             double targetRangeMin,
-            double targetRangeMax)
+            double targetRangeMax) 
         {
-            double percent = Map(rangeMin, rangeMax, inputValue);
+            double percent = Map(rangeMin, rangeMax, inputValue); 
             return targetRangeMin + (targetRangeMax - targetRangeMin) * percent;
         }
     }
@@ -1185,7 +1185,7 @@ namespace ProtoCore.Lang
                             decimal stepsize = (start > end) ? -1 : 1;
                             if (hasStep)
                             {
-                                stepsize = new decimal(svStep.IsDouble ? svStep.DoubleValue : svStep.IntegerValue);
+                                stepsize = new decimal(svStep.IsDouble ? svStep.DoubleValue: svStep.IntegerValue);
                                 isIntRange = isIntRange && (svStep.IsInteger);
                             }
 
@@ -1212,7 +1212,7 @@ namespace ProtoCore.Lang
                         }
                     case (int)RangeStepOperator.Number:
                         {
-                            decimal stepnum = new decimal(Math.Round(svStep.IsDouble ? svStep.DoubleValue : svStep.IntegerValue));
+                            decimal stepnum = new decimal(Math.Round(svStep.IsDouble ? svStep.DoubleValue: svStep.IntegerValue));
                             if (stepnum <= 0)
                             {
                                 return null;
@@ -1312,11 +1312,11 @@ namespace ProtoCore.Lang
             int stepnum = (int)Math.Abs(Math.Truncate((endLetter - startLetter) / (double)step)) + 1;
 
             letters = Enumerable.Range(1, stepnum)
-                 // Generate arithmetic progression.
+                // Generate arithmetic progression.
                  .Select(x => startLetter + (x - 1) * step * stepOffset)
-                 // Take just letters.
+                // Take just letters.
                  .Where(x => Char.IsLetter((char)x))
-                 // Create stack values.
+                // Create stack values.
                  .Select(x => StackValue.BuildString(Char.ToString((char)x), runtimeCore.Heap))
                  .ToArray();
 
