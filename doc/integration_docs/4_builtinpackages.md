@@ -7,7 +7,7 @@ The Built-In Packages mechanism is an effort to bundle more node content with Dy
 
 In this doc we'll interchangeably use the terms Built-In Packages, Dynamo Built-In Packages, builtin packages to mean the same thing.
 
-### Should I ship a package as a Built-In Packages?
+### Should I ship a package as a Built-In Package?
 * The package must have signed binary entry points or it will not be loaded.
 * Every effort should be made to avoid breaking changes in these packages. This means the package content should have automated tests.
 * Semantic versioning, it's probably a good idea to version your package using a semantic versioning scheme, and to communicate it to users in the package description or docs.
@@ -25,7 +25,7 @@ We are intending the `Built-In Packages` to be a core feature, a set of packages
 
 With some constraints this location will be useable for ADSK Dynamo clients and integrators to distribute their integration specific packages. *(for example, the Dynamo Formit integration requires a custom Dynamo Formit package).*
 
-Because the underlying loading mechanism is the same for both core and host specific packages - it will be necessary to make sure that packages distributed this way do not lead to user confusion about core `Built-In Packages` packages vs. integration specific packages that are only available in a single host product. We advise that that to avoid user confusion - the `Built-In Packages` should be used in discussion with the Dynamo teams.
+Because the underlying loading mechanism is the same for both core and host specific packages - it will be necessary to make sure that packages distributed this way do not lead to user confusion about core `Built-In Packages` packages vs. integration specific packages that are only available in a single host product. We advise that that to avoid user confusion host-specific packages should be introduced in discussion with the Dynamo teams.
 
 
 ### Package Localization
@@ -38,7 +38,7 @@ Using a workaround it's possible to manually create (and even publish) packages 
 
 First create the culture specific subdirectories you require under the packages's `/bin` folder manually. 
 
-If for some reason, the package needs to also be published to the package manager then you must first publish a version of the package that is missing these culture subdirectories - then publish a new version of the package using the DynamoUI `publish package version`. The new version upload in Dynamo should not delete your the folders and files under`/bin` which you have added manually using the windows file explorer. The package upload process in Dynamo will be updated to deal with the requirements for localized files in the future.
+If for some reason, the package needs to also be published to the package manager then you must first publish a version of the package that is missing these culture subdirectories - then publish a new version of the package using the DynamoUI `publish package version`. The new version upload in Dynamo should not delete your folders and files under`/bin`, which you have added manually using the windows file explorer. The package upload process in Dynamo will be updated to deal with the requirements for localized files in the future.
 
 These culture subdirectories are loaded without issue by the .net runtime if they are located in the same directory as the node / extension binaries.
 
