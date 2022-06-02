@@ -1607,6 +1607,7 @@ namespace Dynamo.ViewModels
                 var directoryName = Path.GetDirectoryName(filePath);
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
                 if (!PreferenceSettings.TrustedLocations.Contains(directoryName) 
+                    && currentWorkspaceViewModel.IsHomeSpace
                     && DynamoModel.IsTestMode == false
                     && FileTrustViewModel != null)
                 {
