@@ -20,8 +20,10 @@ namespace Dynamo.Models
         private RunType runType;
         private bool runEnabled;
         private bool runTypesEnabled;
-        private bool runTypesComboBoxToolTipIsEnabled;
 
+        /// <summary>
+        /// Boolean indicates if Dynamo should block run even mode is Automatic.
+        /// </summary>
         internal bool ForceAutomaticWithoutRun { get; set; } = false;
 
         /// <summary>

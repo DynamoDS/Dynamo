@@ -7093,6 +7093,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run blocked..
+        /// </summary>
+        public static string RunBlockedMessage {
+            get {
+                return ResourceManager.GetString("RunBlockedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run completed..
         /// </summary>
         public static string RunCompletedMessage {
