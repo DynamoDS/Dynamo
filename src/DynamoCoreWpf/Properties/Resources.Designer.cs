@@ -2705,7 +2705,8 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current location will be added to trusted location. You can manage in Preference -&gt;Security Settings..
+        ///   Looks up a localized string similar to The file&apos;s current location will be added to trusted locations.
+        ///You can manage this in Preferences -&gt; Security..
         /// </summary>
         public static string FileTrustWarningPopupTooltip2 {
             get {

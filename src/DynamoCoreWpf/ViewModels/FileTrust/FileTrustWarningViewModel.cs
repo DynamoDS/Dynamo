@@ -10,7 +10,7 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
     public class FileTrustWarningViewModel : ViewModelBase
     {
         private bool showWarningPopup;
-        private double PointerHorizontalOffset = 15;
+        private double PointerHorizontalOffset = 60;
 
 
         /// <summary>

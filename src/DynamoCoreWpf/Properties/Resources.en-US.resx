@@ -3163,7 +3163,8 @@ To install the latest version of a package, click Install. \n
     <value>External content may bring risks to your system security.</value>
   </data>
   <data name="FileTrustWarningPopupTooltip2" xml:space="preserve">
-    <value>Current location will be added to trusted location. You can manage in Preference -&gt;Security Settings.</value>
+    <value>The file's current location will be added to trusted locations.
+You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="FileTrustWarningPopupYes" xml:space="preserve">
     <value>Yes</value>
