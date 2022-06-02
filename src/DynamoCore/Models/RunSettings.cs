@@ -22,7 +22,7 @@ namespace Dynamo.Models
         private bool runTypesEnabled;
 
         /// <summary>
-        /// Boolean indicates if Dynamo should block run even mode is Automatic.
+        /// Boolean indicates if Dynamo should block run even when mode is Automatic.
         /// </summary>
         internal bool ForceAutomaticWithoutRun { get; set; } = false;
 
