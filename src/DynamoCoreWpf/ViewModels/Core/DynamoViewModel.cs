@@ -1613,12 +1613,6 @@ namespace Dynamo.ViewModels
                     HomeSpace.RunSettings.ForceAutomaticWithoutRun = true;
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
-                    // If user opening dyn but not dyf
-                    if (currentWorkspaceViewModel.IsHomeSpace)
-                    {
-                        // Update workspace run status message
-                        (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
-                    }
                 }
             }
             catch (Exception e)
