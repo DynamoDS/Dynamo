@@ -17,6 +17,7 @@
         <!--  Grid that contains the entire port  -->
         <Grid Name="MainGrid"
               Background="Transparent"
+              HorizontalAlignment="Right"
               IsHitTestVisible="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Name="PortNameColumn" Width="*" />

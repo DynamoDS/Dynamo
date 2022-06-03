@@ -759,14 +759,18 @@ namespace Dynamo.ViewModels
                 .ToList();
 
             var newPortViewModels = new List<PortViewModel>();
-            for (int i = 0; i < groupPortModels.Count(); i++)
+            int index = 0;
+            foreach (var group in groupPortModels)
             {
-                var model = groupPortModels.ElementAt(i);
-                newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(model));
-
-                // calculate new position for the proxy outports
-                model.Center = CalculatePortPosition(model, i);
-                model.Owner.ReportPosition();
+                var originalPort = originalPortViewModels.FirstOrDefault(x => x.PortModel.GUID == group.GUID);
+                if (originalPort != null)
+                {
+                    var portViewModel = originalPort.CreateProxyPortViewModel(group);
+                    newPortViewModels.Add(portViewModel);
+                    // calculate new position for the proxy outports
+                    group.Center = CalculatePortPosition(group, index);
+                }
+                index++;
             }
 
             return newPortViewModels;
