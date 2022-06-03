@@ -22,7 +22,7 @@ namespace Dynamo.Models
         private bool runTypesEnabled;
 
         /// <summary>
-        /// This static property with true value will be used when opening a dyn file with RunMode = Automatic and we don't want to execute the graph
+        /// This static property if is true will block running the graph in any Run Mode
         /// </summary>
         internal static bool ForceBlockRun { get; set; } = false;
 
