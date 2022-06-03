@@ -198,7 +198,10 @@ namespace Dynamo.Graph.Nodes
             }
             internal set 
             {
+                if (center.Equals(value)) return;
+
                 center = value;
+                RaisePropertyChanged(nameof(Center));
             }
         }
 

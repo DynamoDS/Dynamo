@@ -379,7 +379,6 @@ namespace Dynamo.ViewModels
             {
                 case "ActiveConnector":
                     RaisePropertyChanged(nameof(IsHitTestVisible));
-                    RefreshPortColors();
                     break;
                 default:
                     break;
@@ -401,6 +400,9 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(ToolTipContent));
                     break;
                 case nameof(node.IsVisible):
+                    RefreshPortColors();
+                    break;
+                case nameof(node.NodeModel.CachedValue):
                     RefreshPortColors();
                     break;
             }
@@ -431,6 +433,9 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(MarginThickness):
                     RaisePropertyChanged(nameof(MarginThickness));
+                    break;
+                case nameof(UsingDefaultValue):
+                    RefreshPortColors();
                     break;
             }
         }

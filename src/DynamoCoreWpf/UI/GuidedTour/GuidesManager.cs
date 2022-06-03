@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -7,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
@@ -33,7 +35,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private DynamoViewModel dynamoViewModel;
 
-        private ExitGuideWindow exitGuideWindow;
+        internal ExitGuideWindow exitGuideWindow;
 
         private RealTimeInfoWindow exitTourPopup;
 
@@ -49,6 +51,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private const string guideBackgroundName = "GuidesBackground";
         private const string mainGridName = "mainGrid";
         private const string libraryViewName = "Browser";
+        private Stopwatch stopwatch;
 
         internal static string GuidesExecutingDirectory
         {
@@ -105,7 +108,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             guideBackgroundElement.ClearCutOffSection();
             guideBackgroundElement.ClearHighlightSection();
-        }
+            stopwatch = Stopwatch.StartNew();
+    }
 
         /// <summary>
         /// Creates the background for the GuidedTour
@@ -160,6 +164,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
+                Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
+                Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource).Replace("_", ""), currentGuide.SequenceOrder);
             }
         }
 
@@ -218,6 +224,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     tmpStep.StepClosed -= Popup_StepClosed;
                 }
+
+                string guidName = Resources.ResourceManager.GetString(currentGuide.GuideNameResource).Replace("_", "");
+                if (currentGuide.TotalSteps - 1 == currentGuide.CurrentStep.Sequence)
+                {
+                    Logging.Analytics.TrackEvent(Logging.Actions.Completed, Logging.Categories.GuidedTourOperations, guidName, currentGuide.CurrentStep.Sequence);
+                }
+                else 
+                {
+                    Logging.Analytics.TrackEvent(Logging.Actions.End, Logging.Categories.GuidedTourOperations, guidName, currentGuide.CurrentStep.Sequence);
+                }                
+                Logging.Analytics.TrackTimedEvent(Logging.Categories.GuidedTourOperations, Logging.Actions.TimeElapsed.ToString(), stopwatch.Elapsed, guidName);
+
                 currentGuide.ClearGuide();
                 GuideFlowEvents.GuidedTourStart -= TourStarted;
                 GuideFlowEvents.GuidedTourFinish -= TourFinished;
@@ -256,6 +274,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             exitGuideWindow.IsOpen = false;
             if (currentGuide != null)
             {
+                GuideFlowEvents.IsAnyGuideActive = true;
                 currentGuide.ContinueStep(currentGuide.CurrentStep.Sequence);
             }
         }
@@ -296,6 +315,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     Name = guide.Name,
                 };
+
+                newGuide.SequenceOrder = guide.SequenceOrder;
+                newGuide.GuideNameResource = guide.GuideNameResource;
 
                 totalTooltips = (from step in guide.GuideSteps
                                  where step.StepType == Step.StepTypes.TOOLTIP ||
@@ -427,8 +449,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         {
                             FormattedText = formattedText,
                             Title = title
-                        },
-                        GuidesManager = this
+                        }
                     };
 
                     //Due that the RatingTextTitle property is just for Survey then we need to set the property using reflection
@@ -460,8 +481,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     break;
             }//StepType
 
+            newStep.GuideManager = this;
+
             return newStep;
         }
+
+        internal Guide GetNextGuide()
+        {
+            var nextGuide = Guides.FirstOrDefault(x => x.SequenceOrder == currentGuide.SequenceOrder + 1);
+            return nextGuide;
+        }
+
 
         private void Popup_StepClosed(string name, Step.StepTypes stepType)
         {

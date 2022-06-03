@@ -141,8 +141,17 @@ namespace ProtoCore.Mirror
             return null;
         }
 
+        //Store marshaller for repeated calls to GetCLRObject.  Used for short-circuit of re-allocation of marshaller / interpreter object.
+        private static Interpreter interpreter;
+        private static ProtoFFI.FFIObjectMarshaler marshaler;
+        
         internal object GetCLRObject(StackValue svData, RuntimeCore runtimeCore)
         {
+            if (marshaler != null)
+            {
+                return marshaler.UnMarshal(svData, null, interpreter, typeof(object));
+            }
+            
             if (null == runtimeCore.DSExecutable.classTable)
                 return null;
 
@@ -156,15 +165,22 @@ namespace ProtoCore.Mirror
 
             try
             {
-                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, false);
+                interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, false);
                 var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
-                var marshaler = helper.GetMarshaler(runtimeCore);
+                marshaler = helper.GetMarshaler(runtimeCore);
                 return marshaler.UnMarshal(svData, null, interpreter, typeof(object));
             }
             catch (System.Exception)
             {
+                marshaler = null;
                 return null;
             }
+        }
+
+        internal static void ClearMarshaller()
+        {
+            interpreter = null;
+            marshaler = null;
         }
     }
 

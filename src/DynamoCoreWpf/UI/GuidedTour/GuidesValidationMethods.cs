@@ -15,8 +15,9 @@ using Dynamo.Wpf.Views.GuidedTour;
 using Dynamo.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Windows.Shapes;
-using System.IO;
-using static Dynamo.Models.DynamoModel;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Connectors;
+using System.ComponentModel;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -40,6 +41,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private static bool searchPackagesLoaded;
 
         internal static PackageManagerSearchViewModel packagesViewModel;
+
+        private static NodeModel lastCreatedNode;
+
+        private static Window CurrentGuideWindow;
 
         //This method will return a bool that describes if the Terms Of Service was accepted or not.
         internal static bool AcceptedTermsOfUse(DynamoViewModel dynViewModel)
@@ -69,35 +74,61 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void ExecuteTermsOfServiceFlow(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
-
-            if (stepInfo.ExitGuide != null)
-                exitGuide = stepInfo.ExitGuide;
+            exitGuide = stepInfo.ExitGuide;
 
             //When enableFunction = true, means we want to show the TermsOfUse Window (this is executed in the UIAutomation step in the Show() method)
             if (enableFunction)
             {
                 //If the TermsOfService is not accepted yet it will show the TermsOfUseView otherwise it will show the PackageManagerSearchView
                 stepInfo.DynamoViewModelStep.ShowPackageManagerSearch(null);
-                Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
-
+                CurrentGuideWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
                 foreach (var handler in uiAutomationData.AutomaticHandlers)
                 {
-                    if (ownedWindow == null) return;
-                    UIElement element = GuideUtilities.FindChild(ownedWindow, handler.HandlerElement);
+                    if (CurrentGuideWindow == null) return;
+                    UIElement element = GuideUtilities.FindChild(CurrentGuideWindow, handler.HandlerElement);
 
                     //When the Accept button is pressed in the TermsOfUseView then we need to move to the next Step
                     if (element != null)
                         ManageEventHandler(element, handler.HandlerElementEvent, handler.ExecuteMethod);
                 }
+
+                CurrentGuideWindow.Closed += OnPackageManagerTourClosed;
+                GuideFlowEvents.GuidedTourFinish += GuideFlowEvents_GuidedTourFinish;
             }
-            //When enableFunction = false, means we are hiding (closing) the TermsOfUse Window due that we are moving to the next Step or we are exiting the Guide
             else
             {
-                Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
-                if (ownedWindow == null) return;
+                CurrentGuideWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+                if (CurrentGuideWindow != null)
+                {
+                    CurrentGuideWindow.Closed -= OnPackageManagerTourClosed;
+                    CurrentGuideWindow = null;
+                }
+
+                GuideFlowEvents.GuidedTourFinish -= GuideFlowEvents_GuidedTourFinish;
 
                 //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
                 GuideUtilities.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+            }
+        }
+
+        private static void GuideFlowEvents_GuidedTourFinish(GuidedTourStateEventArgs args)
+        {
+            if(CurrentGuideWindow != null)
+            {
+                CurrentGuideWindow.Closed -= OnPackageManagerTourClosed;
+                CurrentGuideWindow.Close();
+            }
+        }
+
+        private static void OnPackageManagerTourClosed(object window, EventArgs e)
+        {
+            if (window is TermsOfUseView)
+            {
+                TermsOfUseView termsOfUseView = (TermsOfUseView)window;
+                if (!termsOfUseView.AcceptedTermsOfUse)
+                {
+                    CloseTour();
+                }
             }
         }
 
@@ -113,9 +144,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (enableFunction)
             {
                 CurrentExecutingStep = stepInfo;
-
-                if (stepInfo.ExitGuide != null)
-                    exitGuide = stepInfo.ExitGuide;
+                exitGuide = stepInfo.ExitGuide;
 
                 Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
 
@@ -123,8 +152,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     if (ownedWindow == null) return;
 
-                    CloseButtonSearchPackages = GuideUtilities.FindChild(ownedWindow, handler.HandlerElement) as Button;
-                    CloseButtonSearchPackages.Click += CloseButton_Click;
+                    if(CloseButtonSearchPackages == null)
+                    {
+                        CloseButtonSearchPackages = GuideUtilities.FindChild(ownedWindow, handler.HandlerElement) as Button;
+                        CloseButtonSearchPackages.Click += CloseButton_Click;
+                    }
                 }
             }
             else
@@ -245,7 +277,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="e"></param>
         internal void DeclineButton_Click(object sender, RoutedEventArgs e)
         {
-            CloseTour();
+            if (!CurrentExecutingGuidesManager.exitGuideWindow.IsOpen)
+            {
+                CloseTour();
+            }
         }
 
         /// <summary>
@@ -255,6 +290,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="e"></param>
         internal static void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            CloseButtonSearchPackages = null;
             CloseTour();
         }
 
@@ -274,6 +310,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void ExecutePackageSearch(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
+            exitGuide = stepInfo.ExitGuide;
             //We try to find the PackageManagerSearchView window
             Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
             if (enableFunction)
@@ -600,25 +637,68 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void HighlightPort(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
+            CurrentExecutingStep.MainWindow.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             var stepMainWindow = CurrentExecutingStep.MainWindow as Window;
 
-            var byOriginNode = GuideUtilities.FindNodeByID(stepMainWindow, "a20a93da6af14deebe2df37c1662349f");
-            if (byOriginNode == null) return;
-            var itemsControlInputPort = GuideUtilities.FindChild(byOriginNode, "inputPortControl") as ItemsControl;
-            if (itemsControlInputPort == null) return;
-            var itemContainer = itemsControlInputPort.ItemContainerGenerator.ContainerFromIndex(0);
-            var mainGrid = itemContainer.ChildOfType<Grid>();
-
-            if(enableFunction)
+            if (uiAutomationData.Parameters == null || uiAutomationData.Parameters.Count < 2)
+                return;
+            //Parse the parameters location in the json file
+            var highlightColor = uiAutomationData.Parameters[0] as string;
+            if (highlightColor == null) return;
+            var portHighlighted = uiAutomationData.Parameters[1] as string;
+            if (portHighlighted == null) return;
+            string nodeID = string.Empty;
+            try
             {
-                var highlightColor = uiAutomationData.Parameters.FirstOrDefault() as string;
+                nodeID = uiAutomationData.Parameters[2] as string;
+            }
+            catch
+            {
+                nodeID = string.Empty;
+            }
+
+            //Find a specific node(NodeView) in the MainWindow (DynamoView) based by ID or by the first of a type found
+            NodeView byOriginNode = null;
+            if(!string.IsNullOrEmpty(nodeID))
+                byOriginNode = GuideUtilities.FindNodeByID(stepMainWindow, nodeID);
+            else
+            {
+                if (lastCreatedNode == null) return;
+                byOriginNode = GuideUtilities.FindNodeByID(stepMainWindow, lastCreatedNode.GUID.ToString("N"));
+            }
+
+            //Inside the NodeView try to find the ItemsControl that contains Input ports or Output ports
+            var itemsControlPort = GuideUtilities.FindChild(byOriginNode, portHighlighted) as ItemsControl;
+            var inPorts = itemsControlPort.Items.Cast<PortViewModel>().ToList();
+            if (itemsControlPort == null) return;
+
+            //Once we have the ItemsControl we get the ContentPresenter
+            var inputViewModel = inPorts.FirstOrDefault(x => x.PortName == (string)uiAutomationData.Parameters[3]);
+            var dependencyObject = itemsControlPort.ItemContainerGenerator.ContainerFromItem(inputViewModel);
+
+
+            Grid mainGrid = dependencyObject.ChildOfType<Grid>();
+
+            if (enableFunction)
+            {
                 //Creates the highlight rectangle so it can be added and shown over the port
                 var portRectangle = stepInfo.CreateRectangle(mainGrid, highlightColor);
 
                 //The Rectangle will be added dynamically in a specific step and then when passing to next step we will remove it
                 mainGrid.Children.Add(portRectangle);
-                Grid.SetColumn(portRectangle, 1);
-                Grid.SetColumnSpan(portRectangle, 7);
+
+                if(portHighlighted.Contains("input"))
+                {
+                    Grid.SetColumn(portRectangle, 1);
+                    Grid.SetColumnSpan(portRectangle, 7);
+                }
+                else if(portHighlighted.Contains("output"))
+                {
+                    Grid.SetColumn(portRectangle, 0);
+                    Grid.SetColumnSpan(portRectangle, 2);
+                }
+
+                
                 Grid.SetRow(portRectangle, 0);
             }
             else
@@ -628,7 +708,257 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (buttonRectangle != null)
                     mainGrid.Children.Remove(buttonRectangle);
             }
-           
+
+        }
+
+        /// <summary>
+        /// This method will enable or disable the Next Popup Button and also subcribe to the PropertyChanged event so we will know if the Nodes are connected or not
+        /// </summary>
+        /// <param name="stepInfo">Information about the Step</param>
+        /// <param name="uiAutomationData">Information about UI Automation that is being executed</param>
+        /// <param name="enableFunction">Variable used to know if we are executing the automation or undoing changes</param>
+        /// <param name="currentFlow">Current Guide Flow</param>
+        internal static void ManagePortConnectionEvents(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+
+            if (uiAutomationData.Parameters == null || uiAutomationData.Parameters.Count < 3)
+                return;
+
+            var portHighlighted = uiAutomationData.Parameters[1] as string;
+            if (portHighlighted == null) return;
+
+            //Get the button name to be enabled/disabled coming from the json file
+            var buttonName = uiAutomationData.Parameters[0] as string;
+            if (buttonName == null) return;
+
+            var nodeName = uiAutomationData.Parameters[2] as string;
+            if (nodeName == null) return;
+
+            //Get the Popup and search for the NextButton in the VisualTree
+            var popupWindow = CurrentExecutingStep.StepUIPopup as PopupWindow;
+            var buttonFound = GuideUtilities.FindChild(popupWindow.mainPopupGrid, buttonName) as Button;
+            if (buttonFound == null) return;
+
+            var stepMainWindow = CurrentExecutingStep.MainWindow as Window;
+
+            var byOriginNotConnected = GetNotConnectedNode(stepMainWindow, nodeName);
+            if (byOriginNotConnected == null) return;
+
+            var idString = byOriginNotConnected.ViewModel.Id.ToString("N");
+            var outputPortViewModel = GetPortViewModel(stepMainWindow, idString, portHighlighted, nodeName) as OutPortViewModel;
+            if (outputPortViewModel == null) return;
+
+            //If the nodes are connected then we enable the Next button otherwise will be disabled
+            buttonFound.IsEnabled = outputPortViewModel.IsConnected;
+
+            //Subscribe/Unsubscribe to the PropertyChanged event based if we are passing to the Step "Connect the Nodes" or we are leaving this Step.
+            if (enableFunction)
+                outputPortViewModel.PropertyChanged += OutputPortViewModel_PropertyChanged;
+            else
+                outputPortViewModel.PropertyChanged -= OutputPortViewModel_PropertyChanged;
+        }
+
+        private static void OutputPortViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (CurrentExecutingStep.UIAutomation == null) return;
+
+            var currentUiAutomation = CurrentExecutingStep.UIAutomation.FirstOrDefault(x => x.Name.Equals(nameof(ManagePortConnectionEvents)));
+            
+            if (currentUiAutomation == null) return;
+            if (currentUiAutomation.Parameters == null) return;
+            if (currentUiAutomation.Parameters.Count == 0) return;
+
+            var buttonName = currentUiAutomation.Parameters[0] as string;
+            if (buttonName == null) return;
+
+            var popupWindow = CurrentExecutingStep.StepUIPopup as PopupWindow;
+            var buttonFound = GuideUtilities.FindChild(popupWindow.mainPopupGrid, buttonName) as Button;
+            if (buttonFound == null) return;
+
+            var portViewModel = sender as OutPortViewModel;
+            if (portViewModel == null) return;
+
+            switch (e.PropertyName)
+            {
+                case "IsConnected":
+                    if (portViewModel.IsConnected)
+                        buttonFound.IsEnabled = true;
+                    else
+                        buttonFound.IsEnabled = false;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// This method will be executed when we are pressing back and it will remove the connection between nodes (if it exists)
+        /// </summary>
+        /// <param name="stepInfo"></param>
+        /// <param name="uiAutomationData"></param>
+        /// <param name="enableFunction"></param>
+        /// <param name="currentFlow"></param>
+        internal static void CreateNode(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+
+            //If any backward action is triggered, the created needs to be deleted 
+            if (currentFlow == GuideFlow.BACKWARD && lastCreatedNode != null)
+            {
+                var stepMainWindow = CurrentExecutingStep.MainWindow as Window;
+
+                foreach (var connector in lastCreatedNode.AllConnectors.ToList())
+                {
+                    connector.Delete();
+                }
+
+                stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.RemoveAndDisposeNode(lastCreatedNode);
+
+                lastCreatedNode = null;
+            }
+
+            if (enableFunction)
+            {
+                stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.NodeAdded += Model_NodeAdded;
+            }
+            else
+            {
+                stepInfo.DynamoViewModelStep.CurrentSpaceViewModel.Model.NodeAdded -= Model_NodeAdded;
+            }
+        }
+
+        //This function compares if the created node is the expected one to move to the next step by comparing it's name.
+        private static void Model_NodeAdded(NodeModel createdNode)
+        {
+            if (CurrentExecutingStep.UIAutomation == null || CurrentExecutingStep.UIAutomation.Count < 6) return;
+
+            lastCreatedNode = createdNode;
+            var uiAutomationData = CurrentExecutingStep.UIAutomation[5];
+            var uiAutomationElementName = (string)uiAutomationData.JSParameters.FirstOrDefault();
+
+            if (createdNode.Name.Equals(uiAutomationElementName))
+            {
+                createdNode.X = uiAutomationData.NodePosition.X;
+                createdNode.Y = uiAutomationData.NodePosition.Y;
+                CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
+            }
+        }
+                
+        internal static void RemovePortConnector(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+            var stepMainWindow = CurrentExecutingStep.MainWindow as Window;
+
+            if(currentFlow == GuideFlow.BACKWARD && enableFunction == false)
+            {
+                if (uiAutomationData.Parameters == null || uiAutomationData.Parameters.Count < 4)
+                    return;
+                var buttonName = uiAutomationData.Parameters[0] as string;
+                if (buttonName == null) return;
+                var portHighlighted = uiAutomationData.Parameters[1] as string;
+                if (portHighlighted == null) return;
+
+                string nodeID = string.Empty;
+                try
+                {
+                    nodeID = uiAutomationData.Parameters[2] as string;
+                }
+                catch
+                {
+                    nodeID = string.Empty;
+                }
+
+                var nodeName = uiAutomationData.Parameters[3] as string;
+                if (nodeName == null) return;
+
+                var outputPortViewModel = GetPortViewModel(stepMainWindow, nodeID, portHighlighted, nodeName) as OutPortViewModel;
+                if (outputPortViewModel == null) return;
+                var userAddedConnector = outputPortViewModel.PortModel.Connectors.FirstOrDefault();
+                if(userAddedConnector != null)
+                    userAddedConnector.Delete();
+
+                CurrentExecutingStep.MainWindow.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+            }       
+        }
+
+        private static PortViewModel GetPortViewModel(Window stepMainWindow, string nodeID, string itemsControlName, string nodeName)
+        {
+
+            //Find a specific node(NodeView) in the MainWindow (DynamoView) based by ID or by the first of a type found
+            NodeView byOriginNode = null;
+            if (!string.IsNullOrEmpty(nodeID))
+                byOriginNode = GuideUtilities.FindNodeByID(stepMainWindow, nodeID);
+            else
+            {
+                byOriginNode = GetNotConnectedNode(stepMainWindow, nodeName);
+                if (byOriginNode == null) return null;
+            }
+
+            //Inside the NodeView try to find the ItemsControl that contains Input ports or Output ports
+            var itemsControlOutputPort = GuideUtilities.FindChild(byOriginNode, itemsControlName) as ItemsControl;
+            if (itemsControlOutputPort == null) return null;
+
+            //Once we have the ItemsControil we try to find a specific port (OutputPortViewModel or InputPortViewModel)
+            var firstOutputPortModel = itemsControlOutputPort.ItemContainerGenerator.Items.FirstOrDefault();
+            if (firstOutputPortModel == null) return null;
+
+            //Finally return the first PortViewModel
+            return firstOutputPortModel as PortViewModel;
+        }
+
+
+        /// <summary>
+        /// Get the first not connected node of the type passed as parameter
+        /// </summary>
+        /// <param name="stepMainWindow">MainWindow that contains the node</param>
+        /// <param name="nodeType">Type of the node to be found</param>
+        /// <returns></returns>
+        private static NodeView GetNotConnectedNode(Window stepMainWindow, string nodeType)
+        {
+            CurrentExecutingStep.MainWindow.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+
+            var allByOriginNodes = GuideUtilities.FindNodesOfType(stepMainWindow, nodeType);
+            NodeView byOriginUserAdded = null;
+            //Try to find the ByOrigin node that doesn't have input/output connections (it means it was the one added by the user)
+            foreach (var byOriginEntry in allByOriginNodes)
+            {
+                var byOriginEntryViewModel = byOriginEntry.DataContext as NodeViewModel;
+                var outputPorts = from port in byOriginEntryViewModel.OutPorts
+                                  where port.IsConnected == false
+                                  select port;
+                if (outputPorts.Any())
+                {
+                    byOriginUserAdded = byOriginEntry;
+                    break;
+                }
+            }
+            return byOriginUserAdded;
+        }
+
+
+        internal static void SubscribeRunButtonNextStep(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+            if (uiAutomationData.Parameters.Any() && uiAutomationData.Parameters[0] is string)
+            {
+                Button runButton = GuideUtilities.FindChildInVisualTree(stepInfo.MainWindow, uiAutomationData.Parameters[0].ToString()) as Button;
+
+                if (runButton == null) return;
+                
+                if (enableFunction)
+                {
+                    runButton.Click += RunButton_Click;
+                }
+                else
+                {
+                    runButton.Click -= RunButton_Click;
+                }
+                
+            }
+        }
+
+        private static void RunButton_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
         }
     }
 }

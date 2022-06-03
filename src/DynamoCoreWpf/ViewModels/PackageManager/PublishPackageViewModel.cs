@@ -930,6 +930,10 @@ namespace Dynamo.PackageManager
                 }
             }
 
+            //after dependencies are loaded refresh package contents
+            vm.RefreshPackageContents();
+            vm.UpdateDependencies();
+
             if (assembliesLoadedTwice.Any())
             {
                 vm.UploadState = PackageUploadHandle.State.Error;
@@ -1331,15 +1335,28 @@ namespace Dynamo.PackageManager
         {
             if (!(parameter is PackageItemRootViewModel packageItemRootViewModel)) return;
 
-            if (packageItemRootViewModel.FileInfo == null || packageItemRootViewModel.FileInfo == null)
-            {
-                PackageContents.Remove(PackageContents
-                    .First(x => x.Name == packageItemRootViewModel.Name));
-                return;
-            }
+            string fileName = packageItemRootViewModel.FileInfo == null ? packageItemRootViewModel.Name : packageItemRootViewModel.FileInfo.FullName;
+            string fileType = packageItemRootViewModel.DependencyType.ToString();
 
-            PackageContents.Remove(PackageContents
-                .First(x => x.FileInfo.FullName == packageItemRootViewModel.FileInfo.FullName));
+            if (fileName.ToLower().EndsWith(".dll") || fileType.Equals(DependencyType.Assembly))
+            {
+                Assemblies.Remove(Assemblies
+                    .First(x => x.Name == Path.GetFileNameWithoutExtension(fileName)));
+            }
+            else if (fileType.Equals(DependencyType.CustomNode))
+            {
+                CustomNodeDefinitions.Remove(CustomNodeDefinitions
+                    .First(x => x.DisplayName == fileName));
+            }
+            else
+            {
+                AdditionalFiles.Remove(AdditionalFiles
+                    .First(x => x == fileName));
+            }
+                        
+            RefreshPackageContents();
+            return;
+
         }
 
         private bool CanShowAddFileDialogAndAdd()

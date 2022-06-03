@@ -51,29 +51,17 @@ namespace Dynamo.Wpf.Views
             var args = e as TrustedPathEventArgs;
             args.Cancel = true;
 
-            // Handle for the case, args.Path does not exist.
-            var errorCannotCreateFolder = PathHelper.CreateFolderIfNotExist(args.Path);
-            // args.Path == null condition is to handle when user want to create new path.
-            if (errorCannotCreateFolder == null || args.Path == null)
+            var dialog = new DynamoFolderBrowserDialog
             {
-                var dialog = new DynamoFolderBrowserDialog
-                {
-                    // Navigate to initial folder.
-                    SelectedPath = args.Path,
-                    Owner = Window.GetWindow(this)
-                };
+                // Navigate to initial folder.
+                SelectedPath = args.Path,
+                Owner = Window.GetWindow(this)
+            };
 
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    args.Cancel = false;
-                    args.Path = dialog.SelectedPath;
-                }
-
-            }
-            else
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
-                string errorMessage = string.Format(Wpf.Properties.Resources.PackageFolderNotAccessible, args.Path);
-                MessageBoxService.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
+                args.Cancel = false;
+                args.Path = dialog.SelectedPath;
             }
         }
         #endregion

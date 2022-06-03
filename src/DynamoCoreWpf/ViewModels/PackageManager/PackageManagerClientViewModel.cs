@@ -47,6 +47,8 @@ namespace Dynamo.ViewModels
         private readonly PackageManagerClient packageManagerClient;
         private readonly AuthenticationManager authenticationManager;
 
+        private static bool isTermsOfUseCreated;
+
         public TermsOfUseHelper(TermsOfUseHelperParams touParams)
         {
             if (touParams == null)
@@ -116,11 +118,16 @@ namespace Dynamo.ViewModels
 
         internal static bool ShowTermsOfUseDialog(bool forPublishing, string additionalTerms, Window parent = null)
         {
+            if (isTermsOfUseCreated) return false;
+
             var executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
             var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
             var touFilePath = Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
-
+            
             var termsOfUseView = new TermsOfUseView(touFilePath);
+            termsOfUseView.Closed += TermsOfUseView_Closed;
+            isTermsOfUseCreated = true;
+
             if (parent == null)
                 termsOfUseView.ShowDialog();
             else
@@ -129,6 +136,7 @@ namespace Dynamo.ViewModels
                 termsOfUseView.Owner = parent;
                 termsOfUseView.Show();
             }
+
             if (!termsOfUseView.AcceptedTermsOfUse)
                 return false; // User rejected the terms, go no further.
 
@@ -152,6 +160,11 @@ namespace Dynamo.ViewModels
                 additionalTermsView.Show();
             }
             return additionalTermsView.AcceptedTermsOfUse;
+        }
+
+        private static void TermsOfUseView_Closed(object sender, EventArgs e)
+        {
+            isTermsOfUseCreated = false;
         }
 
         private void ShowTermsOfUseForPublishing()
@@ -672,6 +685,9 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        // Current host, empty if sandbox, null when running tests
+        internal virtual string Host => DynamoViewModel.Model.HostAnalyticsInfo.HostName;
+
         internal async void ExecutePackageDownload(string name, PackageVersion package, string installPath)
         {
             string msg = String.IsNullOrEmpty(installPath) ?
@@ -793,11 +809,47 @@ namespace Dynamo.ViewModels
 
                 });
 
+
                 // if any do, notify user and allow cancellation
                 if (containsBinariesOrPythonScripts)
                 {
                     var res = MessageBoxService.Show(Owner, 
                         Resources.MessagePackageContainPythonScript,
+                        Resources.PackageDownloadMessageBoxTitle,
+                        MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+
+                    if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None) return;
+                }
+
+                // determinate if any of the packages are targeting other hosts
+                var containsPackagesThatTargetOtherHosts = false;
+
+                // Known hosts
+                var knownHosts = Model.GetKnownHosts();
+
+                // Sandbox, special case: Warn if any package targets only one known host
+                if (String.IsNullOrEmpty(Host))
+                {
+                    containsPackagesThatTargetOtherHosts =
+                        newPackageHeaders.Any(y => y.host_dependencies != null && y.host_dependencies.Intersect(knownHosts).Count() == 1);
+                }
+                else
+                {
+                    // Warn if there are packages targeting other hosts but not our host
+                    var otherHosts = knownHosts.Except(new List<string>() {Host});
+                    containsPackagesThatTargetOtherHosts = newPackageHeaders.Any(x =>
+                    {
+                        // Is our host in the list?
+                        // If not, is any other host in the list?
+                        return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && otherHosts.Any(y => x.host_dependencies != null && x.host_dependencies.Contains(y));
+                    });
+                }
+
+                // if any do, notify user and allow cancellation
+                if (containsPackagesThatTargetOtherHosts)
+                {
+                    var res = MessageBoxService.Show(Owner,
+                        Resources.MessagePackageTargetOtherHosts,
                         Resources.PackageDownloadMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 

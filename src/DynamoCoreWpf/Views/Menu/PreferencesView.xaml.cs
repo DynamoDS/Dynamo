@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -102,6 +103,7 @@ namespace Dynamo.Wpf.Views
             managePackageCommandEvent?.Dispose();
             Analytics.TrackEvent(Actions.Close, Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            viewModel.TrustedPathsViewModel?.SaveSettingCommand?.Execute(null);
             viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
 
@@ -325,6 +327,28 @@ namespace Dynamo.Wpf.Views
         private void GroupStylesListBox_LostFocus(object sender, RoutedEventArgs e)
         {
             GroupStylesListBox.UnselectAll();
+        }
+
+        private void DisableTrustWarningsChecked(object sender, RoutedEventArgs e)
+        {
+            if (viewModel != null)
+            {
+                viewModel.DisableTrustWarnings = (bool)(sender as ToggleButton).IsChecked;
+            }
+        }
+
+        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ScrollViewer scrollviewer = sender as ScrollViewer;
+            if (e.Delta > 0)
+            {
+                scrollviewer.LineUp();
+            }
+            else
+            {
+                scrollviewer.LineDown();
+            }
+            e.Handled = true;
         }
     }
 }

@@ -82,28 +82,45 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         /// <returns></returns>
         private bool UpdateSpecification<T>(IEnumerable<T> items, Func<LayoutSection, List<T>> getlist, Func<T, string> keyselector, string sectionText)
         {
-            var text = DefaultSectionName;
+            var sectionName = DefaultSectionName;
             if (!string.IsNullOrEmpty(sectionText))
             {
-                text = sectionText;
+                sectionName = sectionText;
             }
             var spec = GetSpecification();
-            var section = spec.sections.FirstOrDefault(x => string.Equals(x.text, text));
+            var section = spec.sections.FirstOrDefault(x => string.Equals(x.text, sectionName));
             if (section == null)
             {
-                section = new LayoutSection(text);
+                section = new LayoutSection(sectionName);
                 spec.sections.Add(section);
             }
 
-            //obtain the list to update
-            var list = getlist(section);
-            list.AddRange(items); //add items to the list
-            int count = list.Count;
-            var groups = list.GroupBy(keyselector).ToList();
+            //obtain the list to update, but make a copy before updating
+            var listToUpdate = getlist(section);
+            var listCopy = listToUpdate.ToList();
+            listCopy.AddRange(items); //add items to the clone list
+            //check for dupe categories
+            int count = listCopy.Count;
+            var groups = listCopy.GroupBy(keyselector).ToList();
+            //if there are duplicates we fallback to trying to perform a merge.
             if (groups.Count < count)
             {
-                var duplicates = string.Join(", ", groups.Where(g => g.Count() > 1).Select(g => g.Key));
-                throw new InvalidOperationException(string.Format("Duplicate entries found, ex: {0}", duplicates));
+                var duplicateNames = groups.Where(g => g.Count() > 1).Select(g=>g.Key);
+                var duplicateString = string.Join(", ", duplicateNames);
+                Console.WriteLine($"Duplicate entries found, ex: {duplicateString}, attempting to merge");
+
+                //create a fake layout spec containing the items and merge them in.
+                //merging should deal with duplicates automatically.
+                var newLayoutSpec = new LayoutSpecification();
+                var newSection = new LayoutSection(sectionName);
+                newLayoutSpec.sections.Add(newSection);
+                newSection.childElements.AddRange(items.Cast<LayoutElement>());
+                MergeSpecification(newLayoutSpec);
+                return true;
+            }
+            else
+            {
+                listToUpdate.AddRange(items);
             }
 
             //Update the specification
@@ -143,6 +160,16 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         public Stream ToJSONStream(bool replaceIconURLWithData, IconResourceProvider iconResourceProvider = null)
         {
             return ToJSONStream(root, replaceIconURLWithData, iconResourceProvider);
+        }
+
+        /// <summary>
+        /// Merges the passed spec with the current spec and sets the result as the current library layout.
+        /// </summary>
+        /// <param name="specToMerge"></param>
+        internal void MergeSpecification(LayoutSpecification specToMerge)
+        {
+            var result = LayoutSpecification.MergeLayoutSpecs(GetSpecification(), specToMerge);
+            SetSpecification(result);
         }
 
 
