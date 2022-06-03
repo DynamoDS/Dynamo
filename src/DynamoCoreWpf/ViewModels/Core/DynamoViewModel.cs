@@ -1593,8 +1593,7 @@ namespace Dynamo.ViewModels
             bool forceManualMode = false; 
             try
             {
-                var packedParams = parameters as Tuple<string, bool>;
-                if (packedParams != null)
+                if (parameters is Tuple<string, bool> packedParams)
                 {
                     filePath = packedParams.Item1;
                     forceManualMode = packedParams.Item2;
@@ -1606,27 +1605,22 @@ namespace Dynamo.ViewModels
 
                 var directoryName = Path.GetDirectoryName(filePath);
 
-                if (!PreferenceSettings.IsTrustedLocation(directoryName) 
+                // Display trust warning when file is not among trust location and warning feature is on
+                bool displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
                     && !DynamoModel.IsTestMode
-                    && FileTrustViewModel != null)
-                {
-                    RunSettings.ForceBlockRun = true;
-                }
-                else
-                {
-                    RunSettings.ForceBlockRun = false;
-                }
+                    && !PreferenceSettings.DisableTrustWarnings
+                    && FileTrustViewModel != null;
+                RunSettings.ForceBlockRun = displayTrustWarning;
+                // Execute graph open command
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
-                (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
-                if (!PreferenceSettings.IsTrustedLocation(directoryName) 
-                    && (currentWorkspaceViewModel?.IsHomeSpace ?? false)
-                    && !DynamoModel.IsTestMode
-                    && FileTrustViewModel != null
-                    && !PreferenceSettings.DisableTrustWarnings)
+                // Only show trust warning popop when current opened workspace is homeworkspace and not custom node workspace
+                if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
                 {
+                    // Skip these when opening dyf
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
                 }
+                (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
             }
             catch (Exception e)
             {
