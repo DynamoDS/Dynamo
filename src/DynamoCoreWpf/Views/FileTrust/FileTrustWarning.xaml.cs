@@ -97,10 +97,7 @@ namespace Dynamo.Wpf.Views.FileTrust
         private void EnableRunInteractivity()
         {
             dynViewModel.HomeSpace.RunSettings.RunEnabled = true;
-            if (FileTrustWarningCheckBox.IsChecked.Value == true)
-            {
-                dynViewModel.HomeSpace.RunSettings.RunTypesEnabled = true;
-            }
+            dynViewModel.HomeSpace.RunSettings.RunTypesEnabled = true;
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
@@ -120,12 +117,14 @@ namespace Dynamo.Wpf.Views.FileTrust
         private void YesButton_Click(object sender, RoutedEventArgs e)
         {
             fileTrustWarningViewModel.ShowWarningPopup = false;
-            if(FileTrustWarningCheckBox.IsChecked.Value == true)
+            RunSettings.ForceBlockRun = false;
+            if (FileTrustWarningCheckBox.IsChecked.Value == true)
             {
                 if (string.IsNullOrEmpty(fileTrustWarningViewModel.DynFileDirectoryName)) return;
                 if (dynViewModel.PreferenceSettings.IsTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName)) return;
                 dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName);
             }
+            dynViewModel.Model.CurrentWorkspace.RequestRun();
         }
 
         /// <summary>
