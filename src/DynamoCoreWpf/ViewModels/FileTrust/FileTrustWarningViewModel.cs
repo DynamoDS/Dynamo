@@ -10,6 +10,10 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
     public class FileTrustWarningViewModel : ViewModelBase
     {
         private bool showWarningPopup;
+
+        /// <summary>
+        /// This offset is set to make the popup pointer point at the middle of the RunMode combo box
+        /// </summary>
         private double PointerHorizontalOffset = 60;
 
 
