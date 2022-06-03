@@ -123,12 +123,11 @@ namespace ProtoCore
 
         private static readonly Dictionary<string, string> clrToDSTypeMap = new Dictionary<string, string>
         {
-            { $"{nameof(System)}.{nameof(String)}", "string" },
-            { "long", "int" },
-            { $"{nameof(System)}.{nameof(Int64)}", "int" },
-            { $"{nameof(System)}.{nameof(Double)}", "double" },
-            { $"{nameof(System)}.{nameof(Boolean)}", "bool" },
-            { $"{nameof(System)}.{nameof(Char)}", "char" }
+            { typeof(string).FullName, "string" },
+            { typeof(long).FullName, "int" },
+            { typeof(double).FullName, "double" },
+            { typeof(bool).FullName, "bool" },
+            { typeof(char).FullName, "char" }
         };
 
         public TypeSystem()
