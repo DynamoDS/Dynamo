@@ -1605,23 +1605,20 @@ namespace Dynamo.ViewModels
                 }
 
                 var directoryName = Path.GetDirectoryName(filePath);
-                if (!PreferenceSettings.IsTrustedLocation(directoryName) && !DynamoModel.IsTestMode)
+                if (!PreferenceSettings.IsTrustedLocation(directoryName) 
+                    && !DynamoModel.IsTestMode
+                    && FileTrustViewModel != null)
                 {
                     RunSettings.ForceBlockRun = true;
+                    FileTrustViewModel.DynFileDirectoryName = directoryName;
+                    FileTrustViewModel.ShowWarningPopup = true;
                 }
                 else
                 {
                     RunSettings.ForceBlockRun = false;
                 }
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
-                if (!PreferenceSettings.TrustedLocations.Contains(directoryName) 
-                    && (currentWorkspaceViewModel?.IsHomeSpace ?? false)
-                    && DynamoModel.IsTestMode == false
-                    && FileTrustViewModel != null)
-                {
-                    FileTrustViewModel.DynFileDirectoryName = directoryName;
-                    FileTrustViewModel.ShowWarningPopup = true;
-                }
+                (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
             }
             catch (Exception e)
             {
