@@ -3200,4 +3200,8 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="MessagePackageTargetOtherHosts" xml:space="preserve">
     <value>The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems. Do you want to continue?</value>
   </data>
+  <data name="RunBlockedMessage" xml:space="preserve">
+    <value>Run blocked.</value>
+    <comment>Run status message for case where graph run blocked due to unresolved security warning.</comment>
+  </data>
 </root>
