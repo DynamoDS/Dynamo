@@ -1605,6 +1605,7 @@ namespace Dynamo.ViewModels
                 }
 
                 var directoryName = Path.GetDirectoryName(filePath);
+
                 if (!PreferenceSettings.IsTrustedLocation(directoryName) && !DynamoModel.IsTestMode)
                 {
                     RunSettings.ForceBlockRun = true;
@@ -1614,10 +1615,11 @@ namespace Dynamo.ViewModels
                     RunSettings.ForceBlockRun = false;
                 }
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
-                if (!PreferenceSettings.TrustedLocations.Contains(directoryName) 
+                if (!PreferenceSettings.IsTrustedLocation(directoryName) 
                     && (currentWorkspaceViewModel?.IsHomeSpace ?? false)
-                    && DynamoModel.IsTestMode == false
-                    && FileTrustViewModel != null)
+                    && !DynamoModel.IsTestMode
+                    && FileTrustViewModel != null
+                    && !PreferenceSettings.DisableTrustWarnings)
                 {
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;

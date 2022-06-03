@@ -114,7 +114,7 @@
                       ToolTipService.IsEnabled="{Binding RunTypesEnabled,  Converter={StaticResource InverseBooleanConverter}}"
                       Style="{StaticResource RefreshRunSettingsComboBox}">
                 <ComboBox.ToolTip>
-                    <ToolTip Content="{Binding RunTypesComboBoxToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                    <ToolTip Content="{Binding RunTypesComboBoxToolTip}" Style="{StaticResource GenericToolTipLightTop}"/>
                 </ComboBox.ToolTip>
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ComboBoxItem}">

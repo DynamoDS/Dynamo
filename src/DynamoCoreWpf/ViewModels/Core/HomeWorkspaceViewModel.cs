@@ -16,6 +16,7 @@ using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
@@ -144,22 +145,22 @@ namespace Dynamo.Wpf.ViewModels.Core
             footerItems[0] = new FooterNotificationItem()
             {
                 NotificationCount = 0,
-                NotificationImage = "/DynamoCoreWpf;component/UI/Images/error.png",
-                NotificationToolTip = "Click to cycle through nodes with errors.",
+                NotificationImage = Resources.FooterNotificationErrorImage,
+                NotificationToolTip = Resources.FooterNotificationErrorTooltip,
                 NotificationType = FooterNotificationItem.FooterNotificationType.Error
             };
             footerItems[1] = new FooterNotificationItem()
             {
                 NotificationCount = 0,
-                NotificationImage = "/DynamoCoreWpf;component/UI/Images/warning_16px.png",
-                NotificationToolTip = "Click to cycle through nodes with warnings.",
+                NotificationImage = Resources.FooterNotificationWarningImage,
+                NotificationToolTip = Resources.FooterNotificationWarningTooltip,
                 NotificationType = FooterNotificationItem.FooterNotificationType.Warning
             };
             footerItems[2] = new FooterNotificationItem()
             {
                 NotificationCount = 0,
-                NotificationImage = "/DynamoCoreWpf;component/UI/Images/info.png",
-                NotificationToolTip = "Click to cycle through nodes with info states.",
+                NotificationImage = Resources.FooterNotificationInfoImage,
+                NotificationToolTip = Resources.FooterNotificationInfoTooltip,
                 NotificationType = FooterNotificationItem.FooterNotificationType.Information
             };
 

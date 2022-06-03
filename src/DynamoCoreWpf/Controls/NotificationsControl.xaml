@@ -113,7 +113,7 @@
                                    Foreground="{StaticResource PrimaryCharcoal200Brush}"/>
                         </StackPanel>
                         <Border.ToolTip>
-                            <ToolTip Content="{Binding Path=NotificationToolTip, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{Binding Path=NotificationToolTip, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource GenericToolTipLightTop}"/>
                         </Border.ToolTip>
                     </Border>
                 </DataTemplate>
