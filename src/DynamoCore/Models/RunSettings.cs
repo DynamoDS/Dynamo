@@ -20,7 +20,6 @@ namespace Dynamo.Models
         private RunType runType;
         private bool runEnabled;
         private bool runTypesEnabled;
-        private bool runTypesComboBoxToolTipIsEnabled;
 
         /// <summary>
         /// This static property with true value will be used when opening a dyn file with RunMode = Automatic and we don't want to execute the graph
