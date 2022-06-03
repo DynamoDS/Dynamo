@@ -1605,17 +1605,13 @@ namespace Dynamo.ViewModels
                 }
 
                 var directoryName = Path.GetDirectoryName(filePath);
-                //Checks if the file that is being opened is in the trusted list.
-                bool bShowFileTrustWarning = false;
-                if(!PreferenceSettings.TrustedLocations.Contains(directoryName) && DynamoModel.IsTestMode == false)
+                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
+                if (!PreferenceSettings.TrustedLocations.Contains(directoryName) 
+                    && (currentWorkspaceViewModel?.IsHomeSpace ?? false)
+                    && DynamoModel.IsTestMode == false
+                    && FileTrustViewModel != null)
                 {
                     HomeSpace.RunSettings.ForceAutomaticWithoutRun = true;
-                    bShowFileTrustWarning = true;
-                }
-                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
-
-                if (FileTrustViewModel != null && bShowFileTrustWarning == true)
-                {
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
                 }
