@@ -1605,13 +1605,20 @@ namespace Dynamo.ViewModels
                 }
 
                 var directoryName = Path.GetDirectoryName(filePath);
+                if (!PreferenceSettings.IsTrustedLocation(directoryName) && !DynamoModel.IsTestMode)
+                {
+                    RunSettings.ForceBlockRun = true;
+                }
+                else
+                {
+                    RunSettings.ForceBlockRun = false;
+                }
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
                 if (!PreferenceSettings.TrustedLocations.Contains(directoryName) 
                     && (currentWorkspaceViewModel?.IsHomeSpace ?? false)
                     && DynamoModel.IsTestMode == false
                     && FileTrustViewModel != null)
                 {
-                    RunSettings.ForceBlockRun = true;
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
                 }
