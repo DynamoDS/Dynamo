@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -2738,6 +2738,60 @@ namespace Dynamo.Wpf.Properties {
         public static string FolderNotWritableError {
             get {
                 return ResourceManager.GetString("FolderNotWritableError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /DynamoCoreWpf;component/UI/Images/error.png.
+        /// </summary>
+        public static string FooterNotificationErrorImage {
+            get {
+                return ResourceManager.GetString("FooterNotificationErrorImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to cycle through nodes with errors..
+        /// </summary>
+        public static string FooterNotificationErrorTooltip {
+            get {
+                return ResourceManager.GetString("FooterNotificationErrorTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /DynamoCoreWpf;component/UI/Images/info.png.
+        /// </summary>
+        public static string FooterNotificationInfoImage {
+            get {
+                return ResourceManager.GetString("FooterNotificationInfoImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to cycle through nodes with info states..
+        /// </summary>
+        public static string FooterNotificationInfoTooltip {
+            get {
+                return ResourceManager.GetString("FooterNotificationInfoTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /DynamoCoreWpf;component/UI/Images/warning_16px.png.
+        /// </summary>
+        public static string FooterNotificationWarningImage {
+            get {
+                return ResourceManager.GetString("FooterNotificationWarningImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to cycle through nodes with warnings..
+        /// </summary>
+        public static string FooterNotificationWarningTooltip {
+            get {
+                return ResourceManager.GetString("FooterNotificationWarningTooltip", resourceCulture);
             }
         }
         

@@ -3204,4 +3204,22 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Run blocked.</value>
     <comment>Run status message for case where graph run blocked due to unresolved security warning.</comment>
   </data>
+  <data name="FooterNotificationErrorImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/error.png</value>
+  </data>
+  <data name="FooterNotificationErrorTooltip" xml:space="preserve">
+    <value>Click to cycle through nodes with errors.</value>
+  </data>
+  <data name="FooterNotificationInfoImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/info.png</value>
+  </data>
+  <data name="FooterNotificationInfoTooltip" xml:space="preserve">
+    <value>Click to cycle through nodes with info states.</value>
+  </data>
+  <data name="FooterNotificationWarningImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/warning_16px.png</value>
+  </data>
+  <data name="FooterNotificationWarningTooltip" xml:space="preserve">
+    <value>Click to cycle through nodes with warnings.</value>
+  </data>
 </root>
