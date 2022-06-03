@@ -673,7 +673,7 @@ namespace Dynamo.Graph.Workspaces
                 MarkNodesAsModifiedAndRequestRun(Nodes);
             }
 
-            if (RunSettings.RunEnabled && RunSettings.RunType == RunType.Automatic && !RunSettings.ForceBlockRun)
+            if (RunSettings.RunEnabled && RunSettings.RunType == RunType.Automatic)
                 Run();
         }
 
@@ -804,6 +804,8 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public void Run()
         {
+            if (RunSettings.ForceBlockRun) return;
+
             graphExecuted = true;
 
             // When Dynamo is shut down, the workspace is cleared, which results
