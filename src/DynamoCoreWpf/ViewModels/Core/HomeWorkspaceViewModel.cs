@@ -265,7 +265,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         internal void UpdateRunStatusMsgBasedOnStates()
         {
-            if (RunSettings.ForceAutomaticWithoutRun)
+            if (RunSettings.ForceBlockRun)
             {
                 SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunBlockedMessage);
                 return;

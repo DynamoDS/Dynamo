@@ -24,7 +24,7 @@ namespace Dynamo.Models
         /// <summary>
         /// This static property with true value will be used when opening a dyn file with RunMode = Automatic and we don't want to execute the graph
         /// </summary>
-        internal static bool ForceAutomaticWithoutRun { get; set; } = false;
+        internal static bool ForceBlockRun { get; set; } = false;
 
         /// <summary>
         /// Default milliseconds number for the period in periodic run.

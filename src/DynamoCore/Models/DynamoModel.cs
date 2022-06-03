@@ -1961,13 +1961,13 @@ namespace Dynamo.Models
                 this.LinterManager);
 
             var directoryName = Path.GetDirectoryName(filePath);
-            if (!PreferenceSettings.TrustedLocations.Contains(directoryName) && DynamoModel.IsTestMode == false)
+            if (!PreferenceSettings.IsTrustedLocation(directoryName) && !DynamoModel.IsTestMode)
             {
-                RunSettings.ForceAutomaticWithoutRun = true;
+                RunSettings.ForceBlockRun = true;
             }
             else
             {
-                RunSettings.ForceAutomaticWithoutRun = false;
+                RunSettings.ForceBlockRun = false;
             }
 
             workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
