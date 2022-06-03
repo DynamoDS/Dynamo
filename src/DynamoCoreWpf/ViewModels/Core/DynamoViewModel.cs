@@ -1605,13 +1605,20 @@ namespace Dynamo.ViewModels
                 }
 
                 var directoryName = Path.GetDirectoryName(filePath);
+                if (!PreferenceSettings.IsTrustedLocation(directoryName) && !DynamoModel.IsTestMode)
+                {
+                    RunSettings.ForceBlockRun = true;
+                }
+                else
+                {
+                    RunSettings.ForceBlockRun = false;
+                }
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
                 if (!PreferenceSettings.TrustedLocations.Contains(directoryName) 
                     && (currentWorkspaceViewModel?.IsHomeSpace ?? false)
                     && DynamoModel.IsTestMode == false
                     && FileTrustViewModel != null)
                 {
-                    HomeSpace.RunSettings.ForceAutomaticWithoutRun = true;
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
                 }
@@ -2341,8 +2348,7 @@ namespace Dynamo.ViewModels
                 // If after closing the HOME workspace, and there are no other custom 
                 // workspaces opened at the time, then we should show the start page.
                 this.ShowStartPage = (Model.Workspaces.Count() <= 1);
-                if (HomeSpace.RunSettings != null)
-                    HomeSpace.RunSettings.ForceAutomaticWithoutRun = false;
+                RunSettings.ForceBlockRun = false;
             }
         }
 

@@ -22,9 +22,9 @@ namespace Dynamo.Models
         private bool runTypesEnabled;
 
         /// <summary>
-        /// Boolean indicates if Dynamo should block run even when mode is Automatic.
+        /// This static property if is true will block running the graph in any Run Mode
         /// </summary>
-        internal bool ForceAutomaticWithoutRun { get; set; } = false;
+        internal static bool ForceBlockRun { get; set; } = false;
 
         /// <summary>
         /// Default milliseconds number for the period in periodic run.
