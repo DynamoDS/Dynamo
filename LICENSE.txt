@@ -84,6 +84,9 @@ https://github.com/ipython/ipython/blob/master/IPython/extensions/autoreload.py
 https://github.com/ipython/ipython/blob/master/LICENSE
   (BSD-3-Clause License)
 
+## LaunchDarkly.dotnet-client-sdk
+https://github.com/launchdarkly/dotnet-client-sdk/blob/main/License.txt
+
 ### libiconv
 https://www.gnu.org/software/libiconv/
 https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
@@ -111,6 +114,9 @@ https://docs.microsoft.com/en-us/visualstudio/productinfo/2015-redistribution-vs
 
 ### Microsoft 2019 C Runtime DLLs, msvcp142.dll, msvcr142.dll
 https://visualstudio.microsoft.com/license-terms/mlt031619/
+
+## Mono.Cecil
+https://github.com/jbevain/cecil/blob/master/LICENSE.txt
 
 ### Moq
 http://www.nuget.org/packages/Moq/
