@@ -1611,7 +1611,7 @@ namespace Dynamo.ViewModels
                     && DynamoModel.IsTestMode == false
                     && FileTrustViewModel != null)
                 {
-                    HomeSpace.RunSettings.ForceAutomaticWithoutRun = true;
+                    RunSettings.ForceAutomaticWithoutRun = true;
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
                 }
