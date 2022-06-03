@@ -1605,13 +1605,12 @@ namespace Dynamo.ViewModels
                 }
 
                 var directoryName = Path.GetDirectoryName(filePath);
+
                 if (!PreferenceSettings.IsTrustedLocation(directoryName) 
                     && !DynamoModel.IsTestMode
                     && FileTrustViewModel != null)
                 {
                     RunSettings.ForceBlockRun = true;
-                    FileTrustViewModel.DynFileDirectoryName = directoryName;
-                    FileTrustViewModel.ShowWarningPopup = true;
                 }
                 else
                 {
@@ -1619,6 +1618,15 @@ namespace Dynamo.ViewModels
                 }
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
                 (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
+                if (!PreferenceSettings.IsTrustedLocation(directoryName) 
+                    && (currentWorkspaceViewModel?.IsHomeSpace ?? false)
+                    && !DynamoModel.IsTestMode
+                    && FileTrustViewModel != null
+                    && !PreferenceSettings.DisableTrustWarnings)
+                {
+                    FileTrustViewModel.DynFileDirectoryName = directoryName;
+                    FileTrustViewModel.ShowWarningPopup = true;
+                }
             }
             catch (Exception e)
             {
