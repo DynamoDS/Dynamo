@@ -34,6 +34,7 @@
             </Style>
             <core:NotificationLevelToColorConverter x:Key="NotificationLevelToColorConverter"></core:NotificationLevelToColorConverter>
             <core:ZeroToVisibilityCollapsedConverter x:Key="ZeroToVisibilityCollapsedConverter" />
+            <converters:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
             <converters:LinterIssueCountToVisibilityConverter x:Key="LinterIssueCountToVisibilityConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -56,6 +57,7 @@
                                 Converter={StaticResource NotificationLevelToColorConverter}}">
             <TextBlock x:Name="runNotificationTextBlock"
                        Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
+                       Visibility="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage, Converter={StaticResource EmptyStringToCollapsedConverter}}"
                        FontStyle="Italic"
                        FontSize="12"
                        VerticalAlignment="Center"

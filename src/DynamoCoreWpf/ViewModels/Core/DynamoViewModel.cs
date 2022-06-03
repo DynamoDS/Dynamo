@@ -218,7 +218,8 @@ namespace Dynamo.ViewModels
 
                     // Keep DynamoModel.CurrentWorkspace update-to-date
                     int modelIndex = model.Workspaces.IndexOf(currentWorkspaceViewModel.Model);
-                    this.ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));
+                    ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
                 }
             }
         }
