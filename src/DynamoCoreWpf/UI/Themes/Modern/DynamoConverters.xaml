@@ -182,4 +182,5 @@
     <controls:NestedGroupsLabelConverter x:Key="NestedGroupsLabelConverter" />
     <controls:CollectionHasMoreThanNItemsToBoolConverter x:Key="CollectionHasMoreThanNItemsToBoolConverter" />
     <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
+    <controls:ObjectTypeConverter x:Key="ObjectTypeConverter" />
 </ResourceDictionary>

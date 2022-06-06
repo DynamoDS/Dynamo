@@ -18,11 +18,11 @@ namespace Dynamo.ViewModels
         // For more info: https://msdn.microsoft.com/en-us/library/kfsatb94(v=vs.110).aspx
         private const string numberFormat = "g";
 
-        private static readonly string doubleType = "double";
-        private static readonly string boolType = "bool";
-        private static readonly string intType = "int";
-        private static readonly string objectType = "object";
-        private static readonly string stringType = "string";
+        internal const string doubleType = "double";
+        internal const string boolType = "bool";
+        internal const string intType = "int";
+        internal const string objectType = "object";
+        internal const string stringType = "string";
 
         #region Events
 
