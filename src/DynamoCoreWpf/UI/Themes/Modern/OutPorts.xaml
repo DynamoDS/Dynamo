@@ -46,6 +46,7 @@
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                             <Setter Property="Grid.Height" Value="14px" />
+                            <Setter Property="Grid.Margin" Value="0,3,0,0" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
