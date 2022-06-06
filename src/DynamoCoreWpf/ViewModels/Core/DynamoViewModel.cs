@@ -1608,6 +1608,7 @@ namespace Dynamo.ViewModels
 
                 // Display trust warning when file is not among trust location and warning feature is on
                 bool displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
+                    && !filePath.EndsWith("dyf")
                     && !DynamoModel.IsTestMode
                     && !PreferenceSettings.DisableTrustWarnings
                     && FileTrustViewModel != null;
