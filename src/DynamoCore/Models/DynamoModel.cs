@@ -715,7 +715,7 @@ namespace Dynamo.Models
                 }
             }
 
-            if (PreferenceSettings.IsFirstRun)
+            if (PreferenceSettings.IsFirstRun && !IsTestMode)
             {
                 PreferenceSettings.AddDefaultTrustedLocations();
             }
