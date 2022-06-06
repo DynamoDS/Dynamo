@@ -224,9 +224,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     tmpStep.StepClosed -= Popup_StepClosed;
                 }
+
                 string guidName = Resources.ResourceManager.GetString(currentGuide.GuideNameResource).Replace("_", "");
-                Logging.Analytics.TrackEvent(Logging.Actions.End, Logging.Categories.GuidedTourOperations, guidName, currentGuide.SequenceOrder);
+                if (currentGuide.TotalSteps - 1 == currentGuide.CurrentStep.Sequence)
+                {
+                    Logging.Analytics.TrackEvent(Logging.Actions.Completed, Logging.Categories.GuidedTourOperations, guidName, currentGuide.CurrentStep.Sequence);
+                }
+                else 
+                {
+                    Logging.Analytics.TrackEvent(Logging.Actions.End, Logging.Categories.GuidedTourOperations, guidName, currentGuide.CurrentStep.Sequence);
+                }                
                 Logging.Analytics.TrackTimedEvent(Logging.Categories.GuidedTourOperations, Logging.Actions.TimeElapsed.ToString(), stopwatch.Elapsed, guidName);
+
                 currentGuide.ClearGuide();
                 GuideFlowEvents.GuidedTourStart -= TourStarted;
                 GuideFlowEvents.GuidedTourFinish -= TourFinished;

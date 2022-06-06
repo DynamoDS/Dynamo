@@ -88,6 +88,8 @@ namespace Dynamo.Graph.Annotations
             }
             set
             {
+                if (height == value) return;
+
                 height = value;
                 RaisePropertyChanged("Height");
             }
@@ -426,10 +428,10 @@ namespace Dynamo.Graph.Annotations
         {
             switch (e.PropertyName)
             {
-                case "Position":
+                case nameof(Position):
                     UpdateBoundaryFromSelection();
                     break;
-                case "Text":
+                case nameof(Text):
                     UpdateBoundaryFromSelection();
                     break;
                 case nameof(ModelBase.Height):
@@ -464,18 +466,18 @@ namespace Dynamo.Graph.Annotations
         internal void UpdateBoundaryFromSelection()
         {          
             var selectedModelsList = nodes.ToList();
-          
+
             if (selectedModelsList.Any())
             {
                 var groupModels = selectedModelsList.OrderBy(x => x.X).ToList();
-              
+
                 //Shifting x by 10 and y to the height of textblock
                 var regionX = groupModels.Min(x => x.X) - ExtendSize;
                 //Increase the Y value by 10. This provides the extra space between
                 // a model and textbox. Otherwise there will be some overlap
-                var regionY = groupModels.Min(y => y.Y) - 
+                var regionY = groupModels.Min(y => y.Y) -
                     ExtendSize - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
-              
+
                 //calculates the distance between the nodes
                 var xDistance = groupModels.Max(x => (x.X + x.Width)) - regionX;
                 var yDistance = groupModels.Max(x => (x.Y + x.Height)) - regionY;
@@ -492,6 +494,8 @@ namespace Dynamo.Graph.Annotations
                     Height = yDistance + ExtendSize + ExtendYHeight + HeightAdjustment - TextBlockHeight
                 };
 
+                bool positionChanged = region.X != X || region.Y != Y;
+
                 this.X = region.X;              
                 this.Y = region.Y;
                 this.Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
@@ -502,6 +506,11 @@ namespace Dynamo.Graph.Annotations
                 //that is the height should be the initial height without the textblock height.
                 if (this.InitialHeight <= 0.0)
                     this.InitialHeight = region.Height;
+
+                if (positionChanged)
+                {
+                    RaisePropertyChanged(nameof(Position));
+                }
             }
             else
             {

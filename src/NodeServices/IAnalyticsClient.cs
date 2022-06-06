@@ -401,6 +401,11 @@ namespace Dynamo.Logging
         Next,
 
         /// <summary>
+        /// Previous event, e.g. when a user goes back on a guided tour
+        /// </summary>
+        Previous,
+
+        /// <summary>
         /// TimeElapsed event, e.g. tracks the time elapsed since an event
         /// </summary>
         TimeElapsed,

@@ -745,7 +745,7 @@ namespace ProtoFFI
                 return clrObject;
 
             
-            return CreateCLRObject(dsObject, context, dsi, expectedCLRType);
+            return CreateCLRObject(dsObject, expectedCLRType);
         }
 
         /// <summary>
@@ -1317,7 +1317,7 @@ namespace ProtoFFI
         /// <param name="dsi"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        private object CreateCLRObject(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type type)
+        private object CreateCLRObject(StackValue dsObject, Type type)
         {
             //Must be a user defined type, and expecting a var object
             if (type == typeof(object) && dsObject.IsPointer)

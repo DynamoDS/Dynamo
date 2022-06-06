@@ -38,6 +38,7 @@ using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
+using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
 using ISelectable = Dynamo.Selection.ISelectable;
@@ -172,6 +173,11 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("WorkspaceActualHeight");
             RaisePropertyChanged("WorkspaceActualWidth");
         }
+
+        /// <summary>
+        /// This property is the ViewModel that will be passed to the File Trust Warning popup when is created.
+        /// </summary>
+        internal FileTrustWarningViewModel FileTrustViewModel { get; set; }
 
         private WorkspaceViewModel currentWorkspaceViewModel;
         private string filePath;
@@ -732,6 +738,8 @@ namespace Dynamo.ViewModels
             {
                 model.State = DynamoModel.DynamoModelState.StartedUI;
             }
+
+            FileTrustViewModel = new FileTrustWarningViewModel();
         }
 
         /// <summary>
@@ -1595,7 +1603,27 @@ namespace Dynamo.ViewModels
                 {
                     filePath = parameters as string;
                 }
+
+                var directoryName = Path.GetDirectoryName(filePath);
+
+                if (!PreferenceSettings.IsTrustedLocation(directoryName) && !DynamoModel.IsTestMode)
+                {
+                    RunSettings.ForceBlockRun = true;
+                }
+                else
+                {
+                    RunSettings.ForceBlockRun = false;
+                }
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
+                if (!PreferenceSettings.IsTrustedLocation(directoryName) 
+                    && (currentWorkspaceViewModel?.IsHomeSpace ?? false)
+                    && !DynamoModel.IsTestMode
+                    && FileTrustViewModel != null
+                    && !PreferenceSettings.DisableTrustWarnings)
+                {
+                    FileTrustViewModel.DynFileDirectoryName = directoryName;
+                    FileTrustViewModel.ShowWarningPopup = true;
+                }
             }
             catch (Exception e)
             {
@@ -2322,6 +2350,7 @@ namespace Dynamo.ViewModels
                 // If after closing the HOME workspace, and there are no other custom 
                 // workspaces opened at the time, then we should show the start page.
                 this.ShowStartPage = (Model.Workspaces.Count() <= 1);
+                RunSettings.ForceBlockRun = false;
             }
         }
 

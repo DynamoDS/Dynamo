@@ -921,6 +921,15 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        ///     Are all the inputs of this node disconnected?
+        /// </summary>
+        [JsonIgnore]
+        internal bool AreAllInputsDisconnected
+        {
+            get { return inPorts.All(p => !p.IsConnected); }
+        }
+
+        /// <summary>
         ///     Returns the description from type information
         /// </summary>
         /// <returns>The value or "No description provided"</returns>
