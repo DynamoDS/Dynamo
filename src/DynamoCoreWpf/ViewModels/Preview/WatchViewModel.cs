@@ -248,6 +248,9 @@ namespace Dynamo.ViewModels
                 case TypeCode.Double:
                     return ((double)obj).ToString(numberFormat, CultureInfo.InvariantCulture);
 
+                case TypeCode.Int32:
+                    return ((int)obj).ToString(CultureInfo.InvariantCulture);
+
                 case TypeCode.Int64:
                     return ((long)obj).ToString(CultureInfo.InvariantCulture);
 
