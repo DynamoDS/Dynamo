@@ -443,7 +443,7 @@ namespace DynamoCoreWpfTests
 
             var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
             // watch is computed with cbn and has its value
-            Assert.AreEqual(8, items.Count());
+            Assert.AreEqual(12, items.Count());
 
             // disconnect watch
             Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchGuid, 0, PortType.Input,
