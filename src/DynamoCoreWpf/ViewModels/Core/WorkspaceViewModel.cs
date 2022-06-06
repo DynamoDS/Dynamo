@@ -347,6 +347,9 @@ namespace Dynamo.ViewModels
             get { return Model == DynamoViewModel.CurrentSpace; }
         }
 
+        /// <summary>
+        /// Boolean indicating if the target workspace is home workspace (true), or custom node workspace (false)
+        /// </summary>
         [JsonIgnore]
         public bool IsHomeSpace
         {

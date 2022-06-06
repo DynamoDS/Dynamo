@@ -20,9 +20,11 @@ namespace Dynamo.Models
         private RunType runType;
         private bool runEnabled;
         private bool runTypesEnabled;
-        private bool runTypesComboBoxToolTipIsEnabled;
 
-        internal bool ForceAutomaticWithoutRun { get; set; } = false;
+        /// <summary>
+        /// This static property if is true will block running the graph in any Run Mode
+        /// </summary>
+        internal static bool ForceBlockRun { get; set; } = false;
 
         /// <summary>
         /// Default milliseconds number for the period in periodic run.

@@ -27,8 +27,8 @@ namespace Dynamo.ViewModels
 
     public class TrustedPathViewModel : ViewModelBase
     {
-        private PreferenceSettings settings;
-        private DynamoLogger logger;
+        private readonly PreferenceSettings settings;
+        private readonly DynamoLogger logger;
 
         public ObservableCollection<string> TrustedLocations { get; private set; }
        
@@ -127,7 +127,7 @@ namespace Dynamo.ViewModels
         {
             OnRequestShowFileDialog(this, e);
 
-            if (e.Cancel == false && TrustedLocations.Contains(e.Path))
+            if (e.Cancel == false && settings.IsTrustedLocation(e.Path))
                 e.Cancel = true;
         }
 
