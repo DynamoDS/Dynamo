@@ -266,6 +266,12 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         internal void UpdateRunStatusMsgBasedOnStates()
         {
+            // Clear run status message if home workspace is not current workspace (custom node workspace)
+            if(IsHomeSpace && !IsCurrentSpace)
+            {
+                SetCurrentWarning(NotificationLevel.Mild, string.Empty);
+                return;
+            }
             if (RunSettings.ForceBlockRun)
             {
                 SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunBlockedMessage);
