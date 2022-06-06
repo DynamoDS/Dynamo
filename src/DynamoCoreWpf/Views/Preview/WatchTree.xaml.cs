@@ -21,9 +21,21 @@ namespace Dynamo.Controls
 
         public WatchTree()
         {
-            InitializeComponent();
+            DataContextChanged += WatchTree_DataContextChanged;
             this.Loaded += WatchTree_Loaded;
             this.Unloaded += WatchTree_Unloaded;
+
+            InitializeComponent();
+        }
+
+        private void WatchTree_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.DataContext is WatchViewModel wvm &&
+                _vm != wvm)
+            {
+                _vm = wvm;
+                _vm.PropertyChanged += _vm_PropertyChanged;
+            }
         }
 
         private void WatchTree_Unloaded(object sender, RoutedEventArgs e)
@@ -33,8 +45,12 @@ namespace Dynamo.Controls
 
         void WatchTree_Loaded(object sender, RoutedEventArgs e)
         {
-            _vm = this.DataContext as WatchViewModel;
-            _vm.PropertyChanged += _vm_PropertyChanged;            
+            if (this.DataContext is WatchViewModel wvm &&
+                _vm != wvm)
+            {
+                _vm = wvm;
+                _vm.PropertyChanged += _vm_PropertyChanged;
+            }
         }
 
         private void _vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
