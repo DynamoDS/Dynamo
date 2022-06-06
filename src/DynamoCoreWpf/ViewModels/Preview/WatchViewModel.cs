@@ -18,6 +18,12 @@ namespace Dynamo.ViewModels
         // For more info: https://msdn.microsoft.com/en-us/library/kfsatb94(v=vs.110).aspx
         private const string numberFormat = "g";
 
+        private static readonly string doubleType = "double";
+        private static readonly string boolType = "bool";
+        private static readonly string intType = "int";
+        private static readonly string objectType = "object";
+        private static readonly string stringType = "string";
+
         #region Events
 
         public event Action Clicked;
@@ -220,6 +226,10 @@ namespace Dynamo.ViewModels
 
         public WatchViewModel(Action<string> tagGeometry) : this(null, null, tagGeometry, true) { }
 
+        /// <summary>
+        /// This is added to set the Type identifier for the watch data. 
+        /// It calls the base constructor internally.
+        /// </summary> 
         public WatchViewModel(object obj, string path, Action<string> tagGeometry, bool expanded = false) : this(GetStringFromObject(obj), path, tagGeometry, expanded)
         {
             ValueType = GetDisplayType(obj);
@@ -244,22 +254,16 @@ namespace Dynamo.ViewModels
             {
                 case TypeCode.Boolean:
                     return ObjectToLabelString(obj);
-
                 case TypeCode.Double:
                     return ((double)obj).ToString(numberFormat, CultureInfo.InvariantCulture);
-
                 case TypeCode.Int32:
                     return ((int)obj).ToString(CultureInfo.InvariantCulture);
-
                 case TypeCode.Int64:
                     return ((long)obj).ToString(CultureInfo.InvariantCulture);
-
                 case TypeCode.DateTime:
                     return ((DateTime)obj).ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture);
-
                 case TypeCode.Object:
                     return ObjectToLabelString(obj);
-
                 default:
                     return (string)obj;
             };
@@ -286,21 +290,21 @@ namespace Dynamo.ViewModels
             switch (typeCode)
             {
                 case TypeCode.Boolean:
-                    return "bool";
+                    return boolType;
                 case TypeCode.Double:
-                    return "double";
+                    return doubleType;
                 case TypeCode.Int64:
-                    return "int";
+                    return intType;
                 case TypeCode.Int32:
-                    return "int";
+                    return intType;
                 case TypeCode.Object:
-                    return "object";
+                    return objectType;
                 case TypeCode.String:
-                    return "string";
+                    return stringType;
                 case TypeCode.Empty:
-                    return "";
+                    return String.Empty;
                 default:
-                    return "";
+                    return String.Empty;
             }
         }
         private bool CanFindNodeForPath(object obj)
