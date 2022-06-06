@@ -835,7 +835,13 @@ namespace Dynamo.Configuration
         internal void AddDefaultTrustedLocations()
         {
             if (!IsFirstRun) return;
-            AddTrustedLocation(@"C:\ProgramData\Autodesk");
+
+            const string Autodesk = "Autodesk";
+            string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            AddTrustedLocation(Path.Combine(ProgramData, Autodesk));
+
+            string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            AddTrustedLocation(Path.Combine(ProgramData, Autodesk));
         }
 
         /// <summary>
