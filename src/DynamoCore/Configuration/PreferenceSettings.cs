@@ -830,6 +830,14 @@ namespace Dynamo.Configuration
             disableTrustWarnings = disabled;
         }
 
+        // Add default trusted locations for Autodesk samples.
+        // This function should only be called during Dynamo's first run.
+        internal void AddDefaultTrustedLocations()
+        {
+            if (!IsFirstRun) return;
+            AddTrustedLocation(@"C:\ProgramData\Autodesk");
+        }
+
         /// <summary>
         /// Checkes whether the input argument (path) is among Dynamo's trusted locations
         /// Only directories are supported.
