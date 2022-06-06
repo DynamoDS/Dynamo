@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Controls;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.FileTrust;
 
@@ -99,15 +97,14 @@ namespace Dynamo.Wpf.Views.FileTrust
         private void EnableRunInteractivity()
         {
             dynViewModel.HomeSpace.RunSettings.RunEnabled = true;
-            if (FileTrustWarningCheckBox.IsChecked.Value == true)
-            {
-                dynViewModel.HomeSpace.RunSettings.RunTypesEnabled = true;
-            }
+            dynViewModel.HomeSpace.RunSettings.RunTypesEnabled = true;
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            //Launch the Preference panel in the Security tab
+            var tabName = Properties.Resources.PreferencesSecuritySettingsTab;
+            var expanderName = Properties.Resources.TrustedPathsExpanderName;
+            PreferencesPanelUtilities.OpenPreferencesPanel(mainWindow, WindowStartupLocation.CenterOwner, tabName, expanderName);
         }
 
         private void CloseFileButton_Click(object sender, RoutedEventArgs e)
@@ -120,12 +117,14 @@ namespace Dynamo.Wpf.Views.FileTrust
         private void YesButton_Click(object sender, RoutedEventArgs e)
         {
             fileTrustWarningViewModel.ShowWarningPopup = false;
-            if(FileTrustWarningCheckBox.IsChecked.Value == true)
+            RunSettings.ForceBlockRun = false;
+            if (FileTrustWarningCheckBox.IsChecked.Value == true)
             {
                 if (string.IsNullOrEmpty(fileTrustWarningViewModel.DynFileDirectoryName)) return;
-                if (dynViewModel.PreferenceSettings.TrustedLocations.Contains(fileTrustWarningViewModel.DynFileDirectoryName)) return;
+                if (dynViewModel.PreferenceSettings.IsTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName)) return;
                 dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName);
             }
+            dynViewModel.Model.CurrentWorkspace.RequestRun();
         }
 
         /// <summary>

@@ -23,7 +23,13 @@ namespace Dynamo.PackageManager.Tests
             {
                 content = new List<PackageHeader>()
                 {
-                    new PackageHeader()
+                    new PackageHeader(){
+                        versions = new List<PackageVersion>(){
+                            new PackageVersion(){
+                                url="test.zip"
+                            }
+                        }
+                    }
                 },
                 success = true
             };
