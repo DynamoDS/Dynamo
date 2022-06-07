@@ -7833,8 +7833,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have not trusted file location:
-        ///{0}.
+        ///   Looks up a localized string similar to No trusted location has been added..
         /// </summary>
         public static string TrustLocationSkippedNotification {
             get {
