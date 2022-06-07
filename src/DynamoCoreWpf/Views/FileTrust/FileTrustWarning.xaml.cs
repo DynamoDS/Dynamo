@@ -114,7 +114,10 @@ namespace Dynamo.Wpf.Views.FileTrust
             if (dynViewModel.CloseHomeWorkspaceCommand.CanExecute(null))
             {
                 dynViewModel.CloseHomeWorkspaceCommand.Execute(null);
-                dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.TrustLocationSkippedNotification);
+                if (FileTrustWarningCheckBox.IsChecked.Value == true)
+                {
+                    dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.TrustLocationSkippedNotification);
+                }
             }
         }
 
