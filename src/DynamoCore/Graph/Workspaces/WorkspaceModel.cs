@@ -428,7 +428,7 @@ namespace Dynamo.Graph.Workspaces
             if (handler != null) handler();
         }
 
-        public event Action<IEnumerable<AnnotationModel>> AnnotationsAdded;
+        internal event Action<IEnumerable<AnnotationModel>> AnnotationsAdded;
 
         /// <summary>
         ///     Event that is fired when an annotation is added to the workspace.
