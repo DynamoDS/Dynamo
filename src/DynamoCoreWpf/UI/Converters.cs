@@ -3309,7 +3309,7 @@ namespace Dynamo.Controls
                         return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
                 };
             }
-            return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+            return resourceDictionary["boolLabelBackground"] as SolidColorBrush;
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
