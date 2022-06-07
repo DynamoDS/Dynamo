@@ -257,6 +257,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(NodeContentCount));
                 }
                 WorkspaceViewModel.HasUnsavedChanges = true;
+                UpdateProxyPortsPosition();
                 AddGroupToGroupCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(nameof(IsExpanded));
             }
