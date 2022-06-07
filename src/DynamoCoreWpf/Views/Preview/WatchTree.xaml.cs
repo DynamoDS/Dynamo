@@ -26,12 +26,11 @@ namespace Dynamo.Controls
         {
             _vm = vm;
 
-            DataContext = vm;
+            InitializeComponent();
 
+            DataContext = vm;
             this.Loaded += WatchTree_Loaded;
             this.Unloaded += WatchTree_Unloaded;
-
-            InitializeComponent();
         }
 
         internal double DefaultWidthSize { get { return defaultWidthSize; } }
