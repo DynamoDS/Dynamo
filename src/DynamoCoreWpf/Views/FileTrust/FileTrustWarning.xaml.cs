@@ -7,6 +7,7 @@ using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.FileTrust;
 
 namespace Dynamo.Wpf.Views.FileTrust
@@ -111,7 +112,10 @@ namespace Dynamo.Wpf.Views.FileTrust
         {
             fileTrustWarningViewModel.ShowWarningPopup = false;
             if (dynViewModel.CloseHomeWorkspaceCommand.CanExecute(null))
+            {
                 dynViewModel.CloseHomeWorkspaceCommand.Execute(null);
+                dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.TrustLocationSkippedNotification);
+            }
         }
 
         private void YesButton_Click(object sender, RoutedEventArgs e)
@@ -120,11 +124,18 @@ namespace Dynamo.Wpf.Views.FileTrust
             RunSettings.ForceBlockRun = false;
             if (FileTrustWarningCheckBox.IsChecked.Value == true)
             {
-                if (string.IsNullOrEmpty(fileTrustWarningViewModel.DynFileDirectoryName)) return;
-                if (dynViewModel.PreferenceSettings.IsTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName)) return;
-                dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName);
+                if(dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName))
+                    dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(string.Format(Properties.Resources.TrustLocationAddedNotification, fileTrustWarningViewModel.DynFileDirectoryName));
             }
-            dynViewModel.Model.CurrentWorkspace.RequestRun();
+            if (dynViewModel.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType != RunType.Manual)
+            {
+                dynViewModel.Model.CurrentWorkspace.RequestRun();
+            }
+            else
+            {
+                (dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).CurrentNotificationMessage = Properties.Resources.RunReady;
+                (dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).CurrentNotificationLevel = NotificationLevel.Mild;
+            }
         }
 
         /// <summary>

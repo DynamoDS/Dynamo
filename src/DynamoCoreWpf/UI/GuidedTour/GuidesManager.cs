@@ -507,6 +507,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// and display message passed as param
         /// </summary>
         /// <param name="content">The target content to display.</param>
+        /// TODO: Make this API out of guide manager to a more generic place
         internal void CreateRealTimeInfoWindow(string content)
         {
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree

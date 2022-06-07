@@ -769,7 +769,7 @@ namespace Dynamo.Configuration
         {
             try
             {
-                if (trustedLocations.Contains(path))
+                if (IsTrustedLocation(path) || string.IsNullOrEmpty(path))
                 {
                     return false;
                 }
