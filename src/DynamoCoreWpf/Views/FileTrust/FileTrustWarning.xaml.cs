@@ -7,6 +7,7 @@ using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.FileTrust;
 
 namespace Dynamo.Wpf.Views.FileTrust
@@ -126,7 +127,15 @@ namespace Dynamo.Wpf.Views.FileTrust
                 if(dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName))
                     dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(string.Format(Properties.Resources.TrustLocationAddedNotification, fileTrustWarningViewModel.DynFileDirectoryName));
             }
-            dynViewModel.Model.CurrentWorkspace.RequestRun();
+            if (dynViewModel.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType != RunType.Manual)
+            {
+                dynViewModel.Model.CurrentWorkspace.RequestRun();
+            }
+            else
+            {
+                (dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).CurrentNotificationMessage = Properties.Resources.RunReady;
+                (dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).CurrentNotificationLevel = NotificationLevel.Mild;
+            }
         }
 
         /// <summary>
