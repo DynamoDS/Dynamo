@@ -10,10 +10,12 @@ namespace DynamoUtilities
     /// <summary>
     /// Wrapper over System.Collections.ObjectModel.ObservableCollection that fires minimal notifications.
     /// This class supports batch operations that should defer CollectionChaned notifications.
+    /// Thread safe for the follwing operations: Add, Remove, Contains, AddUnique, AddRange, RemoveRange, Count.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class SmartObservableCollection<T> : ObservableCollection<T>
     {
+        private DynamoLock _lock = new DynamoLock();
         private bool suppressNotification = false;
         private bool anyChangesDuringSuppress = false;
 
@@ -133,7 +135,15 @@ namespace DynamoUtilities
         {
             if (Items.Count > 0)
             {
-                base.ClearItems();
+                CheckReentrancy();
+
+                _lock.LockForWrite();
+                Items.Clear();
+                _lock.UnlockForWrite();
+
+                OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+                OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
         }
 
@@ -212,6 +222,55 @@ namespace DynamoUtilities
                 {
                     Add(item);
                 }
+            }
+        }
+
+        protected override void InsertItem(int index, T item)
+        {
+            CheckReentrancy();
+
+            _lock.LockForWrite();
+            Items.Insert(index, item);
+            _lock.UnlockForWrite();
+
+            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
+        }
+
+        protected override void RemoveItem(int index)
+        {
+            CheckReentrancy();
+
+            _lock.LockForRead();
+            T removed = base[index];
+            _lock.UnlockForRead();
+
+            _lock.LockForWrite();
+            Items.RemoveAt(index);
+            _lock.UnlockForWrite();
+
+            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, removed, index));
+        }
+
+        public new bool Contains(T item)
+        {
+            _lock.LockForRead();
+            bool contains = Items.Contains(item);
+            _lock.UnlockForRead();
+            return contains;
+        }
+
+        public new int Count
+        {
+            get
+            {
+                _lock.LockForRead();
+                int count = base.Count;
+                _lock.UnlockForRead();
+                return count;
             }
         }
     }

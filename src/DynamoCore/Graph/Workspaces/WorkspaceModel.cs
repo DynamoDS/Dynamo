@@ -428,6 +428,8 @@ namespace Dynamo.Graph.Workspaces
             if (handler != null) handler();
         }
 
+        public event Action<IEnumerable<AnnotationModel>> AnnotationsAdded;
+
         /// <summary>
         ///     Event that is fired when an annotation is added to the workspace.
         /// </summary>
@@ -1584,6 +1586,16 @@ namespace Dynamo.Graph.Workspaces
             OnNoteRemoved(note);
         }
 
+        private void AddNewAnnotations(IEnumerable<AnnotationModel> newAnnotations)
+        {
+            lock (annotations)
+            {
+                annotations.AddRange(newAnnotations);
+            }
+
+            AnnotationsAdded?.Invoke(annotations);
+        }
+
         private void AddNewAnnotation(AnnotationModel annotation)
         {
             lock (annotations)
@@ -2437,6 +2449,7 @@ namespace Dynamo.Graph.Workspaces
         {
             if (annotationViews == null) return;
 
+            List<AnnotationModel> loadedAnnotations = new List<AnnotationModel>();
             var annotationQueue = new Queue<ExtraAnnotationViewInfo>(annotationViews);
             while (annotationQueue.Any())
             {
@@ -2450,24 +2463,28 @@ namespace Dynamo.Graph.Workspaces
                     continue;
                 }
 
-                LoadAnnotation(annotationViewInfo);
+                var annotation = LoadAnnotation(annotationViewInfo);
+                if (annotation != null) loadedAnnotations.Add(annotation);
             }
+            AddNewAnnotations(loadedAnnotations);
         }
 
-        private void LoadAnnotation(ExtraAnnotationViewInfo annotationViewInfo)
+        private AnnotationModel LoadAnnotation(ExtraAnnotationViewInfo annotationViewInfo)
         {
             var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
 
             if (annotationViewInfo.Nodes == null || Annotations.Any(x => x.GUID == annotationGuidValue))
             {
-                return;
+                return null;
             }
 
             // If count is zero, this is a note, not an annotation
-            if (annotationViewInfo.Nodes.Count() == 0) return;
+            if (annotationViewInfo.Nodes.Count() == 0) return null;
 
 
             var text = annotationViewInfo.Title;
+
+            Dictionary<Guid, NodeModel> nodeMap = Nodes.ToDictionary(x => x.GUID);
 
             // Create a collection of nodes in the given annotation
             var nodes = new List<NodeModel>();
@@ -2478,8 +2495,7 @@ namespace Dynamo.Graph.Workspaces
                     continue;
 
                 // NOTE: Some nodes may be annotations and not be found here
-                var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
-                if (nodeModel == null)
+                if (!nodeMap.TryGetValue(guidValue, out NodeModel nodeModel))
                     continue;
 
                 nodes.Add(nodeModel);
@@ -2530,8 +2546,9 @@ namespace Dynamo.Graph.Workspaces
             var matchingAnnotation = this.Annotations.FirstOrDefault(x => x.GUID == annotationModel.GUID);
             if (matchingAnnotation == null)
             {
-                this.AddNewAnnotation(annotationModel);
+                return annotationModel;
             }
+            return null;
         }
 
         private Guid IdToGuidConverter(string id)

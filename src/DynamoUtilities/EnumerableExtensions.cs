@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -466,6 +467,31 @@ namespace Dynamo.Utilities
                 return attribute.Value;
 
             return string.Empty;
+        }
+
+        public static bool TryGetValueAs<Key, Value, ValueAs>(this IDictionary<Key, Value> dictionary, Key key, out ValueAs valueAs) where ValueAs : Value
+        {
+            if (dictionary.TryGetValue(key, out Value value))
+            {
+                valueAs = (ValueAs)value;
+                return true;
+            }
+
+            valueAs = default;
+            return false;
+        }
+
+
+        public static bool TryRemoveAs<Key, Value, ValueAs>(this ConcurrentDictionary<Key, Value> dictionary, Key key, out ValueAs valueAs) where ValueAs : Value
+        {
+            if (dictionary.TryRemove(key, out Value value))
+            {
+                valueAs = (ValueAs)value;
+                return true;
+            }
+
+            valueAs = default;
+            return false;
         }
     }
 }

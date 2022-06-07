@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -20,7 +21,6 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
@@ -186,6 +186,11 @@ namespace Dynamo.ViewModels
 
         #region Properties and Fields
 
+        /// <summary>
+        /// A Dictionary that maps NodeModels (by GUID) to their corresponding ViewModels
+        /// </summary>
+        private ConcurrentDictionary<Guid, ViewModelBase> ViewModelMap = new ConcurrentDictionary<Guid, ViewModelBase>();
+
         [JsonIgnore]
         public DynamoViewModel DynamoViewModel { get; private set; }
 
@@ -279,20 +284,20 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public CompositeCollection WorkspaceElements { get; } = new CompositeCollection();
         [JsonIgnore]
-        public ObservableCollection<ConnectorViewModel> Connectors { get; } = new ObservableCollection<ConnectorViewModel>();
+        public SmartObservableCollection<ConnectorViewModel> Connectors { get; } = new SmartObservableCollection<ConnectorViewModel>();
 
         [JsonProperty("NodeViews")]
-        public ObservableCollection<NodeViewModel> Nodes { get; } = new ObservableCollection<NodeViewModel>();
+        public SmartObservableCollection<NodeViewModel> Nodes { get; } = new SmartObservableCollection<NodeViewModel>();
         // Do not serialize notes, they will be converted to annotations during serialization
         [JsonIgnore]
-        public ObservableCollection<NoteViewModel> Notes { get; } = new ObservableCollection<NoteViewModel>();
+        public SmartObservableCollection<NoteViewModel> Notes { get; } = new SmartObservableCollection<NoteViewModel>();
 
         [JsonIgnore]
-        public ObservableCollection<ConnectorPinViewModel> Pins { get; } = new ObservableCollection<ConnectorPinViewModel>();
+        public SmartObservableCollection<ConnectorPinViewModel> Pins { get; } = new SmartObservableCollection<ConnectorPinViewModel>();
 
         [JsonIgnore]
-        public ObservableCollection<InfoBubbleViewModel> Errors { get; } = new ObservableCollection<InfoBubbleViewModel>();
-        public ObservableCollection<AnnotationViewModel> Annotations { get; } = new ObservableCollection<AnnotationViewModel>();
+        public SmartObservableCollection<InfoBubbleViewModel> Errors { get; } = new SmartObservableCollection<InfoBubbleViewModel>();
+        public SmartObservableCollection<AnnotationViewModel> Annotations { get; } = new SmartObservableCollection<AnnotationViewModel>();
 
         [JsonIgnore]
         public string Name
@@ -347,9 +352,6 @@ namespace Dynamo.ViewModels
             get { return Model == DynamoViewModel.CurrentSpace; }
         }
 
-        /// <summary>
-        /// Boolean indicating if the target workspace is home workspace (true), or custom node workspace (false)
-        /// </summary>
         [JsonIgnore]
         public bool IsHomeSpace
         {
@@ -431,9 +433,6 @@ namespace Dynamo.ViewModels
 
         [JsonIgnore]
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
-
-        
-
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
@@ -472,6 +471,7 @@ namespace Dynamo.ViewModels
             Model.NoteRemoved += Model_NoteRemoved;
             Model.NotesCleared += Model_NotesCleared;
 
+            Model.AnnotationsAdded += Model_AnnotationsAdded;
             Model.AnnotationAdded += Model_AnnotationAdded;
             Model.AnnotationRemoved += Model_AnnotationRemoved;
             Model.AnnotationsCleared += Model_AnnotationsCleared;
@@ -496,11 +496,24 @@ namespace Dynamo.ViewModels
             };
 
             // sync collections
-            foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
-            foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
-            foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
-            foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
-            
+            using (Errors.DeferCollectionReset())
+            using (Nodes.DeferCollectionReset())
+            {
+                foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
+            }
+            using (Notes.DeferCollectionReset())
+            {
+                foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
+            }
+            using (Annotations.DeferCollectionReset())
+            {
+                foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
+            }
+            using (Connectors.DeferCollectionReset())
+            {
+                foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
+            }
+
             NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
             {
                 Visible = true
@@ -526,6 +539,7 @@ namespace Dynamo.ViewModels
             Model.NoteRemoved -= Model_NoteRemoved;
             Model.NotesCleared -= Model_NotesCleared;
 
+            Model.AnnotationsAdded -= Model_AnnotationsAdded;
             Model.AnnotationAdded -= Model_AnnotationAdded;
             Model.AnnotationRemoved -= Model_AnnotationRemoved;
             Model.AnnotationsCleared -= Model_AnnotationsCleared;
@@ -667,14 +681,15 @@ namespace Dynamo.ViewModels
         void Connectors_ConnectorAdded(ConnectorModel c)
         {
             var viewModel = new ConnectorViewModel(this, c);
-            if (Connectors.All(x => x.ConnectorModel != c))
+            if (ViewModelMap.TryAdd(c.GUID, viewModel))
+            {
                 Connectors.Add(viewModel);
+            }
         }
 
         void Connectors_ConnectorDeleted(ConnectorModel c)
         {
-            var connector = Connectors.FirstOrDefault(x => x.ConnectorModel == c);
-            if (connector != null)
+            if (ViewModelMap.TryRemoveAs(c.GUID, out ConnectorViewModel connector))
             {
                 Connectors.Remove(connector);
                 connector.Dispose();
@@ -683,44 +698,66 @@ namespace Dynamo.ViewModels
 
         private void Model_NoteAdded(NoteModel note)
         {
-            var viewModel = new NoteViewModel(this, note);
-            Notes.Add(viewModel);
+            var noteViewModel = new NoteViewModel(this, note);
+            if (ViewModelMap.TryAdd(note.GUID, noteViewModel))
+            {
+                Notes.Add(noteViewModel);
+            }
         }
 
         private void Model_NoteRemoved(NoteModel note)
         {
-            var matchingNoteViewModel = Notes.First(x => x.Model == note);
-            Notes.Remove(matchingNoteViewModel);
-            matchingNoteViewModel.Dispose();
+            if (ViewModelMap.TryRemoveAs(note.GUID, out NoteViewModel noteViewModel))
+            {
+                Notes.Remove(noteViewModel);
+                noteViewModel.Dispose();
+            }
         }
 
         private void Model_NotesCleared()
         {
             foreach (var noteViewModel in Notes)
             {
+                ViewModelMap.TryRemove(noteViewModel.Model.GUID, out _);
                 noteViewModel.Dispose();
             }
             Notes.Clear();
         }
 
+        private void Model_AnnotationsAdded(IEnumerable<AnnotationModel> annotations)
+        {
+            using (Annotations.DeferCollectionReset())
+            {
+                foreach (AnnotationModel annotation in annotations)
+                {
+                    Model_AnnotationAdded(annotation);
+                }
+            }
+        }
+
         private void Model_AnnotationAdded(AnnotationModel annotation)
         {
-            var viewModel = new AnnotationViewModel(this, annotation);
-            Annotations.Add(viewModel);
+            var annotationViewModel = new AnnotationViewModel(this, annotation);
+            if (ViewModelMap.TryAdd(annotation.GUID, annotationViewModel))
+            {
+                Annotations.Add(annotationViewModel);
+            }
         }
 
         private void Model_AnnotationRemoved(AnnotationModel annotation)
         {
-            var matchingAnnotation = Annotations.First(x => x.AnnotationModel == annotation);
-            Annotations.Remove(matchingAnnotation);
-            matchingAnnotation.Dispose();
-           
+            if (ViewModelMap.TryRemoveAs(annotation.GUID, out AnnotationViewModel annotationViewModel))
+            {
+                Annotations.Remove(annotationViewModel);
+                annotationViewModel.Dispose();
+            }
         }
 
         private void Model_AnnotationsCleared()
         {
             foreach (var annotationViewModel in Annotations)
             {
+                ViewModelMap.TryRemove(annotationViewModel.AnnotationModel.GUID, out _);
                 annotationViewModel.Dispose();
             }
             Annotations.Clear();
@@ -728,18 +765,23 @@ namespace Dynamo.ViewModels
 
         void Model_NodesCleared()
         {
-            lock (Nodes)
+            foreach (var nodeViewModel in Nodes)
             {
-                foreach (var nodeViewModel in Nodes)
-                {
-                    this.unsubscribeNodeEvents(nodeViewModel);
-                    nodeViewModel.Dispose();
-                }
-                Nodes.Clear();
+                unsubscribeNodeEvents(nodeViewModel);
+                ViewModelMap.TryRemove(nodeViewModel.NodeModel.GUID, out _);
+                nodeViewModel.Dispose();
             }
+
+            Nodes.Clear();
             Errors.Clear();
 
             PostNodeChangeActions();
+        }
+
+        private void subscribeNodeEvents(NodeViewModel nodeViewModel)
+        {
+            nodeViewModel.SnapInputEvent += nodeViewModel_SnapInputEvent;
+            nodeViewModel.NodeLogic.Modified += OnNodeModified;
         }
 
         private void unsubscribeNodeEvents(NodeViewModel nodeViewModel)
@@ -750,32 +792,30 @@ namespace Dynamo.ViewModels
 
         void Model_NodeRemoved(NodeModel node)
         {
-            NodeViewModel nodeViewModel;
-            lock (Nodes)
+            if (ViewModelMap.TryRemoveAs(node.GUID, out NodeViewModel nodeViewModel))
             {
-                nodeViewModel = Nodes.First(x => x.NodeLogic == node);
-                Errors.Remove(nodeViewModel.ErrorBubble);
-                Nodes.Remove(nodeViewModel);
-            }
-            //unsub the events we attached below in NodeAdded.
-            this.unsubscribeNodeEvents(nodeViewModel);
-            nodeViewModel.Dispose();
+                //unsub the events we attached below in NodeAdded.
+                unsubscribeNodeEvents(nodeViewModel);
 
-            PostNodeChangeActions();
+                Nodes.Remove(nodeViewModel);
+                Errors.Remove(nodeViewModel.ErrorBubble);
+
+                PostNodeChangeActions();
+            }
         }
 
         void Model_NodeAdded(NodeModel node)
         {
             var nodeViewModel = new NodeViewModel(this, node);
-            nodeViewModel.SnapInputEvent += nodeViewModel_SnapInputEvent;
-            nodeViewModel.NodeLogic.Modified += OnNodeModified;
-            lock (Nodes)
+            if (ViewModelMap.TryAdd(node.GUID, nodeViewModel))
             {
+                subscribeNodeEvents(nodeViewModel);
+
                 Nodes.Add(nodeViewModel);
+                Errors.Add(nodeViewModel.ErrorBubble);
+    
+                PostNodeChangeActions();
             }
-            Errors.Add(nodeViewModel.ErrorBubble);
-            
-            PostNodeChangeActions();
         }
 
         void PostNodeChangeActions()
@@ -1077,7 +1117,7 @@ namespace Dynamo.ViewModels
 
             // All the models in the selection will be modified, 
             // record their current states before anything gets changed.
-            SmartObservableCollection<ISelectable> selection = DynamoSelection.Instance.Selection;
+            var selection = DynamoSelection.Instance.Selection;
             IEnumerable<ModelBase> models = selection.OfType<ModelBase>();
             WorkspaceModel.RecordModelsForModification(models.ToList(), Model.UndoRecorder);
 
@@ -1533,19 +1573,13 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("SelectionArgumentLacing");            
         }
 
-        /// <summary>
-        /// Returns ViewModelBase by GUID
-        /// </summary>
-        /// <param name="modelGuid">Identifier of the requested model.</param>
-        /// <returns>Found <see cref="ViewModelBase"/> object.</returns>
-        internal ViewModelBase GetViewModelInternal(Guid modelGuid)
+        internal ViewModelBase GetViewModel(Guid modelGuid)
         {
-            ViewModelBase foundModel = (Connectors.FirstOrDefault(c => c.ConnectorModel.GUID == modelGuid)
-                ?? Nodes.FirstOrDefault(node => node.NodeModel.GUID == modelGuid) as ViewModelBase)
-                ?? (Notes.FirstOrDefault(note => note.Model.GUID == modelGuid)
-                ?? Annotations.FirstOrDefault(annotation => annotation.AnnotationModel.GUID == modelGuid) as ViewModelBase);
-
-            return foundModel;
+            return ViewModelMap.TryGetValue(modelGuid, out ViewModelBase viewModel) ? viewModel : null;
+        }
+        internal VmType GetViewModel<VmType>(Guid modelGuid) where VmType : ViewModelBase
+        {
+            return ViewModelMap.TryGetValueAs(modelGuid, out VmType viewModel) ? viewModel : null;
         }
 
         /// <summary>
@@ -1559,7 +1593,7 @@ namespace Dynamo.ViewModels
 
             foreach (var modelGuid in modelGuids)
             {
-                var foundModel = GetViewModelInternal(modelGuid);
+                var foundModel = GetViewModel(modelGuid);
                 if (foundModel != null)
                     foundModels.Add(foundModel);
             }
