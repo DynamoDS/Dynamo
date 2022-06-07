@@ -2678,7 +2678,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This file is stored in an untrusted location. Do you want to run this file?.
+        ///   Looks up a localized string similar to This file is stored in an untrusted location. Do you want to open this file?.
         /// </summary>
         public static string FileTrustWarningPopupText {
             get {
@@ -2687,7 +2687,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run external file?.
+        ///   Looks up a localized string similar to Open external file?.
         /// </summary>
         public static string FileTrustWarningPopupTitle {
             get {

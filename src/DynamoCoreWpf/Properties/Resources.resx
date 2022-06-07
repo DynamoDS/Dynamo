@@ -3141,10 +3141,10 @@ To install the latest version of a package, click Install. \n
     <value>Settings</value>
   </data>
   <data name="FileTrustWarningPopupText" xml:space="preserve">
-    <value>This file is stored in an untrusted location. Do you want to run this file?</value>
+    <value>This file is stored in an untrusted location. Do you want to open this file?</value>
   </data>
   <data name="FileTrustWarningPopupTitle" xml:space="preserve">
-    <value>Run external file?</value>
+    <value>Open external file?</value>
   </data>
   <data name="FileTrustWarningPopupTooltip1" xml:space="preserve">
     <value>External content may bring risks to your system security.</value>
