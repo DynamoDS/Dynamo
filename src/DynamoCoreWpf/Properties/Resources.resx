@@ -3209,4 +3209,12 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="FooterNotificationWarningTooltip" xml:space="preserve">
     <value>Click to cycle through nodes with warnings.</value>
   </data>
+  <data name="TrustLocationAddedNotification" xml:space="preserve">
+    <value>You have trusted file location:
+{0}</value>
+  </data>
+  <data name="TrustLocationSkippedNotification" xml:space="preserve">
+    <value>You have not trusted file location:
+{0}</value>
+  </data>
 </root>

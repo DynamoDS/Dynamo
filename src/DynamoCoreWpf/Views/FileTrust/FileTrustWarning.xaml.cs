@@ -111,7 +111,10 @@ namespace Dynamo.Wpf.Views.FileTrust
         {
             fileTrustWarningViewModel.ShowWarningPopup = false;
             if (dynViewModel.CloseHomeWorkspaceCommand.CanExecute(null))
+            {
                 dynViewModel.CloseHomeWorkspaceCommand.Execute(null);
+                dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(string.Format(Properties.Resources.TrustLocationSkippedNotification, fileTrustWarningViewModel.DynFileDirectoryName));
+            }
         }
 
         private void YesButton_Click(object sender, RoutedEventArgs e)
@@ -123,6 +126,7 @@ namespace Dynamo.Wpf.Views.FileTrust
                 if (string.IsNullOrEmpty(fileTrustWarningViewModel.DynFileDirectoryName)) return;
                 if (dynViewModel.PreferenceSettings.IsTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName)) return;
                 dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName);
+                dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(string.Format(Properties.Resources.TrustLocationAddedNotification, fileTrustWarningViewModel.DynFileDirectoryName));
             }
             dynViewModel.Model.CurrentWorkspace.RequestRun();
         }
