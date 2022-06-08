@@ -257,9 +257,9 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(NodeContentCount));
                 }
                 WorkspaceViewModel.HasUnsavedChanges = true;
-                UpdateProxyPortsPosition();
                 AddGroupToGroupCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(nameof(IsExpanded));
+                RedrawConnectors();
             }
         }
 
@@ -886,6 +886,24 @@ namespace Dynamo.ViewModels
                     .FirstOrDefault();
 
                 connectorViewModel.IsCollapsed = true;
+            }
+        }
+
+        private void RedrawConnectors()
+        {
+            var allNodes = this.Nodes
+                .OfType<AnnotationModel>()
+                .SelectMany(x => x.Nodes.OfType<NodeModel>())
+                .Concat(this.Nodes.OfType<NodeModel>());
+
+            foreach (var connector in allNodes.SelectMany(x=>x.AllConnectors))
+            {
+                var connectorViewModel = WorkspaceViewModel
+                    .Connectors
+                    .Where(x => connector.GUID == x.ConnectorModel.GUID)
+                    .FirstOrDefault();
+
+                connectorViewModel.Redraw();
             }
         }
 
