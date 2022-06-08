@@ -130,6 +130,7 @@ namespace Dynamo.Models
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
+        internal bool IsASMLoaded = false;
     
         #endregion
 

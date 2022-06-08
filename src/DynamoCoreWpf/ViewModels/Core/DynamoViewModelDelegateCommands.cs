@@ -61,6 +61,7 @@ namespace Dynamo.ViewModels
             GoToDictionaryCommand = new DelegateCommand(GoToDictionary, CanGoToDictionary);
             DisplayStartPageCommand = new DelegateCommand(DisplayStartPage, CanDisplayStartPage);
             DisplayInteractiveGuideCommand = new DelegateCommand(DisplayStartPage, CanDisplayInteractiveGuide);
+            GettingStartedGuideCommand = new DelegateCommand(StartGettingStartedGuide, CanStartGettingStartedGuide);
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             PublishNewPackageCommand = new DelegateCommand(PackageManagerClientViewModel.PublishNewPackage, PackageManagerClientViewModel.CanPublishNewPackage);
             ShowInstalledPackagesCommand = new DelegateCommand(o => { }, o => true);
@@ -144,6 +145,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand GoToSourceCodeCommand { get; set; }
         public DelegateCommand DisplayStartPageCommand { get; set; }
         public DelegateCommand DisplayInteractiveGuideCommand { get; set; }
+        public DelegateCommand GettingStartedGuideCommand { get; set; }
         public DelegateCommand SelectNeighborsCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
         public DelegateCommand SubmitCommand { get; set; }

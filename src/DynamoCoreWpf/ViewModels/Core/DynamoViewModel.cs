@@ -2651,6 +2651,27 @@ namespace Dynamo.ViewModels
             return !this.ShowStartPage;
         }
 
+        private void StartGettingStartedGuide(object parameter)
+        {
+            try
+            {
+                if (ClearHomeWorkspaceInternal())
+                {
+                    OpenOnboardingGuideFile();
+                    MainGuideManager.LaunchTour("Getting Started");
+                }
+            }
+            catch (Exception)
+            {
+                //sidebarGrid.Visibility = Visibility.Visible;
+            }
+        }
+
+        private bool CanStartGettingStartedGuide(object parameter)
+        {
+            return Model.IsASMLoaded;
+        }
+
         internal void Pan(object parameter)
         {
             Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", CurrentSpaceViewModel.X, CurrentSpaceViewModel.Y, currentWorkspaceViewModel.Zoom));

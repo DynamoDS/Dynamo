@@ -2466,22 +2466,6 @@ namespace Dynamo.Controls
             }
         }
 
-        private void OnBoardingMenuGuide_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if(dynamoViewModel.ClearHomeWorkspaceInternal())
-                {
-                    dynamoViewModel.OpenOnboardingGuideFile();
-                    dynamoViewModel.MainGuideManager.LaunchTour(OnboardingGuideName);
-                }
-            }
-            catch (Exception)
-            {
-                sidebarGrid.Visibility = Visibility.Visible;
-            }
-        }
-
         private void FileTrustWarning_Click(object sender, RoutedEventArgs e)
         {
             var dynViewModel = DataContext as DynamoViewModel;
