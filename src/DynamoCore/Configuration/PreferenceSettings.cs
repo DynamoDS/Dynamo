@@ -772,7 +772,7 @@ namespace Dynamo.Configuration
             try
             {
                 PathHelper.ValidateDirectory(path);
-                if (isTrustedLocation(path))
+                if (_isTrustedLocation(path))
                 {
                     return false;
                 }
@@ -846,7 +846,7 @@ namespace Dynamo.Configuration
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        private bool isTrustedLocation(string location)
+        private bool _isTrustedLocation(string location)
         {
             return TrustedLocations.FirstOrDefault(trustedLoc =>
             {
@@ -868,7 +868,7 @@ namespace Dynamo.Configuration
             try
             {
                 PathHelper.ValidateDirectory(location);
-                return isTrustedLocation(location);
+                return _isTrustedLocation(location);
             }
             catch
             {
