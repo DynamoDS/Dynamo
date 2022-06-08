@@ -16,6 +16,7 @@ namespace Dynamo.Tests
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
+			libraries.Add("ProtoGeometry.dll");
             libraries.Add("FunctionObject.ds");
             libraries.Add("BuiltIn.ds");
             base.GetLibrariesToPreload(libraries);
@@ -664,18 +665,26 @@ namespace Dynamo.Tests
 
 		}
 
-        [Test]
-        public void SortBy_PreviewValueIsCorrectForFunction()
-        {
-            string openPath = Path.Combine(TestDirectory, @"core\list\SortBy_SimpleTest.dyn");
-            RunModel(openPath);
+		[Test]
+		public void PreviewValueIsCorrectForFunction()
+		{
+			string openPath = Path.Combine(TestDirectory, @"core\list\function.dyn");
+			RunModel(openPath);
+			var pointNode = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
+			var value = GetPreviewValue(pointNode.GUID);
+			Assert.True(value is Autodesk.DesignScript.Geometry.Point);
 
-            var preview = GetPreviewValueInString("42ac0cec-442f-4e4a-b629-1260f6db3d86");
-            Assert.AreEqual("Function()", preview);
-            
-            var value = GetPreviewValue("42ac0cec-442f-4e4a-b629-1260f6db3d86");
-            Assert.Null(value);
-        }
+			var newGuid = "81c94fd0-35a0-4680-8535-00aff41192d3";
+			var command = new Dynamo.Models.DynamoModel.CreateNodeCommand(newGuid, "Point.X", 0, 0, true, true);
+
+			CurrentDynamoModel.ExecuteCommand(command);
+
+			value = GetPreviewValue(newGuid);
+			Assert.Null(value);
+
+			var preview = GetPreviewValueInString(newGuid);
+			Assert.AreEqual("Function()", preview);
+		}
 
 		[Test]
         public void SortByKey_SimpleTest()
