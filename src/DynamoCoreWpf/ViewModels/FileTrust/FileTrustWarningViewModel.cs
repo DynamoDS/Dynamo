@@ -56,7 +56,7 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
         }
 
         /// <summary>
-        /// This property indicates if the Popup has been dismissed once temporarily ignoring the trust warning
+        /// This property indicates if the Popup has been dismissed once, temporarily ignoring the trust warning
         /// </summary>
         public bool AllowOneTimeTrust
         {

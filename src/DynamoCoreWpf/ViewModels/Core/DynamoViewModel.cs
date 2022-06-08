@@ -2865,12 +2865,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Hide file trust warning popup if current workspace is in a trusted location
+        /// Hide or show file trust warning popup for the current workspace when preference settings are updated.
         /// </summary>
         internal void ShowHideFileTrustWarningIfCurrentWorkspaceTrusted()
         {
             if (FileTrustViewModel == null) return;
-            if ((FileTrustViewModel.ShowWarningPopup == true 
+            if ((FileTrustViewModel.ShowWarningPopup
                 && model.PreferenceSettings.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName))
                 || model.PreferenceSettings.DisableTrustWarnings)
             {
@@ -2879,10 +2879,10 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace.RequestRun();
                 return;
             }
-            if (FileTrustViewModel.ShowWarningPopup == false
+            if (!FileTrustViewModel.ShowWarningPopup
                 && !model.PreferenceSettings.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName)
-                && (currentWorkspaceViewModel?.IsHomeSpace ?? false)
-                && FileTrustViewModel.AllowOneTimeTrust == false
+                && (currentWorkspaceViewModel?.IsHomeSpace ?? false) && !ShowStartPage
+                && !FileTrustViewModel.AllowOneTimeTrust
                 && !model.PreferenceSettings.DisableTrustWarnings)
             {
                 FileTrustViewModel.ShowWarningPopup = true;
