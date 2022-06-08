@@ -97,7 +97,7 @@
     <SolidColorBrush x:Key="numberLabelBackground"
                      Color="#6AC0E7" />
     <SolidColorBrush x:Key="objectLabelBackground"
-                     Color="#B7D78C" />
+                     Color="#EEEEEE" />
     <SolidColorBrush x:Key="boolLabelBackground"
                      Color="#F9F9A5" />
 
