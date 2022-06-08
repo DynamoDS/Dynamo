@@ -385,10 +385,9 @@ namespace DynamoUtilities
         /// <returns></returns>
         internal static bool IsSubDirectoryOfDirectory(string subdirectory, string directory)
         {
+            string subdirPath = FormatDirectoryPath(subdirectory);
             string directoryPath = FormatDirectoryPath(directory);
-            var subdirInfo = new DirectoryInfo(subdirectory);
-
-            string subdirPath = FormatDirectoryPath(subdirInfo.FullName);
+            
             return subdirPath.StartsWith(directoryPath, StringComparison.OrdinalIgnoreCase);
         }
     }
