@@ -771,7 +771,7 @@ namespace Dynamo.Configuration
         {
             try
             {
-                if (trustedLocations.Contains(path))
+                if (trustedLocations.Contains(path, new PathHelper.DirectoryPathComparer()))
                 {
                     return false;
                 }
@@ -794,11 +794,7 @@ namespace Dynamo.Configuration
         /// <returns>The true if the path was removed and false otherwise</returns>
         internal bool RemoveTrustedLocation(string path)
         {
-            if (trustedLocations.RemoveAll(x => x.Equals(path)) >= 0)
-            {
-                return true;
-            }
-            return false;
+            return trustedLocations.RemoveAll(x => PathHelper.AreDirectoryPathsEqual(x, path)) > 0;
         }
 
         /// <summary>
@@ -851,39 +847,16 @@ namespace Dynamo.Configuration
         /// </summary>
         /// <param name="path">An absolute path to a folder or file on disk</param>
         /// <returns>True if the path is a trusted location, false otherwise</returns>
-        public bool IsTrustedLocation(string path)
+        public bool IsTrustedLocation(string location)
         {
             try
             {
-                string location = PathHelper.ValidateDirectory(path);
-
-                var locationDir = new DirectoryInfo(location);
-                // All subdirectories are considered trusted if the parent directory is trusted.
-                return TrustedLocations.FirstOrDefault(x =>
+                PathHelper.ValidateDirectory(location);
+                return TrustedLocations.FirstOrDefault(trustedLoc =>
                 {
-                    if (location.Equals(x))
-                    {
-                        return true;
-                    }
-
-                    if (location.StartsWith(x))
-                    {
-                        var parent = locationDir.Parent;
-                        while(parent != null) 
-                        { 
-                            if (parent.FullName.Length < x.Length)
-                            {// Path length will only decrease so no need to check anymore.
-                                return false;
-                            }
-
-                            if (parent.FullName.Equals(x))
-                            {
-                                return true;
-                            }
-                            parent = parent.Parent;
-                        }
-                    }
-                    return false;
+                    // All subdirectories are considered trusted if the parent directory is trusted.
+                    return PathHelper.AreDirectoryPathsEqual(location, trustedLoc) ||
+                        PathHelper.IsSubDirectoryOfDirectory(location, trustedLoc);
                 }) != null;
             }
             catch
