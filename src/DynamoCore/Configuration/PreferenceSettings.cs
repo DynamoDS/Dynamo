@@ -845,7 +845,7 @@ namespace Dynamo.Configuration
         /// Only directories are supported.
         /// Subdirectories of a trusted directory are considered trusted.
         /// </summary>
-        /// <param name="path">An absolute path to a folder or file on disk</param>
+        /// <param name="location">An absolute path to a folder or file on disk</param>
         /// <returns>True if the path is a trusted location, false otherwise</returns>
         public bool IsTrustedLocation(string location)
         {
