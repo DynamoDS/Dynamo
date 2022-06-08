@@ -89,10 +89,10 @@ namespace Dynamo.Tests
             Assert.IsTrue(settings.IsTrustedLocation(TestDirectory));
             Assert.AreEqual(1, settings.TrustedLocations.Count);
 
-            settings.AddTrustedLocation(@"C:\");
-            settings.AddTrustedLocation(@"C:\users");
-            settings.AddTrustedLocation(@"C:\Users\pinzart\AppData\Local\Temp\1");
-            settings.IsTrustedLocation(Path.GetTempPath());
+            Assert.IsTrue(settings.AddTrustedLocation(@"C:\"));
+            Assert.IsFalse(settings.AddTrustedLocation(@"C:\users"));
+            Assert.IsFalse(settings.AddTrustedLocation(@"C:\Users\pinzart\AppData\Local\Temp\1"));
+            Assert.IsTrue(settings.IsTrustedLocation(Path.GetTempPath()));
         }
 
         [Test]
@@ -115,10 +115,6 @@ namespace Dynamo.Tests
 
             Assert.IsFalse(PathHelper.IsSubDirectoryOfDirectory(subDir2, parentDir1));
             Assert.IsFalse(PathHelper.IsSubDirectoryOfDirectory(subDir2, parentDir2));
-
-            List<string> directories = new List<string>() { parentDir1 };
-            Assert.IsTrue(directories.Contains(parentDir2, new PathHelper.DirectoryPathComparer()));
-            Assert.IsTrue(directories.Contains(parentDir2.ToLower(), new PathHelper.DirectoryPathComparer()));
         }
     }
 }

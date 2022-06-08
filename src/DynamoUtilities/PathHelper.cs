@@ -351,25 +351,12 @@ namespace DynamoUtilities
             return directoryPath;
         }
 
-        internal class DirectoryPathComparer : IEqualityComparer<string>
-        {
-            public bool Equals(string x, string y)
-            {
-                return AreDirectoryPathsEqual(x, y);
-            }
-
-            public int GetHashCode(string obj)
-            {
-                return obj.GetHashCode();
-            }
-        }
-
         /// <summary>
         /// Appends a DirectorySeparatorChar to the end of the path if no separator exists.
         /// </summary>
         /// <param name="dirPath"></param>
         /// <returns></returns>
-        static string FormatDirectoryPath(string dirPath)
+        private static string FormatDirectoryPath(string dirPath)
         {
             string formattedPath = dirPath;
 
