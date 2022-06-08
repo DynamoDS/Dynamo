@@ -771,13 +771,12 @@ namespace Dynamo.Configuration
         {
             try
             {
+                PathHelper.ValidateDirectory(path);
                 if (trustedLocations.Contains(path, new PathHelper.DirectoryPathComparer()))
                 {
                     return false;
                 }
-
-                string location = PathHelper.ValidateDirectory(path);
-                trustedLocations.Add(location);
+                trustedLocations.Add(path);
                 return true;
             }
             catch(Exception e)
