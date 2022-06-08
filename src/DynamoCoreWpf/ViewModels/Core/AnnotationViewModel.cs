@@ -898,12 +898,14 @@ namespace Dynamo.ViewModels
 
             foreach (var connector in allNodes.SelectMany(x=>x.AllConnectors))
             {
+
                 var connectorViewModel = WorkspaceViewModel
                     .Connectors
                     .Where(x => connector.GUID == x.ConnectorModel.GUID)
                     .FirstOrDefault();
 
                 connectorViewModel.Redraw();
+                connector.Start.Owner.ReportPosition();
             }
         }
 
