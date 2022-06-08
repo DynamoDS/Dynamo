@@ -123,6 +123,7 @@ namespace Dynamo.Wpf.Views.FileTrust
 
         private void YesButton_Click(object sender, RoutedEventArgs e)
         {
+            fileTrustWarningViewModel.AllowOneTimeTrust = true;
             fileTrustWarningViewModel.ShowWarningPopup = false;
             RunSettings.ForceBlockRun = false;
             if (FileTrustWarningCheckBox.IsChecked.Value == true)
