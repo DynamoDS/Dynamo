@@ -665,6 +665,19 @@ namespace Dynamo.Tests
 		}
 
         [Test]
+        public void SortBy_PreviewValueIsCorrectForFunction()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\list\SortBy_SimpleTest.dyn");
+            RunModel(openPath);
+
+            var preview = GetPreviewValueInString("42ac0cec-442f-4e4a-b629-1260f6db3d86");
+            Assert.AreEqual("Function()", preview);
+            
+            var value = GetPreviewValue("42ac0cec-442f-4e4a-b629-1260f6db3d86");
+            Assert.Null(value);
+        }
+
+		[Test]
         public void SortByKey_SimpleTest()
         {
             string openPath = Path.Combine(TestDirectory, @"core\list\ListSortByKey.dyn");

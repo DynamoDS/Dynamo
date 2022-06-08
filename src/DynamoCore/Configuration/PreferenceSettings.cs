@@ -772,7 +772,7 @@ namespace Dynamo.Configuration
             try
             {
                 PathHelper.ValidateDirectory(path);
-                if (trustedLocations.Contains(path, new PathHelper.DirectoryPathComparer()))
+                if (isTrustedLocation(path))
                 {
                     return false;
                 }
@@ -840,6 +840,23 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// Returns true if the input "location" is among the stored trusted paths.
+        /// Subdirectories of a trusted path are considered trusted.
+        /// Does not validate the input for correctness.
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        private bool isTrustedLocation(string location)
+        {
+            return TrustedLocations.FirstOrDefault(trustedLoc =>
+            {
+                // All subdirectories are considered trusted if the parent directory is trusted.
+                return PathHelper.AreDirectoryPathsEqual(location, trustedLoc) ||
+                    PathHelper.IsSubDirectoryOfDirectory(location, trustedLoc);
+            }) != null;
+        }
+
+        /// <summary>
         /// Checkes whether the input argument (path) is among Dynamo's trusted locations
         /// Only directories are supported.
         /// Subdirectories of a trusted directory are considered trusted.
@@ -851,12 +868,7 @@ namespace Dynamo.Configuration
             try
             {
                 PathHelper.ValidateDirectory(location);
-                return TrustedLocations.FirstOrDefault(trustedLoc =>
-                {
-                    // All subdirectories are considered trusted if the parent directory is trusted.
-                    return PathHelper.AreDirectoryPathsEqual(location, trustedLoc) ||
-                        PathHelper.IsSubDirectoryOfDirectory(location, trustedLoc);
-                }) != null;
+                return isTrustedLocation(location);
             }
             catch
             {
