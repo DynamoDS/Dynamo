@@ -85,7 +85,7 @@
 
                 <!--Learn more-->
                 <localui:CustomRichTextBox x:Name="LearnMoreRichTextBox" 
-                                           Margin="0,0,0,10"
+                                           Margin="0,0,0,20"
                                            Width="{Binding ContentWidth}"
                                            IsDocumentEnabled="True"                                       
                                            Grid.Row="2"
