@@ -1621,7 +1621,7 @@ namespace Dynamo.ViewModels
                     // Skip these when opening dyf
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
-                    FileTrustViewModel.AllowOneTimeTrust = false; ;
+                    FileTrustViewModel.AllowOneTimeTrust = false;
                 }
                 (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
             }
