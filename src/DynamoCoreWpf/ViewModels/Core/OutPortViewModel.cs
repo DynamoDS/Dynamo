@@ -309,17 +309,13 @@ namespace Dynamo.ViewModels
 
         protected override void RefreshPortColors()
         {
-            //This variable checks if the node is a function class
             var isCachedValueNull = node.NodeModel.CachedValue == null || node.NodeModel.CachedValue.Data == null;
-            var isFunctionNode = isCachedValueNull && node.NodeModel.IsPartiallyApplied
-                || !isCachedValueNull && node.NodeModel.CachedValue.IsFunction;
 
-            if (isFunctionNode)
+            if (node.NodeModel.CachedValue != null  && node.NodeModel.CachedValue.IsFunction)
             {
                 PortDefaultValueMarkerVisible = true;
-                portValueMarkerColor = PortValueMarkerGrey;
             }
-            else
+            else if (isCachedValueNull)
             {
                 PortDefaultValueMarkerVisible = false;
             }

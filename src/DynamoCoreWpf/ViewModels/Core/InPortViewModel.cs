@@ -192,7 +192,6 @@ namespace Dynamo.ViewModels
                 case nameof(UsingDefaultValue):
                     RaisePropertyChanged(nameof(UsingDefaultValue));
                     RefreshPortDefaultValueMarkerVisible();
-                    RefreshPortColors();
                     break;
                 case nameof(DefaultValueEnabled):
                     RefreshPortDefaultValueMarkerVisible();
@@ -205,12 +204,25 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(KeepListStructure):
                     RaisePropertyChanged(nameof(ShouldKeepListStructure));
-                    RefreshPortColors();
                     break;
                 case nameof(IsConnected):
-                    RefreshPortColors();
+                    RaisePropertyChanged(nameof(IsConnected));
+                    RefreshAllInportsColors();
                     break;
             }
+        }
+
+        private void RefreshAllInportsColors()
+        {
+            foreach (InPortViewModel port in node.InPorts)
+            {
+                port.RefreshInputColors();
+            }
+        }
+
+        internal void RefreshInputColors()
+        {
+            RefreshPortColors();
         }
 
         /// <summary>
@@ -298,7 +310,7 @@ namespace Dynamo.ViewModels
 
             if (isFunctionNode)
             {
-                if (node.NodeModel.AreAllOutputsConnected)
+                if (node.NodeModel.AreAllOutputsConnected && node.NodeModel.AreAllInputsDisconnected)
                 {
                     PortValueMarkerColor = PortValueMarkerGrey;
                     PortBackgroundColor = PortBackgroundColorDefault;
@@ -317,16 +329,13 @@ namespace Dynamo.ViewModels
 
         internal void RefreshInputPortsByOutputConnectionChanged(bool isOutputConnected)
         {
-            if (node.NodeModel.IsPartiallyApplied)
+            if (node.NodeModel.AreAllInputsDisconnected && isOutputConnected)
             {
-                if (isOutputConnected)
-                {
-                    PortValueMarkerColor = PortValueMarkerGrey;
-                }
-                else
-                {
-                    SetupDefaultPortColorValues();
-                }
+                PortValueMarkerColor = PortValueMarkerGrey;
+            }
+            else
+            {
+                SetupDefaultPortColorValues();
             }
         }
 

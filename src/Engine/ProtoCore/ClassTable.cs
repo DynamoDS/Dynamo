@@ -495,6 +495,16 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
+        /// Retreive the ClassNode at the index.  
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns>ClassNode if found, else null value</returns>
+        internal ClassNode GetClassNodeAtIndex(int index)
+        {
+            return index >= 0 && index < classNodes.Count ? classNodes[index] : null;
+        }
+
+        /// <summary>
         /// Find a matching class for given partial class name.
         /// </summary>
         /// <param name="partialName">Partial class name for lookup.</param>

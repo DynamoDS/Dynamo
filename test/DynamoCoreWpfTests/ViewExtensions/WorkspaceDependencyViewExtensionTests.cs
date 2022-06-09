@@ -324,7 +324,6 @@ namespace DynamoCoreWpfTests
         public void VerifyExternalFileReferences()
         {
             List<string> dependenciesList = new List<string>() { "DynamoTest.xlsx", "Dynamo.png" };
-            DynamoModel.IsTestMode = false;
 
             // Open test file to verify the external file references. 
             var examplePath = Path.Combine(@"core\ExternalReferencesTest.dyn");
@@ -345,8 +344,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void GetExternalFilesShouldBailIfGraphExecuting()
         {
-            DynamoModel.IsTestMode = false;
-
             // Open test file to verify the external file references are not computed when RunEnabled is false. 
             var examplePath = Path.Combine(@"core\ExternalReferencesTest.dyn");
             Open(examplePath);

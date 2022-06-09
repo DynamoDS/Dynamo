@@ -555,7 +555,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(InPortViewModel.PortValueMarkerRed.Color, (portVMs[1] as InPortViewModel).PortValueMarkerColor.Color);
             Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (portVMs[2] as InPortViewModel).PortValueMarkerColor.Color);
 
-            Assert.AreEqual(OutPortViewModel.PortValueMarkerGrey.Color, (outPorts[0] as OutPortViewModel).PortValueMarkerColor.Color);
+            Assert.False((outPorts[0] as OutPortViewModel).PortDefaultValueMarkerVisible);
 
             // python node
             nvm = NodeViewWithGuid("0be84b72-d0d9-4deb-8fa8-7af9594ec6bc");
@@ -566,7 +566,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, outport.Count);
 
             Assert.AreEqual(InPortViewModel.PortValueMarkerRed.Color, (portVM[0] as InPortViewModel).PortValueMarkerColor.Color);
-            Assert.AreEqual(OutPortViewModel.PortValueMarkerGrey.Color, (outport[0] as OutPortViewModel).PortValueMarkerColor.Color);
+            Assert.False((outport[0] as OutPortViewModel).PortDefaultValueMarkerVisible);
 
             Run();
             DispatcherUtil.DoEvents();
@@ -578,6 +578,14 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (portVM[0] as InPortViewModel).PortValueMarkerColor.Color);
             Assert.False((outport[0] as OutPortViewModel).PortDefaultValueMarkerVisible);
+
+            nvm = NodeViewWithGuid("e7699f76-1481-431e-a3a5-b13fa9ef3358");
+
+            var dportVMs = nvm.ViewModel.InPorts;
+            var doutPorts = nvm.ViewModel.OutPorts;
+
+            Assert.AreEqual(InPortViewModel.PortValueMarkerRed.Color, (dportVMs[0] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.True((doutPorts[0] as OutPortViewModel).PortDefaultValueMarkerVisible);
         }
     }
 }
