@@ -74,7 +74,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             IsOpen = false;
             surveyViewModel.Step.OnStepClosed(surveyViewModel.Step.Name, surveyViewModel.Step.StepType);
 
-            if (nextGuide.Name.Equals(Dynamo.Controls.DynamoView.OnboardingGuideName))
+            if (nextGuide.Name.Equals(GuidesManager.OnboardingGuideName))
             {
                 if (surveyViewModel.Step.DynamoViewModelStep.ClearHomeWorkspaceInternal())
                 {

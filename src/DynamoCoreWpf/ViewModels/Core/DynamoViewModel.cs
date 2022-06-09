@@ -2658,7 +2658,7 @@ namespace Dynamo.ViewModels
                 if (ClearHomeWorkspaceInternal())
                 {
                     OpenOnboardingGuideFile();
-                    MainGuideManager.LaunchTour("Getting Started");
+                    MainGuideManager.LaunchTour(GuidesManager.OnboardingGuideName);
                 }
             }
             catch (Exception)
@@ -2669,6 +2669,7 @@ namespace Dynamo.ViewModels
 
         private bool CanStartGettingStartedGuide(object parameter)
         {
+            // Disable Getting Started guided tour when ASM is not loaded
             return Model.IsASMLoaded;
         }
 

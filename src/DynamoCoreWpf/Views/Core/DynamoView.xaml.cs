@@ -60,17 +60,12 @@ namespace Dynamo.Controls
     public partial class DynamoView : Window, IDisposable
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
-
-        //The list of guide name strings are hardcoded to match Json definition of guides (no need localization)
-        internal static string GetStartedGuideName = "User Interface Tour";
-        internal static string PackagesGuideName = "Packages";
-        internal static string OnboardingGuideName = "Getting Started";
-
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
         // internal for testing.
         internal readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
+        private double restoreWidth = 0;
         private DynamoViewModel dynamoViewModel;
         private readonly Stopwatch _timer;
         private StartPageViewModel startPage;
@@ -936,7 +931,7 @@ namespace Dynamo.Controls
             // Initialize Guide Manager as a member on Dynamo ViewModel so other than guided tour,
             // other part of application can also leverage it.
             dynamoViewModel.MainGuideManager = new GuidesManager(_this, dynamoViewModel);
-
+            GuideFlowEvents.GuidedTourStart += GuideFlowEvents_GuidedTourStart;
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
                                                                      _timer.Elapsed, dynamoViewModel.BrandingResourceProvider.ProductName));
@@ -1028,12 +1023,20 @@ namespace Dynamo.Controls
             {
                 CheckTestFlags();
             }
-            //if feature flags is not yet initalized, subscribe to the event and wait.
+            //if feature flags is not yet initialized, subscribe to the event and wait.
             else
             {
                 DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckTestFlags;
             }
            
+        }
+
+        private void GuideFlowEvents_GuidedTourStart(GuidedTourStateEventArgs args)
+        {
+            if(sidebarGrid.Visibility != Visibility.Visible || sidebarGrid.ActualWidth < 2)
+            {
+                OnCollapsedLeftSidebarClick(null, null);
+            }
         }
 
         /// <summary>
@@ -1588,6 +1591,7 @@ namespace Dynamo.Controls
             DynamoSelection.Instance.Selection.CollectionChanged -= Selection_CollectionChanged;
 
             dynamoViewModel.RequestUserSaveWorkflow -= DynamoViewModelRequestUserSaveWorkflow;
+            GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
 
             if (dynamoViewModel.Model != null)
             {
@@ -2259,8 +2263,6 @@ namespace Dynamo.Controls
             UpdateHandleUnhoveredStyle(tb, collapseIcon);
         }
 
-        private double restoreWidth = 0;
-
         private void LibraryClicked(object sender, EventArgs e)
         {
             restoreWidth = sidebarGrid.ActualWidth;
@@ -2440,9 +2442,9 @@ namespace Dynamo.Controls
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
             {
-                dynamoViewModel.MainGuideManager.LaunchTour(GetStartedGuideName);
+                dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.GetStartedGuideName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 sidebarGrid.Visibility = Visibility.Visible;
             }
@@ -2458,7 +2460,7 @@ namespace Dynamo.Controls
         {
             try
             {
-                dynamoViewModel.MainGuideManager.LaunchTour(PackagesGuideName);
+                dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.PackagesGuideName);
             }
             catch (Exception)
             {
