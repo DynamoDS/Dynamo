@@ -7,7 +7,6 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using Dynamo.Models;
 
 namespace DynamoCoreWpfTests
 {
