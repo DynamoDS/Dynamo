@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -84,10 +83,10 @@ namespace Dynamo.Utilities
                     }
                 }
 
-                var local2 = localNotifications.Select(x => Tuple.Create(x.Key, x.Value.Item1, x.Value.Item2)).ToList();
-                local2.Sort((x, y) => y.Item2.CompareTo(x.Item2));
+                var local2 = localNotifications.Select(x => (Property: x.Key, Counter: x.Value.counter, Objects: x.Value.objects)).ToList();
+                local2.Sort((x, y) => y.Counter.CompareTo(x.Counter));
 
-                string[] contents = local2.Select(x => $"{x.Item2}-{x.Item1}-{x.Item3}").ToArray();
+                string[] contents = local2.Select(x => $"{x.Counter}-{x.Property}-{x.Objects}").ToArray();
                 lock (logFile)
                 {
                     File.WriteAllLines(logFile, contents);
