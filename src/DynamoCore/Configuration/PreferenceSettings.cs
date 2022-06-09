@@ -766,13 +766,13 @@ namespace Dynamo.Configuration
         /// Add a path to the Dynamo's trusted locations
         /// </summary>
         /// <param name="path">The path to be added as a trusted location</param>
-        /// <returns></returns>
+        /// <returns>True if the path was successfully added. False otherwise.</returns>
         internal bool AddTrustedLocation(string path)
         {
             try
             {
                 PathHelper.ValidateDirectory(path);
-                if (_isTrustedLocation(path))
+                if (isTrustedLocationInternal(path))
                 {
                     return false;
                 }
@@ -836,7 +836,7 @@ namespace Dynamo.Configuration
             AddTrustedLocation(Path.Combine(ProgramData, Autodesk));
 
             string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            AddTrustedLocation(Path.Combine(ProgramData, Autodesk));
+            AddTrustedLocation(Path.Combine(ProgramFiles, Autodesk));
         }
 
         /// <summary>
@@ -846,7 +846,7 @@ namespace Dynamo.Configuration
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        private bool _isTrustedLocation(string location)
+        private bool isTrustedLocationInternal(string location)
         {
             return TrustedLocations.FirstOrDefault(trustedLoc =>
             {
@@ -868,7 +868,7 @@ namespace Dynamo.Configuration
             try
             {
                 PathHelper.ValidateDirectory(location);
-                return _isTrustedLocation(location);
+                return isTrustedLocationInternal(location);
             }
             catch
             {
