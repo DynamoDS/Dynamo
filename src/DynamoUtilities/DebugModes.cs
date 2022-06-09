@@ -54,6 +54,8 @@ namespace Dynamo.Utilities
         {
             // Register app wide new debug modes here.
             AddDebugMode("DumpByteCode", "Dumps bytecode to a log file in a folder called ByteCodeLogs located in the current working dirrectory.", false);
+
+            AddDebugMode("NotificationCounter", "Counts all notification events at Dynamo startup and logs them periodically to a notificationCounter.log file in the current working directory", false);
         }
 
         internal static void LoadDebugModesStatusFromConfig(string configPath)
