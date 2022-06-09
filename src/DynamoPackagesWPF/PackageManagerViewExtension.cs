@@ -81,9 +81,15 @@ namespace Dynamo.PackageManager.UI
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
             RequestLoadLayoutSpecs(packageManager.PackageLoader.LocalPackages);
+            var packagesToCheck = packageManager?.PackageLoader.LocalPackages;
+            if(packagesToCheck != null)
+            {
+                RaisePackageHostNotifications(packagesToCheck);
+            }
+
         }
 
-            public void Shutdown()
+        public void Shutdown()
         {
             // Do nothing for now
         }
@@ -101,7 +107,6 @@ namespace Dynamo.PackageManager.UI
                 packageManager.PackageLoader.PackgeLoaded += packageLoadedHandler;
                 var packagesToCheck = packageManager.PackageLoader.LocalPackages;
                 RequestLoadViewExtensionsForLoadedPackages(packagesToCheck);
-                RaiseNotifications(packagesToCheck);
             }
             
         }
@@ -127,7 +132,7 @@ namespace Dynamo.PackageManager.UI
             }
         }
 
-        private void RaiseNotifications(IEnumerable<Package> packages)
+        private void RaisePackageHostNotifications(IEnumerable<Package> packages)
         {
             foreach (var pkg in packages)
             {
@@ -140,8 +145,8 @@ namespace Dynamo.PackageManager.UI
                 {
                     notificationLogged?.Invoke(
                         new NotificationMessage(Name,
-                        Resources.MessagePackageTargetOtherHostShort,
-                        $"{Resources.MessagePackageTargetOtherHosts2}:{pkg.Name}",
+                        $"{Resources.MessagePackageTargetOtherHostShort}: {pkg.Name}",
+                        $"{Resources.MessagePackageTargetOtherHosts2}: {pkg.Name}",
                         Resources.TitlePackageTargetOtherHost));
                 }
             }
