@@ -34,6 +34,7 @@ namespace Dynamo.Controls
         internal double ExtratWidthSize { get { return extraWidthSize; } }
         internal double WidthPerCharacter { get { return widthPerCharacter; } }
         internal double MaxWidthSize { get { return defaultWidthSize * 2; } }
+        internal string NodeLabel { get { return _vm.Children[0].NodeLabel; } }
 
         private void WatchTree_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -59,7 +60,7 @@ namespace Dynamo.Controls
                     this.Height = minHeightSize;
                     if (_vm.Children.Count !=0)
                     {
-                        if (_vm.Children[0].NodeLabel.Contains(Environment.NewLine))
+                        if (_vm.Children[0].NodeLabel.Contains(Environment.NewLine) || _vm.Children[0].NodeLabel.ToUpper() == nameof(WatchViewModel.DICTIONARY))
                         {
                             this.Height = defaultHeightSize;
                         }
