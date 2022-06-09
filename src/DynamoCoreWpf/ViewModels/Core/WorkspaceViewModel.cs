@@ -474,7 +474,6 @@ namespace Dynamo.ViewModels
             Model.NoteRemoved += Model_NoteRemoved;
             Model.NotesCleared += Model_NotesCleared;
 
-            Model.AnnotationsAdded += Model_AnnotationsAdded;
             Model.AnnotationAdded += Model_AnnotationAdded;
             Model.AnnotationRemoved += Model_AnnotationRemoved;
             Model.AnnotationsCleared += Model_AnnotationsCleared;
@@ -499,23 +498,10 @@ namespace Dynamo.ViewModels
             };
 
             // sync collections
-            using (Errors.DeferCollectionReset())
-            using (Nodes.DeferCollectionReset())
-            {
-                foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
-            }
-            using (Notes.DeferCollectionReset())
-            {
-                foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
-            }
-            using (Annotations.DeferCollectionReset())
-            {
-                foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
-            }
-            using (Connectors.DeferCollectionReset())
-            {
-                foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
-            }
+            foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
+            foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
+            foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
+            foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
 
             NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
             {
@@ -538,11 +524,11 @@ namespace Dynamo.ViewModels
             Model.NodeAdded -= Model_NodeAdded;
             Model.NodeRemoved -= Model_NodeRemoved;
             Model.NodesCleared -= Model_NodesCleared;
+
             Model.NoteAdded -= Model_NoteAdded;
             Model.NoteRemoved -= Model_NoteRemoved;
             Model.NotesCleared -= Model_NotesCleared;
 
-            Model.AnnotationsAdded -= Model_AnnotationsAdded;
             Model.AnnotationAdded -= Model_AnnotationAdded;
             Model.AnnotationRemoved -= Model_AnnotationRemoved;
             Model.AnnotationsCleared -= Model_AnnotationsCleared;
@@ -725,17 +711,6 @@ namespace Dynamo.ViewModels
                 noteViewModel.Dispose();
             }
             Notes.Clear();
-        }
-
-        private void Model_AnnotationsAdded(IEnumerable<AnnotationModel> annotations)
-        {
-            using (Annotations.DeferCollectionReset())
-            {
-                foreach (AnnotationModel annotation in annotations)
-                {
-                    Model_AnnotationAdded(annotation);
-                }
-            }
         }
 
         private void Model_AnnotationAdded(AnnotationModel annotation)

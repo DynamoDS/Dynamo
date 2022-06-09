@@ -428,8 +428,6 @@ namespace Dynamo.Graph.Workspaces
             if (handler != null) handler();
         }
 
-        internal event Action<IEnumerable<AnnotationModel>> AnnotationsAdded;
-
         /// <summary>
         ///     Event that is fired when an annotation is added to the workspace.
         /// </summary>
@@ -1586,16 +1584,6 @@ namespace Dynamo.Graph.Workspaces
             OnNoteRemoved(note);
         }
 
-        private void AddNewAnnotations(IEnumerable<AnnotationModel> newAnnotations)
-        {
-            lock (annotations)
-            {
-                annotations.AddRange(newAnnotations);
-            }
-
-            AnnotationsAdded?.Invoke(annotations);
-        }
-
         private void AddNewAnnotation(AnnotationModel annotation)
         {
             lock (annotations)
@@ -1665,7 +1653,7 @@ namespace Dynamo.Graph.Workspaces
             var selectedAnnotations = Annotations?.Where(s => s.IsSelected && !s.HasNestedGroups);
 
             // Remove nodes or notes selected which are already in the selected group
-            foreach(var group in selectedAnnotations)
+            foreach (var group in selectedAnnotations)
             {
                 selectedNodes = selectedNodes.Except(group.Nodes.OfType<NodeModel>());
                 selectedNotes = selectedNotes.Except(group.Nodes.OfType<NoteModel>());
@@ -2449,7 +2437,6 @@ namespace Dynamo.Graph.Workspaces
         {
             if (annotationViews == null) return;
 
-            List<AnnotationModel> loadedAnnotations = new List<AnnotationModel>();
             var annotationQueue = new Queue<ExtraAnnotationViewInfo>(annotationViews);
             while (annotationQueue.Any())
             {
@@ -2463,23 +2450,21 @@ namespace Dynamo.Graph.Workspaces
                     continue;
                 }
 
-                var annotation = LoadAnnotation(annotationViewInfo);
-                if (annotation != null) loadedAnnotations.Add(annotation);
+                LoadAnnotation(annotationViewInfo);
             }
-            AddNewAnnotations(loadedAnnotations);
         }
 
-        private AnnotationModel LoadAnnotation(ExtraAnnotationViewInfo annotationViewInfo)
+        private void LoadAnnotation(ExtraAnnotationViewInfo annotationViewInfo)
         {
             var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
 
             if (annotationViewInfo.Nodes == null || Annotations.Any(x => x.GUID == annotationGuidValue))
             {
-                return null;
+                return;
             }
 
             // If count is zero, this is a note, not an annotation
-            if (annotationViewInfo.Nodes.Count() == 0) return null;
+            if (annotationViewInfo.Nodes.Count() == 0) return;
 
 
             var text = annotationViewInfo.Title;
@@ -2546,9 +2531,8 @@ namespace Dynamo.Graph.Workspaces
             var matchingAnnotation = this.Annotations.FirstOrDefault(x => x.GUID == annotationModel.GUID);
             if (matchingAnnotation == null)
             {
-                return annotationModel;
+                this.AddNewAnnotation(annotationModel);
             }
-            return null;
         }
 
         private Guid IdToGuidConverter(string id)
