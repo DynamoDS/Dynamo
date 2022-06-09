@@ -113,23 +113,6 @@ namespace DynamoCoreWpfTests
 
             // Ensure that the View Models are loaded
             Assert.AreEqual(1879, ViewModel.CurrentSpaceViewModel.Nodes.Count());
-
-            var nodeViews = View.NodeViewsInFirstWorkspace();
-            Assert.AreEqual(nodeViews.Count(), ViewModel.CurrentSpaceViewModel.Nodes.Count());
-
-            bool atLeastOne = false;
-            foreach(var nodeView in nodeViews)
-            {
-                Assert.IsNotNull(nodeView);
-
-                var tree = nodeView.ChildrenOfType<WatchTree>();
-                if (tree.Count() > 0 && tree.ElementAt(0) != null)
-                {
-                    atLeastOne = true;
-                    break;
-                }
-            }
-            Assert.IsTrue(atLeastOne);
         }
     }
 }
