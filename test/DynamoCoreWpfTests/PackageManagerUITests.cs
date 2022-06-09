@@ -1162,6 +1162,8 @@ namespace DynamoCoreWpfTests
 
             var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
             var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object);
+            var pmMock = new Mock<PackageManagerExtension>();
+
 
             //when we attempt a download - it returns a valid download path
             pmVmMock.Setup(x => x.Download(It.IsAny<PackageDownloadHandle>())).
@@ -1228,25 +1230,27 @@ namespace DynamoCoreWpfTests
             MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
 
             clientmock.Setup(x => x.GetKnownHosts()).Returns(new List<string>() { "Revit", "Civil 3D", "FormIt" });
+            pmMock.Setup(x => x.PackageManagerClient).Returns(clientmock.Object);
+            //the packageClientVM should return our mocked package manager.
+            pmVmMock.Setup(x => x.PackageManagerExtension).Returns(pmMock.Object);
 
             // Host is Sandbox, empty string
             // This will produce a warning dialog
-            pmVmMock.Setup(x => x.Host).Returns("");
+            pmMock.Setup(x => x.Host).Returns("");
 
-            
             //actually perform the download & install operations
             pmVmMock.Object.ExecutePackageDownload(id, pkgVer, "");
 
             // Host is Revit
             // This will not produce a warning dialog
-            pmVmMock.Setup(x => x.Host).Returns("Revit");
+            pmMock.Setup(x => x.Host).Returns("Revit");
 
             //actually perform the download & install operations
             pmVmMock.Object.ExecutePackageDownload(id, pkgVer, "");
 
             // Host is Civil 3D
             // This will produce a warning dialog
-            pmVmMock.Setup(x => x.Host).Returns("Civil 3D");
+            pmMock.Setup(x => x.Host).Returns("Civil 3D");
 
             //actually perform the download & install operations
             pmVmMock.Object.ExecutePackageDownload(id, pkgVer, "");

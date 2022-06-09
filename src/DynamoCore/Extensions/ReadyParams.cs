@@ -76,7 +76,10 @@ namespace Dynamo.Extensions
         {
             get { return commandExecutive ?? (commandExecutive = new ExtensionCommandExecutive(dynamoModel)); }
         }
-        
+
+        internal HostAnalyticsInfo HostInfo => dynamoModel.HostAnalyticsInfo;
+
+
         /// <summary>
         /// Event that is raised when the Dynamo Logger logs a notification.
         /// This event passes the notificationMessage to any subscribers

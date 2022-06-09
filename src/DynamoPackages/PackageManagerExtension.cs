@@ -10,6 +10,7 @@ using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Greg;
+using Greg.Responses;
 
 namespace Dynamo.PackageManager
 {
@@ -49,6 +50,10 @@ namespace Dynamo.PackageManager
         {
             get { return "FCABC211-D56B-4109-AF18-F434DFE48139"; }
         }
+        internal HostAnalyticsInfo HostInfo { get; private set; }
+
+        // Current host, empty if sandbox, null when running tests
+        internal virtual string Host => HostInfo.HostName;
 
         /// <summary>
         ///     Manages loading of packages (property meant solely for tests)
@@ -60,7 +65,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Dynamo Package Manager Instance.
         /// </summary>
-        public PackageManagerClient PackageManagerClient { get; private set; }
+        public virtual PackageManagerClient PackageManagerClient { get; private set; }
 
 
         #endregion
@@ -183,6 +188,7 @@ namespace Dynamo.PackageManager
             (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodePackageFromID;
             (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingNodePackageDependencies += GetNodePackageFromAssemblyName;
             currentWorkspace = (sp.CurrentWorkspaceModel as WorkspaceModel);
+            HostInfo = ReadyParams.HostInfo;
         }
 
         public void Shutdown()
@@ -341,6 +347,36 @@ namespace Dynamo.PackageManager
         }
 
         #endregion
+        internal bool CheckIfPackagesTargetOtherHosts(IEnumerable<PackageVersion> newPackageHeaders)
+        {
+            // determine if any of the packages are targeting other hosts
+            var containsPackagesThatTargetOtherHosts = false;
+
+            // Known hosts
+            var knownHosts = PackageManagerClient.GetKnownHosts();
+
+            // Sandbox, special case: Warn if any package targets only one known host
+            if (String.IsNullOrEmpty(Host))
+            {
+                containsPackagesThatTargetOtherHosts =
+                    newPackageHeaders.Any(y => y.host_dependencies != null && y.host_dependencies.Intersect(knownHosts).Count() == 1);
+            }
+            else
+            {
+                // Warn if there are packages targeting other hosts but not our host
+                var otherHosts = knownHosts.Except(new List<string>() { Host });
+                containsPackagesThatTargetOtherHosts = newPackageHeaders.Any(x =>
+                {
+                    // Is our host in the list?
+                    // If not, is any other host in the list?
+                    return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && otherHosts.Any(y => x.host_dependencies != null && x.host_dependencies.Contains(y));
+                });
+            }
+
+            return containsPackagesThatTargetOtherHosts;
+        }
+
+
     }
     
 

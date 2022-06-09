@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -4076,6 +4076,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems..
+        /// </summary>
+        public static string MessagePackageTargetOtherHosts2 {
+            get {
+                return ResourceManager.GetString("MessagePackageTargetOtherHosts2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package targets a different host than current host application..
+        /// </summary>
+        public static string MessagePackageTargetOtherHostShort {
+            get {
+                return ResourceManager.GetString("MessagePackageTargetOtherHostShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version {0} of {1} could not be found..
         /// </summary>
         public static string MessagePackageVersionNotFound {
@@ -7792,6 +7810,15 @@ namespace Dynamo.Wpf.Properties {
         public static string TermsOfUseViewTitle {
             get {
                 return ResourceManager.GetString("TermsOfUseViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Host Error.
+        /// </summary>
+        public static string TitlePackageTargetOtherHost {
+            get {
+                return ResourceManager.GetString("TitlePackageTargetOtherHost", resourceCulture);
             }
         }
         

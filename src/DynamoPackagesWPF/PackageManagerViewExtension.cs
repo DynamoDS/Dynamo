@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dynamo.Logging;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Properties;
+using Greg.Responses;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -11,7 +14,7 @@ namespace Dynamo.PackageManager.UI
     /// Currently its only responsibility is to request the loading of ViewExtensions which it finds in packages.
     /// In the future packageManager functionality should be moved from DynamoCoreWPF to this ViewExtension.
     /// </summary>
-    public class PackageManagerViewExtension : IViewExtension, IViewExtensionSource, ILayoutSpecSource
+    public class PackageManagerViewExtension : IViewExtension, IViewExtensionSource, ILayoutSpecSource, INotificationSource
     {
         private readonly List<IViewExtension> requestedExtensions = new List<IViewExtension>();
         private PackageManagerExtension packageManager;
@@ -47,6 +50,7 @@ namespace Dynamo.PackageManager.UI
 
         public event Action<IViewExtension> RequestAddExtension;
         public event Func<string, IViewExtension> RequestLoadExtension;
+
         private Action<string> layouthandler;
         //explicit interface implementation lets us keep the event internal for now.
         event Action<string> ILayoutSpecSource.RequestApplyLayoutSpec
@@ -55,6 +59,19 @@ namespace Dynamo.PackageManager.UI
             remove { layouthandler -= value; }
         }
 
+        Action<NotificationMessage> notificationLogged;
+        event Action<NotificationMessage> INotificationSource.NotificationLogged
+        {
+            add
+            {
+             notificationLogged+=value;
+            }
+
+            remove
+            {
+                notificationLogged -= value;
+            }
+        }
 
         public void Dispose()
         {
@@ -75,7 +92,6 @@ namespace Dynamo.PackageManager.UI
         {
             var packageManager = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             this.packageManager = packageManager;
-
             //when this extension is started up we should look for all packages,
             //and find the viewExtension manifest files in those packages.
             //Then request that these extensions be loaded.
@@ -85,6 +101,7 @@ namespace Dynamo.PackageManager.UI
                 packageManager.PackageLoader.PackgeLoaded += packageLoadedHandler;
                 var packagesToCheck = packageManager.PackageLoader.LocalPackages;
                 RequestLoadViewExtensionsForLoadedPackages(packagesToCheck);
+                RaiseNotifications(packagesToCheck);
             }
             
         }
@@ -108,6 +125,27 @@ namespace Dynamo.PackageManager.UI
                     }
                 }
             }
+        }
+
+        private void RaiseNotifications(IEnumerable<Package> packages)
+        {
+            foreach (var pkg in packages)
+            {
+                //check that the package does not target another host, if it does raise a warning.
+                var pkgVersion = new PackageVersion() { host_dependencies = pkg.HostDependencies };
+                var containsPackagesThatTargetOtherHosts = packageManager.CheckIfPackagesTargetOtherHosts(new List<PackageVersion>() { pkgVersion });
+
+                // if any do, notify user of the potential conflict with notification.
+                if (containsPackagesThatTargetOtherHosts)
+                {
+                    notificationLogged?.Invoke(
+                        new NotificationMessage(Name,
+                        Resources.MessagePackageTargetOtherHostShort,
+                        $"{Resources.MessagePackageTargetOtherHosts2}:{pkg.Name}",
+                        Resources.TitlePackageTargetOtherHost));
+                }
+            }
+
         }
 
         private void RequestLoadLayoutSpecs(IEnumerable<Package> packages)
