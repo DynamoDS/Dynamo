@@ -93,13 +93,13 @@
 
     <!-- NodeLabel colors -->
     <SolidColorBrush x:Key="stringLabelBackground"
-                     Color="#c3ae9d" />
+                     Color="#E0A86F" />
     <SolidColorBrush x:Key="numberLabelBackground"
-                     Color="#91c2f2" />
+                     Color="#6AC0E7" />
     <SolidColorBrush x:Key="objectLabelBackground"
-                     Color="#a1a1a1" />
+                     Color="#EEEEEE" />
     <SolidColorBrush x:Key="boolLabelBackground"
-                     Color="#c6afd5" />
+                     Color="#F9F9A5" />
 
     <!-- Node Autocomplete -->
     <SolidColorBrush x:Key="autocompletionWindow" Color="#535353" />

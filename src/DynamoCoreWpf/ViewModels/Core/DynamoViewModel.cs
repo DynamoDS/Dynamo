@@ -1622,6 +1622,7 @@ namespace Dynamo.ViewModels
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
                     (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
+                    FileTrustViewModel.AllowOneTimeTrust = false;
                 }
             }
             catch (Exception e)
@@ -1657,7 +1658,7 @@ namespace Dynamo.ViewModels
 
         internal void OpenOnboardingGuideFile()
         {  
-            var jsonDynFile = ResourceUtilities.LoadContentFromResources(GuidesManager.OnboardingGuideWorkspaceEmbeededResource, GetType().Assembly, false, false);
+            var jsonDynFile = ResourceUtilities.LoadContentFromResources(GuidesManager.OnboardingGuideWorkspaceEmbeededResource, Assembly.GetExecutingAssembly(), false, false);
             OpenFromJson(new Tuple<string, bool>(jsonDynFile, true));
         }
 
@@ -2882,6 +2883,33 @@ namespace Dynamo.ViewModels
                 BackgroundPreviewViewModel.ExportToSTL(_fileDialog.FileName, HomeSpace.Name);
 
                 Dynamo.Logging.Analytics.TrackCommandEvent("ExportToSTL");
+            }
+        }
+
+        /// <summary>
+        /// Hide or show file trust warning popup for the current workspace when preference settings are updated.
+        /// </summary>
+        internal void ShowHideFileTrustWarningIfCurrentWorkspaceTrusted()
+        {
+            if (FileTrustViewModel == null || DynamoModel.IsTestMode) return;
+            if ((FileTrustViewModel.ShowWarningPopup
+                && model.PreferenceSettings.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName))
+                || model.PreferenceSettings.DisableTrustWarnings)
+            {
+                FileTrustViewModel.ShowWarningPopup = false;
+                RunSettings.ForceBlockRun = false;
+                Model.CurrentWorkspace.RequestRun();
+                return;
+            }
+            if (!FileTrustViewModel.ShowWarningPopup
+                && !model.PreferenceSettings.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName)
+                && (currentWorkspaceViewModel?.IsHomeSpace ?? false) && !ShowStartPage
+                && !FileTrustViewModel.AllowOneTimeTrust
+                && !model.PreferenceSettings.DisableTrustWarnings)
+            {
+                FileTrustViewModel.ShowWarningPopup = true;
+                RunSettings.ForceBlockRun = true;
+                (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
             }
         }
 
