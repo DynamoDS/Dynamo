@@ -2869,7 +2869,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void ShowHideFileTrustWarningIfCurrentWorkspaceTrusted()
         {
-            if (FileTrustViewModel == null) return;
+            if (FileTrustViewModel == null || DynamoModel.IsTestMode) return;
             if ((FileTrustViewModel.ShowWarningPopup
                 && model.PreferenceSettings.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName))
                 || model.PreferenceSettings.DisableTrustWarnings)
