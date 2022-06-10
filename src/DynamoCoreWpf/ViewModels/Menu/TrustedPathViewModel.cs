@@ -120,6 +120,7 @@ namespace Dynamo.ViewModels
             }
             
             TrustedLocations.Insert(TrustedLocations.Count, args.Path);
+            settings?.SetTrustedLocations(TrustedLocations);
             RaiseCanExecuteChanged();
         }
 
@@ -144,11 +145,13 @@ namespace Dynamo.ViewModels
                 return;
 
             TrustedLocations[index] = args.Path;
+            settings?.SetTrustedLocations(TrustedLocations);
         }
 
         private void RemovePathAt(int index)
         {
             TrustedLocations.RemoveAt(index);
+            settings?.SetTrustedLocations(TrustedLocations);
             RaiseCanExecuteChanged();
         }
 
