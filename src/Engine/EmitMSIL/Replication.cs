@@ -24,7 +24,7 @@ namespace EmitMSIL
         public static IList ReplicationLogic(string className, string methodName, IList args, string[][] replicationAttrs)
         {
             var modules = ProtoFFI.DLLFFIHandler.Modules.Values.OfType<ProtoFFI.CLRDLLModule>();
-            var assemblies = modules.Select(m => m.Module.Assembly);
+            var assemblies = modules.Select(m => m.Assembly ?? (m.Module?.Assembly)).Where(m => m != null);
             MethodInfo mi = null;
             foreach (var asm in assemblies)
             {
@@ -35,6 +35,12 @@ namespace EmitMSIL
                 // using its function descriptor. AST isn't sufficient for parameter type info.
                 mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
                     m => m.Name == methodName && m.GetParameters().Length == args.Count).FirstOrDefault();
+
+                if(mi == null)
+                {
+                    mi = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
+                    m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).FirstOrDefault();
+                }
 
                 if (mi != null)
                     break;
@@ -49,10 +55,6 @@ namespace EmitMSIL
             {
                 throw new MissingMethodException("No matching method found in loaded assemblies.");
             }
-
-            var paramCount = args.Count;
-            var parameters = mi.GetParameters();
-            Validity.Assert(paramCount == parameters.Length);
 
             var reducedArgs = ReduceArgs(args);
 
@@ -69,7 +71,16 @@ namespace EmitMSIL
             var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
             // Testing invoking method without replication
-            var result = mi.Invoke(null, reducedArgs.ToArray());
+            object result;
+            if (mi.IsStatic)
+            {
+                //Validity.Assert(args.Count == mi.GetParameters().Length);
+                result = mi.Invoke(null, reducedArgs.ToArray());
+            }
+            else
+            {
+                result = mi.Invoke(reducedArgs[0], reducedArgs.Skip(1).ToArray());
+            }
 
             return new[] { result };
 

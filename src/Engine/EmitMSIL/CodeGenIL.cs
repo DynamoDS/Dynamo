@@ -348,18 +348,26 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Dup);
                 EmitOpCode(OpCodes.Ldc_I4, ++argCount);
 
-                var argIdent = arg as IdentifierNode;
-                var argGuides = argIdent.ReplicationGuides;
-                EmitOpCode(OpCodes.Ldc_I4, argGuides.Count);
-                EmitOpCode(OpCodes.Newarr, typeof(string));
-                int guideCount = -1;
-                foreach(var guide in argGuides)
+                var argIdent = arg as ArrayNameNode;
+                if (argIdent != null)
                 {
-                    EmitOpCode(OpCodes.Dup);
-                    EmitOpCode(OpCodes.Ldc_I4, ++guideCount);
+                    var argGuides = argIdent.ReplicationGuides;
+                    EmitOpCode(OpCodes.Ldc_I4, argGuides.Count);
+                    EmitOpCode(OpCodes.Newarr, typeof(string));
+                    int guideCount = -1;
+                    foreach (var guide in argGuides)
+                    {
+                        EmitOpCode(OpCodes.Dup);
+                        EmitOpCode(OpCodes.Ldc_I4, ++guideCount);
 
-                    EmitOpCode(OpCodes.Ldstr, (guide as ReplicationGuideNode).RepGuide.Name);
-                    EmitOpCode(OpCodes.Stelem_Ref);
+                        EmitOpCode(OpCodes.Ldstr, (guide as ReplicationGuideNode).RepGuide.Name);
+                        EmitOpCode(OpCodes.Stelem_Ref);
+                    }
+                }
+                else
+                {
+                    EmitOpCode(OpCodes.Ldc_I4, 0);
+                    EmitOpCode(OpCodes.Newarr, typeof(string));
                 }
                 EmitOpCode(OpCodes.Stelem_Ref);
             }
