@@ -226,8 +226,10 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", string hostName ="")
         {
-            PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, new HostAnalyticsInfo() { HostName = hostName });
+            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
+            var model = StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, new HostAnalyticsInfo() { HostName = hostName });
+            model.IsASMLoaded = isASMloaded;
+            return model;
         }
 
         /// <summary>
@@ -239,8 +241,10 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
-            PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, info);
+            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
+            var model = StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, info);
+            model.IsASMLoaded = isASMloaded;
+            return model;
         }
 
         /// <summary>
@@ -253,19 +257,23 @@ namespace Dynamo.Applications
         [Obsolete("This method will be removed in Dynamo 3.0 - please use the version with more parameters")]
         public static DynamoModel MakeModel(bool CLImode, string asmPath)
         {
-            PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
+            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
+            var model = StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
+            model.IsASMLoaded = isASMloaded;
+            return model;
         }
 
         //TODO (DYN-2118) remove this method in 3.0 and unify this method with the overload above.
         [Obsolete("This method will be removed in Dynamo 3.0 - please use the version with more parameters")]
         public static DynamoModel MakeModel(bool CLImode)
         {
-            PreloadASM(string.Empty, out string geometryFactoryPath, out string preloaderLocation);
-            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
+            var isASMloaded = PreloadASM(string.Empty, out string geometryFactoryPath, out string preloaderLocation);
+            var model = StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
+            model.IsASMLoaded = isASMloaded;
+            return model;
         }
 
-        private static void PreloadASM(string asmPath, out string geometryFactoryPath, out string preloaderLocation )
+        private static bool PreloadASM(string asmPath, out string geometryFactoryPath, out string preloaderLocation )
         {
             if (string.IsNullOrEmpty(asmPath))
             {
@@ -278,8 +286,9 @@ namespace Dynamo.Applications
                 catch (Exception e)
                 {
                     ASMPreloadFailure?.Invoke(e.Message);
+                    return false;
                 }
-                return;
+                return true;
             }
 
             // get sandbox executing location - this is where libG will be located.
@@ -302,11 +311,13 @@ namespace Dynamo.Applications
 
                 //load asm and libG.
                 DynamoShapeManager.Utilities.PreloadAsmFromPath(preloaderLocation, asmPath);
+                return true;
             }
             catch (Exception e)
             {
-                Console.WriteLine("A problem occured while trying to load ASM or LibG");
+                Console.WriteLine("A problem occurred while trying to load ASM or LibG");
                 Console.WriteLine($"{e?.Message} : {e?.StackTrace}");
+                return false;
             }
         }
 

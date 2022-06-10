@@ -1621,9 +1621,9 @@ namespace Dynamo.ViewModels
                     // Skip these when opening dyf
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
                     FileTrustViewModel.AllowOneTimeTrust = false;
                 }
-                (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
             }
             catch (Exception e)
             {
@@ -2650,6 +2650,29 @@ namespace Dynamo.ViewModels
         private bool CanDisplayInteractiveGuide(object parameter)
         {
             return !this.ShowStartPage;
+        }
+
+        private void StartGettingStartedGuide(object parameter)
+        {
+            try
+            {
+                if (ClearHomeWorkspaceInternal())
+                {
+                    OpenOnboardingGuideFile();
+                    MainGuideManager.LaunchTour(GuidesManager.OnboardingGuideName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Model.Logger.Log(ex.Message);
+                Model.Logger.Log(ex.StackTrace);
+            }
+        }
+
+        private bool CanStartGettingStartedGuide(object parameter)
+        {
+            // Disable Getting Started guided tour when ASM is not loaded
+            return Model.IsASMLoaded;
         }
 
         internal void Pan(object parameter)

@@ -668,10 +668,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
 
             //Inside the NodeView try to find the ItemsControl that contains Input ports or Output ports
-            var itemsControlPort = GuideUtilities.FindChild(byOriginNode, portHighlighted) as ItemsControl;
-
-            if (itemsControlPort == null) return;
-
+            if (!(GuideUtilities.FindChild(byOriginNode, portHighlighted) is ItemsControl itemsControlPort)) return;
             var inPorts = itemsControlPort.Items.Cast<PortViewModel>().ToList();
 
             //Once we have the ItemsControl we get the ContentPresenter
