@@ -104,6 +104,8 @@ namespace Dynamo.Wpf.Views
             Analytics.TrackEvent(Actions.Close, Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
             viewModel.TrustedPathsViewModel?.SaveSettingCommand?.Execute(null);
+            dynViewModel.ShowHideFileTrustWarningIfCurrentWorkspaceTrusted();
+
             viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
             TrustedPathView.Dispose();

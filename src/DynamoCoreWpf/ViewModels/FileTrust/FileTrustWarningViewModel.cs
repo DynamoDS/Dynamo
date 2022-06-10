@@ -10,6 +10,7 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
     public class FileTrustWarningViewModel : ViewModelBase
     {
         private bool showWarningPopup;
+        private bool allowOneTimeTrust;
 
         /// <summary>
         /// This offset is set to make the popup pointer point at the middle of the RunMode combo box
@@ -55,6 +56,21 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
         }
 
         /// <summary>
+        /// This property indicates if the Popup has been dismissed once, temporarily ignoring the trust warning
+        /// </summary>
+        public bool AllowOneTimeTrust
+        {
+            get
+            {
+                return allowOneTimeTrust;
+            }
+            set
+            {
+                allowOneTimeTrust = value;
+            }
+        }
+
+        /// <summary>
         /// This property will contain the full path of the file to be opened and is used to check if already exists in the Trusted Paths 
         /// </summary>
         public string DynFileDirectoryName { get; set; }
@@ -82,6 +98,7 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
                                                                new Point(pointX3, pointY3)});
 
             showWarningPopup = false;
+            allowOneTimeTrust = false;
         }
 
     }
