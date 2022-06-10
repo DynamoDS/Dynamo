@@ -245,6 +245,8 @@ namespace Dynamo.ViewModels
             set
             {
                 annotationModel.IsExpanded = value;
+                InPorts.Clear();
+                OutPorts.Clear();
                 if (value)
                 {
                     this.ShowGroupContents();
@@ -259,6 +261,15 @@ namespace Dynamo.ViewModels
                 WorkspaceViewModel.HasUnsavedChanges = true;
                 AddGroupToGroupCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(nameof(IsExpanded));
+                ReportNodesPosition();
+            }
+        }
+
+        private void ReportNodesPosition()
+        {
+            foreach (var node in Nodes)
+            {
+                node.ReportPosition();
             }
         }
 
@@ -587,7 +598,6 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void SetGroupInputPorts()
         {
-            InPorts.Clear();
             List<PortViewModel> newPortViewModels;
 
             // we need to store the original ports here
@@ -624,7 +634,6 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void SetGroupOutPorts()
         {
-            OutPorts.Clear();
             List<PortViewModel> newPortViewModels;
 
             // we need to store the original ports here
