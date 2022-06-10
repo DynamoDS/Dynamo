@@ -2662,9 +2662,10 @@ namespace Dynamo.ViewModels
                     MainGuideManager.LaunchTour(GuidesManager.OnboardingGuideName);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //sidebarGrid.Visibility = Visibility.Visible;
+                Model.Logger.Log(ex.Message);
+                Model.Logger.Log(ex.StackTrace);
             }
         }
 
