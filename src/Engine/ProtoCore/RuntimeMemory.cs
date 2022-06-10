@@ -296,7 +296,7 @@ namespace ProtoCore
 
 
             private int fp;
-            private StackFrame stackFrame;
+            private StackFrame currentStackFrame;
 
             /// <summary>
             /// Current stack frame.
@@ -311,11 +311,11 @@ namespace ProtoCore
                     if (FramePointer - StackFrame.StackFrameSize < startFramePointer)
                     {
                         fp = 0;
-                        stackFrame = null;
+                        currentStackFrame = null;
                         return null;
                     }
                        
-                    if (fp != FramePointer || stackFrame != null)
+                    if (fp != FramePointer || currentStackFrame != null)
                     {
                         fp = FramePointer;
 
@@ -327,11 +327,10 @@ namespace ProtoCore
                             frame[destIndex] = Stack[sourceIndex];
                         }
 
-                        stackFrame = new StackFrame(frame);
-                        return stackFrame;
+                        currentStackFrame = new StackFrame(frame);
                     }
 
-                    return stackFrame;
+                    return currentStackFrame;
                 }
             }
 

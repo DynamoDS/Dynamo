@@ -1345,21 +1345,17 @@ namespace ProtoCore.DSASM
                 // Data flow execution prototype
                 // Dependency has already been resolved at compile time
                 // Get the reachable nodes directly from the executingGraphNode
-                GraphUpdateImpl(Properties.executingGraphNode.ChildrenNodes);
-
-                return Properties.executingGraphNode.ChildrenNodes.Count;
+                return GraphUpdateImpl(Properties.executingGraphNode.ChildrenNodes);
             }
 
             // Find reachable graphnodes
             var reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
                 Properties.executingGraphNode, this, exprUID, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
 
-            GraphUpdateImpl(reachableGraphNodes);
-            return reachableGraphNodes.Count;
-
+            return GraphUpdateImpl(reachableGraphNodes);
         }
 
-        private void GraphUpdateImpl(List<GraphNode> reachableGraphNodes)
+        private int GraphUpdateImpl(List<GraphNode> reachableGraphNodes)
         {
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);
@@ -1428,6 +1424,8 @@ namespace ProtoCore.DSASM
                 }
                 gnode.isActive = false;
             }
+
+            return reachableGraphNodes.Count;
         }
 
         /// <summary>
