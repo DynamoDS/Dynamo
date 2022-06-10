@@ -106,10 +106,16 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual((items[1] as FooterNotificationItem).NotificationCount, 0);
         }
 
-        [Test, Timeout(60000 * 5)]
+        [Test, Timeout(60000 * 6)]
         public void TestWatchTreeSilentKill()
         {
-            Assert.DoesNotThrow(() => Open(@"UI\BiggestRectangle.dyn"));
+            try
+            {
+                Open(@"UI\BiggestRectangle.dyn");
+            }catch(Exception e)
+            {
+                Assert.Fail($"Exception not expected {e.Message}");
+            }
 
             // Ensure that the View Models are loaded
             Assert.AreEqual(1879, ViewModel.CurrentSpaceViewModel.Nodes.Count());
