@@ -1052,7 +1052,8 @@ namespace DynamoCoreWpfTests
             var mockGreg = new Mock<IGregClient>();
 
             var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
-            var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object);
+            var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
+       
 
             //when we attempt a download - it returns a valid download path, also record order
             pmVmMock.Setup(x => x.Download(It.IsAny<PackageDownloadHandle>())).
