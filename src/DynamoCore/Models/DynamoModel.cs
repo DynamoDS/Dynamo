@@ -714,6 +714,12 @@ namespace Dynamo.Models
                     PreferenceSettings.IsFirstRun = isFirstRun;
                 }
             }
+
+            if (PreferenceSettings.IsFirstRun && !IsTestMode)
+            {
+                PreferenceSettings.AddDefaultTrustedLocations();
+            }
+
             InitializePreferences(PreferenceSettings);
 
             // At this point, pathManager.PackageDirectories only has 1 element which is the directory

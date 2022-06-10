@@ -373,7 +373,9 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// A copy of the list of trusted locations (folders) as recorded in the preferences file.
+        /// Represents a copy of the list of trusted locations that the user added.
+        /// Do not use this list to check if a new path is trusted or not.
+        /// To check if a new path is trusted or not please use the IsTrustedLocation API (IsTrustedLocation supports locations)
         /// </summary>
         public List<string> TrustedLocations
         {
@@ -764,18 +766,17 @@ namespace Dynamo.Configuration
         /// Add a path to the Dynamo's trusted locations
         /// </summary>
         /// <param name="path">The path to be added as a trusted location</param>
-        /// <returns></returns>
+        /// <returns>True if the path was successfully added. False otherwise.</returns>
         internal bool AddTrustedLocation(string path)
         {
             try
             {
-                if (IsTrustedLocation(path) || string.IsNullOrEmpty(path))
+                PathHelper.ValidateDirectory(path);
+                if (isTrustedLocationInternal(path))
                 {
                     return false;
                 }
-
-                string location = PathHelper.ValidateDirectory(path);
-                trustedLocations.Add(location);
+                trustedLocations.Add(path);
                 return true;
             }
             catch(Exception e)
@@ -792,11 +793,7 @@ namespace Dynamo.Configuration
         /// <returns>The true if the path was removed and false otherwise</returns>
         internal bool RemoveTrustedLocation(string path)
         {
-            if (trustedLocations.RemoveAll(x => x.Equals(path)) >= 0)
-            {
-                return true;
-            }
-            return false;
+            return trustedLocations.RemoveAll(x => PathHelper.AreDirectoryPathsEqual(x, path)) > 0;
         }
 
         /// <summary>
@@ -828,21 +825,50 @@ namespace Dynamo.Configuration
             disableTrustWarnings = disabled;
         }
 
+        // Add default trusted locations for Autodesk samples.
+        // This function should only be called during Dynamo's first run.
+        internal void AddDefaultTrustedLocations()
+        {
+            if (!IsFirstRun) return;
+
+            const string Autodesk = "Autodesk";
+            string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            AddTrustedLocation(Path.Combine(ProgramData, Autodesk));
+
+            string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            AddTrustedLocation(Path.Combine(ProgramFiles, Autodesk));
+        }
+
+        /// <summary>
+        /// Returns true if the input "location" is among the stored trusted paths.
+        /// Subdirectories of a trusted path are considered trusted.
+        /// Does not validate the input for correctness.
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        private bool isTrustedLocationInternal(string location)
+        {
+            return TrustedLocations.FirstOrDefault(trustedLoc =>
+            {
+                // All subdirectories are considered trusted if the parent directory is trusted.
+                return PathHelper.AreDirectoryPathsEqual(location, trustedLoc) ||
+                    PathHelper.IsSubDirectoryOfDirectory(location, trustedLoc);
+            }) != null;
+        }
+
         /// <summary>
         /// Checkes whether the input argument (path) is among Dynamo's trusted locations
         /// Only directories are supported.
         /// Subdirectories of a trusted directory are considered trusted.
         /// </summary>
-        /// <param name="path">An absolute path to a folder or file on disk</param>
+        /// <param name="location">An absolute path to a folder or file on disk</param>
         /// <returns>True if the path is a trusted location, false otherwise</returns>
-        public bool IsTrustedLocation(string path)
+        public bool IsTrustedLocation(string location)
         {
             try
             {
-                string location = PathHelper.ValidateDirectory(path);
-
-                // All subdirectories are considered trusted if the parent directory is trusted.
-                return TrustedLocations.FirstOrDefault(x => location.StartsWith(x)) != null;
+                PathHelper.ValidateDirectory(location);
+                return isTrustedLocationInternal(location);
             }
             catch
             {
