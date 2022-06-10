@@ -77,9 +77,29 @@ namespace Dynamo.PackageManager
         {
             return FailFunc.TryExecute(() => {
                 var nv = HeaderCollectionDownload.ByEngine("dynamo");
-                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);                
+                CleanPackagesWithWrongVersions(pkgResponse.content);
                 return pkgResponse.content;
             }, new List<PackageHeader>());
+        }
+
+        /// <summary>
+        /// For every package Checks its versions and exclude the ones with errors
+        /// </summary>
+        /// <param name="packages"></param>
+        void CleanPackagesWithWrongVersions(List<PackageHeader> packages)
+        {
+            foreach (var package in packages)
+            {
+                bool packageHasWrongVersion = package.versions.Count(v => v.url == null) > 0;
+
+                if (packageHasWrongVersion)
+                {
+                    List<PackageVersion> cleanVersions = new List<PackageVersion>();
+                    cleanVersions.AddRange(package.versions.Where(v => v.url != null));
+                    package.versions = cleanVersions;
+                }
+            }
         }
 
         /// <summary>
@@ -135,7 +155,7 @@ namespace Dynamo.PackageManager
         /// Make a call to Package Manager to get the known
         /// supported hosts for package publishing and filtering
         /// </summary>
-        internal IEnumerable<string> GetKnownHosts()
+        internal virtual IEnumerable<string> GetKnownHosts()
         {
             return FailFunc.TryExecute(() =>
             {

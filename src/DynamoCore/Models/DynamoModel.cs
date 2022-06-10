@@ -379,6 +379,7 @@ namespace Dynamo.Models
         internal static string DefaultPythonEngine { get; private set; }
 
         internal static DynamoUtilities.DynamoFeatureFlagsManager FeatureFlags { get; private set; }
+
         #endregion
 
         #region initialization and disposal
@@ -1260,7 +1261,10 @@ namespace Dynamo.Models
             CustomNodeManager.MessageLogged -= LogMessage;
             CustomNodeManager.Dispose();
             MigrationManager.MessageLogged -= LogMessage;
-            FeatureFlags.MessageLogged -= LogMessageWrapper;
+            if (FeatureFlags != null)
+            {
+                FeatureFlags.MessageLogged -= LogMessageWrapper;
+            }
             DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckFeatureFlagTest;
         }
 
@@ -1919,7 +1923,7 @@ namespace Dynamo.Models
                 // TODO: #4258
                 // Remove this ResetEngine call when multiple home workspaces is supported.
                 // This call formerly lived in DynamoViewModel
-                ResetEngine();
+                ResetEngine(false);
 
                 if (hws.RunSettings.RunType == RunType.Periodic)
                 {

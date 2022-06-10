@@ -54,8 +54,6 @@ namespace Dynamo.Utilities
         {
             // Register app wide new debug modes here.
             AddDebugMode("DumpByteCode", "Dumps bytecode to a log file in a folder called ByteCodeLogs located in the current working dirrectory.", false);
-
-            AddDebugMode("DynamoPreferencesMenuDebugMode", "Enable/Disable the Preferences Panel new features in the Dynamo menu.", false);
         }
 
         internal static void LoadDebugModesStatusFromConfig(string configPath)

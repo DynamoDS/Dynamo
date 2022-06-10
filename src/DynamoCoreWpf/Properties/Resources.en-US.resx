@@ -601,15 +601,15 @@ You will get a chance to save your work.</value>
     <comment>File menu</comment>
   </data>
   <data name="DynamoViewFileMenuExport3DAsImage" xml:space="preserve">
-    <value>_Export Background 3D Preview as Image...</value>
+    <value>Export _Background 3D Preview as Image...</value>
     <comment>File menu | Export Background 3D Preview as image</comment>
   </data>
   <data name="DynamoViewFileMenuExportAsImage" xml:space="preserve">
-    <value>_Export Workspace As Image...</value>
+    <value>Export _Workspace As Image...</value>
     <comment>File menu | Export workspace as image</comment>
   </data>
   <data name="DynamoViewFileMenuExportToSTL" xml:space="preserve">
-    <value>_Export Model to STL...</value>
+    <value>Export _Model to STL...</value>
     <comment>File menu | Export geometry model to STL file format</comment>
   </data>
   <data name="DynamoViewFileMenuImport" xml:space="preserve">
@@ -3127,7 +3127,7 @@ To install the latest version of a package, click Install. \n
     <value>Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide.</value>
   </data>
   <data name="OnboardingPlaceNodeText" xml:space="preserve">
-    <value>This node needs a [xyz] input. You can find a node to use as the input in the library by using search or browsing. The node is x, so you’ll find it under the x category.\n\n Click the node to place it in the workspace.</value>
+    <value>This node needs a **CoordinateSystem** input. You can find a node to use as the input in the library by using search or browsing. The node is **CoordinateSystem.ByOrigin**, so you’ll find it under the **CoordinateSystem** category.\n\n Click the node to place it in the workspace.</value>
   </data>
   <data name="OnboardingPlaceNodeTitle" xml:space="preserve">
     <value>Search the library and place a node</value>
@@ -3144,8 +3144,43 @@ To install the latest version of a package, click Install. \n
   <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
     <value>Run the graph</value>
   </data>
+  <data name="FileTrustWarningCheckBoxText" xml:space="preserve">
+    <value>Trust this file’s location in the future.</value>
+  </data>
+  <data name="FileTrustWarningPopupNoCloseFile" xml:space="preserve">
+    <value>No, close file</value>
+  </data>
+  <data name="FileTrustWarningPopupSettings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="FileTrustWarningPopupText" xml:space="preserve">
+    <value>This file is stored in an untrusted location. Do you want to run this file?</value>
+  </data>
+  <data name="FileTrustWarningPopupTitle" xml:space="preserve">
+    <value>Run external file?</value>
+  </data>
+  <data name="FileTrustWarningPopupTooltip1" xml:space="preserve">
+    <value>External content may bring risks to your system security.</value>
+  </data>
+  <data name="FileTrustWarningPopupTooltip2" xml:space="preserve">
+    <value>The file's current location will be added to trusted locations.
+You can manage this in Preferences -&gt; Security.</value>
+  </data>
+  <data name="FileTrustWarningPopupYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
+    <value>Graph execution is suspended until warning is resolved</value>
+  </data>
+  <data name="DynamoShowFileTrustWarning" xml:space="preserve">
+    <value>Show File Trust Warning</value>
+  </data>
+  <data name="DynamoViewRunTypesComboBoxToolTipDisabled" xml:space="preserve">
+    <value>Run mode can not be changed until warning is resolved</value>
+  </data>
   <data name="BubbleDismissAllButtonTooltip" xml:space="preserve">
-    <value>Temporarily dismiss all warnings of this node.</value>
+    <value>Temporarily dismiss all warnings of this node</value>
+    <comment>Tooltip text of Dismiss All warnong button.</comment>
   </data>
   <data name="RunCompletedWithWarningsDismissedMessage" xml:space="preserve">
     <value>Run completed with dismissed warnings.</value>
@@ -3161,5 +3196,30 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="OnboardingSuccessTitle" xml:space="preserve">
     <value>Success</value>
+  </data>
+  <data name="MessagePackageTargetOtherHosts" xml:space="preserve">
+    <value>The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems. Do you want to continue?</value>
+  </data>
+  <data name="RunBlockedMessage" xml:space="preserve">
+    <value>Run blocked.</value>
+    <comment>Run status message for case where graph run blocked due to unresolved security warning.</comment>
+  </data>
+  <data name="FooterNotificationErrorImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/error.png</value>
+  </data>
+  <data name="FooterNotificationErrorTooltip" xml:space="preserve">
+    <value>Click to cycle through nodes with errors.</value>
+  </data>
+  <data name="FooterNotificationInfoImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/info.png</value>
+  </data>
+  <data name="FooterNotificationInfoTooltip" xml:space="preserve">
+    <value>Click to cycle through nodes with info states.</value>
+  </data>
+  <data name="FooterNotificationWarningImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/warning_16px.png</value>
+  </data>
+  <data name="FooterNotificationWarningTooltip" xml:space="preserve">
+    <value>Click to cycle through nodes with warnings.</value>
   </data>
 </root>

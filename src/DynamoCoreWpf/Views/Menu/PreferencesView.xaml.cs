@@ -106,6 +106,7 @@ namespace Dynamo.Wpf.Views
             viewModel.TrustedPathsViewModel?.SaveSettingCommand?.Execute(null);
             viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
+            TrustedPathView.Dispose();
 
             RunGraphWhenScaleFactorUpdated();
 

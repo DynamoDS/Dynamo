@@ -91,6 +91,16 @@
     <!--  Node colors in selected state  -->
     <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
 
+    <!-- NodeLabel colors -->
+    <SolidColorBrush x:Key="stringLabelBackground"
+                     Color="#c3ae9d" />
+    <SolidColorBrush x:Key="numberLabelBackground"
+                     Color="#91c2f2" />
+    <SolidColorBrush x:Key="objectLabelBackground"
+                     Color="#a1a1a1" />
+    <SolidColorBrush x:Key="boolLabelBackground"
+                     Color="#c6afd5" />
+
     <!-- Node Autocomplete -->
     <SolidColorBrush x:Key="autocompletionWindow" Color="#535353" />
     <SolidColorBrush x:Key="AutocompletionWindowFontColor" Color="#F5F5F5" />

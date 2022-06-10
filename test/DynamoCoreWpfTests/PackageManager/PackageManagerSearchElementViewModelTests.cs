@@ -8,6 +8,7 @@ using Dynamo.Tests;
 using Dynamo.ViewModels;
 using System.Collections.Generic;
 using static Dynamo.PackageManager.PackageManagerSearchViewModel;
+using Dynamo.Controls;
 
 namespace Dynamo.PackageManager.Wpf.Tests
 {
@@ -100,6 +101,57 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.AreEqual(false, newSE2.CanInstall);
 
             packageManagerSearchViewModel.ClearSearchResults();
+        }
+
+
+        /// <summary>
+        /// A test to ensure that the label converted is equal the resources when localized
+        /// </summary>
+        [Test]
+        public void TestPackageManagerInstallStatusByResourceName()
+        {
+            var name1 = "package";
+            var version = "1.0.0";         
+
+            var dHandle1 = new PackageDownloadHandle()
+            {
+                Id = name1,
+                VersionName = version,
+                Name = name1
+            };
+
+            dHandle1.DownloadState = PackageDownloadHandle.State.Installed;
+
+            var download1State = new PackageDownloadStateToStringConverter().Convert(dHandle1.DownloadState, null, null, null).ToString();
+            Assert.IsTrue(download1State.Equals(Dynamo.Wpf.Properties.Resources.PackageDownloadStateInstalled));
+
+            dHandle1.DownloadState = PackageDownloadHandle.State.Installing;
+
+            download1State = new PackageDownloadStateToStringConverter().Convert(dHandle1.DownloadState, null, null, null).ToString();
+            Assert.IsTrue(download1State.Equals(Dynamo.Wpf.Properties.Resources.PackageDownloadStateInstalling));
+
+            dHandle1.DownloadState = PackageDownloadHandle.State.Downloaded;
+
+            download1State = new PackageDownloadStateToStringConverter().Convert(dHandle1.DownloadState, null, null, null).ToString();
+            Assert.IsTrue(download1State.Equals(Dynamo.Wpf.Properties.Resources.PackageDownloadStateDownloaded));
+            
+            dHandle1.DownloadState = PackageDownloadHandle.State.Downloading;
+
+            download1State = new PackageDownloadStateToStringConverter().Convert(dHandle1.DownloadState, null, null, null).ToString();
+            Assert.IsTrue(download1State.Equals(Dynamo.Wpf.Properties.Resources.PackageDownloadStateDownloading));
+
+            dHandle1.DownloadState = PackageDownloadHandle.State.Error;
+
+            download1State = new PackageDownloadStateToStringConverter().Convert(dHandle1.DownloadState, null, null, null).ToString();
+            Assert.IsTrue(download1State.Equals(Dynamo.Wpf.Properties.Resources.PackageDownloadStateError));
+
+            dHandle1.DownloadState = PackageDownloadHandle.State.Uninitialized;
+
+            download1State = new PackageDownloadStateToStringConverter().Convert(dHandle1.DownloadState, null, null, null).ToString();
+            Assert.IsTrue(download1State.Equals(Dynamo.Wpf.Properties.Resources.PackageDownloadStateStarting));
+
+            download1State = new PackageDownloadStateToStringConverter().Convert(null, null, null, null).ToString();
+            Assert.IsTrue(download1State.Equals(Dynamo.Wpf.Properties.Resources.PackageStateUnknown));
         }
 
         /// <summary>

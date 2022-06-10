@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dynamo.Wpf.Properties;
+using System;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {

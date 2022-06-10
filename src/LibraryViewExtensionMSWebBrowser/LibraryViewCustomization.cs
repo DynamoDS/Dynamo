@@ -106,7 +106,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             if (groups.Count < count)
             {
                 var duplicateNames = groups.Where(g => g.Count() > 1).Select(g=>g.Key);
-                var duplicateString = string.Join(", ", groups.Where(g => g.Count() > 1).Select(g => g.Key));
+                var duplicateString = string.Join(", ", duplicateNames);
                 Console.WriteLine($"Duplicate entries found, ex: {duplicateString}, attempting to merge");
 
                 //create a fake layout spec containing the items and merge them in.

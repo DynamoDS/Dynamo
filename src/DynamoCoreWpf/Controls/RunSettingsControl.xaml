@@ -9,6 +9,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:ui="clr-namespace:Dynamo.UI"
     xmlns:viewModels="clr-namespace:Dynamo.Wpf.ViewModels"
+    xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
     d:DesignHeight="40"
     d:DesignWidth="600"
     d:DataContext="{d:DesignInstance Type=viewModels:RunSettingsViewModel}"
@@ -22,7 +23,6 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-
             <ObjectDataProvider
                 x:Key="RunTypes"
                 MethodName="GetValues"
@@ -75,6 +75,19 @@
                                             Property="BorderThickness"
                                             Value="4" />
                                 </Trigger>
+
+                                <Trigger Property="Button.IsEnabled"
+                                         Value="false">
+                                    <Setter TargetName="inner"
+                                            Property="Background"
+                                            Value="#218d81" />
+                                    <Setter TargetName="text"
+                                            Property="Foreground"
+                                            Value="#bebebe" />
+                                    <Setter TargetName="container"
+                                            Property="BorderBrush"
+                                            Value="#218d81" />
+                                </Trigger>
                             </ControlTemplate.Triggers>
 
                         </ControlTemplate>
@@ -93,9 +106,16 @@
                       HorizontalContentAlignment="Left"
                       VerticalContentAlignment="Center"
                       FontSize="14px"
+                      IsEnabled="{Binding RunTypesEnabled}"
                       ItemsSource="{Binding RunTypeItems}"
                       SelectedItem="{Binding SelectedRunTypeItem}"
+                      ToolTipService.ShowOnDisabled="True"
+                      ToolTipService.Placement="Bottom"
+                      ToolTipService.IsEnabled="{Binding RunTypesEnabled,  Converter={StaticResource InverseBooleanConverter}}"
                       Style="{StaticResource RefreshRunSettingsComboBox}">
+                <ComboBox.ToolTip>
+                    <ToolTip Content="{Binding RunTypesComboBoxToolTip}" Style="{StaticResource GenericToolTipLightTop}"/>
+                </ComboBox.ToolTip>
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ComboBoxItem}">
                         <Setter Property="IsEnabled"

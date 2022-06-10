@@ -17,6 +17,7 @@
         <!--  Grid that contains the entire port  -->
         <Grid Name="MainGrid"
               Background="Transparent"
+              HorizontalAlignment="Right"
               IsHitTestVisible="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Name="PortNameColumn" Width="*" />
@@ -45,6 +46,7 @@
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                             <Setter Property="Grid.Height" Value="14px" />
+                            <Setter Property="Grid.Margin" Value="0,3,0,0" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -101,7 +103,7 @@
                        Grid.Column="1"
                        Height="27px"
                        VerticalAlignment="Center"
-                       Fill="{Binding PortValueMarkerColor, UpdateSourceTrigger=PropertyChanged}"
+                       Fill="#999999"
                        IsHitTestVisible="False"
                        Visibility="{Binding PortDefaultValueMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                        SnapsToDevicePixels="True" />

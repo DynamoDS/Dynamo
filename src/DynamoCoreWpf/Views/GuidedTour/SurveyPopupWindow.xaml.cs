@@ -54,7 +54,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             if(nextGuide != null)
             {
                 GetStartedLink.Visibility = System.Windows.Visibility.Visible;
-                NextGuideNameLink.Content = Res.ResourceManager.GetString(nextGuide.GuideNameResource);
+                NextGuideNameLink.Content = Res.ResourceManager.GetString(nextGuide.GuideNameResource).Replace("_", "");
             }
             else
             {

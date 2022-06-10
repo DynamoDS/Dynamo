@@ -158,7 +158,8 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <TabControl TabStripPlacement="Left" 
+                <TabControl x:Name="preferencesTabControl"
+                            TabStripPlacement="Left" 
                             Background="{StaticResource PreferencesWindowBackgroundColor}">
                     
                     <!--General Tab-->
@@ -859,8 +860,7 @@
                     
                     <!--Security Settings Tab-->
                     <TabItem Header="{x:Static p:Resources.PreferencesSecuritySettingsTab}"
-                             Style="{StaticResource LeftTab}"
-                             Visibility="{Binding PreferencesDebugMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                             Style="{StaticResource LeftTab}">
                         <!--This Grid contains the package manager settings tab-->
                         <Grid x:Name="SecurityTab" 
                               Margin="1"
