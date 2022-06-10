@@ -261,6 +261,7 @@ namespace Dynamo.ViewModels
                 WorkspaceViewModel.HasUnsavedChanges = true;
                 AddGroupToGroupCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(nameof(IsExpanded));
+                RedrawConnectors();
                 ReportNodesPosition();
             }
         }
@@ -703,10 +704,7 @@ namespace Dynamo.ViewModels
                 return ownerNodes
                     .SelectMany(x => x.OutPorts
                         .Where(p => !p.IsConnected ||
-                                    !p.Connectors.Any(c => ownerNodes.Contains(c.End.Owner)) ||
-                                    // If the port is connected to any of the groups inports
-                                    // we need to return it as well
-                                    p.Connectors.Any(c => inPorts.Select(m => m.PortModel).Contains(c.End)))
+                                    !p.Connectors.All(c => ownerNodes.Contains(c.End.Owner)))
                     );
             }
 
@@ -716,10 +714,7 @@ namespace Dynamo.ViewModels
             return Nodes.OfType<NodeModel>()
                 .SelectMany(x => x.OutPorts
                     .Where(p => !p.IsConnected ||
-                                !p.Connectors.Any(c => Nodes.Contains(c.End.Owner)) ||
-                                // If the port is connected to any of the groups inports
-                                // we need to return it as well
-                                p.Connectors.Any(c => inPorts.Select(m => m.PortModel).Contains(c.End)))
+                                !p.Connectors.All(c => Nodes.Contains(c.End.Owner)))
                 );
         }
 
@@ -873,18 +868,24 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            var excludedPorts = originalInPorts.Concat(originalOutPorts);
-
             var allNodes = this.Nodes
                 .OfType<AnnotationModel>()
                 .SelectMany(x => x.Nodes.OfType<NodeModel>())
                 .Concat(this.Nodes.OfType<NodeModel>());
 
-            var connectorsToHide = allNodes
-                .SelectMany(x => x.InPorts.Concat(x.OutPorts))
-                .Except(excludedPorts)
+            var inportsToHide = allNodes
+                .SelectMany(x => x.InPorts)
+                .Except(originalInPorts)
                 .SelectMany(x => x.Connectors)
                 .Distinct();
+
+            var outportsToHide = allNodes
+                .SelectMany(x => x.OutPorts)
+                .SelectMany(x => x.Connectors)
+                .Distinct()
+                .Where(x => Nodes.Contains(x.End.Owner));
+
+            var connectorsToHide = inportsToHide.Concat(outportsToHide);
 
             foreach (var connector in connectorsToHide)
             {
@@ -894,6 +895,26 @@ namespace Dynamo.ViewModels
                     .FirstOrDefault();
 
                 connectorViewModel.IsCollapsed = true;
+            }
+        }
+
+        private void RedrawConnectors()
+        {
+            var allNodes = this.Nodes
+                .OfType<AnnotationModel>()
+                .SelectMany(x => x.Nodes.OfType<NodeModel>())
+                .Concat(this.Nodes.OfType<NodeModel>());
+
+            foreach (var connector in allNodes.SelectMany(x=>x.AllConnectors))
+            {
+
+                var connectorViewModel = WorkspaceViewModel
+                    .Connectors
+                    .Where(x => connector.GUID == x.ConnectorModel.GUID)
+                    .FirstOrDefault();
+
+                connectorViewModel.Redraw();
+                connector.Start.Owner.ReportPosition();
             }
         }
 

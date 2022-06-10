@@ -893,7 +893,7 @@
 				"Type": "welcome",
 				"ShowLibrary": false,
 				"Width": 480,
-				"Height": 230,
+				"Height": 180,
 				"StepContent": {
 					"Title": "OnboardingGuideWelcomeTitle",
 					"FormattedText": "OnboardingGuideWelcomeText"
@@ -1183,7 +1183,7 @@
 				"Height": 450,
 				"StepContent": {
 					"Title": "PackagesGuideSurveyTitle",
-					"FormattedText": "PackagesGuideSurveyText"
+					"FormattedText": "OnboardingGuideSurveyText"
 				},
 				"ExtraContent": [
 					{

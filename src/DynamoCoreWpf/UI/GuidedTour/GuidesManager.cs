@@ -21,21 +21,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
     /// </summary>
     public sealed class GuidesManager
     {
-        /// <summary>
-        /// This property contains the list of Guides read from the json file
-        /// </summary>
-        public List<Guide> Guides;
-
+        #region private properties
         /// <summary>
         /// currentGuide will contain the Guide being played
         /// </summary>
         private Guide currentGuide;
-        private UIElement mainRootElement;
+
         private GuideBackground guideBackgroundElement;
-
-        private DynamoViewModel dynamoViewModel;
-
-        internal ExitGuideWindow exitGuideWindow;
+        private readonly UIElement mainRootElement;
+        private readonly DynamoViewModel dynamoViewModel;
 
         private RealTimeInfoWindow exitTourPopup;
 
@@ -52,6 +46,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private const string mainGridName = "mainGrid";
         private const string libraryViewName = "Browser";
         private Stopwatch stopwatch;
+        #endregion
+
+        #region internal properties
+        //The list of guide name strings are hardcoded to match Json definition of guides (no need localization)
+        internal static string GetStartedGuideName = "User Interface Tour";
+        internal static string PackagesGuideName = "Packages";
+        internal static string OnboardingGuideName = "Getting Started";
+
+        internal ExitGuideWindow exitGuideWindow;
 
         internal static string GuidesExecutingDirectory
         {
@@ -76,6 +79,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 return @"Dynamo.Wpf.UI.GuidedTour.DynamoOnboardingGuide_HouseCreationDS.dyn";
             }
         }
+        #endregion
+
+        /// <summary>
+        /// This property contains the list of Guides read from the json file
+        /// </summary>
+        public List<Guide> Guides;
 
         /// <summary>
         /// GuidesManager Constructor 
@@ -90,7 +99,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// Initializator that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
+        /// Initialization that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
         /// </summary>
         internal void Initialize()
         {

@@ -626,7 +626,7 @@
                             </MenuItem>
                             <MenuItem x:Name="OnBoardingMenuGuide"
                                       Header="{x:Static p:Resources.OnboardingGuide}"
-                                      Click="OnBoardingMenuGuide_Click">
+                                      Command="{Binding GettingStartedGuideCommand}">
                             </MenuItem>
                             <MenuItem x:Name="PackagesMenuGuide"
                                       Header="{x:Static p:Resources.PackagesGuide}"
