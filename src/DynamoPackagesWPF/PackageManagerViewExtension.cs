@@ -181,6 +181,9 @@ namespace Dynamo.PackageManager.UI
             //when a package is loaded with packageManager, this extension should inspect it for viewExtensions.
             var pkgs = new List<Package>() { package };
             RequestLoadViewExtensionsForLoadedPackages(pkgs);
+            //also check host target of the package and raise notifications.
+            RaisePackageHostNotifications(pkgs);
+            
         }
 
 

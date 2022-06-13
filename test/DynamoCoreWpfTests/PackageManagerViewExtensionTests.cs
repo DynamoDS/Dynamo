@@ -240,7 +240,39 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void PackageManagerViewExtesion_SendsNotificationForPackagesThatTargetDifferentHost()
+        public void PackageManagerViewExtesion_SendsNotificationForPackagesThatTargetDifferentHost_AtExtensionLoad()
+        {
+            var count = 0;
+            //check that the packageManagerViewExtension logged a notification for a package that targets revit.
+            var packageManagerViewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
+            var packageManager = ViewModel.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+
+            Assert.IsNotNull(packageManagerViewExtension);
+            Assert.IsNotNull(packageManager);
+
+            //load a package manually. This package targets Revit.
+            var packageForAnotherHost = new Package("nowhere", "nothing", "1.2.3", "MIT");
+            packageForAnotherHost.HostDependencies = new List<string>() { "Revit" };
+            packageManager.PackageLoader.LoadPackages(new List<Package> { packageForAnotherHost });
+            //attach handler, after forcing packge to load - analgous to mocking startup sequence.
+            (packageManagerViewExtension as INotificationSource).NotificationLogged += PackageManagerViewExtensionTests_NotificationLogged;
+
+            //force Loaded, which should run the check.
+            packageManagerViewExtension.Loaded(new ViewLoadedParams(View,ViewModel));
+
+            //check that notification is raised.
+            Assert.AreEqual(1, count);
+
+            (packageManagerViewExtension as INotificationSource).NotificationLogged -= PackageManagerViewExtensionTests_NotificationLogged;
+
+
+            void PackageManagerViewExtensionTests_NotificationLogged(NotificationMessage obj)
+            {
+                count = count + 1;
+            }
+        }
+        [Test]
+        public void PackageManagerViewExtesion_SendsNotificationForPackagesThatTargetDifferentHost_AtLatePackageLoad()
         {
             var count = 0;
             //check that the packageManagerViewExtension logged a notification for a package that targets revit.
@@ -251,13 +283,10 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(packageManagerViewExtension);
             Assert.IsNotNull(packageManager);
 
-            //load a package manually. This package tagets Revit.
-            var packageForAnotherHost = new Package("nowhere", "nothing", "123", "MIT");
+            //load a package manually. This package targets Revit.
+            var packageForAnotherHost = new Package("nowhere", "nothing", "1.2.3", "MIT");
             packageForAnotherHost.HostDependencies = new List<string>() { "Revit" };
             packageManager.PackageLoader.LoadPackages(new List<Package> { packageForAnotherHost });
-
-            //force startup, which should run the check.
-            packageManagerViewExtension.Loaded(new ViewLoadedParams(View,ViewModel));
 
             //check that notification is raised.
             Assert.AreEqual(1, count);
