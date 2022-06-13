@@ -139,7 +139,7 @@
 
             <DataGrid.Columns>
 
-                <!-- Node Name -->
+                <!-- Name -->
                 <DataGridTextColumn
                     Header="Name"
                     Binding="{Binding Name}"
