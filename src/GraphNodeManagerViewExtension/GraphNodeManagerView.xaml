@@ -29,7 +29,6 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
         <!-- Search Bar -->
@@ -92,6 +91,7 @@
         <!-- Node Data Grid -->
         <DataGrid x:Name="NodesInfoDataGrid"
                   Grid.Row="2"
+                  VerticalAlignment="Top"
                   ItemsSource="{Binding Path=NodesCollection.View}" 
                   IsSynchronizedWithCurrentItem="True"
                   Style="{StaticResource DataGridStyle1}"
@@ -102,7 +102,6 @@
                   AlternationCount="2"
                   FontSize="10"
                   Foreground="#F5F5F5"
-                  VerticalAlignment="Center"
                   SelectionUnit="FullRow"
                   SelectionMode="Single"
                   ScrollViewer.CanContentScroll="True" 
