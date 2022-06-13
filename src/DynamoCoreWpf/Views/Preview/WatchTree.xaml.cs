@@ -60,7 +60,7 @@ namespace Dynamo.Controls
                     this.Height = minHeightSize;
                     if (_vm.Children.Count !=0)
                     {
-                        if (_vm.Children[0].NodeLabel.Contains(Environment.NewLine) || _vm.Children[0].NodeLabel.ToUpper() == nameof(WatchViewModel.DICTIONARY))
+                        if (NodeLabel.Contains(Environment.NewLine) || NodeLabel.ToUpper() == nameof(WatchViewModel.DICTIONARY))
                         {
                             this.Height = defaultHeightSize;
                         }
@@ -80,7 +80,7 @@ namespace Dynamo.Controls
                     {
                         // We will use 7.5 as width factor for each character.
 
-                        double requiredWidth = (_vm.Children[0].NodeLabel.Length * widthPerCharacter);
+                        double requiredWidth = (NodeLabel.Length * widthPerCharacter);
                         if (requiredWidth > (MaxWidthSize))
                         {
                             requiredWidth = MaxWidthSize;
