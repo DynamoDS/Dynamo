@@ -243,7 +243,7 @@ namespace DynamoCoreWpfTests
         public void PackageManagerViewExtesion_SendsNotificationForPackagesThatTargetDifferentHost()
         {
             var count = 0;
-            //check that the packageManagerViewExtension requested the test layout spec to be applied.
+            //check that the packageManagerViewExtension logged a notification for a package that targets revit.
             var packageManagerViewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
             var packageManager = ViewModel.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             (packageManagerViewExtension as INotificationSource).NotificationLogged += PackageManagerViewExtensionTests_NotificationLogged;
