@@ -3235,9 +3235,6 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="MessagePackageTargetOtherHostShort" xml:space="preserve">
     <value>Package targets a different host than current host application.</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value />
-  </data>
   <data name="TitlePackageTargetOtherHost" xml:space="preserve">
     <value>Package Host Error</value>
   </data>
