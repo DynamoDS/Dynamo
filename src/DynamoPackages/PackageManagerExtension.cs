@@ -369,7 +369,7 @@ namespace Dynamo.PackageManager
                 {
                     // Is our host in the list?
                     // If not, is any other host in the list?
-                    return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && otherHosts.Any(y => x.host_dependencies != null && x.host_dependencies.Contains(y));
+                    return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && otherHosts.Any(y => x.host_dependencies.Contains(y));
                 });
             }
 
