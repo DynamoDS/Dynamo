@@ -33,13 +33,27 @@ namespace EmitMSIL
 
                 // There should be a way to get the exact method after matching parameter types for a node
                 // using its function descriptor. AST isn't sufficient for parameter type info.
+                // Fist check for static methods
                 mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
                     m => m.Name == methodName && m.GetParameters().Length == args.Count).FirstOrDefault();
 
-                if(mi == null)
+                // Check for instance methods
+                if (mi == null)
                 {
                     mi = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
-                    m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).FirstOrDefault();
+                        m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).FirstOrDefault();
+                }
+
+                // Check for property getters
+                if (mi == null)
+                {
+                    var prop = type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).Where(
+                            p => p.Name == methodName).FirstOrDefault();
+
+                    if (prop != null)
+                    {
+                        mi = prop.GetAccessors().FirstOrDefault();
+                    }
                 }
 
                 if (mi != null)
