@@ -39,13 +39,13 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(settings.AddTrustedLocation(Path.GetTempPath()), "temp should be added to trusted paths successfully");
 
-            Assert.IsTrue(settings.IsTrustedLocation(Path.GetTempPath()));
+            Assert.IsTrue(settings.IsTrustedLocation(Path.GetTempPath()), "temp should now be trusted");
 
             var tempWithSuffix = Path.GetTempPath() + "2222";
-            Assert.IsFalse(settings.TrustedLocations.Contains(tempWithSuffix));
-            Assert.IsFalse(settings.IsTrustedLocation(tempWithSuffix));
+            Assert.IsFalse(settings.TrustedLocations.Contains(tempWithSuffix),"temp with suffix should not be in list of paths");
+            Assert.IsFalse(settings.IsTrustedLocation(tempWithSuffix), "temp with suffix should not be trusted");
 
-            Assert.IsFalse(settings.IsTrustedLocation(Path.Combine(TestDirectory, ":")));
+            Assert.IsFalse(settings.IsTrustedLocation(Path.Combine(TestDirectory, ":")),"sibling path should not be trusted");
 
             var doesNotExist = settings.TrustedLocations[0];
             Assert.IsFalse(settings.IsTrustedLocation(doesNotExist),"trusted location must exist");
@@ -82,13 +82,14 @@ namespace Dynamo.Tests
 
             settings.SetTrustedLocations(new List<string>() { TestDirectory });
 
-            Assert.IsTrue(settings.IsTrustedLocation(TestDirectory));
-            Assert.AreEqual(1, settings.TrustedLocations.Count);
+            Assert.IsTrue(settings.IsTrustedLocation(TestDirectory),"test dir should have been set as trusted");
+            Assert.AreEqual(1, settings.TrustedLocations.Count,"set trusted should have set only 1 path");
 
-            Assert.IsTrue(settings.AddTrustedLocation(@"C:\"));
-            Assert.IsFalse(settings.AddTrustedLocation(@"C:\users"));
-            Assert.IsFalse(settings.AddTrustedLocation(@"C:\Users\pinzart\AppData\Local\Temp\1"));
-            Assert.IsTrue(settings.IsTrustedLocation(Path.GetTempPath()));
+            var rootDir = Path.GetPathRoot(System.Environment.SystemDirectory);
+            Assert.IsTrue(settings.AddTrustedLocation(rootDir),$"adding {rootDir} (root dir of this machine) should succeed");
+            Assert.IsFalse(settings.AddTrustedLocation($"{rootDir}users"),"adding a subdirectory of already trusted path should fail.");
+            Assert.IsFalse(settings.AddTrustedLocation($"{rootDir}Users\\pinzart\\AppData\\Local\\Temp\\1"),"adding path that does not exist should fail. ");
+            Assert.IsTrue(settings.IsTrustedLocation(Path.GetTempPath()),"root volume should be trusted, so all sub folders should be trusted.");
         }
 
         [Test]
