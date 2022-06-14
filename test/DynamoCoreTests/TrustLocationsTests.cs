@@ -24,7 +24,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("UnitTests"), Category("Failure")]
+        [Category("UnitTests")]
         public void TestTrustLocationManagerAPIs()
         {
             Assert.AreEqual(settings.TrustedLocations.Count, 2,"trust location count is incorrect");
