@@ -34,7 +34,7 @@
   </ItemGroup>
   <ItemGroup>
   <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8745" />
-  <PackageReference Include="Greg" Version="2.1.8122.28281" />
+  <PackageReference Include="Greg" Version="2.3.0.1646" />
 	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
 	<PackageReference Include="RestSharp" Version="106.12.0" />
 	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" CopyXML="true" />
