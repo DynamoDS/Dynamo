@@ -366,8 +366,19 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             if (mirrorData == null || !mirrorData.IsCollection) return false;
 
-            var list = mirrorData.GetElements();
-            return !list.Any();
+            try
+            {
+                var list = mirrorData.GetElements();
+                return !list.Any();
+            }
+            catch(NullReferenceException)
+            {
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -379,8 +390,19 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             if (mirrorData == null || mirrorData.Class == null) return false;
 
-            if (string.Equals(mirrorData.Class.Name, "Function")) return true;
-            return false;
+            try
+            {
+                if (string.Equals(mirrorData.Class.Name, "Function")) return true;
+                return false;
+            }
+            catch (NullReferenceException)
+            {
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
