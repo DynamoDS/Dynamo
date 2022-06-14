@@ -1,12 +1,8 @@
-﻿using Dynamo.Configuration;
-using Dynamo.Core;
+﻿using System.Collections.Generic;
+using System.IO;
+using Dynamo.Configuration;
 using DynamoUtilities;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 
 namespace Dynamo.Tests
 {
@@ -28,7 +24,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void TestTrustLocationManagerAPIs()
         {
             Assert.AreEqual(settings.TrustedLocations.Count, 2);
