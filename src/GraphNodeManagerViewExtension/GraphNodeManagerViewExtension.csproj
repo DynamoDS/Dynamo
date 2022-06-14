@@ -107,7 +107,7 @@
     </Compile>
     <Compile Include="Utilities\Utilities.cs" />
     <Compile Include="ViewModels\FilterViewModel.cs" />
-    <Compile Include="ViewModels\NodeViewModel.cs" />
+    <Compile Include="ViewModels\GridNodeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

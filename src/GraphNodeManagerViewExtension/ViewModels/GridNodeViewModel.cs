@@ -22,7 +22,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
     /// <summary>
     /// The ViewModel class to represent a Dynamo Node 
     /// </summary>
-    public class NodeViewModel : NotificationObject
+    public class GridNodeViewModel : NotificationObject
     {
         #region Private Properties
         private string name = string.Empty;
@@ -447,7 +447,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         /// Constructor
         /// </summary>
         /// <param name="node"></param>
-        public NodeViewModel(NodeModel node)
+        public GridNodeViewModel(NodeModel node)
         {
             NodeModel = node;
 
