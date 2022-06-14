@@ -382,6 +382,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             if (mirrorData.IsNull || mirrorData == null || mirrorData.Class == null) return false;
 
+            if (string.IsNullOrEmpty(mirrorData.Class.Name)) return false;
             if (string.Equals(mirrorData.Class.Name, "Function")) return true;
             return false;
         }

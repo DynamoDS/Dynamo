@@ -41,7 +41,7 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
-        /// Search for an element by its ID and focus the view on it
+        /// Search for a Node by its ID and focus the view on it
         /// </summary>
         /// <param name="objectID"></param>
         public void FocusNodeCommand(string objectID)
