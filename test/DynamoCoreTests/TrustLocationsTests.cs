@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Dynamo.Configuration;
 using DynamoUtilities;
@@ -85,7 +86,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(settings.IsTrustedLocation(TestDirectory),"test dir should have been set as trusted");
             Assert.AreEqual(1, settings.TrustedLocations.Count,"set trusted should have set only 1 path");
 
-            var rootDir = Path.GetPathRoot(System.Environment.SystemDirectory);
+            var rootDir = Path.GetPathRoot(Environment.SystemDirectory);
             Assert.IsTrue(settings.AddTrustedLocation(rootDir),$"adding {rootDir} (root dir of this machine) should succeed");
             Assert.IsFalse(settings.AddTrustedLocation($"{rootDir}users"),"adding a subdirectory of already trusted path should fail.");
             Assert.IsFalse(settings.AddTrustedLocation($"{rootDir}Users\\pinzart\\AppData\\Local\\Temp\\1"),"adding path that does not exist should fail. ");
