@@ -63,6 +63,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (name == value) return;
                 name = value;
                 RaisePropertyChanged(nameof(Name));
             }
@@ -79,6 +80,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (statusIsHidden == value) return;
                 statusIsHidden = value;
                 RaisePropertyChanged(nameof(StatusIsHidden));
             }
@@ -95,6 +97,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (stateIsInput == value) return;
                 stateIsInput = value;
                 RaisePropertyChanged(nameof(StateIsInput));
             }
@@ -111,6 +114,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (stateIsOutput == value) return;
                 stateIsOutput = value;
                 RaisePropertyChanged(nameof(StateIsOutput));
             }
@@ -128,6 +132,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (statusIsFrozen == value) return;
                 statusIsFrozen = value;
                 RaisePropertyChanged(nameof(StatusIsFrozen));
             }
@@ -145,6 +150,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (stateIsFunction == value) return;
                 stateIsFunction = value;
                 RaisePropertyChanged(nameof(StateIsFunction));
             }
@@ -165,6 +171,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (issuesHasWarning == value) return;
                 issuesHasWarning = value;
                 RaisePropertyChanged(nameof(IssuesHasWarning));
             }
@@ -182,6 +189,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (issuesHasError == value) return;
                 issuesHasError = value;
                 RaisePropertyChanged(nameof(IssuesHasError));
             }
@@ -203,6 +211,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (isInfo == value) return;
                 isInfo = value;
                 RaisePropertyChanged(nameof(IsInfo));
             }
@@ -221,6 +230,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (isEmptyList == value) return;
                 isEmptyList = value;
                 RaisePropertyChanged(nameof(IsEmptyList));
             }
@@ -238,6 +248,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (isNull == value) return;
                 isNull = value;
                 RaisePropertyChanged(nameof(IsNull));
             }
@@ -254,6 +265,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (dismissedAlertsCount == value) return;
                 dismissedAlertsCount = value;
                 RaisePropertyChanged(nameof(DismissedAlertsCount));
             }
@@ -270,6 +282,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (isDummyNode == value) return;
                 isDummyNode = value;
                 RaisePropertyChanged(nameof(IsDummyNode));
             }
@@ -287,6 +300,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
             internal set
             {
+                if (infoCount == value) return;
                 infoCount = value;
                 RaisePropertyChanged(nameof(InfoCount));
             }
