@@ -1,10 +1,8 @@
-﻿using Dynamo.Configuration;
-using Dynamo.Core;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
+using Dynamo.Configuration;
+using DynamoUtilities;
+using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
@@ -26,7 +24,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void TestTrustLocationManagerAPIs()
         {
             Assert.AreEqual(settings.TrustedLocations.Count, 2,"trust location count is incorrect");
@@ -41,7 +39,13 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(settings.AddTrustedLocation(Path.GetTempPath()), "temp should be added to trusted paths successfully");
 
-            Assert.IsFalse(settings.IsTrustedLocation(Path.Combine(TestDirectory, ":")),"random test directory subdirectory should not be trusted");
+            Assert.IsTrue(settings.IsTrustedLocation(Path.GetTempPath()));
+
+            var tempWithSuffix = Path.GetTempPath() + "2222";
+            Assert.IsFalse(settings.TrustedLocations.Contains(tempWithSuffix));
+            Assert.IsFalse(settings.IsTrustedLocation(tempWithSuffix));
+
+            Assert.IsFalse(settings.IsTrustedLocation(Path.Combine(TestDirectory, ":")));
 
             var doesNotExist = settings.TrustedLocations[0];
             Assert.IsFalse(settings.IsTrustedLocation(doesNotExist),"trusted location must exist");
@@ -78,8 +82,35 @@ namespace Dynamo.Tests
 
             settings.SetTrustedLocations(new List<string>() { TestDirectory });
 
-            Assert.IsTrue(settings.IsTrustedLocation(TestDirectory),"test dir is trusted after setting paths");
-            Assert.AreEqual(1, settings.TrustedLocations.Count,"only one path is trusted");
+            Assert.IsTrue(settings.IsTrustedLocation(TestDirectory));
+            Assert.AreEqual(1, settings.TrustedLocations.Count);
+
+            Assert.IsTrue(settings.AddTrustedLocation(@"C:\"));
+            Assert.IsFalse(settings.AddTrustedLocation(@"C:\users"));
+            Assert.IsFalse(settings.AddTrustedLocation(@"C:\Users\pinzart\AppData\Local\Temp\1"));
+            Assert.IsTrue(settings.IsTrustedLocation(Path.GetTempPath()));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestPathHelper()
+        {
+            string dir1 = "C:\\users";
+            string dir2 = "C:\\users" + Path.DirectorySeparatorChar;
+            string dir3 = "C:\\users" + Path.AltDirectorySeparatorChar;
+            Assert.IsTrue(PathHelper.AreDirectoryPathsEqual(dir1, dir2));
+            Assert.IsTrue(PathHelper.AreDirectoryPathsEqual(dir1, dir3));
+            Assert.IsTrue(PathHelper.AreDirectoryPathsEqual(dir1.ToUpper(), dir3.ToLower()));
+
+            string parentDir1 = @"C:\\B";
+            string parentDir2 = @"C:\\B\\";
+            string subDir1 = @"C:\B\C\D\C\E\F\G";
+            string subDir2 = @"C:\D\C\D\C\E\F\G";
+            Assert.IsTrue(PathHelper.IsSubDirectoryOfDirectory(subDir1, parentDir1));
+            Assert.IsTrue(PathHelper.IsSubDirectoryOfDirectory(subDir1, parentDir2));
+
+            Assert.IsFalse(PathHelper.IsSubDirectoryOfDirectory(subDir2, parentDir1));
+            Assert.IsFalse(PathHelper.IsSubDirectoryOfDirectory(subDir2, parentDir2));
         }
     }
 }
