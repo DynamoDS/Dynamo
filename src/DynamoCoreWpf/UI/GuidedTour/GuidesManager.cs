@@ -522,27 +522,24 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
             UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
 
-            // When popup already exist, replace the content
+            // When popup already exist, replace it
             if ( exitTourPopup != null && exitTourPopup.IsOpen)
             {
-                exitTourPopup.TextContent = content;
+                exitTourPopup.IsOpen = false;
             }
-            else
+            // Otherwise creates the RealTimeInfoWindow popup and set up all the needed values
+            // to show the popup over the Dynamo workspace
+            exitTourPopup = new RealTimeInfoWindow()
             {
-                // Otherwise creates the RealTimeInfoWindow popup and set up all the needed values
-                // to show the popup over the Dynamo workspace
-                exitTourPopup = new RealTimeInfoWindow()
-                {
-                    VerticalOffset = ExitTourVerticalOffset,
-                    HorizontalOffset = ExitTourHorizontalOffset,
-                    Placement = PlacementMode.Left,
-                    TextContent = content
-                };
+                VerticalOffset = ExitTourVerticalOffset,
+                HorizontalOffset = ExitTourHorizontalOffset,
+                Placement = PlacementMode.Left,
+                TextContent = content
+            };
 
-                if (hostUIElement != null)
-                    exitTourPopup.PlacementTarget = hostUIElement;
-                exitTourPopup.IsOpen = true;
-            }
+            if (hostUIElement != null)
+                exitTourPopup.PlacementTarget = hostUIElement;
+            exitTourPopup.IsOpen = true;
         }
     }
 }
