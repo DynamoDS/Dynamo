@@ -23,7 +23,7 @@ namespace Dynamo.Tests
                 ExecutingDirectory
             });
         }
-        /*
+        
         [Test]
         [Category("UnitTests")]
         public void TestTrustLocationManagerAPIs()
@@ -93,7 +93,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(settings.IsTrustedLocation(Path.GetTempPath()),"root volume should be trusted, so all sub folders should be trusted.");
             
     }
-        */
+        
 
         [Test]
         [Category("UnitTests")]
