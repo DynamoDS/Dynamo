@@ -4577,7 +4577,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This new node needs to be connected to another to make it part of the graph. Give it a try!.
+        ///   Looks up a localized string similar to This new node needs to be connected to another to make it part of the graph. Give it a try, then click the Next arrow..
         /// </summary>
         public static string OnboardingGuideConnectNodesText {
             get {
@@ -4613,7 +4613,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide..
+        ///   Looks up a localized string similar to You&apos;ve finished getting started with Dynamo..
+        /// </summary>
+        public static string OnboardingGuideSurveyText {
+            get {
+                return ResourceManager.GetString("OnboardingGuideSurveyText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph..
         /// </summary>
         public static string OnboardingGuideWelcomeText {
             get {
@@ -4649,7 +4658,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This node needs a **CoordinateSystem** input. You can find a node to use as the input in the library by using search or browsing. The node is **CoordinateSystem.ByOrigin**, so you’ll find it under the **CoordinateSystem** category.\n\n Click the node to place it in the workspace..
+        ///   Looks up a localized string similar to The library contains the nodes used to build graphs. To find a node, you can search the library or browse its categories.
+        ///
+        ///To place a node from the library to the workspace, click the node.
+        ///
+        ///Try placing the highlighted **ByOrigin** node..
         /// </summary>
         public static string OnboardingPlaceNodeText {
             get {
@@ -4658,7 +4671,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search the library and place a node.
+        ///   Looks up a localized string similar to Placing nodes.
         /// </summary>
         public static string OnboardingPlaceNodeTitle {
             get {
@@ -4667,7 +4680,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in Dynamo Primer..
+        ///   Looks up a localized string similar to Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in #Dynamo Primer=https://primer2.dynamobim.org/..
         /// </summary>
         public static string OnboardingSuccessText {
             get {
@@ -4685,7 +4698,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** , which is made up of nodes and wires. Graphs can process data, create geometry, and more. In this guide, we’ll work with a premade sample graph..
+        ///   Looks up a localized string similar to This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** . Graphs can process data, create geometry, and more. In this guide, we’ll work with a sample graph..
         /// </summary>
         public static string OnboardingWorkspaceText {
             get {

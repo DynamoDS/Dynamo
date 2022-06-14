@@ -1,10 +1,8 @@
-﻿using Dynamo.Configuration;
-using Dynamo.Core;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
+using Dynamo.Configuration;
+using DynamoUtilities;
+using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
@@ -26,7 +24,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void TestTrustLocationManagerAPIs()
         {
             Assert.AreEqual(settings.TrustedLocations.Count, 2);
@@ -40,6 +38,12 @@ namespace Dynamo.Tests
             Assert.IsFalse(settings.IsTrustedLocation(Path.GetTempPath()));
 
             Assert.IsTrue(settings.AddTrustedLocation(Path.GetTempPath()));
+
+            Assert.IsTrue(settings.IsTrustedLocation(Path.GetTempPath()));
+
+            var tempWithSuffix = Path.GetTempPath() + "2222";
+            Assert.IsFalse(settings.TrustedLocations.Contains(tempWithSuffix));
+            Assert.IsFalse(settings.IsTrustedLocation(tempWithSuffix));
 
             Assert.IsFalse(settings.IsTrustedLocation(Path.Combine(TestDirectory, ":")));
 
@@ -80,6 +84,33 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(settings.IsTrustedLocation(TestDirectory));
             Assert.AreEqual(1, settings.TrustedLocations.Count);
+
+            Assert.IsTrue(settings.AddTrustedLocation(@"C:\"));
+            Assert.IsFalse(settings.AddTrustedLocation(@"C:\users"));
+            Assert.IsFalse(settings.AddTrustedLocation(@"C:\Users\pinzart\AppData\Local\Temp\1"));
+            Assert.IsTrue(settings.IsTrustedLocation(Path.GetTempPath()));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestPathHelper()
+        {
+            string dir1 = "C:\\users";
+            string dir2 = "C:\\users" + Path.DirectorySeparatorChar;
+            string dir3 = "C:\\users" + Path.AltDirectorySeparatorChar;
+            Assert.IsTrue(PathHelper.AreDirectoryPathsEqual(dir1, dir2));
+            Assert.IsTrue(PathHelper.AreDirectoryPathsEqual(dir1, dir3));
+            Assert.IsTrue(PathHelper.AreDirectoryPathsEqual(dir1.ToUpper(), dir3.ToLower()));
+
+            string parentDir1 = @"C:\\B";
+            string parentDir2 = @"C:\\B\\";
+            string subDir1 = @"C:\B\C\D\C\E\F\G";
+            string subDir2 = @"C:\D\C\D\C\E\F\G";
+            Assert.IsTrue(PathHelper.IsSubDirectoryOfDirectory(subDir1, parentDir1));
+            Assert.IsTrue(PathHelper.IsSubDirectoryOfDirectory(subDir1, parentDir2));
+
+            Assert.IsFalse(PathHelper.IsSubDirectoryOfDirectory(subDir2, parentDir1));
+            Assert.IsFalse(PathHelper.IsSubDirectoryOfDirectory(subDir2, parentDir2));
         }
     }
 }
