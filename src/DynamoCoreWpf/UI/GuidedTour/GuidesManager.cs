@@ -21,19 +21,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
     /// </summary>
     public sealed class GuidesManager
     {
-        /// <summary>
-        /// enum that represent the state of the current guide.
-        /// PLAYING - The Guide has started
-        /// EXIT_MODE - exitGuideWindow Popup is being shown
-        /// STOPPED - The user has exited completely the guide (so no Popup is being shown)
-        /// </summary>
-        internal enum GUIDE_STATE { PLAYING, EXIT_MODE, STOPPED }
         #region private properties
         /// <summary>
         /// currentGuide will contain the Guide being played
         /// </summary>
         internal Guide currentGuide;
-        internal GUIDE_STATE currentGuideState;
 
         private GuideBackground guideBackgroundElement;
         private readonly UIElement mainRootElement;
@@ -114,6 +106,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
             GuideFlowEvents.GuidedTourStart += TourStarted;
             GuideFlowEvents.GuidedTourFinish += TourFinished;
+            GuideFlowEvents.GuidedTourClosed += TourClosed;
 
             Guides = new List<Guide>();
 
@@ -181,7 +174,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
-                currentGuideState = GUIDE_STATE.PLAYING;
                 Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
                 Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource).Replace("_", ""), currentGuide.SequenceOrder);
             }
@@ -223,13 +215,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 guideBackgroundElement.ClearHighlightSection();
                 guideBackgroundElement.ClearCutOffSection();
                 CreateExitModal(currentGuide.CurrentStep.ExitGuide);
-                currentGuideState = GUIDE_STATE.EXIT_MODE;
             }
             else
             {
                 ExitTour();
-                currentGuideState = GUIDE_STATE.STOPPED;
             }
+        }
+
+        private void TourClosed(GuidedTourStateEventArgs args)
+        {
+
         }
 
         /// <summary>
@@ -259,8 +254,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 currentGuide.ClearGuide();
                 GuideFlowEvents.GuidedTourStart -= TourStarted;
                 GuideFlowEvents.GuidedTourFinish -= TourFinished;
+                GuideFlowEvents.GuidedTourClosed -= TourClosed;
 
-                if(exitGuideWindow != null)
+                if (exitGuideWindow != null)
                 {
                     exitGuideWindow.ExitTourButton.Click -= ExitTourButton_Click;
                     exitGuideWindow.ContinueTourButton.Click -= ContinueTourButton_Click;
@@ -295,14 +291,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="isActive"></param>
         internal void ManagePopupActivation(bool isActive)
         {
-            switch(currentGuideState)
+            if (GuideFlowEvents.IsAnyGuideActive)
             {
-                case GUIDE_STATE.PLAYING:
+                if (currentGuide.CurrentStep.stepUIPopup.IsOpen == !isActive)
                     currentGuide.CurrentStep.stepUIPopup.IsOpen = isActive;
-                    break;
-                case GUIDE_STATE.EXIT_MODE:
+            }
+            else if (GuideFlowEvents.IsAnyGuideActive == false && GuideFlowEvents.IsGuideClosed == false)
+            {
+                if(exitGuideWindow != null && currentGuide.Name.Equals("Packages"))
                     exitGuideWindow.IsOpen = isActive;
-                    break;
             }
         }
 
@@ -314,14 +311,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 GuideFlowEvents.IsAnyGuideActive = true;
                 currentGuide.ContinueStep(currentGuide.CurrentStep.Sequence);
             }
-            currentGuideState = GUIDE_STATE.PLAYING;
         }
 
         private void ExitTourButton_Click(object sender, RoutedEventArgs e)
         {
             exitGuideWindow.IsOpen = false;
+            GuideFlowEvents.OnGuidedTourClosed(currentGuide.Name);
             ExitTour();
-            currentGuideState = GUIDE_STATE.STOPPED;
         }
 
         /// <summary>

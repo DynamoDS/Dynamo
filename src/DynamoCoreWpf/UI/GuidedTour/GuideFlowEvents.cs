@@ -9,6 +9,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
     public delegate void UpdateLibraryInteractionsEventHandler();
     public delegate void GuidedTourStartEventHandler(GuidedTourStateEventArgs args);
     public delegate void GuidedTourFinishEventHandler(GuidedTourStateEventArgs args);
+    public delegate void GuidedTourClosedEventHandler(GuidedTourStateEventArgs args);
 
     /// <summary>
     /// This static class will be used to raise events when the tooltip, welcome and survey popup buttons are clicked.
@@ -18,6 +19,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         //Event that will be raised when the Popup Next button is pressed, the value passed as parameter is the current Step Sequence
         public static event GuidedTourNextEventHandler GuidedTourNextStep;
         private static bool isAnyGuideActive { get; set; } = false;
+        private static bool isGuideClosed { get; set; } = false;
         public static void OnGuidedTourNext()
         {
             if (GuidedTourNextStep != null)
@@ -39,6 +41,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (GuidedTourStart != null)
             {
                 isAnyGuideActive = true;
+                isGuideClosed = false;
                 GuidedTourStart(new GuidedTourStateEventArgs(name));
             }              
         }
@@ -51,6 +54,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 isAnyGuideActive = false;
                 GuidedTourFinish(new GuidedTourStateEventArgs(name));
+            }
+        }
+
+        //Event that will be raised when the Guide is completely closed (this is specific for the Packages guide that allows the user to continue or exit the guide)
+        public static event GuidedTourClosedEventHandler GuidedTourClosed;
+        internal static void OnGuidedTourClosed(string name)
+        {
+            if (GuidedTourClosed != null)
+            {
+                isGuideClosed = true;
+                GuidedTourClosed(new GuidedTourStateEventArgs(name));
             }
         }
 
@@ -71,12 +85,21 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This property will returm if the a guide is being executed or not. 
+        /// This property will return if the a guide is being executed or not. 
         /// </summary>
         public static bool IsAnyGuideActive
         {
             get { return isAnyGuideActive; }
             set { isAnyGuideActive = value; }
+        }
+
+        /// <summary>
+        /// This property will return a value that says if the tour has been completely closed or not
+        /// </summary>
+        public static bool IsGuideClosed
+        {
+            get { return isGuideClosed; }
+            set { isGuideClosed = value; }
         }
     }
 
