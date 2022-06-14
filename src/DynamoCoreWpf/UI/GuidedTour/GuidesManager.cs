@@ -21,11 +21,19 @@ namespace Dynamo.Wpf.UI.GuidedTour
     /// </summary>
     public sealed class GuidesManager
     {
+        /// <summary>
+        /// enum that represent the state of the current guide.
+        /// PLAYING - The Guide has started
+        /// EXIT_MODE - exitGuideWindow Popup is being shown
+        /// STOPPED - The user has exited completely the guide (so no Popup is being shown)
+        /// </summary>
+        internal enum GUIDE_STATE { PLAYING, EXIT_MODE, STOPPED }
         #region private properties
         /// <summary>
         /// currentGuide will contain the Guide being played
         /// </summary>
-        private Guide currentGuide;
+        internal Guide currentGuide;
+        internal GUIDE_STATE currentGuideState;
 
         private GuideBackground guideBackgroundElement;
         private readonly UIElement mainRootElement;
@@ -173,6 +181,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
+                currentGuideState = GUIDE_STATE.PLAYING;
                 Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
                 Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource).Replace("_", ""), currentGuide.SequenceOrder);
             }
@@ -214,10 +223,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 guideBackgroundElement.ClearHighlightSection();
                 guideBackgroundElement.ClearCutOffSection();
                 CreateExitModal(currentGuide.CurrentStep.ExitGuide);
+                currentGuideState = GUIDE_STATE.EXIT_MODE;
             }
             else
             {
                 ExitTour();
+                currentGuideState = GUIDE_STATE.STOPPED;
             }
         }
 
@@ -278,6 +289,23 @@ namespace Dynamo.Wpf.UI.GuidedTour
             exitGuideWindow.IsOpen = true;
         }
 
+        /// <summary>
+        /// Shows/Hides the Popup based in if the DynamoView is Active or not
+        /// </summary>
+        /// <param name="isActive"></param>
+        internal void ManagePopupActivation(bool isActive)
+        {
+            switch(currentGuideState)
+            {
+                case GUIDE_STATE.PLAYING:
+                    currentGuide.CurrentStep.stepUIPopup.IsOpen = isActive;
+                    break;
+                case GUIDE_STATE.EXIT_MODE:
+                    exitGuideWindow.IsOpen = isActive;
+                    break;
+            }
+        }
+
         private void ContinueTourButton_Click(object sender, RoutedEventArgs e)
         {
             exitGuideWindow.IsOpen = false;
@@ -286,12 +314,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 GuideFlowEvents.IsAnyGuideActive = true;
                 currentGuide.ContinueStep(currentGuide.CurrentStep.Sequence);
             }
+            currentGuideState = GUIDE_STATE.PLAYING;
         }
 
         private void ExitTourButton_Click(object sender, RoutedEventArgs e)
         {
             exitGuideWindow.IsOpen = false;
             ExitTour();
+            currentGuideState = GUIDE_STATE.STOPPED;
         }
 
         /// <summary>

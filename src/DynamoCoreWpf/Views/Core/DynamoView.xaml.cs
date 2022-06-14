@@ -42,6 +42,7 @@ using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.FileTrust;
@@ -2473,6 +2474,27 @@ namespace Dynamo.Controls
             var dynViewModel = DataContext as DynamoViewModel;
             if (dynViewModel.FileTrustViewModel == null) return;
             dynViewModel.FileTrustViewModel.ShowWarningPopup = true;
+        }
+
+        private void DynamoView_Activated(object sender, EventArgs e)
+        {
+            if (dynamoViewModel.MainGuideManager != null && dynamoViewModel.MainGuideManager.currentGuide != null)
+            {
+                dynamoViewModel.MainGuideManager.ManagePopupActivation(true);
+            }
+               
+
+            if (warningPopup != null)
+                warningPopup.ManagePopupActivation(true);
+        }
+
+        private void DynamoView_Deactivated(object sender, EventArgs e)
+        {
+            if (dynamoViewModel.MainGuideManager != null && dynamoViewModel.MainGuideManager.currentGuide != null)
+                dynamoViewModel.MainGuideManager.ManagePopupActivation(false);
+
+            if(warningPopup != null)
+                warningPopup.ManagePopupActivation(false);
         }
 
         public void Dispose()
