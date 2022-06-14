@@ -38,6 +38,7 @@ namespace Dynamo.Controls
         internal double ExtratWidthSize { get { return extraWidthSize; } }
         internal double WidthPerCharacter { get { return widthPerCharacter; } }
         internal double MaxWidthSize { get { return defaultWidthSize * 2; } }
+        internal string NodeLabel { get { return _vm.Children[0].NodeLabel; } }
 
         private void WatchTree_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -62,7 +63,7 @@ namespace Dynamo.Controls
                     this.Height = minHeightSize;
                     if (_vm.Children.Count !=0)
                     {
-                        if (_vm.Children[0].NodeLabel.Contains(Environment.NewLine))
+                        if (NodeLabel.Contains(Environment.NewLine) || NodeLabel.ToUpper() == nameof(WatchViewModel.DICTIONARY))
                         {
                             this.Height = defaultHeightSize;
                         }
@@ -82,7 +83,7 @@ namespace Dynamo.Controls
                     {
                         // We will use 7.5 as width factor for each character.
 
-                        double requiredWidth = (_vm.Children[0].NodeLabel.Length * widthPerCharacter);
+                        double requiredWidth = (NodeLabel.Length * widthPerCharacter);
                         if (requiredWidth > (MaxWidthSize))
                         {
                             requiredWidth = MaxWidthSize;
