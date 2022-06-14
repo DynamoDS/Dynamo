@@ -364,13 +364,21 @@ namespace Dynamo.GraphNodeManager.ViewModels
         /// <returns></returns>
         private bool IsNodeEmptyList(MirrorData mirrorData)
         {
-            if (mirrorData.IsNull || mirrorData == null || !mirrorData.IsCollection) return false;
+            if (mirrorData == null || !mirrorData.IsCollection) return false;
 
-            var list = mirrorData.GetElements();
-            if (list == null)
+            try
+            {
+                var list = mirrorData.GetElements();
+                return !list.Any();
+            }
+            catch(NullReferenceException)
+            {
                 return false;
-
-            return !list.Any();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -380,11 +388,21 @@ namespace Dynamo.GraphNodeManager.ViewModels
         /// <returns></returns>
         private bool IsNodeOutputFunction(MirrorData mirrorData)
         {
-            if (mirrorData.IsNull || mirrorData == null || mirrorData.Class == null) return false;
+            if (mirrorData == null || mirrorData.Class == null) return false;
 
-            if (string.IsNullOrEmpty(mirrorData.Class.Name)) return false;
-            if (string.Equals(mirrorData.Class.Name, "Function")) return true;
-            return false;
+            try
+            {
+                if (string.Equals(mirrorData.Class.Name, "Function")) return true;
+                return false;
+            }
+            catch (NullReferenceException)
+            {
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
