@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Core;
@@ -42,7 +43,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private ElementState state;
         private ObservableCollection<NodeInfo> nodeInfos = new ObservableCollection<NodeInfo>();
         private string package;
-        private Guid nodeGuid;
+        private Guid nodeGuid; 
+        
+        public delegate void EventHandler(object sender, EventArgs args);
+        public event EventHandler BubbleUpdate = delegate { };
+
         #endregion
 
         #region Public Fields
@@ -56,7 +61,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 name = NodeModel?.Name;
                 return name;
             }
-            internal set => name = value;
+            internal set
+            {
+                name = value;
+                RaisePropertyChanged(nameof(Name));
+            }
         }
         /// <summary>
         /// IsVisible
@@ -68,7 +77,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 statusIsHidden = !NodeModel.IsVisible;
                 return statusIsHidden;
             }
-            internal set => statusIsHidden = value;
+            internal set
+            {
+                statusIsHidden = value;
+                RaisePropertyChanged(nameof(StatusIsHidden));
+            }
         }
         /// <summary>
         /// IsInputNode
@@ -80,7 +93,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 stateIsInput = NodeModel.IsSetAsInput;
                 return stateIsInput;
             }
-            internal set => stateIsInput = value;
+            internal set
+            {
+                stateIsInput = value;
+                RaisePropertyChanged(nameof(StateIsInput));
+            }
         }
         /// <summary>
         /// IsOutputNode
@@ -92,7 +109,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 stateIsOutput = NodeModel.IsSetAsOutput;
                 return stateIsOutput;
             }
-            internal set => stateIsInput = value;
+            internal set
+            {
+                stateIsOutput = value;
+                RaisePropertyChanged(nameof(StateIsOutput));
+            }
         }
 
         /// <summary>
@@ -105,7 +126,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 statusIsFrozen = NodeModel.IsFrozen;
                 return statusIsFrozen;
             }
-            internal set => statusIsFrozen = value;
+            internal set
+            {
+                statusIsFrozen = value;
+                RaisePropertyChanged(nameof(StatusIsFrozen));
+            }
         }
 
         /// <summary>
@@ -118,7 +143,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 stateIsFunction = IsNodeOutputFunction(NodeModel.CachedValue);
                 return stateIsFunction;
             }
-            internal set => stateIsFunction = value;
+            internal set
+            {
+                stateIsFunction = value;
+                RaisePropertyChanged(nameof(StateIsFunction));
+            }
         }
 
         /// <summary>
@@ -134,7 +163,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 }
                 return issuesHasWarning;
             }
-            internal set => issuesHasWarning = value;
+            internal set
+            {
+                issuesHasWarning = value;
+                RaisePropertyChanged(nameof(IssuesHasWarning));
+            }
         }
 
         /// <summary>
@@ -147,7 +180,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 issuesHasError = NodeModel.IsInErrorState;
                 return issuesHasError;
             }
-            internal set => issuesHasError = value;
+            internal set
+            {
+                issuesHasError = value;
+                RaisePropertyChanged(nameof(IssuesHasError));
+            }
         }
 
 
@@ -164,7 +201,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 }
                 return isInfo;
             }
-            internal set => isInfo = value;
+            internal set
+            {
+                isInfo = value;
+                RaisePropertyChanged(nameof(IsInfo));
+            }
         }
 
         /// <summary>
@@ -178,7 +219,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
 
                 return isEmptyList;
             }
-            internal set => isEmptyList = value;
+            internal set
+            {
+                isEmptyList = value;
+                RaisePropertyChanged(nameof(IsEmptyList));
+            }
         }
 
         /// <summary>
@@ -191,7 +236,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 isNull = NodeModel.CachedValue != null && NodeModel.CachedValue.IsNull;
                 return isNull;
             }
-            internal set => isNull = value;
+            internal set
+            {
+                isNull = value;
+                RaisePropertyChanged(nameof(IsNull));
+            }
         }
         /// <summary>
         /// Number of dismissed alerts - Warnings/Errors in a node
@@ -203,7 +252,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 dismissedAlertsCount = NodeModel.DismissedAlerts.Count;
                 return dismissedAlertsCount;
             }
-            internal set => dismissedAlertsCount = value;
+            internal set
+            {
+                dismissedAlertsCount = value;
+                RaisePropertyChanged(nameof(DismissedAlertsCount));
+            }
         }
         /// <summary>
         /// If the node is broken or unreferenced
@@ -215,7 +268,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 isDummyNode = (NodeModel as DummyNode) != null;
                 return isDummyNode;
             }
-            internal set => isDummyNode = value;
+            internal set
+            {
+                isDummyNode = value;
+                RaisePropertyChanged(nameof(IsDummyNode));
+            }
         }
         /// <summary>
         /// Test The Number of Info/Warning/Error messages 
@@ -228,7 +285,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 infoCount = NodeModel.NodeInfos.Count;
                 return infoCount;
             }
-            internal set => infoCount = value;
+            internal set
+            {
+                infoCount = value;
+                RaisePropertyChanged(nameof(InfoCount));
+            }
         }
         /// <summary>
         /// The correct icon for the Info Bubble
@@ -408,10 +469,25 @@ namespace Dynamo.GraphNodeManager.ViewModels
                     break;
                 case "IsFrozen":
                     RaisePropertyChanged(nameof(StatusIsFrozen));
+                    UpdateDownstreemNodes(nodeModel);
                     break;
                 case "State":
                     RaisePropertyChanged(nameof(State));
                     break;
+            }
+        }
+
+        /// <summary>
+        /// In case an Input Node is frozen, only the input node triggers RaisePropertyChange
+        /// All the downstream Nodes won't RaisePropertyChange for IsFrozen (although they will report correctly that they are)
+        /// We need to manually update the view in this case
+        /// </summary>
+        /// <param name="nodeModel"></param>
+        private void UpdateDownstreemNodes(NodeModel nodeModel)
+        {
+            if (nodeModel.OutputNodes.Count > 0)
+            {
+                BubbleUpdate(nodeModel, new EventArgs());
             }
         }
 

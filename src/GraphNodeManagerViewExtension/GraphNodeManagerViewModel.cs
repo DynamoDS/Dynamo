@@ -234,11 +234,16 @@ namespace Dynamo.GraphNodeManager
             {
                 return;
             }
+
+            DisposeNodes();
+
             nodeDictionary.Clear();
             Nodes.Clear();
+
             foreach (var node in CurrentWorkspace.Nodes)
             {
                 var graphNode = new NodeViewModel(node);
+                graphNode.BubbleUpdate += (sender, args) => { RefreshNodesView(); };
                 nodeDictionary[node.GUID] = graphNode;
                 Nodes.Add(graphNode);
             }
@@ -247,12 +252,20 @@ namespace Dynamo.GraphNodeManager
             NodesCollection.Source = Nodes;
             NodesCollection.Filter += NodesCollectionViewSource_Filter;
 
+            RefreshNodesView();
+        }
+
+        /// <summary>
+        /// A sequence of methods to update the DataGrid view
+        /// </summary>
+        private void RefreshNodesView()
+        {
             NodesCollection.View?.Refresh();
 
             RaisePropertyChanged(nameof(NodesCollection));
             RaisePropertyChanged(nameof(Nodes));
         }
-        
+
         /// <summary>
         /// Enable editing when it is disabled temporarily.
         /// </summary>
@@ -465,6 +478,7 @@ namespace Dynamo.GraphNodeManager
         private void CurrentWorkspaceModel_NodeAdded(NodeModel node)
         {
             var infoNode = new NodeViewModel(node);
+            infoNode.BubbleUpdate += (sender, args) => { RefreshNodesView(); };
             nodeDictionary[node.GUID] = infoNode;
             Nodes.Add(infoNode);
             RaisePropertyChanged(nameof(NodesCollection));
@@ -476,6 +490,7 @@ namespace Dynamo.GraphNodeManager
         private void CurrentWorkspaceModel_NodeRemoved(NodeModel node)
         {
             var infoNode = nodeDictionary[node.GUID];
+            infoNode.BubbleUpdate -= (sender, args) => { RefreshNodesView(); };
             nodeDictionary.Remove(node.GUID);
             Nodes.Remove(infoNode);
             RaisePropertyChanged(nameof(NodesCollection));
@@ -547,6 +562,7 @@ namespace Dynamo.GraphNodeManager
         {
             foreach(var nvm in Nodes)
             {
+                nvm.BubbleUpdate -= (sender, args) => { RefreshNodesView(); };
                 nvm.Dispose();
             }
         }
