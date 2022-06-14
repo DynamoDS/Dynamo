@@ -16,7 +16,7 @@
     <Compile Remove="Saving.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Greg" Version="2.2.0.1553" />
+    <PackageReference Include="Greg" Version="2.3.0.1646" />
 	  <PackageReference Include="Moq" Version="4.2.1507.0118" ExcludeAssets="none" CopyXML="true" />
     <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
     <PackageReference Include="NUnit" Version="2.6.3" ExcludeAssets="none" CopyXML="true" />
