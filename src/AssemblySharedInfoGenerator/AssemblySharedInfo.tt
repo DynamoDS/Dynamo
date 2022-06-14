@@ -72,5 +72,5 @@ int MinorVersion = 15;
 int BuildNumber = 0;
 // The datetime baseline we choose using this algorithm will affect build number and all nuget packages uploaded
 // Please only change when major or minor version got incremented
-int RevisionNumber = ((int)(DateTime.UtcNow - new DateTime(2021,1,1)).TotalDays)*10+(int)DateTime.UtcNow.Hour;
+int RevisionNumber = ((int)(DateTime.UtcNow - new DateTime(2021,1,1)).TotalDays)*10+((int)DateTime.UtcNow.Hour)/3;
 #>
