@@ -915,7 +915,6 @@ namespace Dynamo.ViewModels
 
             foreach (var connector in allNodes.SelectMany(x=>x.AllConnectors))
             {
-
                 var connectorViewModel = WorkspaceViewModel
                     .Connectors
                     .Where(x => connector.GUID == x.ConnectorModel.GUID)
@@ -1098,10 +1097,12 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Width");
                     RaisePropertyChanged(nameof(ModelAreaRect));
                     UpdateAllGroupedGroups();
+                    UpdateProxyPortsPosition();
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
                     UpdateAllGroupedGroups();
+                    UpdateProxyPortsPosition();
                     break;
                 case nameof(AnnotationDescriptionText):
                     RaisePropertyChanged(nameof(AnnotationDescriptionText));
