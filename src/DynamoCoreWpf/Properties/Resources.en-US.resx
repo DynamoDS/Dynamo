@@ -3073,7 +3073,7 @@ To install the latest version of a package, click Install. \n
     <value>You've finished getting started with Dynamo.</value>
   </data>
   <data name="OnboardingWorkspaceText" xml:space="preserve">
-    <value>This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph**. Graphs can process data, create geometry, and more. In this guide, we’ll work with a sample graph.</value>
+    <value>This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** . Graphs can process data, create geometry, and more. In this guide, we’ll work with a sample graph.</value>
   </data>
   <data name="OnboardingWorkspaceTitle" xml:space="preserve">
     <value>Workspace</value>
@@ -3130,13 +3130,17 @@ To install the latest version of a package, click Install. \n
     <value>Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph.</value>
   </data>
   <data name="OnboardingPlaceNodeText" xml:space="preserve">
-    <value>This node needs a **CoordinateSystem** input. You can find a node to use as the input in the library by using search or browsing. The node is **CoordinateSystem.ByOrigin**, so you’ll find it under the **CoordinateSystem** category.\n\n Click the node to place it in the workspace.</value>
+    <value>The library contains the nodes used to build graphs. To find a node, you can search the library or browse its categories.
+
+To place a node from the library to the workspace, click the node.
+
+Try placing the highlighted **ByOrigin** node.</value>
   </data>
   <data name="OnboardingPlaceNodeTitle" xml:space="preserve">
-    <value>Search the library and place a node</value>
+    <value>Placing nodes</value>
   </data>
   <data name="OnboardingGuideConnectNodesText" xml:space="preserve">
-    <value>This new node needs to be connected to another to make it part of the graph. Give it a try!</value>
+    <value>This new node needs to be connected to another to make it part of the graph. Give it a try, then click the Next arrow.</value>
   </data>
   <data name="OnboardingGuideConnectNodesTitle" xml:space="preserve">
     <value>Connect the nodes</value>
