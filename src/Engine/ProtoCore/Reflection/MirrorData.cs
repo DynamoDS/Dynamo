@@ -169,6 +169,9 @@ namespace ProtoCore
                     return null;
 
                 var array = runtimeCore.Heap.ToHeapObject<DSArray>(svData);
+                if (array == null)
+                    return null;
+
                 return array.Values.Select(x => new MirrorData(this.core, this.runtimeCore, x));
             }
 
