@@ -249,7 +249,7 @@ namespace Dynamo.ViewModels
                 OutPorts.Clear();
                 if (value)
                 {
-                    this.ShowGroupContents();
+                    this.ShowGroupContents();       
                 }
                 else
                 {
@@ -725,13 +725,10 @@ namespace Dynamo.ViewModels
             return verticalOffset + (proxyPortIndex * portHeight) + portVerticalMidPoint;
         }
 
-        private Point2D CalculatePortPosition(PortModel portModel, int proxyPortIndex)
+        private Point2D CalculatePortPosition(PortModel portModel, double verticalPosition)
         {
             double groupHeaderHeight = Height - ModelAreaRect.Height;
-
-            double offset = GetPortVerticalOffset(portModel, proxyPortIndex);
-            double y = Top + groupHeaderHeight + offset;
-
+            double y = Top + groupHeaderHeight + verticalPosition + verticalOffset + portVerticalMidPoint;
             switch (portModel.PortType)
             {
                 case PortType.Input:
@@ -740,7 +737,7 @@ namespace Dynamo.ViewModels
                     if (portModel.Owner is CodeBlockNodeModel)
                     {
                         // Special case because code block outputs are smaller than regular outputs.
-                        return new Point2D(Left + Width, y + 6);
+                        return new Point2D(Left + Width, y - 8);
                     }
                     return new Point2D(Left + Width, y);
             }
@@ -755,15 +752,19 @@ namespace Dynamo.ViewModels
                 .ToList();
 
             var newPortViewModels = new List<PortViewModel>();
-            for (int i = 0; i < groupPortModels.Count(); i++)
+            double verticalPosition = 0;
+            foreach (var group in groupPortModels)
             {
-                var model = groupPortModels.ElementAt(i);
-                newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(model));
-
-                // calculate new position for the proxy inports.
-                model.Center = CalculatePortPosition(model, i);
+                var originalPort = originalPortViewModels.FirstOrDefault(x => x.PortModel.GUID == group.GUID);
+                if (originalPort != null)
+                {
+                    var portViewModel = originalPort.CreateProxyPortViewModel(group);
+                    newPortViewModels.Add(portViewModel);
+                    // calculate new position for the proxy outports
+                    group.Center = CalculatePortPosition(group, verticalPosition);
+                    verticalPosition += originalPort.Height;
+                }
             }
-
             return newPortViewModels;
         }
 
@@ -775,7 +776,7 @@ namespace Dynamo.ViewModels
                 .ToList();
 
             var newPortViewModels = new List<PortViewModel>();
-            int index = 0;
+            double verticalPosition = 0;
             foreach (var group in groupPortModels)
             {
                 var originalPort = originalPortViewModels.FirstOrDefault(x => x.PortModel.GUID == group.GUID);
@@ -784,9 +785,9 @@ namespace Dynamo.ViewModels
                     var portViewModel = originalPort.CreateProxyPortViewModel(group);
                     newPortViewModels.Add(portViewModel);
                     // calculate new position for the proxy outports
-                    group.Center = CalculatePortPosition(group, index);
+                    group.Center = CalculatePortPosition(group, verticalPosition);
+                    verticalPosition += originalPort.Height;
                 }
-                index++;
             }
 
             return newPortViewModels;
@@ -799,23 +800,30 @@ namespace Dynamo.ViewModels
 
             if (parent != null && !parent.IsExpanded) return;
 
+            double verticalPosition = 0;
+
             for (int i = 0; i < inPorts.Count(); i++)
             {
                 var model = inPorts[i]?.PortModel;
                 if (model != null && model.IsProxyPort)
                 {
                     // calculate new position for the proxy inports.
-                    model.Center = CalculatePortPosition(model, i);
+                    model.Center = CalculatePortPosition(model, verticalPosition);
+                    verticalPosition += model.Height;
+
                 }
             }
 
+            verticalPosition = 0;
             for (int i = 0; i < outPorts.Count(); i++)
             {
                 var model = outPorts[i]?.PortModel;
                 if (model != null && model.IsProxyPort)
                 {
                     // calculate new position for the proxy outports.
-                    model.Center = CalculatePortPosition(model, i);
+                    model.Center = CalculatePortPosition(model, verticalPosition);
+                    verticalPosition += model.Height;
+
                 }
             }
         }
