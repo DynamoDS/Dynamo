@@ -13,7 +13,7 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
     <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8745" />
-    <PackageReference Include="Greg" Version="2.1.8122.28281" />
+    <PackageReference Include="Greg" Version="2.2.0.1553" />
     <PackageReference Include="Magick.NET.Core" Version="7.0.1" />
     <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.24.1" />
     <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
