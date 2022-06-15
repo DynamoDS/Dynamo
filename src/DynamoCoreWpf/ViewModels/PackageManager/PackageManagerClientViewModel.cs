@@ -218,7 +218,7 @@ namespace Dynamo.ViewModels
 
         private PackageManagerExtension pmExtension;
 
-        internal PackageManagerExtension PackageManagerExtension
+        internal virtual PackageManagerExtension PackageManagerExtension
         {
             get { return pmExtension ?? (pmExtension = DynamoViewModel.Model.GetPackageManagerExtension()); }
         }
@@ -685,9 +685,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        // Current host, empty if sandbox, null when running tests
-        internal virtual string Host => DynamoViewModel.Model.HostAnalyticsInfo.HostName;
-
         internal async void ExecutePackageDownload(string name, PackageVersion package, string installPath)
         {
             string msg = String.IsNullOrEmpty(installPath) ?
@@ -711,7 +708,7 @@ namespace Dynamo.ViewModels
                 // we reverse these arrays because the package manager returns dependencies in topological order starting at 
                 // the current package - and we want to install the dependencies first!.
                 var reversedVersions = package.full_dependency_versions.Select(x => x).Reverse().ToList();
-                var dependencyVersionHeaders = package.full_dependency_ids.Select(x=>x).Reverse().Select((dep, i) =>
+                var dependencyVersionHeaders = package.full_dependency_ids.Select(x => x).Reverse().Select((dep, i) =>
                 {
                     var depVersion = reversedVersions[i];
                     try
@@ -734,12 +731,12 @@ namespace Dynamo.ViewModels
                 {
                     return;
                 }
-                
+
                 if (!dependencyVersionHeaders.Any(x => x.name == name))
                 {// Add the main package if it does not exist
                     dependencyVersionHeaders.Add(package);
                 }
-                
+
                 var localPkgs = pmExt.PackageLoader.LocalPackages;
                 // if the new package has one or more dependencies that are already installed
                 // we need to either first uninstall them, or allow the user to forcibly install the package,
@@ -753,7 +750,7 @@ namespace Dynamo.ViewModels
                 var localPkgsConflictingWithPkgDeps = new List<Package>();
                 var newPackageHeaders = new List<PackageVersion>();
 
-                foreach(var dependencyHeader in dependencyVersionHeaders)
+                foreach (var dependencyHeader in dependencyVersionHeaders)
                 {
                     var localPkgWithSameName = localPkgs.FirstOrDefault(x =>
                         (x.LoadState.State == PackageLoadState.StateTypes.Loaded ||
@@ -813,7 +810,7 @@ namespace Dynamo.ViewModels
                 // if any do, notify user and allow cancellation
                 if (containsBinariesOrPythonScripts)
                 {
-                    var res = MessageBoxService.Show(Owner, 
+                    var res = MessageBoxService.Show(Owner,
                         Resources.MessagePackageContainPythonScript,
                         Resources.PackageDownloadMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
@@ -821,29 +818,7 @@ namespace Dynamo.ViewModels
                     if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None) return;
                 }
 
-                // determinate if any of the packages are targeting other hosts
-                var containsPackagesThatTargetOtherHosts = false;
-
-                // Known hosts
-                var knownHosts = Model.GetKnownHosts();
-
-                // Sandbox, special case: Warn if any package targets only one known host
-                if (String.IsNullOrEmpty(Host))
-                {
-                    containsPackagesThatTargetOtherHosts =
-                        newPackageHeaders.Any(y => y.host_dependencies != null && y.host_dependencies.Intersect(knownHosts).Count() == 1);
-                }
-                else
-                {
-                    // Warn if there are packages targeting other hosts but not our host
-                    var otherHosts = knownHosts.Except(new List<string>() {Host});
-                    containsPackagesThatTargetOtherHosts = newPackageHeaders.Any(x =>
-                    {
-                        // Is our host in the list?
-                        // If not, is any other host in the list?
-                        return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && otherHosts.Any(y => x.host_dependencies != null && x.host_dependencies.Contains(y));
-                    });
-                }
+                var containsPackagesThatTargetOtherHosts = PackageManagerExtension.CheckIfPackagesTargetOtherHosts(newPackageHeaders);
 
                 // if any do, notify user and allow cancellation
                 if (containsPackagesThatTargetOtherHosts)
@@ -875,7 +850,7 @@ namespace Dynamo.ViewModels
                         return;
                     }
                 }
-                
+
                 // add custom path to custom package folder list
                 if (!String.IsNullOrEmpty(installPath))
                 {
@@ -888,7 +863,8 @@ namespace Dynamo.ViewModels
 
                 // form header version pairs and download and install all packages
                 var downloadTasks = newPackageHeaders
-                    .Select((dep) => {
+                    .Select((dep) =>
+                    {
                         return new PackageDownloadHandle()
                         {
                             Id = dep.id,
@@ -903,7 +879,7 @@ namespace Dynamo.ViewModels
                 // When above downloads complete, start installing packages in dependency order.
                 // The downloads have completed in a random order, but the dependencyVersionHeaders list is in correct topological
                 // install order.
-                foreach(var dep in newPackageHeaders)
+                foreach (var dep in newPackageHeaders)
                 {
                     var matchingDownload = downloadTasks.Where(x => x.Result.handle.Id == dep.id).FirstOrDefault();
                     if (matchingDownload != null)
@@ -913,6 +889,7 @@ namespace Dynamo.ViewModels
                 }
             }
         }
+       
 
         /// <summary>
         ///     Returns a newline delimited string representing the package name and version of the argument
