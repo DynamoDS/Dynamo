@@ -466,6 +466,32 @@ namespace Dynamo.ViewModels
         /// <param name="dynamoViewModel"></param>
         public InfoBubbleViewModel(DynamoViewModel dynamoViewModel)
         {
+            InitializeInfoBubble(dynamoViewModel);
+        }
+
+        /// <summary>
+        /// This constructor will update the TopBottom and BottomRight positions of the warnings since the beginning.
+        /// </summary>
+        /// <param name="dynamoViewModel"></param>
+        /// <param name="nodeViewModel">This parameter will be used to get the TopBottom and BottomRight positions of the NodeModel</param>
+        public InfoBubbleViewModel(DynamoViewModel dynamoViewModel, NodeViewModel nodeViewModel)
+        {
+
+            InitializeInfoBubble(dynamoViewModel);
+
+            if (nodeViewModel != null)
+            {
+                var data = new InfoBubbleDataPacket
+                {
+                    TopLeft = nodeViewModel.GetTopLeft(),
+                    BotRight = nodeViewModel.GetBotRight()
+                };
+                UpdatePosition(data);
+            }
+        }
+
+        private void InitializeInfoBubble(DynamoViewModel dynamoViewModel)
+        {
             this.DynamoViewModel = dynamoViewModel;
 
             // Default values
@@ -477,7 +503,7 @@ namespace Dynamo.ViewModels
             InfoBubbleState = State.Minimized;
 
             NodeMessages.CollectionChanged += NodeInformation_CollectionChanged;
-            
+
             RefreshNodeInformationalStateDisplay();
         }
 
