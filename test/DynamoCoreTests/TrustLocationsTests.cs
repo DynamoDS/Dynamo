@@ -90,7 +90,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(settings.AddTrustedLocation(rootDir), $"adding {rootDir} (root dir of this machine) should succeed");
             Assert.IsFalse(settings.AddTrustedLocation($"{rootDir}users"), "adding a subdirectory of already trusted path should fail.");
             Assert.IsFalse(settings.AddTrustedLocation($"{rootDir}Users\\pinzart\\AppData\\Local\\Temp\\1"), "adding path that does not exist should fail. ");
-            Assert.IsTrue(settings.IsTrustedLocation(Path.GetTempPath()), "root volume should be trusted, so all sub folders should be trusted.");
+            Assert.IsTrue(settings.IsTrustedLocation(System.Environment.SystemDirectory), $"root volume should be trusted, so all sub folders should be trusted.root was{rootDir}, sub dir was {System.Environment.SystemDirectory}");
         }
 
         [Test]
