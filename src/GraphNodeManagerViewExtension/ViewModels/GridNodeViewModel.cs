@@ -385,10 +385,6 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 var list = mirrorData.GetElements();
                 return !list.Any();
             }
-            catch(NullReferenceException)
-            {
-                return false;
-            }
             catch (Exception)
             {
                 return false;
@@ -406,11 +402,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
 
             try
             {
-                if (string.Equals(mirrorData.Class.Name, "Function")) return true;
-                return false;
-            }
-            catch (NullReferenceException)
-            {
+                if (mirrorData.IsFunction) return true;
                 return false;
             }
             catch (Exception)
