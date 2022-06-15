@@ -268,7 +268,7 @@ namespace Dynamo.ViewModels
 
         private void ReportNodesPosition()
         {
-            foreach (var node in Nodes)
+            foreach (var node in Nodes.OfType<AnnotationModel>())
             {
                 node.ReportPosition();
             }
@@ -547,11 +547,15 @@ namespace Dynamo.ViewModels
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {
             annotationModel = model;
+            var modelBase = (ModelBase)model;
+
             this.WorkspaceViewModel = workspaceViewModel;
             this.preferenceSettings = WorkspaceViewModel.DynamoViewModel.PreferenceSettings;
             model.PropertyChanged += model_PropertyChanged;
             model.RemovedFromGroup += OnModelRemovedFromGroup;
             model.AddedToGroup += OnModelAddedToGroup;
+            modelBase.PropertyChanged += ModelBase_PropertyChanged;
+
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
             //https://jira.autodesk.com/browse/QNTM-3770
@@ -592,11 +596,21 @@ namespace Dynamo.ViewModels
             LoadGroupStylesFromPreferences(preferenceSettings.GroupStyleItemsList);
         }
 
+        private void ModelBase_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(annotationModel.Position):
+                    UpdateProxyPortsPosition();
+                    break;
+            }
+        }
+        
         /// <summary>
-        /// Creates input ports for the group based on its Nodes.
-        /// Input ports that either is connected to a Node outside of the
-        /// group, or has a port that is not connected will be used for the group.
-        /// </summary>
+            /// Creates input ports for the group based on its Nodes.
+            /// Input ports that either is connected to a Node outside of the
+            /// group, or has a port that is not connected will be used for the group.
+            /// </summary>
         internal void SetGroupInputPorts()
         {
             List<PortViewModel> newPortViewModels;
@@ -753,15 +767,15 @@ namespace Dynamo.ViewModels
 
             var newPortViewModels = new List<PortViewModel>();
             double verticalPosition = 0;
-            foreach (var group in groupPortModels)
+            foreach (var groupPort in groupPortModels)
             {
-                var originalPort = originalPortViewModels.FirstOrDefault(x => x.PortModel.GUID == group.GUID);
+                var originalPort = originalPortViewModels.FirstOrDefault(x => x.PortModel.GUID == groupPort.GUID);
                 if (originalPort != null)
                 {
-                    var portViewModel = originalPort.CreateProxyPortViewModel(group);
+                    var portViewModel = originalPort.CreateProxyPortViewModel(groupPort);
                     newPortViewModels.Add(portViewModel);
                     // calculate new position for the proxy outports
-                    group.Center = CalculatePortPosition(group, verticalPosition);
+                    groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
                     verticalPosition += originalPort.Height;
                 }
             }
@@ -810,7 +824,6 @@ namespace Dynamo.ViewModels
                     // calculate new position for the proxy inports.
                     model.Center = CalculatePortPosition(model, verticalPosition);
                     verticalPosition += model.Height;
-
                 }
             }
 
@@ -823,7 +836,6 @@ namespace Dynamo.ViewModels
                     // calculate new position for the proxy outports.
                     model.Center = CalculatePortPosition(model, verticalPosition);
                     verticalPosition += model.Height;
-
                 }
             }
         }
@@ -1097,12 +1109,10 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Width");
                     RaisePropertyChanged(nameof(ModelAreaRect));
                     UpdateAllGroupedGroups();
-                    UpdateProxyPortsPosition();
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
                     UpdateAllGroupedGroups();
-                    UpdateProxyPortsPosition();
                     break;
                 case nameof(AnnotationDescriptionText):
                     RaisePropertyChanged(nameof(AnnotationDescriptionText));
