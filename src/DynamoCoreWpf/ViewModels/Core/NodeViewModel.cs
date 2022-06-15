@@ -1199,7 +1199,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void BuildErrorBubble()
         {
-            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(DynamoViewModel, this)
+            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(this)
             {
                 IsCollapsed = this.IsCollapsed
             };

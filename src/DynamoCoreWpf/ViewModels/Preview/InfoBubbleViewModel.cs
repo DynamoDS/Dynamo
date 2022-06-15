@@ -474,10 +474,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="dynamoViewModel"></param>
         /// <param name="nodeViewModel">This parameter will be used to get the TopBottom and BottomRight positions of the NodeModel</param>
-        public InfoBubbleViewModel(DynamoViewModel dynamoViewModel, NodeViewModel nodeViewModel)
+        public InfoBubbleViewModel(NodeViewModel nodeViewModel)
         {
 
-            InitializeInfoBubble(dynamoViewModel);
+            InitializeInfoBubble(nodeViewModel.DynamoViewModel);
 
             if (nodeViewModel != null)
             {
