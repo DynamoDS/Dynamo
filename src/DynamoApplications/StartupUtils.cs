@@ -289,7 +289,7 @@ namespace Dynamo.Applications
                     return false;
                 }
                 // If the output locations are not valid, return false
-                if (!Directory.Exists(preloaderLocation) && !Directory.Exists(geometryFactoryPath))
+                if (!Directory.Exists(preloaderLocation) && !File.Exists(geometryFactoryPath))
                 {
                     return false;
                 }
