@@ -27,6 +27,25 @@
 	  <PackageReference Include="Newtonsoft.Json" Version="8.0.3" CopyXML="true" />
 	  <PackageReference Include="RestSharp" Version="106.12.0" CopyXML="true" />
     <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup>
+	<PackageReference Include="DynamoVisualProgramming.LibG_227_0_0" Version="2.13.0.8745" GeneratePathProperty="true">
+		<ExcludeAssets>all</ExcludeAssets>
+	</PackageReference>
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8745" GeneratePathProperty="true" />
+    <PackageReference Include="Greg" Version="2.3.0.1646" />
+	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" CopyXML="true" />
+	<PackageReference Include="RestSharp" Version="106.12.0" CopyXML="true" />
+    <Reference Include="Analytics.Net.ADP, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\Analytics.NET\Analytics.Net.ADP.dll</HintPath>
+    </Reference>
+    <Reference Include="Analytics.NET.Core">
+      <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Analytics.NET.Google">
+      <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
@@ -116,14 +135,14 @@
   </Choose>
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
     <PropertyGroup>
-      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\libg_locale</LibGProtoGeometryLibGLocale>
+      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\netstandard2.0\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>
-      <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\LibG.Interface.dll" />
-      <LibGProtoGeometryXml Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\lib\net48\ProtoGeometry.XML" />
-      <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\$(UICulture)\*" />
-      <LibG227 Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\tools\net48\LibG_227_0_0\*" />
-      <LibG228 Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\LibG_228_0_0\*" />
+      <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\netstandard2.0\LibG.Interface.dll" />
+      <LibGProtoGeometryXml Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\lib\netstandard2.0\ProtoGeometry.XML" />
+      <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\netstandard2.0\$(UICulture)\*" />
+      <LibG227 Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\tools\netstandard2.0\LibG_227_0_0\*" />
+      <LibG228 Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\netstandard2.0\LibG_228_0_0\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />

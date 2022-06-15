@@ -50,6 +50,7 @@ Thumbs.db
 *.user
 *.opendb
 .vs
+launchSettings.json
 
 # PYTHON #
 ###############

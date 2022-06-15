@@ -2058,9 +2058,9 @@ namespace ProtoAssociative
             if (context.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
                 // Save the current scope for the expression interpreter
-                globalClassIndex = context.WatchClassScope = context.MemoryState.CurrentStackFrame.ClassScope;
-                globalProcIndex = core.watchFunctionScope = context.MemoryState.CurrentStackFrame.FunctionScope;
-                int functionBlock = context.MemoryState.CurrentStackFrame.FunctionBlock;
+                globalClassIndex = context.WatchClassScope = context.MemoryState.CurrentStackFrameClassScope;
+                globalProcIndex = core.watchFunctionScope = context.MemoryState.CurrentStackFrameFunctionScope;
+                int functionBlock = context.MemoryState.CurrentStackFrameFunctionBlock;
 
                 if (globalClassIndex != -1)
                     localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
@@ -5408,16 +5408,21 @@ namespace ProtoAssociative
                             symbolnode.datatype = inferedType;
                         }
 
-                        //
-                        // Jun Comment: 
-                        //      Update system uses the following registers:  
-                        //      _ex stores prev value of ident 't'  - VM assigned
-                        //      _fx stores new value                - VM assigned
-                        //
-
                         if (bnode.LeftNode is TypedIdentifierNode)
                         {
                             EmitCast(castType.UID, castType.rank);
+                        }
+
+                        if (bnode.IsInputExpression)
+                        {
+                            StackValue regLX = StackValue.BuildRegister(Registers.LX);
+                            EmitInstrConsole(kw.pop, kw.regLX);
+                            EmitPopUpdateInstruction(regLX, bnode.OriginalAstID);
+
+                            graphNode.updateBlock.updateRegisterStartPC = pc;
+
+                            EmitInstrConsole(kw.push, kw.regLX);
+                            EmitPushUpdateInstruction(regLX, bnode.OriginalAstID);
                         }
 
                         if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.Expression)

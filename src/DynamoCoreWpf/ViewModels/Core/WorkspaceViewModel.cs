@@ -25,6 +25,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using DynamoUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
@@ -346,6 +347,9 @@ namespace Dynamo.ViewModels
             get { return Model == DynamoViewModel.CurrentSpace; }
         }
 
+        /// <summary>
+        /// Boolean indicating if the target workspace is home workspace (true), or custom node workspace (false)
+        /// </summary>
         [JsonIgnore]
         public bool IsHomeSpace
         {
@@ -1073,7 +1077,7 @@ namespace Dynamo.ViewModels
 
             // All the models in the selection will be modified, 
             // record their current states before anything gets changed.
-            SmartCollection<ISelectable> selection = DynamoSelection.Instance.Selection;
+            SmartObservableCollection<ISelectable> selection = DynamoSelection.Instance.Selection;
             IEnumerable<ModelBase> models = selection.OfType<ModelBase>();
             WorkspaceModel.RecordModelsForModification(models.ToList(), Model.UndoRecorder);
 

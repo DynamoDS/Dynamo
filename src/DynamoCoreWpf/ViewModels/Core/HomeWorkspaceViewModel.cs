@@ -14,8 +14,11 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
@@ -44,6 +47,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         #endregion
 
+        #region public members
         [JsonIgnore]
         public NotificationLevel CurrentNotificationLevel
         {
@@ -67,6 +71,30 @@ namespace Dynamo.Wpf.ViewModels.Core
         }
 
         /// <summary>
+        /// Boolean indicates if home workspace run with errors
+        /// </summary>
+        public bool HasErrors
+        {
+            get { return Model.Nodes.Any(n => n.State == ElementState.Error); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if home workspace is displayed with infos
+        /// </summary>
+        public bool HasInfos
+        {
+            get { return Model.Nodes.Any(n => n.State == ElementState.Info); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if home workspace run with warnings
+        /// </summary>
+        public bool HasWarnings
+        {
+            get { return Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning); }
+        }
+
+        /// <summary>
         /// Contains all footer notification item bindings
         /// </summary>
         [JsonIgnore]
@@ -79,6 +107,8 @@ namespace Dynamo.Wpf.ViewModels.Core
                 RaisePropertyChanged(nameof(FooterNotificationItems));
             }
         }
+
+        #endregion
 
         public HomeWorkspaceViewModel(HomeWorkspaceModel model, DynamoViewModel dynamoViewModel)
             : base(model, dynamoViewModel)
@@ -115,22 +145,22 @@ namespace Dynamo.Wpf.ViewModels.Core
             footerItems[0] = new FooterNotificationItem()
             {
                 NotificationCount = 0,
-                NotificationImage = "/DynamoCoreWpf;component/UI/Images/error.png",
-                NotificationToolTip = "Click to cycle through nodes with errors.",
+                NotificationImage = Resources.FooterNotificationErrorImage,
+                NotificationToolTip = Resources.FooterNotificationErrorTooltip,
                 NotificationType = FooterNotificationItem.FooterNotificationType.Error
             };
             footerItems[1] = new FooterNotificationItem()
             {
                 NotificationCount = 0,
-                NotificationImage = "/DynamoCoreWpf;component/UI/Images/warning_16px.png",
-                NotificationToolTip = "Click to cycle through nodes with warnings.",
+                NotificationImage = Resources.FooterNotificationWarningImage,
+                NotificationToolTip = Resources.FooterNotificationWarningTooltip,
                 NotificationType = FooterNotificationItem.FooterNotificationType.Warning
             };
             footerItems[2] = new FooterNotificationItem()
             {
                 NotificationCount = 0,
-                NotificationImage = "/DynamoCoreWpf;component/UI/Images/info.png",
-                NotificationToolTip = "Click to cycle through nodes with info states.",
+                NotificationImage = Resources.FooterNotificationInfoImage,
+                NotificationToolTip = Resources.FooterNotificationInfoTooltip,
                 NotificationType = FooterNotificationItem.FooterNotificationType.Information
             };
 
@@ -225,12 +255,30 @@ namespace Dynamo.Wpf.ViewModels.Core
                 //just call it directly 
                 UpdateNodeInfoBubbleContent(e);
             }
-        
-            bool hasInfo = Model.Nodes.Any(n => n.State == ElementState.Info);
-            bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
-            bool hasErrors = Model.Nodes.Any(n => n.State == ElementState.Error);
 
-            if (!hasWarnings && !hasErrors)
+            UpdateRunStatusMsgBasedOnStates();
+            UpdateFooterItems(HasInfos, HasWarnings, HasErrors);
+        }
+
+
+        /// <summary>
+        /// Update run status message based on error/warning/info states
+        /// </summary>
+        internal void UpdateRunStatusMsgBasedOnStates()
+        {
+            // Clear run status message if home workspace is not current workspace (custom node workspace)
+            if(IsHomeSpace && !IsCurrentSpace)
+            {
+                SetCurrentWarning(NotificationLevel.Mild, string.Empty);
+                return;
+            }
+            if (RunSettings.ForceBlockRun)
+            {
+                SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunBlockedMessage);
+                return;
+            }
+
+            if (!HasWarnings && !HasErrors)
             {
                 if (Model.ScaleFactorChanged)
                 {
@@ -241,15 +289,23 @@ namespace Dynamo.Wpf.ViewModels.Core
                     SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunCompletedMessage);
                 }
             }
-            else if(hasWarnings && !hasErrors)
+            else if (HasWarnings && !HasErrors)
             {
                 if (Model.ScaleFactorChanged)
                 {
                     SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithScaleChangeAndWarningsMessage);
                 }
+                // If all nodes with warnings dismissed and graph has no errors, update the run status msg
                 else
                 {
-                    SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage);
+                    if (Nodes.All(x => x.ErrorBubble?.DismissedMessages.Count() == x.ErrorBubble?.NodeMessages.Count()))
+                    {
+                        SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsDismissedMessage);
+                    }
+                    else
+                    {
+                        SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage);
+                    }
                 }
             }
             else
@@ -263,8 +319,6 @@ namespace Dynamo.Wpf.ViewModels.Core
                     SetCurrentWarning(NotificationLevel.Error, Properties.Resources.RunCompletedWithErrorsMessage);
                 }
             }
-
-            UpdateFooterItems(hasInfo, hasWarnings, hasErrors);
         }
 
         /// <summary>
@@ -389,6 +443,8 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// <param name="selectedNodes"></param>
         private void FitSelection(IEnumerable<NodeModel> selectedNodes, FooterNotificationItem.FooterNotificationType currentNotificationType)
         {
+            Guid nodeToSelect = Guid.Empty;
+
             // Don't allow prior to evaluation 
             if ((Model as HomeWorkspaceModel).EvaluationCount == 0) return;
             var nodeModels = selectedNodes as NodeModel[] ?? selectedNodes.ToArray();
@@ -400,30 +456,25 @@ namespace Dynamo.Wpf.ViewModels.Core
                 this.notificationsCounter = 0;
                 this.footerNotificationType = currentNotificationType;
             }
-
-            // Clear the selection then set the nodes to selection
-            DynamoSelection.Instance.ClearSelection();
-
+            
             // If we have reached the maximum nodes for this type, select all and reset the counter
             int maxCount = nodeModels.Length;
             if (IsMaxNotificationCounter(this.notificationsCounter, maxCount))
             {
-                DynamoSelection.Instance.Selection.AddRange(nodeModels);
                 this.notificationsCounter = 0;
             }
-            else
-            {
-                var node = nodeModels.ElementAt(this.notificationsCounter);
-                DynamoSelection.Instance.Selection.Add(node);
-                this.notificationsCounter++;
-            }
+            
+            var node = nodeModels.ElementAt(this.notificationsCounter);
+            nodeToSelect = node.GUID;
+            this.notificationsCounter++;
+            
 
-            // Execute the FitViewCommand 
-            this.DynamoViewModel.CurrentSpaceViewModel.FitViewInternal();
-            this.DynamoViewModel.CurrentSpaceViewModel.ResetFitViewToggle(null);
-            //this.DynamoViewModel.FitViewCommand.Execute(null);
-            // Clean up the selection after
-            DynamoSelection.Instance.ClearSelection();
+            // Select
+            var command = new DynamoModel.SelectModelCommand(nodeToSelect, ModifierKeys.None);
+            this.DynamoViewModel.ExecuteCommand(command);
+
+            // Fit
+            this.DynamoViewModel.CurrentSpaceViewModel.FindByIdCommand.Execute(nodeToSelect.ToString());
         }
 
         private bool IsMaxNotificationCounter(int counter, int max)

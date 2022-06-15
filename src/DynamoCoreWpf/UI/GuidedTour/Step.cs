@@ -170,6 +170,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
+
+        /// <summary>
+        /// This property contains the object of the current GuideManager
+        /// </summary>
+        internal GuidesManager GuideManager { get; set; }
+
         #endregion
 
         #region Protected Properties
@@ -185,7 +191,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// A vertical offfset to the pointer of the popups 
         /// </summary>
         [JsonProperty("PointerVerticalOffset")]
-        public double PointerVerticalOffset { get; set; }
+        public double PointerVerticalOffset { get; set; }        
         #endregion
 
         #region Public Methods

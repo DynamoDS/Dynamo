@@ -975,6 +975,9 @@ namespace Dynamo.ViewModels
                 }
             }
 
+            connectorModel.Start.PropertyChanged += StartPortModel_PropertyChanged;
+            connectorModel.End.PropertyChanged += EndPortModel_PropertyChanged;
+
             connectorModel.Start.Owner.PropertyChanged += StartOwner_PropertyChanged;
             connectorModel.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
 
@@ -1131,6 +1134,10 @@ namespace Dynamo.ViewModels
         public override void Dispose()
         {
             model.PropertyChanged -= HandleConnectorPropertyChanged;
+
+            model.Start.PropertyChanged -= StartPortModel_PropertyChanged;
+            model.End.PropertyChanged -= EndPortModel_PropertyChanged;
+
             model.Start.Owner.PropertyChanged -= StartOwner_PropertyChanged;
             model.End.Owner.PropertyChanged -= EndOwner_PropertyChanged;
             model.ConnectorPinModels.CollectionChanged -= ConnectorPinModelCollectionChanged;
@@ -1192,6 +1199,28 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(ZIndex));
                     break;
                 default: break;
+            }
+        }
+
+        void StartPortModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(PortModel.Center):
+                    RaisePropertyChanged(nameof(CurvePoint0));
+                    Redraw();
+                    break;
+            }
+        }
+
+        void EndPortModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(PortModel.Center):
+                    RaisePropertyChanged(nameof(CurvePoint3));
+                    Redraw();
+                    break;
             }
         }
 

@@ -1178,7 +1178,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// A single method that handles all color-related overrides
         /// The following events trigger color update:
-        /// Error, Warning, Frozen, PreviewOff, Info TODO(still don't know what that is)
+        /// Error, Warning, Frozen, PreviewOff, Info 
         /// </summary>
         private void HandleColorOverlayChange()
         {

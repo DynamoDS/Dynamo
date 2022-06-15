@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dynamo.Wpf.Properties;
+using System;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -75,7 +76,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public static bool IsAnyGuideActive
         {
             get { return isAnyGuideActive; }
-            private set { isAnyGuideActive = value; }
+            set { isAnyGuideActive = value; }
         }
     }
 

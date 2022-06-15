@@ -130,6 +130,7 @@ namespace Dynamo.Models
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
+        internal bool IsASMLoaded = false;
     
         #endregion
 
@@ -380,7 +381,6 @@ namespace Dynamo.Models
 
         internal static DynamoUtilities.DynamoFeatureFlagsManager FeatureFlags { get; private set; }
 
-        internal TrustedLocationsManager TrustedLocationsManager => TrustedLocationsManager.Instance;
         #endregion
 
         #region initialization and disposal
@@ -618,7 +618,8 @@ namespace Dynamo.Models
             if (preferences is PreferenceSettings settings)
             {
                 PreferenceSettings = settings;
-                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;             
+                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+                PreferenceSettings.MessageLogged += LogMessage;
             }
 
             if (config is DefaultStartConfiguration defaultStartConfiguration)
@@ -714,6 +715,12 @@ namespace Dynamo.Models
                     PreferenceSettings.IsFirstRun = isFirstRun;
                 }
             }
+
+            if (PreferenceSettings.IsFirstRun && !IsTestMode)
+            {
+                PreferenceSettings.AddDefaultTrustedLocations();
+            }
+
             InitializePreferences(PreferenceSettings);
 
             // At this point, pathManager.PackageDirectories only has 1 element which is the directory
@@ -783,8 +790,6 @@ namespace Dynamo.Models
 
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
-
-            TrustedLocationsManager.Initialize(PreferenceSettings);
 
             SearchModel = new NodeSearchModel(Logger);
             SearchModel.ItemProduced +=
@@ -1251,6 +1256,7 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
                 PreferenceSettings.RequestUserDataFolder -= pathManager.GetUserDataFolder;
+                PreferenceSettings.MessageLogged -= LogMessage;
             }
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
@@ -1262,7 +1268,10 @@ namespace Dynamo.Models
             CustomNodeManager.MessageLogged -= LogMessage;
             CustomNodeManager.Dispose();
             MigrationManager.MessageLogged -= LogMessage;
-            FeatureFlags.MessageLogged -= LogMessageWrapper;
+            if (FeatureFlags != null)
+            {
+                FeatureFlags.MessageLogged -= LogMessageWrapper;
+            }
             DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckFeatureFlagTest;
         }
 
@@ -1921,7 +1930,7 @@ namespace Dynamo.Models
                 // TODO: #4258
                 // Remove this ResetEngine call when multiple home workspaces is supported.
                 // This call formerly lived in DynamoViewModel
-                ResetEngine();
+                ResetEngine(false);
 
                 if (hws.RunSettings.RunType == RunType.Periodic)
                 {

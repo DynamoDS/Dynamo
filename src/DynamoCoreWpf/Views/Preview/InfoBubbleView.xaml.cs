@@ -1046,6 +1046,7 @@ namespace Dynamo.Controls
             // Track dismiss warning event and how many warnings dismissed
             Analytics.TrackEvent(Actions.Dismiss, Categories.NodeOperations, "Warning", ViewModel.DismissedMessages.Count);
             ViewModel.RefreshNodeInformationalStateDisplay();
+            viewModel.ValidateWorkspaceRunStatusMsg();
         }
 
 

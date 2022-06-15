@@ -14,6 +14,7 @@
     <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
     <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8745" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />

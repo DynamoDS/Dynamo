@@ -30,6 +30,9 @@
 	<Reference Include="Microsoft.Practices.Prism">
 		<HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
 	</Reference>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />

@@ -108,6 +108,75 @@
       ],
       "Replication": "Disabled",
       "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.X",
+      "Id": "24d755d39eea40e8ab8537dd24167fc7",
+      "Inputs": [
+        {
+          "Id": "a3b547fc385d472cb06d0927e856b7a8",
+          "Name": "point",
+          "Description": "Autodesk.DesignScript.Geometry.Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "db9126161a2a498ca90994dc87b8338c",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the X component of a Point\n\nPoint.X: double"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.HigherOrder.ComposeFunctions, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "e7699f761481431ea3a5b13fa9ef3358",
+      "Inputs": [
+        {
+          "Id": "f917943663254943924a6e05e1a230fa",
+          "Name": "function0",
+          "Description": "Function #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7a356bc174574e10987ec9548366137f",
+          "Name": "function1",
+          "Description": "Function #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "958968b772d2428b928ffde352af5edd",
+          "Name": "function",
+          "Description": "Composed function.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Returns a single function from multiple functions. Ex: the modulus and divide functions are composed into a single function to apply to a list."
     }
   ],
   "Connectors": [
@@ -143,7 +212,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.15.0.4946",
+      "Version": "2.15.0.4596",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -188,13 +257,33 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1077.6000000000001,
-        "Y": 231.20000000000005
+        "X": 1084.2695622824137,
+        "Y": 379.04196392683571
+      },
+      {
+        "Name": "Point.X",
+        "ShowGeometry": true,
+        "Id": "24d755d39eea40e8ab8537dd24167fc7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 709.19562282413631,
+        "Y": 181.87971943902346
+      },
+      {
+        "Name": "Function Compose",
+        "ShowGeometry": true,
+        "Id": "e7699f761481431ea3a5b13fa9ef3358",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 758.35973989836748,
+        "Y": 710.73092299611778
       }
     ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
-    "Zoom": 1.0
+    "X": 78.292091292236023,
+    "Y": 58.6394160959982,
+    "Zoom": 0.899609261588403
   }
 }

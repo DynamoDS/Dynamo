@@ -22,13 +22,13 @@
     </Popup.Resources>
 
     <Border
-        ClipToBounds="True" CornerRadius="3" Background="White" Name="brdEtikett">
+        ClipToBounds="True" CornerRadius="3" Name="brdEtikett">
         <Canvas Background="Transparent">
 
-            <Grid Name="RootLayout"                   
+            <Grid Name="RootLayout"    
+                  Background="White"
                  Width="{Binding Width}"
-                 Height="{Binding Height}"
-                  >
+                 Height="{Binding Height}" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="*"/>
@@ -63,7 +63,7 @@
                     <!--This is the text section of the Popup-->
                     <localui:CustomRichTextBox x:Name="ContentRichTextBox" 
                                            IsDocumentEnabled="True"                   
-                                           Padding="20,20,100,5"
+                                           Padding="20,20,100,0"
                                            CustomText="{Binding FormattedText}"
                                            Style="{StaticResource CustomRichTextBoxStyle}">
 
@@ -71,7 +71,7 @@
                 </Grid>
 
                 <!--Group of buttons Exit/Continue-->
-                <Grid Grid.Row="2">
+                <Grid Grid.Row="2" Margin="0 0 0 10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
