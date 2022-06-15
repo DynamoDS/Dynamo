@@ -173,9 +173,15 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    var logSource = ext as ILogSource;
-                    if (logSource != null)
+                    if (ext is ILogSource logSource)
+                    {
                         logSource.MessageLogged += Log;
+                    }
+
+                    if(ext is INotificationSource notificationSource)
+                    {
+                        notificationSource.NotificationLogged += LogNotification;
+                    }
 
                     ext.Startup(startupParams);
                     // if we are starting ViewExtension (A) which is a source of other extensions (like packageManager)
@@ -1610,6 +1616,16 @@ namespace Dynamo.Controls
             //when this view is finally disposed, dispose will be called on them.
             foreach (var ext in viewExtensionManager.ViewExtensions)
             {
+                if (ext is ILogSource logSource)
+                {
+                    logSource.MessageLogged -= Log;
+                }
+
+                if (ext is INotificationSource notificationSource)
+                {
+                    notificationSource.NotificationLogged -= LogNotification;
+                }
+
                 try
                 {
                     ext.Shutdown();
@@ -2417,6 +2433,10 @@ namespace Dynamo.Controls
         private void Log(string message)
         {
             Log(LogMessage.Info(message));
+        }
+        private void LogNotification(NotificationMessage notification)
+        {
+            dynamoViewModel.Model.Logger.LogNotification(notification.Sender, notification.Title,notification.ShortMessage, notification.DetailedMessage);
         }
 
         private void Window_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
