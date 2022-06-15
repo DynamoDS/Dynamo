@@ -288,6 +288,11 @@ namespace Dynamo.Applications
                     ASMPreloadFailure?.Invoke(e.Message);
                     return false;
                 }
+                // If the output locations are not valid, return false
+                if (!Directory.Exists(preloaderLocation) && !File.Exists(geometryFactoryPath))
+                {
+                    return false;
+                }
                 return true;
             }
 
