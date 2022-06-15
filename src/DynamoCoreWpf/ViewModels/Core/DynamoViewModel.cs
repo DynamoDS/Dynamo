@@ -2906,7 +2906,8 @@ namespace Dynamo.ViewModels
                 && !model.PreferenceSettings.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName)
                 && (currentWorkspaceViewModel?.IsHomeSpace ?? false) && !ShowStartPage
                 && !FileTrustViewModel.AllowOneTimeTrust
-                && !model.PreferenceSettings.DisableTrustWarnings)
+                && !model.PreferenceSettings.DisableTrustWarnings
+                && !string.IsNullOrWhiteSpace(currentWorkspaceViewModel.FileName))
             {
                 FileTrustViewModel.ShowWarningPopup = true;
                 RunSettings.ForceBlockRun = true;
