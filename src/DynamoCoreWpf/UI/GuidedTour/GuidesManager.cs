@@ -210,7 +210,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             currentGuide = (from guide in Guides where guide.Name.Equals(args.GuideName) select guide).FirstOrDefault();
 
             //Check if it's packages guide to open the exit modal 
-            if (args.GuideName == "Packages" && currentGuide.CurrentStep.StepType != Step.StepTypes.SURVEY)
+            if (args.GuideName == GuidesManager.PackagesGuideName && currentGuide.CurrentStep.StepType != Step.StepTypes.SURVEY)
             {
                 guideBackgroundElement.ClearHighlightSection();
                 guideBackgroundElement.ClearCutOffSection();
@@ -298,7 +298,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
             else if (GuideFlowEvents.IsAnyGuideActive == false && GuideFlowEvents.IsGuideClosed == false)
             {
-                if(exitGuideWindow != null && currentGuide.Name.Equals("Packages"))
+                if(exitGuideWindow != null && currentGuide.Name.Equals(GuidesManager.PackagesGuideName))
                     exitGuideWindow.IsOpen = isActive;
             }
         }
