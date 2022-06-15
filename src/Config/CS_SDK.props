@@ -45,16 +45,7 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
   </ItemGroup>
-  <ItemDefinitionGroup>
-    <ProjectReference>
-      <Private>false</Private>
-    </ProjectReference>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
-    <ProjectReference>
-      <PrivateAssets>all</PrivateAssets>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </ProjectReference>
     <PackageReference>
       <PrivateAssets>all</PrivateAssets>
       <ExcludeAssets>runtime</ExcludeAssets>
