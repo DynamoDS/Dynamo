@@ -448,6 +448,32 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(rawMultiLineStringtWatchNode.DefaultHeightSize, rawMultiLineStringtWatchNode.Height);
         }
 
+        [Test]
+        public void Watch_Dictionary()
+        {
+            OpenAndRun(@"core\WatchTree.dyn");
+
+            string watchNodeGuid = "a3b57ebd-5fff-413d-a6c5-ecee20e80e4e";
+            var dictionaryWatchNode = NodeViewWithGuid(watchNodeGuid);
+            WatchTree rawDictionaryWatchNode = dictionaryWatchNode.ChildOfType<WatchTree>();
+
+            bool isDictionary = rawDictionaryWatchNode.NodeLabel.ToUpper() == nameof(Dynamo.ViewModels.WatchViewModel.DICTIONARY);
+
+            // Fire transition on dynamo main ui thread.
+            View.Dispatcher.Invoke(() =>
+            {
+                dictionaryWatchNode.PreviewControl.BindToDataSource();
+                dictionaryWatchNode.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
+                dictionaryWatchNode.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
+            });
+
+            DispatcherUtil.DoEvents();
+
+            Assert.NotNull(dictionaryWatchNode);
+            Assert.IsTrue(isDictionary);
+            Assert.AreEqual(rawDictionaryWatchNode.DefaultHeightSize, rawDictionaryWatchNode.Height);
+        }
+
         #endregion
 
         [Test]
