@@ -9,7 +9,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
     public delegate void UpdateLibraryInteractionsEventHandler();
     public delegate void GuidedTourStartEventHandler(GuidedTourStateEventArgs args);
     public delegate void GuidedTourFinishEventHandler(GuidedTourStateEventArgs args);
-    public delegate void GuidedTourClosedEventHandler(GuidedTourStateEventArgs args);
+    public delegate void GuidedTourFinishedEventHandler(GuidedTourStateEventArgs args);
 
     /// <summary>
     /// This static class will be used to raise events when the tooltip, welcome and survey popup buttons are clicked.
@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         //Event that will be raised when the Popup Next button is pressed, the value passed as parameter is the current Step Sequence
         public static event GuidedTourNextEventHandler GuidedTourNextStep;
         private static bool isAnyGuideActive { get; set; } = false;
-        private static bool isGuideClosed { get; set; } = false;
+        private static bool isGuideFinished { get; set; } = false;
         public static void OnGuidedTourNext()
         {
             if (GuidedTourNextStep != null)
@@ -41,7 +41,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (GuidedTourStart != null)
             {
                 isAnyGuideActive = true;
-                isGuideClosed = false;
+                isGuideFinished = false;
                 GuidedTourStart(new GuidedTourStateEventArgs(name));
             }              
         }
@@ -58,13 +58,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         //Event that will be raised when the Guide is completely closed (this is specific for the Packages guide that allows the user to continue or exit the guide)
-        public static event GuidedTourClosedEventHandler GuidedTourClosed;
-        internal static void OnGuidedTourClosed(string name)
+        public static event GuidedTourFinishedEventHandler GuidedTourFinished;
+        internal static void OnGuidedTourFinished(string name)
         {
-            if (GuidedTourClosed != null)
+            if (GuidedTourFinished != null)
             {
-                isGuideClosed = true;
-                GuidedTourClosed(new GuidedTourStateEventArgs(name));
+                isGuideFinished = true;
+                GuidedTourFinished(new GuidedTourStateEventArgs(name));
             }
         }
 
@@ -98,8 +98,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         public static bool IsGuideClosed
         {
-            get { return isGuideClosed; }
-            set { isGuideClosed = value; }
+            get { return isGuideFinished; }
+            set { isGuideFinished = value; }
         }
     }
 

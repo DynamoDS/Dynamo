@@ -106,7 +106,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
             GuideFlowEvents.GuidedTourStart += TourStarted;
             GuideFlowEvents.GuidedTourFinish += TourFinished;
-            GuideFlowEvents.GuidedTourClosed += TourClosed;
+            GuideFlowEvents.GuidedTourFinished += TourClosed;
 
             Guides = new List<Guide>();
 
@@ -254,7 +254,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 currentGuide.ClearGuide();
                 GuideFlowEvents.GuidedTourStart -= TourStarted;
                 GuideFlowEvents.GuidedTourFinish -= TourFinished;
-                GuideFlowEvents.GuidedTourClosed -= TourClosed;
+                GuideFlowEvents.GuidedTourFinished -= TourClosed;
 
                 if (exitGuideWindow != null)
                 {
@@ -316,7 +316,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private void ExitTourButton_Click(object sender, RoutedEventArgs e)
         {
             exitGuideWindow.IsOpen = false;
-            GuideFlowEvents.OnGuidedTourClosed(currentGuide.Name);
+            GuideFlowEvents.OnGuidedTourFinished(currentGuide.Name);
             ExitTour();
         }
 
