@@ -289,7 +289,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (currentGuide.CurrentStep.stepUIPopup.IsOpen == !isActive)
                     currentGuide.CurrentStep.stepUIPopup.IsOpen = isActive;
             }
-            else if (GuideFlowEvents.IsAnyGuideActive == false && GuideFlowEvents.IsGuideClosed == false)
+            else if (GuideFlowEvents.IsAnyGuideActive == false && GuideFlowEvents.IsGuideExited == false)
             {
                 if(exitGuideWindow != null && currentGuide.Name.Equals(GuidesManager.PackagesGuideName))
                     exitGuideWindow.IsOpen = isActive;

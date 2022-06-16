@@ -92,7 +92,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This property will return a value that says if the tour has been completely closed or not
         /// </summary>
-        public static bool IsGuideClosed
+        public static bool IsGuideExited
         {
             get { return isGuideExited; }
             set { isGuideExited = value; }
