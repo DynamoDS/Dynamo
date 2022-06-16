@@ -6,6 +6,7 @@
              xmlns:converters="clr-namespace:Dynamo.GraphNodeManager.Converters"
              xmlns:controls="clr-namespace:Dynamo.GraphNodeManager.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:p="clr-namespace:Dynamo.GraphNodeManager.Properties"
              x:Name="UserControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -61,8 +62,8 @@
                        VerticalAlignment="Center"
                        Source="/GraphNodeManagerViewExtension;component/Images/Export.png"
                        Stretch="UniformToFill"
+                       ToolTip="{x:Static p:Resources.ToolTip_ExportToExcel}"
                        MouseUp="ExportImage_OnMouseUp"
-                       ToolTip="Export to Excel"
                        Cursor="Hand">
                 <Image.ContextMenu>
                     <ContextMenu Name="MainContextMenu"
@@ -157,15 +158,15 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/Function.png" 
-                                       ToolTip="Function"
+                                       ToolTip="{x:Static p:Resources.ToolTip_Function}"
                                        Style="{StaticResource ImageStyle}"
                                        Visibility="{Binding StateIsFunction, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/IsInput.png"
-                                       ToolTip="Is Input"
+                                       ToolTip="{x:Static p:Resources.ToolTip_IsInput}"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding StateIsInput, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/IsOutput.png"
-                                       ToolTip="Is Output"
+                                       ToolTip="{x:Static p:Resources.ToolTip_IsOutput}"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding StateIsOutput, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                             </StackPanel>
@@ -182,16 +183,16 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/Frozen.png" 
-                                       ToolTip="Frozen"
+                                       ToolTip="{x:Static p:Resources.ToolTip_Frozen}"
                                        Style="{StaticResource ImageStyle}"
                                        Visibility="{Binding StatusIsFrozen, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/Hidden.png"
-                                       ToolTip="Preview Off"
+                                       ToolTip="{x:Static p:Resources.ToolTip_PreviewOff}"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding StatusIsHidden, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                                 <controls:InfoBubbleControl 
                                     Margin="3 0" 
-                                    ToolTip="Information"
+                                    ToolTip="{x:Static p:Resources.ToolTip_Information}"
                                     Visibility="{Binding State, Converter={StaticResource StateToVisibilityCollapsedConverter}, ConverterParameter=Info}"/>
                             </StackPanel>
                         </DataTemplate>
@@ -212,7 +213,7 @@
                                     Visibility="{Binding State, Converter={StaticResource StateToVisibilityCollapsedConverter}, ConverterParameter=WarningOrError}"/>
                                 <Border Height="14" Width="14" CornerRadius="7" 
                                         VerticalAlignment="Center" HorizontalAlignment="Center"
-                                        ToolTip="Dismissed warnings"
+                                        ToolTip="{x:Static p:Resources.ToolTip_DismissedWarnings}"
                                         Visibility="{Binding DismissedAlertsCount, Converter={StaticResource IntToVisibilityConverter}}"
                                         Background="{StaticResource PrimaryCharcoal100Brush}">
                                     <TextBlock Text="{Binding DismissedAlertsCount}" 
@@ -223,7 +224,7 @@
                                                FontSize="8"/>
                                 </Border>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/MissingNode.png"
-                                       ToolTip="Missing content"
+                                       ToolTip="{x:Static p:Resources.ToolTip_MissingContent}"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding IsDummyNode, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                             </StackPanel>
@@ -240,11 +241,11 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/EmptyList.png"
-                                       ToolTip="Empty list"
+                                       ToolTip="{x:Static p:Resources.ToolTip_EmptyList}"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding IsEmptyList, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/Null.png"
-                                       ToolTip="Null"
+                                       ToolTip="{x:Static p:Resources.ToolTip_Null}"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding IsNull, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                             </StackPanel>
@@ -307,7 +308,7 @@
                                                             Tag="{Binding ElementName=DetailedRowItemControl, Path=DataContext}"
                                                             Width="24"
                                                             VerticalAlignment="Top"
-                                                            ToolTip="Copy to clipboard"
+                                                            ToolTip="{x:Static p:Resources.ToolTip_CopyToClipboard}"
                                                             Cursor="Hand">
                                                     <Image Source="/GraphNodeManagerViewExtension;component/Images/Copy.png" 
                                                            Style="{StaticResource ImageStyle}"/>

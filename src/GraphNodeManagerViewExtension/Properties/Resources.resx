@@ -123,4 +123,46 @@
   <data name="MenuItemText" xml:space="preserve">
     <value>Show _Graph Node Manager</value>
   </data>
+  <data name="ToolTip_CopyToClipboard" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
+  <data name="ToolTip_DismissedWarnings" xml:space="preserve">
+    <value>Dismissed Warnings</value>
+  </data>
+  <data name="ToolTip_EmptyList" xml:space="preserve">
+    <value>Empty List</value>
+  </data>
+  <data name="ToolTip_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ToolTip_ExportToExcel" xml:space="preserve">
+    <value>Export to Excel</value>
+  </data>
+  <data name="ToolTip_Frozen" xml:space="preserve">
+    <value>Frozen</value>
+  </data>
+  <data name="ToolTip_Function" xml:space="preserve">
+    <value>Function</value>
+  </data>
+  <data name="ToolTip_Information" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="ToolTip_IsInput" xml:space="preserve">
+    <value>Is Input</value>
+  </data>
+  <data name="ToolTip_IsOutput" xml:space="preserve">
+    <value>Is Output</value>
+  </data>
+  <data name="ToolTip_MissingContent" xml:space="preserve">
+    <value>Missing content</value>
+  </data>
+  <data name="ToolTip_Null" xml:space="preserve">
+    <value>Null</value>
+  </data>
+  <data name="ToolTip_PreviewOff" xml:space="preserve">
+    <value>Preview Off</value>
+  </data>
+  <data name="ToolTip_Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
 </root>
