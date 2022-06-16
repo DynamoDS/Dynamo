@@ -497,7 +497,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
                     break;
                 case "IsFrozen":
                     RaisePropertyChanged(nameof(StatusIsFrozen));
-                    UpdateDownstreemNodes(nodeModel);
+                    UpdateDownstreamNodes(nodeModel);
                     break;
                 case "State":
                     RaisePropertyChanged(nameof(State));
@@ -511,7 +511,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         /// We need to manually update the view in this case
         /// </summary>
         /// <param name="nodeModel"></param>
-        private void UpdateDownstreemNodes(NodeModel nodeModel)
+        private void UpdateDownstreamNodes(NodeModel nodeModel)
         {
             if (nodeModel.OutputNodes.Count > 0)
             {
