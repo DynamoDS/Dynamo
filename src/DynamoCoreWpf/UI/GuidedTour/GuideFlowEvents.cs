@@ -61,11 +61,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public static event GuidedTourExitedEventHandler GuidedTourExited;
         internal static void OnGuidedTourExited(string name)
         {
-            if (GuidedTourExited != null)
-            {
-                isGuideExited = true;
-                GuidedTourExited(new GuidedTourStateEventArgs(name));
-            }
+            isGuideExited = true;
         }
 
         //Event that will be raised when we want to update the Popup location of the current step being executed
