@@ -12,6 +12,5 @@
     <AssemblyName>DynamoServices</AssemblyName>
     <DocumentationFile>$(OutputPath)\DynamoServices.XML</DocumentationFile>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateDependencyFile>False</GenerateDependencyFile>
   </PropertyGroup>
 </Project>
