@@ -1951,10 +1951,10 @@ namespace Dynamo.ViewModels
         /// Default boolean introduced to allow for this method to be used in Automatic mode
         /// </summary>
         /// <param name="e"></param>
-        /// <param name="automatic"></param>
-        internal void ShowElement(NodeModel e, bool automatic = true)
+        /// <param name="forceShowElement"></param>
+        internal void ShowElement(NodeModel e, bool forceShowElement = true)
         {
-            if (HomeSpace.RunSettings.RunType == RunType.Automatic && automatic)
+            if (HomeSpace.RunSettings.RunType == RunType.Automatic && forceShowElement)
                 return;
 
             if (!model.CurrentWorkspace.Nodes.Contains(e))

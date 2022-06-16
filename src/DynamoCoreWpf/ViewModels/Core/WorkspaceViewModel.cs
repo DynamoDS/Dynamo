@@ -1425,16 +1425,12 @@ namespace Dynamo.ViewModels
             try
             {
                 var node = DynamoViewModel.Model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == id.ToString());
-                if(node != null)
-                {
-                    //select the element
-                    DynamoSelection.Instance.ClearSelection();
-                    DynamoSelection.Instance.Selection.Add(node);
+              
+                //select the element
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
 
-                    DynamoViewModel.ShowElement(node, false);
-
-                    return;
-                }
+                DynamoViewModel.ShowElement(node, false);
             }
             catch
             {
