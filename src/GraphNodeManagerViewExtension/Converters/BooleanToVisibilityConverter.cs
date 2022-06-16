@@ -76,12 +76,12 @@ namespace Dynamo.GraphNodeManager.Converters
             switch ((ElementState)value)
             {
                 case ElementState.Info:
-                    return Resources.ToolTip_Information;
+                    return Resources.Title_Information;
                 case ElementState.Warning:
                 case ElementState.PersistentWarning:
-                    return Resources.ToolTip_Warning;
+                    return Resources.Title_Warning;
                 case ElementState.Error:
-                    return Resources.ToolTip_Error;
+                    return Resources.Title_Error;
                 default:
                     return string.Empty;
             }

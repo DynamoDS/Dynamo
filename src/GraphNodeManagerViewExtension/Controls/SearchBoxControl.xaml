@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dynamo.GraphNodeManager.Controls"
+             xmlns:p="clr-namespace:Dynamo.GraphNodeManager.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="800">
     <UserControl.Resources>
@@ -127,7 +128,7 @@
                                     Height="16px"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    ToolTip="Clear search box .."
+                                    ToolTip="{x:Static p:Resources.ToolTip_ClearSearchBox}"
                                     Cursor="Hand">
 
                             <Image Source="/GraphNodeManagerViewExtension;component/Images/Clear.png" 

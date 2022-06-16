@@ -11,6 +11,7 @@ using Dynamo.GraphNodeManager.ViewModels;
 using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Extensions;
+using Dynamo.GraphNodeManager.Properties;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -204,17 +205,17 @@ namespace Dynamo.GraphNodeManager
 
         private void InitializeFilters()
         {
-            FilterItems.Add(new FilterViewModel(this){Name = "Empty list"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Error"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Frozen"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Missing content"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Function"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Information"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Is Input"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Is Output"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Null"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Warning"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Preview off"});
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_EmptyList }); 
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Error });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Frozen });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_MissingContent });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Function });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Information });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsInput });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsOutput });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Null });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Warning });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_PreviewOff });
 
             filterDictionary = new Dictionary<string, FilterViewModel>(FilterItems.ToDictionary(fi => fi.Name));
         }
