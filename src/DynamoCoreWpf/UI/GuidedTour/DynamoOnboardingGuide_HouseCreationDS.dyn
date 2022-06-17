@@ -200,7 +200,7 @@
       "MaximumValue": 40.0,
       "MinimumValue": 10.0,
       "StepValue": 0.5,
-      "InputValue": 15.0,
+      "InputValue": 23.5,
       "Id": "c06d5c1f11dd4602a20a263705e695dd",
       "Inputs": [],
       "Outputs": [
@@ -658,7 +658,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.15.0.5327",
+      "Version": "2.15.0.4767",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -834,8 +834,8 @@
         "HasNestedGroups": false,
         "Left": 937.418588977639,
         "Top": 1152.77055234231,
-        "Width": 428.0,
-        "Height": 176.0,
+        "Width": 423.0,
+        "Height": 167.0,
         "FontSize": 36.0,
         "InitialTop": 1215.77055234231,
         "InitialHeight": 145.0,
@@ -846,7 +846,7 @@
         "Id": "f0484841d68f4d36be83b27bb1858cc3",
         "Title": "Create House",
         "DescriptionText": "",
-        "IsExpanded": false,
+        "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
         "Nodes": [
@@ -855,13 +855,13 @@
         ],
         "HasNestedGroups": false,
         "Left": 960.562210876038,
-        "Top": 433.398897852045,
-        "Width": 745.00000000000011,
-        "Height": 295.0,
+        "Top": 423.398897852045,
+        "Width": 740.00000000000011,
+        "Height": 563.26547279662793,
         "FontSize": 36.0,
         "InitialTop": 496.398897852045,
         "InitialHeight": 461.26547279662793,
-        "TextblockHeight": 53.0,
+        "TextblockHeight": 63.0,
         "Background": "#FFA4E1FF"
       },
       {
@@ -877,7 +877,7 @@
         "HasNestedGroups": false,
         "Left": 2437.44338026175,
         "Top": 1161.2607092586,
-        "Width": 436.0,
+        "Width": 431.0,
         "Height": 160.0,
         "FontSize": 36.0,
         "InitialTop": 1224.2607092586,
@@ -901,11 +901,11 @@
         ],
         "HasNestedGroups": true,
         "Left": 927.418588977639,
-        "Top": 360.398897852045,
+        "Top": 350.398897852045,
         "Width": 1411.755091210041,
-        "Height": 983.37165449026509,
+        "Height": 986.96889433214494,
         "FontSize": 36.0,
-        "InitialTop": 433.398897852045,
+        "InitialTop": 423.398897852045,
         "InitialHeight": 909.37165449026509,
         "TextblockHeight": 63.0,
         "Background": "#FFB9F9E1"
@@ -955,8 +955,8 @@
         "PinnedNode": "a62352cb70ac488bb223dcbe46f24430"
       }
     ],
-    "X": -433.3630912170072,
-    "Y": -148.78297261749378,
-    "Zoom": 0.65020850353273663
+    "X": -582.49420321979255,
+    "Y": -365.56667527023006,
+    "Zoom": 0.82224304506905654
   }
 }
