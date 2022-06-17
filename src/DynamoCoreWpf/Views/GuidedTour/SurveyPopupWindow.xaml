@@ -85,7 +85,7 @@
 
                 <!--Learn more-->
                 <localui:CustomRichTextBox x:Name="LearnMoreRichTextBox" 
-                                           Margin="0,0,0,20"
+                                           Margin="0,0,0,50"
                                            Width="{Binding ContentWidth}"
                                            IsDocumentEnabled="True"                                       
                                            Grid.Row="2"
@@ -121,25 +121,28 @@
                     </Grid>
                 </Border>
 
-                <!-- This grid represents the link that redirects to the onboarding guide -->
-                <Grid Grid.Row="5" Name="GetStartedLink">
+                <!-- This grid represents the link that redirects to the next guide -->
+                <Grid
+                    Grid.Row="5" 
+                    Name="NextGuideLink"
+                    HorizontalAlignment="Center">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="10"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <TextBlock                           
-                            Grid.Column="1"
+                            Name="NextGuidelable"
+                            Grid.Column="0"
                             Text="{x:Static prop:Resources.NextGuideText}"      
                             FontSize="14px"
-                            TextAlignment="Right"                        
+                            TextAlignment="Center"                        
                             FontFamily="{StaticResource ArtifaktElementRegular}"
                             HorizontalAlignment="Right">
                     </TextBlock>
                     <Button 
-                        x:Name="NextGuideNameLink"
-                        Grid.Column="2" Click="GetStartedButton_Click"
+                        x:Name="NextGuideNameButton"
+                        Grid.Column="1"
+                        Click="GetStartedButton_Click"
                         Style="{StaticResource TextButtonLink}">
                     </Button>
                 </Grid>
