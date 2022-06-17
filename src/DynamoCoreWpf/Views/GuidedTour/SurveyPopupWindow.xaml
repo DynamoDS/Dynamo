@@ -60,7 +60,8 @@
                     </Grid.RowDefinitions>
 
                     <!--Check Mark Symbol-->
-                    <Canvas HorizontalAlignment="Center"
+                    <Canvas Name="CheckMark"
+                            HorizontalAlignment="Center"
                             Grid.Row="0"
                             Width="30"
                             Height="30"
@@ -85,8 +86,8 @@
 
                 <!--Learn more-->
                 <localui:CustomRichTextBox x:Name="LearnMoreRichTextBox" 
-                                           Margin="0,0,0,50"
-                                           Width="{Binding ContentWidth}"
+                                           Margin="30,10,0,50"
+                                           MaxWidth="300"
                                            IsDocumentEnabled="True"                                       
                                            Grid.Row="2"
                                            HorizontalContentAlignment="Center"
@@ -131,7 +132,7 @@
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <TextBlock                           
-                            Name="NextGuidelable"
+                            Name="NextGuidelabel"
                             Grid.Column="0"
                             Text="{x:Static prop:Resources.NextGuideText}"      
                             FontSize="14px"

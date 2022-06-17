@@ -3057,7 +3057,7 @@ To install the latest version of a package, click Install. \n
     <value>Get started with Dynamo</value>
   </data>
   <data name="OnboardingGuideSurveyText" xml:space="preserve">
-    <value>You've finished getting started with Dynamo.</value>
+    <value>You've finished the Getting Started guide.</value>
   </data>
   <data name="OnboardingWorkspaceText" xml:space="preserve">
     <value>This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** . Graphs can process data, create geometry, and more. In this guide, we’ll work with a sample graph.</value>
