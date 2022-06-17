@@ -25,7 +25,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// currentGuide will contain the Guide being played
         /// </summary>
-        private Guide currentGuide;
+        internal Guide currentGuide;
 
         private GuideBackground guideBackgroundElement;
         private readonly UIElement mainRootElement;
@@ -209,7 +209,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             currentGuide = (from guide in Guides where guide.Name.Equals(args.GuideName) select guide).FirstOrDefault();
 
             //Check if it's packages guide to open the exit modal 
-            if (args.GuideName == "Packages" && currentGuide.CurrentStep.StepType != Step.StepTypes.SURVEY)
+            if (args.GuideName == GuidesManager.PackagesGuideName && currentGuide.CurrentStep.StepType != Step.StepTypes.SURVEY)
             {
                 guideBackgroundElement.ClearHighlightSection();
                 guideBackgroundElement.ClearCutOffSection();
@@ -249,7 +249,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 GuideFlowEvents.GuidedTourStart -= TourStarted;
                 GuideFlowEvents.GuidedTourFinish -= TourFinished;
 
-                if(exitGuideWindow != null)
+                if (exitGuideWindow != null)
                 {
                     exitGuideWindow.ExitTourButton.Click -= ExitTourButton_Click;
                     exitGuideWindow.ContinueTourButton.Click -= ContinueTourButton_Click;
@@ -278,6 +278,24 @@ namespace Dynamo.Wpf.UI.GuidedTour
             exitGuideWindow.IsOpen = true;
         }
 
+        /// <summary>
+        /// Shows/Hides the Popup based in if the DynamoView is Active or not
+        /// </summary>
+        /// <param name="isActive"></param>
+        internal void ManagePopupActivation(bool isActive)
+        {
+            if (GuideFlowEvents.IsAnyGuideActive)
+            {
+                if (currentGuide.CurrentStep.stepUIPopup.IsOpen == !isActive)
+                    currentGuide.CurrentStep.stepUIPopup.IsOpen = isActive;
+            }
+            else if (GuideFlowEvents.IsAnyGuideActive == false && GuideFlowEvents.IsGuideExited == false)
+            {
+                if(exitGuideWindow != null && currentGuide.Name.Equals(GuidesManager.PackagesGuideName))
+                    exitGuideWindow.IsOpen = isActive;
+            }
+        }
+
         private void ContinueTourButton_Click(object sender, RoutedEventArgs e)
         {
             exitGuideWindow.IsOpen = false;
@@ -291,6 +309,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private void ExitTourButton_Click(object sender, RoutedEventArgs e)
         {
             exitGuideWindow.IsOpen = false;
+            GuideFlowEvents.OnGuidedTourExited(currentGuide.Name);
             ExitTour();
         }
 
