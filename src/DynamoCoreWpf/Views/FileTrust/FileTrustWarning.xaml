@@ -161,7 +161,6 @@
                              Text="{x:Static p:Resources.FileTrustWarningPopupText}"/>
                     <StackPanel Grid.Row="1" 
                                 Orientation="Horizontal"
-                                HorizontalAlignment="Center"
                                 Margin="5,20,0,10"
                                 MaxWidth="600">
                         <CheckBox Name="FileTrustWarningCheckBox"
