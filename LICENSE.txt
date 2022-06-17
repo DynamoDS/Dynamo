@@ -574,7 +574,7 @@ Python.NET
 https://github.com/pythonnet/pythonnet/blob/master/LICENSE
 
 SimplexNoise
-https://unlicense.org/
+https://unlicense.org
 
 Xceed Extended WPF Toolkit
 Microsoft Public License
