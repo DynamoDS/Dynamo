@@ -11,7 +11,7 @@
        mc:Ignorable="d" 
        AllowsTransparency="True"
        Opacity="0.5"
-       Width="415"
+       Width="530"
        Height="250"
        IsOpen="{Binding ShowWarningPopup}"
        d:DesignWidth="415"
@@ -153,17 +153,18 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBox Grid.Row="0" 
-                             MaxWidth="345"
+                    <TextBlock
+                        Margin="10,0,0,0"
+                             Grid.Row="0" 
+                             MaxWidth="500"
                              FontSize="13"
                              FontFamily="{StaticResource ArtifaktElementRegular}"
-                             BorderThickness="0"
                              TextWrapping="Wrap"
                              Text="{x:Static p:Resources.FileTrustWarningPopupText}"/>
                     <StackPanel Grid.Row="1" 
                                 Orientation="Horizontal"
                                 Margin="5,20,0,10"
-                                MaxWidth="345">
+                                MaxWidth="500">
                         <CheckBox Name="FileTrustWarningCheckBox"
                                   Content="{x:Static p:Resources.FileTrustWarningCheckBoxText}"
                                   Style="{StaticResource CheckBoxFileTrustStyle}"
