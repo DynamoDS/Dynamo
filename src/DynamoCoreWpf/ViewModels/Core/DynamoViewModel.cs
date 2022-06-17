@@ -1974,9 +1974,15 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal void ShowElement(NodeModel e)
+        /// <summary>
+        /// Attempts to find a NodeModel and focuses the view around it
+        /// Default boolean introduced to allow for this method to be used in Automatic mode
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="forceShowElement"></param>
+        internal void ShowElement(NodeModel e, bool forceShowElement = true)
         {
-            if (HomeSpace.RunSettings.RunType == RunType.Automatic)
+            if (HomeSpace.RunSettings.RunType == RunType.Automatic && forceShowElement)
                 return;
 
             if (!model.CurrentWorkspace.Nodes.Contains(e))

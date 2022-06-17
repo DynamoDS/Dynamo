@@ -100,6 +100,11 @@
     <Compile Include="GraphNodeManagerViewExtension.cs" />
     <Compile Include="GraphNodeManagerViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.en-US.Designer.cs">
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -107,12 +112,18 @@
     </Compile>
     <Compile Include="Utilities\Utilities.cs" />
     <Compile Include="ViewModels\FilterViewModel.cs" />
-    <Compile Include="ViewModels\NodeViewModel.cs" />
+    <Compile Include="ViewModels\GridNodeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.en-US.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="GraphNodeManager_ViewExtensionDefinition.xml" />
+    <Resource Include="Images\Clear.png" />
     <Resource Include="Images\Copy.png" />
     <Resource Include="Images\Export.png" />
     <Resource Include="Images\Search.png" />

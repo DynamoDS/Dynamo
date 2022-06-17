@@ -22,7 +22,7 @@ namespace Dynamo.GraphNodeManager.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dynamo.GraphNodeManager.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Graph Node Manager.
         /// </summary>
-        internal static string ExtensionName {
+        public static string ExtensionName {
             get {
                 return ResourceManager.GetString("ExtensionName", resourceCulture);
             }
@@ -72,9 +72,144 @@ namespace Dynamo.GraphNodeManager.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Show _Graph Node Manager.
         /// </summary>
-        internal static string MenuItemText {
+        public static string MenuItemText {
             get {
                 return ResourceManager.GetString("MenuItemText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty List.
+        /// </summary>
+        public static string Title_EmptyList {
+            get {
+                return ResourceManager.GetString("Title_EmptyList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Title_Error {
+            get {
+                return ResourceManager.GetString("Title_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Frozen.
+        /// </summary>
+        public static string Title_Frozen {
+            get {
+                return ResourceManager.GetString("Title_Frozen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Function.
+        /// </summary>
+        public static string Title_Function {
+            get {
+                return ResourceManager.GetString("Title_Function", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Information.
+        /// </summary>
+        public static string Title_Information {
+            get {
+                return ResourceManager.GetString("Title_Information", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is Input.
+        /// </summary>
+        public static string Title_IsInput {
+            get {
+                return ResourceManager.GetString("Title_IsInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is Output.
+        /// </summary>
+        public static string Title_IsOutput {
+            get {
+                return ResourceManager.GetString("Title_IsOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing content.
+        /// </summary>
+        public static string Title_MissingContent {
+            get {
+                return ResourceManager.GetString("Title_MissingContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Null.
+        /// </summary>
+        public static string Title_Null {
+            get {
+                return ResourceManager.GetString("Title_Null", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview Off.
+        /// </summary>
+        public static string Title_PreviewOff {
+            get {
+                return ResourceManager.GetString("Title_PreviewOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string Title_Warning {
+            get {
+                return ResourceManager.GetString("Title_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear search box ...
+        /// </summary>
+        public static string ToolTip_ClearSearchBox {
+            get {
+                return ResourceManager.GetString("ToolTip_ClearSearchBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard.
+        /// </summary>
+        public static string ToolTip_CopyToClipboard {
+            get {
+                return ResourceManager.GetString("ToolTip_CopyToClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismissed Warnings.
+        /// </summary>
+        public static string ToolTip_DismissedWarnings {
+            get {
+                return ResourceManager.GetString("ToolTip_DismissedWarnings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export to Excel.
+        /// </summary>
+        public static string ToolTip_ExportToExcel {
+            get {
+                return ResourceManager.GetString("ToolTip_ExportToExcel", resourceCulture);
             }
         }
     }
