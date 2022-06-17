@@ -7854,6 +7854,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A problem occurred when trying to access the location. Dynamo is unable to obtain read/write access to
+        ///{0}.
+        /// </summary>
+        public static string TrustedLocationNotAccessible {
+            get {
+                return ResourceManager.GetString("TrustedLocationNotAccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Trusted location.
         /// </summary>
         public static string TrustedPathsExpanderName {
@@ -7887,6 +7897,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UnableToAccessPackageDirectory {
             get {
                 return ResourceManager.GetString("UnableToAccessPackageDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable To Access Directory.
+        /// </summary>
+        public static string UnableToAccessTrustedDirectory {
+            get {
+                return ResourceManager.GetString("UnableToAccessTrustedDirectory", resourceCulture);
             }
         }
         
