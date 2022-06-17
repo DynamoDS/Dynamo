@@ -3245,4 +3245,11 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="TitlePackageTargetOtherHost" xml:space="preserve">
     <value>Package Host Error</value>
   </data>
+  <data name="TrustedLocationNotAccessible" xml:space="preserve">
+    <value>A problem occurred when trying to access the trusted location. Dynamo is unable to obtain read/write access to
+{0}</value>
+  </data>
+  <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
+    <value>Unable To Access Trusted Directory</value>
+  </data>
 </root>
