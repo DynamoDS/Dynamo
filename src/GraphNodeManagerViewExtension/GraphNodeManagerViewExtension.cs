@@ -15,7 +15,7 @@ namespace Dynamo.GraphNodeManager
     {
         #region Private Properties
         private ViewLoadedParams viewLoadedParamsReference;
-        private MenuItem graphNodeManagerMenuItem;
+        internal MenuItem graphNodeManagerMenuItem;
 
         public event Action<ILogMessage> MessageLogged;
 
