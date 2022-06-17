@@ -114,7 +114,7 @@ namespace Dynamo.GraphNodeManager
         {
             mouseHandled = true;
 
-            var node = (NodeViewModel)((Button)sender).Tag;
+            var node = (GridNodeViewModel)((Button)sender).Tag;
             var info = ((Button)sender).DataContext as NodeInfo;
             var vm = this.DataContext as GraphNodeManagerViewModel;
 
