@@ -43,6 +43,7 @@ namespace Dynamo.GraphNodeManager
 
         private bool isEditingEnabled = true;
         private bool isAnyFilterOn = false;
+        private Action<Logging.ILogMessage> logMessage;
 
         private HomeWorkspaceModel CurrentWorkspace
         {
@@ -170,9 +171,10 @@ namespace Dynamo.GraphNodeManager
         /// Establish the Current Workspace
         /// </summary>
         /// <param name="p"></param>
-        public GraphNodeManagerViewModel(ViewLoadedParams p, string id)
+        public GraphNodeManagerViewModel(ViewLoadedParams p, string id, Action<Logging.ILogMessage> logDelegate)
         {
             this.viewLoadedParams = p;
+            logMessage = logDelegate;
 
             p.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
             p.CurrentWorkspaceCleared += OnCurrentWorkspaceCleared;
@@ -204,7 +206,7 @@ namespace Dynamo.GraphNodeManager
 
 
         private void InitializeFilters()
-        {
+        {   //TODO this should really not use localized text... it should use an enum etc.
             FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_EmptyList }); 
             FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Error });
             FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Frozen });
@@ -355,61 +357,68 @@ namespace Dynamo.GraphNodeManager
             if (!(e.Item is GridNodeViewModel nvm)) return;
             if (!filterDictionary.Any()) return;
 
-            // Boolean Toggle Filters
-            if (!nvm.IsEmptyList && filterDictionary["Empty list"].IsFilterOn)
+            try
             {
-                e.Accepted = false;
-                return;
+                // Boolean Toggle Filters
+                if (!nvm.IsEmptyList && filterDictionary[Resources.Title_EmptyList].IsFilterOn)
+                {
+                    e.Accepted = false;
+                    return;
+                }
+                if (!nvm.IssuesHasError && filterDictionary[Resources.Title_Error].IsFilterOn)
+                {
+                    e.Accepted = false;
+                    return;
+                }
+                if (!nvm.StatusIsFrozen && filterDictionary[Resources.Title_Frozen].IsFilterOn)
+                {
+                    e.Accepted = false;
+                    return;
+                }
+                if (!nvm.IsDummyNode && filterDictionary[Resources.Title_MissingContent].IsFilterOn)
+                {
+                    e.Accepted = false;
+                    return;
+                }
+                if (!nvm.StateIsFunction && filterDictionary[Resources.Title_Function].IsFilterOn)
+                {
+                    e.Accepted = false;
+                    return;
+                }
+                if (!nvm.IsInfo && filterDictionary[Resources.Title_Information].IsFilterOn)
+                {
+                    e.Accepted = false;
+                    return;
+                }
+                if (!nvm.StateIsInput && filterDictionary[Resources.Title_IsInput].IsFilterOn)
+                {
+                    e.Accepted = false;
+                    return;
+                }
+                if (!nvm.StateIsOutput && filterDictionary[Resources.Title_IsOutput].IsFilterOn)
+                {
+                    e.Accepted = false;
+                    return;
+                }
+                if (!nvm.IsNull && filterDictionary[Resources.Title_Null].IsFilterOn)
+                {
+                    e.Accepted = false;
+                    return;
+                }
+                if (!nvm.IssuesHasWarning && filterDictionary[Resources.Title_Warning].IsFilterOn)
+                {
+                    e.Accepted = false;
+                    return;
+                }
+                if (!nvm.StatusIsHidden && filterDictionary[Resources.Title_PreviewOff].IsFilterOn)
+                {
+                    e.Accepted = false;
+                    return;
+                }
             }
-            if (!nvm.IssuesHasError && filterDictionary["Error"].IsFilterOn)
+            catch(Exception err)
             {
-                e.Accepted = false;
-                return;
-            }
-            if (!nvm.StatusIsFrozen && filterDictionary["Frozen"].IsFilterOn)
-            {
-                e.Accepted = false;
-                return;
-            }
-            if (!nvm.IsDummyNode && filterDictionary["Missing content"].IsFilterOn)
-            {
-                e.Accepted = false;
-                return;
-            }
-            if (!nvm.StateIsFunction && filterDictionary["Function"].IsFilterOn)
-            {
-                e.Accepted = false;
-                return;
-            }
-            if (!nvm.IsInfo && filterDictionary["Information"].IsFilterOn)
-            {
-                e.Accepted = false;
-                return;
-            }
-            if (!nvm.StateIsInput && filterDictionary["Is Input"].IsFilterOn)
-            {
-                e.Accepted = false;
-                return;
-            }
-            if (!nvm.StateIsOutput && filterDictionary["Is Output"].IsFilterOn)
-            {
-                e.Accepted = false;
-                return;
-            }
-            if (!nvm.IsNull && filterDictionary["Null"].IsFilterOn)
-            {
-                e.Accepted = false;
-                return;
-            }
-            if (!nvm.IssuesHasWarning && filterDictionary["Warning"].IsFilterOn)
-            {
-                e.Accepted = false;
-                return;
-            }
-            if (!nvm.StatusIsHidden && filterDictionary["Preview off"].IsFilterOn)
-            {
-                e.Accepted = false;
-                return;
+                logMessage(Logging.LogMessage.Error(err));
             }
 
             // Textual SearchBox Filter
