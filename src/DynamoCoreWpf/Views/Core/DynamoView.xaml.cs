@@ -752,7 +752,6 @@ namespace Dynamo.Controls
 
             if (warningPopup != null && warningPopup.IsOpen)
                 warningPopup.UpdatePopupLocation();
-            }
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -762,13 +761,11 @@ namespace Dynamo.Controls
 
             //When the Dynamo window size is changed then we need to update the Steps location
             if (dynamoViewModel.MainGuideManager != null)
-            {
                 dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
-            }
+
 
             if (warningPopup != null && warningPopup.IsOpen)
                 warningPopup.UpdatePopupLocation();
-            }
         }
 
         private void InitializeLogin()
