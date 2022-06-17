@@ -97,6 +97,7 @@
       <Project>{A42563F1-2B8B-4C4D-BFAD-2CA981524E00}</Project>
       <Name>GraphMetadataViewExtension</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\GraphNodeManagerViewExtension\GraphNodeManagerViewExtension.csproj" />
     <ProjectReference Include="..\..\src\Libraries\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj">
       <Project>{f5932f7d-8e34-4787-80b8-e7f9d996edff}</Project>
       <Name>CoreNodeModelsWpf</Name>
