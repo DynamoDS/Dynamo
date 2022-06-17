@@ -34,7 +34,7 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
         /// TODO it should really be responsive either using grid of auto canvas:
         /// https://stackoverflow.com/questions/855334/wpf-how-to-make-canvas-auto-resize
         /// </summary>
-        public double PopupRectangleWidth { get; set; } = 600;
+        public double PopupRectangleWidth { get; set; } = 500;
 
         /// <summary>
         /// Popup Height, by default it will have a Height of 220
