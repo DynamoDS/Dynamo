@@ -42,6 +42,7 @@ using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.FileTrust;
@@ -92,7 +93,7 @@ namespace Dynamo.Controls
         internal ViewExtensionManager viewExtensionManager;
         internal Watch3DView BackgroundPreview { get; private set; }
 
-        private FileTrustWarning warningPopup = null;
+        private FileTrustWarning fileTrustWarningPopup = null;
 
         /// <summary>
         /// Constructor
@@ -224,8 +225,8 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
             FocusableGrid.InputBindings.Clear();
             
-            if(warningPopup == null)
-                warningPopup = new FileTrustWarning(this);
+            if(fileTrustWarningPopup == null)
+                fileTrustWarningPopup = new FileTrustWarning(this);
         }
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
@@ -750,8 +751,8 @@ namespace Dynamo.Controls
             if(dynamoViewModel.MainGuideManager != null)
                 dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
 
-            if (warningPopup != null && warningPopup.IsOpen)
-                warningPopup.UpdatePopupLocation();
+            if (fileTrustWarningPopup != null && fileTrustWarningPopup.IsOpen)
+                fileTrustWarningPopup.UpdatePopupLocation();
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -763,8 +764,8 @@ namespace Dynamo.Controls
             if (dynamoViewModel.MainGuideManager != null)
                 dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
 
-            if (warningPopup != null && warningPopup.IsOpen)
-                warningPopup.UpdatePopupLocation();
+            if (fileTrustWarningPopup != null && fileTrustWarningPopup.IsOpen)
+                fileTrustWarningPopup.UpdatePopupLocation();
         }
 
         private void InitializeLogin()
@@ -2495,6 +2496,27 @@ namespace Dynamo.Controls
             dynViewModel.FileTrustViewModel.ShowWarningPopup = true;
         }
 
+        private void DynamoView_Activated(object sender, EventArgs e)
+        {
+            if (dynamoViewModel.MainGuideManager != null && dynamoViewModel.MainGuideManager.currentGuide != null)
+            {
+                dynamoViewModel.MainGuideManager.ManagePopupActivation(true);
+            }
+               
+
+            if (fileTrustWarningPopup != null)
+                fileTrustWarningPopup.ManagePopupActivation(true);
+        }
+
+        private void DynamoView_Deactivated(object sender, EventArgs e)
+        {
+            if (dynamoViewModel.MainGuideManager != null && dynamoViewModel.MainGuideManager.currentGuide != null)
+                dynamoViewModel.MainGuideManager.ManagePopupActivation(false);
+
+            if(fileTrustWarningPopup != null)
+                fileTrustWarningPopup.ManagePopupActivation(false);
+        }
+
         public void Dispose()
         {
             viewExtensionManager.Dispose();
@@ -2506,8 +2528,8 @@ namespace Dynamo.Controls
             // Removing the tab items list handler
             ExtensionTabItems.CollectionChanged -= this.OnCollectionChanged;
 
-            if (warningPopup != null)
-                warningPopup.CleanPopup();
+            if (fileTrustWarningPopup != null)
+                fileTrustWarningPopup.CleanPopup();
         }
     }
 }

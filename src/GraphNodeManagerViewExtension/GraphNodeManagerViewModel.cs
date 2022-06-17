@@ -11,13 +11,14 @@ using Dynamo.GraphNodeManager.ViewModels;
 using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Extensions;
+using Dynamo.GraphNodeManager.Properties;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.Commands;
-using Newtonsoft.Json;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
-using NodeViewModel = Dynamo.GraphNodeManager.ViewModels.NodeViewModel;
+using GridNodeViewModel = Dynamo.GraphNodeManager.ViewModels.GridNodeViewModel;
+using Newtonsoft.Json;
 
 namespace Dynamo.GraphNodeManager
 {
@@ -37,7 +38,7 @@ namespace Dynamo.GraphNodeManager
 
         private readonly string uniqueId;
 
-        private readonly Dictionary<Guid, NodeViewModel> nodeDictionary = new Dictionary<Guid, NodeViewModel>();
+        private readonly Dictionary<Guid, GridNodeViewModel> nodeDictionary = new Dictionary<Guid, GridNodeViewModel>();
         private Dictionary<string, FilterViewModel> filterDictionary = new Dictionary<string, FilterViewModel>();
 
         private bool isEditingEnabled = true;
@@ -76,7 +77,7 @@ namespace Dynamo.GraphNodeManager
         /// <summary>
         /// Collection of data for nodes in the current workspace
         /// </summary>
-        public ObservableCollection<NodeViewModel> Nodes { get; set; } = new ObservableCollection<NodeViewModel>();
+        public ObservableCollection<GridNodeViewModel> Nodes { get; set; } = new ObservableCollection<GridNodeViewModel>();
 
         /// <summary>
         /// Collection of user filters
@@ -204,17 +205,17 @@ namespace Dynamo.GraphNodeManager
 
         private void InitializeFilters()
         {
-            FilterItems.Add(new FilterViewModel(this){Name = "Empty list"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Error"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Frozen"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Missing content"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Function"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Information"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Is Input"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Is Output"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Null"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Warning"});
-            FilterItems.Add(new FilterViewModel(this){Name = "Preview off"});
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_EmptyList }); 
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Error });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Frozen });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_MissingContent });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Function });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Information });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsInput });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsOutput });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Null });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Warning });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_PreviewOff });
 
             filterDictionary = new Dictionary<string, FilterViewModel>(FilterItems.ToDictionary(fi => fi.Name));
         }
@@ -234,11 +235,16 @@ namespace Dynamo.GraphNodeManager
             {
                 return;
             }
+
+            DisposeNodes();
+
             nodeDictionary.Clear();
             Nodes.Clear();
+
             foreach (var node in CurrentWorkspace.Nodes)
             {
-                var graphNode = new NodeViewModel(node);
+                var graphNode = new GridNodeViewModel(node);
+                graphNode.BubbleUpdate += (sender, args) => { RefreshNodesView(); };
                 nodeDictionary[node.GUID] = graphNode;
                 Nodes.Add(graphNode);
             }
@@ -247,12 +253,20 @@ namespace Dynamo.GraphNodeManager
             NodesCollection.Source = Nodes;
             NodesCollection.Filter += NodesCollectionViewSource_Filter;
 
+            RefreshNodesView();
+        }
+
+        /// <summary>
+        /// A sequence of methods to update the DataGrid view
+        /// </summary>
+        private void RefreshNodesView()
+        {
             NodesCollection.View?.Refresh();
 
             RaisePropertyChanged(nameof(NodesCollection));
             RaisePropertyChanged(nameof(Nodes));
         }
-        
+
         /// <summary>
         /// Enable editing when it is disabled temporarily.
         /// </summary>
@@ -273,7 +287,7 @@ namespace Dynamo.GraphNodeManager
         /// <param name="obj"></param>
         internal void NodeSelect(object obj)
         {
-            var nodeViewModel = obj as NodeViewModel;
+            var nodeViewModel = obj as GridNodeViewModel;
             if (nodeViewModel == null) return;
 
             // Select
@@ -281,7 +295,7 @@ namespace Dynamo.GraphNodeManager
             commandExecutive.ExecuteCommand(command, uniqueId, "GraphNodeManager");
 
             // Focus on selected
-            viewModelCommandExecutive.FindByIdCommand(nodeViewModel.NodeModel.GUID.ToString());
+            viewModelCommandExecutive.FocusNodeCommand(nodeViewModel.NodeModel.GUID.ToString());
         }
 
         /// <summary>
@@ -338,7 +352,7 @@ namespace Dynamo.GraphNodeManager
         /// <param name="e"></param>
         private void NodesCollectionViewSource_Filter(object sender, FilterEventArgs e)
         {
-            if (!(e.Item is NodeViewModel nvm)) return;
+            if (!(e.Item is GridNodeViewModel nvm)) return;
             if (!filterDictionary.Any()) return;
 
             // Boolean Toggle Filters
@@ -464,7 +478,8 @@ namespace Dynamo.GraphNodeManager
         /// <param name="node"></param>
         private void CurrentWorkspaceModel_NodeAdded(NodeModel node)
         {
-            var infoNode = new NodeViewModel(node);
+            var infoNode = new GridNodeViewModel(node);
+            infoNode.BubbleUpdate += (sender, args) => { RefreshNodesView(); };
             nodeDictionary[node.GUID] = infoNode;
             Nodes.Add(infoNode);
             RaisePropertyChanged(nameof(NodesCollection));
@@ -476,6 +491,7 @@ namespace Dynamo.GraphNodeManager
         private void CurrentWorkspaceModel_NodeRemoved(NodeModel node)
         {
             var infoNode = nodeDictionary[node.GUID];
+            infoNode.BubbleUpdate -= (sender, args) => { RefreshNodesView(); };
             nodeDictionary.Remove(node.GUID);
             Nodes.Remove(infoNode);
             RaisePropertyChanged(nameof(NodesCollection));
@@ -531,12 +547,26 @@ namespace Dynamo.GraphNodeManager
         public void Dispose()
         {
             UnsubscribeWorkspaceEvents(CurrentWorkspace);
+
+            DisposeNodes();
+
             viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
             viewLoadedParams.CurrentWorkspaceCleared -= OnCurrentWorkspaceCleared;
             NodesCollection.Filter -= NodesCollectionViewSource_Filter;
             GraphNodeManagerView = null;
         }
 
+        /// <summary>
+        /// Dispose of each NodeViewModel individually
+        /// </summary>
+        private void DisposeNodes()
+        {
+            foreach(var nvm in Nodes)
+            {
+                nvm.BubbleUpdate -= (sender, args) => { RefreshNodesView(); };
+                nvm.Dispose();
+            }
+        }
         #endregion
     }
 }

@@ -369,7 +369,7 @@
                AllowsTransparency="True"
                Opened="OnContextMenuOpened"
                Placement="MousePoint"
-               StaysOpen="True"
+               StaysOpen="False"
                Style="{StaticResource WorkspaceContextMenuStylePopup}">
             <Popup.Resources>
                 <Style TargetType="{x:Type MenuItem}">

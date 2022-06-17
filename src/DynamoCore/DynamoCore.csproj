@@ -139,6 +139,7 @@
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
       <NodeHelpFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.*" />
+      <OpenSourceLicenses Include="$(SolutionDir)..\doc\distrib\Open Source Licenses\**\*.*" />
       <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
       <ExternAnalytics Include="$(SolutionDir)..\extern\Analytics.NET\*.*" />
       <LegacyBinariesToBinFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\*" />
@@ -152,6 +153,7 @@
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\InstrumentationConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\ADPAnalyticsConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(NodeHelpFiles)" DestinationFolder="$(OutputPath)fallback_docs\" />
+    <Copy SourceFiles="@(OpenSourceLicenses)" DestinationFolder="$(OutputPath)Open Source Licenses\" />
     <Copy SourceFiles="@(LibGInterface)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
