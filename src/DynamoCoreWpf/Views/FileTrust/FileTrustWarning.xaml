@@ -156,7 +156,6 @@
                     <TextBlock Grid.Row="0" 
                              MaxWidth="600"
                              FontSize="13"
-                             HorizontalAlignment="Center"
                              FontFamily="{StaticResource ArtifaktElementRegular}"
                              TextWrapping="Wrap"
                              Text="{x:Static p:Resources.FileTrustWarningPopupText}"/>
@@ -166,12 +165,11 @@
                                 Margin="5,20,0,10"
                                 MaxWidth="600">
                         <CheckBox Name="FileTrustWarningCheckBox"
-                                  HorizontalAlignment="Center"
                                   Content="{x:Static p:Resources.FileTrustWarningCheckBoxText}"
                                   Style="{StaticResource CheckBoxFileTrustStyle}"
                                   FontFamily="{StaticResource ArtifaktElementRegular}"
                                   FontSize="12"/>
-                        <Label HorizontalAlignment="Center" 
+                        <Label HorizontalAlignment="Left" 
                                 Name="TitleInfo2" 
                                 VerticalAlignment="Center" 
                                 Height="26" 
