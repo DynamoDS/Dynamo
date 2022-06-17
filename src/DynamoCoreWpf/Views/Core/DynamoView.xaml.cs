@@ -763,6 +763,7 @@ namespace Dynamo.Controls
             if (dynamoViewModel.MainGuideManager != null)
                 dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
 
+
             if (warningPopup != null && warningPopup.IsOpen)
                 warningPopup.UpdatePopupLocation();
         }
