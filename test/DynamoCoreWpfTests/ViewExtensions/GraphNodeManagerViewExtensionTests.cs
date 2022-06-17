@@ -9,7 +9,6 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
-
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
