@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dynamo.GraphNodeManager.Controls"
+             xmlns:p="clr-namespace:Dynamo.GraphNodeManager.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="800">
     <UserControl.Resources>
@@ -74,12 +75,17 @@
                     <Image x:Name="SearchImage"
                                Width="16px"
                                Height="16px"
-                               Margin="0 0 -10 0"
+                               Margin="0 5 -10 0"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
+                               SnapsToDevicePixels="True"
                                Source="/GraphNodeManagerViewExtension;component/Images/Search.png"
                                Stretch="UniformToFill"/>
                     <Grid HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
 
                         <!-- Watermark -->
                         <TextBlock
@@ -107,6 +113,28 @@
                             HorizontalAlignment="Stretch"
                             TextChanged="SearchTextBox_OnTextChanged"
                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                        
+                        <!-- Clear Search -->
+
+                        <Button Grid.Column="1"
+                                    Margin="5 5 0 0"
+                                    PreviewMouseLeftButtonDown="OnSearchClearButtonClicked" 
+                                    Name="SearchClearButton"
+                                    Style="{StaticResource ButtonStyle1}"
+                                    Visibility="{Binding ElementName=SearchTextBox, 
+                                                         Path=Text, 
+                                                         Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
+                                    Width="16px"
+                                    Height="16px"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    ToolTip="{x:Static p:Resources.ToolTip_ClearSearchBox}"
+                                    Cursor="Hand">
+
+                            <Image Source="/GraphNodeManagerViewExtension;component/Images/Clear.png" 
+                                                           SnapsToDevicePixels="True"
+                                                           Style="{StaticResource ImageStyle}"/>
+                        </Button>
                     </Grid>
                 </DockPanel>
             </Border>
