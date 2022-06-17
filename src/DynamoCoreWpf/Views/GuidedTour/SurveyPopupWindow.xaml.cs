@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
-using Res = Dynamo.Wpf.Properties.Resources;
 using System.Windows.Controls.Primitives;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels.GuidedTour;
+using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Wpf.Views.GuidedTour
 {
@@ -26,7 +25,6 @@ namespace Dynamo.Wpf.Views.GuidedTour
             InitializeComponent();
             if (viewModel != null)
                 surveyViewModel = viewModel;
-
 
             DataContext = surveyViewModel;
             
@@ -53,12 +51,12 @@ namespace Dynamo.Wpf.Views.GuidedTour
             
             if(nextGuide != null)
             {
-                GetStartedLink.Visibility = System.Windows.Visibility.Visible;
-                NextGuideNameLink.Content = Res.ResourceManager.GetString(nextGuide.GuideNameResource).Replace("_", "");
+                NextGuideLink.Visibility = System.Windows.Visibility.Visible;
+                NextGuideNameButton.Content = Res.ResourceManager.GetString(nextGuide.GuideNameResource).Replace("_", "");
             }
             else
             {
-                GetStartedLink.Visibility = System.Windows.Visibility.Hidden;
+                NextGuideLink.Visibility = System.Windows.Visibility.Hidden;
             }
         }
 
