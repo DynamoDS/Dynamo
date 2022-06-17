@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
+using Dynamo.GraphNodeManager.Properties;
 using Dynamo.UI;
 
 namespace Dynamo.GraphNodeManager.Converters
@@ -75,12 +76,12 @@ namespace Dynamo.GraphNodeManager.Converters
             switch ((ElementState)value)
             {
                 case ElementState.Info:
-                    return "Information";
+                    return Resources.Title_Information;
                 case ElementState.Warning:
                 case ElementState.PersistentWarning:
-                    return "Warning";
+                    return Resources.Title_Warning;
                 case ElementState.Error:
-                    return "Error";
+                    return Resources.Title_Error;
                 default:
                     return string.Empty;
             }
