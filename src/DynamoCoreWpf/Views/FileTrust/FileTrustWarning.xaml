@@ -169,7 +169,7 @@
                                   Content="{x:Static p:Resources.FileTrustWarningCheckBoxText}"
                                   Style="{StaticResource CheckBoxFileTrustStyle}"
                                   FontFamily="{StaticResource ArtifaktElementRegular}"
-                                  FontSize="12"/>
+                                  FontSize="13"/>
                         <Label HorizontalAlignment="Left" 
                                 Name="TitleInfo2" 
                                 VerticalAlignment="Center" 
