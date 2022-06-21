@@ -30,6 +30,8 @@
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
         UseLayoutRounding="True"
+        Activated="DynamoView_Activated"
+        Deactivated="DynamoView_Deactivated"
         Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.Resources>

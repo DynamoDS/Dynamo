@@ -4076,6 +4076,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems..
+        /// </summary>
+        public static string MessagePackageTargetOtherHosts2 {
+            get {
+                return ResourceManager.GetString("MessagePackageTargetOtherHosts2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package targets a different host than current host application..
+        /// </summary>
+        public static string MessagePackageTargetOtherHostShort {
+            get {
+                return ResourceManager.GetString("MessagePackageTargetOtherHostShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version {0} of {1} could not be found..
         /// </summary>
         public static string MessagePackageVersionNotFound {
@@ -4613,7 +4631,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You&apos;ve finished getting started with Dynamo..
+        ///   Looks up a localized string similar to You&apos;ve finished the Getting Started guide..
         /// </summary>
         public static string OnboardingGuideSurveyText {
             get {
@@ -4680,7 +4698,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in #Dynamo Primer=https://primer2.dynamobim.org/..
+        ///   Looks up a localized string similar to Well done! You just ran your first graph in Dynamo. \n\nStay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in #Dynamo Primer=https://primer2.dynamobim.org/ ..
         /// </summary>
         public static string OnboardingSuccessText {
             get {
@@ -7809,6 +7827,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package Host Error.
+        /// </summary>
+        public static string TitlePackageTargetOtherHost {
+            get {
+                return ResourceManager.GetString("TitlePackageTargetOtherHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} of {1}.
         /// </summary>
         public static string TooltipCurrentIndex {
@@ -7823,6 +7850,16 @@ namespace Dynamo.Wpf.Properties {
         public static string TourLabelProgressText {
             get {
                 return ResourceManager.GetString("TourLabelProgressText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A problem occurred when trying to access the location. Dynamo is unable to obtain read/write access to
+        ///{0}.
+        /// </summary>
+        public static string TrustedLocationNotAccessible {
+            get {
+                return ResourceManager.GetString("TrustedLocationNotAccessible", resourceCulture);
             }
         }
         
@@ -7860,6 +7897,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UnableToAccessPackageDirectory {
             get {
                 return ResourceManager.GetString("UnableToAccessPackageDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable To Access Directory.
+        /// </summary>
+        public static string UnableToAccessTrustedDirectory {
+            get {
+                return ResourceManager.GetString("UnableToAccessTrustedDirectory", resourceCulture);
             }
         }
         

@@ -1420,6 +1420,33 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// Selects an Element by ID and focuses the view around it
+        /// </summary>
+        /// <param name="id"></param>
+        private void FocusNode(object id)
+        {
+            try
+            {
+                var node = DynamoViewModel.Model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == id.ToString());
+              
+                //select the element
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
+
+                DynamoViewModel.ShowElement(node, false);
+            }
+            catch
+            {
+                DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindNodeById);
+            }
+        }
+
+        private static bool CanFocusNode(object id)
+        {
+            return !string.IsNullOrEmpty(id.ToString());
+        }
+
         private void FindById(object id)
         {
             try

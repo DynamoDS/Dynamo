@@ -111,6 +111,7 @@ namespace Dynamo.Wpf.Views.FileTrust
         private void CloseFileButton_Click(object sender, RoutedEventArgs e)
         {
             fileTrustWarningViewModel.ShowWarningPopup = false;
+            fileTrustWarningViewModel.DynFileDirectoryName = string.Empty;
             if (dynViewModel.CloseHomeWorkspaceCommand.CanExecute(null))
             {
                 dynViewModel.CloseHomeWorkspaceCommand.Execute(null);
@@ -125,6 +126,7 @@ namespace Dynamo.Wpf.Views.FileTrust
         {
             fileTrustWarningViewModel.AllowOneTimeTrust = true;
             fileTrustWarningViewModel.ShowWarningPopup = false;
+            fileTrustWarningViewModel.DynFileDirectoryName = string.Empty;
             RunSettings.ForceBlockRun = false;
             if (FileTrustWarningCheckBox.IsChecked.Value == true)
             {
@@ -162,6 +164,17 @@ namespace Dynamo.Wpf.Views.FileTrust
                 fileTrustWarningViewModel.PropertyChanged -= ViewModel_PropertyChanged;
                 fileTrustWarningViewModel.DynFileDirectoryName = string.Empty;
             }
+        }
+
+        /// <summary>
+        /// This method will show/hide the Popup when the main window is Activated or Deactivated
+        /// </summary>
+        internal void ManagePopupActivation(bool activate)
+        {
+            if (dynViewModel.FileTrustViewModel.ShowWarningPopup == !activate &&
+               !string.IsNullOrEmpty(dynViewModel.FileTrustViewModel.DynFileDirectoryName) &&
+               RunSettings.ForceBlockRun == true)
+                IsOpen = activate;
         }
 
         private void SetUpPopup()
