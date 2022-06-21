@@ -232,9 +232,9 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!-- Info -->
+                <!-- Outputs -->
                 <DataGridTemplateColumn
-                    Header="Info" 
+                    Header="Outputs"
                     Width="Auto"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
