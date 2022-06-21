@@ -59,8 +59,7 @@ namespace DesignScript
             ///     Produces the values in a Dictionary.
             /// </summary>
             /// <returns name="values">Values of the dictionary</returns>
-            // [AllowRankReduction]
-            // TODO: Consider adding this attribute in 3.0 (DYN-1697)
+            [AllowRankReduction]
             public IEnumerable<object> Values => D.Values;
 
             /// <summary>
