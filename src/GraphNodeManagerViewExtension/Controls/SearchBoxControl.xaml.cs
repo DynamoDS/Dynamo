@@ -32,6 +32,11 @@ namespace Dynamo.GraphNodeManager.Controls
 
             textBox.Focus();
         }
+
+        private void OnSearchClearButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            this.SearchTextBox.Clear();
+        }
     }
 
     /// <summary>

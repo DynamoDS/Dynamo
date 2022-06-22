@@ -26,7 +26,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
 
             var mockGreg = new Mock<IGregClient>();
             var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
-            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true }; ;
 
             var ext = Model.GetPackageManagerExtension();
             var loader = ext.PackageLoader;
@@ -173,11 +173,11 @@ namespace Dynamo.PackageManager.Wpf.Tests
             //Advance Steel Packages
             List<string> advanceSteelPackagesName = new List<string> { "DynamoIronPython2.7", "dynamo", "mise en barre", "Test-PackageDependencyFilter" };
             //Advance Steel Packages & Formit
-            List<string> intersectionPackagesName = new List<string> { "DynamoTestPackage1", "DynamoTestPackage2"};
+            List<string> intersectionPackagesName = new List<string> { "DynamoTestPackage1", "DynamoTestPackage2" };
 
             var mockGreg = new Mock<IGregClient>();
             var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
-            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) {CallBase=true };
 
             var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
             packageManagerSearchViewModel.RegisterTransientHandlers();

@@ -130,6 +130,12 @@ namespace Dynamo.Models
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
+
+        /// <summary>
+        /// Indicating if ASM is loaded correctly, defaulting to true because integrators most likely have code for ASM preloading
+        /// During sandbox initializing, Dynamo checks specifically if ASM loading was correct
+        /// </summary>
+        internal bool IsASMLoaded = true;
     
         #endregion
 

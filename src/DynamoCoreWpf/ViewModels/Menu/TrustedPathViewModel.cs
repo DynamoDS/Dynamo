@@ -114,12 +114,13 @@ namespace Dynamo.ViewModels
                     this.logger?.LogError($"Failed to add trusted location ${args.Path} due to the following error: {ex.Message}");
                 }
 
-                string errorMessage = string.Format(Resources.PackageFolderNotAccessible, args.Path);
-                MessageBoxService.Show(errorMessage, Resources.UnableToAccessPackageDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
+                string errorMessage = string.Format(Resources.TrustedLocationNotAccessible, args.Path);
+                MessageBoxService.Show(errorMessage, Resources.UnableToAccessTrustedDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             
             TrustedLocations.Insert(TrustedLocations.Count, args.Path);
+            CommitChanges(null);
             RaiseCanExecuteChanged();
         }
 
@@ -144,11 +145,13 @@ namespace Dynamo.ViewModels
                 return;
 
             TrustedLocations[index] = args.Path;
+            CommitChanges(null);
         }
 
         private void RemovePathAt(int index)
         {
             TrustedLocations.RemoveAt(index);
+            CommitChanges(null);
             RaiseCanExecuteChanged();
         }
 

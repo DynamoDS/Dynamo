@@ -3069,8 +3069,11 @@ To install the latest version of a package, click Install. \n
   <data name="OnboardingGuideWelcomeTitle" xml:space="preserve">
     <value>Get started with Dynamo</value>
   </data>
+  <data name="OnboardingGuideSurveyText" xml:space="preserve">
+    <value>You've finished the Getting Started guide.</value>
+  </data>
   <data name="OnboardingWorkspaceText" xml:space="preserve">
-    <value>This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** , which is made up of nodes and wires. Graphs can process data, create geometry, and more. In this guide, we’ll work with a premade sample graph.</value>
+    <value>This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** . Graphs can process data, create geometry, and more. In this guide, we’ll work with a sample graph.</value>
   </data>
   <data name="OnboardingWorkspaceTitle" xml:space="preserve">
     <value>Workspace</value>
@@ -3124,16 +3127,20 @@ To install the latest version of a package, click Install. \n
     <value>Nodes</value>
   </data>
   <data name="OnboardingGuideWelcomeText" xml:space="preserve">
-    <value>Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide.</value>
+    <value>Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph.</value>
   </data>
   <data name="OnboardingPlaceNodeText" xml:space="preserve">
-    <value>This node needs a **CoordinateSystem** input. You can find a node to use as the input in the library by using search or browsing. The node is **CoordinateSystem.ByOrigin**, so you’ll find it under the **CoordinateSystem** category.\n\n Click the node to place it in the workspace.</value>
+    <value>The library contains the nodes used to build graphs. To find a node, you can search the library or browse its categories.
+
+To place a node from the library to the workspace, click the node.
+
+Try placing the highlighted **ByOrigin** node.</value>
   </data>
   <data name="OnboardingPlaceNodeTitle" xml:space="preserve">
-    <value>Search the library and place a node</value>
+    <value>Placing nodes</value>
   </data>
   <data name="OnboardingGuideConnectNodesText" xml:space="preserve">
-    <value>This new node needs to be connected to another to make it part of the graph. Give it a try!</value>
+    <value>This new node needs to be connected to another to make it part of the graph. Give it a try, then click the Next arrow.</value>
   </data>
   <data name="OnboardingGuideConnectNodesTitle" xml:space="preserve">
     <value>Connect the nodes</value>
@@ -3192,7 +3199,7 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Website</value>
   </data>
   <data name="OnboardingSuccessText" xml:space="preserve">
-    <value>Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in Dynamo Primer.</value>
+    <value>Well done! You just ran your first graph in Dynamo. \n\nStay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in #Dynamo Primer=https://primer2.dynamobim.org/ .</value>
   </data>
   <data name="OnboardingSuccessTitle" xml:space="preserve">
     <value>Success</value>
@@ -3228,5 +3235,21 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="TrustLocationSkippedNotification" xml:space="preserve">
     <value>No trusted location has been added.</value>
+  </data>
+  <data name="MessagePackageTargetOtherHosts2" xml:space="preserve">
+    <value>The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems.</value>
+  </data>
+  <data name="MessagePackageTargetOtherHostShort" xml:space="preserve">
+    <value>Package targets a different host than current host application.</value>
+  </data>
+  <data name="TitlePackageTargetOtherHost" xml:space="preserve">
+    <value>Package Host Error</value>
+  </data>
+  <data name="TrustedLocationNotAccessible" xml:space="preserve">
+    <value>A problem occurred when trying to access the trusted location. Dynamo is unable to obtain read/write access to
+{0}</value>
+  </data>
+  <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
+    <value>Unable To Access Trusted Directory</value>
   </data>
 </root>

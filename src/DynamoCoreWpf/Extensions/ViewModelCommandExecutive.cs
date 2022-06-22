@@ -41,6 +41,16 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
+        /// Search for a Node by its ID and focus the view on it
+        /// </summary>
+        /// <param name="objectID"></param>
+        public void FocusNodeCommand(string objectID)
+        {
+            dynamoViewModel.CurrentSpaceViewModel.FocusNodeCommand.Execute(objectID);
+        }
+
+
+        /// <summary>
         /// Force re-execute all nodes in the current workspace
         /// </summary>
         /// <param name="showErrors">Should errors be shown?</param>
