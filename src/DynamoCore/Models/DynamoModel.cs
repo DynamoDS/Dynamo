@@ -576,7 +576,7 @@ namespace Dynamo.Models
         /// <param name="config">Start configuration</param>
         protected DynamoModel(IStartConfiguration config)
         {
-            if (DebugModes.IsEnabled("NotificationCounter"))
+            if (NotificationCounter.Initialize())
             {
                 NotificationCounter.StartCounting();
             }

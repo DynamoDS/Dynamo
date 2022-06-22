@@ -27,6 +27,29 @@ namespace Dynamo.Utilities
         private static string logFile = "";
         private static Dictionary<string, NotificationLog> notifications = new Dictionary<string, NotificationLog>();
 
+        /// <summary>
+        /// Tries to initialize the NotificationCounter class.
+        /// </summary>
+        /// <returns>true if debug mode 'NotificationCounter' is turned on and if Harmony.dll was successfully loaded. Returns false otherwise</returns>
+        internal static bool Initialize()
+        {
+            if (!DebugModes.IsEnabled("NotificationCounter"))
+                return false;
+
+            string harmonyLocation = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "0Harmony.dll");
+            if (!File.Exists(harmonyLocation))
+                return false;
+
+            try
+            {
+                return Assembly.LoadFrom(harmonyLocation) != null;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         internal static void StartCounting()
         {
             try
