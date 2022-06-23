@@ -3,6 +3,7 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+       xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
        xmlns:local="clr-namespace:Dynamo.Wpf.Views.FileTrust"
        xmlns:ui="clr-namespace:Dynamo.UI"
        xmlns:controls="clr-namespace:Dynamo.Controls"
@@ -13,9 +14,9 @@
        Opacity="0.5"
         Height="600" 
        Width="400"     
-       d:DesignWidth="415"
+       d:DesignWidth="350"
        d:DesignHeight="250">
-    <Grid>
-        
+    <Grid Background="White">
+        <wv2:WebView2  Source="http://localhost:3000/"></wv2:WebView2>
     </Grid>
 </Popup>

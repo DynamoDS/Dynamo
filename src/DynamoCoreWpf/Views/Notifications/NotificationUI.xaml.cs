@@ -19,7 +19,16 @@ namespace Dynamo.Wpf.Views.Notifications
     {
         public NotificationUI(DynamoView dynamoViewWindow)
         {
-            InitializeComponent();          
+            InitializeComponent();
+        }
+
+        internal void UpdatePopupLocation()
+        {
+            if (IsOpen)
+            {
+                var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                positionMethod.Invoke(this, null);
+            }
         }
     }
 }

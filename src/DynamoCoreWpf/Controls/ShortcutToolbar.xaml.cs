@@ -3,11 +3,14 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Dynamo.Controls;
 using Dynamo.UI.Commands;
 using Dynamo.Updates;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Views.Notifications;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UI.Controls
@@ -20,7 +23,7 @@ namespace Dynamo.UI.Controls
         private readonly ObservableCollection<ShortcutBarItem> shortcutBarItems;
         private readonly ObservableCollection<ShortcutBarItem> shortcutBarRightSideItems;
 
-        public DelegateCommand NotificationsCommand;
+        private NotificationUI notificationUIPopup;
 
         /// <summary>
         /// A collection of <see cref="ShortcutBarItem"/>.
@@ -42,19 +45,40 @@ namespace Dynamo.UI.Controls
         /// Construct a ShortcutToolbar.
         /// </summary>
         /// <param name="updateManager"></param>
-        public ShortcutToolbar(IUpdateManager updateManager)
+        public ShortcutToolbar(DynamoView dynamoView, IUpdateManager updateManager)
         {
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
-            shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();    
+            shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();
+
+            notificationUIPopup = new NotificationUI(null);
+            notificationUIPopup.IsOpen = false;
+            notificationUIPopup.PlacementTarget = notificationsButton;
+            notificationUIPopup.Placement = PlacementMode.Bottom;
+            notificationUIPopup.HorizontalOffset = -350;
+            notificationUIPopup.VerticalOffset= 30;
+
+            notificationUIPopup.UpdatePopupLocation();
 
             InitializeComponent();
+
             UpdateControl.DataContext = updateManager;
-            NotificationsCommand = new DelegateCommand(ShowNotifications);
+
+            dynamoView.SizeChanged += DynamoView_SizeChanged;
+            dynamoView.LocationChanged += DynamoView_LocationChanged;
         }
 
-        private void ShowNotifications(object obj)
+        private void DynamoView_LocationChanged(object sender, EventArgs e)
         {
-            
+            notificationUIPopup.PlacementTarget = notificationsButton;
+            notificationUIPopup.Placement = PlacementMode.Bottom;
+            notificationUIPopup.UpdatePopupLocation();
+        }
+
+        private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            notificationUIPopup.PlacementTarget = notificationsButton;
+            notificationUIPopup.Placement = PlacementMode.Bottom;
+            notificationUIPopup.UpdatePopupLocation();
         }
 
         private void exportMenu_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -67,6 +91,11 @@ namespace Dynamo.UI.Controls
         {
             this.HeaderText.FontFamily = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
             this.Icon.Source = new BitmapImage(new System.Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/image-icon-default.png"));
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            notificationUIPopup.IsOpen = !notificationUIPopup.IsOpen;
         }
     }
 

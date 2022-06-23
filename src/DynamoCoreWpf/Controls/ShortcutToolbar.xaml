@@ -143,7 +143,7 @@
                         <MenuItem.Header>
                             <Grid MinWidth="25"
                                 Width="Auto">
-                                <Button Command="{Binding NotificationsCommand}">
+                                <Button x:Name="notificationsButton" Click="Button_Click">
                                     <Image
                                            Width="16"
                                            Height="16"
