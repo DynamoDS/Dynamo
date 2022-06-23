@@ -594,13 +594,14 @@ namespace Dynamo.ViewModels
             LoadGroupStylesFromPreferences(preferenceSettings.GroupStyleItemsList);
         }
 
-        
+
         /// <summary>
-            /// Creates input ports for the group based on its Nodes.
-            /// Input ports that either is connected to a Node outside of the
-            /// group, or has a port that is not connected will be used for the group.
-            /// </summary>
-        internal void SetGroupInputPorts()
+        /// Creates input ports for the group based on its Nodes.
+        /// Input ports that either is connected to a Node outside of the
+        /// group, or has a port that is not connected will be used for the group.
+        /// This function appends to the inputs
+        /// </summary>
+        private void SetGroupInputPorts()
         {
             List<PortViewModel> newPortViewModels;
 
@@ -635,8 +636,9 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Creates output ports for the group based on its Nodes.
         /// Output ports that are not connected will be used for the group.
+        /// This function appends to the outports
         /// </summary>
-        internal void SetGroupOutPorts()
+        private void SetGroupOutPorts()
         {
             List<PortViewModel> newPortViewModels;
 
