@@ -547,14 +547,12 @@ namespace Dynamo.ViewModels
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {
             annotationModel = model;
-            var modelBase = (ModelBase)model;
 
             this.WorkspaceViewModel = workspaceViewModel;
             this.preferenceSettings = WorkspaceViewModel.DynamoViewModel.PreferenceSettings;
             model.PropertyChanged += model_PropertyChanged;
             model.RemovedFromGroup += OnModelRemovedFromGroup;
             model.AddedToGroup += OnModelAddedToGroup;
-            modelBase.PropertyChanged += ModelBase_PropertyChanged;
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
@@ -596,15 +594,6 @@ namespace Dynamo.ViewModels
             LoadGroupStylesFromPreferences(preferenceSettings.GroupStyleItemsList);
         }
 
-        private void ModelBase_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(annotationModel.Position):
-                    UpdateProxyPortsPosition();
-                    break;
-            }
-        }
         
         /// <summary>
             /// Creates input ports for the group based on its Nodes.
