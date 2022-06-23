@@ -7,6 +7,7 @@ using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.FileTrust;
 
 namespace Dynamo.Wpf.Views.FileTrust
@@ -110,21 +111,37 @@ namespace Dynamo.Wpf.Views.FileTrust
         private void CloseFileButton_Click(object sender, RoutedEventArgs e)
         {
             fileTrustWarningViewModel.ShowWarningPopup = false;
+            fileTrustWarningViewModel.DynFileDirectoryName = string.Empty;
             if (dynViewModel.CloseHomeWorkspaceCommand.CanExecute(null))
+            {
                 dynViewModel.CloseHomeWorkspaceCommand.Execute(null);
+                if (FileTrustWarningCheckBox.IsChecked.Value == true)
+                {
+                    dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.TrustLocationSkippedNotification);
+                }
+            }
         }
 
         private void YesButton_Click(object sender, RoutedEventArgs e)
         {
+            fileTrustWarningViewModel.AllowOneTimeTrust = true;
             fileTrustWarningViewModel.ShowWarningPopup = false;
+            fileTrustWarningViewModel.DynFileDirectoryName = string.Empty;
             RunSettings.ForceBlockRun = false;
             if (FileTrustWarningCheckBox.IsChecked.Value == true)
             {
-                if (string.IsNullOrEmpty(fileTrustWarningViewModel.DynFileDirectoryName)) return;
-                if (dynViewModel.PreferenceSettings.IsTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName)) return;
-                dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName);
+                if(dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName))
+                    dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(string.Format(Properties.Resources.TrustLocationAddedNotification, fileTrustWarningViewModel.DynFileDirectoryName));
             }
-            dynViewModel.Model.CurrentWorkspace.RequestRun();
+            if (dynViewModel.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType != RunType.Manual)
+            {
+                dynViewModel.Model.CurrentWorkspace.RequestRun();
+            }
+            else
+            {
+                (dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).CurrentNotificationMessage = Properties.Resources.RunReady;
+                (dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).CurrentNotificationLevel = NotificationLevel.Mild;
+            }
         }
 
         /// <summary>
@@ -147,6 +164,17 @@ namespace Dynamo.Wpf.Views.FileTrust
                 fileTrustWarningViewModel.PropertyChanged -= ViewModel_PropertyChanged;
                 fileTrustWarningViewModel.DynFileDirectoryName = string.Empty;
             }
+        }
+
+        /// <summary>
+        /// This method will show/hide the Popup when the main window is Activated or Deactivated
+        /// </summary>
+        internal void ManagePopupActivation(bool activate)
+        {
+            if (dynViewModel.FileTrustViewModel.ShowWarningPopup == !activate &&
+               !string.IsNullOrEmpty(dynViewModel.FileTrustViewModel.DynFileDirectoryName) &&
+               RunSettings.ForceBlockRun == true)
+                IsOpen = activate;
         }
 
         private void SetUpPopup()

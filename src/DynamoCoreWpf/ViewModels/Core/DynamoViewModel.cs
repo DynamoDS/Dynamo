@@ -1621,8 +1621,9 @@ namespace Dynamo.ViewModels
                     // Skip these when opening dyf
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
+                    FileTrustViewModel.AllowOneTimeTrust = false;
                 }
-                (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
             }
             catch (Exception e)
             {
@@ -1657,7 +1658,7 @@ namespace Dynamo.ViewModels
 
         internal void OpenOnboardingGuideFile()
         {  
-            var jsonDynFile = ResourceUtilities.LoadContentFromResources(GuidesManager.OnboardingGuideWorkspaceEmbeededResource, GetType().Assembly, false, false);
+            var jsonDynFile = ResourceUtilities.LoadContentFromResources(GuidesManager.OnboardingGuideWorkspaceEmbeededResource, Assembly.GetExecutingAssembly(), false, false);
             OpenFromJson(new Tuple<string, bool>(jsonDynFile, true));
         }
 
@@ -1973,9 +1974,15 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal void ShowElement(NodeModel e)
+        /// <summary>
+        /// Attempts to find a NodeModel and focuses the view around it
+        /// Default boolean introduced to allow for this method to be used in Automatic mode
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="forceShowElement"></param>
+        internal void ShowElement(NodeModel e, bool forceShowElement = true)
         {
-            if (HomeSpace.RunSettings.RunType == RunType.Automatic)
+            if (HomeSpace.RunSettings.RunType == RunType.Automatic && forceShowElement)
                 return;
 
             if (!model.CurrentWorkspace.Nodes.Contains(e))
@@ -2651,6 +2658,29 @@ namespace Dynamo.ViewModels
             return !this.ShowStartPage;
         }
 
+        private void StartGettingStartedGuide(object parameter)
+        {
+            try
+            {
+                if (ClearHomeWorkspaceInternal())
+                {
+                    OpenOnboardingGuideFile();
+                    MainGuideManager.LaunchTour(GuidesManager.OnboardingGuideName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Model.Logger.Log(ex.Message);
+                Model.Logger.Log(ex.StackTrace);
+            }
+        }
+
+        private bool CanStartGettingStartedGuide(object parameter)
+        {
+            // Disable Getting Started guided tour when ASM is not loaded
+            return Model.IsASMLoaded;
+        }
+
         internal void Pan(object parameter)
         {
             Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", CurrentSpaceViewModel.X, CurrentSpaceViewModel.Y, currentWorkspaceViewModel.Zoom));
@@ -2860,6 +2890,34 @@ namespace Dynamo.ViewModels
                 BackgroundPreviewViewModel.ExportToSTL(_fileDialog.FileName, HomeSpace.Name);
 
                 Dynamo.Logging.Analytics.TrackCommandEvent("ExportToSTL");
+            }
+        }
+
+        /// <summary>
+        /// Hide or show file trust warning popup for the current workspace when preference settings are updated.
+        /// </summary>
+        internal void ShowHideFileTrustWarningIfCurrentWorkspaceTrusted()
+        {
+            if (FileTrustViewModel == null || DynamoModel.IsTestMode) return;
+            if ((FileTrustViewModel.ShowWarningPopup
+                && model.PreferenceSettings.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName))
+                || model.PreferenceSettings.DisableTrustWarnings)
+            {
+                FileTrustViewModel.ShowWarningPopup = false;
+                RunSettings.ForceBlockRun = false;
+                Model.CurrentWorkspace.RequestRun();
+                return;
+            }
+            if (!FileTrustViewModel.ShowWarningPopup
+                && !model.PreferenceSettings.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName)
+                && (currentWorkspaceViewModel?.IsHomeSpace ?? false) && !ShowStartPage
+                && !FileTrustViewModel.AllowOneTimeTrust
+                && !model.PreferenceSettings.DisableTrustWarnings
+                && !string.IsNullOrWhiteSpace(currentWorkspaceViewModel.FileName))
+            {
+                FileTrustViewModel.ShowWarningPopup = true;
+                RunSettings.ForceBlockRun = true;
+                (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
             }
         }
 

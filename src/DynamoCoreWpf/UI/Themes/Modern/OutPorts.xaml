@@ -127,7 +127,7 @@
                             <Setter Property="Margin" Value="13,3,10,0" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
-                                    <Setter Property="Margin" Value="7,1,0,0" />
+                                    <Setter Property="Margin" Value="12,1,0,0" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -170,6 +170,7 @@
                                 <Setter Property="BorderThickness" Value="0" />
                                 <Setter Property="Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
                                 <Setter Property="Width" Value="20px" />
+                                <Setter Property="Margin" Value="5,0,0,0" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

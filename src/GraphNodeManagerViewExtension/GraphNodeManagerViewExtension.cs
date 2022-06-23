@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Logging;
 using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.GraphNodeManager
@@ -10,11 +11,13 @@ namespace Dynamo.GraphNodeManager
     /// to quickly interrogate the current graph for information
     /// relevant to the Nodes and their States, Status and Issues
     /// </summary>
-    public class GraphNodeManagerViewExtension : ViewExtensionBase, IViewExtension
+    public class GraphNodeManagerViewExtension : ViewExtensionBase, IViewExtension, ILogSource
     {
         #region Private Properties
         private ViewLoadedParams viewLoadedParamsReference;
-        private MenuItem graphNodeManagerMenuItem;
+        internal MenuItem graphNodeManagerMenuItem;
+
+        public event Action<ILogMessage> MessageLogged;
 
         internal GraphNodeManagerViewModel ViewModel { get; private set; }
         internal GraphNodeManagerView ManagerView { get; private set; }
@@ -77,7 +80,7 @@ namespace Dynamo.GraphNodeManager
         private void AddToSidebar()
         {
             // initialise the ViewModel and View for the window
-            this.ViewModel = new GraphNodeManagerViewModel(this.viewLoadedParamsReference, UniqueId);
+            this.ViewModel = new GraphNodeManagerViewModel(this.viewLoadedParamsReference, UniqueId, MessageLogged);
             this.ManagerView = new GraphNodeManagerView(this.ViewModel);
 
             if (this.ManagerView == null)

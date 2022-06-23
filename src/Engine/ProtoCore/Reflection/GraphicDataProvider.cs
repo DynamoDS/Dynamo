@@ -147,21 +147,24 @@ namespace ProtoCore.Mirror
         
         internal object GetCLRObject(StackValue svData, RuntimeCore runtimeCore)
         {
+            if (null == runtimeCore.DSExecutable.classTable)
+                return null;
+
+            //The GetCLRObject function is typically utilized to retrieve a ClrObject from a StackValue of type pointer.
+            //There is an edge cases for pointers where the pointer references a non CLR object.  This code
+            //checks for this edge case by verifying that the requested StackValue pointer is associated with an
+            //imported library.  An example is the "Function" pointer which does not have an associated CLRObject.
+            //In that case, the return value should be null.
+            var classNode = runtimeCore.DSExecutable.classTable.GetClassNodeAtIndex(svData.metaData.type);
+            if (classNode != null  && !classNode.IsImportedClass)
+            {
+                return null;
+            }
+
             if (marshaler != null)
             {
                 return marshaler.UnMarshal(svData, null, interpreter, typeof(object));
             }
-            
-            if (null == runtimeCore.DSExecutable.classTable)
-                return null;
-
-            IList<ClassNode> classNodes = runtimeCore.DSExecutable.classTable.ClassNodes;
-            if (null == classNodes || (classNodes.Count <= 0))
-                return null;
-
-            ClassNode classnode = runtimeCore.DSExecutable.classTable.ClassNodes[svData.metaData.type];
-            if (!classnode.IsImportedClass) //TODO: look at properties to see if it contains any FFI objects.
-                return null;
 
             try
             {

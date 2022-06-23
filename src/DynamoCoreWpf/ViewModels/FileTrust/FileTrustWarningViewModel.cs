@@ -10,6 +10,7 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
     public class FileTrustWarningViewModel : ViewModelBase
     {
         private bool showWarningPopup;
+        private bool allowOneTimeTrust;
 
         /// <summary>
         /// This offset is set to make the popup pointer point at the middle of the RunMode combo box
@@ -29,9 +30,11 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
         public int PopupBordersOffSet { get; set; } = 15;
 
         /// <summary>
-        /// Popup Width, by default it will have a Width of 385
+        /// Popup Width, by default it will have an exaggerated Width to accommodate localized languages
+        /// TODO it should really be responsive either using grid of auto canvas:
+        /// https://stackoverflow.com/questions/855334/wpf-how-to-make-canvas-auto-resize
         /// </summary>
-        public double PopupRectangleWidth { get; set; } = 385;
+        public double PopupRectangleWidth { get; set; } = 500;
 
         /// <summary>
         /// Popup Height, by default it will have a Height of 220
@@ -51,6 +54,21 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
             {
                 showWarningPopup = value;
                 RaisePropertyChanged(nameof(ShowWarningPopup));
+            }
+        }
+
+        /// <summary>
+        /// This property indicates if the Popup has been dismissed once, temporarily ignoring the trust warning
+        /// </summary>
+        public bool AllowOneTimeTrust
+        {
+            get
+            {
+                return allowOneTimeTrust;
+            }
+            set
+            {
+                allowOneTimeTrust = value;
             }
         }
 
@@ -82,6 +100,7 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
                                                                new Point(pointX3, pointY3)});
 
             showWarningPopup = false;
+            allowOneTimeTrust = false;
         }
 
     }
