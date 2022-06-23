@@ -139,6 +139,19 @@
                 <Menu HorizontalAlignment="Right"
                       Style="{StaticResource MainMenu}"
                       IsMainMenu="True">
+                    <MenuItem Name="MenuItem" Tag="NoDownArrow">
+                        <MenuItem.Header>
+                            <Grid MinWidth="25"
+                                Width="Auto">
+                                <Button Command="{Binding NotificationsCommand}">
+                                    <Image
+                                           Width="16"
+                                           Height="16"
+                                           Source="{Binding ImgHoverSource}" />
+                                </Button>                                
+                            </Grid>
+                        </MenuItem.Header>
+                    </MenuItem>
                     <MenuItem Name="exportMenu"
                               Cursor="Hand"
                               Focusable="False"

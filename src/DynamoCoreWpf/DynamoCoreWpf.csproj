@@ -31,6 +31,7 @@
     <None Remove="Views\GuidedTour\HtmlPages\nodePackage.html" />
     <None Remove="Views\Menu\TrustedPathView.xaml" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
+    <None Remove="Views\Notifications\NotificationUI.xaml" />
   </ItemGroup>
   <ItemGroup>
   <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.8745" />
@@ -354,6 +355,7 @@
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
     <Compile Include="Views\Menu\TrustedPathView.xaml.cs" />
+    <Compile Include="Views\Notifications\NotificationUI.xaml.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
     <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
       <DependentUpon>PackagePathView.xaml</DependentUpon>
@@ -536,6 +538,10 @@
     <Page Include="Views\Menu\PreferencesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Notifications\NotificationUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\ExtensionWindow.xaml">
       <SubType>Designer</SubType>

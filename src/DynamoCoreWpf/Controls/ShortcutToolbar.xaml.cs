@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,6 +19,8 @@ namespace Dynamo.UI.Controls
     {
         private readonly ObservableCollection<ShortcutBarItem> shortcutBarItems;
         private readonly ObservableCollection<ShortcutBarItem> shortcutBarRightSideItems;
+
+        public DelegateCommand NotificationsCommand;
 
         /// <summary>
         /// A collection of <see cref="ShortcutBarItem"/>.
@@ -46,6 +49,12 @@ namespace Dynamo.UI.Controls
 
             InitializeComponent();
             UpdateControl.DataContext = updateManager;
+            NotificationsCommand = new DelegateCommand(ShowNotifications);
+        }
+
+        private void ShowNotifications(object obj)
+        {
+            
         }
 
         private void exportMenu_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -131,6 +140,30 @@ namespace Dynamo.UI.Controls
         {
             if (e.PropertyName != "CanNavigateBackground") return;
             RaisePropertyChanged("ShortcutToolTip");
+        }
+    }
+
+    internal partial class NotificationsShortcutBarItem : ShortcutBarItem
+    {
+        private readonly DynamoViewModel vm;
+
+        public override string ShortcutToolTip
+        {
+            get
+            {
+                return vm.BackgroundPreviewViewModel == null || !vm.BackgroundPreviewViewModel.CanNavigateBackground
+                    ? Wpf.Properties.Resources.DynamoViewToolbarExportButtonTooltip
+                    : Wpf.Properties.Resources.DynamoViewToolbarExport3DButtonTooltip;
+            }
+            set
+            {
+                shortcutToolTip = value;
+            }
+        }
+
+        public NotificationsShortcutBarItem(DynamoViewModel viewModel)
+        {
+
         }
     }
 }

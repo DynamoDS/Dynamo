@@ -844,6 +844,7 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
+            shortcutBar.ShortcutBarItems.Add(notifications);
 
             shortcutBarGrid.Children.Add(shortcutBar);
         }
