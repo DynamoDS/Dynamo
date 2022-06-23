@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -10,11 +11,46 @@ namespace DynamoUtilities
     /// <summary>
     /// Wrapper over System.Collections.ObjectModel.ObservableCollection that fires minimal notifications.
     /// This class supports batch operations that should defer CollectionChaned notifications.
-    /// Thread safe for the follwing operations: Add, Remove, Contains, AddUnique, AddRange, RemoveRange, Count.
+    /// Thread safe for the follwing operations: Add, Remove, Contains, AddUnique, AddRange, RemoveRange, Count and iterations.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class SmartObservableCollection<T> : ObservableCollection<T>
+    public class SmartObservableCollection<T> : ObservableCollection<T>, IEnumerable<T>, IEnumerable
     {
+        /// <summary>
+        /// Thread safe Enumerator used by the SmartObservableCollection class
+        /// </summary>
+        protected class SmartEnumerator : IEnumerator<T>
+        {
+            private readonly IEnumerator<T> _inner;
+            private readonly IDisposable readLock;
+
+            internal SmartEnumerator(IEnumerator<T> inner, DynamoLock _lock)
+            {
+                this._inner = inner;
+                this.readLock = _lock.CreateReadLock();
+            }
+
+            public T Current => _inner.Current;
+
+            object IEnumerator.Current => _inner.Current;
+
+            public void Dispose()
+            {
+                _inner.Dispose();
+                readLock.Dispose();
+            }
+
+            public bool MoveNext()
+            {
+                return _inner.MoveNext();
+            }
+
+            public void Reset()
+            {
+                _inner.Reset();
+            }
+        }
+
         private DynamoLock _lock = new DynamoLock();
         private bool suppressNotification = false;
         private bool anyChangesDuringSuppress = false;
@@ -272,6 +308,16 @@ namespace DynamoUtilities
                 _lock.UnlockForRead();
                 return count;
             }
+        }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return new SmartEnumerator(base.GetEnumerator(), _lock);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return new SmartEnumerator(base.GetEnumerator(), _lock);
         }
     }
 }
