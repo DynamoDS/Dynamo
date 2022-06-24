@@ -48,8 +48,10 @@ namespace EmitMSIL
             // 5. method name is read from function call AST
             //string methodName = $"PointWrapper";
             var methodName = "ByCoordinates";
+
+            var mi = CodeGenIL.FunctionLookup(className, methodName, args);
             // 6. Emit call to ReplicationLogic by passing input args from previous steps
-            IList c = Replication.ReplicationLogic(className, methodName, args, guides);
+            IList c = Replication.ReplicationLogic(mi, args, guides);
 
             // 7. read output identifier from lhs of AST and emit assignment
             output.Add("c", c);
@@ -66,8 +68,9 @@ namespace EmitMSIL
             // 5. read methodname from function call AST
             //methodName = "CircleWrapper";
             methodName = "ByCenterPointRadius";
+            mi = CodeGenIL.FunctionLookup(className, methodName, args);
             // 6. Emit call to ReplicationLogic by passing input args from previous steps
-            IList d = Replication.ReplicationLogic(className, methodName, args, guides);
+            IList d = Replication.ReplicationLogic(mi, args, guides);
             // 7. read output identifier from lhs of AST and emit assignment
             output.Add("d", d);
 

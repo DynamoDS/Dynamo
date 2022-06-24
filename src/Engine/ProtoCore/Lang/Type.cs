@@ -401,8 +401,6 @@ namespace ProtoCore
             if (sv.IsArray &&
                 targetType.IsIndexable)
             {
-                Validity.Assert(sv.IsArray);
-
                 //We're being asked to convert an array into an array
                 //walk over the structure converting each othe elements
 

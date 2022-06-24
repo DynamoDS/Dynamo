@@ -21,55 +21,8 @@ namespace EmitMSIL
         /// <param name="args"></param>
         /// <param name="replicationAttrs"></param>
         /// <returns></returns>
-        public static IList ReplicationLogic(string className, string methodName, IList args, string[][] replicationAttrs)
+        public static IList ReplicationLogic(MethodInfo mi, IList args, string[][] replicationAttrs)
         {
-            var modules = ProtoFFI.DLLFFIHandler.Modules.Values.OfType<ProtoFFI.CLRDLLModule>();
-            var assemblies = modules.Select(m => m.Assembly ?? (m.Module?.Assembly)).Where(m => m != null);
-            MethodInfo mi = null;
-            foreach (var asm in assemblies)
-            {
-                var type = asm.GetType(className);
-                if (type == null) continue;
-
-                // There should be a way to get the exact method after matching parameter types for a node
-                // using its function descriptor. AST isn't sufficient for parameter type info.
-                // Fist check for static methods
-                mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
-                    m => m.Name == methodName && m.GetParameters().Length == args.Count).FirstOrDefault();
-
-                // Check for instance methods
-                if (mi == null)
-                {
-                    mi = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
-                        m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).FirstOrDefault();
-                }
-
-                // Check for property getters
-                if (mi == null)
-                {
-                    var prop = type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).Where(
-                            p => p.Name == methodName).FirstOrDefault();
-
-                    if (prop != null)
-                    {
-                        mi = prop.GetAccessors().FirstOrDefault();
-                    }
-                }
-
-                if (mi != null)
-                    break;
-
-                //if (method != null)
-                //{
-                //    argTypes = method.GetParameters().Select(p => p.ParameterType).ToList();
-                //    return method.ReturnType;
-                //}
-            }
-            if (mi == null)
-            {
-                throw new MissingMethodException("No matching method found in loaded assemblies.");
-            }
-
             var reducedArgs = ReduceArgs(args);
 
 

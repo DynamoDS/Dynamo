@@ -60,6 +60,56 @@ namespace EmitMSIL
             asm.Save("DynamicAssembly.dll");
         }
 
+        internal static MethodInfo FunctionLookup(string className, string methodName, IList args)
+        {
+            var modules = ProtoFFI.DLLFFIHandler.Modules.Values.OfType<ProtoFFI.CLRDLLModule>();
+            var assemblies = modules.Select(m => m.Assembly ?? (m.Module?.Assembly)).Where(m => m != null);
+            MethodInfo mi = null;
+            foreach (var asm in assemblies)
+            {
+                var type = asm.GetType(className);
+                if (type == null) continue;
+
+                // There should be a way to get the exact method after matching parameter types for a node
+                // using its function descriptor. AST isn't sufficient for parameter type info.
+                // Fist check for static methods
+                mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
+                    m => m.Name == methodName && m.GetParameters().Length == args.Count).FirstOrDefault();
+
+                // Check for instance methods
+                if (mi == null)
+                {
+                    mi = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
+                        m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).FirstOrDefault();
+                }
+
+                // Check for property getters
+                if (mi == null)
+                {
+                    var prop = type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).Where(
+                            p => p.Name == methodName).FirstOrDefault();
+
+                    if (prop != null)
+                    {
+                        mi = prop.GetAccessors().FirstOrDefault();
+                    }
+                }
+
+                if (mi != null)
+                    break;
+
+                //if (method != null)
+                //{
+                //    argTypes = method.GetParameters().Select(p => p.ParameterType).ToList();
+                //    return method.ReturnType;
+                //}
+            }
+            if (mi == null)
+            {
+                throw new MissingMethodException("No matching method found in loaded assemblies.");
+            }
+            return mi;
+        }
 
         public Type DfsTraverse(Node n)
         {
@@ -116,7 +166,7 @@ namespace EmitMSIL
                     EmitFunctionCallNode(node);
                     break;
                 case AstKind.ExpressionList:
-                    EmitExprListNode(node);
+                    t = EmitExprListNode(node);
                     break;
                 case AstKind.IdentifierList:
                     t = EmitIdentifierListNode(node);
@@ -183,6 +233,12 @@ namespace EmitMSIL
         }
 
         private void EmitOpCode(OpCode opCode, double val)
+        {
+            ilGen.Emit(opCode, val);
+            writer.WriteLine($"{opCode} {val}");
+        }
+
+        private void EmitOpCode(OpCode opCode, long val)
         {
             ilGen.Emit(opCode, val);
             writer.WriteLine($"{opCode} {val}");
@@ -306,9 +362,28 @@ namespace EmitMSIL
             return DfsTraverse(iln.RightNode);
         }
 
-        private void EmitExprListNode(AssociativeNode node)
+        private Type EmitExprListNode(AssociativeNode node)
         {
-            throw new NotImplementedException();
+            if(!(node is ExprListNode eln))
+            {
+                throw new ArgumentException("AST node must be an Expression List.");
+            }
+            var elements = eln.Exprs;
+            EmitOpCode(OpCodes.Ldc_I4, elements.Count);
+            EmitOpCode(OpCodes.Newarr, typeof(double));
+            int elCount = -1;
+            foreach (var el in elements)
+            {
+                EmitOpCode(OpCodes.Dup);
+                EmitOpCode(OpCodes.Ldc_I4, ++elCount);
+                var t = DfsTraverse(el);
+                //if (t == typeof(int) || t == typeof(long) || t == typeof(double) || t == typeof(bool) || t == typeof(char))
+                //{
+                //    EmitOpCode(OpCodes.Box, t);
+                //}
+                EmitOpCode(OpCodes.Stelem_R8);
+            }
+            return typeof(IList);
         }
 
         private Type EmitFunctionCallNode(AssociativeNode node)
@@ -490,257 +565,4 @@ namespace EmitMSIL
 
     }
 
-    //public class TypeInference
-    //{
-
-    //    public void Emit(List<AssociativeNode> astList)
-    //    {
-    //        foreach (var ast in astList)
-    //        {
-    //            DfsTraverse(ast);
-    //        }
-    //    }
-
-    //    public Type DfsTraverse(Node n)
-    //    {
-    //        Type t = null;
-
-    //        if (!(n is AssociativeNode node) || node.skipMe)
-    //            return t;
-
-    //        switch (node.Kind)
-    //        {
-    //            case AstKind.Identifier:
-    //            case AstKind.TypedIdentifier:
-    //                EmitIdentifierNode(node);
-    //                break;
-    //            case AstKind.Integer:
-    //                EmitIntNode(node);
-    //                break;
-    //            case AstKind.Double:
-    //                EmitDoubleNode(node);
-    //                break;
-    //            case AstKind.Boolean:
-    //                EmitBooleanNode(node);
-    //                break;
-    //            case AstKind.Char:
-    //                EmitCharNode(node);
-    //                break;
-    //            case AstKind.String:
-    //                EmitStringNode(node);
-    //                break;
-    //            case AstKind.DefaultArgument:
-    //                EmitDefaultArgNode();
-    //                break;
-    //            case AstKind.Null:
-    //                EmitNullNode(node);
-    //                break;
-    //            case AstKind.RangeExpression:
-    //                EmitRangeExprNode(node);
-    //                break;
-    //            case AstKind.LanguageBlock:
-    //                EmitLanguageBlockNode(node);
-    //                break;
-    //            case AstKind.ClassDeclaration:
-    //                EmitClassDeclNode(node);
-    //                break;
-    //            case AstKind.Constructor:
-    //                EmitConstructorDefinitionNode(node);
-    //                break;
-    //            case AstKind.FunctionDefintion:
-    //                EmitFunctionDefinitionNode(node);
-    //                break;
-    //            case AstKind.FunctionCall:
-    //                EmitFunctionCallNode(node);
-    //                break;
-    //            case AstKind.FunctionDotCall:
-    //                EmitFunctionCallNode(node);
-    //                break;
-    //            case AstKind.ExpressionList:
-    //                EmitExprListNode(node);
-    //                break;
-    //            case AstKind.IdentifierList:
-    //                EmitIdentifierListNode(node);
-    //                break;
-    //            case AstKind.InlineConditional:
-    //                EmitInlineConditionalNode(node);
-    //                break;
-    //            case AstKind.UnaryExpression:
-    //                EmitUnaryExpressionNode(node);
-    //                break;
-    //            case AstKind.BinaryExpression:
-    //                EmitBinaryExpressionNode(node);
-    //                break;
-    //            case AstKind.Import:
-    //                EmitImportNode(node);
-    //                break;
-    //            case AstKind.DynamicBlock:
-    //                {
-    //                    int block = (node as DynamicBlockNode).block;
-    //                    EmitDynamicBlockNode(block);
-    //                    break;
-    //                }
-    //            case AstKind.ThisPointer:
-    //                EmitThisPointerNode();
-    //                break;
-    //            case AstKind.Dynamic:
-    //                EmitDynamicNode();
-    //                break;
-    //            case AstKind.GroupExpression:
-    //                EmitGroupExpressionNode(node);
-    //                break;
-    //        }
-    //        return t;
-    //    }
-
-    //    private void EmitGroupExpressionNode(AssociativeNode node)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private void EmitDynamicNode()
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private void EmitThisPointerNode()
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private void EmitDynamicBlockNode(int block)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private void EmitImportNode(AssociativeNode node)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private void EmitBinaryExpressionNode(AssociativeNode node)
-    //    {
-    //        var bNode = node as BinaryExpressionNode;
-    //        if (bNode == null) throw new ArgumentException("AST node must be a Binary Expression");
-
-    //        if (bNode.Optr == ProtoCore.DSASM.Operator.assign)
-    //        {
-    //            // Initialize dynamic method to return result of assignment.
-
-    //            DfsTraverse(bNode.RightNode);
-    //            var lNode = bNode.LeftNode as IdentifierNode;
-    //            if (lNode == null)
-    //            {
-    //                throw new Exception("Left node is expected to be an identifier but is not!");
-    //            }
-                
-    //        }
-    //        else if (bNode.Optr == ProtoCore.DSASM.Operator.add)
-    //        {
-    //            DfsTraverse(bNode.LeftNode);
-    //            DfsTraverse(bNode.RightNode);
-
-    //        }
-    //        // TODO: add Emit calls for other binary operators
-
-    //    }
-
-    //    private void EmitUnaryExpressionNode(AssociativeNode node)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private void EmitInlineConditionalNode(AssociativeNode node)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private void EmitIdentifierListNode(AssociativeNode node)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private void EmitExprListNode(AssociativeNode node)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private void EmitFunctionCallNode(AssociativeNode node)
-    //    {
-    //        if(node is FunctionCallNode fcn)
-    //        {
-                
-    //        }
-    //    }
-
-    //    private void EmitFunctionDefinitionNode(AssociativeNode node)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private void EmitConstructorDefinitionNode(AssociativeNode node)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private void EmitClassDeclNode(AssociativeNode node)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private void EmitLanguageBlockNode(AssociativeNode node)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private void EmitRangeExprNode(AssociativeNode node)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private Type EmitNullNode(AssociativeNode node)
-    //    {
-    //        return typeof(Nullable);
-    //    }
-
-    //    private void EmitDefaultArgNode()
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private Type EmitStringNode(AssociativeNode node)
-    //    {
-    //        return typeof(string);
-    //    }
-
-    //    private Type EmitCharNode(AssociativeNode node)
-    //    {
-    //        return typeof(char);
-    //    }
-
-    //    private Type EmitBooleanNode(AssociativeNode node)
-    //    {
-    //        return typeof(bool);
-    //    }
-
-    //    private Type EmitDoubleNode(AssociativeNode node)
-    //    {
-    //        return typeof(double);
-    //    }
-
-    //    private Type EmitIntNode(AssociativeNode node)
-    //    {
-    //        return typeof(long);
-    //    }
-
-    //    private void EmitIdentifierNode(AssociativeNode node)
-    //    {
-    //        // only handle identifiers on rhs of assignment expression for now.
-    //        if (node is IdentifierNode idNode)
-    //        {
-    //            // local variables on rhs of expression should have already been defined.
-                
-    //        }
-    //    }
-    //}
 }
