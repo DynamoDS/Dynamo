@@ -30,7 +30,7 @@ namespace Dynamo.Wpf.ViewModels.FileTrust
         public int PopupBordersOffSet { get; set; } = 15;
 
         /// <summary>
-        /// Popup Width, by default it will have an exaggerated Width to accomdate localized languages
+        /// Popup Width, by default it will have an exaggerated Width to accommodate localized languages
         /// TODO it should really be responsive either using grid of auto canvas:
         /// https://stackoverflow.com/questions/855334/wpf-how-to-make-canvas-auto-resize
         /// </summary>
