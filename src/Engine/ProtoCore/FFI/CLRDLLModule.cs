@@ -634,18 +634,6 @@ namespace ProtoFFI
             return false;
         }
 
-        private bool AllowsRankReduction(MethodInfo method)
-        {
-            object[] atts = method.GetCustomAttributes(false);
-            foreach (var item in atts)
-            {
-                if (item is AllowRankReductionAttribute)
-                    return true;
-            }
-
-            return false;
-        }
-
         private ProtoCore.AST.AssociativeAST.VarDeclNode ParseFieldDeclaration(FieldInfo f)
         {
             if (null == f || SupressesImport(f))
@@ -716,7 +704,7 @@ namespace ProtoFFI
             }
             func.Signature = ParseArgumentSignature(method);
 
-            if ((retype.IsIndexable && mattrs.AllowRankReduction)
+            if ((retype.IsIndexable && (mattrs.AllowRankReduction || mattrs.ArbitraryDimensionArrayImport))
                 || (typeof(object).Equals(method.ReturnType)))
             {
                 retype.rank = Constants.kArbitraryRank;
@@ -1261,7 +1249,7 @@ namespace ProtoFFI
     /// </summary>
     public class FFIMethodAttributes : ProtoCore.AST.AssociativeAST.MethodAttributes
     {
-        private Attribute[] attributes;
+        private List<Attribute> attributes;
         /// <summary>
         /// FFI method attributes.
         /// </summary>
@@ -1269,6 +1257,7 @@ namespace ProtoFFI
         {
             get { return attributes; }
         }
+        internal bool ArbitraryDimensionArrayImport { get; }
         public bool AllowRankReduction { get; protected set; }
         public bool RequireTracing { get; protected set; }
 
@@ -1342,13 +1331,20 @@ namespace ProtoFFI
             }
 
             Attribute[] atts;
+            attributes = new List<Attribute>();
             if (method is MethodInfo mInfo && getterAttributes != null && getterAttributes.TryGetValue(mInfo, out atts))
             {
-                attributes = atts;
+                attributes.AddRange(atts);
+
+                var returnTypeAtts = mInfo.ReturnTypeCustomAttributes;
+                if (returnTypeAtts != null)
+                {
+                    attributes.AddRange(returnTypeAtts.GetCustomAttributes(false).Cast<Attribute>());
+                }
             }
             else
             {
-                attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
+                attributes.AddRange(method.GetCustomAttributes(false).Cast<Attribute>());
             }
 
             foreach (var attr in attributes)
@@ -1399,6 +1395,10 @@ namespace ProtoFFI
                 else if (attr is AllowArrayPromotionAttribute)
                 {
                     AllowArrayPromotion = (attr as AllowArrayPromotionAttribute).IsAllowed;
+                }
+                else if(attr is ArbitraryDimensionArrayImportAttribute)
+                {
+                    ArbitraryDimensionArrayImport = true;
                 }
             }
         }

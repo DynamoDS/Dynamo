@@ -59,8 +59,11 @@ namespace DesignScript
             ///     Produces the values in a Dictionary.
             /// </summary>
             /// <returns name="values">Values of the dictionary</returns>
-            [AllowRankReduction]
-            public IEnumerable<object> Values => D.Values;
+            public IEnumerable<object> Values
+            {
+                [return: ArbitraryDimensionArrayImport]
+                get { return D.Values; }
+            }
 
             /// <summary>
             ///     The number of key value pairs in a Dictionary.
