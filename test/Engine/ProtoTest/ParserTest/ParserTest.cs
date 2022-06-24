@@ -51,7 +51,7 @@ values = b.Values;
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("keys", new[] { "hello" });
-            thisTest.Verify("values", new[] { "world" });
+            thisTest.Verify("values", "world");
         }
 
         [Test]

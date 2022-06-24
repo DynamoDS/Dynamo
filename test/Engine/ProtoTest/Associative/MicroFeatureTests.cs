@@ -1154,7 +1154,7 @@ a = {""x"" : ""foo""};
 r = a.Values;
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", new[] { "foo" });
+            thisTest.Verify("r", "foo");
         }
 
         [Test]
