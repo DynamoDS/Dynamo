@@ -1,0 +1,168 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace DynamoUtilities
+{
+    /// <summary>
+    /// Thread safe List<T>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    internal class ThreadSafeList<T> : IList<T>
+    {
+        /// <summary>
+        /// Thread safe Enumerator used by the ThreadSafeList class
+        /// </summary>
+        internal class TSEnumerator : IEnumerator<T>
+        {
+            private readonly IEnumerator<T> _inner;
+            private readonly IDisposable readLock;
+
+            internal TSEnumerator(IEnumerator<T> inner, DynamoLock _lock)
+            {
+                this._inner = inner;
+                this.readLock = _lock.CreateReadLock();
+            }
+
+            T IEnumerator<T>.Current => _inner.Current;
+
+            object IEnumerator.Current => _inner.Current;
+
+            public void Dispose()
+            {
+                _inner.Dispose();
+                readLock.Dispose();
+            }
+
+            public bool MoveNext()
+            {
+                return _inner.MoveNext();
+            }
+
+            public void Reset()
+            {
+                _inner.Reset();
+            }
+        }
+
+        private readonly IList<T> innerList;
+        private readonly DynamoLock _lock = new DynamoLock();
+
+        internal ThreadSafeList()
+        {
+            innerList = new List<T>();
+        }
+
+        internal ThreadSafeList(IList<T> items)
+        {
+            innerList = items != null ? new List<T>(items) : new List<T>();
+        }
+
+        internal ThreadSafeList(IEnumerable<T> items)
+        {
+            innerList = items != null ? new List<T>(items) : new List<T>();
+        }
+
+        T IList<T>.this[int index]
+        {
+            get
+            {
+                _lock.LockForRead();
+                T item = innerList[index];
+                _lock.UnlockForRead();
+                return item;
+            }
+
+            set
+            {
+                _lock.LockForRead();
+                innerList[index] = value;
+                _lock.UnlockForRead();
+            }
+        }
+
+        bool ICollection<T>.IsReadOnly => innerList.IsReadOnly;
+
+
+        int ICollection<T>.Count
+        {
+            get
+            {
+                _lock.LockForRead();
+                int count = innerList.Count;
+                _lock.UnlockForRead();
+                return count;
+            }
+
+        }
+
+        void ICollection<T>.Add(T item)
+        {
+            _lock.LockForWrite();
+            innerList.Add(item);
+            _lock.UnlockForWrite();
+        }
+
+        void ICollection<T>.Clear()
+        {
+            _lock.LockForWrite();
+            innerList.Clear();
+            _lock.UnlockForWrite();
+        }
+
+        bool ICollection<T>.Contains(T item)
+        {
+            _lock.LockForRead();
+            bool containts = innerList.Contains(item);
+            _lock.UnlockForRead();
+            return containts;
+        }
+
+        void ICollection<T>.CopyTo(T[] array, int arrayIndex)
+        {
+            _lock.LockForRead();
+            innerList.CopyTo(array, arrayIndex);
+            _lock.UnlockForRead();
+        }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return new TSEnumerator(innerList.GetEnumerator(), _lock);
+        }
+
+        int IList<T>.IndexOf(T item)
+        {
+            _lock.LockForRead();
+            int index = innerList.IndexOf(item);
+            _lock.UnlockForRead();
+            return index;
+        }
+
+        void IList<T>.Insert(int index, T item)
+        {
+            _lock.LockForWrite();
+            innerList.Insert(index, item);
+            _lock.UnlockForWrite();
+        }
+
+        bool ICollection<T>.Remove(T item)
+        {
+            _lock.LockForWrite();
+            bool removed = innerList.Remove(item);
+            _lock.UnlockForWrite();
+            return removed;
+        }
+
+        void IList<T>.RemoveAt(int index)
+        {
+            _lock.LockForWrite();
+            innerList.RemoveAt(index);
+            _lock.UnlockForWrite();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return new TSEnumerator(innerList.GetEnumerator(), _lock);
+        }
+    }
+}

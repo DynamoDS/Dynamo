@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace DynamoUtilities
 {
@@ -16,42 +17,6 @@ namespace DynamoUtilities
     /// <typeparam name="T"></typeparam>
     public class SmartObservableCollection<T> : ObservableCollection<T>, IEnumerable<T>, IEnumerable
     {
-        /// <summary>
-        /// Thread safe Enumerator used by the SmartObservableCollection class
-        /// </summary>
-        protected class SmartEnumerator : IEnumerator<T>
-        {
-            private readonly IEnumerator<T> _inner;
-            private readonly IDisposable readLock;
-
-            internal SmartEnumerator(IEnumerator<T> inner, DynamoLock _lock)
-            {
-                this._inner = inner;
-                this.readLock = _lock.CreateReadLock();
-            }
-
-            public T Current => _inner.Current;
-
-            object IEnumerator.Current => _inner.Current;
-
-            public void Dispose()
-            {
-                _inner.Dispose();
-                readLock.Dispose();
-            }
-
-            public bool MoveNext()
-            {
-                return _inner.MoveNext();
-            }
-
-            public void Reset()
-            {
-                _inner.Reset();
-            }
-        }
-
-        private DynamoLock _lock = new DynamoLock();
         private bool suppressNotification = false;
         private bool anyChangesDuringSuppress = false;
 
@@ -62,15 +27,22 @@ namespace DynamoUtilities
         /// </summary>
         internal event NotifyCollectionChangedEventHandler CollectionChangedDuringDeferredReset;
 
-        public SmartObservableCollection() : base()
+        public SmartObservableCollection() : this(null)
         {}
 
-        public SmartObservableCollection(List<T> list)
-            : base(list)
+        public SmartObservableCollection(List<T> list) : this(list as IEnumerable<T>) 
         {}
-
-        public SmartObservableCollection(IEnumerable<T> collection) : base(collection)
-        {}
+  
+        public SmartObservableCollection(IEnumerable<T> collection) : base()
+        {
+            try
+            {
+                //Replace internal IList (from Collection<T>.items) with a thread safe IList(ThreadSafeList)
+                var itemsField = typeof(Collection<T>).GetField("items", BindingFlags.NonPublic | BindingFlags.Instance);
+                itemsField?.SetValue(this, new ThreadSafeList<T>(items: collection));
+            }
+            catch { }
+        }
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs e)
         {
@@ -162,27 +134,6 @@ namespace DynamoUtilities
             });
         }
 
-        internal new void Clear()
-        {
-            ClearItems();
-        }
-
-        protected override void ClearItems()
-        {
-            if (Items.Count > 0)
-            {
-                CheckReentrancy();
-
-                _lock.LockForWrite();
-                Items.Clear();
-                _lock.UnlockForWrite();
-
-                OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-                OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-            }
-        }
-
         /// <summary>
         /// Adds an item only if the sequence does not have it yet
         /// </summary>
@@ -259,65 +210,6 @@ namespace DynamoUtilities
                     Add(item);
                 }
             }
-        }
-
-        protected override void InsertItem(int index, T item)
-        {
-            CheckReentrancy();
-
-            _lock.LockForWrite();
-            Items.Insert(index, item);
-            _lock.UnlockForWrite();
-
-            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
-        }
-
-        protected override void RemoveItem(int index)
-        {
-            CheckReentrancy();
-
-            _lock.LockForRead();
-            T removed = base[index];
-            _lock.UnlockForRead();
-
-            _lock.LockForWrite();
-            Items.RemoveAt(index);
-            _lock.UnlockForWrite();
-
-            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, removed, index));
-        }
-
-        public new bool Contains(T item)
-        {
-            _lock.LockForRead();
-            bool contains = Items.Contains(item);
-            _lock.UnlockForRead();
-            return contains;
-        }
-
-        public new int Count
-        {
-            get
-            {
-                _lock.LockForRead();
-                int count = base.Count;
-                _lock.UnlockForRead();
-                return count;
-            }
-        }
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            return new SmartEnumerator(base.GetEnumerator(), _lock);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return new SmartEnumerator(base.GetEnumerator(), _lock);
         }
     }
 }
