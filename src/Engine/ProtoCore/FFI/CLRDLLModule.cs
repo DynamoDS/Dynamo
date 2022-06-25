@@ -1335,16 +1335,18 @@ namespace ProtoFFI
             if (method is MethodInfo mInfo && getterAttributes != null && getterAttributes.TryGetValue(mInfo, out atts))
             {
                 attributes.AddRange(atts);
-
-                var returnTypeAtts = mInfo.ReturnTypeCustomAttributes;
-                if (returnTypeAtts != null)
-                {
-                    attributes.AddRange(returnTypeAtts.GetCustomAttributes(false).Cast<Attribute>());
-                }
             }
             else
             {
                 attributes.AddRange(method.GetCustomAttributes(false).Cast<Attribute>());
+            }
+            if(method is MethodInfo minfo)
+            {
+                var returnTypeAtts = minfo.ReturnTypeCustomAttributes;
+                if (returnTypeAtts != null)
+                {
+                    attributes.AddRange(returnTypeAtts.GetCustomAttributes(false).Cast<Attribute>());
+                }
             }
 
             foreach (var attr in attributes)

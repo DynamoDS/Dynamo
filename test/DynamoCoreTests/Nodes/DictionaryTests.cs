@@ -88,8 +88,8 @@ namespace Dynamo.Tests.Nodes
             var validationData1 = new List<string> { "foo" };
             var validationData2 = new object[] { 1, new[] { 1, 2 } };
 
-            AssertPreviewValue("f64c1972520144d7a6d342937584c47e", validationData1);
-            AssertPreviewValue("bc957838571c4c56af2bb714f9f40bd7", validationData2);
+            AssertPreviewValue("f64c1972520144d7a6d342937584c47e", validationData2);
+            AssertPreviewValue("bc957838571c4c56af2bb714f9f40bd7", validationData1);
         }
     }
 }
