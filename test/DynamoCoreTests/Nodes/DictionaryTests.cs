@@ -78,5 +78,18 @@ namespace Dynamo.Tests.Nodes
             var dict = Dictionary.ByKeysValues(new string[0], new object[0]);
             Assert.AreEqual(dict.ToString(), "{}");
         }
+
+        [Test]
+        public void Dictionary_ListOfValues_ReturnedAsExpected()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dictionary\Dictionary.Values2.dyn");
+            OpenModel(dynFilePath);
+
+            var validationData1 = new List<string> { "foo" };
+            var validationData2 = new object[] { 1, new[] { 1, 2 } };
+
+            AssertPreviewValue("f64c1972520144d7a6d342937584c47e", validationData1);
+            AssertPreviewValue("bc957838571c4c56af2bb714f9f40bd7", validationData2);
+        }
     }
 }
