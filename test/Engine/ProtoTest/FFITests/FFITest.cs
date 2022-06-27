@@ -193,5 +193,18 @@ x = ClassWithExceptionToString.Construct();
             Assert.DoesNotThrow(() => { mirror.GetStringValue(x,this.core.Heap, 0); }); 
             
         }
+
+        [Test]
+        public void TestReturnArbitraryDimensionAttribute()
+        {
+            string code = @"
+import (TestCSharpAttribute from ""FFITarget.dll"");
+x = TestCSharpAttribute.TestReturnAttribute();
+";
+            var mirror = thisTest.RunScriptSource(code);
+            var x = mirror.GetValue("x");
+            thisTest.Verify("x", new object[] { 1.3, new double[] { 4.5, 7.8 } });
+
+        }
     }
 }
