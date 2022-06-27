@@ -1864,7 +1864,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Periodic</value>
   </data>
   <data name="ContextMenuCopy" xml:space="preserve">
-    <value>Copy</value>
+    <value>Copy Contents</value>
     <comment>Context menu item</comment>
   </data>
   <data name="ContextMenuHideGeometry" xml:space="preserve">
@@ -3057,7 +3057,7 @@ To install the latest version of a package, click Install. \n
     <value>Get started with Dynamo</value>
   </data>
   <data name="OnboardingGuideSurveyText" xml:space="preserve">
-    <value>You've finished getting started with Dynamo.</value>
+    <value>You've finished the Getting Started guide.</value>
   </data>
   <data name="OnboardingWorkspaceText" xml:space="preserve">
     <value>This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** . Graphs can process data, create geometry, and more. In this guide, we’ll work with a sample graph.</value>
@@ -3186,7 +3186,7 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Website</value>
   </data>
   <data name="OnboardingSuccessText" xml:space="preserve">
-    <value>Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in #Dynamo Primer=https://primer2.dynamobim.org/.</value>
+    <value>Well done! You just ran your first graph in Dynamo. \n\nStay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in #Dynamo Primer=https://primer2.dynamobim.org/ .</value>
   </data>
   <data name="OnboardingSuccessTitle" xml:space="preserve">
     <value>Success</value>
@@ -3231,5 +3231,12 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="TitlePackageTargetOtherHost" xml:space="preserve">
     <value>Package Host Error</value>
+  </data>
+  <data name="TrustedLocationNotAccessible" xml:space="preserve">
+    <value>A problem occurred when trying to access the location. Dynamo is unable to obtain read/write access to
+{0}</value>
+  </data>
+  <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
+    <value>Unable To Access Directory</value>
   </data>
 </root>

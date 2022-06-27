@@ -245,9 +245,11 @@ namespace Dynamo.ViewModels
             set
             {
                 annotationModel.IsExpanded = value;
+                InPorts.Clear();
+                OutPorts.Clear();
                 if (value)
                 {
-                    this.ShowGroupContents();
+                    this.ShowGroupContents();       
                 }
                 else
                 {
@@ -260,6 +262,15 @@ namespace Dynamo.ViewModels
                 AddGroupToGroupCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(nameof(IsExpanded));
                 RedrawConnectors();
+                ReportNodesPosition();
+            }
+        }
+
+        private void ReportNodesPosition()
+        {
+            foreach (var node in Nodes.OfType<AnnotationModel>())
+            {
+                node.ReportPosition();
             }
         }
 
@@ -536,11 +547,13 @@ namespace Dynamo.ViewModels
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {
             annotationModel = model;
+
             this.WorkspaceViewModel = workspaceViewModel;
             this.preferenceSettings = WorkspaceViewModel.DynamoViewModel.PreferenceSettings;
             model.PropertyChanged += model_PropertyChanged;
             model.RemovedFromGroup += OnModelRemovedFromGroup;
             model.AddedToGroup += OnModelAddedToGroup;
+
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
             //https://jira.autodesk.com/browse/QNTM-3770
@@ -581,14 +594,15 @@ namespace Dynamo.ViewModels
             LoadGroupStylesFromPreferences(preferenceSettings.GroupStyleItemsList);
         }
 
+
         /// <summary>
         /// Creates input ports for the group based on its Nodes.
         /// Input ports that either is connected to a Node outside of the
         /// group, or has a port that is not connected will be used for the group.
+        /// This function appends to the inputs
         /// </summary>
-        internal void SetGroupInputPorts()
+        private void SetGroupInputPorts()
         {
-            InPorts.Clear();
             List<PortViewModel> newPortViewModels;
 
             // we need to store the original ports here
@@ -622,10 +636,10 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Creates output ports for the group based on its Nodes.
         /// Output ports that are not connected will be used for the group.
+        /// This function appends to the outports
         /// </summary>
-        internal void SetGroupOutPorts()
+        private void SetGroupOutPorts()
         {
-            OutPorts.Clear();
             List<PortViewModel> newPortViewModels;
 
             // we need to store the original ports here
@@ -716,13 +730,10 @@ namespace Dynamo.ViewModels
             return verticalOffset + (proxyPortIndex * portHeight) + portVerticalMidPoint;
         }
 
-        private Point2D CalculatePortPosition(PortModel portModel, int proxyPortIndex)
+        private Point2D CalculatePortPosition(PortModel portModel, double verticalPosition)
         {
             double groupHeaderHeight = Height - ModelAreaRect.Height;
-
-            double offset = GetPortVerticalOffset(portModel, proxyPortIndex);
-            double y = Top + groupHeaderHeight + offset;
-
+            double y = Top + groupHeaderHeight + verticalPosition + verticalOffset + portVerticalMidPoint;
             switch (portModel.PortType)
             {
                 case PortType.Input:
@@ -731,7 +742,7 @@ namespace Dynamo.ViewModels
                     if (portModel.Owner is CodeBlockNodeModel)
                     {
                         // Special case because code block outputs are smaller than regular outputs.
-                        return new Point2D(Left + Width, y + 6);
+                        return new Point2D(Left + Width, y - 8);
                     }
                     return new Point2D(Left + Width, y);
             }
@@ -746,15 +757,19 @@ namespace Dynamo.ViewModels
                 .ToList();
 
             var newPortViewModels = new List<PortViewModel>();
-            for (int i = 0; i < groupPortModels.Count(); i++)
+            double verticalPosition = 0;
+            foreach (var groupPort in groupPortModels)
             {
-                var model = groupPortModels.ElementAt(i);
-                newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(model));
-
-                // calculate new position for the proxy inports.
-                model.Center = CalculatePortPosition(model, i);
+                var originalPort = originalPortViewModels.FirstOrDefault(x => x.PortModel.GUID == groupPort.GUID);
+                if (originalPort != null)
+                {
+                    var portViewModel = originalPort.CreateProxyPortViewModel(groupPort);
+                    newPortViewModels.Add(portViewModel);
+                    // calculate new position for the proxy outports
+                    groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
+                    verticalPosition += originalPort.Height;
+                }
             }
-
             return newPortViewModels;
         }
 
@@ -766,7 +781,7 @@ namespace Dynamo.ViewModels
                 .ToList();
 
             var newPortViewModels = new List<PortViewModel>();
-            int index = 0;
+            double verticalPosition = 0;
             foreach (var group in groupPortModels)
             {
                 var originalPort = originalPortViewModels.FirstOrDefault(x => x.PortModel.GUID == group.GUID);
@@ -775,9 +790,9 @@ namespace Dynamo.ViewModels
                     var portViewModel = originalPort.CreateProxyPortViewModel(group);
                     newPortViewModels.Add(portViewModel);
                     // calculate new position for the proxy outports
-                    group.Center = CalculatePortPosition(group, index);
+                    group.Center = CalculatePortPosition(group, verticalPosition);
+                    verticalPosition += originalPort.Height;
                 }
-                index++;
             }
 
             return newPortViewModels;
@@ -790,23 +805,28 @@ namespace Dynamo.ViewModels
 
             if (parent != null && !parent.IsExpanded) return;
 
+            double verticalPosition = 0;
+
             for (int i = 0; i < inPorts.Count(); i++)
             {
                 var model = inPorts[i]?.PortModel;
                 if (model != null && model.IsProxyPort)
                 {
                     // calculate new position for the proxy inports.
-                    model.Center = CalculatePortPosition(model, i);
+                    model.Center = CalculatePortPosition(model, verticalPosition);
+                    verticalPosition += model.Height;
                 }
             }
 
+            verticalPosition = 0;
             for (int i = 0; i < outPorts.Count(); i++)
             {
                 var model = outPorts[i]?.PortModel;
                 if (model != null && model.IsProxyPort)
                 {
                     // calculate new position for the proxy outports.
-                    model.Center = CalculatePortPosition(model, i);
+                    model.Center = CalculatePortPosition(model, verticalPosition);
+                    verticalPosition += model.Height;
                 }
             }
         }
@@ -898,7 +918,6 @@ namespace Dynamo.ViewModels
 
             foreach (var connector in allNodes.SelectMany(x=>x.AllConnectors))
             {
-
                 var connectorViewModel = WorkspaceViewModel
                     .Connectors
                     .Where(x => connector.GUID == x.ConnectorModel.GUID)

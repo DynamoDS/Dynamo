@@ -1060,6 +1060,7 @@
 				"Name": "connectNodes",
 				"Type": "tooltip",
 				"ShowLibrary": false,
+				"TooltipPointerDirection": "top_right",
 				"Width": 480,
 				"Height": 380,
 				"StepContent": {

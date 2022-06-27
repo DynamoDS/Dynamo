@@ -224,9 +224,11 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
             FocusableGrid.InputBindings.Clear();
-            
-            if(fileTrustWarningPopup == null)
+
+            if (fileTrustWarningPopup == null)
+            {
                 fileTrustWarningPopup = new FileTrustWarning(this);
+            }
         }
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
@@ -752,7 +754,9 @@ namespace Dynamo.Controls
                 dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
 
             if (fileTrustWarningPopup != null && fileTrustWarningPopup.IsOpen)
+            {
                 fileTrustWarningPopup.UpdatePopupLocation();
+            }
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -762,10 +766,14 @@ namespace Dynamo.Controls
 
             //When the Dynamo window size is changed then we need to update the Steps location
             if (dynamoViewModel.MainGuideManager != null)
+            {
                 dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
+            }
 
             if (fileTrustWarningPopup != null && fileTrustWarningPopup.IsOpen)
+            {
                 fileTrustWarningPopup.UpdatePopupLocation();
+            }
         }
 
         private void InitializeLogin()
@@ -2502,10 +2510,12 @@ namespace Dynamo.Controls
             {
                 dynamoViewModel.MainGuideManager.ManagePopupActivation(true);
             }
-               
+
 
             if (fileTrustWarningPopup != null)
+            {
                 fileTrustWarningPopup.ManagePopupActivation(true);
+            }
         }
 
         private void DynamoView_Deactivated(object sender, EventArgs e)

@@ -538,7 +538,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy.
+        ///   Looks up a localized string similar to Copy Contents.
         /// </summary>
         public static string ContextMenuCopy {
             get {
@@ -4631,7 +4631,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You&apos;ve finished getting started with Dynamo..
+        ///   Looks up a localized string similar to You&apos;ve finished the Getting Started guide..
         /// </summary>
         public static string OnboardingGuideSurveyText {
             get {
@@ -4698,7 +4698,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in #Dynamo Primer=https://primer2.dynamobim.org/..
+        ///   Looks up a localized string similar to Well done! You just ran your first graph in Dynamo. \n\nStay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in #Dynamo Primer=https://primer2.dynamobim.org/ ..
         /// </summary>
         public static string OnboardingSuccessText {
             get {
@@ -7854,6 +7854,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A problem occurred when trying to access the location. Dynamo is unable to obtain read/write access to
+        ///{0}.
+        /// </summary>
+        public static string TrustedLocationNotAccessible {
+            get {
+                return ResourceManager.GetString("TrustedLocationNotAccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Trusted location.
         /// </summary>
         public static string TrustedPathsExpanderName {
@@ -7887,6 +7897,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UnableToAccessPackageDirectory {
             get {
                 return ResourceManager.GetString("UnableToAccessPackageDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable To Access Directory.
+        /// </summary>
+        public static string UnableToAccessTrustedDirectory {
+            get {
+                return ResourceManager.GetString("UnableToAccessTrustedDirectory", resourceCulture);
             }
         }
         
