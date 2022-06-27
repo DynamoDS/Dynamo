@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Engine;
@@ -547,7 +549,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void FindFilesRespectsPathOrder()
         {
-            var path1 = Path.Combine(Path.GetTempPath(),"firstFindFile");
+            var path1 = Path.Combine(Path.GetTempPath(), "firstFindFile");
             var path2 = Path.Combine(Path.GetTempPath(), "secondFindFile");
 
             Directory.CreateDirectory(path1);
@@ -566,11 +568,11 @@ namespace Dynamo.Tests
             }
 
 
-            Assert.AreEqual(filePath1, DocumentationServices.FindFileInPaths("SaveFile", ".txt", new String[] { path1,path2 }));
+            Assert.AreEqual(filePath1, DocumentationServices.FindFileInPaths("SaveFile", ".txt", new String[] { path1, path2 }));
             Assert.AreEqual(filePath2, DocumentationServices.FindFileInPaths("SaveFile", ".txt", new String[] { path2, path1 }));
 
-            Directory.Delete(path1,true);
-            Directory.Delete(path2,true);
+            Directory.Delete(path1, true);
+            Directory.Delete(path2, true);
         }
 
         [Test]
@@ -761,7 +763,7 @@ namespace Dynamo.Tests
             testingSTR = Graph.Nodes.Utilities.NormalizeAsResourceName("Ab/b.double-int");
             Assert.AreEqual("Abb.double-int", testingSTR);
         }
-		
+
         [Category("UnitTests")]
         public void TestTypeSwitch()
         {
@@ -790,7 +792,7 @@ namespace Dynamo.Tests
                 TypeSwitch.Default(() => v = null));
             Assert.AreEqual(v, 42);
 
-            StringNode sNode = new StringNode(); 
+            StringNode sNode = new StringNode();
             node = sNode;
             TypeSwitch.Do(
                 node,
@@ -832,6 +834,147 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
             var snapshotName = PathHelper.GetScreenCaptureNameFromPath(examplePath);
             Assert.AreEqual(snapshotName, "Add_" + string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now));
+        }
+
+        [Test]
+        public void ThreadSafeListTest()
+        {
+            ThreadSafeList<int> tsList = new ThreadSafeList<int>() { 1, 2, 3, 4, 5 };
+
+            var th1 = new System.Threading.Thread(new System.Threading.ThreadStart(() =>
+            {
+                tsList.FirstOrDefault(x =>
+                {
+                    System.Threading.Thread.Sleep(3000);
+                    return x == 3;
+                });
+            }));
+            th1.Start();
+            System.Threading.Thread.Sleep(50);
+
+            Assert.AreEqual(5, tsList.Count);
+            Assert.AreEqual(true, tsList.Contains(1));
+
+            Assert.AreEqual(System.Threading.ThreadState.WaitSleepJoin, th1.ThreadState);
+            tsList.Add(6);
+            Assert.AreEqual(System.Threading.ThreadState.Stopped, th1.ThreadState);
+        }
+
+        void testAsICollection(ICollection<int> list)
+        {
+            var th = new Thread(new ThreadStart(() =>
+            {
+                list.FirstOrDefault(x =>
+                {
+
+                    Thread.Sleep(1000);
+                    return x == 1;
+                });
+
+                Assert.AreEqual(5, list.Count);
+            }));
+
+            th.Start();
+
+            // Sleep so that th can start.
+            Thread.Sleep(200);
+
+            // Sleep again so that th can start iterating (with read lock)
+            Thread.Sleep(200);
+
+            list.Add(6);
+
+            th.Join();
+
+            Assert.AreEqual(6, list.Count);
+        }
+
+        void testAsIList(IList<int> list)
+        {
+            var th = new Thread(new ThreadStart(() =>
+            {
+                list.Where(x => { Thread.Sleep(1000); return x == 1; }).FirstOrDefault();
+                Assert.AreEqual(6, list.Count);
+            }));
+
+            th.Start();
+
+            // Sleep so that th can start.
+            Thread.Sleep(200);
+
+            // Sleep again so that th can start iterating (with read lock)
+            Thread.Sleep(200);
+
+            list.Remove(6);
+
+            th.Join();
+            Assert.AreEqual(5, list.Count);
+        }
+
+        void testAsObservable(ObservableCollection<int> list)
+        {
+            // Use isInIteration to make sure we are still iterating when
+            // the main thread calls list.Clear()
+            int isInIteration = 0;
+            var th = new Thread(new ThreadStart(() =>
+            {
+                foreach (var item in list)
+                {
+                    Interlocked.Increment(ref isInIteration);
+                    Thread.Sleep(1000);
+                }
+                Assert.AreEqual(5, list.Count);
+            }));
+
+            th.Start();
+
+            while(isInIteration == 0)
+            {
+                Thread.Sleep(50);
+            }
+
+            list.Clear();
+
+            th.Join();
+
+            Assert.AreEqual(0, list.Count);
+        }
+
+        void testAsSmartObservable(SmartObservableCollection<int> list)
+        {
+            list.AddRange(new List<int> { 1, 2 });
+
+            var th = new Thread(new ThreadStart(() =>
+            {
+                list.Select(x => { Thread.Sleep(1000); return x == 1; });
+                Assert.AreEqual(2, list.Count);
+            }));
+
+            th.Start();
+
+            // Sleep so that th can start.
+            Thread.Sleep(200);
+
+            // Sleep again so that th can start iterating (with read lock)
+            Thread.Sleep(200);
+
+            list.AddRange(new List<int> { 8, 9 });
+
+            th.Join();
+
+            Assert.AreEqual(4, list.Count);
+        }
+
+        [Test]
+        public void ThreadSafeSmartObservableCollTest()
+        {
+            // Test that SmartObservableCollection is thread safe event if it is passed around
+            // in base class or interface variables.
+            SmartObservableCollection<int> list = new SmartObservableCollection<int>() { 1, 2, 3, 4, 5 };
+            testAsICollection(list as ICollection<int>);
+            testAsIList(list as IList<int>);
+            testAsObservable(list as ObservableCollection<int>);
+            testAsSmartObservable(list);
         }
     }
 }

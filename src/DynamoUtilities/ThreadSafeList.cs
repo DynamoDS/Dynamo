@@ -63,7 +63,7 @@ namespace DynamoUtilities
             innerList = items != null ? new List<T>(items) : new List<T>();
         }
 
-        T IList<T>.this[int index]
+        public T this[int index]
         {
             get
             {
@@ -84,7 +84,7 @@ namespace DynamoUtilities
         bool ICollection<T>.IsReadOnly => innerList.IsReadOnly;
 
 
-        int ICollection<T>.Count
+        public int Count
         {
             get
             {
@@ -96,21 +96,21 @@ namespace DynamoUtilities
 
         }
 
-        void ICollection<T>.Add(T item)
+        public void Add(T item)
         {
             _lock.LockForWrite();
             innerList.Add(item);
             _lock.UnlockForWrite();
         }
 
-        void ICollection<T>.Clear()
+        public void Clear()
         {
             _lock.LockForWrite();
             innerList.Clear();
             _lock.UnlockForWrite();
         }
 
-        bool ICollection<T>.Contains(T item)
+        public bool Contains(T item)
         {
             _lock.LockForRead();
             bool containts = innerList.Contains(item);
@@ -118,7 +118,7 @@ namespace DynamoUtilities
             return containts;
         }
 
-        void ICollection<T>.CopyTo(T[] array, int arrayIndex)
+        public void CopyTo(T[] array, int arrayIndex)
         {
             _lock.LockForRead();
             innerList.CopyTo(array, arrayIndex);
@@ -130,7 +130,7 @@ namespace DynamoUtilities
             return new TSEnumerator(innerList.GetEnumerator(), _lock);
         }
 
-        int IList<T>.IndexOf(T item)
+        public int IndexOf(T item)
         {
             _lock.LockForRead();
             int index = innerList.IndexOf(item);
@@ -138,14 +138,14 @@ namespace DynamoUtilities
             return index;
         }
 
-        void IList<T>.Insert(int index, T item)
+        public void Insert(int index, T item)
         {
             _lock.LockForWrite();
             innerList.Insert(index, item);
             _lock.UnlockForWrite();
         }
 
-        bool ICollection<T>.Remove(T item)
+        public bool Remove(T item)
         {
             _lock.LockForWrite();
             bool removed = innerList.Remove(item);
@@ -153,7 +153,7 @@ namespace DynamoUtilities
             return removed;
         }
 
-        void IList<T>.RemoveAt(int index)
+        public void RemoveAt(int index)
         {
             _lock.LockForWrite();
             innerList.RemoveAt(index);
