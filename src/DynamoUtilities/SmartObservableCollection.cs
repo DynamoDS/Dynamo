@@ -15,7 +15,7 @@ namespace DynamoUtilities
     /// Thread safe for the follwing operations: Add, Remove, Contains, AddUnique, AddRange, RemoveRange, Count and iterations.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class SmartObservableCollection<T> : ObservableCollection<T>, IEnumerable<T>, IEnumerable
+    public class SmartObservableCollection<T> : ObservableCollection<T>
     {
         private bool suppressNotification = false;
         private bool anyChangesDuringSuppress = false;
