@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Forms;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
@@ -23,7 +24,8 @@ namespace DSCore.File
         {
             var openDialog = new OpenFileDialog
             {
-                CheckFileExists = false
+                CheckFileExists = false,
+                InitialDirectory = Path.GetDirectoryName(model.Value)
             };
 
             if (openDialog.ShowDialog() == DialogResult.OK)
