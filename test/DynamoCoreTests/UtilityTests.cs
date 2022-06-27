@@ -890,6 +890,35 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, list.Count);
         }
 
+        void testAsCollection(Collection<int> list)
+        {
+            var th = new Thread(new ThreadStart(() =>
+            {
+                list.FirstOrDefault(x =>
+                {
+
+                    Thread.Sleep(1000);
+                    return x == 1;
+                });
+
+                Assert.AreEqual(5, list.Count);
+            }));
+
+            th.Start();
+
+            // Sleep so that th can start.
+            Thread.Sleep(200);
+
+            // Sleep again so that th can start iterating (with read lock)
+            Thread.Sleep(200);
+
+            list.Insert(0, 6);
+
+            th.Join();
+
+            Assert.AreEqual(6, list.Count);
+        }
+
         void testAsIList(IList<int> list)
         {
             var th = new Thread(new ThreadStart(() =>
@@ -982,6 +1011,7 @@ namespace Dynamo.Tests
 
             testAsICollection(list as ICollection<int>);
             testAsIList(list as IList<int>);
+            testAsCollection(list as Collection<int>);
             testAsObservable(list as ObservableCollection<int>);
             testAsSmartObservable(list);
         }
