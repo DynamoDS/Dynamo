@@ -30,7 +30,7 @@ namespace DynamoUtilities
         public SmartObservableCollection() : this(null)
         {}
 
-        public SmartObservableCollection(List<T> list) : this(list as IEnumerable<T>) 
+        public SmartObservableCollection(List<T> list) : this(list as IEnumerable<T>)
         {}
   
         public SmartObservableCollection(IEnumerable<T> collection) : base()
@@ -39,9 +39,12 @@ namespace DynamoUtilities
             {
                 //Replace internal IList (from Collection<T>.items) with a thread safe IList(ThreadSafeList)
                 var itemsField = typeof(Collection<T>).GetField("items", BindingFlags.NonPublic | BindingFlags.Instance);
-                itemsField?.SetValue(this, new ThreadSafeList<T>(items: collection));
+                itemsField.SetValue(this, new ThreadSafeList<T>(items: collection));
             }
-            catch { }
+            catch
+            {
+                throw new Exception("SmartObservableCollection constructor cannot override the private field 'Collection<T>.items'.");
+            }
         }
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs e)
