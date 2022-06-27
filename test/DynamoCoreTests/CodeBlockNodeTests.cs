@@ -1379,6 +1379,20 @@ var06 = g;
             Assert.AreEqual(0, codeBlockNode.InPorts.Count);
             Assert.AreEqual(1, codeBlockNode.OutPorts.Count);
         }
+        [Test]
+        [Category("RegressionTests")]
+        public void TestLoadFileWithBrokenCodeBlockAndGetExternalReferences()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\cbn\classAsVariable.dyn");
+            Assert.DoesNotThrow(() =>
+            {
+                OpenModel(openPath);
+                var dummy = CurrentDynamoModel.CurrentWorkspace.ExternalFiles;
+            });
+         
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+        }
 
         [Test]
         public void Defect_MAGN_6723()

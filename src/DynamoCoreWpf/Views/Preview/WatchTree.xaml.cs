@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
+using System;
 
 namespace Dynamo.Controls
 {
@@ -14,17 +15,30 @@ namespace Dynamo.Controls
     {
         private WatchViewModel _vm;
         private WatchViewModel prevWatchViewModel;
-        private readonly int defaultWidthSize = 200;
+        private readonly double defaultWidthSize = 200;
+        private readonly double extraWidthSize = 20;
+        private readonly double widthPerCharacter = 7.5;
         private readonly int defaultHeightSize = 200;
         private readonly int minWidthSize = 100;
         private readonly int minHeightSize = 38;
 
-        public WatchTree()
+        public WatchTree(WatchViewModel vm)
         {
+            _vm = vm;
+
             InitializeComponent();
+
+            DataContext = vm;
             this.Loaded += WatchTree_Loaded;
             this.Unloaded += WatchTree_Unloaded;
         }
+
+        internal double DefaultWidthSize { get { return defaultWidthSize; } }
+        internal double DefaultHeightSize { get { return defaultHeightSize; } }
+        internal double ExtratWidthSize { get { return extraWidthSize; } }
+        internal double WidthPerCharacter { get { return widthPerCharacter; } }
+        internal double MaxWidthSize { get { return defaultWidthSize * 2; } }
+        internal string NodeLabel { get { return _vm.Children[0].NodeLabel; } }
 
         private void WatchTree_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -33,29 +47,39 @@ namespace Dynamo.Controls
 
         void WatchTree_Loaded(object sender, RoutedEventArgs e)
         {
-            _vm = this.DataContext as WatchViewModel;
-            _vm.PropertyChanged += _vm_PropertyChanged;            
+            _vm.PropertyChanged += _vm_PropertyChanged;
         }
 
         private void _vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsCollection")
+            if (e.PropertyName == nameof(WatchViewModel.IsCollection))
             {
-                if (_vm.IsCollection)
+                // // The WatchTree controll will resize only if its role is a WatchNode (starts with an specific height), otherwise it won't resize (Bubble role).
+                if (!Double.IsNaN(this.Height))
                 {
-                    this.Height = defaultHeightSize;
-                }
-                else
-                {
-                    this.Height = minHeightSize;
-                }
-                // When it doesn't have any element, it should be set back the width to the default.
-                if (_vm.Children != null && _vm.Children.Count == 0)
-                {
-                    this.Width = defaultWidthSize;
+                    if (_vm.IsCollection)
+                    {
+                        this.Height = defaultHeightSize;
+                    }
+                    else
+                    {
+                        this.Height = minHeightSize;
+                        if (_vm.Children.Count != 0)
+                        {
+                            if (NodeLabel.Contains(Environment.NewLine) || NodeLabel.ToUpper() == nameof(WatchViewModel.DICTIONARY))
+                            {
+                                this.Height = defaultHeightSize;
+                            }
+                        }
+                    }
+                    // When it doesn't have any element, it should be set back the width to the default.
+                    if (_vm.Children != null && _vm.Children.Count == 0)
+                    {
+                        this.Width = defaultWidthSize;
+                    }
                 }
             }
-            else if (e.PropertyName == "Children")
+            else if (e.PropertyName == nameof(WatchViewModel.Children))
             {
                 if (_vm.Children != null)
                 {
@@ -63,12 +87,12 @@ namespace Dynamo.Controls
                     {
                         // We will use 7.5 as width factor for each character.
 
-                        double requiredWidth = (_vm.Children[0].NodeLabel.Length * 7.5);
-                        if (requiredWidth > (defaultWidthSize * 2))
+                        double requiredWidth = (NodeLabel.Length * widthPerCharacter);
+                        if (requiredWidth > (MaxWidthSize))
                         {
-                            requiredWidth = defaultWidthSize * 2;
+                            requiredWidth = MaxWidthSize;
                         }
-                        requiredWidth += 20;
+                        requiredWidth += extraWidthSize;
                         this.Width = requiredWidth;
                     }
                     else
@@ -76,7 +100,16 @@ namespace Dynamo.Controls
                         this.Width = defaultWidthSize;
                     }
                 }
-            }            
+            }
+            else if (e.PropertyName == nameof(WatchViewModel.IsOneRowContent))
+            {
+                if (_vm.IsOneRowContent)
+                {
+                    // Forcing not to display the Levels content when is being used for display info from another node like the Color Range
+                    this.ListLevelsDisplay.Visibility = Visibility.Hidden;
+                    this.ListLevelsDisplay.Height = 0;
+                }
+            }
         }
 
         internal void SetWatchNodeProperties() 

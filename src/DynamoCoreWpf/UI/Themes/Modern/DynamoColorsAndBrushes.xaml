@@ -10,6 +10,7 @@
     <Color x:Key="PrimaryCharcoal100">#EEEEEE</Color>
     <Color x:Key="PrimaryCharcoal200">#DCDCDC</Color>
     <Color x:Key="PrimaryCharcoal300">#CCCCCC</Color>
+    <Color x:Key="LightMidGrey">#808080</Color>
     <Color x:Key="LightGrey">#989898</Color>
     <Color x:Key="MidGrey">#666666</Color>
     <Color x:Key="DarkMidGrey">#535353</Color>
@@ -35,6 +36,7 @@
     <SolidColorBrush x:Key="PrimaryCharcoal200Brush" Color="{StaticResource PrimaryCharcoal200}" />
     <SolidColorBrush x:Key="PrimaryCharcoal300Brush" Color="{StaticResource PrimaryCharcoal300}" />
     <SolidColorBrush x:Key="LightGreyBrush" Color="{StaticResource LightGrey}" />
+    <SolidColorBrush x:Key="LightMidGreyBrush" Color="{StaticResource LightMidGrey}" />
     <SolidColorBrush x:Key="MidGreyBrush" Color="{StaticResource MidGrey}" />
     <SolidColorBrush x:Key="DarkMidGreyBrush" Color="{StaticResource DarkMidGrey}" />
     <SolidColorBrush x:Key="DarkGreyBrush" Color="{StaticResource DarkGrey}" />
@@ -88,6 +90,16 @@
 
     <!--  Node colors in selected state  -->
     <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
+
+    <!-- NodeLabel colors -->
+    <SolidColorBrush x:Key="stringLabelBackground"
+                     Color="#E0A86F" />
+    <SolidColorBrush x:Key="numberLabelBackground"
+                     Color="#6AC0E7" />
+    <SolidColorBrush x:Key="objectLabelBackground"
+                     Color="#EEEEEE" />
+    <SolidColorBrush x:Key="boolLabelBackground"
+                     Color="#F9F9A5" />
 
     <!-- Node Autocomplete -->
     <SolidColorBrush x:Key="autocompletionWindow" Color="#535353" />

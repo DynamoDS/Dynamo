@@ -735,7 +735,7 @@
                                 </CombinedGeometry.Geometry1>
                                 <CombinedGeometry.Geometry2>
                                     <GeometryGroup FillRule="EvenOdd"
-                                                   Children="{Binding NestedGroupsGeometryCollection}" />
+                                                   Children="{Binding NestedGroupsGeometries}" />
                                 </CombinedGeometry.Geometry2>
                             </CombinedGeometry>
                         </Path.Data>

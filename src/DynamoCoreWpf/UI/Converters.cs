@@ -358,6 +358,9 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// If the given string is empty, collapsed visibility enum is returned, otherwise visible enum is returned.
+    /// </summary>
     public class EmptyStringToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -369,6 +372,29 @@ namespace Dynamo.Controls
             }
 
             return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// If the given string is empty, hidden visibility enum is returned, otherwise visible enum is returned.
+    /// </summary>
+    public class EmptyStringToHiddenConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is string && !string.IsNullOrEmpty(value as string))
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Hidden;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -3249,6 +3275,41 @@ namespace Dynamo.Controls
                 return strColor.Substring(2);
             }
             return "000000";
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts the object type to forground color for the object.
+    /// </summary>
+    public class ObjectTypeConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
+
+            if (value != null)
+            {
+                switch (value)
+                {
+                    case WatchViewModel.objectType:
+                        return resourceDictionary["objectLabelBackground"] as SolidColorBrush;
+                    case WatchViewModel.doubleType:
+                        return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
+                    case WatchViewModel.intType:
+                        return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
+                    case WatchViewModel.stringType:
+                        return resourceDictionary["stringLabelBackground"] as SolidColorBrush;
+                    case WatchViewModel.boolType:
+                        return resourceDictionary["boolLabelBackground"] as SolidColorBrush;
+                    default:
+                        return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+                };
+            }
+            return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

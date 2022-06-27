@@ -13,6 +13,7 @@ using Dynamo.Controls;
 using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
@@ -169,10 +170,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
+
+        /// <summary>
+        /// This property contains the object of the current GuideManager
+        /// </summary>
+        internal GuidesManager GuideManager { get; set; }
+
         #endregion
 
         #region Protected Properties
-        protected Popup stepUIPopup;
+        internal Popup stepUIPopup;
         protected Func<bool, bool> validator;
         /// <summary>
         /// This property describe which will be the pointing direction of the tooltip (if is a Welcome or Survey popup then is not used)
@@ -184,7 +191,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// A vertical offfset to the pointer of the popups 
         /// </summary>
         [JsonProperty("PointerVerticalOffset")]
-        public double PointerVerticalOffset { get; set; }
+        public double PointerVerticalOffset { get; set; }        
         #endregion
 
         #region Public Methods
@@ -246,7 +253,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 if (GuideUtilities.FindChild((popupWindow).mainPopupGrid, NextButton) is Button nextbuttonFound)
                 {
-                    nextbuttonFound.Focus();
+                    if (popupWindow.TitleLabel.Content.Equals(Resources.PackagesGuideTermsOfServiceTitle))
+                    {
+                        nextbuttonFound.IsEnabled = false;
+                    }
+                    else
+                    {
+                        nextbuttonFound.Focus();
+                    }
                 }
             }
         }
@@ -390,7 +404,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 HighlightWindowElement(bVisible);
                 StepGuideBackground.ClearHighlightSection();
-            }             
+            }
+
+            //Hit tests is set to false so that the content inside the rectangle can be clicked
+            StepGuideBackground.GuideHighlightRectangle.IsHitTestVisible = false;
         }
 
 
@@ -788,6 +805,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             var converter = new BrushConverter();
             Rectangle menuItemHighlightRec = new Rectangle
             {
+                Focusable = false,                
                 Name = "HighlightRectangle",
                 StrokeThickness = 2,
                 Effect = blur,

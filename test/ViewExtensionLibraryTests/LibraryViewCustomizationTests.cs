@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dynamo.LibraryViewExtensionMSWebBrowser;
 using Dynamo.Wpf.Interfaces;
@@ -415,6 +416,35 @@ namespace ViewExtensionLibraryTests
             Assert.AreEqual(4, spec.sections.Count);
             Assert.AreEqual("A, B, C, D", string.Join(", ", spec.sections.Select(s => s.text)));
             Assert.AreEqual("A, , B, , C, , D, category, group", string.Join(", ", spec.sections.Select(x => x.text + ", " + string.Join(", ", x.EnumerateChildren().Select(c => c.text)))));
+        }
+
+        /// <summary>
+        /// AddElements should call merge with existing category.
+        /// </summary>
+        [Test, Category("UnitTests")]
+        public void AddElementsShouldMergeIfExistingCategory()
+        {
+            var customization = new LibraryViewCustomization();
+            var spec = customization.GetSpecification();
+            Assert.False(spec.sections.Any()); //By default empty spec
+
+            customization.SpecificationUpdated += (o, e) => { };
+
+            var section = new LayoutSection("default");
+            var category = new LayoutElement("category") { elementType = LayoutElementType.category };
+            section.childElements.Add(category);
+            Assert.True(customization.AddSections(new List<LayoutSection>() { section }));
+            category.childElements.Add(new LayoutElement("group") { elementType = LayoutElementType.group });
+            var category2 = new LayoutElement("category") { elementType = LayoutElementType.category };
+            category2.childElements.Add(new LayoutElement("group2") { elementType = LayoutElementType.group });
+
+            customization.AddElements(new List<LayoutElement>(){category2});
+
+
+            spec = customization.GetSpecification();
+            Assert.AreEqual(1, spec.sections.Count);
+            Assert.AreEqual("default", string.Join(", ", spec.sections.Select(s => s.text)));
+            Assert.AreEqual("default, category, group, group2", string.Join(", ", spec.sections.Select(x => x.text + ", " + string.Join(", ", x.EnumerateChildren().Select(c => c.text)))));
         }
     }
 }

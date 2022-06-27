@@ -838,7 +838,7 @@ namespace Dynamo.Graph.Workspaces
                     // Check for the file path string value at each of the output ports of all nodes in the workspace. 
                     foreach (var port in node.OutPorts)
                     {
-                        var id = node.GetAstIdentifierForOutputIndex(port.Index).Name;
+                        var id = node.GetAstIdentifierForOutputIndex(port.Index)?.Name;
                         var mirror = homeWorkspaceModel.EngineController.GetMirror(id);
                         var data = mirror?.GetData().Data;
 
@@ -1388,7 +1388,6 @@ namespace Dynamo.Graph.Workspaces
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;
-            ScaleFactor = 1.0;
             // Reset the workspace offset
             OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(X, Y)));
             workspaceLoaded = true;

@@ -428,6 +428,39 @@ namespace Dynamo.Engine
                 }
             }
 
+            foreach (var node in nodes)
+            {
+                if (!node.IsInputNode) continue;
+
+                // Only one or the other of the two lists, Added or Modified, will match the node GUID if they do. 
+                bool isAdded = false;
+                for (int i = 0; i < graphSyncdata.AddedSubtrees.Count; i++)
+                {
+                    if (graphSyncdata.AddedSubtrees[i].GUID == node.GUID)
+                    {
+                        graphSyncdata.AddedSubtrees[i] = new Subtree(graphSyncdata.AddedSubtrees[i])
+                        {
+                            IsInput = true
+                        };
+                        isAdded = true;
+                        break;
+                    }
+                }
+                if (isAdded) continue;
+
+                for (int i = 0; i < graphSyncdata.ModifiedSubtrees.Count; i++)
+                {
+                    if (graphSyncdata.ModifiedSubtrees[i].GUID == node.GUID)
+                    {
+                        graphSyncdata.ModifiedSubtrees[i] = new Subtree(graphSyncdata.ModifiedSubtrees[i])
+                        {
+                            IsInput = true
+                        };
+                        break;
+                    }
+                }
+            }
+
             if (graphSyncdata.AddedSubtrees.Any() || graphSyncdata.ModifiedSubtrees.Any() || graphSyncdata.DeletedSubtrees.Any())
             {
                 lock (graphSyncDataQueue)

@@ -62,7 +62,7 @@ namespace DynamoCoreWpfTests
 
             //Find the Get Started guide in the list
             var getStartedGuide = (from guide in testGuide.Guides 
-                                  where guide.Name.ToUpper().Equals("GET STARTED")
+                                  where guide.Name.Equals(GuidesManager.GetStartedGuideName)
                                   select guide).FirstOrDefault();
 
             //Validate that the GetStarted guide exists
@@ -94,11 +94,11 @@ namespace DynamoCoreWpfTests
             Assert.DoesNotThrow(() => testGuide = new GuidesManager(View, ViewModel));
 
             //Initializes variables and reads json properties
-            Assert.DoesNotThrow(() => testGuide.LaunchTour(DynamoView.OnboardingGuideName));
+            Assert.DoesNotThrow(() => testGuide.LaunchTour(GuidesManager.OnboardingGuideName));
 
             //Find the Get Started guide in the list
             var OnboardingGuide = (from guide in testGuide.Guides
-                                   where guide.Name.ToUpper().Equals(DynamoView.OnboardingGuideName.ToUpper())
+                                   where guide.Name.ToUpper().Equals(GuidesManager.OnboardingGuideName.ToUpper())
                                    select guide).FirstOrDefault();
 
             //Validate that the GetStarted guide exists
