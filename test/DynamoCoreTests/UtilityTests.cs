@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Xml;
 using Dynamo.Configuration;
@@ -971,6 +972,14 @@ namespace Dynamo.Tests
             // Test that SmartObservableCollection is thread safe event if it is passed around
             // in base class or interface variables.
             SmartObservableCollection<int> list = new SmartObservableCollection<int>() { 1, 2, 3, 4, 5 };
+
+            // Enabling SmartObservableCollection to be thread safe (even when stored as base class)
+            // is based on the existance of the items field 
+            var itemsField = typeof(Collection<int>).GetField("items", BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(itemsField);
+
+            Assert.AreEqual(typeof(ThreadSafeList<int>), itemsField.GetValue(list).GetType());
+
             testAsICollection(list as ICollection<int>);
             testAsIList(list as IList<int>);
             testAsObservable(list as ObservableCollection<int>);
