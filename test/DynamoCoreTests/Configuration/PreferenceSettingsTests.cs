@@ -193,7 +193,7 @@ namespace Dynamo.Tests.Configuration
             var settingsLoaded = PreferenceSettings.Load(tempPath);
             Assert.AreEqual(1, settingsLoaded.TrustedLocations.Count);
 
-            Assert.IsTrue(settingsLoaded.TrustedLocations.Contains(Path.GetTempPath()));
+            Assert.IsTrue(settingsLoaded.IsTrustedLocation(Path.GetTempPath()));
         }
     }
 }

@@ -47,6 +47,8 @@ namespace Dynamo.ViewModels
         private readonly PackageManagerClient packageManagerClient;
         private readonly AuthenticationManager authenticationManager;
 
+        private static bool isTermsOfUseCreated;
+
         public TermsOfUseHelper(TermsOfUseHelperParams touParams)
         {
             if (touParams == null)
@@ -116,11 +118,16 @@ namespace Dynamo.ViewModels
 
         internal static bool ShowTermsOfUseDialog(bool forPublishing, string additionalTerms, Window parent = null)
         {
+            if (isTermsOfUseCreated) return false;
+
             var executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
             var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
             var touFilePath = Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
-
+            
             var termsOfUseView = new TermsOfUseView(touFilePath);
+            termsOfUseView.Closed += TermsOfUseView_Closed;
+            isTermsOfUseCreated = true;
+
             if (parent == null)
                 termsOfUseView.ShowDialog();
             else
@@ -129,6 +136,7 @@ namespace Dynamo.ViewModels
                 termsOfUseView.Owner = parent;
                 termsOfUseView.Show();
             }
+
             if (!termsOfUseView.AcceptedTermsOfUse)
                 return false; // User rejected the terms, go no further.
 
@@ -152,6 +160,11 @@ namespace Dynamo.ViewModels
                 additionalTermsView.Show();
             }
             return additionalTermsView.AcceptedTermsOfUse;
+        }
+
+        private static void TermsOfUseView_Closed(object sender, EventArgs e)
+        {
+            isTermsOfUseCreated = false;
         }
 
         private void ShowTermsOfUseForPublishing()
@@ -205,7 +218,7 @@ namespace Dynamo.ViewModels
 
         private PackageManagerExtension pmExtension;
 
-        internal PackageManagerExtension PackageManagerExtension
+        internal virtual PackageManagerExtension PackageManagerExtension
         {
             get { return pmExtension ?? (pmExtension = DynamoViewModel.Model.GetPackageManagerExtension()); }
         }
@@ -695,7 +708,7 @@ namespace Dynamo.ViewModels
                 // we reverse these arrays because the package manager returns dependencies in topological order starting at 
                 // the current package - and we want to install the dependencies first!.
                 var reversedVersions = package.full_dependency_versions.Select(x => x).Reverse().ToList();
-                var dependencyVersionHeaders = package.full_dependency_ids.Select(x=>x).Reverse().Select((dep, i) =>
+                var dependencyVersionHeaders = package.full_dependency_ids.Select(x => x).Reverse().Select((dep, i) =>
                 {
                     var depVersion = reversedVersions[i];
                     try
@@ -718,12 +731,12 @@ namespace Dynamo.ViewModels
                 {
                     return;
                 }
-                
+
                 if (!dependencyVersionHeaders.Any(x => x.name == name))
                 {// Add the main package if it does not exist
                     dependencyVersionHeaders.Add(package);
                 }
-                
+
                 var localPkgs = pmExt.PackageLoader.LocalPackages;
                 // if the new package has one or more dependencies that are already installed
                 // we need to either first uninstall them, or allow the user to forcibly install the package,
@@ -737,7 +750,7 @@ namespace Dynamo.ViewModels
                 var localPkgsConflictingWithPkgDeps = new List<Package>();
                 var newPackageHeaders = new List<PackageVersion>();
 
-                foreach(var dependencyHeader in dependencyVersionHeaders)
+                foreach (var dependencyHeader in dependencyVersionHeaders)
                 {
                     var localPkgWithSameName = localPkgs.FirstOrDefault(x =>
                         (x.LoadState.State == PackageLoadState.StateTypes.Loaded ||
@@ -793,11 +806,25 @@ namespace Dynamo.ViewModels
 
                 });
 
+
                 // if any do, notify user and allow cancellation
                 if (containsBinariesOrPythonScripts)
                 {
-                    var res = MessageBoxService.Show(Owner, 
+                    var res = MessageBoxService.Show(Owner,
                         Resources.MessagePackageContainPythonScript,
+                        Resources.PackageDownloadMessageBoxTitle,
+                        MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+
+                    if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None) return;
+                }
+
+                var containsPackagesThatTargetOtherHosts = PackageManagerExtension.CheckIfPackagesTargetOtherHosts(newPackageHeaders);
+
+                // if any do, notify user and allow cancellation
+                if (containsPackagesThatTargetOtherHosts)
+                {
+                    var res = MessageBoxService.Show(Owner,
+                        Resources.MessagePackageTargetOtherHosts,
                         Resources.PackageDownloadMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
@@ -823,7 +850,7 @@ namespace Dynamo.ViewModels
                         return;
                     }
                 }
-                
+
                 // add custom path to custom package folder list
                 if (!String.IsNullOrEmpty(installPath))
                 {
@@ -836,7 +863,8 @@ namespace Dynamo.ViewModels
 
                 // form header version pairs and download and install all packages
                 var downloadTasks = newPackageHeaders
-                    .Select((dep) => {
+                    .Select((dep) =>
+                    {
                         return new PackageDownloadHandle()
                         {
                             Id = dep.id,
@@ -851,7 +879,7 @@ namespace Dynamo.ViewModels
                 // When above downloads complete, start installing packages in dependency order.
                 // The downloads have completed in a random order, but the dependencyVersionHeaders list is in correct topological
                 // install order.
-                foreach(var dep in newPackageHeaders)
+                foreach (var dep in newPackageHeaders)
                 {
                     var matchingDownload = downloadTasks.Where(x => x.Result.handle.Id == dep.id).FirstOrDefault();
                     if (matchingDownload != null)
@@ -861,6 +889,7 @@ namespace Dynamo.ViewModels
                 }
             }
         }
+       
 
         /// <summary>
         ///     Returns a newline delimited string representing the package name and version of the argument

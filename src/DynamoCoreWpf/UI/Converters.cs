@@ -3283,6 +3283,41 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
+    /// Converts the object type to forground color for the object.
+    /// </summary>
+    public class ObjectTypeConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
+
+            if (value != null)
+            {
+                switch (value)
+                {
+                    case WatchViewModel.objectType:
+                        return resourceDictionary["objectLabelBackground"] as SolidColorBrush;
+                    case WatchViewModel.doubleType:
+                        return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
+                    case WatchViewModel.intType:
+                        return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
+                    case WatchViewModel.stringType:
+                        return resourceDictionary["stringLabelBackground"] as SolidColorBrush;
+                    case WatchViewModel.boolType:
+                        return resourceDictionary["boolLabelBackground"] as SolidColorBrush;
+                    default:
+                        return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+                };
+            }
+            return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
     /// Receives an string containing a hexadecimal color value and returs a Brush color corresponding to the string value
     /// </summary>
     public class StringToBrushColorConverter : IValueConverter

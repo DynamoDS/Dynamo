@@ -12,6 +12,10 @@
       "Point": {
         "Key": "Autodesk.DesignScript.Geometry.Point",
         "Value": "ProtoGeometry.dll"
+      },
+      "DesignScript.Builtin.Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "DesignScriptBuiltin.dll"
       }
     }
   },
@@ -309,6 +313,55 @@
       ],
       "Replication": "Disabled",
       "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "{\"id\":7888,\"uid\":\"095a8563-6b2f-4961-b5d0-51d224508ff7\",\"brand\":\"Budweiser\",\"name\":\"Westmalle Trappist Tripel\",\"style\":\"Stout\",\"hop\":\"Willamette\",\"yeast\":\"1099 - Whitbread Ale\",\"malts\":\"Vienna\",\"ibu\":\"45 IBU\",\"alcohol\":\"9.6%\",\"blg\":\"11.7°Blg\"};",
+      "Id": "4dbf32f1be71457a8a207d659896d274",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "97450167f6e844f38de8e1204b9cf543",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "a3b57ebd5fff413da6c5ecee20e80e4e",
+      "Inputs": [
+        {
+          "Id": "9bc1396dc4e642e787f1c273ad7e1c1f",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bc02de04f1fc41f485188d443b311d5d",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
     }
   ],
   "Connectors": [
@@ -341,6 +394,12 @@
       "End": "79a2a477a7144cf4aa1888f35080c103",
       "Id": "a8636b0b2b1e4c9ba0088c5de773290b",
       "IsHidden": "False"
+    },
+    {
+      "Start": "97450167f6e844f38de8e1204b9cf543",
+      "End": "9bc1396dc4e642e787f1c273ad7e1c1f",
+      "Id": "9850c23ac51f46849692bb191274a853",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
@@ -368,7 +427,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.15.0.5047",
+      "Version": "2.15.0.5252",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -495,6 +554,26 @@
         "Excluded": false,
         "X": 841.30826466519318,
         "Y": 973.22971481997047
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "4dbf32f1be71457a8a207d659896d274",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1053.2918870047356,
+        "Y": 261.47013517660719
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "a3b57ebd5fff413da6c5ecee20e80e4e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1516.5673530447943,
+        "Y": 417.29915557189958
       }
     ],
     "Annotations": [],

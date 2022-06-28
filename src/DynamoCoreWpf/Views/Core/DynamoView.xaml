@@ -30,6 +30,8 @@
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
         UseLayoutRounding="True"
+        Activated="DynamoView_Activated"
+        Deactivated="DynamoView_Deactivated"
         Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.Resources>
@@ -626,7 +628,7 @@
                             </MenuItem>
                             <MenuItem x:Name="OnBoardingMenuGuide"
                                       Header="{x:Static p:Resources.OnboardingGuide}"
-                                      Click="OnBoardingMenuGuide_Click">
+                                      Command="{Binding GettingStartedGuideCommand}">
                             </MenuItem>
                             <MenuItem x:Name="PackagesMenuGuide"
                                       Header="{x:Static p:Resources.PackagesGuide}"
@@ -706,6 +708,10 @@
                         <MenuItem Name="DebugModes"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
                                   Click="OnDebugModesClick"
+                                  IsCheckable="False" />
+                        <MenuItem Name="FileTrustWarning"
+                                  Header="{x:Static p:Resources.DynamoShowFileTrustWarning}"
+                                  Click="FileTrustWarning_Click"
                                   IsCheckable="False" />
                     </MenuItem>
                 </Menu>

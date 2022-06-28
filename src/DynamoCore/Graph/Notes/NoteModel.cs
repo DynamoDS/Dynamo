@@ -11,6 +11,11 @@ namespace Dynamo.Graph.Notes
     /// </summary>
     public class NoteModel : ModelBase
     {
+        public enum UndoAction
+        {
+            Pin, Unpin
+        }
+
         /// <summary>
         /// This action is triggered when undo command is pressed and a node is pinned
         /// </summary>
@@ -47,11 +52,33 @@ namespace Dynamo.Graph.Notes
             get { return pinnedNode; }
             set
             {
-                pinnedNode = value;               
+                pinnedNode = value;
                 RaisePropertyChanged(nameof(PinnedNode));
             }
         }
 
+        private Guid pinnedNodeGuid;
+
+        public Guid PinnedNodeGuid
+        {
+            get { return pinnedNodeGuid; }
+            set
+            {
+                pinnedNodeGuid = value;
+                RaisePropertyChanged(nameof(PinnedNodeGuid));
+            }
+        }
+
+        private UndoAction undoAction;
+        public UndoAction UndoRedoAction
+        {
+            get { return undoAction; }
+            set
+            {
+                undoAction = value;
+                RaisePropertyChanged(nameof(UndoRedoAction));
+            }
+        }
 
         /// <summary>
         /// Creates NoteModel.
@@ -93,13 +120,13 @@ namespace Dynamo.Graph.Notes
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            if (name != "Text") 
+            if (name != "Text")
                 return base.UpdateValueCore(updateValueParams);
-            
+
             Text = value;
 
             return true;
-        }        
+        }
         #endregion
 
         #region Serialization/Deserialization Methods
@@ -146,6 +173,13 @@ namespace Dynamo.Graph.Notes
         {
             if (pinnedNode!=null && UndoRequest != null)
             {
+                UndoRedoAction = UndoAction.Unpin;
+                UndoRequest(this);
+                return;
+            }
+            else if (pinnedNode == null && PinnedNodeGuid != Guid.Empty && UndoRequest != null)
+            {
+                UndoRedoAction = UndoAction.Pin;
                 UndoRequest(this);
             }
         }

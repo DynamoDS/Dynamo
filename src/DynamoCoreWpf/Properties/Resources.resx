@@ -343,11 +343,11 @@
     <comment>File menu</comment>
   </data>
   <data name="DynamoViewFileMenuExportAsImage" xml:space="preserve">
-    <value>_Export Workspace As Image...</value>
+    <value>Export _Workspace As Image...</value>
     <comment>File menu | Export workspace as image</comment>
   </data>
   <data name="DynamoViewFileMenuExportToSTL" xml:space="preserve">
-    <value>_Export Model to STL...</value>
+    <value>Export _Model to STL...</value>
     <comment>File menu | Export geometry model to STL file format</comment>
   </data>
   <data name="DynamoViewFileMenuImport" xml:space="preserve">
@@ -1864,7 +1864,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Periodic</value>
   </data>
   <data name="ContextMenuCopy" xml:space="preserve">
-    <value>Copy</value>
+    <value>Copy Contents</value>
     <comment>Context menu item</comment>
   </data>
   <data name="ContextMenuHideGeometry" xml:space="preserve">
@@ -2298,7 +2298,7 @@ Next assemblies were loaded several times:
     <value>Unable To Access Package Directory</value>
   </data>
   <data name="DynamoViewFileMenuExport3DAsImage" xml:space="preserve">
-    <value>_Export Background 3D Preview as Image...</value>
+    <value>Export _Background 3D Preview as Image...</value>
     <comment>File menu | Export Background 3D Preview as image</comment>
   </data>
   <data name="DynamoViewToolbarExport3DButtonTooltip" xml:space="preserve">
@@ -3056,8 +3056,11 @@ To install the latest version of a package, click Install. \n
   <data name="OnboardingGuideWelcomeTitle" xml:space="preserve">
     <value>Get started with Dynamo</value>
   </data>
+  <data name="OnboardingGuideSurveyText" xml:space="preserve">
+    <value>You've finished the Getting Started guide.</value>
+  </data>
   <data name="OnboardingWorkspaceText" xml:space="preserve">
-    <value>This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** , which is made up of nodes and wires. Graphs can process data, create geometry, and more. In this guide, we’ll work with a premade sample graph.</value>
+    <value>This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** . Graphs can process data, create geometry, and more. In this guide, we’ll work with a sample graph.</value>
   </data>
   <data name="OnboardingWorkspaceTitle" xml:space="preserve">
     <value>Workspace</value>
@@ -3111,16 +3114,20 @@ To install the latest version of a package, click Install. \n
     <value>Nodes</value>
   </data>
   <data name="OnboardingGuideWelcomeText" xml:space="preserve">
-    <value>Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide.</value>
+    <value>Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph.</value>
   </data>
   <data name="OnboardingPlaceNodeText" xml:space="preserve">
-    <value>This node needs a [xyz] input. You can find a node to use as the input in the library by using search or browsing. The node is x, so you’ll find it under the x category.\n\n Click the node to place it in the workspace.</value>
+    <value>The library contains the nodes used to build graphs. To find a node, you can search the library or browse its categories.
+
+To place a node from the library to the workspace, click the node.
+
+Try placing the highlighted **ByOrigin** node.</value>
   </data>
   <data name="OnboardingPlaceNodeTitle" xml:space="preserve">
-    <value>Search the library and place a node</value>
+    <value>Placing nodes</value>
   </data>
   <data name="OnboardingGuideConnectNodesText" xml:space="preserve">
-    <value>This new node needs to be connected to another to make it part of the graph. Give it a try!</value>
+    <value>This new node needs to be connected to another to make it part of the graph. Give it a try, then click the Next arrow.</value>
   </data>
   <data name="OnboardingGuideConnectNodesTitle" xml:space="preserve">
     <value>Connect the nodes</value>
@@ -3131,6 +3138,47 @@ To install the latest version of a package, click Install. \n
   <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
     <value>Run the graph</value>
   </data>
+  <data name="FileTrustWarningCheckBoxText" xml:space="preserve">
+    <value>Trust this file’s location in the future.</value>
+  </data>
+  <data name="FileTrustWarningPopupNoCloseFile" xml:space="preserve">
+    <value>No, close file</value>
+  </data>
+  <data name="FileTrustWarningPopupSettings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="FileTrustWarningPopupText" xml:space="preserve">
+    <value>This file is stored in an untrusted location. Do you want to open this file?</value>
+  </data>
+  <data name="FileTrustWarningPopupTitle" xml:space="preserve">
+    <value>Open external file?</value>
+  </data>
+  <data name="FileTrustWarningPopupTooltip1" xml:space="preserve">
+    <value>External content may bring risks to your system security.</value>
+  </data>
+  <data name="FileTrustWarningPopupTooltip2" xml:space="preserve">
+    <value>The file's current location will be added to trusted locations.
+You can manage this in Preferences -&gt; Security.</value>
+  </data>
+  <data name="FileTrustWarningPopupYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="DynamoShowFileTrustWarning" xml:space="preserve">
+    <value>Show File Trust Warning</value>
+  </data>
+  <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
+    <value>Graph execution is suspended until warning is resolved</value>
+  </data>
+  <data name="DynamoViewRunTypesComboBoxToolTipDisabled" xml:space="preserve">
+    <value>Run mode can not be changed until warning is resolved</value>
+  </data>
+  <data name="BubbleDismissAllButtonTooltip" xml:space="preserve">
+    <value>Temporarily dismiss all warnings of this node</value>
+    <comment>Tooltip text of Dismiss All warnong button.</comment>
+  </data>
+  <data name="RunCompletedWithWarningsDismissedMessage" xml:space="preserve">
+    <value>Run completed with dismissed warnings.</value>
+  </data>
   <data name="PackageRepositoryLabel" xml:space="preserve">
     <value>Repository</value>
   </data>
@@ -3138,9 +3186,57 @@ To install the latest version of a package, click Install. \n
     <value>Website</value>
   </data>
   <data name="OnboardingSuccessText" xml:space="preserve">
-    <value>Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in Dynamo Primer.</value>
+    <value>Well done! You just ran your first graph in Dynamo. \n\nStay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in #Dynamo Primer=https://primer2.dynamobim.org/ .</value>
   </data>
   <data name="OnboardingSuccessTitle" xml:space="preserve">
     <value>Success</value>
+  </data>
+  <data name="MessagePackageTargetOtherHosts" xml:space="preserve">
+    <value>The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems. Do you want to continue?</value>
+  </data>
+  <data name="RunBlockedMessage" xml:space="preserve">
+    <value>Run blocked.</value>
+    <comment>Run status message for case where graph run blocked due to unresolved security warning.</comment>
+  </data>
+  <data name="FooterNotificationErrorImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/error.png</value>
+  </data>
+  <data name="FooterNotificationErrorTooltip" xml:space="preserve">
+    <value>Click to cycle through nodes with errors.</value>
+  </data>
+  <data name="FooterNotificationInfoImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/info.png</value>
+  </data>
+  <data name="FooterNotificationInfoTooltip" xml:space="preserve">
+    <value>Click to cycle through nodes with info states.</value>
+  </data>
+  <data name="FooterNotificationWarningImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/warning_16px.png</value>
+  </data>
+  <data name="FooterNotificationWarningTooltip" xml:space="preserve">
+    <value>Click to cycle through nodes with warnings.</value>
+  </data>
+  <data name="TrustLocationAddedNotification" xml:space="preserve">
+    <value>You have trusted file location:
+{0}</value>
+  </data>
+  <data name="TrustLocationSkippedNotification" xml:space="preserve">
+    <value>No trusted location has been added.</value>
+  </data>
+  <data name="MessagePackageTargetOtherHosts2" xml:space="preserve">
+    <value>The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems.</value>
+  </data>
+  <data name="MessagePackageTargetOtherHostShort" xml:space="preserve">
+    <value>Package targets a different host than current host application.</value>
+  </data>
+  <data name="TitlePackageTargetOtherHost" xml:space="preserve">
+    <value>Package Host Error</value>
+  </data>
+  <data name="TrustedLocationNotAccessible" xml:space="preserve">
+    <value>A problem occurred when trying to access the location. Dynamo is unable to obtain read/write access to
+{0}</value>
+  </data>
+  <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
+    <value>Unable To Access Directory</value>
   </data>
 </root>

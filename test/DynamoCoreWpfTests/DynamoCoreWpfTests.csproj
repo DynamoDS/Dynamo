@@ -15,7 +15,7 @@
 	  <PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
     <PackageReference Include="Moq" Version="4.2.1507.0118" />
 	  <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
-	  <PackageReference Include="Greg" Version="2.1.8122.28281"/>
+	  <PackageReference Include="Greg" Version="2.3.0.1646" />
 	  <PackageReference Include="HelixToolkit" Version="2.17.0" />
 	  <PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
 	  <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
@@ -161,6 +161,10 @@
     <ProjectReference Include="..\..\src\WorkspaceDependencyViewExtension\WorkspaceDependencyViewExtension.csproj">
       <Project>{5E76AAB3-6302-473E-9655-081B53FB1419}</Project>
       <Name>WorkspaceDependencyViewExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\GraphNodeManagerViewExtension\GraphNodeManagerViewExtension.csproj">
+      <Project>{1E92CDB0-644C-4EAA-8AB8-EFDD193A0484}</Project>
+      <Name>GraphNodeManagerViewExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>

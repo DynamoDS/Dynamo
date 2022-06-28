@@ -343,6 +343,30 @@ namespace Autodesk.DesignScript.Interfaces
     }
 
     /// <summary>
+    /// Internal interface to enable adding labels that are related to an instanceableGraphicItem.
+    /// </summary>
+    internal interface IRenderInstancedLabels
+    {
+        /// <summary>
+        /// Adds a label to the render package, but first transforms the label by the transform matrix of the 
+        /// relevant graphicItem.
+        /// </summary>
+        /// <param name="label">label</param>
+        /// <param name="vertexType">type of vertex</param>
+        /// <param name="vertIndex">vertex index for base label position</param>
+        /// <param name="instanceIndex">index to use for transform matrix</param>
+        /// <param name="BaseTessellationId">baseTessellation Id of the item this label belongs to.
+        /// Aids in lookup of the correct transform matrix.</param>
+        void AddInstancedLabel(string label, VertexType vertexType, int vertIndex, int instanceIndex, Guid BaseTessellationId);
+        /// <summary>
+        /// Number of instances for a particular baseTessellation type(cuboid, sphere etc)
+        /// </summary>
+        /// <param name="baseTessellationID"></param>
+        /// <returns>returns -1 if id cannot be found in package.</returns>
+        int InstanceCount(Guid baseTessellationID);
+    };
+
+    /// <summary>
     /// Represents instance matrices and references to tessellated geometry in the RenderPackage
     /// </summary>
     internal interface IInstancingRenderPackage
@@ -417,7 +441,9 @@ namespace Autodesk.DesignScript.Interfaces
     {
         Point,
         Line,
-        Mesh
+        Mesh,
+        MeshInstance,
+        LineInstance,
     }
 
     /// <summary>

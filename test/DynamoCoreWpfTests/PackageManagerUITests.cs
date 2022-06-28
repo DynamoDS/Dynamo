@@ -1052,7 +1052,8 @@ namespace DynamoCoreWpfTests
             var mockGreg = new Mock<IGregClient>();
 
             var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
-            var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object);
+            var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
+       
 
             //when we attempt a download - it returns a valid download path, also record order
             pmVmMock.Setup(x => x.Download(It.IsAny<PackageDownloadHandle>())).
@@ -1151,6 +1152,114 @@ namespace DynamoCoreWpfTests
             {
                 Assert.AreEqual(expectedResults[i], operations[i]);
             }
+        }
+
+        [Test]
+        [Description("User tries to download a package that target a different host.")]
+        public void PackageManagerWarnWhenInstallingPackageTargetingOtherHost()
+        {
+
+            var mockGreg = new Mock<IGregClient>();
+
+            var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object);
+            var pmMock = new Mock<PackageManagerExtension>();
+
+
+            //when we attempt a download - it returns a valid download path
+            pmVmMock.Setup(x => x.Download(It.IsAny<PackageDownloadHandle>())).
+                Returns<PackageDownloadHandle>(h => Task.Factory.StartNew(() => (h, h.Name)));
+
+            //these are our fake packages
+            var dep_name = "Dep123";
+            var dep_version = "0.0.1";
+            var dep_id = "Dep123";
+            var dep_deps = new List<Dependency>() { new Dependency() { _id = dep_id, name = dep_name } };
+            var dep_depVers = new List<string>() { dep_version };
+            var host_dependencies = new List<string>() { "Revit" };
+
+            var dep_pkgVer = new PackageVersion()
+            {
+                version = dep_version,
+                engine_version = "2.1.1",
+                name = dep_name,
+                id = dep_id,
+                full_dependency_ids = dep_deps,
+                full_dependency_versions = dep_depVers,
+                host_dependencies = host_dependencies
+            };
+
+            var name = "PackageWithDep123";
+            var version = "0.0.1";
+            var id = "PackageWithDep123";
+            var deps = new List<Dependency>() { new Dependency() { _id = id, name = name }, new Dependency() { _id = dep_id, name = dep_name } };
+            var depVers = new List<string>() { version, dep_version };
+
+            var pkgVer = new PackageVersion()
+            {
+                version = version,
+                engine_version = "2.1.1",
+                name = name,
+                id = id,
+                full_dependency_ids = deps,
+                full_dependency_versions = depVers
+            };
+
+            //when headers are retrieved for dependencies return the correct header
+            clientmock.Setup(x => x.GetPackageVersionHeader(It.IsAny<string>(), It.IsAny<string>())).Returns<string, string>((i, v) =>
+            {
+                switch (i)
+                {
+                    case "PackageWithDep123":
+                        return pkgVer;
+
+                    case "Dep123":
+                        return dep_pkgVer;
+                    default:
+                        return null;
+                }
+            });
+
+            pmVmMock.Setup(x =>
+                x.InstallPackage(It.IsAny<PackageDownloadHandle>(), It.IsAny<string>(), It.IsAny<string>()));
+
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+
+            //click ok during download.
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            clientmock.Setup(x => x.GetKnownHosts()).Returns(new List<string>() { "Revit", "Civil 3D", "FormIt" });
+            pmMock.Setup(x => x.PackageManagerClient).Returns(clientmock.Object);
+            //the packageClientVM should return our mocked package manager.
+            pmVmMock.Setup(x => x.PackageManagerExtension).Returns(pmMock.Object);
+
+            // Host is Sandbox, empty string
+            // This will produce a warning dialog
+            pmMock.Setup(x => x.Host).Returns("");
+
+            //actually perform the download & install operations
+            pmVmMock.Object.ExecutePackageDownload(id, pkgVer, "");
+
+            // Host is Revit
+            // This will not produce a warning dialog
+            pmMock.Setup(x => x.Host).Returns("Revit");
+
+            //actually perform the download & install operations
+            pmVmMock.Object.ExecutePackageDownload(id, pkgVer, "");
+
+            // Host is Civil 3D
+            // This will produce a warning dialog
+            pmMock.Setup(x => x.Host).Returns("Civil 3D");
+
+            //actually perform the download & install operations
+            pmVmMock.Object.ExecutePackageDownload(id, pkgVer, "");
+
+            // We should now have showed the warning dialog twice
+            dlgMock.Verify(x => x.Show(It.IsAny<Window>(), Dynamo.Wpf.Properties.Resources.MessagePackageTargetOtherHosts,
+                Dynamo.Wpf.Properties.Resources.PackageDownloadMessageBoxTitle,
+                MessageBoxButton.OKCancel, MessageBoxImage.Exclamation), Times.Exactly(2));
         }
 
         [Test]

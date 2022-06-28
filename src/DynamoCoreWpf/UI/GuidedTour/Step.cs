@@ -179,7 +179,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         #endregion
 
         #region Protected Properties
-        protected Popup stepUIPopup;
+        internal Popup stepUIPopup;
         protected Func<bool, bool> validator;
         /// <summary>
         /// This property describe which will be the pointing direction of the tooltip (if is a Welcome or Survey popup then is not used)

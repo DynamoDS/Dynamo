@@ -44,6 +44,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private static NodeModel lastCreatedNode;
 
+        private static Window CurrentGuideWindow;
+
         //This method will return a bool that describes if the Terms Of Service was accepted or not.
         internal static bool AcceptedTermsOfUse(DynamoViewModel dynViewModel)
         {
@@ -72,53 +74,61 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void ExecuteTermsOfServiceFlow(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
-
-            if (stepInfo.ExitGuide != null)
-                exitGuide = stepInfo.ExitGuide;
+            exitGuide = stepInfo.ExitGuide;
 
             //When enableFunction = true, means we want to show the TermsOfUse Window (this is executed in the UIAutomation step in the Show() method)
             if (enableFunction)
             {
                 //If the TermsOfService is not accepted yet it will show the TermsOfUseView otherwise it will show the PackageManagerSearchView
                 stepInfo.DynamoViewModelStep.ShowPackageManagerSearch(null);
-                Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
-
+                CurrentGuideWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
                 foreach (var handler in uiAutomationData.AutomaticHandlers)
                 {
-                    if (ownedWindow == null) return;
-                    UIElement element = GuideUtilities.FindChild(ownedWindow, handler.HandlerElement);
+                    if (CurrentGuideWindow == null) return;
+                    UIElement element = GuideUtilities.FindChild(CurrentGuideWindow, handler.HandlerElement);
 
                     //When the Accept button is pressed in the TermsOfUseView then we need to move to the next Step
                     if (element != null)
                         ManageEventHandler(element, handler.HandlerElementEvent, handler.ExecuteMethod);
                 }
 
-                ownedWindow.Closed += OnPackageManagerTouClosed;
+                CurrentGuideWindow.Closed += OnPackageManagerTourClosed;
+                GuideFlowEvents.GuidedTourFinish += GuideFlowEvents_GuidedTourFinish;
             }
-            //When enableFunction = false, means we are hiding (closing) the TermsOfUse Window due that we are moving to the next Step or we are exiting the Guide
             else
             {
-                Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
-                if (ownedWindow == null) return;
+                CurrentGuideWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+                if (CurrentGuideWindow != null)
+                {
+                    CurrentGuideWindow.Closed -= OnPackageManagerTourClosed;
+                    CurrentGuideWindow = null;
+                }
+
+                GuideFlowEvents.GuidedTourFinish -= GuideFlowEvents_GuidedTourFinish;
 
                 //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
                 GuideUtilities.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
             }
         }
 
-        private static void OnPackageManagerTouClosed(object sender, EventArgs e)
+        private static void GuideFlowEvents_GuidedTourFinish(GuidedTourStateEventArgs args)
         {
-            bool acceptedTermsOfUse = false;
-            var window = sender as TermsOfUseView;
-
-            if (window != null)
+            if(CurrentGuideWindow != null)
             {
-               acceptedTermsOfUse = window.AcceptedTermsOfUse;
+                CurrentGuideWindow.Closed -= OnPackageManagerTourClosed;
+                CurrentGuideWindow.Close();
             }
+        }
 
-            if (!acceptedTermsOfUse)
+        private static void OnPackageManagerTourClosed(object window, EventArgs e)
+        {
+            if (window is TermsOfUseView)
             {
-                CloseTour();
+                TermsOfUseView termsOfUseView = (TermsOfUseView)window;
+                if (!termsOfUseView.AcceptedTermsOfUse)
+                {
+                    CloseTour();
+                }
             }
         }
 
@@ -134,9 +144,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (enableFunction)
             {
                 CurrentExecutingStep = stepInfo;
-
-                if (stepInfo.ExitGuide != null)
-                    exitGuide = stepInfo.ExitGuide;
+                exitGuide = stepInfo.ExitGuide;
 
                 Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
 
@@ -144,8 +152,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     if (ownedWindow == null) return;
 
-                    CloseButtonSearchPackages = GuideUtilities.FindChild(ownedWindow, handler.HandlerElement) as Button;
-                    CloseButtonSearchPackages.Click += CloseButton_Click;
+                    if(CloseButtonSearchPackages == null)
+                    {
+                        CloseButtonSearchPackages = GuideUtilities.FindChild(ownedWindow, handler.HandlerElement) as Button;
+                        CloseButtonSearchPackages.Click += CloseButton_Click;
+                    }
                 }
             }
             else
@@ -279,6 +290,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="e"></param>
         internal static void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            CloseButtonSearchPackages = null;
             CloseTour();
         }
 
@@ -298,6 +310,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void ExecutePackageSearch(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
+            exitGuide = stepInfo.ExitGuide;
             //We try to find the PackageManagerSearchView window
             Window ownedWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
             if (enableFunction)
@@ -655,9 +668,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
 
             //Inside the NodeView try to find the ItemsControl that contains Input ports or Output ports
-            var itemsControlPort = GuideUtilities.FindChild(byOriginNode, portHighlighted) as ItemsControl;
+            if (!(GuideUtilities.FindChild(byOriginNode, portHighlighted) is ItemsControl itemsControlPort)) return;
             var inPorts = itemsControlPort.Items.Cast<PortViewModel>().ToList();
-            if (itemsControlPort == null) return;
 
             //Once we have the ItemsControl we get the ContentPresenter
             var inputViewModel = inPorts.FirstOrDefault(x => x.PortName == (string)uiAutomationData.Parameters[3]);

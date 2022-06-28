@@ -133,8 +133,15 @@ namespace Dynamo.ViewModels
             foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
             {
                 ILocatable locatable = selectable as ILocatable;
-                if (null != locatable)
-                    draggedNodes.Add(new DraggedNode(locatable, mouseCursor));
+                if (null == locatable)
+                    continue;
+
+                // Annotations always update their position relative to all nested Nodes
+                // So there is no need to move the Annotation since it will be updated later anyway (performance improvement)
+                if (locatable is AnnotationModel)
+                    continue;
+
+                draggedNodes.Add(new DraggedNode(locatable, mouseCursor));
             }
 
             if (draggedNodes.Count <= 0) // There is nothing to drag.
@@ -413,6 +420,7 @@ namespace Dynamo.ViewModels
                 // Make sure the nodes do not go beyond the region.
                 double x = mouseCursor.X - deltaX;
                 double y = mouseCursor.Y - deltaY;
+
                 locatable.X = x;
                 locatable.Y = y;
                 locatable.ReportPosition();
