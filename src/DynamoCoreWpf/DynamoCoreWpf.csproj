@@ -284,6 +284,7 @@
     <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
     <Compile Include="ViewModels\Menu\TrustedPathViewModel.cs" />
     <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
+    <Compile Include="ViewModels\Notifications\NotificationsUIViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\Preview\CompactBubbleViewModel.cs" />
