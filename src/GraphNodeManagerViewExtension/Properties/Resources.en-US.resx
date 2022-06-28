@@ -166,6 +166,6 @@
     <value>Dismissed warnings</value>
   </data>
   <data name="ToolTip_ExportToExcel" xml:space="preserve">
-    <value>Export to Excel</value>
+    <value>Export</value>
   </data>
 </root>
