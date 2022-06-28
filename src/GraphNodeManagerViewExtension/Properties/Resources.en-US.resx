@@ -124,7 +124,7 @@
     <value>Show _Graph Node Manager</value>
   </data>
   <data name="Title_EmptyList" xml:space="preserve">
-    <value>Empty List</value>
+    <value>Empty list</value>
   </data>
   <data name="Title_Error" xml:space="preserve">
     <value>Error</value>
@@ -139,10 +139,10 @@
     <value>Information</value>
   </data>
   <data name="Title_IsInput" xml:space="preserve">
-    <value>Is Input</value>
+    <value>Is input</value>
   </data>
   <data name="Title_IsOutput" xml:space="preserve">
-    <value>Is Output</value>
+    <value>Is output</value>
   </data>
   <data name="Title_MissingContent" xml:space="preserve">
     <value>Missing content</value>
@@ -151,7 +151,7 @@
     <value>Null</value>
   </data>
   <data name="Title_PreviewOff" xml:space="preserve">
-    <value>Preview Off</value>
+    <value>Preview off</value>
   </data>
   <data name="Title_Warning" xml:space="preserve">
     <value>Warning</value>
@@ -163,7 +163,7 @@
     <value>Copy to clipboard</value>
   </data>
   <data name="ToolTip_DismissedWarnings" xml:space="preserve">
-    <value>Dismissed Warnings</value>
+    <value>Dismissed warnings</value>
   </data>
   <data name="ToolTip_ExportToExcel" xml:space="preserve">
     <value>Export to Excel</value>

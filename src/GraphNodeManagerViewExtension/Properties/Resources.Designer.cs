@@ -79,7 +79,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty List.
+        ///   Looks up a localized string similar to Empty list.
         /// </summary>
         public static string Title_EmptyList {
             get {
@@ -124,7 +124,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Is Input.
+        ///   Looks up a localized string similar to Is input.
         /// </summary>
         public static string Title_IsInput {
             get {
@@ -133,7 +133,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Is Output.
+        ///   Looks up a localized string similar to Is output.
         /// </summary>
         public static string Title_IsOutput {
             get {
@@ -160,7 +160,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preview Off.
+        ///   Looks up a localized string similar to Preview off.
         /// </summary>
         public static string Title_PreviewOff {
             get {
@@ -196,7 +196,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dismissed Warnings.
+        ///   Looks up a localized string similar to Dismissed warnings.
         /// </summary>
         public static string ToolTip_DismissedWarnings {
             get {
