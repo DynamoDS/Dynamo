@@ -21,7 +21,7 @@ namespace EmitMSIL
         /// <param name="args"></param>
         /// <param name="replicationAttrs"></param>
         /// <returns></returns>
-        public static IList ReplicationLogic(MethodInfo mi, IList args, string[][] replicationAttrs)
+        public static IList ReplicationLogic(MethodBase mi, IList args, string[][] replicationAttrs)
         {
             var reducedArgs = ReduceArgs(args);
 

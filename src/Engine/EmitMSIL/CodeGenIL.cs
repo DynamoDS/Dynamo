@@ -15,13 +15,33 @@ namespace EmitMSIL
     public class CodeGenIL
     {
         private ILGenerator ilGen;
-        private string className;
-        private string methodName;
+        internal string className;
+        internal string methodName;
         private IDictionary<string, IList> input;
         private IDictionary<string, IList> output;
         private int localVarIndex = -1;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
         private StreamWriter writer;
+        private Dictionary<int, MethodBase> methodCache = new Dictionary<int, MethodBase>();
+        private CompilePass compilePass;
+
+        private enum CompilePass
+        {
+            GlobalFuncSig,
+            GlobalFuncBody,
+            Done
+        }
+
+        public static int KeyGen(string className, string methodName, int numParameters)
+        {
+            unchecked
+            {
+                int hash = 0;
+                hash = (hash * 397) ^ className.GetHashCode();
+                hash = (hash * 397) ^ methodName.GetHashCode();
+                return hash + numParameters;
+            }
+        }
 
         public CodeGenIL(IDictionary<string, IList> input, string filePath)
         {
@@ -31,6 +51,12 @@ namespace EmitMSIL
 
         public void Emit(List<AssociativeNode> astList)
         {
+            compilePass = CompilePass.GlobalFuncSig;
+            foreach (var ast in astList)
+            {
+                DfsTraverse(ast);
+            }
+
             // 1. Create assembly builder (dynamic assembly)
             var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false);
             // 2. Create module builder
@@ -40,9 +66,10 @@ namespace EmitMSIL
             // 4. Create method ("Execute"), get ILGenerator 
             var execMethod = BuilderHelper.CreateMethod(type, "Execute",
                 System.Reflection.MethodAttributes.Static, typeof(void), new[] { typeof(IDictionary<string, IList>),
-                    typeof(IDictionary<string, IList>)});
+                typeof(IDictionary<int, MethodBase>), typeof(IDictionary<string, IList>)});
             ilGen = execMethod.GetILGenerator();
 
+            compilePass = CompilePass.GlobalFuncBody;
             // 5. Traverse AST and use ILGen to emit code for Execute method
             foreach(var ast in astList)
             {
@@ -50,59 +77,73 @@ namespace EmitMSIL
             }
             EmitOpCode(OpCodes.Ret);
 
+            writer.Close();
+
             // Invoke emitted method (ExecuteIL.Execute)
             var t = type.CreateType();
             var mi = t.GetMethod("Execute");
             var output = new Dictionary<string, IList>();
-            var obj = mi.Invoke(null, new[] { null, output });
+            var obj = mi.Invoke(null, new object[] { null, methodCache, output });
 
-            writer.Close();
             asm.Save("DynamicAssembly.dll");
         }
 
-        internal static MethodInfo FunctionLookup(string className, string methodName, IList args)
+        private MethodBase FunctionLookup(IList args)
         {
-            var modules = ProtoFFI.DLLFFIHandler.Modules.Values.OfType<ProtoFFI.CLRDLLModule>();
-            var assemblies = modules.Select(m => m.Assembly ?? (m.Module?.Assembly)).Where(m => m != null);
             MethodInfo mi = null;
-            foreach (var asm in assemblies)
+            var key = KeyGen(className, methodName, args.Count);
+            if (methodCache.TryGetValue(key, out MethodBase mBase))
             {
-                var type = asm.GetType(className);
-                if (type == null) continue;
-
-                // There should be a way to get the exact method after matching parameter types for a node
-                // using its function descriptor. AST isn't sufficient for parameter type info.
-                // Fist check for static methods
-                mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
-                    m => m.Name == methodName && m.GetParameters().Length == args.Count).FirstOrDefault();
-
-                // Check for instance methods
-                if (mi == null)
+                mi = mBase as MethodInfo;
+            }
+            else
+            {
+                var modules = ProtoFFI.DLLFFIHandler.Modules.Values.OfType<ProtoFFI.CLRDLLModule>();
+                var assemblies = modules.Select(m => m.Assembly ?? (m.Module?.Assembly)).Where(m => m != null);
+                foreach (var asm in assemblies)
                 {
-                    mi = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
-                        m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).FirstOrDefault();
-                }
+                    var type = asm.GetType(className);
+                    if (type == null) continue;
 
-                // Check for property getters
-                if (mi == null)
-                {
-                    var prop = type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).Where(
-                            p => p.Name == methodName).FirstOrDefault();
+                    // There should be a way to get the exact method after matching parameter types for a node
+                    // using its function descriptor. AST isn't sufficient for parameter type info.
+                    // Fist check for static methods
+                    mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
+                        m => m.Name == methodName && m.GetParameters().Length == args.Count).FirstOrDefault();
 
-                    if (prop != null)
+                    // Check for instance methods
+                    if (mi == null)
                     {
-                        mi = prop.GetAccessors().FirstOrDefault();
+                        mi = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
+                            m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).FirstOrDefault();
                     }
+
+                    // Check for property getters
+                    if (mi == null)
+                    {
+                        var prop = type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).Where(
+                                p => p.Name == methodName).FirstOrDefault();
+
+                        if (prop != null)
+                        {
+                            mi = prop.GetAccessors().FirstOrDefault();
+                        }
+                    }
+
+                    // TODO: Add check for constructorinfo objects
+
+                    if (mi != null)
+                    {
+                        methodCache.Add(key, mi);
+                        break;
+                    }
+
+                    //if (method != null)
+                    //{
+                    //    argTypes = method.GetParameters().Select(p => p.ParameterType).ToList();
+                    //    return method.ReturnType;
+                    //}
                 }
-
-                if (mi != null)
-                    break;
-
-                //if (method != null)
-                //{
-                //    argTypes = method.GetParameters().Select(p => p.ParameterType).ToList();
-                //    return method.ReturnType;
-                //}
             }
             if (mi == null)
             {
@@ -202,6 +243,12 @@ namespace EmitMSIL
             return t;
         }
 
+        private void EmitOpCode(OpCode opCode, LocalBuilder local)
+        {
+            ilGen.Emit(opCode, local);
+            writer.WriteLine($"{opCode} {local}");
+        }
+        
         private void EmitOpCode(OpCode opCode)
         {
             ilGen.Emit(opCode);
@@ -226,10 +273,19 @@ namespace EmitMSIL
             writer.WriteLine($"{opCode} {str}");
         }
 
-        private void EmitOpCode(OpCode opCode, MethodInfo mInfo)
+        private void EmitOpCode(OpCode opCode, MethodBase mBase)
         {
-            ilGen.Emit(opCode, mInfo);
-            writer.WriteLine($"{opCode} {mInfo}");
+            var mInfo = mBase as MethodInfo;
+            if (mInfo != null)
+            {
+                ilGen.Emit(opCode, mInfo);
+            }
+            else
+            {
+                var cInfo = mBase as ConstructorInfo;
+                if(cInfo != null) ilGen.Emit(opCode, cInfo);
+            }
+            writer.WriteLine($"{opCode} {mBase}");
         }
 
         private void EmitOpCode(OpCode opCode, double val)
@@ -280,6 +336,9 @@ namespace EmitMSIL
                 //var t = ti.DfsTraverse(bNode.RightNode);
 
                 var t = DfsTraverse(bNode.RightNode);
+
+                if (compilePass == CompilePass.GlobalFuncSig) return;
+
                 var lNode = bNode.LeftNode as IdentifierNode;
                 if(lNode == null)
                 {
@@ -296,7 +355,7 @@ namespace EmitMSIL
 
                 EmitOpCode(OpCodes.Stloc, localVarIndex);
                 // Add variable to output dictionary: output.Add("varName", variable);
-                EmitOpCode(OpCodes.Ldarg_1);
+                EmitOpCode(OpCodes.Ldarg_2);
                 EmitOpCode(OpCodes.Ldstr, lNode.Value);
                 // if t is a single value, wrap it in an array of the single value.
                 if (!typeof(IEnumerable).IsAssignableFrom(t))
@@ -357,14 +416,15 @@ namespace EmitMSIL
             if (ident == null) throw new ArgumentException("Left node of IdentifierListNode is expected to be an identifier.");
 
             className = ident.Value;
-            // Emit className for input to call to ReplicationLogic
-            EmitOpCode(OpCodes.Ldstr, className);
+
             return DfsTraverse(iln.RightNode);
         }
 
         private Type EmitExprListNode(AssociativeNode node)
         {
-            if(!(node is ExprListNode eln))
+            if (compilePass == CompilePass.GlobalFuncSig) return null;
+
+            if (!(node is ExprListNode eln))
             {
                 throw new ArgumentException("AST node must be an Expression List.");
             }
@@ -392,13 +452,39 @@ namespace EmitMSIL
             if (fcn == null) throw new ArgumentException("AST node must be a Function Call Node.");
 
             methodName = fcn.Function.Name;
-            // Emit methodName for input to call to ReplicationLogic
-            EmitOpCode(OpCodes.Ldstr, methodName);
-
-            // Emit args for input to call to ReplicationLogic
-
             var args = fcn.FormalArguments;
             var numArgs = args.Count;
+
+            if(compilePass == CompilePass.GlobalFuncSig)
+            {
+                FunctionLookup(args);
+                return null;
+            }
+
+            // Emit methodCache
+            EmitOpCode(OpCodes.Ldarg_1);
+
+            // Emit className for input to call to CodeGenIL.KeyGen
+            EmitOpCode(OpCodes.Ldstr, className);
+
+            // Emit methodName for input to call to CodeGenIL.KeyGen
+            EmitOpCode(OpCodes.Ldstr, methodName);
+            EmitOpCode(OpCodes.Ldc_I4, numArgs);
+
+            var mInfo = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
+            EmitOpCode(OpCodes.Call, mInfo);
+
+            var local = ilGen.DeclareLocal(typeof(MethodBase));
+            EmitOpCode(OpCodes.Ldloca, local);
+
+            // Emit methodCache.TryGetValue(KeyGen(...), out MethodBase mInfo)
+            var mBase = typeof(IDictionary<int, MethodBase>).GetMethod(nameof(IDictionary<int, MethodBase>.TryGetValue));
+            EmitOpCode(OpCodes.Callvirt, mBase);
+
+            EmitOpCode(OpCodes.Pop);
+            EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
+
+            // Emit args for input to call to ReplicationLogic
             EmitOpCode(OpCodes.Ldc_I4, numArgs);
             EmitOpCode(OpCodes.Newarr, typeof(object));
             int argCount = -1;
@@ -448,7 +534,7 @@ namespace EmitMSIL
             }
 
             // Emit call to ReplicationLogic
-            var mInfo = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic));
+            mInfo = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic));
             EmitOpCode(OpCodes.Call, mInfo);
 
             return typeof(IList);
@@ -481,6 +567,8 @@ namespace EmitMSIL
 
         private Type EmitNullNode(AssociativeNode node)
         {
+            if (compilePass == CompilePass.GlobalFuncSig) return null;
+
             if(node is NullNode nullNode)
             {
                 EmitOpCode(OpCodes.Ldnull);
@@ -496,6 +584,8 @@ namespace EmitMSIL
 
         private Type EmitStringNode(AssociativeNode node)
         {
+            if (compilePass == CompilePass.GlobalFuncSig) return null;
+
             if (node is StringNode strNode)
             {
                 EmitOpCode(OpCodes.Ldstr, strNode.Value);
@@ -506,7 +596,9 @@ namespace EmitMSIL
 
         private Type EmitCharNode(AssociativeNode node)
         {
-            if(node is CharNode charNode)
+            if (compilePass == CompilePass.GlobalFuncSig) return null;
+
+            if (node is CharNode charNode)
             {
                 EmitOpCode(OpCodes.Ldc_I4_S, charNode.Value[0]);
                 return typeof(char);
@@ -516,6 +608,8 @@ namespace EmitMSIL
 
         private Type EmitBooleanNode(AssociativeNode node)
         {
+            if (compilePass == CompilePass.GlobalFuncSig) return null;
+
             if (node is BooleanNode boolNode)
             {
                 if (boolNode.Value)
@@ -529,7 +623,9 @@ namespace EmitMSIL
 
         private Type EmitDoubleNode(AssociativeNode node)
         {
-            if(node is DoubleNode dblNode)
+            if (compilePass == CompilePass.GlobalFuncSig) return null;
+
+            if (node is DoubleNode dblNode)
             {
                 EmitOpCode(OpCodes.Ldc_R8, dblNode.Value);
                 return typeof(double);
@@ -539,7 +635,9 @@ namespace EmitMSIL
 
         private Type EmitIntNode(AssociativeNode node)
         {
-            if(node is IntNode intNode)
+            if (compilePass == CompilePass.GlobalFuncSig) return null;
+
+            if (node is IntNode intNode)
             {
                 EmitOpCode(OpCodes.Ldc_I8, intNode.Value);
                 return typeof(long);
@@ -549,8 +647,10 @@ namespace EmitMSIL
 
         private Type EmitIdentifierNode(AssociativeNode node)
         {
+            if (compilePass == CompilePass.GlobalFuncSig) return null;
+
             // only handle identifiers on rhs of assignment expression for now.
-            if(node is IdentifierNode idNode)
+            if (node is IdentifierNode idNode)
             {
                 // local variables on rhs of expression should have already been defined.
                 if(!variables.TryGetValue(idNode.Value, out Tuple<int, Type> tup))

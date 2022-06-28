@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
+using System.Reflection;
 
 namespace EmitMSIL
 {
@@ -31,7 +32,8 @@ namespace EmitMSIL
             input.Add("z", new[] { 453 });
 
             Dictionary<string, IList> output = new Dictionary<string, IList>();
-            ExecuteIL.Execute(input, output);
+            var methodCache = new Dictionary<int, MethodBase>();
+            ExecuteIL.Execute(input, methodCache, output);
         }
     }
 }

@@ -1687,9 +1687,9 @@ namespace ProtoScript.Runners
                 changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
 
                 ///////////////////////////////////////////////////
-                //Dictionary<string, IList> input = new Dictionary<string, IList>();
-                //var codeGenIL = new EmitMSIL.CodeGenIL(input, @"D:\GitHub\Dynamo\src\Engine\EmitMSIL\bin\Debug\opCodes.txt");
-                //codeGenIL.Emit(finalDeltaAstList);
+                Dictionary<string, IList> input = new Dictionary<string, IList>();
+                var codeGenIL = new EmitMSIL.CodeGenIL(input, @"D:\GitHub\Dynamo\src\Engine\EmitMSIL\bin\Debug\opCodes.txt");
+                codeGenIL.Emit(finalDeltaAstList);
 
                 ///////////////////////////////////////////////////
 

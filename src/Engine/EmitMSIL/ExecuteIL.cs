@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
-//using FFITarget.Dynamo;
+using System.Reflection;
 
 namespace EmitMSIL
 {
@@ -21,7 +21,8 @@ namespace EmitMSIL
         //    return Circle.ByPointRadius(pt, rad);
         //}
 
-        public static void Execute(IDictionary<string, IList> input, IDictionary<string, IList> output)
+        public static void Execute(IDictionary<string, IList> input, IDictionary<int, MethodBase> methodCache, 
+            IDictionary<string, IList> output)
         {
             // Sample script for which below code is emitted:
             // x = 12;
@@ -49,7 +50,8 @@ namespace EmitMSIL
             //string methodName = $"PointWrapper";
             var methodName = "ByCoordinates";
 
-            var mi = CodeGenIL.FunctionLookup(className, methodName, args);
+            var key = CodeGenIL.KeyGen(className, methodName, args.Count);
+            var mi = methodCache[key];
             // 6. Emit call to ReplicationLogic by passing input args from previous steps
             IList c = Replication.ReplicationLogic(mi, args, guides);
 
@@ -68,7 +70,9 @@ namespace EmitMSIL
             // 5. read methodname from function call AST
             //methodName = "CircleWrapper";
             methodName = "ByCenterPointRadius";
-            mi = CodeGenIL.FunctionLookup(className, methodName, args);
+
+            key = CodeGenIL.KeyGen(className, methodName, args.Count);
+            mi = methodCache[key];
             // 6. Emit call to ReplicationLogic by passing input args from previous steps
             IList d = Replication.ReplicationLogic(mi, args, guides);
             // 7. read output identifier from lhs of AST and emit assignment
