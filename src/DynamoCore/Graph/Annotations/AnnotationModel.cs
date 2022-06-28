@@ -23,6 +23,8 @@ namespace Dynamo.Graph.Annotations
         private const double ExtendSize = 10.0;
         private const double ExtendYHeight = 5.0;
 
+        double lastExpandedWidth = 0;
+
         #region Properties
 
         /// <summary>
@@ -498,9 +500,19 @@ namespace Dynamo.Graph.Annotations
 
                 this.X = region.X;              
                 this.Y = region.Y;
-                this.Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
                 this.ModelAreaHeight = IsExpanded ? region.Height : ModelAreaHeight;
-                this.Height = this.ModelAreaHeight + TextBlockHeight;
+                Height = this.ModelAreaHeight + TextBlockHeight;
+
+                if (IsExpanded)
+                {
+                    Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);                    
+                    lastExpandedWidth = Width;
+                }
+                else
+                {
+                    //If the annotation is not expanded, than it will remain the same width of the last time it was expanded
+                    Width = lastExpandedWidth;
+                }
 
                 //Initial Height is to store the Actual height of the group.
                 //that is the height should be the initial height without the textblock height.
