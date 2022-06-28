@@ -383,7 +383,12 @@ namespace Dynamo.GraphNodeManager.ViewModels
             try
             {
                 var list = mirrorData.GetElements();
-                return !list.Any();
+                foreach (var nested in list)
+                {
+                    if (!IsNodeEmptyList(nested))
+                        return false;
+                }
+                return true;
             }
             catch (Exception)
             {
