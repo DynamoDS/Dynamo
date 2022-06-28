@@ -113,9 +113,9 @@ namespace DynamoUtilities
         public bool Contains(T item)
         {
             _lock.LockForRead();
-            bool containts = innerList.Contains(item);
+            bool contains = innerList.Contains(item);
             _lock.UnlockForRead();
-            return containts;
+            return contains;
         }
 
         public void CopyTo(T[] array, int arrayIndex)

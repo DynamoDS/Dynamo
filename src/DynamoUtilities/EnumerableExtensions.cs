@@ -469,28 +469,37 @@ namespace Dynamo.Utilities
             return string.Empty;
         }
 
-        public static bool TryGetValueAs<Key, Value, ValueAs>(this IDictionary<Key, Value> dictionary, Key key, out ValueAs valueAs) where ValueAs : Value
+        /// <summary>
+        /// Returns true if a value of type ValueAs is found at key in the ConcurrentDictionary
+        /// Returns false otherwise. The output value 'valueAs' will be null in this case.
+        /// </summary>
+        public static bool TryGetValueAs<Key, Value, ValueAs>(this ConcurrentDictionary<Key, Value> dictionary, Key key, out ValueAs valueAs) where ValueAs : class
         {
-            if (dictionary.TryGetValue(key, out Value value))
+            if (dictionary.TryGetValue(key, out Value value) &&
+                value is ValueAs valCoerced)
             {
-                valueAs = (ValueAs)value;
+                valueAs = valCoerced;
                 return true;
             }
 
-            valueAs = default;
+            valueAs = null;
             return false;
         }
 
 
-        public static bool TryRemoveAs<Key, Value, ValueAs>(this ConcurrentDictionary<Key, Value> dictionary, Key key, out ValueAs valueAs) where ValueAs : Value
+        /// Returns true if a value of type ValueAs is found at key in the ConcurrentDictionary. The output 'valueAs' 
+        /// will contain the removed item.
+        /// Returns false otherwise. The output value 'valueAs' will be null in this case.
+        public static bool TryRemoveAs<Key, Value, ValueAs>(this ConcurrentDictionary<Key, Value> dictionary, Key key, out ValueAs valueAs) where ValueAs : class
         {
-            if (dictionary.TryRemove(key, out Value value))
+            if (dictionary.TryRemove(key, out Value value) &&
+                value is ValueAs valueCoerced)
             {
-                valueAs = (ValueAs)value;
+                valueAs = valueCoerced;
                 return true;
             }
 
-            valueAs = default;
+            valueAs = null;
             return false;
         }
     }

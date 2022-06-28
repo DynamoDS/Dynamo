@@ -778,6 +778,8 @@ namespace Dynamo.ViewModels
                 Nodes.Remove(nodeViewModel);
                 Errors.Remove(nodeViewModel.ErrorBubble);
 
+                nodeViewModel.Dispose();
+
                 PostNodeChangeActions();
             }
         }
@@ -1582,7 +1584,8 @@ namespace Dynamo.ViewModels
         {
             return ViewModelMap.TryGetValue(modelGuid, out ViewModelBase viewModel) ? viewModel : null;
         }
-        internal VmType GetViewModel<VmType>(Guid modelGuid) where VmType : ViewModelBase
+
+        internal VmType GetViewModelAs<VmType>(Guid modelGuid) where VmType : ViewModelBase
         {
             return ViewModelMap.TryGetValueAs(modelGuid, out VmType viewModel) ? viewModel : null;
         }
@@ -1605,8 +1608,6 @@ namespace Dynamo.ViewModels
 
             return foundModels;
         }
-
-        
     }
 
     public class ViewModelEventArgs : EventArgs
