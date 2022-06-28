@@ -1071,10 +1071,33 @@ namespace Dynamo.Graph.Nodes
                 };
             }
         }
-
+        
         /// A collection of error/warning/info messages, dismissed via a sub-menu in the node Context Menu.
         [JsonIgnore]
         public ObservableCollection<string> DismissedAlerts { get; set; } = new ObservableCollection<string>();
+
+
+        private int _dismissedAlertsCount;
+        /// <summary>
+        ///     Returns the number of dismissed error/warning/info messages.
+        /// </summary>
+        [JsonIgnore]
+        public int DismissedAlertsCount
+        {
+            get
+            {
+                return _dismissedAlertsCount;
+            }
+
+            internal set // Private setter, see "ArgumentLacing" for details.
+            {
+                if (_dismissedAlertsCount != value)
+                {
+                    _dismissedAlertsCount = value;
+                    RaisePropertyChanged(nameof(DismissedAlertsCount));
+                }
+            }
+        }
 
         #endregion
 

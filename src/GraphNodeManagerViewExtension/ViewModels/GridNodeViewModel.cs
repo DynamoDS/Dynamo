@@ -260,7 +260,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             get
             {
-                dismissedAlertsCount = NodeModel.DismissedAlerts.Count;
+                dismissedAlertsCount = NodeModel.DismissedAlertsCount;
                 return dismissedAlertsCount;
             }
             internal set
@@ -506,6 +506,9 @@ namespace Dynamo.GraphNodeManager.ViewModels
                     break;
                 case "State":
                     RaisePropertyChanged(nameof(State));
+                    break;
+                case "DismissedAlertsCount":
+                    RaisePropertyChanged(nameof(DismissedAlertsCount));
                     break;
             }
         }
