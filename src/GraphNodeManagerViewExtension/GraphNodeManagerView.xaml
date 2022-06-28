@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:Dynamo.GraphNodeManager.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:p="clr-namespace:Dynamo.GraphNodeManager.Properties"
+             xmlns:controls1="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
              x:Name="UserControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -62,7 +63,6 @@
                        VerticalAlignment="Center"
                        Source="/GraphNodeManagerViewExtension;component/Images/Export.png"
                        Stretch="UniformToFill"
-                       ToolTip="{x:Static p:Resources.ToolTip_ExportToExcel}"
                        MouseUp="ExportImage_OnMouseUp"
                        Cursor="Hand">
                 <Image.ContextMenu>
@@ -77,6 +77,17 @@
                                       Command="{Binding ExportCommand}" CommandParameter="JSON"/>
                     </ContextMenu>
                 </Image.ContextMenu>
+                <Image.ToolTip>
+                    <controls1:DynamoToolTip AttachmentSide="Bottom" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                        <Grid>
+                            <TextBlock MaxWidth="320"
+                                       Padding="5"
+                                       Foreground="Black" FontSize="12"
+                                       Text="{x:Static p:Resources.ToolTip_ExportToExcel}"
+                                       TextWrapping="Wrap" />
+                        </Grid>
+                    </controls1:DynamoToolTip>
+                </Image.ToolTip>
             </Image>
             <Button x:Name="ClearFiltersButton"
                     DockPanel.Dock="Right"
@@ -308,10 +319,20 @@
                                                             Tag="{Binding ElementName=DetailedRowItemControl, Path=DataContext}"
                                                             Width="24"
                                                             VerticalAlignment="Top"
-                                                            ToolTip="{x:Static p:Resources.ToolTip_CopyToClipboard}"
                                                             Cursor="Hand">
                                                     <Image Source="/GraphNodeManagerViewExtension;component/Images/Copy.png" 
                                                            Style="{StaticResource ImageStyle}"/>
+                                                    <Button.ToolTip>
+                                                        <controls1:DynamoToolTip AttachmentSide="Bottom" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                                                            <Grid>
+                                                                <TextBlock MaxWidth="320"
+                                                                           Padding="5"
+                                                                           Foreground="Black" FontSize="12"
+                                                                           Text="{x:Static p:Resources.ToolTip_CopyToClipboard}"
+                                                                           TextWrapping="Wrap" />
+                                                            </Grid>
+                                                        </controls1:DynamoToolTip>
+                                                    </Button.ToolTip>
                                                 </Button>
                                             </Grid>
                                         </Border>
