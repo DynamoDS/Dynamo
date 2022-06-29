@@ -13,7 +13,9 @@
        MinWidth="340"
        Height="{Binding Height}"
        d:DesignHeight="67" 
-       d:DesignWidth="340">
+       d:DesignWidth="340"
+       StaysOpen="False"
+       PopupAnimation="Fade">
     <Popup.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

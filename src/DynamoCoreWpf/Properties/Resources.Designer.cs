@@ -250,6 +250,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Temporarily dismiss all warnings of this node.
+        /// </summary>
+        public static string BubbleDismissAllButtonTooltip {
+            get {
+                return ResourceManager.GetString("BubbleDismissAllButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must provide a Build version as a non-negative integer..
         /// </summary>
         public static string BuildVersionNonNegative {
@@ -529,7 +538,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy.
+        ///   Looks up a localized string similar to Copy Contents.
         /// </summary>
         public static string ContextMenuCopy {
             get {
@@ -1127,6 +1136,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show File Trust Warning.
+        /// </summary>
+        public static string DynamoShowFileTrustWarning {
+            get {
+                return ResourceManager.GetString("DynamoShowFileTrustWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A Dynamo update is available. Click to install..
         /// </summary>
         public static string DynamoUpdateAvailableToolTip {
@@ -1523,7 +1541,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Export Background 3D Preview as Image....
+        ///   Looks up a localized string similar to Export _Background 3D Preview as Image....
         /// </summary>
         public static string DynamoViewFileMenuExport3DAsImage {
             get {
@@ -1532,7 +1550,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Export Workspace As Image....
+        ///   Looks up a localized string similar to Export _Workspace As Image....
         /// </summary>
         public static string DynamoViewFileMenuExportAsImage {
             get {
@@ -1541,7 +1559,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Export Model to STL....
+        ///   Looks up a localized string similar to Export _Model to STL....
         /// </summary>
         public static string DynamoViewFileMenuExportToSTL {
             get {
@@ -1780,6 +1798,24 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewRunButtonToolTipDisabled {
             get {
                 return ResourceManager.GetString("DynamoViewRunButtonToolTipDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph execution is suspended until warning is resolved.
+        /// </summary>
+        public static string DynamoViewRunButtonToolTipDisabledFileTrust {
+            get {
+                return ResourceManager.GetString("DynamoViewRunButtonToolTipDisabledFileTrust", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run mode can not be changed until warning is resolved.
+        /// </summary>
+        public static string DynamoViewRunTypesComboBoxToolTipDisabled {
+            get {
+                return ResourceManager.GetString("DynamoViewRunTypesComboBoxToolTipDisabled", resourceCulture);
             }
         }
         
@@ -2615,6 +2651,79 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Trust this file’s location in the future..
+        /// </summary>
+        public static string FileTrustWarningCheckBoxText {
+            get {
+                return ResourceManager.GetString("FileTrustWarningCheckBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No, close file.
+        /// </summary>
+        public static string FileTrustWarningPopupNoCloseFile {
+            get {
+                return ResourceManager.GetString("FileTrustWarningPopupNoCloseFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string FileTrustWarningPopupSettings {
+            get {
+                return ResourceManager.GetString("FileTrustWarningPopupSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This file is stored in an untrusted location. Do you want to open this file?.
+        /// </summary>
+        public static string FileTrustWarningPopupText {
+            get {
+                return ResourceManager.GetString("FileTrustWarningPopupText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open external file?.
+        /// </summary>
+        public static string FileTrustWarningPopupTitle {
+            get {
+                return ResourceManager.GetString("FileTrustWarningPopupTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External content may bring risks to your system security..
+        /// </summary>
+        public static string FileTrustWarningPopupTooltip1 {
+            get {
+                return ResourceManager.GetString("FileTrustWarningPopupTooltip1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file&apos;s current location will be added to trusted locations.
+        ///You can manage this in Preferences -&gt; Security..
+        /// </summary>
+        public static string FileTrustWarningPopupTooltip2 {
+            get {
+                return ResourceManager.GetString("FileTrustWarningPopupTooltip2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string FileTrustWarningPopupYes {
+            get {
+                return ResourceManager.GetString("FileTrustWarningPopupYes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter results.
         /// </summary>
         public static string FilterIconTooltip {
@@ -2629,6 +2738,60 @@ namespace Dynamo.Wpf.Properties {
         public static string FolderNotWritableError {
             get {
                 return ResourceManager.GetString("FolderNotWritableError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /DynamoCoreWpf;component/UI/Images/error.png.
+        /// </summary>
+        public static string FooterNotificationErrorImage {
+            get {
+                return ResourceManager.GetString("FooterNotificationErrorImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to cycle through nodes with errors..
+        /// </summary>
+        public static string FooterNotificationErrorTooltip {
+            get {
+                return ResourceManager.GetString("FooterNotificationErrorTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /DynamoCoreWpf;component/UI/Images/info.png.
+        /// </summary>
+        public static string FooterNotificationInfoImage {
+            get {
+                return ResourceManager.GetString("FooterNotificationInfoImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to cycle through nodes with info states..
+        /// </summary>
+        public static string FooterNotificationInfoTooltip {
+            get {
+                return ResourceManager.GetString("FooterNotificationInfoTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /DynamoCoreWpf;component/UI/Images/warning_16px.png.
+        /// </summary>
+        public static string FooterNotificationWarningImage {
+            get {
+                return ResourceManager.GetString("FooterNotificationWarningImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to cycle through nodes with warnings..
+        /// </summary>
+        public static string FooterNotificationWarningTooltip {
+            get {
+                return ResourceManager.GetString("FooterNotificationWarningTooltip", resourceCulture);
             }
         }
         
@@ -2705,7 +2868,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User Interface Tour.
+        ///   Looks up a localized string similar to _User Interface Tour.
         /// </summary>
         public static string GetStartedGuide {
             get {
@@ -2714,7 +2877,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The library contains all default functions #(nodes)=https://www.dynamoprimer.com/03_Anatomy-of-a-Dynamo-Definition/3-1_dynamo_nodes.html of Dynamo, as well as custom nodes you may have loaded. \n\nTo find a node, search the library or browse its categories..
+        ///   Looks up a localized string similar to The library contains all default functions #(nodes)=https://primer2.dynamobim.org/4_nodes_and_wires of Dynamo, as well as custom nodes you may have loaded. \n\nTo find a node, search the library or browse its categories..
         /// </summary>
         public static string GetStartedGuideLibraryText {
             get {
@@ -3904,6 +4067,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems. Do you want to continue?.
+        /// </summary>
+        public static string MessagePackageTargetOtherHosts {
+            get {
+                return ResourceManager.GetString("MessagePackageTargetOtherHosts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems..
+        /// </summary>
+        public static string MessagePackageTargetOtherHosts2 {
+            get {
+                return ResourceManager.GetString("MessagePackageTargetOtherHosts2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package targets a different host than current host application..
+        /// </summary>
+        public static string MessagePackageTargetOtherHostShort {
+            get {
+                return ResourceManager.GetString("MessagePackageTargetOtherHostShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version {0} of {1} could not be found..
         /// </summary>
         public static string MessagePackageVersionNotFound {
@@ -4396,7 +4586,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Onboarding.
+        ///   Looks up a localized string similar to _Getting Started.
         /// </summary>
         public static string OnboardingGuide {
             get {
@@ -4405,7 +4595,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This new node needs to be connected to another to make it part of the graph. Give it a try!.
+        ///   Looks up a localized string similar to This new node needs to be connected to another to make it part of the graph. Give it a try, then click the Next arrow..
         /// </summary>
         public static string OnboardingGuideConnectNodesText {
             get {
@@ -4441,7 +4631,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph. \n\n**Note:** This will open a new graph. Be sure to save any changes before starting the guide..
+        ///   Looks up a localized string similar to You&apos;ve finished the Getting Started guide..
+        /// </summary>
+        public static string OnboardingGuideSurveyText {
+            get {
+                return ResourceManager.GetString("OnboardingGuideSurveyText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph..
         /// </summary>
         public static string OnboardingGuideWelcomeText {
             get {
@@ -4477,7 +4676,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This node needs a [xyz] input. You can find a node to use as the input in the library by using search or browsing. The node is x, so you’ll find it under the x category.\n\n Click the node to place it in the workspace..
+        ///   Looks up a localized string similar to The library contains the nodes used to build graphs. To find a node, you can search the library or browse its categories.
+        ///
+        ///To place a node from the library to the workspace, click the node.
+        ///
+        ///Try placing the highlighted **ByOrigin** node..
         /// </summary>
         public static string OnboardingPlaceNodeText {
             get {
@@ -4486,7 +4689,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search the library and place a node.
+        ///   Looks up a localized string similar to Placing nodes.
         /// </summary>
         public static string OnboardingPlaceNodeTitle {
             get {
@@ -4495,7 +4698,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Well done! You just ran your first graph in Dynamo. \n\n Stay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in Dynamo Primer..
+        ///   Looks up a localized string similar to Well done! You just ran your first graph in Dynamo. \n\nStay tuned for more guides on Dynamo basics. In the meantime, continue your learning journey in #Dynamo Primer=https://primer2.dynamobim.org/ ..
         /// </summary>
         public static string OnboardingSuccessText {
             get {
@@ -4513,7 +4716,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** , which is made up of nodes and wires. Graphs can process data, create geometry, and more. In this guide, we’ll work with a premade sample graph..
+        ///   Looks up a localized string similar to This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** . Graphs can process data, create geometry, and more. In this guide, we’ll work with a sample graph..
         /// </summary>
         public static string OnboardingWorkspaceText {
             get {
@@ -5398,7 +5601,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages.
+        ///   Looks up a localized string similar to _Packages.
         /// </summary>
         public static string PackagesGuide {
             get {
@@ -6976,6 +7179,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run blocked..
+        /// </summary>
+        public static string RunBlockedMessage {
+            get {
+                return ResourceManager.GetString("RunBlockedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run completed..
         /// </summary>
         public static string RunCompletedMessage {
@@ -7017,6 +7229,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RunCompletedWithScaleChangeMessage {
             get {
                 return ResourceManager.GetString("RunCompletedWithScaleChangeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with dismissed warnings..
+        /// </summary>
+        public static string RunCompletedWithWarningsDismissedMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithWarningsDismissedMessage", resourceCulture);
             }
         }
         
@@ -7606,6 +7827,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package Host Error.
+        /// </summary>
+        public static string TitlePackageTargetOtherHost {
+            get {
+                return ResourceManager.GetString("TitlePackageTargetOtherHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} of {1}.
         /// </summary>
         public static string TooltipCurrentIndex {
@@ -7624,6 +7854,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A problem occurred when trying to access the location. Dynamo is unable to obtain read/write access to
+        ///{0}.
+        /// </summary>
+        public static string TrustedLocationNotAccessible {
+            get {
+                return ResourceManager.GetString("TrustedLocationNotAccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Trusted location.
         /// </summary>
         public static string TrustedPathsExpanderName {
@@ -7633,11 +7873,39 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have trusted file location:
+        ///{0}.
+        /// </summary>
+        public static string TrustLocationAddedNotification {
+            get {
+                return ResourceManager.GetString("TrustLocationAddedNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No trusted location has been added..
+        /// </summary>
+        public static string TrustLocationSkippedNotification {
+            get {
+                return ResourceManager.GetString("TrustLocationSkippedNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable To Access Package Directory.
         /// </summary>
         public static string UnableToAccessPackageDirectory {
             get {
                 return ResourceManager.GetString("UnableToAccessPackageDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable To Access Directory.
+        /// </summary>
+        public static string UnableToAccessTrustedDirectory {
+            get {
+                return ResourceManager.GetString("UnableToAccessTrustedDirectory", resourceCulture);
             }
         }
         

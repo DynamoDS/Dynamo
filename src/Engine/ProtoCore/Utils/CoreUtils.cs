@@ -955,5 +955,50 @@ namespace ProtoCore.Utils
             }
             return StackValue.BuildNull();
         }
+
+        /// <summary>
+        /// Checks if an AST node is a primitive
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static bool IsPrimitiveASTNode(AssociativeNode node)
+        {
+            if (node is IntNode
+                || node is DoubleNode
+                || node is BooleanNode
+                || node is StringNode)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        public static StackValue BuildStackValueForPrimitive(AssociativeNode node, RuntimeCore rt)
+        {
+            Validity.Assert(IsPrimitiveASTNode(node) == true);
+
+            if (node is IntNode)
+            {
+                return StackValue.BuildInt((node as IntNode).Value);
+            }
+
+            if (node is DoubleNode)
+            {
+                return StackValue.BuildDouble((node as DoubleNode).Value);
+            }
+
+            if (node is BooleanNode)
+            {
+                return StackValue.BuildBoolean((node as BooleanNode).Value);
+            }
+
+            if (node is StringNode)
+            {
+                return StackValue.BuildString((node as StringNode).Value, rt.Heap);
+            }
+
+            return StackValue.BuildNull();
+        }
     }
 }

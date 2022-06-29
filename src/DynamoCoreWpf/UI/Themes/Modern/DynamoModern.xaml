@@ -152,7 +152,27 @@
             </Style>
         </Style.Resources>
     </Style>
-    
+
+    <Style x:Key="GenericToolTipLightTop" TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
+        <Setter Property="Placement" Value="Top"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Grid x:Name="PopupGrid">
+                        <Grid x:Name="ShadowBackground" Background="Transparent">
+                            <Path Margin="5 0 0 0" x:Name="TooltipPointer" Width="20" Height="6" HorizontalAlignment="Left" VerticalAlignment="Bottom" Data="M0,0 L6,6 12,0Z" Stroke="Gray" Fill="White" Stretch="None"/>
+                            <Border BorderThickness="1 1 1 0" CornerRadius="3" Margin="0 7 7 5" BorderBrush="#999999" Background="white" Padding="10,8">
+                                <ContentPresenter/>
+                            </Border>
+                            <Border BorderThickness="0 0 0 1" CornerRadius="0 0 3 0" Margin="16 0 9 5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="7" BorderBrush="#999999" />
+                            <Border BorderThickness="0 0 0 1" CornerRadius="0 0 0 3" Margin="0 0 0 5"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="7" Width="6" BorderBrush="#999999" />
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Image x:Key="ComboDownIcon_normal" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/tick_selected.png" />
 
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
@@ -3444,7 +3464,6 @@
                                                                                             TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                     <Grid RenderOptions.ClearTypeHint="Enabled">
                                         <ItemsPresenter x:Name="ItemsPresenter"
-                                                        Margin="2"
                                                         Grid.IsSharedSizeScope="true"
                                                         KeyboardNavigation.DirectionalNavigation="Cycle"
                                                         KeyboardNavigation.TabNavigation="Cycle"
@@ -3545,7 +3564,6 @@
                                                                                             TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                     <Grid RenderOptions.ClearTypeHint="Enabled">
                                         <ItemsPresenter x:Name="ItemsPresenter"
-                                                        Margin="2"
                                                         Grid.IsSharedSizeScope="true"
                                                         KeyboardNavigation.DirectionalNavigation="Cycle"
                                                         KeyboardNavigation.TabNavigation="Cycle"
@@ -4281,8 +4299,57 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
-    
+
+    <!--This Style will be used in the FileTrustWarning.xaml file (there is one already using inverted colors) specifically for the Buttons "Settings" and "No, close file"-->
+    <Style x:Key="OutlinedButtonStyleInverted" TargetType="Button">
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder"
+                            BorderThickness="2"
+                            Background="Transparent"
+                            BorderBrush="{StaticResource Button.Outline.Default.Border}"
+                            CornerRadius="2">
+                        <Grid Background="Transparent">
+                            <Rectangle Stroke="Black" 
+                                       RadiusX="2" 
+                                       RadiusY="2" 
+                                       Opacity="0.5" 
+                                       StrokeThickness="1"/>
+                            <TextBlock HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center" 
+                                       FontSize="14"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       Padding="10,0,10,0">
+                                <ContentPresenter />
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                    <!--  According to the Hig Autodesk standards for Outlined buttons some colors/properties will be changed according to the event generated  -->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource Button.Outline.MouseOver.Border}" />
+                            <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource Button.Outline.Pressed.Border}" />
+                            <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Cursor" Value="Hand" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Foreground" Value="{StaticResource DynamoStandardLabelTextBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 
     <!--  This Style will be used for Note Text block (used when Note is on edit mode)  -->
     <Style x:Key="NoteTextBoxStyle" TargetType="TextBox">
@@ -4792,7 +4859,6 @@
                                                                                             TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                     <Grid RenderOptions.ClearTypeHint="Enabled">
                                         <ItemsPresenter x:Name="ItemsPresenter"
-                                                        Margin="2"
                                                         Grid.IsSharedSizeScope="true"
                                                         KeyboardNavigation.DirectionalNavigation="Cycle"
                                                         KeyboardNavigation.TabNavigation="Cycle"
@@ -4883,5 +4949,57 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+    
+    <!--This Style is using in the FileTrustWarning.xaml file for the only checkbox in the Popup-->
+    <Style x:Key="CheckBoxFileTrustStyle" TargetType="{x:Type CheckBox}">
+    <Setter Property="SnapsToDevicePixels" Value="true" />
+    <Setter Property="OverridesDefaultStyle" Value="true" />
+    <Setter Property="Template">
+        <Setter.Value>
+            <ControlTemplate TargetType="CheckBox">
+                <BulletDecorator VerticalAlignment="Center" 
+                                 Background="Transparent">
+                    <BulletDecorator.Bullet>
+                        <Border x:Name="Border"
+                                    Width="13"
+                                    Height="13"
+                                    Background="#373737"
+                                    BorderBrush="{StaticResource MidGreyBrush}"
+                                    BorderThickness="1">
+                            <Image x:Name="CheckBoxTick"
+                                       Width="7"
+                                       Height="7"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/tick_selected.png"
+                                       Visibility="Hidden" />
+                        </Border>
+                    </BulletDecorator.Bullet>
+
+                    <ContentPresenter x:Name="contentPresent"
+                                          Margin="5,0,5,0"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          TextBlock.FontSize="14px"
+                                          TextBlock.Foreground="Black" />
+                </BulletDecorator>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsChecked" Value="true">
+                            <Setter TargetName="CheckBoxTick" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    <Trigger Property="IsChecked" Value="false">
+                        <Setter TargetName="Border" Property="Background" Value="White" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="True">
+                    <Setter TargetName="contentPresent" Property="TextBlock.Foreground" Value="Black" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter TargetName="contentPresent" Property="TextBlock.Foreground" Value="{StaticResource NormalBorderBrush}" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value>
+    </Setter>
     </Style>
 </ResourceDictionary>

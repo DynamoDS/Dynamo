@@ -34,6 +34,7 @@
             </Style>
             <core:NotificationLevelToColorConverter x:Key="NotificationLevelToColorConverter"></core:NotificationLevelToColorConverter>
             <core:ZeroToVisibilityCollapsedConverter x:Key="ZeroToVisibilityCollapsedConverter" />
+            <converters:EmptyStringToHiddenConverter x:Key="EmptyStringToHiddenConverter" />
             <converters:LinterIssueCountToVisibilityConverter x:Key="LinterIssueCountToVisibilityConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -53,9 +54,11 @@
         <Border Style="{StaticResource FooterNotificationItemStyle}"
                 Grid.Column="0"
                 BorderBrush="{Binding Path=HomeSpaceViewModel.CurrentNotificationLevel, 
-                                Converter={StaticResource NotificationLevelToColorConverter}}">
+                                Converter={StaticResource NotificationLevelToColorConverter}}"
+                Visibility="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage, Converter={StaticResource EmptyStringToHiddenConverter}}">
             <TextBlock x:Name="runNotificationTextBlock"
                        Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
+                       Visibility="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage, Converter={StaticResource EmptyStringToHiddenConverter}}"
                        FontStyle="Italic"
                        FontSize="12"
                        VerticalAlignment="Center"
@@ -113,7 +116,7 @@
                                    Foreground="{StaticResource PrimaryCharcoal200Brush}"/>
                         </StackPanel>
                         <Border.ToolTip>
-                            <ToolTip Content="{Binding Path=NotificationToolTip, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{Binding Path=NotificationToolTip, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource GenericToolTipLightTop}"/>
                         </Border.ToolTip>
                     </Border>
                 </DataTemplate>

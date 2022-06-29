@@ -142,17 +142,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Returns the state of the Preferences Window Debug Mode
-        /// </summary>
-        public bool PreferencesDebugMode
-        {
-            get
-            {
-                return DebugModes.IsEnabled("DynamoPreferencesMenuDebugMode");
-            }
-        }
-
-        /// <summary>
         /// Returns all installed packages
         /// </summary>
         public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
@@ -906,7 +895,7 @@ namespace Dynamo.ViewModels
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
-            TrustedPathsViewModel = new TrustedPathViewModel();
+            TrustedPathsViewModel = new TrustedPathViewModel(this.preferenceSettings, this.dynamoViewModel?.Model?.Logger);
 
             WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
 

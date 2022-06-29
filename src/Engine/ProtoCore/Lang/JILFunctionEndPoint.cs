@@ -94,8 +94,6 @@ namespace ProtoCore.Lang
 
                 StackFrameType callerType = stackFrame.CallerStackFrameType;
 
-                List<StackValue> registers = new List<DSASM.StackValue>();
-
                 StackValue svCallConvention;
                 bool isDispose = CoreUtils.IsDisposeMethod(procedureNode.Name);
 
@@ -118,7 +116,7 @@ namespace ProtoCore.Lang
                 // TODO Jun:
                 // The stackframe carries the current set of registers
                 // Determine if this can be done even for the non explicit call implementation
-                registers.AddRange(stackFrame.GetRegisters());
+                var registers = stackFrame.GetRegisters();
 
 
                 // Comment Jun: the depth is always 0 for a function call as we are reseting this for each function call

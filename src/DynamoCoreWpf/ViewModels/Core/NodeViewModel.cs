@@ -1178,7 +1178,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// A single method that handles all color-related overrides
         /// The following events trigger color update:
-        /// Error, Warning, Frozen, PreviewOff, Info TODO(still don't know what that is)
+        /// Error, Warning, Frozen, PreviewOff, Info 
         /// </summary>
         private void HandleColorOverlayChange()
         {
@@ -1199,7 +1199,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void BuildErrorBubble()
         {
-            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(DynamoViewModel)
+            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(this)
             {
                 IsCollapsed = this.IsCollapsed
             };
@@ -1971,12 +1971,12 @@ namespace Dynamo.ViewModels
         }
         
         #region Private Helper Methods
-        private Point GetTopLeft()
+        internal Point GetTopLeft()
         {
             return new Point(NodeModel.X, NodeModel.Y);
         }
 
-        private Point GetBotRight()
+        internal Point GetBotRight()
         {
             return new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
         }
