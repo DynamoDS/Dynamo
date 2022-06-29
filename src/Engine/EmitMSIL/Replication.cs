@@ -21,10 +21,9 @@ namespace EmitMSIL
         /// <param name="args"></param>
         /// <param name="replicationAttrs"></param>
         /// <returns></returns>
-        public static IList ReplicationLogic(MethodBase mi, IList args, string[][] replicationAttrs)
+        public static IList ReplicationLogic(IEnumerable<MethodBase> mInfos, IList args, string[][] replicationAttrs)
         {
             var reducedArgs = ReduceArgs(args);
-
 
             // Construct replicationGuides from replicationAttrs
             var replicationGuides = ConstructRepGuides(replicationAttrs);
@@ -37,6 +36,7 @@ namespace EmitMSIL
             //Turn the replication guides into a guide -> List args data structure
             var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
+            var mi = mInfos.FirstOrDefault();
             // Testing invoking method without replication
             object result;
             if (mi.IsStatic)

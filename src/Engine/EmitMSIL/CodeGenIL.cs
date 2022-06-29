@@ -22,7 +22,7 @@ namespace EmitMSIL
         private int localVarIndex = -1;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
         private StreamWriter writer;
-        private Dictionary<int, MethodBase> methodCache = new Dictionary<int, MethodBase>();
+        private Dictionary<int, IEnumerable<MethodBase>> methodCache = new Dictionary<int, IEnumerable<MethodBase>>();
         private CompilePass compilePass;
 
         private enum CompilePass
@@ -66,7 +66,7 @@ namespace EmitMSIL
             // 4. Create method ("Execute"), get ILGenerator 
             var execMethod = BuilderHelper.CreateMethod(type, "Execute",
                 System.Reflection.MethodAttributes.Static, typeof(void), new[] { typeof(IDictionary<string, IList>),
-                typeof(IDictionary<int, MethodBase>), typeof(IDictionary<string, IList>)});
+                typeof(IDictionary<int, IEnumerable<MethodBase>>), typeof(IDictionary<string, IList>)});
             ilGen = execMethod.GetILGenerator();
 
             compilePass = CompilePass.GlobalFuncBody;
@@ -88,13 +88,13 @@ namespace EmitMSIL
             asm.Save("DynamicAssembly.dll");
         }
 
-        private MethodBase FunctionLookup(IList args)
+        private IEnumerable<MethodBase> FunctionLookup(IList args)
         {
-            MethodInfo mi = null;
+            IEnumerable<MethodBase> mi = null;
             var key = KeyGen(className, methodName, args.Count);
-            if (methodCache.TryGetValue(key, out MethodBase mBase))
+            if (methodCache.TryGetValue(key, out IEnumerable<MethodBase> mBase))
             {
-                mi = mBase as MethodInfo;
+                mi = mBase;
             }
             else
             {
@@ -109,13 +109,13 @@ namespace EmitMSIL
                     // using its function descriptor. AST isn't sufficient for parameter type info.
                     // Fist check for static methods
                     mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
-                        m => m.Name == methodName && m.GetParameters().Length == args.Count).FirstOrDefault();
+                        m => m.Name == methodName && m.GetParameters().Length == args.Count);
 
                     // Check for instance methods
                     if (mi == null)
                     {
                         mi = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
-                            m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).FirstOrDefault();
+                            m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count);
                     }
 
                     // Check for property getters
@@ -126,7 +126,7 @@ namespace EmitMSIL
 
                         if (prop != null)
                         {
-                            mi = prop.GetAccessors().FirstOrDefault();
+                            mi = prop.GetAccessors();
                         }
                     }
 

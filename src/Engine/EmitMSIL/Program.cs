@@ -32,7 +32,7 @@ namespace EmitMSIL
             input.Add("z", new[] { 453 });
 
             Dictionary<string, IList> output = new Dictionary<string, IList>();
-            var methodCache = new Dictionary<int, MethodBase>();
+            var methodCache = new Dictionary<int, IEnumerable<MethodBase>>();
             ExecuteIL.Execute(input, methodCache, output);
         }
     }
