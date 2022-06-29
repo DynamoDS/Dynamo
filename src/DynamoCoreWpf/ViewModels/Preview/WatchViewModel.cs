@@ -255,7 +255,7 @@ namespace Dynamo.ViewModels
                 case TypeCode.Boolean:
                     return ObjectToLabelString(obj);
                 case TypeCode.Double:
-                    return ((double)obj).ToString(numberFormat, CultureInfo.InvariantCulture);
+                    return ((double)obj).ToString(ProtoCore.Mirror.MirrorData.PrecisionFormat, CultureInfo.InvariantCulture);
                 case TypeCode.Int32:
                     return ((int)obj).ToString(CultureInfo.InvariantCulture);
                 case TypeCode.Int64:
