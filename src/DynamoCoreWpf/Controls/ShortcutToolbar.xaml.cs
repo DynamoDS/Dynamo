@@ -54,8 +54,8 @@ namespace Dynamo.UI.Controls
             notificationUIPopup.IsOpen = false;
             notificationUIPopup.PlacementTarget = notificationsButton;
             notificationUIPopup.Placement = PlacementMode.Bottom;
-            notificationUIPopup.HorizontalOffset = -300;
-            notificationUIPopup.VerticalOffset= 30;
+            notificationUIPopup.HorizontalOffset = -285;
+            notificationUIPopup.VerticalOffset= 10;
 
             notificationUIPopup.UpdatePopupLocation();
 

@@ -18,8 +18,7 @@ namespace Dynamo.Wpf.Views.Notifications
     /// </summary>
     public partial class NotificationUI : Popup
     {
-        private NotificationsUIViewModel notificationsUIViewModel;
-        private const int popupBordersOffSet = 10;
+        private NotificationsUIViewModel notificationsUIViewModel;       
 
         public NotificationUI(DynamoView dynamoViewWindow)
         {
@@ -32,12 +31,6 @@ namespace Dynamo.Wpf.Views.Notifications
 
             DataContext = notificationsUIViewModel;
 
-            //Due that we are drawing the Direction pointers on left and right side of the Canvas (10 width each one) then we need to add 20
-            //RootLayout.Width = notificationsUIViewModel.PopupRectangleWidth + (popupBordersOffSet * 2);
-            //////Also a shadow of 10 pixels in top and 10 pixels at the bottom will be shown then we need to add 20
-            //RootLayout.Height = notificationsUIViewModel.PopupRectangleHeight + (popupBordersOffSet * 2);
-
-
             //The BackgroundRectangle represent the tooltip background rectangle that is drawn over a Canvas
             //Needs to be moved 10 pixels over the X axis to show the direction pointers (Height was already increased above)
             //Needs to be moved 10 pixels over the Y axis to show the shadow at top and bottom.
@@ -45,8 +38,8 @@ namespace Dynamo.Wpf.Views.Notifications
 
 
             //The CustomRichTextBox has a margin of 10 in left and 10 in right, also there is a indentation for drawing the PointerDirection of 10 of each side so that's why we are subtracting 40.
-            mainPopupGrid.Width = 200;
-            mainPopupGrid.Height = 200;
+            mainPopupGrid.Width = notificationsUIViewModel.PopupRectangleWidth;
+            mainPopupGrid.Height = notificationsUIViewModel.PopupRectangleHeight;
             mainPopupGrid.Margin = new Thickness(notificationsUIViewModel.PopupBordersOffSet, notificationsUIViewModel.PopupBordersOffSet, 0, 0);
         }
 
