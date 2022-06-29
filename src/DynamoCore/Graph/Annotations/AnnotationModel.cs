@@ -510,7 +510,7 @@ namespace Dynamo.Graph.Annotations
                 }
                 else
                 {
-                    //If the annotation is not expanded, than it will remain the same width of the last time it was expanded
+                    //If the annotation is not expanded, then it will remain the same width of the last time it was expanded
                     Width = lastExpandedWidth;
                 }
 
