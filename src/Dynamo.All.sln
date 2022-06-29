@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.1.32228.430
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32413.511
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -241,9 +241,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyRenamerCLI", "Tools
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyInfoGenerator", "AssemblySharedInfoGenerator\AssemblyInfoGenerator.csproj", "{133FC760-5699-46D9-BEA6-E816B5F01016}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphNodeManagerViewExtension", "GraphNodeManagerViewExtension\GraphNodeManagerViewExtension.csproj", "{1E92CDB0-644C-4EAA-8AB8-EFDD193A0484}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphNodeManagerViewExtension", "GraphNodeManagerViewExtension\GraphNodeManagerViewExtension.csproj", "{1E92CDB0-644C-4EAA-8AB8-EFDD193A0484}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoFeatureFlags", "Tools\DynamoFeatureFlags\DynamoFeatureFlags.csproj", "{94CF053D-BB66-4FC7-883B-48F072701BA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationCenterViewExtension", "NotificationCenterViewExtension\NotificationCenterViewExtension.csproj", "{FFBCF7D2-3E88-438C-A83D-6763E97F30D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -929,6 +931,14 @@ Global
 		{94CF053D-BB66-4FC7-883B-48F072701BA9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{94CF053D-BB66-4FC7-883B-48F072701BA9}.Release|x64.ActiveCfg = Release|Any CPU
 		{94CF053D-BB66-4FC7-883B-48F072701BA9}.Release|x64.Build.0 = Release|Any CPU
+		{FFBCF7D2-3E88-438C-A83D-6763E97F30D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFBCF7D2-3E88-438C-A83D-6763E97F30D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFBCF7D2-3E88-438C-A83D-6763E97F30D0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FFBCF7D2-3E88-438C-A83D-6763E97F30D0}.Debug|x64.Build.0 = Debug|Any CPU
+		{FFBCF7D2-3E88-438C-A83D-6763E97F30D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFBCF7D2-3E88-438C-A83D-6763E97F30D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFBCF7D2-3E88-438C-A83D-6763E97F30D0}.Release|x64.ActiveCfg = Release|Any CPU
+		{FFBCF7D2-3E88-438C-A83D-6763E97F30D0}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1016,6 +1026,7 @@ Global
 		{F382C3F8-C55C-4350-800A-3D13A94F8E13} = {D114C59C-CF66-4CC2-980F-9301FB4EA4E1}
 		{1E92CDB0-644C-4EAA-8AB8-EFDD193A0484} = {88D45B00-E564-41DB-B57C-9509646CAA49}
 		{94CF053D-BB66-4FC7-883B-48F072701BA9} = {D114C59C-CF66-4CC2-980F-9301FB4EA4E1}
+		{FFBCF7D2-3E88-438C-A83D-6763E97F30D0} = {88D45B00-E564-41DB-B57C-9509646CAA49}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}
