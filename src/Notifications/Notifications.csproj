@@ -10,7 +10,11 @@
     <AssemblyName>Notifications</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="View\NotificationUI.xaml" />
+  </ItemGroup>
+  <ItemGroup>
 	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+	<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1245.22" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
@@ -44,6 +48,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\NotificationUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -55,6 +63,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.en-US.resx</DependentUpon>
+    </Compile>
+    <Compile Update="View\NotificationUI.xaml.cs">
+      <DependentUpon>NotificationUI.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

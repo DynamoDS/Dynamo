@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Dynamo.NotificationCenter.View
+namespace Dynamo.Notifications.View
 {
     /// <summary>
     /// Interaction logic for NotificationUI.xaml

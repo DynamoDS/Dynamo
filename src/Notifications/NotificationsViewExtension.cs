@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
@@ -98,6 +99,16 @@ namespace Dynamo.Notifications
             (notificationsMenuItem.MenuItem.Parent as ContentControl).Content = null;
             //place the menu into the DynamoMenu
             viewStartupParams.dynamoMenu.Items.Add(notificationsMenuItem.MenuItem);
+
+            LoadNotificationCenter();
+        }
+
+        private void LoadNotificationCenter()
+        {
+            var dynamoView = (DynamoView)viewLoadedParams.DynamoWindow;
+            var shortcutBar = dynamoView.ShortcutBar;
+            var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
+            var notificationCenterController = new NotificationCenterController(dynamoView, notificationsButton);
         }
 
         internal void AddNotifications()

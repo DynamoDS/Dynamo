@@ -30,10 +30,10 @@ namespace Dynamo.NotificationCenter
         {
             if (!DynamoModel.IsTestMode)
             {
-                var dynamoView = (DynamoView)viewLoadedParams.DynamoWindow;
-                var shortcutBar = dynamoView.ShortcutBar;
-                var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
-                var notificationCenterController = new NotificationCenterController(dynamoView, notificationsButton);
+                //var dynamoView = (DynamoView)viewLoadedParams.DynamoWindow;
+                //var shortcutBar = dynamoView.ShortcutBar;
+                //var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
+                //var notificationCenterController = new NotificationCenterController(dynamoView, notificationsButton);
             }
         }
 
