@@ -1,12 +1,15 @@
-﻿using Dynamo.Models;
+﻿using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 
-namespace NotificationCenterViewExtension
+namespace Dynamo.NotificationCenter
 {
     public class ViewExtension : IViewExtension
     {
@@ -27,18 +30,19 @@ namespace NotificationCenterViewExtension
         {
             if (!DynamoModel.IsTestMode)
             {
-
+                var dynamoView = (DynamoView)viewLoadedParams.DynamoWindow;
+                var shortcutBar = dynamoView.ShortcutBar;
+                var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
+                var notificationCenterController = new NotificationCenterController(dynamoView, notificationsButton);
             }
         }
 
         public void Shutdown()
         {
-            throw new NotImplementedException();
         }
 
         public void Startup(ViewStartupParams viewStartupParams)
         {
-            throw new NotImplementedException();
         }
     }
 }

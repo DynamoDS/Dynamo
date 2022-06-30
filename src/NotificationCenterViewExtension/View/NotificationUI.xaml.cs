@@ -1,30 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Threading;
-using Dynamo.Controls;
-using Dynamo.Models;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Utilities;
-using Dynamo.Wpf.ViewModels;
-using Dynamo.Wpf.ViewModels.Core;
-using Dynamo.Wpf.ViewModels.FileTrust;
-using Dynamo.Wpf.ViewModels.Notifications;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace Dynamo.Wpf.Views.Notifications
+namespace Dynamo.NotificationCenter.View
 {
     /// <summary>
     /// Interaction logic for NotificationUI.xaml
     /// </summary>
     public partial class NotificationUI : Popup
     {
-        private NotificationsUIViewModel notificationsUIViewModel;       
+        private NotificationsUIViewModel notificationsUIViewModel;
 
-        public NotificationUI(DynamoView dynamoViewWindow)
+        public NotificationUI()
         {
             InitializeComponent();
 
-            if(notificationsUIViewModel == null)
+            if (notificationsUIViewModel == null)
             {
                 notificationsUIViewModel = new NotificationsUIViewModel();
             }

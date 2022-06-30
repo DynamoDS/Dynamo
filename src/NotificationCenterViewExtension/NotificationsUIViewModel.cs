@@ -2,7 +2,7 @@
 using System.Windows.Media;
 using Dynamo.ViewModels;
 
-namespace Dynamo.Wpf.ViewModels.Notifications
+namespace Dynamo.NotificationCenter
 {
     class NotificationsUIViewModel : ViewModelBase
     {

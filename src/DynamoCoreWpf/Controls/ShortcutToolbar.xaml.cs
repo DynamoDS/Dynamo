@@ -10,7 +10,6 @@ using Dynamo.Controls;
 using Dynamo.UI.Commands;
 using Dynamo.Updates;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Views.Notifications;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UI.Controls
@@ -22,8 +21,6 @@ namespace Dynamo.UI.Controls
     {
         private readonly ObservableCollection<ShortcutBarItem> shortcutBarItems;
         private readonly ObservableCollection<ShortcutBarItem> shortcutBarRightSideItems;
-
-        private NotificationUI notificationUIPopup;
 
         /// <summary>
         /// A collection of <see cref="ShortcutBarItem"/>.
@@ -50,35 +47,9 @@ namespace Dynamo.UI.Controls
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
             shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();
 
-            notificationUIPopup = new NotificationUI(null);
-            notificationUIPopup.IsOpen = false;
-            notificationUIPopup.PlacementTarget = notificationsButton;
-            notificationUIPopup.Placement = PlacementMode.Bottom;
-            notificationUIPopup.HorizontalOffset = -285;
-            notificationUIPopup.VerticalOffset= 10;
-
-            notificationUIPopup.UpdatePopupLocation();
-
             InitializeComponent();
 
             UpdateControl.DataContext = updateManager;
-
-            dynamoView.SizeChanged += DynamoView_SizeChanged;
-            dynamoView.LocationChanged += DynamoView_LocationChanged;
-        }
-
-        private void DynamoView_LocationChanged(object sender, EventArgs e)
-        {
-            notificationUIPopup.PlacementTarget = notificationsButton;
-            notificationUIPopup.Placement = PlacementMode.Bottom;
-            notificationUIPopup.UpdatePopupLocation();
-        }
-
-        private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            notificationUIPopup.PlacementTarget = notificationsButton;
-            notificationUIPopup.Placement = PlacementMode.Bottom;
-            notificationUIPopup.UpdatePopupLocation();
         }
 
         private void exportMenu_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -95,7 +66,7 @@ namespace Dynamo.UI.Controls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            notificationUIPopup.IsOpen = !notificationUIPopup.IsOpen;
+            //notificationUIPopup.IsOpen = !notificationUIPopup.IsOpen;
         }
     }
 
