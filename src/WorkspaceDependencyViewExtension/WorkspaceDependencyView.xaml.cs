@@ -100,7 +100,7 @@ namespace Dynamo.WorkspaceDependency
                 {
                     currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
                 }
-                DependencyRegen(obj as WorkspaceModel);
+                DependencyRegen(obj as WorkspaceModel, true);
                 // Update current workspace
                 currentWorkspace = obj as WorkspaceModel;
                 currentWorkspace.Saved += TriggerDependencyRegen;
@@ -131,9 +131,12 @@ namespace Dynamo.WorkspaceDependency
         /// Regenerate dependency table
         /// </summary>
         /// <param name="ws">workspace model</param>
-        internal void DependencyRegen(WorkspaceModel ws)
+        /// <param name="forceCompute">flag indicating if the workspace references should be computed</param>
+        internal void DependencyRegen(WorkspaceModel ws, bool forceCompute = false)
         {
             RestartBanner.Visibility = Visibility.Hidden;
+            ws.ForceComputeWorkspaceReferences = forceCompute;
+
             var packageDependencies = ws.NodeLibraryDependencies.Where(d => d is PackageDependencyInfo).ToList();
             var localDefinitions = ws.NodeLocalDefinitions.Where(d => d is DependencyInfo).ToList();
             var externalFiles = ws.ExternalFiles.Where(d => d is DependencyInfo).ToList();
@@ -213,6 +216,7 @@ namespace Dynamo.WorkspaceDependency
             LocalDefinitions.IsExpanded = localDefinitionDataRows.Count() > 0;
             ExternalFiles.IsExpanded = externalFilesDataRows.Count() > 0;
 
+            ws.ForceComputeWorkspaceReferences = false;
 
             PackageDependencyTable.ItemsSource = dataRows;
             LocalDefinitionsTable.ItemsSource = localDefinitionDataRows;
@@ -220,7 +224,7 @@ namespace Dynamo.WorkspaceDependency
         }
 
         /// <summary>
-        /// Calls the DependencyRegen function when the DummyNodesReloaded event is triggered from the dynamo model.
+        /// Calls the DependencyRegen function when workspace is saved or when DummyNodesReloaded event is fired
         /// </summary>
         internal void TriggerDependencyRegen()
         {
@@ -283,7 +287,6 @@ namespace Dynamo.WorkspaceDependency
         internal void DownloadSpecifiedPackageAndRefresh(PackageDependencyInfo info)
         {
             packageInstaller.DownloadAndInstallPackage(info);
-            DependencyRegen(currentWorkspace);
         }
 
         /// <summary>
