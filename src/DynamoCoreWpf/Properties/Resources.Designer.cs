@@ -5178,7 +5178,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Node and Package Paths.
+        ///   Looks up a localized string similar to Node and Package File Locations.
         /// </summary>
         public static string PackagePathsExpanderName {
             get {
@@ -6284,7 +6284,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New Package Download Directory.
+        ///   Looks up a localized string similar to New Package Download Path.
         /// </summary>
         public static string PreferencesViewPackageDownloadDirectory {
             get {
@@ -7864,7 +7864,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Trusted location.
+        ///   Looks up a localized string similar to Trusted File Locations.
         /// </summary>
         public static string TrustedPathsExpanderName {
             get {
