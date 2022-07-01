@@ -224,11 +224,19 @@ namespace Dynamo.WorkspaceDependency
         }
 
         /// <summary>
-        /// Calls the DependencyRegen function when workspace is saved or when DummyNodesReloaded event is fired
+        /// Calls DependencyRegen when workspace is saved
         /// </summary>
         internal void TriggerDependencyRegen()
         {
             DependencyRegen(currentWorkspace);
+        }
+
+        /// <summary>
+        /// Calls DependencyRegen with forceCompute as true, as dummy nodes are reloaded.
+        /// </summary>
+        internal void ForceTriggerDependencyRegen()
+        {
+            DependencyRegen(currentWorkspace, true);
         }
 
         /// <summary>
@@ -240,7 +248,7 @@ namespace Dynamo.WorkspaceDependency
             InitializeComponent();
             this.DataContext = this;
             currentWorkspace = p.CurrentWorkspaceModel as WorkspaceModel;
-            WorkspaceModel.DummyNodesReloaded += TriggerDependencyRegen;
+            WorkspaceModel.DummyNodesReloaded += ForceTriggerDependencyRegen;
             currentWorkspace.Saved += TriggerDependencyRegen;
             p.CurrentWorkspaceChanged += OnWorkspaceChanged;
             p.CurrentWorkspaceCleared += OnWorkspaceCleared;
@@ -340,7 +348,7 @@ namespace Dynamo.WorkspaceDependency
             loadedParams.CurrentWorkspaceChanged -= OnWorkspaceChanged;
             loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
             currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
-            WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
+            WorkspaceModel.DummyNodesReloaded -= ForceTriggerDependencyRegen;
             currentWorkspace.Saved -= TriggerDependencyRegen;
             HomeWorkspaceModel.WorkspaceClosed -= this.CloseExtensionTab;
             PackageDependencyTable.ItemsSource = null;
@@ -354,6 +362,11 @@ namespace Dynamo.WorkspaceDependency
         private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             DependencyRegen(currentWorkspace);
+        }
+
+        private void ForceRefresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            DependencyRegen(currentWorkspace, true);
         }
     }
 
