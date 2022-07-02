@@ -935,6 +935,9 @@ namespace Dynamo.Graph.Workspaces
             return externalFiles.Values.ToList<INodeLibraryDependencyInfo>();
         }
 
+        /// <summary>
+        /// This flag will indicate if the workspace references should be computed again.
+        /// </summary>
         internal bool ForceComputeWorkspaceReferences
         {
             get { return forceComputeWorkspaceReferences; }
