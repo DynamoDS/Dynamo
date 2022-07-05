@@ -46,7 +46,7 @@ namespace DynamoUtilities
         }
 
         private readonly IList<T> innerList;
-        private readonly DynamoLock _lock = new DynamoLock();
+        private readonly DynamoLock _lock = new DynamoLock(allowRecursiveLock: true);
 
         internal ThreadSafeList()
         {
@@ -75,9 +75,9 @@ namespace DynamoUtilities
 
             set
             {
-                _lock.LockForRead();
+                _lock.LockForWrite();
                 innerList[index] = value;
-                _lock.UnlockForRead();
+                _lock.LockForWrite();
             }
         }
 
