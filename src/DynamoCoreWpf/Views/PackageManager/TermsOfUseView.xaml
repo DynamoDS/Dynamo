@@ -33,13 +33,7 @@
     </Window.Resources>
 
     <Grid Background="Transparent" MouseDown="UIElement_OnMouseDown">
-        <Border Name="MainBorder"
-                Background="White"
-                CornerRadius="4 "
-                BorderThickness="4">
-            <Border.Effect>
-                <DropShadowEffect Color="#000" ShadowDepth="0" Opacity="0.25" BlurRadius="10.0" />
-            </Border.Effect>
+        <Border Name="MainBorder" Style="{StaticResource NoStyleWindowBorderStyle}">
 
             <Grid Margin="0">
 
@@ -97,11 +91,7 @@
                                TextWrapping="Wrap" />
                 </DockPanel>
 
-                <Rectangle Grid.Row="0"
-                           Height="1px"
-                           Margin="0 20 0 15"
-                           VerticalAlignment="Bottom"
-                           Fill="#B7B7B7" />
+                <Rectangle Style="{StaticResource DividerRectangleStyle}" Grid.Row="0" />
 
                 <Grid Grid.Row="1" 
                       Margin="0 10 0 25">
@@ -125,16 +115,13 @@
                     </ScrollViewer>
                 </Grid>
 
-                <Rectangle Grid.Row="1"
-                           Height="1px"
-                           VerticalAlignment="Bottom"
-                           Fill="#B7B7B7" />
+                <Rectangle Style="{StaticResource DividerRectangleStyle}" Grid.Row="1" Margin="0 20 0 0"/>
                 
                 <StackPanel Orientation="Horizontal"
-                    FlowDirection="RightToLeft"
-                    Name="ButtonsStackPanel"
-                    Margin="18"
-                    Grid.Row="2">
+                            FlowDirection="RightToLeft"
+                            Name="ButtonsStackPanel"
+                            Margin="18"
+                            Grid.Row="2">
                     <Button Name="AcceptTermsOfUseButton"
                         Click="AcceptTermsOfUseButton_OnClick"
                         Margin="3"
@@ -154,6 +141,7 @@
                         Foreground="Black"
                         Style="{StaticResource CtaButtonStyle}"/>
                 </StackPanel>
+
             </Grid>
         </Border>
     </Grid>

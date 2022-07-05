@@ -115,18 +115,6 @@
                            Margin="0,0,20,20"
                            LastChildFill="False">
                     
-                    <Button Name="CancelButton"
-                            MinWidth="90"
-                            Margin="0"
-                            Background="White"
-                            BorderBrush="#BFBFBF"
-                            Click="CancelButton_OnClick"
-                            Content="{x:Static p:Resources.GenericTaskDialogOptionCancel}"
-                            DockPanel.Dock="Right"
-                            Foreground="Black"
-                            Style="{StaticResource CtaButtonStyle}"
-                            Visibility="Collapsed" />
-
                     <Button Name="NoButton"
                             MinWidth="90"
                             Margin="0"
@@ -162,6 +150,18 @@
                             Foreground="White"
                             Style="{StaticResource CtaButtonStyle}"
                             Visibility="Collapsed" />
+
+                    <Button Name="CancelButton"
+                            MinWidth="90"
+                            Margin="0"
+                            Background="White"
+                            BorderBrush="#BFBFBF"
+                            Click="CancelButton_OnClick"
+                            Content="{x:Static p:Resources.GenericTaskDialogOptionCancel}"
+                            DockPanel.Dock="Right"
+                            Foreground="Black"
+                            Style="{StaticResource CtaButtonStyle}"
+                            Visibility="Collapsed" />
                 </DockPanel>
             </Grid>
         </Border>
@@ -170,6 +170,7 @@
         <Border Name="downloadStatusFlag"
                 Width="4"
                 HorizontalAlignment="Left"
+                Margin="0 4"
                 CornerRadius="4,0,0,4">
             <Border.Style>
                 <Style TargetType="Border">
