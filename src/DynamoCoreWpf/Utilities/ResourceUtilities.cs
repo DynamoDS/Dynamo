@@ -264,7 +264,7 @@ namespace Dynamo.Utilities
         }
 
 
-        internal static string ConvertToBase64(Stream stream)
+        public static string ConvertToBase64(Stream stream)
         {
             byte[] bytes;
             using (var memoryStream = new MemoryStream())

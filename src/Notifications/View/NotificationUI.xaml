@@ -72,7 +72,7 @@
 
         <Grid  x:Name="mainPopupGrid" Background="White"                
                Width="{Binding PopupRectangleWidth}">
-            <wv2:WebView2 Name="webView"  Source="http://localhost:3000/"></wv2:WebView2>
+            <wv2:WebView2 Name="webView" ></wv2:WebView2>
         </Grid>
     </Canvas>
 </Popup>

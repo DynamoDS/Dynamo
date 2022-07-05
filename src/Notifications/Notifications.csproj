@@ -11,10 +11,19 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="View\NotificationUI.xaml" />
+    <None Remove="Web\ArtifaktElement-Regular.woff" />
+    <None Remove="Web\index.bundle.js" />
+    <None Remove="Web\index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Web\ArtifaktElement-Regular.woff" />
+    <EmbeddedResource Include="Web\index.bundle.js" />
+    <EmbeddedResource Include="Web\index.html" />
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
 	<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1245.22" />
+	<PackageReference Include="WebView2.Runtime.X64" Version="103.0.1264.37" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
