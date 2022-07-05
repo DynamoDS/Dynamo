@@ -842,15 +842,24 @@ namespace Dynamo.Tests
         {
             ThreadSafeList<int> tsList = new ThreadSafeList<int>() { 1, 2, 3, 4, 5 };
 
+            Exception iteratorException = null;
             var th1 = new System.Threading.Thread(new System.Threading.ThreadStart(() =>
             {
-                tsList.FirstOrDefault(x =>
+                try
                 {
-                    System.Threading.Thread.Sleep(3000);
-                    return x == 3;
-                });
+                    foreach (var item in tsList)
+                    {
+                        // Test nested read lock.
+                        Assert.AreEqual(5, tsList.Count);
+                        Thread.Sleep(3000);
+                    }
+                }
+                catch(Exception e) { iteratorException = e; }
             }));
+
             th1.Start();
+
+            System.Threading.Thread.Sleep(50);
             System.Threading.Thread.Sleep(50);
 
             Assert.AreEqual(5, tsList.Count);
@@ -859,20 +868,28 @@ namespace Dynamo.Tests
             Assert.AreEqual(System.Threading.ThreadState.WaitSleepJoin, th1.ThreadState);
             tsList.Add(6);
             Assert.AreEqual(System.Threading.ThreadState.Stopped, th1.ThreadState);
+
+            th1.Join();
+
+            Assert.IsNull(iteratorException, $"Exception thrown in iterator thread {iteratorException}");
         }
 
         void testAsICollection(ICollection<int> list)
         {
+            Exception iteratorException = null;
             var th = new Thread(new ThreadStart(() =>
             {
-                list.FirstOrDefault(x =>
+                try
                 {
-
-                    Thread.Sleep(1000);
-                    return x == 1;
-                });
-
-                Assert.AreEqual(5, list.Count);
+                    list.FirstOrDefault(x =>
+                    {
+                        Thread.Sleep(1000);
+                        Assert.AreEqual(5, list.Count);
+                        return x == 1;
+                    });
+                }
+                catch (Exception e) { iteratorException = e; }
+                
             }));
 
             th.Start();
@@ -887,21 +904,25 @@ namespace Dynamo.Tests
 
             th.Join();
 
+            Assert.IsNull(iteratorException, $"Exception thrown in iterator thread {iteratorException}");
             Assert.AreEqual(6, list.Count);
         }
 
         void testAsCollection(Collection<int> list)
         {
+            Exception iteratorException = null;
             var th = new Thread(new ThreadStart(() =>
             {
-                list.FirstOrDefault(x =>
+                try
                 {
-
-                    Thread.Sleep(1000);
-                    return x == 1;
-                });
-
-                Assert.AreEqual(5, list.Count);
+                    list.FirstOrDefault(x =>
+                    {
+                        Thread.Sleep(1000);
+                        Assert.AreEqual(5, list.Count);
+                        return x == 1;
+                    });
+                }
+                catch (Exception e) { iteratorException = e; }
             }));
 
             th.Start();
@@ -916,15 +937,25 @@ namespace Dynamo.Tests
 
             th.Join();
 
+            Assert.IsNull(iteratorException, $"Exception thrown in iterator thread {iteratorException}");
             Assert.AreEqual(6, list.Count);
         }
 
         void testAsIList(IList<int> list)
         {
+            Exception iteratorException = null;
             var th = new Thread(new ThreadStart(() =>
             {
-                list.Where(x => { Thread.Sleep(1000); return x == 1; }).FirstOrDefault();
-                Assert.AreEqual(6, list.Count);
+                try
+                {
+                    list.Where(x => 
+                    { 
+                        Thread.Sleep(1000);
+                        Assert.AreEqual(6, list.Count);
+                        return x == 1; 
+                    }).FirstOrDefault();
+                }
+                catch (Exception e) { iteratorException = e; }
             }));
 
             th.Start();
@@ -938,22 +969,29 @@ namespace Dynamo.Tests
             list.Remove(6);
 
             th.Join();
+
+            Assert.IsNull(iteratorException, $"Exception thrown in iterator thread {iteratorException}");
             Assert.AreEqual(5, list.Count);
         }
 
         void testAsObservable(ObservableCollection<int> list)
         {
+            Exception iteratorException = null;
             // Use isInIteration to make sure we are still iterating when
             // the main thread calls list.Clear()
             int isInIteration = 0;
             var th = new Thread(new ThreadStart(() =>
             {
-                foreach (var item in list)
+                try
                 {
-                    Interlocked.Increment(ref isInIteration);
-                    Thread.Sleep(1000);
+                    foreach (var item in list)
+                    {
+                        Interlocked.Increment(ref isInIteration);
+                        Thread.Sleep(1000);
+                        Assert.AreEqual(6, list.Count);
+                    }
                 }
-                Assert.AreEqual(5, list.Count);
+                catch (Exception e) { iteratorException = e; }
             }));
 
             th.Start();
@@ -967,17 +1005,29 @@ namespace Dynamo.Tests
 
             th.Join();
 
+            Assert.IsNull(iteratorException, $"Exception thrown in iterator thread {iteratorException}");
             Assert.AreEqual(0, list.Count);
         }
 
         void testAsSmartObservable(SmartObservableCollection<int> list)
         {
+            Exception iteratorException = null;
             list.AddRange(new List<int> { 1, 2 });
 
             var th = new Thread(new ThreadStart(() =>
             {
-                list.Select(x => { Thread.Sleep(1000); return x == 1; });
-                Assert.AreEqual(2, list.Count);
+                try
+                {
+                    list.Select(x => 
+                    {
+                        Thread.Sleep(1000); 
+                        Assert.AreEqual(2, list.Count);
+                        return x == 1; 
+                    }).FirstOrDefault();
+                }
+                catch (Exception e) { iteratorException = e; }
+
+               
             }));
 
             th.Start();
@@ -992,6 +1042,7 @@ namespace Dynamo.Tests
 
             th.Join();
 
+            Assert.IsNull(iteratorException, $"Exception thrown in iterator thread {iteratorException}");
             Assert.AreEqual(4, list.Count);
         }
 
