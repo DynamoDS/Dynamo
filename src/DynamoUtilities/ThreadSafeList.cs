@@ -77,7 +77,7 @@ namespace DynamoUtilities
             {
                 _lock.LockForWrite();
                 innerList[index] = value;
-                _lock.LockForWrite();
+                _lock.UnlockForWrite();
             }
         }
 
