@@ -13,8 +13,6 @@ namespace Dynamo.Tests
     [TestFixture, Category("Performance")]
     public class PerformanceTests : DynamoModelTestBase
     {
-        private TimeSpan lastExecutionDuration = new TimeSpan();
-
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");
@@ -31,23 +29,6 @@ namespace Dynamo.Tests
             return fis.Select(fi => fi.FullName).ToArray();
         }
 
-        [TestFixtureSetUp]
-        public void FixtureSetup()
-        {
-            ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
-        }
-
-        [TestFixtureTearDown]
-        public void TearDown()
-        {
-            ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
-        }
-
-        private void ExecutionEvents_GraphPostExecution(Session.IExecutionSession session)
-        {
-            lastExecutionDuration = (TimeSpan)session.GetParameterValue(Session.ParameterKeys.LastExecutionDuration);
-        }
-
         [Test, TestCaseSource("FindWorkspaces"), Category("Performance")]
         public void PerformanceTest(string filePath)
         {
@@ -62,11 +43,9 @@ namespace Dynamo.Tests
             var ws1 = model.CurrentWorkspace;
             ws1.Description = "TestDescription";
 
-            var dummyNodes = ws1.Nodes.Where(n => n is DummyNode);
-            if (dummyNodes.Any())
-            {
-                Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.Name).ToArray()));
-            }
+            Assert.NotNull(ws1);
+
+            CheckForDummyNodes(ws1);
 
             var cbnErrorNodes = ws1.Nodes.Where(n => n is CodeBlockNodeModel && n.State == ElementState.Error);
             if (cbnErrorNodes.Any())
@@ -85,7 +64,7 @@ namespace Dynamo.Tests
             // The big hammer, maybe not needed
             Cleanup();
 
-            // TODO, Switch to the new VM
+            // TODO, Switch to the new Engine
 
             Setup();
 
@@ -101,15 +80,19 @@ namespace Dynamo.Tests
 
             Assert.NotNull(ws2);
 
-            dummyNodes = ws2.Nodes.Where(n => n is DummyNode);
-            if (dummyNodes.Any())
-            {
-                Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.Name).ToArray()));
-            }
+            CheckForDummyNodes(ws2);
 
             var wcd2 = new serializationTestUtils.WorkspaceComparisonData(ws2, CurrentDynamoModel.EngineController);
 
             serializationTestUtils.CompareWorkspaceModels(wcd1, wcd2, null);
+        }
+        private void CheckForDummyNodes(WorkspaceModel ws)
+        {
+            var dummyNodes = ws.Nodes.Where(n => n is DummyNode);
+            if (dummyNodes.Any())
+            {
+                Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.Name).ToArray()));
+            }
         }
     }
 }
