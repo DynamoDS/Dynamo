@@ -87,7 +87,7 @@ namespace Dynamo.WorkspaceDependency
 
             pmExtension.PackageLoader.PackgeLoaded += (package) =>
             {
-                DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
+                DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel, true);
             };
 
             // Adding a button in view menu to refresh and show manually
@@ -97,7 +97,7 @@ namespace Dynamo.WorkspaceDependency
                 if (workspaceReferencesMenuItem.IsChecked)
                 {
                     // Refresh dependency data
-                    DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
+                    DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel, true);
                     viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
                     workspaceReferencesMenuItem.IsChecked = true;
                 }
