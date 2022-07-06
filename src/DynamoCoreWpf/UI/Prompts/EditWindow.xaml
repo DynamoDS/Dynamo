@@ -28,7 +28,7 @@
 
 
     <Grid Background="Transparent" MouseDown="UIElement_OnMouseDown">
-        <Border Name="MainBorder" Style="{StaticResource NoStyleWindowBorderStyle}">
+        <Border Name="MainBorder" Style="{StaticResource NoStyleWindowBorderStyle}" Background="#535353">
 
             <Grid Margin="0">
 
@@ -40,7 +40,7 @@
 
                 <!--  Title Bar + Close Button  -->
                 <DockPanel Grid.Row="0"
-                           Margin="18 20 18 35"
+                           Margin="18 15 18 30"
                            HorizontalAlignment="Stretch">
                     <Image Name="MessageBoxImageIcon"
                            Width="24"
@@ -80,7 +80,7 @@
                                DockPanel.Dock="Left"
                                FontFamily="{StaticResource ArtifaktElementRegular}"
                                FontSize="20px"
-                               Foreground="#3C3C3C"
+                               Foreground="{StaticResource DarkThemeBodyMediumBrush}"
                                Text="{x:Static p:Resources.EditNodeWindowTitle}" 
                                TextWrapping="Wrap" />
                 </DockPanel>
@@ -88,28 +88,20 @@
                 <Rectangle Style="{StaticResource DividerRectangleStyle}" Grid.Row="0" />
 
                 <TextBox 
-                        Grid.Row="1"
                         PreviewKeyDown="OnEditWindowPreviewKeyDown"
-                        Margin="13 10"
                         x:FieldModifier="private" 
+                        Grid.Row="1"
+                        Margin="20 0 20 15" 
                         HorizontalAlignment="Stretch" 
                         Name="editText" 
-                        Padding="10"
-                        FontSize="20"
-                        MinLines="2"
-                        Background="{StaticResource PrimaryCharcoal100Brush}"
-                        VerticalAlignment="Stretch" 
-                        BorderThickness="0"
-                        AcceptsReturn="True"
-                        HorizontalScrollBarVisibility="Disabled"
-                        VerticalScrollBarVisibility="Auto"
-                        TextWrapping="Wrap"
-                        AcceptsTab="True"/>
+                        IsHitTestVisible="True"
+                        Style="{StaticResource HintingInputStyle}"/>
+
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" FlowDirection="RightToLeft">
                     <Button 
                         Content="{x:Static p:Resources.EditWindowAcceptButton}" 
-                        Margin="10"
+                        Margin="18 10 18 15"
                         MinWidth="90"
                         BorderBrush="#0696D7"
                         Foreground="White"

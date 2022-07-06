@@ -59,6 +59,12 @@
     <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
     <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
 
+    <Color x:Key="DarkThemeBodyMediumColor">#F5F5F5</Color>
+    <Color x:Key="DarkThemeInputBoxBackgroundColor">#353535</Color>
+
+    <SolidColorBrush x:Key="DarkThemeBodyMediumBrush" Color="{DynamicResource DarkThemeBodyMediumColor}" />
+    <SolidColorBrush x:Key="DarkThemeInputBoxBackgroundBrush" Color="{DynamicResource DarkThemeInputBoxBackgroundColor}" />
+
     <clr:Double x:Key="NodeNameHeight">53</clr:Double>
 
 
@@ -5013,7 +5019,7 @@
     <!-- UI No Style Window Border Style -->
     <Style x:Key="NoStyleWindowBorderStyle" TargetType="{x:Type Border}">
         <Setter Property="Background" Value="White"/>
-        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="BorderThickness" Value="4"/>
         <Setter Property="Effect">
             <Setter.Value>
@@ -5030,5 +5036,154 @@
         <Setter Property="Fill" Value="#B7B7B7"/>
         <Setter Property="UseLayoutRounding" Value="True"/>
     </Style>
-</ResourceDictionary>
 
+    <!-- The default style for a TextBox in the Dark Theme -->
+    <Style x:Key="InputBoxDarkThemeStyle" TargetType="{x:Type TextBox}">
+        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+        <Setter Property="Foreground" Value="{StaticResource DarkThemeBodyMediumBrush}"/>
+        <Setter Property="Background" Value="{StaticResource DarkThemeInputBoxBackgroundBrush}"/>
+        <Setter Property="UseLayoutRounding" Value="True"/>
+        <Setter Property="FontSize" Value="12px"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="MinLines" Value="2"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="AcceptsReturn" Value="True"/>
+        <Setter Property="AcceptsTab" Value="True"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+    </Style>
+
+    <!-- Colors -->
+    <Color x:Key="MidGray">#999999</Color>
+    <Color x:Key="LightGray">#CCCCCC</Color>
+    <Color x:Key="Blue">#38abdf</Color>
+    <Color x:Key="MidLightBlue">#366a81</Color>
+    <Color x:Key="MidBlue">#365868</Color>
+    <Color x:Key="MidDarkBlue">#375f71</Color>
+    <Color x:Key="TextColor">#F5F5F5</Color>
+    <Color x:Key="GrayOpacity">#5C5C5C5C</Color>
+
+    <!--  Brushes  -->
+    <SolidColorBrush x:Key="MidGrayBrush" Color="{StaticResource MidGray}" />
+    <SolidColorBrush x:Key="LightGrayBrush" Color="{StaticResource LightGray}" />
+    <SolidColorBrush x:Key="BlueBrush" Color="{StaticResource Blue}" />
+    <SolidColorBrush x:Key="MidLightBlueBrush" Color="{StaticResource MidLightBlue}" />
+    <SolidColorBrush x:Key="MidBlueBrush" Color="{StaticResource MidBlue}" />
+    <SolidColorBrush x:Key="MidDarkBlueBrush" Color="{StaticResource MidDarkBlue}" />
+    <SolidColorBrush x:Key="TextColorBrush" Color="{StaticResource TextColor}" />
+    <SolidColorBrush x:Key="GrayOpacityBrush" Color="{StaticResource GrayOpacity}" />
+
+    <!-- Controls behaviour for mouseover on TextBox -->
+    <Style x:Key="BorderInputBoxDarkThemeStyle" TargetType="Border">
+        <Setter Property="BorderThickness" Value="0 0 0 1"></Setter>
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource MidGrayBrush}"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ElementName=editText, Path=IsMouseOver}" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource LightGrayBrush}"></Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ElementName=editText, Path=IsFocused}" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource BlueBrush}"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Controls behaviour for mouseover on TextBox -->
+    <Style x:Key="RectangleInputBoxDarkThemeStyle" TargetType="Rectangle">
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="Fill" Value="{StaticResource MidDarkBlueBrush}"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ElementName=editText, Path=IsFocused}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard SpeedRatio="2">
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0.75" Duration="0:0:1" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard SpeedRatio="2">
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0" Duration="0:0:1" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="HintingInputStyle" TargetType="TextBox">
+        <Setter Property="Margin" Value="0,0,0,12" />
+        <Setter Property="MinWidth" Value="62px" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Cursor" Value="IBeam" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Grid>
+                        <TextBox x:Name="InputTextBox"
+                                     Padding="8,10"
+                                     Background="#353535"
+                                     BorderThickness="0"
+                                     CaretBrush="{StaticResource Blue300Brush}"
+                                     Focusable="True"
+                                     FontFamily="{StaticResource ArtifaktElementRegular}"
+                                     FontSize="12px"
+                                     Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                     MaxLength="{TemplateBinding MaxLength}"
+                                     Tag="{TemplateBinding Tag}"
+                                     Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
+                                     TextWrapping="Wrap" />
+                        <TextBlock x:Name="WatermarkLabel"
+                                       Padding="10"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="12px"
+                                       Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                       IsHitTestVisible="False"
+                                       Opacity="0.5"
+                                       Text="{TemplateBinding Tag}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=InputTextBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <StackPanel Height="4px" VerticalAlignment="Bottom">
+                            <Rectangle Name="Underline"
+                                           Height="1px"
+                                           Fill="Transparent" />
+                            <Rectangle Name="UnderlineShadow"
+                                           Height="3px"
+                                           Fill="Transparent" />
+                        </StackPanel>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="Underline" Property="Rectangle.Fill" Value="{StaticResource Blue300Brush}" />
+                            <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#497386" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Underline" Property="Rectangle.Fill" Value="#9B9B9B" />
+                            <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#6E6E6E" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="BorderBrush" Value="{StaticResource DarkMidGreyBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>
