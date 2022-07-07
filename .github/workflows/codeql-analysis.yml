@@ -54,7 +54,7 @@ jobs:
     - name: Build Dynamo with MSBuild
       run: |
         echo "***Continue with the build, Good luck developer!***"
-        .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
+        .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln /p:UseSharedCompilation=false
       working-directory: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\
       
     - name: Navigate back to Dynamo directory
