@@ -68,7 +68,7 @@ jobs:
       working-directory: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\
       
     - name: Navigate back to Dynamo directory
-      run:
+      run: |
         cd $Env:GITHUB_WORKSPACE\Dynamo
         cd
         
