@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'cpp', 'csharp', 'python' ]
+        language: ['csharp']
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
@@ -64,9 +64,8 @@ jobs:
     - name: Build Dynamo with MSBuild
       run: |
         echo "***Continue with the build, Good luck developer!***"
-        cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
-           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
-        cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
+        run "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
+        # cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
