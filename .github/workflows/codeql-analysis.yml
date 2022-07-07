@@ -64,7 +64,7 @@ jobs:
     - name: Build Dynamo with MSBuild
       run: |
         echo "***Continue with the build, Good luck developer!***"
-        run "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
+        "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
         # cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
 
     - name: Perform CodeQL Analysis
