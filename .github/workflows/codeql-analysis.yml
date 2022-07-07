@@ -70,7 +70,7 @@ jobs:
     - name: Navigate back to Dynamo directory
       run:
         cd $Env:GITHUB_WORKSPACE\Dynamo
-        echo $PATH
+        cd
         
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
