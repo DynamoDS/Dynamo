@@ -22,6 +22,7 @@ namespace Dynamo.Graph.Annotations
         private const double MinTextHeight = 20.0;
         private const double ExtendSize = 10.0;
         private const double ExtendYHeight = 5.0;
+        private const double NoteYAdjustment = 8.0;
 
         double lastExpandedWidth = 0;
 
@@ -477,15 +478,15 @@ namespace Dynamo.Graph.Annotations
                 var regionX = groupModels.Min(x => x.X) - ExtendSize;
                 //Increase the Y value by 10. This provides the extra space between
                 // a model and textbox. Otherwise there will be some overlap
-                var regionY = groupModels.Min(y => y.Y) -
+                var regionY = groupModels.Min(y => (y as NoteModel) == null ? (y.Y) : (y.Y - NoteYAdjustment)) -
                     ExtendSize - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
 
                 //calculates the distance between the nodes
                 var xDistance = groupModels.Max(x => (x.X + x.Width)) - regionX;
-                var yDistance = groupModels.Max(x => (x.Y + x.Height)) - regionY;
-
+                var yDistance = groupModels.Max(y => (y as NoteModel) == null ? (y.Y + y.Height) : (y.Y + y.Height - NoteYAdjustment)) - regionY;
+                
                 // InitialTop is to store the Y value without the Textblock height
-                this.InitialTop = groupModels.Min(y => y.Y);
+                this.InitialTop = groupModels.Min(y => (y as NoteModel) == null ? (y.Y) : (y.Y - NoteYAdjustment));
 
 
                 var region = new Rect2D
@@ -527,7 +528,7 @@ namespace Dynamo.Graph.Annotations
             else
             {
                 this.Width = 0;
-                this.height = 0;               
+                this.Height = 0;               
             }
         }
 

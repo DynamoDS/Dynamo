@@ -387,7 +387,7 @@
                         <DataGridTemplateColumn.Header>
                             <fa:ImageAwesome Name="RefreshExternalReferences" 
                                              Icon="Refresh" 
-                                             MouseLeftButtonDown="Refresh_MouseLeftButtonDown">
+                                             MouseLeftButtonDown="ForceRefresh_MouseLeftButtonDown">
                                 <fa:ImageAwesome.ToolTip>
                                     <ToolTip Content="{x:Static w:Resources.RefreshButtonTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
                                 </fa:ImageAwesome.ToolTip>
