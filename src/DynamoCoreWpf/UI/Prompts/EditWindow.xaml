@@ -40,17 +40,8 @@
 
                 <!--  Title Bar + Close Button  -->
                 <DockPanel Grid.Row="0"
-                           Margin="18 15 18 30"
+                           Margin="20 15 18 30"
                            HorizontalAlignment="Stretch">
-                    <Image Name="MessageBoxImageIcon"
-                           Width="24"
-                           Height="24"
-                           Margin="0,0,5,0"
-                           Source="/DynamoCoreWpf;component/UI/Images/dynamonotext.png"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           DockPanel.Dock="Left">
-                    </Image>
 
                     <Button Name="CloseButton"
                             Click="CloseButton_OnClick"
@@ -101,7 +92,7 @@
                 <StackPanel Grid.Row="2" Orientation="Horizontal" FlowDirection="RightToLeft">
                     <Button 
                         Content="{x:Static p:Resources.EditWindowAcceptButton}" 
-                        Margin="18 10 18 15"
+                        Margin="18 5 18 15"
                         MinWidth="90"
                         BorderBrush="#0696D7"
                         Foreground="White"

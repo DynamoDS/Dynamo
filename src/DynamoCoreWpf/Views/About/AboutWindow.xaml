@@ -133,7 +133,7 @@
                             MinWidth="180"
                             Background="White"
                             BorderBrush="#BFBFBF"
-                            Foreground="Black"/>
+                            Foreground="#3C3C3C"/>
                     <Image Grid.Column="0"
                            Grid.Row="0"
                            Source="/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png" Height="128" Width="128"/>
