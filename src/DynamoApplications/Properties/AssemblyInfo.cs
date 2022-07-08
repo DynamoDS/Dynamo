@@ -12,3 +12,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("72464112-159f-4542-88c9-55734f67074e")]
 
 [assembly:InternalsVisibleTo("IntegrationTests")]
+[assembly: InternalsVisibleTo("DynamoSandbox")]
