@@ -154,9 +154,9 @@ namespace EmitMSIL
             return mi;
         }
 
-        private static Dictionary<Type, int> GetTypeStatisticsForArray(ExprListNode array)
+        private static HashSet<Type> GetTypeStatisticsForArray(ExprListNode array)
         {
-            var usageFreq = new Dictionary<Type, int>();
+            var arrayTypes = new HashSet<Type>();
 
             foreach (var exp in array.Exprs)
             {
@@ -169,11 +169,7 @@ namespace EmitMSIL
                     {
                         t = t.MakeArrayType();
                     }
-                    if (!usageFreq.ContainsKey(t))
-                    {
-                        usageFreq.Add(t, 0);
-                    }
-                    usageFreq[t] += 1;
+                    arrayTypes.Add(t);
                 }
                 else
                 {
@@ -202,32 +198,37 @@ namespace EmitMSIL
                             t = typeof(object);
                             break;
                     }
-                    if (!usageFreq.ContainsKey(t))
-                    {
-                        usageFreq.Add(t, 0);
-                    }
-
-                    usageFreq[t] += 1;
+                    arrayTypes.Add(t);
                 }
             }
-            return usageFreq;
+            return arrayTypes;
         }
 
-        private static Type GetOverallTypeForArray(Dictionary<Type, int> arrayTypes)
+        private static Type GetOverallTypeForArray(HashSet<Type> arrayTypes)
         {
-            var keys = arrayTypes.Keys;
-            if (keys.Count == 1)
+            if (arrayTypes.Count == 1)
             {
                 // There is only a single type in the array, return it.
-                return keys.FirstOrDefault();
+                return arrayTypes.FirstOrDefault();
             }
-            if(keys.Count == 2)
+            if(arrayTypes.Count == 2)
             {
-                if(keys.Any(x => x == typeof(long)) && keys.Any(x => x == typeof(double)))
+                bool isLong = false;
+                bool isDouble = false;
+                bool isChar = false;
+                bool isString = false;
+                foreach (var type in arrayTypes)
+                {
+                    isLong = isLong || type == typeof(long);
+                    isDouble = isDouble || type == typeof(double);
+                    isChar = isChar || type == typeof(char);
+                    isString = isString || type == typeof(string);
+                }
+                if (isLong && isDouble)
                 {
                     return typeof(double);
                 }
-                if (keys.Any(x => x == typeof(char)) && keys.Any(x => x == typeof(string)))
+                if (isChar && isString)
                 {
                     return typeof(string);
                 }
