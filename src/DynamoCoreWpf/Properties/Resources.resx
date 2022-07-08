@@ -1141,7 +1141,7 @@ You will get a chance to save your work.</value>
     <value>Cancel</value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
-    <value>Agreement to collect usability data on your use of {0}</value>
+    <value>Agreement to Collect Usability Data</value>
   </data>
   <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
     <value>Clear</value>

@@ -119,7 +119,8 @@ namespace Dynamo.UI.Views
 
                 range.Load(fStream, DataFormats.Rtf);
                 // Set text Foreground color on the actual range
-                range.ApplyPropertyValue(TextElement.ForegroundProperty, (SolidColorBrush)new BrushConverter().ConvertFrom("#3c3c3c"));    
+                range.ApplyPropertyValue(TextElement.ForegroundProperty, (SolidColorBrush)new BrushConverter().ConvertFrom("#3C3C3C"));    
+                range.ApplyPropertyValue(TextElement.FontSizeProperty, 12.0);
 
                 fStream.Close();
             }
