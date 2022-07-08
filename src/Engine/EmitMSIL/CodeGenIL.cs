@@ -161,14 +161,17 @@ namespace EmitMSIL
                 if (exp is ExprListNode eln)
                 {
                     var subArray = GetTypeStatisticsForArray(eln);
-                    foreach (var t in subArray.Keys)
+                    var t = GetOverallTypeForArray(subArray);
+
+                    if (t != typeof(object))
                     {
-                        if (!usageFreq.ContainsKey(t))
-                        {
-                            usageFreq.Add(t, 0);
-                        }
-                        usageFreq[t] += subArray[t];
+                        t = t.MakeArrayType();
                     }
+                    if (!usageFreq.ContainsKey(t))
+                    {
+                        usageFreq.Add(t, 0);
+                    }
+                    usageFreq[t] += 1;
                 }
                 else
                 {
@@ -198,12 +201,36 @@ namespace EmitMSIL
                             break;
                     }
                     if (!usageFreq.ContainsKey(t))
+                    {
                         usageFreq.Add(t, 0);
+                    }
 
                     usageFreq[t] += 1;
                 }
             }
             return usageFreq;
+        }
+
+        private static Type GetOverallTypeForArray(Dictionary<Type, int> arrayTypes)
+        {
+            var keys = arrayTypes.Keys;
+            if (keys.Count == 1)
+            {
+                // There is only a single type in the array, return it.
+                return keys.FirstOrDefault();
+            }
+            if(keys.Count == 2)
+            {
+                if(keys.Any(x => x == typeof(long)) && keys.Any(x => x == typeof(double)))
+                {
+                    return typeof(double);
+                }
+                if (keys.Any(x => x == typeof(char)) && keys.Any(x => x == typeof(string)))
+                {
+                    return typeof(string);
+                }
+            }
+            return typeof(object);
         }
 
         public Type DfsTraverse(Node n)
@@ -474,16 +501,6 @@ namespace EmitMSIL
             return DfsTraverse(iln.RightNode);
         }
 
-        private static Type GetOverallTypeForArray(Dictionary<Type, int> arrayTypes, int arrayLength)
-        {
-            if(arrayTypes.Count == 1)
-            {
-                return arrayTypes.Keys.FirstOrDefault();
-            }
-
-            return null;
-        }
-
         private Type EmitExprListNode(AssociativeNode node)
         {
             if (compilePass == CompilePass.MethodLookup) return null;
@@ -493,25 +510,52 @@ namespace EmitMSIL
                 throw new ArgumentException("AST node must be an Expression List.");
             }
             var arrayTypes = GetTypeStatisticsForArray(eln);
-
+            var ot = GetOverallTypeForArray(arrayTypes);
 
             var elements = eln.Exprs;
             
             EmitOpCode(OpCodes.Ldc_I4, elements.Count);
-            EmitOpCode(OpCodes.Newarr, typeof(double));
+            EmitOpCode(OpCodes.Newarr, ot);
             int elCount = -1;
             foreach (var el in elements)
             {
                 EmitOpCode(OpCodes.Dup);
                 EmitOpCode(OpCodes.Ldc_I4, ++elCount);
                 var t = DfsTraverse(el);
-                //if (t == typeof(int) || t == typeof(long) || t == typeof(double) || t == typeof(bool) || t == typeof(char))
-                //{
-                //    EmitOpCode(OpCodes.Box, t);
-                //}
-                EmitOpCode(OpCodes.Stelem_R8);
+                if (ot == typeof(object) && (t == typeof(int) || t == typeof(long) || t == typeof(double) || t == typeof(bool) || t == typeof(char)))
+                {
+                    EmitOpCode(OpCodes.Box, t);
+                }
+                if (ot == typeof(int))
+                {
+                    EmitOpCode(OpCodes.Stelem_I4);
+                }
+                else if (ot == typeof(long))
+                {
+                    EmitOpCode(OpCodes.Stelem_I8);
+                }
+                else if (ot == typeof(double))
+                {
+                    if (t == typeof(int) || t == typeof(long))
+                    {
+                        EmitOpCode(OpCodes.Conv_R8);
+                    }
+                    EmitOpCode(OpCodes.Stelem_R8);
+                }
+                else if (ot == typeof(bool))
+                {
+                    EmitOpCode(OpCodes.Stelem_I1);
+                }
+                else if (ot == typeof(char))
+                {
+                    EmitOpCode(OpCodes.Stelem_I2);
+                }
+                else
+                {
+                    EmitOpCode(OpCodes.Stelem_Ref);
+                }
             }
-            return typeof(IList);
+            return ot.MakeArrayType();
         }
 
         private Type EmitFunctionCallNode(AssociativeNode node)
