@@ -162,7 +162,7 @@
                         Grid.Column="0"
                         Grid.ColumnSpan="2"
                         Margin="0 20 3 20" 
-                        Padding="0 10">
+                        Padding="0 7">
                     <ScrollViewer 
                         Margin="0 0 -30 0" 
                               HorizontalScrollBarVisibility="Disabled" >
@@ -182,7 +182,7 @@
                         Grid.Column="0"
                         Grid.ColumnSpan="2" 
                         Margin="0 0 3 0" 
-                        Padding="0 10">
+                        Padding="0 7">
                     <ScrollViewer 
                               Padding="0"
                               HorizontalScrollBarVisibility="Disabled"
@@ -208,9 +208,8 @@
 
                     <CheckBox x:Name="AcceptGoogleAnalyticsCheck"
                               Click="ToggleIsGoogleAnalyticsChecked"
-                              Margin="-2 17 0 15"
+                              Margin="-2 18 0 15"
                               VerticalAlignment="Center"
-                              Foreground="#4790cd"
                               FontSize="13.333"
                               Background="White"
                               IsChecked="True">
@@ -221,6 +220,24 @@
                                    Name="AcceptGoogleAnalyticsTextBlock"
                                    Text="{x:Static p:Resources.ConsentFormGoogleAnalyticsCheckBoxContent}"/>
                     </CheckBox>
+
+                    <!--The instrumentation checkbox will be hidden and unchecked by default-->
+                    <CheckBox x:Name="AcceptUsageReportingCheck"
+                              Click="ToggleIsUsageReportingChecked"
+                              Visibility="Collapsed"
+                              Margin="-2 -10 0 15"
+                              VerticalAlignment="Center"
+                              FontSize="13.333"
+                              Background="White">
+                        <TextBlock FontWeight="SemiBold"
+                                   FontSize="12"
+                                   Foreground="{StaticResource DarkThemeInputBoxBackgroundBrush}" 
+                                   TextWrapping="Wrap"
+                                   Visibility="Collapsed"
+                                   Text="Test"
+                                   Name="AcceptUsageReportingTextBlock"/>
+                    </CheckBox>
+
                 </StackPanel>
                 <!--Configure ADP Consent-->
                 <Button Grid.Row="4"
@@ -236,25 +253,6 @@
                         HorizontalAlignment="Left"
                         Content="{x:Static p:Resources.ConfigureADPButtonText}"
                         Click="configure_adp_button_Click" />
-
-                <!--The instrumentation checkbox will be hidden and unchecked by default-->
-                <CheckBox x:Name="AcceptUsageReportingCheck"
-                          Grid.Row="3"
-                          Grid.Column="0"
-                          Grid.ColumnSpan="2"
-                          Click="ToggleIsUsageReportingChecked"
-                          Visibility="Collapsed"
-                          Margin="35,16,15,14"
-                          VerticalAlignment="Center"
-                          Foreground="#4790cd"
-                          FontSize="13.333"
-                          Background="White">
-                    <TextBlock FontWeight="SemiBold"
-                               Foreground="#4790cd"
-                               TextWrapping="Wrap"
-                               Visibility="Collapsed"
-                               Name="AcceptUsageReportingTextBlock"/>
-                </CheckBox>
 
                 <!--Learn More Button-->
                 <TextBlock Grid.Row="5"
