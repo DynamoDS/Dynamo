@@ -27,7 +27,9 @@ namespace EmitMSIL
 
         private enum CompilePass
         {
+            // Compile pass to perform method lookup and populate method cache only
             MethodLookup,
+            // Compile pass that performs the actual MSIL opCode emission
             emitIL,
             Done
         }

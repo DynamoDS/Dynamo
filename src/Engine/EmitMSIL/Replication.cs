@@ -36,7 +36,9 @@ namespace EmitMSIL
             //Turn the replication guides into a guide -> List args data structure
             var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
+            // TODO: Determine final function endpoint here based on fitting runtime args to function parameters
             var mi = mInfos.FirstOrDefault();
+
             // Testing invoking method without replication
             object result;
             if (mi.IsStatic)
