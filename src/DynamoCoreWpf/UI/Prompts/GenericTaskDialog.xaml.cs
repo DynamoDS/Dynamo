@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Dynamo.Models;
 
@@ -25,6 +26,7 @@ namespace Dynamo.UI.Prompts
 
             this.DialogIcon.Source = new BitmapImage(taskDialogParams.ImageUri);
             this.Title = taskDialogParams.DialogTitle;
+            this.TitleTextBlock.Text = taskDialogParams.DialogTitle;
             this.SummaryText.Text = taskDialogParams.Summary;
             this.DescriptionText.Text = taskDialogParams.Description;
 
@@ -33,6 +35,22 @@ namespace Dynamo.UI.Prompts
         }
 
         #endregion
+
+        private void CloseButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        /// <summary>
+        /// Lets the user drag this window around with their left mouse button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+            DragMove();
+        }
 
         #region Private Class Helper Methods
 
@@ -49,7 +67,7 @@ namespace Dynamo.UI.Prompts
             if (buttons == null)
                 return;
 
-            var style = SharedDictionaryManager.DynamoModernDictionary["STextButton"];
+            var style = SharedDictionaryManager.DynamoModernDictionary["CtaButtonStyle"];
 
             foreach (var button in buttons)
             {
