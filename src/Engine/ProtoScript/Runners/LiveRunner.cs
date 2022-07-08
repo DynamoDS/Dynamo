@@ -1193,6 +1193,8 @@ namespace ProtoScript.Runners
 
     public partial class LiveRunner : ILiveRunner, IDisposable
     {
+        internal bool DSExecutionEngine = true;
+
         internal class DebugByteCodeMode : IDisposable
         {
             private TextWriter oldAsmOutput;
@@ -1237,6 +1239,14 @@ namespace ProtoScript.Runners
                     core.Options.DumpByteCode = oldDumpByteCode;
                 }
             }
+        }
+
+        internal void CompileAndExecuteMSIL(List<AssociativeNode> finalDeltaAstList)
+        {
+            Dictionary<string, IList> input = new Dictionary<string, IList>();
+            var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var codeGenIL = new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"));
+            codeGenIL.Emit(finalDeltaAstList);
         }
 
         /// <summary>
@@ -1682,16 +1692,14 @@ namespace ProtoScript.Runners
                 // Get AST list that need to be executed
                 var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
 
+                if (!DSExecutionEngine)
+                {
+                    CompileAndExecuteMSIL(finalDeltaAstList);
+                }
+
                 // Prior to execution, apply state modifications to the VM given the delta AST's
                 bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
                 changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
-
-                ///////////////////////////////////////////////////
-                Dictionary<string, IList> input = new Dictionary<string, IList>();
-                var codeGenIL = new EmitMSIL.CodeGenIL(input, @"D:\GitHub\Dynamo\src\Engine\EmitMSIL\bin\Debug\opCodes.txt");
-                codeGenIL.Emit(finalDeltaAstList);
-
-                ///////////////////////////////////////////////////
 
                 if (finalDeltaAstList.Any() || anyForcedExecutedNodes || changeSetComputer.csData.ModifiedNodesForRuntimeSetValue.Any())
                 {

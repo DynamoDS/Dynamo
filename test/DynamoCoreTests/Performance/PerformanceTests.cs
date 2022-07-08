@@ -65,7 +65,7 @@ namespace Dynamo.Tests
 
             Setup();
 
-            OpenModel(filePath);
+            OpenModel(filePath, dsExecution: false);
             model = CurrentDynamoModel;
             var ws2 = model.CurrentWorkspace;
             ws2.Description = "TestDescription";
