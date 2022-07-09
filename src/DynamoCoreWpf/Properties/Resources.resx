@@ -1864,7 +1864,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Periodic</value>
   </data>
   <data name="ContextMenuCopy" xml:space="preserve">
-    <value>Copy</value>
+    <value>Copy Contents</value>
     <comment>Context menu item</comment>
   </data>
   <data name="ContextMenuHideGeometry" xml:space="preserve">
@@ -2469,7 +2469,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
   </data>
   <data name="PreferencesViewPackageDownloadDirectory" xml:space="preserve">
-    <value>New Package Download Directory</value>
+    <value>New Package Download Path</value>
     <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
   </data>
   <data name="PreferencesPackageDownloadDirectoryTooltip" xml:space="preserve">
@@ -2650,7 +2650,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Graph Type Issues found</value>
   </data>
   <data name="PackagePathsExpanderName" xml:space="preserve">
-    <value>Node and Package Paths</value>
+    <value>Node and Package File Locations</value>
   </data>
   <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
     <value>Package Manager</value>
@@ -3102,7 +3102,7 @@ To install the latest version of a package, click Install. \n
     <value>Warning</value>
   </data>
   <data name="TrustedPathsExpanderName" xml:space="preserve">
-    <value>Trusted location</value>
+    <value>Trusted File Locations</value>
   </data>
   <data name="ZoomLevel" xml:space="preserve">
     <value>0.4</value>

@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.GraphNodeManager;
+using Dynamo.GraphNodeManager.ViewModels;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -109,6 +110,52 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(startGraphNodes, startExtensionNodes);
             Assert.AreEqual(loadedGraphNodes, loadedExtensionNodes);
             Assert.AreEqual(deleteGraphNodes, deleteExtensionNodes);
+        }
+        /// <summary>
+        /// Test if using the IsFrozen filter yields correct results
+        /// </summary>
+        [Test]
+        public void FilterFrozenItemsTest()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            var viewExt = extensionManager.ViewExtensions
+                    .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
+                as GraphNodeManagerViewExtension;
+
+            // Arrange
+            LoadExtension(viewExt);
+
+            Open(@"pkgs\Dynamo Samples\extra\ZoomNodeColorStates.dyn");
+            Utility.DispatcherUtil.DoEvents();
+
+            // Get number of frozen Nodes in the graph
+            var hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
+            int frozenNodes = hwm.Nodes.Count(n => n.IsFrozen);
+
+
+            // Activate the 'Frozen' filter
+            var view = viewExt.ManagerView;
+            string frozenFilterTitle = "Frozen";
+
+            foreach (var item in view.FilterItemControl.Items)
+            {
+                FilterViewModel fvm = item as FilterViewModel;
+                if (fvm.Name.Equals(frozenFilterTitle))
+                {
+                    fvm.Toggle(null);
+                    break;
+                }
+            }
+
+            Utility.DispatcherUtil.DoEvents();
+
+            // Get the number of frozen Nodes in the Extension
+            var dataGridItems = view.NodesInfoDataGrid.Items;
+            int frozenUINodes = dataGridItems.Count;
+
+            // Assert
+            Assert.AreEqual(frozenNodes, frozenUINodes);
         }
         #endregion
 

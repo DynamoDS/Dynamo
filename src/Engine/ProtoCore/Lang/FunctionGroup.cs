@@ -262,7 +262,7 @@ namespace ProtoCore
                 }
                 else if (arrayTypes.Count > 1)
                 {
-                    ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArray(reducedSVs[i], runtimeCore);
+                    ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(arrayTypes, runtimeCore);
 
                     if (commonBaseType == null)
                         throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported(
