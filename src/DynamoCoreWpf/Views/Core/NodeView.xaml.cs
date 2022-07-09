@@ -445,17 +445,51 @@ namespace Dynamo.Controls
             if (e.ClickCount == 2)
             {
                 Debug.WriteLine("Name double clicked!");
-                if (ViewModel != null && ViewModel.RenameCommand.CanExecute(null))
+                if (viewModel.WorkspaceViewModel.Zoom < Configurations.ZoomThreshold)
                 {
-                    ViewModel.RenameCommand.Execute(null);
+                    if (ViewModel != null && ViewModel.RenameCommand.CanExecute(null))
+                    {
+                        ViewModel.RenameCommand.Execute(null);
+                    }
+                }
+                else
+                {
+                    ChangeNameInline();
                 }
                 e.Handled = true;
             }
         }
 
-        #region Preview Control Related Event Handlers
+        private void ChangeNameInline()
+        {
+            NameBlock.Visibility = Visibility.Collapsed;
+            EditableNameBox.Visibility = Visibility.Visible;
+            EditableNameBox.Focus();
+            if (EditableNameBox.SelectionLength == 0)
+                EditableNameBox.SelectAll();
+        }
 
-        private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
+
+        private void EditableNameBox_OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            EndInlineRename();
+        }
+
+        private void EditableNameBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Escape)
+                EndInlineRename();
+        }
+
+        private void EndInlineRename()
+        {
+            NameBlock.Visibility = Visibility.Visible;
+            EditableNameBox.Visibility = Visibility.Collapsed;
+        }
+
+    #region Preview Control Related Event Handlers
+
+    private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
             // if the node is located under "Hide preview bubbles" menu item and the item is clicked,
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
@@ -762,5 +796,6 @@ namespace Dynamo.Controls
             grid.ContextMenu.Items.Clear();
             e.Handled = true;
         }
+
     }
 }

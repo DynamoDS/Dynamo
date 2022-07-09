@@ -185,5 +185,11 @@ namespace Dynamo.UI.Prompts
             this.editText.PreviewKeyDown -= EditText_PreviewKeyDown;
             this.Closed -= EditWindow_Closed;
         }
+
+        // ESC Button pressed triggers Window close        
+        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }
