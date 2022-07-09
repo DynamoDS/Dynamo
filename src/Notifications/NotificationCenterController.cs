@@ -61,8 +61,8 @@ namespace Dynamo.Notifications
                 htmlString = htmlString.Replace("#fontStyle", resourceBase64);
             }
 
-            notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
-
+            if(notificationUIPopup.webView.CoreWebView2 != null)
+                notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
         }
 
         private void DynamoView_LocationChanged(object sender, EventArgs e)

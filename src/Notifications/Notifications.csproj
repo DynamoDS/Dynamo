@@ -22,8 +22,7 @@
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
-	<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1245.22" />
-	<PackageReference Include="WebView2.Runtime.X64" Version="103.0.1264.37" />
+	<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>

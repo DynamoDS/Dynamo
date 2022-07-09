@@ -149,6 +149,7 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Notifications\Notifications.csproj" />
     <ProjectReference Include="..\..\src\PackageDetailsViewExtension\PackageDetailsViewExtension.csproj">
       <Project>{12FB4DA4-7E9C-4C2E-91CD-1D0B523A9535}</Project>
       <Name>PackageDetailsViewExtension</Name>

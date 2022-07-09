@@ -1,0 +1,74 @@
+﻿using Dynamo.Utilities;
+using Dynamo.Notifications.View;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
+using Microsoft.Web.WebView2.Wpf;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+
+namespace DynamoCoreWpfTests.ViewExtensions
+{
+    public class NotificationsExtensionTests : DynamoTestUIBase
+    {
+        [Test]
+        public void PressNotificationButtonAndShowPopup()
+        {
+            var shortcutBar = this.View.ShortcutBar;
+            var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
+            notificationsButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+
+            NotificationUI notificationUI = PresentationSource.CurrentSources.OfType<System.Windows.Interop.HwndSource>()
+                                        .Select(h => h.RootVisual)
+                                        .OfType<FrameworkElement>()
+                                        .Select(f => f.Parent)
+                                        .OfType<NotificationUI>()
+                                        .FirstOrDefault(p => p.IsOpen);
+
+            Assert.NotNull(notificationUI);
+            var webView = notificationUI.FindName("webView");
+            Assert.NotNull(webView);
+        }
+
+        [Test]
+        public void ValidateNotificationsUIEmbeededFiles()
+        {
+            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x=>x.ManifestModule.Name.Contains("Notifications.dll"));
+            var htmlFile = "Dynamo.Notifications.Web.index.html";
+            var fontFile = "Dynamo.Notifications.Web.ArtifaktElement-Regular.woff";
+            var jsFile = "Dynamo.Notifications.Web.index.bundle.js";
+
+            var mainJstag = "#mainJs";
+            var fontStyleTag = "#fontStyle";            
+
+            using (Stream stream = assembly.GetManifestResourceStream(htmlFile))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string htmlString = reader.ReadToEnd();
+                Assert.IsTrue(htmlString.Contains(mainJstag));
+                Assert.IsTrue(htmlString.Contains(fontStyleTag));
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(jsFile))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                var jsString = reader.ReadToEnd();
+                Assert.IsFalse(string.IsNullOrEmpty(jsString));
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(fontFile))
+            {
+                var resourceBase64 = ResourceUtilities.ConvertToBase64(stream);
+                Assert.IsFalse(string.IsNullOrEmpty(resourceBase64));
+            }
+        }
+    }
+}
