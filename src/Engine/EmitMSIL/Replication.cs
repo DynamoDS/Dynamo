@@ -14,7 +14,7 @@ namespace EmitMSIL
     public class Replication
     {
         /// <summary>
-        /// 
+        /// Invoke method with replication.
         /// </summary>
         /// <param name="className">fully qualified name parsed from function call AST</param>
         /// <param name="methodName">parsed from function call AST</param>

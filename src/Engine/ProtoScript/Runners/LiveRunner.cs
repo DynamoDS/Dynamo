@@ -1688,7 +1688,8 @@ namespace ProtoScript.Runners
 
                 ///////////////////////////////////////////////////
                 Dictionary<string, IList> input = new Dictionary<string, IList>();
-                var codeGenIL = new EmitMSIL.CodeGenIL(input, @"D:\GitHub\Dynamo\src\Engine\EmitMSIL\bin\Debug\opCodes.txt");
+                var codeGenIL = new EmitMSIL.CodeGenIL(input, 
+                    System.IO.Path.Combine(new DirectoryInfo( Assembly.GetExecutingAssembly().Location).Parent.FullName,"opCodes.txt"));
                 codeGenIL.Emit(finalDeltaAstList);
 
                 ///////////////////////////////////////////////////

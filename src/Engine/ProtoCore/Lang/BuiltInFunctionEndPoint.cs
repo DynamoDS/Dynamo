@@ -1032,29 +1032,78 @@ namespace ProtoCore.Lang
     }
     internal class RangeExpressionUtils
     {
-        // For to include start and end. 
-        internal static StackValue[] GenerateRangeByStepNumber(decimal start, decimal end, int stepnum, bool isIntRange)
+      
+        //overloads to avoid returning object[] and boxing/unboxing.
+        internal static long[] GenerateRangeByStepNumberInt(decimal start, decimal end, int stepnum)
         {
             decimal stepsize = (stepnum == 1) ? 0 : (end - start) / (stepnum - 1);
-            isIntRange = isIntRange && (Math.Truncate(stepsize) == stepsize);
 
-            StackValue[] range = new StackValue[stepnum > 1 ? stepnum : 1];
-            range[0] = isIntRange ? StackValue.BuildInt((int)start) : StackValue.BuildDouble((double)start);
+            long[] range = new long[stepnum > 1 ? stepnum : 1];
+            range[0] = (long)start;
 
             decimal cur = start;
             for (int i = 1; i < stepnum - 1; ++i)
             {
                 cur += stepsize;
-                range[i] = isIntRange ? StackValue.BuildInt((int)cur) : StackValue.BuildDouble((double)cur);
+                range[i] = (long)cur;
             }
 
             if (stepnum > 1)
             {
-                range[(int)stepnum - 1] = isIntRange ? StackValue.BuildInt((int)end) : StackValue.BuildDouble((double)end);
+                range[stepnum - 1] = (long)end;
             }
 
             return range;
         }
+        internal static double[] GenerateRangeByStepNumberDouble(decimal start, decimal end, int stepnum)
+        {
+            decimal stepsize = (stepnum == 1) ? 0 : (end - start) / (stepnum - 1);
+
+            double[] range = new double[stepnum > 1 ? stepnum : 1];
+            range[0] = (double)start;
+
+            decimal cur = start;
+            for (int i = 1; i < stepnum - 1; ++i)
+            {
+                cur += stepsize;
+                range[i] = (double)cur;
+            }
+
+            if (stepnum > 1)
+            {
+                range[stepnum - 1] = (double)end;
+            }
+
+            return range;
+        }
+
+
+        // For to include start and end. 
+        internal static StackValue[] GenerateRangeByStepNumber(decimal start, decimal end, int stepnum, bool isIntRange)
+        {
+            if (isIntRange)
+            {
+                return GenerateRangeByStepNumberInt(start, end, stepnum).Select(x => StackValue.BuildInt(x)).ToArray();
+            }
+            else
+            {
+                return GenerateRangeByStepNumberDouble(start, end, stepnum).Select(x => StackValue.BuildDouble(x)).ToArray();
+            }
+        }
+
+        //We are only handling numeric ranges in IL gen at the moment.
+        //TODO come back and create another overload or make this dynamic to support alphabetic ranges as well.
+        internal static object[] RangeExpressionCore(double start, double end, double step,int op,bool hasStep, bool hasAmountOp )
+        {
+            if(hasAmountOp && !hasStep)
+            {
+                throw new ArgumentException(Resources.kNoStepSizeInAmountRangeExpression);
+            }
+
+             return GenerateNumericRangeCore(start, end, step, op, hasStep, hasAmountOp);
+        }
+
+
 
         internal static StackValue RangeExpression(
             StackValue svStart,
@@ -1123,6 +1172,149 @@ namespace ProtoCore.Lang
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
                 return StackValue.Null;
             }
+        }
+
+        //TODO would be nice not to have to use/return object[]
+        //unclear what perf consequence is. Just trying to get things hooked up at the moment.
+        //Also, it would be nice to replace the GenerateNumericRange duplicate implementation and have it call this.
+        private static object[] GenerateNumericRangeCore(double start, double end, double step, double op, bool hasStep, bool hasAmountOp)
+        {
+            var isIntStep = Math.Truncate(step) == step;
+            var isIntRange = Math.Truncate(start) == start && Math.Truncate(end) == end;
+
+            if (double.IsInfinity(start) || double.IsNaN(end) ||
+               double.IsInfinity(end) || double.IsNaN(end) ||
+               !isIntStep && (double.IsInfinity(step) || double.IsNaN(step)))
+            {
+                throw new ArgumentException(Resources.kInvalidArgumentsInRangeExpression);
+            }
+
+            if (hasAmountOp)
+            {
+                long amount = (int)end;
+                if (amount < 0)
+                {
+                    throw new ArgumentException(Resources.kInvalidAmountInRangeExpression);
+                }
+
+                if (amount == 0)
+                {
+                    return new object[0];
+                }
+                else
+                {
+                    double stepsize = step;
+                    isIntRange = isIntRange && isIntStep;
+                    object[] range = new object[amount];
+                    for (int i = 0; i < amount; ++i)
+                    {
+                        range[i] = isIntRange ? (int)start : (double)start;
+                        start += stepsize;
+                    }
+                    return range;
+                }
+            }
+            else
+            {
+                decimal startDec = new decimal(start);
+                decimal endDec = new decimal(end);
+
+                switch (op)
+                {
+                    case (int)RangeStepOperator.StepSize:
+                        {
+                            decimal stepsize = (startDec > endDec) ? -1 : 1;
+                            if (hasStep)
+                            {
+                                stepsize = new decimal(!isIntStep ? step : (int)step);
+                                isIntRange = isIntRange && isIntStep;
+                            }
+
+                            if ((stepsize == 0) || (endDec > startDec && stepsize < 0) || (endDec < startDec && stepsize > 0))
+                            {
+                                return null;
+                            }
+
+                            decimal stepnum = Math.Truncate((endDec - startDec) / stepsize) + 1;
+                            if (stepnum > int.MaxValue)
+                            {
+                                throw new ArgumentOutOfRangeException(Resources.RangeExpressionOutOfMemory);
+                            }
+                            object[] range = new object[(int)stepnum];
+
+                            decimal cur = startDec;
+                            for (int i = 0; i < (int)stepnum; ++i)
+                            {
+                                range[i] = isIntRange ?(int)cur : (double)cur;
+                                cur += stepsize;
+                            }
+                            return range;
+                        }
+                    case (int)RangeStepOperator.Number:
+                        {
+                            decimal stepnum = new decimal(Math.Round(!isIntStep ? step : (int)step));
+                            if (stepnum <= 0)
+                            {
+                                return null;
+                            }
+                            else if (stepnum > int.MaxValue)
+                            {
+                                throw new ArgumentOutOfRangeException(Resources.RangeExpressionOutOfMemory);
+                            }
+                            //TODO - ugh boxing bummer.
+                            if (isIntRange)
+                            {
+                                return GenerateRangeByStepNumberInt(startDec, endDec, (int)stepnum).Cast<object>().ToArray();
+                            }
+                            return GenerateRangeByStepNumberDouble(startDec, endDec, (int)stepnum).Cast<object>().ToArray();
+
+                        }
+                    case (int)RangeStepOperator.ApproximateSize:
+                        {
+                            decimal astepsize = new decimal(!isIntStep ? step : (int)step);
+                            if (astepsize == 0)
+                            {
+                                return null;
+                            }
+
+                            decimal dist = endDec - startDec;
+                            decimal stepnum = 1;
+                            if (dist != 0)
+                            {
+                                decimal cstepnum = Math.Ceiling(dist / astepsize);
+                                decimal fstepnum = Math.Floor(dist / astepsize);
+
+                                if (cstepnum == 0 || fstepnum == 0)
+                                {
+                                    stepnum = 2;
+                                }
+                                else
+                                {
+                                    decimal capprox = Math.Abs(dist / cstepnum - astepsize);
+                                    decimal fapprox = Math.Abs(dist / fstepnum - astepsize);
+                                    stepnum = capprox < fapprox ? cstepnum + 1 : fstepnum + 1;
+                                }
+                            }
+
+                            if (stepnum > int.MaxValue)
+                            {
+                                throw new ArgumentOutOfRangeException(Resources.RangeExpressionOutOfMemory);
+                            }
+
+                            //TODO - ugh boxing bummer.
+                            if (isIntRange)
+                            {
+                                return GenerateRangeByStepNumberInt(startDec, endDec, (int)stepnum).Cast<object>().ToArray();
+                            }
+                            return GenerateRangeByStepNumberDouble(startDec, endDec, (int)stepnum).Cast<object>().ToArray();
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+            }
+            return null;
         }
 
         private static StackValue[] GenerateNumericRange(

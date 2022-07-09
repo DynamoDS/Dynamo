@@ -9,6 +9,7 @@ using System.Reflection.Emit;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
+using DSASM = ProtoCore.DSASM;
 
 namespace EmitMSIL
 {
@@ -560,10 +561,53 @@ namespace EmitMSIL
             throw new NotImplementedException();
         }
 
-        private void EmitRangeExprNode(AssociativeNode node)
+        private Type EmitRangeExprNode(AssociativeNode node)
         {
-            throw new NotImplementedException();
+            if (compilePass == CompilePass.GlobalFuncSig) return null;
+
+            var range = node as RangeExprNode;
+            var fromNode = range.From;
+            var toNode = range.To;
+            var stepNode = range.Step;
+            var stepOp = range.StepOperator;
+            var hasAmountOperator = range.HasRangeAmountOperator;
+
+            //TODO If the from / to nodes are constants we can do some checks
+
+            //call generate range c# function.
+
+            IntNode op = null;
+            switch (stepOp)
+            {
+                case DSASM.RangeStepOperator.StepSize:
+                    op = new IntNode(0);
+                    break;
+                case DSASM.RangeStepOperator.Number:
+                    op = new IntNode(1);
+                    break;
+                case DSASM.RangeStepOperator.ApproximateSize:
+                    op = new IntNode(2);
+                    break;
+                default:
+                    op = new IntNode(-1);
+                    break;
+            }
+            var arguments = new List<AssociativeNode>
+            {
+                fromNode,
+                toNode,
+                stepNode ?? new NullNode(),
+                op,
+                AstFactory.BuildBooleanNode(stepNode != null),
+                AstFactory.BuildBooleanNode(hasAmountOperator),
+            };
+            //TODO - currently range expressions in the DSVM always generate shortest lacing....
+            //what should we do here?
+            var rangeExprFunc = AstFactory.BuildFunctionCall(nameof(ProtoCore.Lang.RangeExpressionUtils.RangeExpressionCore),
+                                                             arguments);
+            return EmitFunctionCallNode(rangeExprFunc);
         }
+
 
         private Type EmitNullNode(AssociativeNode node)
         {
