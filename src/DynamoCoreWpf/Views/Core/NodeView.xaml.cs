@@ -445,6 +445,7 @@ namespace Dynamo.Controls
             if (e.ClickCount == 2)
             {
                 Debug.WriteLine("Name double clicked!");
+                // If workspace is zoomed-out, open an Edit Name dialog, otherwise rename inline
                 if (viewModel.WorkspaceViewModel.Zoom < Configurations.ZoomThreshold)
                 {
                     if (ViewModel != null && ViewModel.RenameCommand.CanExecute(null))
@@ -460,15 +461,27 @@ namespace Dynamo.Controls
             }
         }
 
+        /// <summary>
+        /// Edit Node Name directly in the Node Header
+        /// </summary>
         private void ChangeNameInline()
         {
             NameBlock.Visibility = Visibility.Collapsed;
             EditableNameBox.Visibility = Visibility.Visible;
+
             EditableNameBox.Focus();
             if (EditableNameBox.SelectionLength == 0)
                 EditableNameBox.SelectAll();
         }
 
+        /// <summary>
+        ///  Finalize Inline Rename by hiding the TextBox and showing the TextBlock
+        /// </summary>
+        private void EndInlineRename()
+        {
+            NameBlock.Visibility = Visibility.Visible;
+            EditableNameBox.Visibility = Visibility.Collapsed;
+        }
 
         private void EditableNameBox_OnLostFocus(object sender, RoutedEventArgs e)
         {
@@ -481,11 +494,6 @@ namespace Dynamo.Controls
                 EndInlineRename();
         }
 
-        private void EndInlineRename()
-        {
-            NameBlock.Visibility = Visibility.Visible;
-            EditableNameBox.Visibility = Visibility.Collapsed;
-        }
 
     #region Preview Control Related Event Handlers
 

@@ -37,6 +37,7 @@
     <SolidColorBrush x:Key="PrimaryCharcoal300Brush" Color="{StaticResource PrimaryCharcoal300}" />
     <SolidColorBrush x:Key="LightGreyBrush" Color="{StaticResource LightGrey}" />
     <SolidColorBrush x:Key="LightMidGreyBrush" Color="{StaticResource LightMidGrey}" />
+    <SolidColorBrush x:Key="LightMidGreyOpacityBrush" Color="{StaticResource LightMidGrey}" Opacity="0.2" />
     <SolidColorBrush x:Key="MidGreyBrush" Color="{StaticResource MidGrey}" />
     <SolidColorBrush x:Key="DarkMidGreyBrush" Color="{StaticResource DarkMidGrey}" />
     <SolidColorBrush x:Key="DarkGreyBrush" Color="{StaticResource DarkGrey}" />
