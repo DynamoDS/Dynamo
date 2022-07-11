@@ -535,7 +535,7 @@
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" 
                                               x:Name="GroupStyleScrollViewer"                                              
                                               PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
-                                              Height="220">
+                                              MaxHeight="250">
                                     <Grid Margin="0,0,0,0">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
