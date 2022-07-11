@@ -223,6 +223,7 @@ namespace EmitMSIL
                 // There is only a single type in the array, return it.
                 return arrayTypes.FirstOrDefault();
             }
+            // TODO: Do we need to address cases, where there are more than 2 types?
             if(arrayTypes.Count == 2)
             {
                 bool isLong = false;
@@ -537,7 +538,7 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Dup);
                 EmitOpCode(OpCodes.Ldc_I4, ++elCount);
                 var t = DfsTraverse(el);
-                if (ot == typeof(object) && (t == typeof(int) || t == typeof(long) || t == typeof(double) || t == typeof(bool) || t == typeof(char)))
+                if (ot == typeof(object) && t.IsValueType)
                 {
                     EmitOpCode(OpCodes.Box, t);
                 }
