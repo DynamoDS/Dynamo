@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using ProtoCore.AST.AssociativeAST;
+using System.Linq;
 
 namespace CodeGenILTests
 {
@@ -21,11 +22,8 @@ namespace CodeGenILTests
             codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(assemblyPath, "OpCodesTEST.txt"));
         }
 
-        //TODO currently this test fails because it relies on functions defined in DSCoreNodes.dll
-        //but import nodes are not yet implemeted in the MSIL compiler / runtime.
         [Test]
-        [Category("Failure")]
-        public void RangeTests()
+        public void RangeTestInts()
         {
             var dscode = @"
 import(""DSCoreNodes.dll"");
@@ -33,7 +31,21 @@ import(""DSCoreNodes.dll"");
 
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
-        } 
-       
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10 }, output.Values.ToList().First()[0] as object[]);
+        }
+        [Test]
+        public void RangeTestDouble()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+0..1.1..0.1;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0,1.1 }, output.Values.ToList().First()[0] as object[]);
+        }
+
     }
 }

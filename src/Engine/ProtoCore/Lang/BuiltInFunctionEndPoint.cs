@@ -1210,7 +1210,16 @@ namespace ProtoCore.Lang
                     object[] range = new object[amount];
                     for (int i = 0; i < amount; ++i)
                     {
-                        range[i] = isIntRange ? (int)start : (double)start;
+                        //TODO see below - do not use ? operator.
+                        if (isIntRange)
+                        {
+                            range[i] = (int)start;
+                        }
+                        else
+                        {
+                            range[i] = (double)start;
+                        }
+                        //range[i] = isIntRange ? (int)start : (double)start;
                         start += stepsize;
                     }
                     return range;
@@ -1247,7 +1256,25 @@ namespace ProtoCore.Lang
                             decimal cur = startDec;
                             for (int i = 0; i < (int)stepnum; ++i)
                             {
-                                range[i] = isIntRange ?(int)cur : (double)cur;
+                                //TODO!!!! - unexpected result here
+                                //the ternary operator produces doubles in both cases
+                                //while the explicit if statement produces ints and doubles.
+
+                                //oh - dangerous and we should investigate the existing range code.
+                                //https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/expressions#1115-conditional-operator
+                                //Otherwise, if an implicit conversion (§10.2) exists from X to Y, but not from Y to X, then Y is the type of the conditional expression.
+                                
+                                //TODO investigate what the existing behavior is, and what the preferred behavior is.
+
+                                if (isIntRange)
+                                {
+                                    range[i] = (int)cur;
+                                }
+                                else
+                                {
+                                    range[i] = (double)cur;
+                                }
+                                //range[i] = isIntRange ? : (double)cur;
                                 cur += stepsize;
                             }
                             return range;

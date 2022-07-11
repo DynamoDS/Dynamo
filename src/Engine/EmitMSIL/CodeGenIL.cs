@@ -459,10 +459,13 @@ namespace EmitMSIL
         {
             throw new NotImplementedException();
         }
-
+        
         private void EmitImportNode(AssociativeNode node)
         {
-            throw new NotImplementedException();
+            //doing absolutely nothing is actually
+            //enough to import binaries.
+            //TODO do other important things here!
+            //see: ProtoAssociative.CodeGen.EmitImportNode
         }
 
         private void EmitBinaryExpressionNode(AssociativeNode node)
