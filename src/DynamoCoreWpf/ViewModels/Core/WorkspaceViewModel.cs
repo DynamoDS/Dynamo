@@ -1283,7 +1283,7 @@ namespace Dynamo.ViewModels
 
             if (this.IsHomeSpace)
             {
-                if (DynamoViewModel.CloseHomeWorkspaceCommand.CanExecute(null))
+                if (DynamoViewModel.CloseHomeWorkspaceCommand.CanExecute(true))
                     DynamoViewModel.CloseHomeWorkspaceCommand.Execute(null);
             }
             else
