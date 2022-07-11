@@ -90,6 +90,18 @@ namespace EmitMSIL
             asm.Save("DynamicAssembly.dll");
         }
 
+        private Type EmitCoercionCode(Type argType, ParameterInfo param)
+        {
+            if(argType == typeof(double) && param.ParameterType == typeof(long))
+            {
+                EmitOpCode(OpCodes.Conv_I8);
+                return typeof(long);
+            }
+            // TODO: Add more coercion cases here.
+
+            return argType;
+        }
+
         private IEnumerable<MethodBase> FunctionLookup(IList args)
         {
             IEnumerable<MethodBase> mi = null;
@@ -114,14 +126,14 @@ namespace EmitMSIL
                         m => m.Name == methodName && m.GetParameters().Length == args.Count).ToList();
 
                     // Check for instance methods
-                    if (mi == null)
+                    if (mi == null || !mi.Any())
                     {
                         mi = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
                             m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).ToList();
                     }
 
                     // Check for property getters
-                    if (mi == null)
+                    if (mi == null || !mi.Any())
                     {
                         var prop = type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).Where(
                                 p => p.Name == methodName).FirstOrDefault();
@@ -586,8 +598,8 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldstr, methodName);
             EmitOpCode(OpCodes.Ldc_I4, numArgs);
 
-            var mInfo = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
-            EmitOpCode(OpCodes.Call, mInfo);
+            var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
+            EmitOpCode(OpCodes.Call, keygen);
 
             var local = ilGen.DeclareLocal(typeof(IEnumerable<MethodBase>));
             writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {typeof(IEnumerable<MethodBase>)}");
@@ -595,9 +607,9 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldloca, local);
 
             // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<MethodBase> mInfos)
-            var mBase = typeof(IDictionary<int, IEnumerable<MethodBase>>).GetMethod(
+            var dictLookup = typeof(IDictionary<int, IEnumerable<MethodBase>>).GetMethod(
                 nameof(IDictionary<int, IEnumerable<MethodBase>>.TryGetValue));
-            EmitOpCode(OpCodes.Callvirt, mBase);
+            EmitOpCode(OpCodes.Callvirt, dictLookup);
 
             EmitOpCode(OpCodes.Pop);
             EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
@@ -606,11 +618,20 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldc_I4, numArgs);
             EmitOpCode(OpCodes.Newarr, typeof(object));
             int argCount = -1;
-            foreach (var arg in args)
+
+            // Retrieve previously cached functions
+            // TODO: Decide whether to process overloaded methods at compile time or leave it for runtime.
+            // For now, we assume no overloads.
+            var mBase = FunctionLookup(args).FirstOrDefault();
+            var parameters = mBase.GetParameters();
+            for (var i=0; i < args.Count; i++)
             {
+                var arg = args[i];
                 EmitOpCode(OpCodes.Dup);
                 EmitOpCode(OpCodes.Ldc_I4, ++argCount);
                 var t = DfsTraverse(arg);
+
+                t = EmitCoercionCode(t, parameters[i]);
                 if (t == typeof(int) || t == typeof(long) || t == typeof(double) || t == typeof(bool) || t == typeof(char))
                 {
                     EmitOpCode(OpCodes.Box, t);
@@ -652,8 +673,8 @@ namespace EmitMSIL
             }
 
             // Emit call to ReplicationLogic
-            mInfo = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic));
-            EmitOpCode(OpCodes.Call, mInfo);
+            keygen = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic));
+            EmitOpCode(OpCodes.Call, keygen);
 
             return typeof(IList);
         }
