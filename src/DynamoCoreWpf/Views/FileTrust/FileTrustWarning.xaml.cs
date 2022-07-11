@@ -192,7 +192,7 @@ namespace Dynamo.Wpf.Views.FileTrust
         }
 
         /// <summary>
-        /// 
+        /// Close the warning popup
         /// </summary>
         internal void CloseWarningPopup()
         {
