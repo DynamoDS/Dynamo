@@ -67,7 +67,6 @@ namespace Dynamo.Wpf.Views.FileTrust
                 {
                     EnableRunInteractivity();
                 }
-
             }
         }
 
