@@ -100,29 +100,38 @@ namespace Dynamo.Controls
 
         public void SetTranslateTransformOrigin(Point2D p)
         {
-            var tt = GetTranslateTransform(child);
-            tt.X = p.X;
-            tt.Y = p.Y;
+            var tt = GetChildTranslateTransform();
+            if (tt.X != p.X || tt.Y != p.Y)
+            {
+                tt.X = p.X;
+                tt.Y = p.Y;
 
-            var st = GetScaleTransform(child);
-            NotifyViewSettingsChanged(tt.X, tt.Y, st.ScaleX);
+                var st = GetChildScaleTransform();
+                if (child.IsMouseCaptured)
+                {
+                    NotifyViewSettingsChanged(tt.X, tt.Y, st.ScaleX);
+                }
+            }
         }
 
         public void SetZoom(double zoom)
         {
-            var st = GetScaleTransform(child);
-            st.ScaleX = zoom;
-            st.ScaleY = zoom;
-
-            var tt = GetTranslateTransform(child);
-            NotifyViewSettingsChanged(tt.X, tt.Y, zoom);
+            var st = GetChildScaleTransform();
+            if (st.ScaleX != zoom || st.ScaleY != zoom)
+            {
+                st.ScaleX = zoom;
+                st.ScaleY = zoom;
+                var tt = GetTranslateTransform(child);
+                NotifyViewSettingsChanged(tt.X, tt.Y, zoom);
+            }
         }
 
         #region Child Events
 
         private void child_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (child != null)
+            PrintMousePosition(e);
+            if (child != null && !child.IsMouseCaptured)
             {
                 //double zoom = e.Delta > 0 ? .1 : -.1;
                 double zoom = e.Delta > 0 ? 1 : -1;
@@ -173,6 +182,12 @@ namespace Dynamo.Controls
 
             // Change ZoomBorder's child translation
             Vector v = start - e.GetPosition(this);
+
+            if (v.Length == 0.0)
+            {
+                return;
+            }
+
             SetTranslateTransformOrigin(new Point2D
             {
                 X = origin.X - v.X,
@@ -200,6 +215,18 @@ namespace Dynamo.Controls
             if (handler != null)
             {
                 handler(new ViewSettingsChangedEventArgs(x, y, zoom));
+                var ws = DataContext as WorkspaceViewModel;
+                ws?.DynamoViewModel.Model.Logger.Log($"X={x}, Y={y}, zoom={zoom}");
+            }
+        }
+
+        private void PrintMousePosition(MouseEventArgs e)
+        {
+            if (child != null)
+            {
+                var p = e.GetPosition(child);
+                var ws = DataContext as WorkspaceViewModel;
+              //  ws?.DynamoViewModel.Model.Logger.Log($"X={p.X}, Y={p.Y}");
             }
         }
 

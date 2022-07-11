@@ -850,8 +850,6 @@ namespace Dynamo.ViewModels
                 case "Y":
                     break;
                 case "Zoom":
-                    this.OnZoomChanged(this, new ZoomEventArgs(this.Zoom));
-                    RaisePropertyChanged("Zoom");
                     break;
                 case "IsCurrentSpace":
                     RaisePropertyChanged("IsCurrentSpace");
