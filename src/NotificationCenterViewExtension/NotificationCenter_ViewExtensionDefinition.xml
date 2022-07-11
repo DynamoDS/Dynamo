@@ -1,5 +1,0 @@
-<ViewExtensionDefinition>
-  <AssemblyPath>..\NotificationCenterViewExtension.dll</AssemblyPath>
-  <TypeName>Dynamo.NotificationCenter.ViewExtension</TypeName>
-  <IsEnabled>True</IsEnabled>
-</ViewExtensionDefinition>
