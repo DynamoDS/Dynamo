@@ -21,7 +21,7 @@ namespace EmitMSIL
         //    return Circle.ByPointRadius(pt, rad);
         //}
 
-        public static void Execute(IDictionary<string, IList> input, IDictionary<int, MethodBase> methodCache, 
+        public static void Execute(IDictionary<string, IList> input, IDictionary<int, IEnumerable<MethodBase>> methodCache, 
             IDictionary<string, IList> output)
         {
             // Sample script for which below code is emitted:

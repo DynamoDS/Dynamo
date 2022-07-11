@@ -89,11 +89,13 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="graphData"></param>
         /// <param name="verboseLogging"></param>
-        internal void UpdateGraph(GraphSyncData graphData, bool verboseLogging)
+        /// <param name="dsExecution"></param>
+        internal void UpdateGraph(GraphSyncData graphData, bool verboseLogging, bool dsExecution)
         {
             if (verboseLogging)
                 Log("LRS.UpdateGraph: " + graphData);
 
+            (liveRunner as LiveRunner).DSExecutionEngine = dsExecution;
             liveRunner.UpdateGraph(graphData);
         }
 
