@@ -115,6 +115,8 @@ namespace Dynamo.Applications
                 var parentId = string.Empty;
                 var sessionId = string.Empty;
 
+                var dsExecutionEngine = false;
+
                 var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
                 .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path," +
                 "this option is only supported when run from DynamoSandbox", c => commandFilePath = c)
@@ -132,6 +134,7 @@ namespace Dynamo.Applications
                 .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
                 .Add("da|DA|disableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
+                .Add("eng|ENG|Eng|engine", "true if using the old DesignScript engine, false if using .NET execution of graphs", eng => dsExecutionEngine = eng == null || eng.ToLower() == "true");
                 ;
                 optionsSet.Parse(args);
 
@@ -157,7 +160,8 @@ namespace Dynamo.Applications
                     ASMPath = asmPath,
                     KeepAlive = keepAlive,
                     DisableAnalytics = disableAnalytics,
-                    AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname,  ParentId = parentId, SessionId = sessionId }
+                    AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname,  ParentId = parentId, SessionId = sessionId },
+                    DSExecutionEngine = dsExecutionEngine
                 };
             }
 
@@ -180,6 +184,7 @@ namespace Dynamo.Applications
             public string HostName { get; set; }
             public bool DisableAnalytics { get; set; }
             public HostAnalyticsInfo AnalyticsInfo { get; set; } 
+            internal bool DSExecutionEngine { get; set; }
         }
 
         /// <summary>

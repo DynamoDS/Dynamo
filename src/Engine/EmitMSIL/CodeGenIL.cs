@@ -23,13 +23,15 @@ namespace EmitMSIL
         private int localVarIndex = -1;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
         private StreamWriter writer;
-        private Dictionary<int, MethodBase> methodCache = new Dictionary<int, MethodBase>();
+        private Dictionary<int, IEnumerable<MethodBase>> methodCache = new Dictionary<int, IEnumerable<MethodBase>>();
         private CompilePass compilePass;
 
         private enum CompilePass
         {
-            GlobalFuncSig,
-            GlobalFuncBody,
+            // Compile pass to perform method lookup and populate method cache only
+            MethodLookup,
+            // Compile pass that performs the actual MSIL opCode emission
+            emitIL,
             Done
         }
 
@@ -52,7 +54,7 @@ namespace EmitMSIL
 
         public void Emit(List<AssociativeNode> astList)
         {
-            compilePass = CompilePass.GlobalFuncSig;
+            compilePass = CompilePass.MethodLookup;
             foreach (var ast in astList)
             {
                 DfsTraverse(ast);
@@ -67,10 +69,10 @@ namespace EmitMSIL
             // 4. Create method ("Execute"), get ILGenerator 
             var execMethod = BuilderHelper.CreateMethod(type, "Execute",
                 System.Reflection.MethodAttributes.Static, typeof(void), new[] { typeof(IDictionary<string, IList>),
-                typeof(IDictionary<int, MethodBase>), typeof(IDictionary<string, IList>)});
+                typeof(IDictionary<int, IEnumerable<MethodBase>>), typeof(IDictionary<string, IList>)});
             ilGen = execMethod.GetILGenerator();
 
-            compilePass = CompilePass.GlobalFuncBody;
+            compilePass = CompilePass.emitIL;
             // 5. Traverse AST and use ILGen to emit code for Execute method
             foreach(var ast in astList)
             {
@@ -89,13 +91,25 @@ namespace EmitMSIL
             asm.Save("DynamicAssembly.dll");
         }
 
-        private MethodBase FunctionLookup(IList args)
+        private Type EmitCoercionCode(Type argType, ParameterInfo param)
         {
-            MethodInfo mi = null;
-            var key = KeyGen(className, methodName, args.Count);
-            if (methodCache.TryGetValue(key, out MethodBase mBase))
+            if(argType == typeof(double) && param.ParameterType == typeof(long))
             {
-                mi = mBase as MethodInfo;
+                EmitOpCode(OpCodes.Conv_I8);
+                return typeof(long);
+            }
+            // TODO: Add more coercion cases here.
+
+            return argType;
+        }
+
+        private IEnumerable<MethodBase> FunctionLookup(IList args)
+        {
+            IEnumerable<MethodBase> mi = null;
+            var key = KeyGen(className, methodName, args.Count);
+            if (methodCache.TryGetValue(key, out IEnumerable<MethodBase> mBase))
+            {
+                mi = mBase;
             }
             else
             {
@@ -110,24 +124,24 @@ namespace EmitMSIL
                     // using its function descriptor. AST isn't sufficient for parameter type info.
                     // Fist check for static methods
                     mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
-                        m => m.Name == methodName && m.GetParameters().Length == args.Count).FirstOrDefault();
+                        m => m.Name == methodName && m.GetParameters().Length == args.Count).ToList();
 
                     // Check for instance methods
-                    if (mi == null)
+                    if (mi == null || !mi.Any())
                     {
                         mi = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
-                            m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).FirstOrDefault();
+                            m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).ToList();
                     }
 
                     // Check for property getters
-                    if (mi == null)
+                    if (mi == null || !mi.Any())
                     {
                         var prop = type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).Where(
                                 p => p.Name == methodName).FirstOrDefault();
 
                         if (prop != null)
                         {
-                            mi = prop.GetAccessors().FirstOrDefault();
+                            mi = prop.GetAccessors().ToList();
                         }
                     }
 
@@ -151,6 +165,89 @@ namespace EmitMSIL
                 throw new MissingMethodException("No matching method found in loaded assemblies.");
             }
             return mi;
+        }
+
+        private static HashSet<Type> GetTypeStatisticsForArray(ExprListNode array)
+        {
+            var arrayTypes = new HashSet<Type>();
+
+            foreach (var exp in array.Exprs)
+            {
+                if (exp is ExprListNode eln)
+                {
+                    var subArray = GetTypeStatisticsForArray(eln);
+                    var t = GetOverallTypeForArray(subArray);
+
+                    if (t != typeof(object))
+                    {
+                        t = t.MakeArrayType();
+                    }
+                    arrayTypes.Add(t);
+                }
+                else
+                {
+                    Type t;
+                    switch (exp.Kind)
+                    {
+                        case AstKind.Integer:
+                            t = typeof(long);
+                            break;
+                        case AstKind.Double:
+                            t = typeof(double);
+                            break;
+                        case AstKind.Boolean:
+                            t = typeof(bool);
+                            break;
+                        case AstKind.Char:
+                            t = typeof(char);
+                            break;
+                        case AstKind.String:
+                            t = typeof(string);
+                            break;
+                        case AstKind.Identifier:
+                            t = typeof(object);
+                            break;
+                        default:
+                            t = typeof(object);
+                            break;
+                    }
+                    arrayTypes.Add(t);
+                }
+            }
+            return arrayTypes;
+        }
+
+        private static Type GetOverallTypeForArray(HashSet<Type> arrayTypes)
+        {
+            if (arrayTypes.Count == 1)
+            {
+                // There is only a single type in the array, return it.
+                return arrayTypes.FirstOrDefault();
+            }
+            // TODO: Do we need to address cases, where there are more than 2 types?
+            if(arrayTypes.Count == 2)
+            {
+                bool isLong = false;
+                bool isDouble = false;
+                bool isChar = false;
+                bool isString = false;
+                foreach (var type in arrayTypes)
+                {
+                    isLong = isLong || type == typeof(long);
+                    isDouble = isDouble || type == typeof(double);
+                    isChar = isChar || type == typeof(char);
+                    isString = isString || type == typeof(string);
+                }
+                if (isLong && isDouble)
+                {
+                    return typeof(double);
+                }
+                if (isChar && isString)
+                {
+                    return typeof(string);
+                }
+            }
+            return typeof(object);
         }
 
         public Type DfsTraverse(Node n)
@@ -338,7 +435,7 @@ namespace EmitMSIL
 
                 var t = DfsTraverse(bNode.RightNode);
 
-                if (compilePass == CompilePass.GlobalFuncSig) return;
+                if (compilePass == CompilePass.MethodLookup) return;
 
                 var lNode = bNode.LeftNode as IdentifierNode;
                 if(lNode == null)
@@ -423,28 +520,59 @@ namespace EmitMSIL
 
         private Type EmitExprListNode(AssociativeNode node)
         {
-            if (compilePass == CompilePass.GlobalFuncSig) return null;
+            if (compilePass == CompilePass.MethodLookup) return null;
 
             if (!(node is ExprListNode eln))
             {
                 throw new ArgumentException("AST node must be an Expression List.");
             }
+            var arrayTypes = GetTypeStatisticsForArray(eln);
+            var ot = GetOverallTypeForArray(arrayTypes);
+
             var elements = eln.Exprs;
+            
             EmitOpCode(OpCodes.Ldc_I4, elements.Count);
-            EmitOpCode(OpCodes.Newarr, typeof(double));
+            EmitOpCode(OpCodes.Newarr, ot);
             int elCount = -1;
             foreach (var el in elements)
             {
                 EmitOpCode(OpCodes.Dup);
                 EmitOpCode(OpCodes.Ldc_I4, ++elCount);
                 var t = DfsTraverse(el);
-                //if (t == typeof(int) || t == typeof(long) || t == typeof(double) || t == typeof(bool) || t == typeof(char))
-                //{
-                //    EmitOpCode(OpCodes.Box, t);
-                //}
-                EmitOpCode(OpCodes.Stelem_R8);
+                if (ot == typeof(object) && t.IsValueType)
+                {
+                    EmitOpCode(OpCodes.Box, t);
+                }
+                if (ot == typeof(int))
+                {
+                    EmitOpCode(OpCodes.Stelem_I4);
+                }
+                else if (ot == typeof(long))
+                {
+                    EmitOpCode(OpCodes.Stelem_I8);
+                }
+                else if (ot == typeof(double))
+                {
+                    if (t == typeof(int) || t == typeof(long))
+                    {
+                        EmitOpCode(OpCodes.Conv_R8);
+                    }
+                    EmitOpCode(OpCodes.Stelem_R8);
+                }
+                else if (ot == typeof(bool))
+                {
+                    EmitOpCode(OpCodes.Stelem_I1);
+                }
+                else if (ot == typeof(char))
+                {
+                    EmitOpCode(OpCodes.Stelem_I2);
+                }
+                else
+                {
+                    EmitOpCode(OpCodes.Stelem_Ref);
+                }
             }
-            return typeof(IList);
+            return ot.MakeArrayType();
         }
 
         private Type EmitFunctionCallNode(AssociativeNode node)
@@ -456,7 +584,7 @@ namespace EmitMSIL
             var args = fcn.FormalArguments;
             var numArgs = args.Count;
 
-            if(compilePass == CompilePass.GlobalFuncSig)
+            if(compilePass == CompilePass.MethodLookup)
             {
                 FunctionLookup(args);
                 return null;
@@ -472,15 +600,18 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldstr, methodName);
             EmitOpCode(OpCodes.Ldc_I4, numArgs);
 
-            var mInfo = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
-            EmitOpCode(OpCodes.Call, mInfo);
+            var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
+            EmitOpCode(OpCodes.Call, keygen);
 
-            var local = ilGen.DeclareLocal(typeof(MethodBase));
+            var local = ilGen.DeclareLocal(typeof(IEnumerable<MethodBase>));
+            writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {typeof(IEnumerable<MethodBase>)}");
+
             EmitOpCode(OpCodes.Ldloca, local);
 
-            // Emit methodCache.TryGetValue(KeyGen(...), out MethodBase mInfo)
-            var mBase = typeof(IDictionary<int, MethodBase>).GetMethod(nameof(IDictionary<int, MethodBase>.TryGetValue));
-            EmitOpCode(OpCodes.Callvirt, mBase);
+            // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<MethodBase> mInfos)
+            var dictLookup = typeof(IDictionary<int, IEnumerable<MethodBase>>).GetMethod(
+                nameof(IDictionary<int, IEnumerable<MethodBase>>.TryGetValue));
+            EmitOpCode(OpCodes.Callvirt, dictLookup);
 
             EmitOpCode(OpCodes.Pop);
             EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
@@ -489,11 +620,20 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldc_I4, numArgs);
             EmitOpCode(OpCodes.Newarr, typeof(object));
             int argCount = -1;
-            foreach (var arg in args)
+
+            // Retrieve previously cached functions
+            // TODO: Decide whether to process overloaded methods at compile time or leave it for runtime.
+            // For now, we assume no overloads.
+            var mBase = FunctionLookup(args).FirstOrDefault();
+            var parameters = mBase.GetParameters();
+            for (var i=0; i < args.Count; i++)
             {
+                var arg = args[i];
                 EmitOpCode(OpCodes.Dup);
                 EmitOpCode(OpCodes.Ldc_I4, ++argCount);
                 var t = DfsTraverse(arg);
+
+                t = EmitCoercionCode(t, parameters[i]);
                 if (t == typeof(int) || t == typeof(long) || t == typeof(double) || t == typeof(bool) || t == typeof(char))
                 {
                     EmitOpCode(OpCodes.Box, t);
@@ -535,8 +675,8 @@ namespace EmitMSIL
             }
 
             // Emit call to ReplicationLogic
-            mInfo = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic));
-            EmitOpCode(OpCodes.Call, mInfo);
+            keygen = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic));
+            EmitOpCode(OpCodes.Call, keygen);
 
             return typeof(IList);
         }
@@ -611,7 +751,7 @@ namespace EmitMSIL
 
         private Type EmitNullNode(AssociativeNode node)
         {
-            if (compilePass == CompilePass.GlobalFuncSig) return null;
+            if (compilePass == CompilePass.MethodLookup) return null;
 
             if(node is NullNode nullNode)
             {
@@ -628,7 +768,7 @@ namespace EmitMSIL
 
         private Type EmitStringNode(AssociativeNode node)
         {
-            if (compilePass == CompilePass.GlobalFuncSig) return null;
+            if (compilePass == CompilePass.MethodLookup) return null;
 
             if (node is StringNode strNode)
             {
@@ -640,7 +780,7 @@ namespace EmitMSIL
 
         private Type EmitCharNode(AssociativeNode node)
         {
-            if (compilePass == CompilePass.GlobalFuncSig) return null;
+            if (compilePass == CompilePass.MethodLookup) return null;
 
             if (node is CharNode charNode)
             {
@@ -652,7 +792,7 @@ namespace EmitMSIL
 
         private Type EmitBooleanNode(AssociativeNode node)
         {
-            if (compilePass == CompilePass.GlobalFuncSig) return null;
+            if (compilePass == CompilePass.MethodLookup) return null;
 
             if (node is BooleanNode boolNode)
             {
@@ -667,7 +807,7 @@ namespace EmitMSIL
 
         private Type EmitDoubleNode(AssociativeNode node)
         {
-            if (compilePass == CompilePass.GlobalFuncSig) return null;
+            if (compilePass == CompilePass.MethodLookup) return null;
 
             if (node is DoubleNode dblNode)
             {
@@ -679,7 +819,7 @@ namespace EmitMSIL
 
         private Type EmitIntNode(AssociativeNode node)
         {
-            if (compilePass == CompilePass.GlobalFuncSig) return null;
+            if (compilePass == CompilePass.MethodLookup) return null;
 
             if (node is IntNode intNode)
             {
@@ -691,7 +831,7 @@ namespace EmitMSIL
 
         private Type EmitIdentifierNode(AssociativeNode node)
         {
-            if (compilePass == CompilePass.GlobalFuncSig) return null;
+            if (compilePass == CompilePass.MethodLookup) return null;
 
             // only handle identifiers on rhs of assignment expression for now.
             if (node is IdentifierNode idNode)

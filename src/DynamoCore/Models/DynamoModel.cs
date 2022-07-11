@@ -276,6 +276,8 @@ namespace Dynamo.Models
             }
         }
 
+        internal bool DSExecutionEngine = true;
+
         /// <summary>
         ///     Debugging settings for this instance of Dynamo.
         /// </summary>
@@ -1700,11 +1702,15 @@ namespace Dynamo.Models
             EngineController = new EngineController(
                 LibraryServices,
                 geometryFactoryPath,
-                DebugSettings.VerboseLogging);
+                DebugSettings.VerboseLogging)
+            {
+                DSExecutionEngine = DSExecutionEngine
+            };
 
             EngineController.MessageLogged += LogMessage;
             EngineController.TraceReconcliationComplete += EngineController_TraceReconcliationComplete;
             EngineController.RequestCustomNodeRegistration += EngineController_RequestCustomNodeRegistration;
+            
 
             foreach (var def in CustomNodeManager.LoadedDefinitions)
                 RegisterCustomNodeDefinitionWithEngine(def);

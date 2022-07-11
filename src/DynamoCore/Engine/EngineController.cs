@@ -43,6 +43,8 @@ namespace Dynamo.Engine
         /// </summary>
         internal static event Action VMLibrariesReset;
 
+        internal bool DSExecutionEngine { get; set; }
+
         /// <summary>
         /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
         /// </summary>
@@ -487,7 +489,7 @@ namespace Dynamo.Engine
             // within the execution. Such exception, if any, will be caught by
             // DynamoScheduler.ProcessTaskInternal.
 
-            liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging);
+            liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging, DSExecutionEngine);
         }
 
         internal IDictionary<Guid, List<BuildWarning>> GetBuildWarnings()
