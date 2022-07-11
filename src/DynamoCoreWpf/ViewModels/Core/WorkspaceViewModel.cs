@@ -1281,10 +1281,9 @@ namespace Dynamo.ViewModels
             // if there are no other custom workspace that is opened.
             // 
 
-            if (this.IsHomeSpace)
+            if (IsHomeSpace)
             {
-                if (DynamoViewModel.CloseHomeWorkspaceCommand.CanExecute(true))
-                    DynamoViewModel.CloseHomeWorkspaceCommand.Execute(null);
+                DynamoViewModel.CloseHomeWorkspaceCommand.Execute(null);
             }
             else
             {
