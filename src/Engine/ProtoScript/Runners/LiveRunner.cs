@@ -1695,6 +1695,7 @@ namespace ProtoScript.Runners
                 if (!DSExecutionEngine)
                 {
                     CompileAndExecuteMSIL(finalDeltaAstList);
+                    return;
                 }
 
                 // Prior to execution, apply state modifications to the VM given the delta AST's
