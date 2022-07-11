@@ -1101,6 +1101,8 @@ namespace ProtoCore.Lang
             }
 
              return GenerateNumericRangeCore(start, end, step, op, hasStep, hasAmountOp);
+
+            //TODO in existing RangeExpression - we'd handle alphabet ranges here.
         }
 
 

@@ -32,5 +32,6 @@ namespace DSCore
         {
             return RangeExpressionUtils.RangeExpressionCore(start, end, step, (int)op, hasStep, hasAmountOp);
         }
+        //TODO handle alphabetic ranges - overloads or dynamically.
     }
 }

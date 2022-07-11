@@ -91,6 +91,45 @@ namespace EmitMSIL
             asm.Save("DynamicAssembly.dll");
         }
 
+        internal Dictionary<string,IList> EmitAndExecute(List<AssociativeNode> astList)
+        {
+            //TODO refactor with above method.
+            compilePass = CompilePass.MethodLookup;
+            foreach (var ast in astList)
+            {
+                DfsTraverse(ast);
+            }
+
+            // 1. Create assembly builder (dynamic assembly)
+            var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false);
+            // 2. Create module builder
+            var mod = BuilderHelper.CreateDLLModuleBuilder(asm, "DynamicModule");
+            // 3. Create type builder (name it "ExecuteIL")
+            var type = BuilderHelper.CreateType(mod, "ExecuteIL");
+            // 4. Create method ("Execute"), get ILGenerator 
+            var execMethod = BuilderHelper.CreateMethod(type, "Execute",
+                System.Reflection.MethodAttributes.Static, typeof(void), new[] { typeof(IDictionary<string, IList>),
+                typeof(IDictionary<int, IEnumerable<MethodBase>>), typeof(IDictionary<string, IList>)});
+            ilGen = execMethod.GetILGenerator();
+
+            compilePass = CompilePass.emitIL;
+            // 5. Traverse AST and use ILGen to emit code for Execute method
+            foreach (var ast in astList)
+            {
+                DfsTraverse(ast);
+            }
+            EmitOpCode(OpCodes.Ret);
+
+            writer.Close();
+
+            // Invoke emitted method (ExecuteIL.Execute)
+            var t = type.CreateType();
+            var mi = t.GetMethod("Execute");
+            var output = new Dictionary<string, IList>();
+            mi.Invoke(null, new object[] { null, methodCache, output });
+            return output;
+        }
+
         private Type EmitCoercionCode(Type argType, ParameterInfo param)
         {
             if(argType == typeof(double) && param.ParameterType == typeof(long))
