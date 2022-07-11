@@ -125,9 +125,9 @@
                                 Margin="10,0,10,10">
 
                     <Button Content="{x:Static p:Resources.GenericTaskDialogSampleRightButton}"
-                                Background="White"
-                                BorderBrush="#BFBFBF"
-                                Foreground="#3C3C3C"
+                                BorderBrush="#0696D7"
+                                Foreground="White"
+                                Background="#0696D7"
                                 Style="{StaticResource CtaButtonStyle}"
                                 Visibility="Visible" />
 

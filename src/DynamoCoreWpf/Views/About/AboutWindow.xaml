@@ -96,22 +96,22 @@
                                    Grid.Row="0"
                                    HorizontalAlignment="Center"
                                    Background="Transparent" 
-                                   Foreground="#898989"
+                                   Foreground="{StaticResource DarkerGreyBrush}"
                                    FontSize="14">
                                    <Run Text="Dynamo Core"/>
-                                   <Run Foreground="{StaticResource DynamoStandardLabelTextBrush}" Text="{Binding Version, Mode=OneWay}"/>
+                                   <Run Foreground="{StaticResource DarkerGreyBrush}" Text="{Binding Version, Mode=OneWay}"/>
                         </TextBlock>
 
                         <TextBlock Name="GenericHostVersion"
                                    Grid.Row="1"
                                    HorizontalAlignment="Center"
                                    Background="Transparent" 
-                                   Foreground="#898989" 
+                                   Foreground="{StaticResource DarkerGreyBrush}"
                                    FontSize="14"
                                    Margin="0"
                                    Visibility="{Binding HostVersion, Converter={StaticResource NullValueToCollapsedConverter}}">
                                    <Run Text="{Binding HostName, Mode=OneWay}"/>
-                                   <Run Foreground="{StaticResource DynamoStandardLabelTextBrush}" Text= "{Binding HostVersion, Mode=OneWay}"/>
+                                   <Run Foreground="{StaticResource DarkerGreyBrush}" Text= "{Binding HostVersion, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock x:Name ="UpdateInfo"
                                    HorizontalAlignment="Center"
@@ -136,7 +136,7 @@
                             Foreground="#3C3C3C"/>
                     <Image Grid.Column="0"
                            Grid.Row="0"
-                           Source="/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png" Height="128" Width="128"/>
+                           Source="/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about_dark.png" Height="128" Width="128"/>
                 </Grid>
 
                 <Border Grid.Column="1" Grid.Row="1" Background="{StaticResource LightMidGreyOpacityBrush}"  Margin="0 -15 0 0">

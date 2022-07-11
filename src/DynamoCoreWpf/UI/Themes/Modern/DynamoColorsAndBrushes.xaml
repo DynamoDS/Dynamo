@@ -70,7 +70,7 @@
     <SolidColorBrush x:Key="WorkspaceBackGroundHomeBrush" Color="{StaticResource WorkspaceBackgroundHome}" />
 
     <SolidColorBrush x:Key="WorkspaceTabBorderSelectedTrue" Color="#2A2A2A" />
-    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#3C3C3C" />
+    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalseWorkspaceTabBorderSelectedFalse" Color="#3C3C3C" />
 
     <!--  Nodes  -->
     <SolidColorBrush x:Key="NodeFrozenOverlayColor" Color="{StaticResource DarkBlue200}" />
@@ -177,4 +177,6 @@
 
     <!--  Connector  -->
     <SolidColorBrush x:Key="ConnectorHoverStateColor" Color="#808080" />
+
+    <!-- Modal Pattern --> 
 </ResourceDictionary>

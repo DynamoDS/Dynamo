@@ -143,9 +143,9 @@
                                     Click="PostOnGithub_Click" />
 
                             <Button Content="{x:Static p:Resources.ContinueButton}"
-                                    Background="White"
-                                    BorderBrush="#BFBFBF"
-                                    Foreground="#3C3C3C"
+                                    BorderBrush="#0696D7"
+                                    Foreground="White"
+                                    Background="#0696D7"
                                     Style="{StaticResource CtaButtonStyle}"
                                     Margin="10,0,0,0"
                                     Click="Continue_Click"
