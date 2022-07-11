@@ -123,7 +123,10 @@ namespace EmitMSIL
                     // There should be a way to get the exact method after matching parameter types for a node
                     // using its function descriptor. AST isn't sufficient for parameter type info.
                     // Fist check for static methods
-                    mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
+                    mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static 
+                        //TODO remove this?
+                        //search for non public methods for builtins like range.
+                        | BindingFlags.NonPublic).Where(
                         m => m.Name == methodName && m.GetParameters().Length == args.Count).ToList();
 
                     // Check for instance methods
@@ -147,7 +150,7 @@ namespace EmitMSIL
 
                     // TODO: Add check for constructorinfo objects
 
-                    if (mi != null)
+                    if (mi != null && mi.Count()>0)
                     {
                         methodCache.Add(key, mi);
                         break;
@@ -160,7 +163,7 @@ namespace EmitMSIL
                     //}
                 }
             }
-            if (mi == null)
+            if (mi != null && mi.Count() > 0 == null)
             {
                 throw new MissingMethodException("No matching method found in loaded assemblies.");
             }
@@ -284,7 +287,7 @@ namespace EmitMSIL
                     t = EmitNullNode(node);
                     break;
                 case AstKind.RangeExpression:
-                    EmitRangeExprNode(node);
+                    t = EmitRangeExprNode(node);
                     break;
                 case AstKind.LanguageBlock:
                     EmitLanguageBlockNode(node);
@@ -703,8 +706,6 @@ namespace EmitMSIL
 
         private Type EmitRangeExprNode(AssociativeNode node)
         {
-            if (compilePass == CompilePass.GlobalFuncSig) return null;
-
             var range = node as RangeExprNode;
             var fromNode = range.From;
             var toNode = range.To;
@@ -741,11 +742,22 @@ namespace EmitMSIL
                 AstFactory.BuildBooleanNode(stepNode != null),
                 AstFactory.BuildBooleanNode(hasAmountOperator),
             };
-            //TODO - currently range expressions in the DSVM always generate shortest lacing....
-            //what should we do here?
-            var rangeExprFunc = AstFactory.BuildFunctionCall(nameof(ProtoCore.Lang.RangeExpressionUtils.RangeExpressionCore),
-                                                             arguments);
-            return EmitFunctionCallNode(rangeExprFunc);
+            //TODO shortest lacing?
+            //TODO without more refactoring we cannot reference the names of the generate range functions. fix that.
+            //maybe move to designscriptbuiltins and use type forwarding for enum?
+            var rangeExprFunc = AstFactory.BuildFunctionCall("GenerateRangeIL", arguments);
+            var idlist = new IdentifierListNode()
+            {
+                LeftNode = new IdentifierNode("DSCore.RangeHelpers"),
+                RightNode = rangeExprFunc
+            };
+            //we want to cache the call to generate range, so traverse down in any case.
+            var t = DfsTraverse(idlist);
+            if (compilePass == CompilePass.MethodLookup)
+            {
+                return null;
+            }
+            return t;
         }
 
 
