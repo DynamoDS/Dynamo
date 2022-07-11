@@ -144,8 +144,7 @@
                         <MenuItem.Header>
                                 <Button x:Name="notificationsButton" 
                                         BorderBrush="Transparent"                                         
-                                        Background="Transparent" 
-                                        Click="Button_Click">
+                                        Background="Transparent">
                                     <DockPanel>
                                         <fa:FontAwesome Margin="0,0,20,0"  DockPanel.Dock="Bottom" Icon="BellOutline" Foreground="#38ABDF" FontSize="20px"/>
                                         <Border DockPanel.Dock="Top" Background="#38ABDF" CornerRadius="2" 
@@ -158,30 +157,7 @@
                                                 TextAlignment="Center"
                                                 FontSize="9">99
                                             </TextBlock>
-                                        </Border>
-                                        <!--<Grid Name="NumberAlerts" Width="Auto" VerticalAlignment="Top" Margin="0,0,0,0">
-                                            <Label Padding="0,0,0,0"
-                                               HorizontalContentAlignment="Right"
-                                               VerticalContentAlignment="Top"
-                                               Content="6"
-                                               FontFamily="{StaticResource ArtifaktElementRegular}"
-                                               FontSize="9px"
-                                               Foreground="White"
-                                               Background="#38ABDF"/>
-                                            <Grid.Style>
-                                                <Style TargetType="Grid">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                    <Setter Property="MinWidth" Value="16" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding NumberOfDismissedAlerts}" Value="0">
-                                                            <Setter Property="Grid.MinWidth" Value="0" />
-                                                            <Setter Property="Grid.Margin" Value="0" />
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Grid.Style>
-                                        </Grid>-->                                        
+                                        </Border>                                   
                                     </DockPanel>                                   
                                 </Button>                                
                         </MenuItem.Header>

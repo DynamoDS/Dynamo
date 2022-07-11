@@ -42,13 +42,12 @@ namespace Dynamo.UI.Controls
         /// Construct a ShortcutToolbar.
         /// </summary>
         /// <param name="updateManager"></param>
-        public ShortcutToolbar(DynamoView dynamoView, IUpdateManager updateManager)
+        public ShortcutToolbar(IUpdateManager updateManager)
         {
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
-            shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();
+            shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();    
 
             InitializeComponent();
-
             UpdateControl.DataContext = updateManager;
         }
 
@@ -62,11 +61,6 @@ namespace Dynamo.UI.Controls
         {
             this.HeaderText.FontFamily = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
             this.Icon.Source = new BitmapImage(new System.Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/image-icon-default.png"));
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //notificationUIPopup.IsOpen = !notificationUIPopup.IsOpen;
         }
     }
 
@@ -140,30 +134,6 @@ namespace Dynamo.UI.Controls
         {
             if (e.PropertyName != "CanNavigateBackground") return;
             RaisePropertyChanged("ShortcutToolTip");
-        }
-    }
-
-    internal partial class NotificationsShortcutBarItem : ShortcutBarItem
-    {
-        private readonly DynamoViewModel vm;
-
-        public override string ShortcutToolTip
-        {
-            get
-            {
-                return vm.BackgroundPreviewViewModel == null || !vm.BackgroundPreviewViewModel.CanNavigateBackground
-                    ? Wpf.Properties.Resources.DynamoViewToolbarExportButtonTooltip
-                    : Wpf.Properties.Resources.DynamoViewToolbarExport3DButtonTooltip;
-            }
-            set
-            {
-                shortcutToolTip = value;
-            }
-        }
-
-        public NotificationsShortcutBarItem(DynamoViewModel viewModel)
-        {
-
         }
     }
 }

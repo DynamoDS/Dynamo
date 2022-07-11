@@ -35,7 +35,7 @@ namespace Dynamo.Notifications
 
         private void WebView_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
         {
-            \var assembly = Assembly.GetExecutingAssembly();
+            var assembly = Assembly.GetExecutingAssembly();
             var htmlFile = "Dynamo.Notifications.Web.index.html";
             var fontFile = "Dynamo.Notifications.Web.ArtifaktElement-Regular.woff";
             var jsFile = "Dynamo.Notifications.Web.index.bundle.js";
