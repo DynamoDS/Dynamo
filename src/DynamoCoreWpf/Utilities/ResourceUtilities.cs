@@ -263,7 +263,11 @@ namespace Dynamo.Utilities
             return textStream;
         }
 
-
+        /// <summary>
+        /// This method converts a stream to base64 string
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
         public static string ConvertToBase64(Stream stream)
         {
             byte[] bytes;

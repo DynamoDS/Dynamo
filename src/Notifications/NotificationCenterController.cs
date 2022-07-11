@@ -16,18 +16,31 @@ namespace Dynamo.Notifications
     public class NotificationCenterController
     {
         NotificationUI notificationUIPopup;
+        DynamoView dynamoView;
+        Button notificationsButton;
+
+        private static int notificationPopupHorizontalOffset = -285;
+        private static int notificationPopupVerticalOffset = 10;
+
+        private static string htmlEmbeddedFile = "Dynamo.Notifications.Web.index.html";
+        private static string fontEmbeddedFile = "Dynamo.Notifications.Web.ArtifaktElement-Regular.woff";
+        private static string jsEmbeddedFile = "Dynamo.Notifications.Web.index.bundle.js";
+
         public NotificationCenterController(DynamoView dynamoView, Button notificationsButton)
         {
             notificationUIPopup = new NotificationUI();
             notificationUIPopup.IsOpen = false;
             notificationUIPopup.PlacementTarget = notificationsButton;
             notificationUIPopup.Placement = PlacementMode.Bottom;
-            notificationUIPopup.HorizontalOffset = -285;
-            notificationUIPopup.VerticalOffset = 10;
+            notificationUIPopup.HorizontalOffset = notificationPopupHorizontalOffset;
+            notificationUIPopup.VerticalOffset = notificationPopupVerticalOffset;
 
-            dynamoView.SizeChanged += DynamoView_SizeChanged;
-            dynamoView.LocationChanged += DynamoView_LocationChanged;
-            notificationsButton.Click += NotificationsButton_Click;
+            this.dynamoView = dynamoView;
+            this.notificationsButton = notificationsButton;
+
+            this.dynamoView.SizeChanged += DynamoView_SizeChanged;
+            this.dynamoView.LocationChanged += DynamoView_LocationChanged;
+            this.notificationsButton.Click += NotificationsButton_Click;
 
             notificationUIPopup.webView.EnsureCoreWebView2Async();
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;            
@@ -36,26 +49,22 @@ namespace Dynamo.Notifications
         private void WebView_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var htmlFile = "Dynamo.Notifications.Web.index.html";
-            var fontFile = "Dynamo.Notifications.Web.ArtifaktElement-Regular.woff";
-            var jsFile = "Dynamo.Notifications.Web.index.bundle.js";
-
             string htmlString = string.Empty;
 
-            using (Stream stream = assembly.GetManifestResourceStream(htmlFile))
+            using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))
             using (StreamReader reader = new StreamReader(stream))
             {
                 htmlString = reader.ReadToEnd();
             }
 
-            using (Stream stream = assembly.GetManifestResourceStream(jsFile))
+            using (Stream stream = assembly.GetManifestResourceStream(jsEmbeddedFile))
             using (StreamReader reader = new StreamReader(stream))
             {
                 var jsString = reader.ReadToEnd();
                 htmlString = htmlString.Replace("#mainJs", jsString);
             }
 
-            using (Stream stream = assembly.GetManifestResourceStream(fontFile))
+            using (Stream stream = assembly.GetManifestResourceStream(fontEmbeddedFile))
             {
                 var resourceBase64 = Utilities.ResourceUtilities.ConvertToBase64(stream);
                 htmlString = htmlString.Replace("#fontStyle", resourceBase64);
@@ -63,6 +72,14 @@ namespace Dynamo.Notifications
 
             if(notificationUIPopup.webView.CoreWebView2 != null)
                 notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
+        }
+
+        internal void Dispose()
+        {
+            notificationUIPopup.webView.CoreWebView2InitializationCompleted -= WebView_CoreWebView2InitializationCompleted;
+            dynamoView.SizeChanged -= DynamoView_SizeChanged;
+            dynamoView.LocationChanged -= DynamoView_LocationChanged;
+            notificationsButton.Click -= NotificationsButton_Click;
         }
 
         private void DynamoView_LocationChanged(object sender, EventArgs e)
@@ -82,6 +99,6 @@ namespace Dynamo.Notifications
             notificationUIPopup.IsOpen = !notificationUIPopup.IsOpen;
             if (notificationUIPopup.IsOpen)
                 notificationUIPopup.webView.Focus();
-        }
+        }        
     }
 }

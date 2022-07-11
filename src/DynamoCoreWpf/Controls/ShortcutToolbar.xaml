@@ -150,13 +150,14 @@
                                         <Border DockPanel.Dock="Top" Background="#38ABDF" CornerRadius="2" 
                                                 Padding="2" Height="15" Width="15" VerticalAlignment="Center" 
                                                 HorizontalAlignment="Center">
-                                            <TextBlock     
+                                            <!--TODO insert data bind for the notifications -->
+                                        <TextBlock     
                                                 FontFamily="{StaticResource ArtifaktElementRegular}"
                                                 Foreground="White" 
                                                 FontWeight="Bold" 
                                                 TextAlignment="Center"
                                                 FontSize="9">99
-                                            </TextBlock>
+                                        </TextBlock>
                                         </Border>                                   
                                     </DockPanel>                                   
                                 </Button>                                
