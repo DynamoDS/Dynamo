@@ -199,7 +199,7 @@ namespace EmitMSIL
                     //}
                 }
             }
-            if (mi != null && mi.Count() > 0 == null)
+            if (mi == null || mi?.Count() > 0)
             {
                 throw new MissingMethodException("No matching method found in loaded assemblies.");
             }
