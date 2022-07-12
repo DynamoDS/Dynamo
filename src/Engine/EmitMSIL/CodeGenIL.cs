@@ -533,6 +533,11 @@ namespace EmitMSIL
             return ot.MakeArrayType();
         }
 
+        /// <summary>
+        /// Creates an array of type T on the evaluation stack.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items"></param>
         private void EmitArray<T>(IEnumerable<T> items = null)
         {
             var t = typeof(T);
@@ -565,7 +570,15 @@ namespace EmitMSIL
                 }
             });
         }
- 
+
+        /// <summary>
+        /// Creates an array of type "arrType" on the evaluation stack
+        /// Each Item of the array must be emitted by the caller through the itemEmitter callback.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arrType">The type of the array</param>
+        /// <param name="items">The list that will be iterated</param>
+        /// <param name="itemEmitter">A callback on each of the item's items</param>
         private void EmitArray<T>(Type arrType, IEnumerable<T> items, Action<T, int> itemEmitter = null)
         {
             EmitOpCode(OpCodes.Ldc_I4, items == null ? 0 : items.Count());
