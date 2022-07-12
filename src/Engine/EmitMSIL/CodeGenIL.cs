@@ -162,10 +162,7 @@ namespace EmitMSIL
                     // There should be a way to get the exact method after matching parameter types for a node
                     // using its function descriptor. AST isn't sufficient for parameter type info.
                     // Fist check for static methods
-                    mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static 
-                        //TODO remove this?
-                        //search for non public methods for builtins like range.
-                        | BindingFlags.NonPublic).Where(
+                    mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
                         m => m.Name == methodName && m.GetParameters().Length == args.Count).ToList();
 
                     // Check for instance methods
