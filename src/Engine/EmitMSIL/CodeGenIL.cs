@@ -581,7 +581,7 @@ namespace EmitMSIL
         /// <param name="arrType">The type of the array</param>
         /// <param name="items">The list that will be iterated</param>
         /// <param name="itemEmitter">A callback on each of the item's items</param>
-        private void EmitArray<T>(Type arrType, IEnumerable<T> items, Action<T, int> itemEmitter = null)
+        private void EmitArray<T>(Type arrType, IEnumerable<T> items, Action<T, int> itemEmitter)
         {
             EmitOpCode(OpCodes.Ldc_I4, items == null ? 0 : items.Count());
             EmitOpCode(OpCodes.Newarr, arrType);
