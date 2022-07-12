@@ -186,7 +186,7 @@ namespace EmitMSIL
 
                     // TODO: Add check for constructorinfo objects
 
-                    if (mi != null && mi.Count()>0)
+                    if (mi != null && mi.Any())
                     {
                         methodCache.Add(key, mi);
                         break;
@@ -199,7 +199,7 @@ namespace EmitMSIL
                     //}
                 }
             }
-            if (mi == null || mi?.Count() > 0)
+            if (mi == null || !mi.Any())
             {
                 throw new MissingMethodException("No matching method found in loaded assemblies.");
             }
