@@ -457,24 +457,11 @@ namespace EmitMSIL
                 // if t is a single value, wrap it in an array of the single value.
                 if (!typeof(IEnumerable).IsAssignableFrom(t))
                 {
-                    EmitOpCode(OpCodes.Ldc_I4_1);
-                    EmitOpCode(OpCodes.Newarr, t);
-                    EmitOpCode(OpCodes.Dup);
-                    EmitOpCode(OpCodes.Ldc_I4_0);
-                    EmitOpCode(OpCodes.Ldloc, localVarIndex);
-
-                    if (t == typeof(int))
-                        EmitOpCode(OpCodes.Stelem_I4);
-                    else if (t == typeof(long))
-                        EmitOpCode(OpCodes.Stelem_I8);
-                    else if (t == typeof(double))
-                        EmitOpCode(OpCodes.Stelem_R8);
-                    else if (t == typeof(bool))
-                        EmitOpCode(OpCodes.Stelem_I1);
-                    else if (t == typeof(char))
-                        EmitOpCode(OpCodes.Stelem_I2);
-                    else
-                        EmitOpCode(OpCodes.Stelem_Ref);
+                    var localVarIndxes = new List<int>() { localVarIndex };
+                    EmitArray(t, localVarIndxes, (int varIdx, int _) =>
+                    {
+                        EmitOpCode(OpCodes.Ldloc, varIdx);
+                    });
                 }
                 else
                 {
@@ -528,50 +515,87 @@ namespace EmitMSIL
             var arrayTypes = GetTypeStatisticsForArray(eln);
             var ot = GetOverallTypeForArray(arrayTypes);
 
-            var elements = eln.Exprs;
-            
-            EmitOpCode(OpCodes.Ldc_I4, elements.Count);
-            EmitOpCode(OpCodes.Newarr, ot);
-            int elCount = -1;
-            foreach (var el in elements)
+            EmitArray(ot, eln.Exprs, (AssociativeNode el, int idx) => 
             {
-                EmitOpCode(OpCodes.Dup);
-                EmitOpCode(OpCodes.Ldc_I4, ++elCount);
-                var t = DfsTraverse(el);
+                Type t = DfsTraverse(el);
                 if (ot == typeof(object) && t.IsValueType)
                 {
                     EmitOpCode(OpCodes.Box, t);
                 }
-                if (ot == typeof(int))
-                {
-                    EmitOpCode(OpCodes.Stelem_I4);
-                }
-                else if (ot == typeof(long))
-                {
-                    EmitOpCode(OpCodes.Stelem_I8);
-                }
-                else if (ot == typeof(double))
+                if (ot == typeof(double))
                 {
                     if (t == typeof(int) || t == typeof(long))
                     {
                         EmitOpCode(OpCodes.Conv_R8);
                     }
-                    EmitOpCode(OpCodes.Stelem_R8);
                 }
-                else if (ot == typeof(bool))
-                {
-                    EmitOpCode(OpCodes.Stelem_I1);
-                }
-                else if (ot == typeof(char))
-                {
-                    EmitOpCode(OpCodes.Stelem_I2);
-                }
-                else
-                {
-                    EmitOpCode(OpCodes.Stelem_Ref);
-                }
-            }
+            });
             return ot.MakeArrayType();
+        }
+
+        private void EmitArray<T>(IEnumerable<T> items = null)
+        {
+            var t = typeof(T);
+            EmitArray(t, items, (T item, int idx) => 
+            {
+                object obj = item;
+                if(t == typeof(int))
+                {
+                    EmitOpCode(OpCodes.Ldc_I4, (int)obj);
+                }
+                else if(t == typeof(long)) 
+                {
+                    EmitOpCode(OpCodes.Ldc_I8, (long)obj);
+                }
+                else if(t == typeof(double))
+                {
+                    EmitOpCode(OpCodes.Ldc_R8, (double)obj);
+                }
+                else if(t == typeof(bool))
+                {
+                    EmitOpCode((bool)obj ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
+                }
+                else if(t == typeof(char))
+                {
+                    EmitOpCode(OpCodes.Ldc_I4_S, (char)obj);
+                }
+                else if(t == typeof(string))
+                {
+                    EmitOpCode(OpCodes.Ldstr, (string)obj);
+                }
+            });
+        }
+ 
+        private void EmitArray<T>(Type arrType, IEnumerable<T> items, Action<T, int> itemEmitter = null)
+        {
+            EmitOpCode(OpCodes.Ldc_I4, items == null ? 0 : items.Count());
+            EmitOpCode(OpCodes.Newarr, arrType);
+
+            if (items == null) return;
+
+            int itemIndex = -1;
+            foreach (T item in items)
+            {
+                itemIndex++;
+
+                EmitOpCode(OpCodes.Dup);
+                EmitOpCode(OpCodes.Ldc_I4, itemIndex);
+
+                itemEmitter(item, itemIndex);
+
+                if (arrType == typeof(int))
+                    EmitOpCode(OpCodes.Stelem_I4);
+                else if (arrType == typeof(long))
+                    EmitOpCode(OpCodes.Stelem_I8);
+                else if (arrType == typeof(double))
+                    EmitOpCode(OpCodes.Stelem_R8);
+                else if (arrType == typeof(bool))
+                    EmitOpCode(OpCodes.Stelem_I1);
+                else if (arrType == typeof(char))
+                    EmitOpCode(OpCodes.Stelem_I2);
+                else
+                    EmitOpCode(OpCodes.Stelem_Ref);
+            }
         }
 
         private Type EmitFunctionCallNode(AssociativeNode node)
@@ -615,63 +639,38 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Pop);
             EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
 
-            // Emit args for input to call to ReplicationLogic
-            EmitOpCode(OpCodes.Ldc_I4, numArgs);
-            EmitOpCode(OpCodes.Newarr, typeof(object));
-            int argCount = -1;
-
             // Retrieve previously cached functions
             // TODO: Decide whether to process overloaded methods at compile time or leave it for runtime.
             // For now, we assume no overloads.
             var mBase = FunctionLookup(args).FirstOrDefault();
             var parameters = mBase.GetParameters();
-            for (var i=0; i < args.Count; i++)
-            {
-                var arg = args[i];
-                EmitOpCode(OpCodes.Dup);
-                EmitOpCode(OpCodes.Ldc_I4, ++argCount);
-                var t = DfsTraverse(arg);
 
-                t = EmitCoercionCode(t, parameters[i]);
-                if (t == typeof(int) || t == typeof(long) || t == typeof(double) || t == typeof(bool) || t == typeof(char))
+            // Emit args for input to call to ReplicationLogic
+            EmitArray(typeof(object), args, (AssociativeNode n, int index) => {
+                Type t = DfsTraverse(n);
+                t = EmitCoercionCode(t, parameters[index]);
+                if (t.IsValueType)
                 {
                     EmitOpCode(OpCodes.Box, t);
                 }
-                EmitOpCode(OpCodes.Stelem_Ref);
-            }
+            });
 
             // Emit guides
-            EmitOpCode(OpCodes.Ldc_I4, numArgs);
-            EmitOpCode(OpCodes.Newarr, typeof(string[]));
-            argCount = -1;
-            foreach(var arg in args)
+            EmitArray(typeof(string[]), args, (AssociativeNode n, int idx) =>
             {
-                EmitOpCode(OpCodes.Dup);
-                EmitOpCode(OpCodes.Ldc_I4, ++argCount);
-
-                var argIdent = arg as ArrayNameNode;
-                if (argIdent != null)
+                if (n is ArrayNameNode argIdent)
                 {
                     var argGuides = argIdent.ReplicationGuides;
-                    EmitOpCode(OpCodes.Ldc_I4, argGuides.Count);
-                    EmitOpCode(OpCodes.Newarr, typeof(string));
-                    int guideCount = -1;
-                    foreach (var guide in argGuides)
+                    EmitArray(typeof(string), argGuides, (AssociativeNode gn, int gidx) =>
                     {
-                        EmitOpCode(OpCodes.Dup);
-                        EmitOpCode(OpCodes.Ldc_I4, ++guideCount);
-
-                        EmitOpCode(OpCodes.Ldstr, (guide as ReplicationGuideNode).RepGuide.Name);
-                        EmitOpCode(OpCodes.Stelem_Ref);
-                    }
+                        EmitOpCode(OpCodes.Ldstr, (gn as ReplicationGuideNode).RepGuide.Name);
+                    });
                 }
                 else
                 {
-                    EmitOpCode(OpCodes.Ldc_I4, 0);
-                    EmitOpCode(OpCodes.Newarr, typeof(string));
+                    EmitArray<string>();
                 }
-                EmitOpCode(OpCodes.Stelem_Ref);
-            }
+            });
 
             // Emit call to ReplicationLogic
             keygen = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic));
