@@ -535,6 +535,8 @@ namespace EmitMSIL
 
         /// <summary>
         /// Creates an array of type T on the evaluation stack.
+        /// This function uses boxing/unboxing to figure out the item opcode types. Performance might
+        /// be affected, so use this function for simple cases.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="items"></param>
