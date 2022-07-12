@@ -588,6 +588,18 @@ namespace EmitMSIL
 
             if (items == null) return;
 
+            OpCode stElemOpCode = OpCodes.Stelem_Ref;
+            if (arrType == typeof(int))
+                stElemOpCode = OpCodes.Stelem_I4;
+            else if (arrType == typeof(long))
+                stElemOpCode = OpCodes.Stelem_I8;
+            else if (arrType == typeof(double))
+                stElemOpCode = OpCodes.Stelem_R8;
+            else if (arrType == typeof(bool))
+                stElemOpCode = OpCodes.Stelem_I1;
+            else if (arrType == typeof(char))
+                stElemOpCode = OpCodes.Stelem_I2;
+
             int itemIndex = -1;
             foreach (T item in items)
             {
@@ -598,18 +610,7 @@ namespace EmitMSIL
 
                 itemEmitter(item, itemIndex);
 
-                if (arrType == typeof(int))
-                    EmitOpCode(OpCodes.Stelem_I4);
-                else if (arrType == typeof(long))
-                    EmitOpCode(OpCodes.Stelem_I8);
-                else if (arrType == typeof(double))
-                    EmitOpCode(OpCodes.Stelem_R8);
-                else if (arrType == typeof(bool))
-                    EmitOpCode(OpCodes.Stelem_I1);
-                else if (arrType == typeof(char))
-                    EmitOpCode(OpCodes.Stelem_I2);
-                else
-                    EmitOpCode(OpCodes.Stelem_Ref);
+                EmitOpCode(stElemOpCode);
             }
         }
 
