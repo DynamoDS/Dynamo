@@ -3240,6 +3240,6 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Unable To Access Directory</value>
   </data>
   <data name="InvalidDraggingOperationMessgae" xml:space="preserve">
-    <value>There is nothing being dragged. If you see this message, most likely your recent Dynamo interaction is not recommended.</value>
+    <value>Nothing is being dragged. If you see this message, most likely your recent Dynamo interaction is not recommended.</value>
   </data>
 </root>

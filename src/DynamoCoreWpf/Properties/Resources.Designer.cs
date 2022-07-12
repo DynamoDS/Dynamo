@@ -3516,7 +3516,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is nothing being dragged. If you see this message, most likely your recent Dynamo interaction is not recommended..
+        ///   Looks up a localized string similar to Nothing is being dragged. If you see this message, most likely your recent Dynamo interaction is not recommended..
         /// </summary>
         public static string InvalidDraggingOperationMessgae {
             get {
