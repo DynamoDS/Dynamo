@@ -22,8 +22,6 @@
     <None Remove="UI\Images\Alignment\align_x_distribute.png" />
     <None Remove="UI\Images\Alignment\align_y_average.png" />
     <None Remove="UI\Images\Alignment\align_y_distribute.png" />
-    <None Remove="UI\Images\close_default_16px_blue.png" />
-    <None Remove="UI\Images\close_default_16px_grey.png" />
     <None Remove="UI\Images\dynamonotext.png" />
     <None Remove="UI\Images\maximize_16px_blue.png" />
     <None Remove="UI\Images\maximize_16px_grey.png" />
@@ -670,8 +668,6 @@
     <Resource Include="UI\Images\Alignment\align_y_distribute.png" />
     <Resource Include="UI\Images\caret_up.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
-    <Resource Include="UI\Images\close_default_16px_blue.png" />
-    <Resource Include="UI\Images\close_default_16px_grey.png" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
