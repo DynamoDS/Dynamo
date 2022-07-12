@@ -1702,14 +1702,6 @@ namespace ProtoScript.Runners
                 bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
                 changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
 
-                ///////////////////////////////////////////////////
-                Dictionary<string, IList> input = new Dictionary<string, IList>();
-                var codeGenIL = new EmitMSIL.CodeGenIL(input, 
-                    System.IO.Path.Combine(new DirectoryInfo( Assembly.GetExecutingAssembly().Location).Parent.FullName,"opCodes.txt"));
-                codeGenIL.Emit(finalDeltaAstList);
-
-                ///////////////////////////////////////////////////
-
                 if (finalDeltaAstList.Any() || anyForcedExecutedNodes || changeSetComputer.csData.ModifiedNodesForRuntimeSetValue.Any())
                 {
                     CompileAndExecuteForDeltaExecution(finalDeltaAstList);
