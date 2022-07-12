@@ -76,7 +76,6 @@ namespace Dynamo.UI.Prompts
                 buttonElement.Tag = button.Item1;
                 buttonElement.Content = button.Item2;
                 buttonElement.Style = style as Style;
-                //buttonElement.MinWidth = 90.0;
                 buttonElement.BorderBrush = (SolidColorBrush) new BrushConverter().ConvertFrom("#0696D7");
                 buttonElement.Foreground = Brushes.White;
                 buttonElement.Background = (SolidColorBrush) new BrushConverter().ConvertFrom("#0696D7");

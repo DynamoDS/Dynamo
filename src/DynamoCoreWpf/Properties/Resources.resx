@@ -1078,9 +1078,9 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
     <comment>Copy crash details</comment>
   </data>
   <data name="CrashPromptDialogCrashMessage" xml:space="preserve">
-    <value>Uh oh... something went wrong and {0} has crashed, sorry about that.
+    <value>Something went wrong and Dynamo has closed unexpectedly.
 
-You will get a chance to save your work.</value>
+Don't worry, you'll have the option to save your work.</value>
   </data>
   <data name="CrashPromptDialogDetailButton" xml:space="preserve">
     <value>Details</value>
@@ -1091,11 +1091,11 @@ You will get a chance to save your work.</value>
     <comment>Open folder that contains crash report</comment>
   </data>
   <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
-    <value>Submit Bug To Github</value>
+    <value>Submit bug to GitHub</value>
     <comment>Submit a bug on github</comment>
   </data>
   <data name="CrashPromptDialogTitle" xml:space="preserve">
-    <value>{0} has crashed</value>
+    <value>{0} has closed unexpectedly</value>
   </data>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Download Warning</value>

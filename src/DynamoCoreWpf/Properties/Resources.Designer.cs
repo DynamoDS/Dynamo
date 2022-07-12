@@ -880,9 +880,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uh oh... something went wrong and {0} has crashed, sorry about that.
+        ///   Looks up a localized string similar to Something went wrong and Dynamo has closed unexpectedly.
         ///
-        ///You will get a chance to save your work..
+        ///Don&apos;t worry, you&apos;ll have the option to save your work..
         /// </summary>
         public static string CrashPromptDialogCrashMessage {
             get {
@@ -909,7 +909,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Submit Bug To Github.
+        ///   Looks up a localized string similar to Submit bug to GitHub.
         /// </summary>
         public static string CrashPromptDialogSubmitBugButton {
             get {
@@ -918,7 +918,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} has crashed.
+        ///   Looks up a localized string similar to {0} has closed unexpectedly.
         /// </summary>
         public static string CrashPromptDialogTitle {
             get {
