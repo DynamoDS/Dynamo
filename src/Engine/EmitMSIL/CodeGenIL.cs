@@ -552,10 +552,19 @@ namespace EmitMSIL
             var iln = node as IdentifierListNode;
             if(iln == null) throw new ArgumentException("AST node must be an Identifier List.");
 
-            var ident = iln.LeftNode as IdentifierNode;
-            if (ident == null) throw new ArgumentException("Left node of IdentifierListNode is expected to be an identifier.");
+            //TODO this is a bit of a hack to support class names like DSCore.Math
+            //only works one level deep, I guess this should recurse?
+            if (iln.LeftNode is IdentifierListNode)
+            {
+                className = iln.LeftNode.ToString();
+            }
+            else
+            {
+                var ident = iln.LeftNode as IdentifierNode;
+                if (ident == null) throw new ArgumentException("Left node of IdentifierListNode is expected to be an identifier.");
 
-            className = ident.Value;
+                className = ident.Value;
+            }
 
             return DfsTraverse(iln.RightNode);
         }

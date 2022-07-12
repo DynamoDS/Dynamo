@@ -47,5 +47,21 @@ import(""DSCoreNodes.dll"");
             CollectionAssert.AreEqual(new object[] { 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0,1.1 }, output.Values.ToList().First()[0] as object[]);
         }
 
+        [Category("Failure")]
+        [Test]
+        //'Object of type 'System.Object[]' cannot be converted to type 'System.Collections.Generic.IEnumerable`1[System.Double]'.'
+        public void SumIntRange_TypeCoerNeeded()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+x = 0..10;
+y = DSCore.Math.Sum(x);";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(55, output.Values.ToList().First()[0]);
+        }
+
     }
 }
