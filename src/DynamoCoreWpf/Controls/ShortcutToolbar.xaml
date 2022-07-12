@@ -146,8 +146,8 @@
                                         BorderBrush="Transparent"                                         
                                         Background="Transparent">
                                     <DockPanel>
-                                        <fa:FontAwesome Margin="0,0,20,0"  DockPanel.Dock="Bottom" Icon="BellOutline" Foreground="#38ABDF" FontSize="20px"/>
-                                        <Border DockPanel.Dock="Top" Background="#38ABDF" CornerRadius="2" 
+                                    <fa:FontAwesome Margin="0,0,20,0"  DockPanel.Dock="Bottom" Icon="BellOutline" Foreground="{StaticResource Blue400Brush}" FontSize="20px"/>
+                                    <Border DockPanel.Dock="Top" Background="{StaticResource Blue400Brush}" CornerRadius="2" 
                                                 Padding="2" Height="15" Width="15" VerticalAlignment="Center" 
                                                 HorizontalAlignment="Center">
                                             <!--TODO insert data bind for the notifications -->

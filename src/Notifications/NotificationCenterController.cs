@@ -26,8 +26,11 @@ namespace Dynamo.Notifications
         private static string fontEmbeddedFile = "Dynamo.Notifications.Web.ArtifaktElement-Regular.woff";
         private static string jsEmbeddedFile = "Dynamo.Notifications.Web.index.bundle.js";
 
-        public NotificationCenterController(DynamoView dynamoView, Button notificationsButton)
+        public NotificationCenterController(DynamoView dynamoView)
         {
+            var shortcutBar = dynamoView.ShortcutBar;
+            var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
+
             notificationUIPopup = new NotificationUI();
             notificationUIPopup.IsOpen = false;
             notificationUIPopup.PlacementTarget = notificationsButton;
