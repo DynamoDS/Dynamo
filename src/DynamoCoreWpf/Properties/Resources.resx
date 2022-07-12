@@ -3239,4 +3239,7 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
     <value>Unable To Access Directory</value>
   </data>
+  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
+    <value>Pin Wire</value>
+  </data>
 </root>
