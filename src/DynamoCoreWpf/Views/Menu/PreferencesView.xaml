@@ -18,7 +18,7 @@
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         mc:Ignorable="d" 
-        Height="474" 
+        Height="480" 
         Width="665"
         ResizeMode="NoResize">
 
@@ -39,8 +39,7 @@
 
             <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
             <DataTemplate x:Key="styleViewItemTemplate">
-                <Border Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}"     
-                        Margin="4"
+                <Border Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}"
                         BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -535,8 +534,8 @@
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" 
                                               x:Name="GroupStyleScrollViewer"                                              
                                               PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
-                                              MaxHeight="250">
-                                    <Grid Margin="0,0,0,0">
+                                              MaxHeight="260">
+                                    <Grid Margin="0,0,0,-2">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
@@ -548,7 +547,7 @@
                                                 Grid.Row="0"
                                                 MinWidth="100"
                                                 MinHeight="25"
-                                                Margin="3,10,0,10"
+                                                Margin="0,5,0,5"
                                                 Click="AddStyleButton_Click"
                                                 IsEnabled="{Binding IsEnabledAddStyleButton}"
                                                 Content="{x:Static p:Resources.AddStyleButton}" />
@@ -557,7 +556,7 @@
                                                 CornerRadius="4" 
                                                 MinHeight="100"
                                                 MinWidth="335"
-                                                Margin="7,0,72,10"
+                                                Margin="3,0,72,5"
                                                 Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}"
                                                 Grid.Row="1">
                                             <Grid>
