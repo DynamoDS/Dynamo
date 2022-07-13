@@ -8,14 +8,16 @@
     x:Name="DynamoAboutWindow" 
     WindowStartupLocation="CenterOwner"
     WindowStyle="None"
-    ResizeMode="NoResize"
+    ResizeMode="CanResizeWithGrip"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
     d:DataContext="{d:DesignInstance viewModels:DynamoViewModel, IsDesignTimeCreatable=False}"
     mc:Ignorable="d" 
+    MinHeight="400" 
+    MinWidth="540"  
     Height="400" 
-    Width="540" 
+    Width="540"  
     Style="{DynamicResource DynamoWindowStyle}"
     AllowsTransparency="True">
 
@@ -66,6 +68,23 @@
                             DockPanel.Dock="Right"
                             Margin="25 0 0 0"
                             Style="{StaticResource CloseButtonStyle}" />
+
+                    <Button Name="MaximizeButton"
+                            Click="MaximizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource MaximizeButtonStyle}" />
+
+                    <Button Name="NormalizeButton"
+                            Click="MaximizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Visibility="Collapsed"
+                            Style="{StaticResource NormalizeButtonStyle}" />
+
+                    <Button Name="MinimizeButton"
+                            Margin="0 0 25 0"
+                            Click="MinimizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource MinimizeButtonStyle}" />
 
                     <TextBlock Name="TitleTextBlock"
                                VerticalAlignment="Center"
@@ -118,7 +137,7 @@
                                    FontSize="12" 
                                    Grid.Row="{Binding HostVersion, Converter={StaticResource NullValueToGridRow1Converter}}"
                                    FontFamily="{StaticResource OpenSansRegular}" 
-                                   Foreground="#00bb00"
+                                   Foreground="#168576"
                                    Margin="0"
                                    PreviewMouseDown="OnPreviewMouseDown">
                                 <Run Foreground="{Binding IsUpdateAvailable, Converter={StaticResource IsUpdateAvailableBrushConverter}}" 
@@ -141,7 +160,7 @@
 
                 <Border Grid.Column="1" Grid.Row="1" Background="{StaticResource LightMidGreyOpacityBrush}"  Margin="0 -15 0 0">
                     <ScrollViewer Padding="25" Margin="0 15 0 0">
-                        <views:RichTextFile File="{Binding LicenseFile}" 
+                        <views:RichTextFile File="{Binding LicenseFile, Mode=OneTime}" 
                                             IsReadOnly="True" 
                                             IsEnabled="True"
                                             IsDocumentEnabled="True" 

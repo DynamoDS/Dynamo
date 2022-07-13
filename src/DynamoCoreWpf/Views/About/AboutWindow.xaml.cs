@@ -25,7 +25,7 @@ namespace Dynamo.UI.Views
             DataContext = dynamoViewModel;
 
             TitleTextBlock.Text = string.Format(Dynamo.Wpf.Properties.Resources.AboutWindowTitle, dynamoViewModel.BrandingResourceProvider.ProductName);
-            //Title = string.Format(Dynamo.Wpf.Properties.Resources.AboutWindowTitle,dynamoViewModel.BrandingResourceProvider.ProductName);
+            Title = string.Format(Dynamo.Wpf.Properties.Resources.AboutWindowTitle, dynamoViewModel.BrandingResourceProvider.ProductName);
             DynamoWebsiteButton.Content = string.Format(Dynamo.Wpf.Properties.Resources.AboutWindowDynamoWebsiteButton, dynamoViewModel.BrandingResourceProvider.ProductName);
         }
 
@@ -50,6 +50,43 @@ namespace Dynamo.UI.Views
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void MinimizeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void MaximizeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if ((sender as Button).Name.Equals("MaximizeButton"))
+            {
+                this.WindowState = WindowState.Maximized;
+                ToggleButtons(true);
+            }
+            else
+            {
+                this.WindowState = WindowState.Normal;
+                ToggleButtons(false);
+            }
+        }
+
+        /// <summary>
+        /// Toggles between the Maximize and Normalize buttons on the window
+        /// </summary>
+        /// <param name="toggle"></param>
+        private void ToggleButtons(bool toggle)
+        {
+            if (toggle)
+            {
+                this.MaximizeButton.Visibility = Visibility.Collapsed;
+                this.NormalizeButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                this.MaximizeButton.Visibility = Visibility.Visible;
+                this.NormalizeButton.Visibility = Visibility.Collapsed;
+            }
         }
 
         /// <summary>

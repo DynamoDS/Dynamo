@@ -130,7 +130,7 @@
     <comment>About window title</comment>
   </data>
   <data name="AboutWindowUpToDate" xml:space="preserve">
-    <value>(Up-to-date)</value>
+    <value>(Up to date)</value>
     <comment>To indicate Dynamo is up to date</comment>
   </data>
   <data name="ActionMember" xml:space="preserve">
