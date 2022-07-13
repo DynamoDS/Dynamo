@@ -1193,6 +1193,7 @@ namespace ProtoScript.Runners
 
     public partial class LiveRunner : ILiveRunner, IDisposable
     {
+        private IDictionary<string, IList> graphOutput;
         internal bool DSExecutionEngine = true;
 
         internal class DebugByteCodeMode : IDisposable
@@ -1246,7 +1247,16 @@ namespace ProtoScript.Runners
             Dictionary<string, IList> input = new Dictionary<string, IList>();
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             var codeGenIL = new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"));
-            codeGenIL.Emit(finalDeltaAstList);
+            graphOutput = codeGenIL.Emit(finalDeltaAstList);
+        }
+
+        internal IList GetNodeValue(string variableName)
+        {
+            if (!graphOutput.TryGetValue(variableName, out IList output))
+            {
+                return null;
+            }
+            return output;
         }
 
         /// <summary>

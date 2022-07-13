@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Dynamo.Logging;
 using ProtoCore.Mirror;
@@ -82,6 +83,11 @@ namespace Dynamo.Engine
 
             return mirror;
 
+        }
+
+        internal IList GetValue(string variableName)
+        {
+            return (liveRunner as LiveRunner).GetNodeValue(variableName);
         }
 
         /// <summary>

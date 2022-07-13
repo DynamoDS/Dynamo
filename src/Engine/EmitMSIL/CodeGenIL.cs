@@ -52,7 +52,7 @@ namespace EmitMSIL
             writer = new StreamWriter(filePath);
         }
 
-        public void Emit(List<AssociativeNode> astList)
+        public IDictionary<string, IList> Emit(List<AssociativeNode> astList)
         {
             compilePass = CompilePass.MethodLookup;
             foreach (var ast in astList)
@@ -89,6 +89,8 @@ namespace EmitMSIL
             var obj = mi.Invoke(null, new object[] { null, methodCache, output });
 
             asm.Save("DynamicAssembly.dll");
+
+            return output;
         }
 
         internal Dictionary<string,IList> EmitAndExecute(List<AssociativeNode> astList)
@@ -380,6 +382,12 @@ namespace EmitMSIL
             return t;
         }
 
+        private LocalBuilder DeclareLocal(Type t)
+        {
+            writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {t}");
+            return ilGen.DeclareLocal(t);
+        }
+
         private void EmitOpCode(OpCode opCode, LocalBuilder local)
         {
             ilGen.Emit(opCode, local);
@@ -472,9 +480,6 @@ namespace EmitMSIL
 
             if (bNode.Optr == ProtoCore.DSASM.Operator.assign)
             {
-                //var ti = new TypeInference();
-                //var t = ti.DfsTraverse(bNode.RightNode);
-
                 var t = DfsTraverse(bNode.RightNode);
 
                 if (compilePass == CompilePass.MethodLookup) return;
@@ -490,8 +495,7 @@ namespace EmitMSIL
                     throw new Exception("Variable redefinition is not allowed.");
                 }
                 variables.Add(lNode.Value, new Tuple<int, Type>(++localVarIndex, t));
-                ilGen.DeclareLocal(t);
-                writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {t}");
+                DeclareLocal(t);
 
                 EmitOpCode(OpCodes.Stloc, localVarIndex);
                 // Add variable to output dictionary: output.Add("varName", variable);
@@ -531,6 +535,9 @@ namespace EmitMSIL
                 DfsTraverse(bNode.LeftNode);
                 DfsTraverse(bNode.RightNode);
 
+                //TODO: Replace this!
+                // It needs to be replaced with emission of a builtin Function call to an Add function
+                // so we can call it via ReplicationLogic for replication scenarios.
                 EmitOpCode(OpCodes.Add);
             }
             // TODO: add Emit calls for other binary operators
@@ -654,8 +661,7 @@ namespace EmitMSIL
             var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
             EmitOpCode(OpCodes.Call, keygen);
 
-            var local = ilGen.DeclareLocal(typeof(IEnumerable<MethodBase>));
-            writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {typeof(IEnumerable<MethodBase>)}");
+            var local = DeclareLocal(typeof(IEnumerable<MethodBase>));
 
             EmitOpCode(OpCodes.Ldloca, local);
 

@@ -115,7 +115,7 @@ namespace Dynamo.Applications
                 var parentId = string.Empty;
                 var sessionId = string.Empty;
 
-                var dsExecutionEngine = false;
+                var dsExecutionEngine = true;
 
                 var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
                 .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path," +
@@ -128,13 +128,14 @@ namespace Dynamo.Applications
                 .Add("g=|G=|geometry", "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g)
                 .Add("i=|I=|import", "Import, Instruct Dynamo to import an assembly as a node library. This argument should be a filepath to a single .dll" +
                 " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i => importPaths.Add(i))
-                .Add("gp=|GP=|geometrypath=|GeometryPath=", "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.", gp => asmPath = gp)
+                .Add("gp=|GP=|geometrypath=|GeometryPath=", "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, " +
+                "it will be loaded directly from this path.", gp => asmPath = gp)
                 .Add("k|K|keepalive", "Keepalive mode, leave the Dynamo process running until a loaded extension shuts it down.", k => keepAlive = k != null)
                 .Add("hn=|HN=|hostname", "Identify Dynamo variation associated with host", hn => hostname = hn)
                 .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
                 .Add("da|DA|disableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
-                .Add("eng|ENG|Eng|engine", "true if using the old DesignScript engine, false if using .NET execution of graphs", eng => dsExecutionEngine = eng == null || eng.ToLower() == "true");
+                .Add("eng=|ENG=|Eng=|engine=", "true if using the old DesignScript engine, false if using .NET execution of graphs", eng => dsExecutionEngine = !(eng != null && eng.ToLower() == "false"));
                 ;
                 optionsSet.Parse(args);
 
