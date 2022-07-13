@@ -146,7 +146,7 @@ namespace Dynamo.Tests
             public Dictionary<Guid, NodeOutputData> OutputsMap { get; set; }
             public string DesignScript { get; set; }
 
-            public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller)
+            private void Init(WorkspaceModel workspace, EngineController controller, bool dsExecution = true)
             {
                 Guid = workspace.Guid;
                 Description = workspace.Description;
@@ -179,8 +179,20 @@ namespace Dynamo.Tests
                     var portvalues = new List<object>();
                     if (!n.IsFrozen)
                     {
-                        portvalues = n.OutPorts.Select(p =>
-                            ProtoCore.Utils.CoreUtils.GetDataOfValue(n.GetValue(p.Index, controller))).ToList();
+                        if (dsExecution)
+                        {
+                            portvalues = n.OutPorts.Select(p =>
+                                ProtoCore.Utils.CoreUtils.GetDataOfValue(n.GetValue(p.Index, controller))).ToList();
+                        }
+                        else
+                        {
+                            // TODO: Add support for multi-outport nodes.
+                           //foreach(var p in n.OutPorts)
+                           {
+                                var objs = n.GetCSValue(/*p.Index*/0, controller).Cast<object>();
+                                portvalues.AddRange(objs.Select(x => x.ToString()));
+                           };
+                        }
                     }
 
                     n.InPorts.ToList().ForEach(p =>
@@ -211,6 +223,16 @@ namespace Dynamo.Tests
                     InportCountMap.Add(n.GUID, n.InPorts.Count);
                     OutportCountMap.Add(n.GUID, n.OutPorts.Count);
                 }
+            }
+
+            public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller, bool dsExecution)
+            {
+                Init(workspace, controller, dsExecution);
+            }
+
+            public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller)
+            {
+                Init(workspace, controller);
             }
         }
         
