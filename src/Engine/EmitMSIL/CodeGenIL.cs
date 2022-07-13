@@ -534,46 +534,6 @@ namespace EmitMSIL
         }
 
         /// <summary>
-        /// Creates an array of type T on the evaluation stack.
-        /// This function uses boxing/unboxing to figure out the item opcode types. Performance might
-        /// be affected, so use this function for simple cases.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="items"></param>
-        private void EmitArray<T>(IEnumerable<T> items = null)
-        {
-            var t = typeof(T);
-            EmitArray(t, items, (T item, int idx) => 
-            {
-                object obj = item;
-                if(t == typeof(int))
-                {
-                    EmitOpCode(OpCodes.Ldc_I4, (int)obj);
-                }
-                else if(t == typeof(long)) 
-                {
-                    EmitOpCode(OpCodes.Ldc_I8, (long)obj);
-                }
-                else if(t == typeof(double))
-                {
-                    EmitOpCode(OpCodes.Ldc_R8, (double)obj);
-                }
-                else if(t == typeof(bool))
-                {
-                    EmitOpCode((bool)obj ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
-                }
-                else if(t == typeof(char))
-                {
-                    EmitOpCode(OpCodes.Ldc_I4_S, (char)obj);
-                }
-                else if(t == typeof(string))
-                {
-                    EmitOpCode(OpCodes.Ldstr, (string)obj);
-                }
-            });
-        }
-
-        /// <summary>
         /// Creates an array of type "arrType" on the evaluation stack
         /// Each Item of the array must be emitted by the caller through the itemEmitter callback.
         /// </summary>
@@ -684,7 +644,8 @@ namespace EmitMSIL
                 }
                 else
                 {
-                    EmitArray<string>();
+                    // Emit an empty string array.
+                    EmitArray<string>(arrType: typeof(string), items: null, itemEmitter: null);
                 }
             });
 
@@ -723,8 +684,7 @@ namespace EmitMSIL
         private Type EmitNullNode(AssociativeNode node)
         {
             if (compilePass == CompilePass.MethodLookup) return null;
-
-            if(node is NullNode nullNode)
+            if (node is NullNode)
             {
                 EmitOpCode(OpCodes.Ldnull);
                 return null;
