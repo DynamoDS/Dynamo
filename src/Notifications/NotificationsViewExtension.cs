@@ -107,7 +107,7 @@ namespace Dynamo.Notifications
 
         private void LoadNotificationCenter()
         {
-            var dynamoView = (DynamoView)viewLoadedParams.DynamoWindow;
+            var dynamoView = viewLoadedParams.DynamoWindow as DynamoView;
             var notificationCenterController = new NotificationCenterController(dynamoView);
         }
 

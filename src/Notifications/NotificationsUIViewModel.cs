@@ -22,7 +22,7 @@ namespace Dynamo.Notifications
         public double PopupRectangleWidth { get; set; } = 310;
 
         /// <summary>
-        /// Popup Height, by default it will have a Height of 220
+        /// Popup Height, by default it will have a Height of 568
         /// </summary>
         public double PopupRectangleHeight { get; set; } = 568;
                 
