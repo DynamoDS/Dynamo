@@ -31,9 +31,13 @@ namespace DSCore
         /// <param name="hasStep">has step size been specified</param>
         /// <param name="hasAmountOp">has amount been specified</param>
         /// <returns></returns>
-        public static IList GenerateRangeIL(double start, double end, double step, long op, bool hasStep, bool hasAmountOp)
+        public static long[] GenerateRangeILInt(long start, long end, double step, long op, bool hasStep, bool hasAmountOp)
         {
-            return RangeExpressionUtils.RangeExpressionCore(start, end, step, (int)op, hasStep, hasAmountOp);
+            return RangeExpressionUtils.RangeExpressionInt(start, end, step, (int)op, hasStep, hasAmountOp);
+        }
+        public static double[] GenerateRangeILDouble(double start, double end, double step, long op, bool hasStep, bool hasAmountOp)
+        {
+            return RangeExpressionUtils.RangeExpressionDouble(start, end, step, (int)op, hasStep, hasAmountOp);
         }
         //TODO handle alphabetic ranges - overloads or dynamically.
     }
