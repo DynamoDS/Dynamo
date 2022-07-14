@@ -12,7 +12,7 @@ namespace Dynamo.Notifications
         public double ShadowTooltipDirection { get; set; } = 90;
 
         //This value will describe the needed space for drawing pointers inside the Popup
-        public int PopupBordersOffSet { get; set; } = 15;
+        internal int PopupBordersOffSet { get; set; } = 15;
 
         /// <summary>
         /// Popup Width, by default it will have an exaggerated Width to accommodate localized languages
@@ -24,7 +24,7 @@ namespace Dynamo.Notifications
         /// <summary>
         /// Popup Height, by default it will have a Height of 568
         /// </summary>
-        public double PopupRectangleHeight { get; set; } = 568;
+        internal double PopupRectangleHeight { get; set; } = 568;
                 
         double PointerWidth = 25;
 
