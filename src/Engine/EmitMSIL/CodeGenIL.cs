@@ -786,7 +786,9 @@ namespace EmitMSIL
             var stepNode = range.Step;
             var stepOp = range.StepOperator;
             var hasAmountOperator = range.HasRangeAmountOperator;
-
+            
+            //TODO in addition to checking if the inputs are constants, we can also check
+            //if they are identifiers for which we know the type.
            
             //TODO we may want to do this check again at runtime.
             if(stepNode is DoubleNode && stepOp == DSASM.RangeStepOperator.Number)

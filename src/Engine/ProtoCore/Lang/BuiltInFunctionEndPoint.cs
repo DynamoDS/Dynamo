@@ -1083,7 +1083,11 @@ namespace ProtoCore.Lang
         // For to include start and end. 
         internal static StackValue[] GenerateRangeByStepNumber(decimal start, decimal end, int stepnum, bool isIntRange)
         {
-            if (isIntRange)
+            decimal stepsize = (stepnum == 1) ? 0 : (end - start) / (stepnum - 1);
+            //if this is really a double range - call double range method.
+            isIntRange = isIntRange && (Math.Truncate(stepsize) == stepsize);
+            
+            if ( isIntRange )
             {
                 return GenerateRangeByStepNumberInt(start, end, stepnum).Select(x => StackValue.BuildInt(x)).ToArray();
             }
