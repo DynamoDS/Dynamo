@@ -186,12 +186,27 @@ namespace Dynamo.Tests
                         }
                         else
                         {
-                            // TODO: Add support for multi-outport nodes.
-                           //foreach(var p in n.OutPorts)
-                           {
-                                var objs = n.GetCSValue(/*p.Index*/0, controller).Cast<object>();
-                                portvalues.AddRange(objs.Select(x => x.ToString()));
-                           };
+                            portvalues.AddRange(n.OutPorts.Select(p =>
+                            {
+                                var objs = n.GetCSValue(p.Index, controller).Cast<object>();
+                                var values = objs.Select(x =>
+                                {
+                                    // This is because stackvalues directly store value types
+                                    // while they store the string representation of reference types.
+                                    if (x is long || x is int || x is double || x is char || x is bool)
+                                    {
+                                        return x;
+                                    }
+                                    else
+                                    {
+                                        return x.ToString();
+                                    }
+                                }).ToList();
+
+                                if(values.Count == 1) { return values[0]; }
+
+                                return values;
+                            }));
                         }
                     }
 
@@ -235,13 +250,9 @@ namespace Dynamo.Tests
                 Init(workspace, controller);
             }
         }
-        
-        /// <summary>
-        /// compare two workspace comparison objects that represent workspace models
-        /// </summary>
-        /// <param name="a"> first workspace data to compare</param>
-        /// <param name="b">second workspace data to compare</param>
-        public static void CompareWorkspaceModels(serializationTestUtils.WorkspaceComparisonData a, serializationTestUtils.WorkspaceComparisonData b, Dictionary<Guid, string> c = null)
+
+        private static void CompareWorkspaceModelsInternal(WorkspaceComparisonData a, WorkspaceComparisonData b, Dictionary<Guid, string> c = null,
+            bool dsExecution = true)
         {
             var nodeDiff = a.NodeTypeMap.Except(b.NodeTypeMap);
 
@@ -276,7 +287,7 @@ namespace Dynamo.Tests
 
                 var aData = a.PortDataMap[portkvp.Key];
                 var bData = b.PortDataMap[portkvp.Key];
-                
+
                 // With the change to JSON based IntegerSlider nodes returning 64 bit integers,
                 // the description between the old XML and the new JSON based workspaces will be
                 // "Int32" and "Int64" respectively.
@@ -323,6 +334,8 @@ namespace Dynamo.Tests
                 }
                 catch
                 {
+                    if (!dsExecution) throw;
+
                     continue;
                 }
             }
@@ -333,6 +346,20 @@ namespace Dynamo.Tests
                 var valb = b.InputsMap[kvp.Key];
                 Assert.AreEqual(vala, valb, "input datas are not the same.");
             }
+        }
+
+        internal static void CompareWorkspaceModelsMSIL(WorkspaceComparisonData a, WorkspaceComparisonData b, Dictionary<Guid, string> c = null)
+        {
+            CompareWorkspaceModelsInternal(a, b, c, dsExecution: false);
+        }
+        /// <summary>
+        /// compare two workspace comparison objects that represent workspace models
+        /// </summary>
+        /// <param name="a"> first workspace data to compare</param>
+        /// <param name="b">second workspace data to compare</param>
+        public static void CompareWorkspaceModels(WorkspaceComparisonData a, WorkspaceComparisonData b, Dictionary<Guid, string> c = null)
+        {
+            CompareWorkspaceModelsInternal(a, b, c);
         }
 
         public static void CompareWorkspacesDifferentGuids(serializationTestUtils.WorkspaceComparisonData a,

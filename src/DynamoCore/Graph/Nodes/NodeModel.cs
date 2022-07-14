@@ -1381,7 +1381,7 @@ namespace Dynamo.Graph.Nodes
 
         internal IList GetCSValue(int outPortIndex, EngineController engine)
         {
-            return engine.GetValue(AstIdentifierBase);
+            return engine.GetValue(GetAstIdentifierForOutputIndex(outPortIndex).Value);
         }
 
         /// <summary>
