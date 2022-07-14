@@ -851,7 +851,9 @@ namespace EmitMSIL
             }
             if (methodName == unselectedToken)
             {
-                //if we still have not been able to determine the type of range to generate, just generate a double range.
+                //if we still have not been able to determine the type of range to generate, temporarily generate a double range.
+                //TODO when we add alphabetic ranges we'll want to check for string/char types in the above logic but,
+                //if we still get to this line we'll need to call a dynamic version of generate range that boxes objects.
                 methodName = "GenerateRangeILDouble";
             }
                
