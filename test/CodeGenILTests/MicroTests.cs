@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using ProtoCore.AST.AssociativeAST;
 using System.Linq;
 using System;
 
@@ -27,7 +26,7 @@ namespace CodeGenILTests
         {
             codeGen.Reset();
         }
-
+#region constants
         [Test]
         public void RangeTestInts_nullstep()
         {
@@ -190,6 +189,56 @@ y = DSCore.Math.Sum(x);";
             Assert.IsNotEmpty(output);
             Assert.AreEqual(55, output.Values.ToList().First()[0]);
         }
+        #endregion
+        #region identifers
+        [Test]
+        public void Range_step_Ints_Idents()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+fr = 0;
+to = 10;
+step = 1;
+fr..to..step;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0,1,2,3,4,5,6,7,8,9,10 }, output.Values.ToList()[3][0] as long[]);
+        }
+        [Test]
+        public void Range_step_Doubles_Idents()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+fr = 0.0;
+to = 10.0;
+step = 1.0;
+fr..to..step;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output.Values.ToList()[3][0] as double[]);
+        }
+
+        [Test]
+        public void Range_step_Doubles_DifferentTypes()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+fr = 0.0;
+to = 10;
+step = 1.0;
+fr..to..step;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output.Values.ToList()[3][0] as double[]);
+        }
+
+        #endregion
 
     }
 }

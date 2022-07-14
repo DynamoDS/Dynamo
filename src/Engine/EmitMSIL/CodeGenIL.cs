@@ -11,6 +11,7 @@ using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using DSASM = ProtoCore.DSASM;
 using ProtoCore.Properties;
+using ProtoCore.Utils;
 
 namespace EmitMSIL
 {
@@ -558,22 +559,9 @@ namespace EmitMSIL
         private Type EmitIdentifierListNode(AssociativeNode node)
         {
             var iln = node as IdentifierListNode;
-            if(iln == null) throw new ArgumentException("AST node must be an Identifier List.");
-
-            //TODO this is a bit of a hack to support class names like DSCore.Math
-            //only works one level deep, I guess this should recurse?
-            if (iln.LeftNode is IdentifierListNode)
-            {
-                className = iln.LeftNode.ToString();
-            }
-            else
-            {
-                var ident = iln.LeftNode as IdentifierNode;
-                if (ident == null) throw new ArgumentException("Left node of IdentifierListNode is expected to be an identifier.");
-
-                className = ident.Value;
-            }
-
+            if (iln == null) throw new ArgumentException("AST node must be an Identifier List.");
+            className = CoreUtils.GetIdentifierExceptMethodName(iln);
+           
             return DfsTraverse(iln.RightNode);
         }
 
@@ -778,30 +766,42 @@ namespace EmitMSIL
             return double.NaN;
         }
 
-        private Type EmitRangeExprNode(AssociativeNode node)
+        private bool CheckIdentType<T>(IdentifierNode ident)
         {
+            if (variables.TryGetValue(ident.Value, out Tuple<int, Type> output))
+            {
+                if (typeof(T) == output.Item2)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+            private Type EmitRangeExprNode(AssociativeNode node)
+        {
+            if (compilePass == CompilePass.MethodLookup)
+            {
+                return null;
+            }
+            const string unselectedToken = "UNSELECTEDTOKEN";
+
             var range = node as RangeExprNode;
             var fromNode = range.From;
             var toNode = range.To;
             var stepNode = range.Step;
             var stepOp = range.StepOperator;
             var hasAmountOperator = range.HasRangeAmountOperator;
-            
-            //TODO in addition to checking if the inputs are constants, we can also check
-            //if they are identifiers for which we know the type.
-           
+
             //TODO we may want to do this check again at runtime.
             if(stepNode is DoubleNode && stepOp == DSASM.RangeStepOperator.Number)
             {
                 throw new ArgumentException(Resources.kInvalidAmountInRangeExpression);
             }
 
-            //do some checks to attempt to determine which range generate method to call.
-            //both ints
 
-            var methodName = "GenerateRangeILBox";
+            var methodName = unselectedToken;
 
-            
             var isIntStep = stepNode is IntNode stpInt ||
                 (hasAmountOperator && stepOp == DSASM.RangeStepOperator.StepSize && stepNode is DoubleNode stpDB && Math.Truncate(stpDB.Value) == stpDB.Value) ||
                 stepNode == null; 
@@ -830,7 +830,29 @@ namespace EmitMSIL
                 methodName = "GenerateRangeILDouble";
             }
 
-            //call generate range c# function.
+            //we still have not selected a method, lets check if our inputs are idents and have known types.
+            if(methodName == unselectedToken)
+            {
+                //if we are generating a simple range and we have all doubles or ints we know what methods to call
+                //in other cases we can't determine which overload to call without the values of these idents.
+                if (stepOp == DSASM.RangeStepOperator.StepSize)
+                {
+                    if (new[] { fromNode, toNode, stepNode }.All(x => x is IdentifierNode ident && CheckIdentType<long>(ident))){
+                        methodName = "GenerateRangeILInt";
+                    }
+                    else if (new[] { fromNode, toNode, stepNode }.All(x => x is IdentifierNode ident && CheckIdentType<double>(ident)))
+                    {
+                        methodName = "GenerateRangeILDouble";
+                    }
+                }
+            }
+            if (methodName == unselectedToken)
+            {
+                //if we still have not been able to determine the type of range to generate, just generate a double range.
+                methodName = "GenerateRangeILDouble";
+            }
+               
+            //call the generate method we've selected.
 
             IntNode op = null;
             switch (stepOp)
@@ -869,10 +891,7 @@ namespace EmitMSIL
             };
             //we want to cache the call to generate range, so traverse down in any case.
             var t = DfsTraverse(idlist);
-            if (compilePass == CompilePass.MethodLookup)
-            {
-                return null;
-            }
+          
             return t;
         }
 
