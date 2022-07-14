@@ -132,6 +132,14 @@ namespace Dynamo.ViewModels
                 e.Cancel = true;
         }
 
+        private void ShowFileDialogUpdatePath(TrustedPathEventArgs e)
+        {
+            OnRequestShowFileDialog(this, e);
+
+            if (e.Cancel == false && TrustedLocations.Contains(e.Path))
+                e.Cancel = true;
+        }
+
         private void UpdatePathAt(int index)
         {
             var args = new TrustedPathEventArgs
@@ -139,7 +147,7 @@ namespace Dynamo.ViewModels
                 Path = TrustedLocations[index]
             };
 
-            ShowFileDialog(args);
+            ShowFileDialogUpdatePath(args);
 
             if (args.Cancel)
                 return;
