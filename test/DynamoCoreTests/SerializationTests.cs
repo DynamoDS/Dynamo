@@ -188,7 +188,7 @@ namespace Dynamo.Tests
                         {
                             portvalues.AddRange(n.OutPorts.Select(p =>
                             {
-                                var objs = n.GetCSValue(p.Index, controller).Cast<object>();
+                                var objs = n.GetCLRValue(p.Index, controller).Cast<object>();
                                 var values = objs.Select(x =>
                                 {
                                     // This is because stackvalues directly store value types
