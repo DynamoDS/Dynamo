@@ -223,7 +223,7 @@ fr..to..step;";
         }
 
         [Test]
-        public void Range_step_Doubles_DifferentTypes()
+        public void Range_step_Doubles_DifferentTypes_idents()
         {
             var dscode = @"
 import(""DSCoreNodes.dll"");
@@ -237,7 +237,39 @@ fr..to..step;";
             Assert.IsNotEmpty(output);
             CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output.Values.ToList()[3][0] as double[]);
         }
+        [Test]
+        public void Range_amount_Doubles_idents()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+fr = 0;
+to = 10;
+step = 5;
+fr..to..#step;";
 
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0, 2.5, 5, 7.5, 10 }, output.Values.ToList()[3][0] as double[]);
+        }
+        //NOTE that is test illustrates the difference between the from..#amount..step range form where step is a double that 
+        //can be represnted by an int - in the old vm and if we know the types we can create an int range - but when using identifers, we
+        //just return a double range because we can't figure it out ahead of time without knowing the input values.
+        [Test]
+        public void Range_Number_Step_IntAndDouble_DoubleRange_Idents()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+fr = 0;
+to = 10;
+step = 5.0;
+fr..#to..step;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0, 5, 10, 15, 20, 25, 30, 35, 40, 45 }, output.Values.ToList()[3][0] as double[]);
+        }
         #endregion
 
     }
