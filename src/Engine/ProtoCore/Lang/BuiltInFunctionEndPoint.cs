@@ -1036,7 +1036,6 @@ namespace ProtoCore.Lang
         //overloads to avoid returning object[] and boxing/unboxing.
         internal static long[] GenerateRangeByStepNumberInt(decimal start, decimal end, long stepnum)
         {
-            //TODO watch stepnum - could this cause type issues with floating points?
             decimal stepsize = (stepnum == 1) ? 0 : (end - start) / (stepnum - 1);
 
             long[] range = new long[stepnum > 1 ? stepnum : 1];
@@ -1058,7 +1057,6 @@ namespace ProtoCore.Lang
         }
         internal static double[] GenerateRangeByStepNumberDouble(decimal start, decimal end, long stepnum)
         {
-            //TODO watch stepnum - could this cause type issues with floating points?
             decimal stepsize = (stepnum == 1) ? 0 : (end - start) / (stepnum - 1);
 
             double[] range = new double[stepnum > 1 ? stepnum : 1];

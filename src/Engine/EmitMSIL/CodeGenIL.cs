@@ -1001,10 +1001,6 @@ namespace EmitMSIL
         {
             writer?.Dispose();
         }
-        public void Reset()
-        {
-            writer?.Close();
-        }
     }
 
 }

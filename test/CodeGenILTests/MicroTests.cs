@@ -24,7 +24,7 @@ namespace CodeGenILTests
         [TearDown]
         public void TearDown()
         {
-            codeGen.Reset();
+            codeGen.Dispose();
         }
 #region constants
         [Test]
