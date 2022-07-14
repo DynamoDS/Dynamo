@@ -780,6 +780,9 @@ namespace EmitMSIL
 
             private Type EmitRangeExprNode(AssociativeNode node)
         {
+            //we don't do anything if this is the methodlookup phase
+            //as we need want to access the variable types which are not computed
+            //until the emitIL phase.
             if (compilePass == CompilePass.MethodLookup)
             {
                 return null;
