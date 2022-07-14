@@ -6,6 +6,7 @@ using System.IO;
 using System.Reflection;
 using ProtoCore.AST.AssociativeAST;
 using System.Linq;
+using System;
 
 namespace CodeGenILTests
 {
@@ -21,9 +22,14 @@ namespace CodeGenILTests
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(assemblyPath, "OpCodesTEST.txt"));
         }
+        [TearDown]
+        public void TearDown()
+        {
+            codeGen.Reset();
+        }
 
         [Test]
-        public void RangeTestInts()
+        public void RangeTestInts_nullstep()
         {
             var dscode = @"
 import(""DSCoreNodes.dll"");
@@ -32,7 +38,56 @@ import(""DSCoreNodes.dll"");
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10 }, output.Values.ToList().First()[0] as object[]);
+            CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10 }, output.Values.ToList().First()[0] as long[]);
+        }
+        [Test]
+        public void RangeTestIntStep_ints()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+0..10..2;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0, 2, 4, 6, 8, 10 }, output.Values.ToList().First()[0] as long[]);
+        }
+        [Test]
+        public void RangeTestDoubleStep_doubles()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+0..10..2.0;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0, 2, 4,6,8,10 }, output.Values.ToList().First()[0] as double[]);
+        }
+
+        [Test]
+        public void RangeTestAmountByStep_DoubleStep_IntRange()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+0..#10..5.0;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0, 5, 10, 15, 20, 25,30,35, 40,45 }, output.Values.ToList().First()[0] as long[]);
+        }
+        [Test]
+        public void RangeTestAmountByStep_IntStep_IntRange()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+0..#10..5;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0, 5, 10, 15, 20, 25, 30, 35, 40, 45 }, output.Values.ToList().First()[0] as long[]);
         }
         [Test]
         public void RangeTestDouble()
@@ -44,12 +99,85 @@ import(""DSCoreNodes.dll"");
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0,1.1 }, output.Values.ToList().First()[0] as object[]);
+            CollectionAssert.AreEqual(new object[] { 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0,1.1 }, output.Values.ToList().First()[0] as double[]);
         }
+
+        [Test]
+        public void DoubleAmountThrows()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+0..10..#5.0;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            Assert.Throws<ArgumentException>(() =>
+            {
+
+                var output = codeGen.EmitAndExecute(ast);
+                Assert.IsNotEmpty(output);
+                Assert.AreEqual(null, output.Values.ToList().First()[0]);
+
+            });
+            
+           
+        }
+
+        [Test]
+        public void RangeAmountDoubles()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+0.0..10.0..#5;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0,2.5,5,7.5,10 }, output.Values.ToList().First()[0] as double[]);
+        }
+        [Test]
+        public void RangeAmountInts_returnsDoubles()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+0..10..#5;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0, 2.5, 5, 7.5, 10 }, output.Values.ToList().First()[0] as double[]);
+        }
+        [Test]
+        public void RangeAmountInts_returnsInts()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+0..10..#2;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            CollectionAssert.AreEqual(new object[] { 0, 10 }, output.Values.ToList().First()[0] as long[]);
+        }
+
+       
+        [Test]
+        public void RangeApproximateStep_Doubles()
+        {
+            var dscode = @"
+import(""DSCoreNodes.dll"");
+0..10..~3;";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            //irrational numbers! 0,3.33333,6.66666,10
+            CollectionAssert.AreEqual(new object[] { 0, 10d/3d, (10d / 3d)*2, 10 }, output.Values.ToList().First()[0] as double[]);
+        }
+
 
         [Category("Failure")]
         [Test]
-        //'Object of type 'System.Object[]' cannot be converted to type 'System.Collections.Generic.IEnumerable`1[System.Double]'.'
+        //'Object of type 'System.int64[]' cannot be converted to type 'System.Collections.Generic.IEnumerable`1[System.Double]'.'
         public void SumIntRange_TypeCoerNeeded()
         {
             var dscode = @"

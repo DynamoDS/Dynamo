@@ -10,10 +10,11 @@ using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using DSASM = ProtoCore.DSASM;
+using ProtoCore.Properties;
 
 namespace EmitMSIL
 {
-    public class CodeGenIL
+    public class CodeGenIL:IDisposable
     {
         private ILGenerator ilGen;
         internal string className;
@@ -758,6 +759,25 @@ namespace EmitMSIL
             throw new NotImplementedException();
         }
 
+
+
+        private double GetStepValueAsDouble(AssociativeNode stepNode)
+        {
+            if(stepNode == null)
+            {
+                return 1;
+            }
+            if(stepNode is IntNode stpInt)
+            {
+                return stpInt.Value;
+            }
+            if(stepNode is DoubleNode stpDB)
+            {
+                return stpDB.Value;
+            }
+            return double.NaN;
+        }
+
         private Type EmitRangeExprNode(AssociativeNode node)
         {
             var range = node as RangeExprNode;
@@ -767,7 +787,46 @@ namespace EmitMSIL
             var stepOp = range.StepOperator;
             var hasAmountOperator = range.HasRangeAmountOperator;
 
-            //TODO If the from / to nodes are constants we can do some checks
+           
+            //TODO we may want to do this check again at runtime.
+            if(stepNode is DoubleNode && stepOp == DSASM.RangeStepOperator.Number)
+            {
+                throw new ArgumentException(Resources.kInvalidAmountInRangeExpression);
+            }
+
+            //do some checks to attempt to determine which range generate method to call.
+            //both ints
+
+            var methodName = "GenerateRangeILBox";
+
+            
+            var isIntStep = stepNode is IntNode stpInt ||
+                (hasAmountOperator && stepOp == DSASM.RangeStepOperator.StepSize && stepNode is DoubleNode stpDB && Math.Truncate(stpDB.Value) == stpDB.Value) ||
+                stepNode == null; 
+            
+
+            if (fromNode is IntNode fint && toNode is IntNode tint && isIntStep)
+            {
+
+                var stpval = GetStepValueAsDouble(stepNode);
+                //the requested range was not divided evenly by the approximate step, so we create a double range.
+                if (stepOp == DSASM.RangeStepOperator.ApproximateSize &&  Math.Abs(fint.Value - tint.Value)%stpval != 0 ||
+                 //the requested number of items does not fit evenly into the range, so we create a double range.
+                   stepOp == DSASM.RangeStepOperator.Number && (Math.Abs(fint.Value - tint.Value) % (stpval-1) != 0)
+                   )
+                {
+                    methodName = "GenerateRangeILDouble";
+                }
+                else
+                {
+                    methodName = "GenerateRangeILInt";
+                }
+            }
+
+            else if(fromNode is DoubleNode || toNode is DoubleNode || stepNode is DoubleNode)
+            {
+                methodName = "GenerateRangeILDouble";
+            }
 
             //call generate range c# function.
 
@@ -796,10 +855,11 @@ namespace EmitMSIL
                 AstFactory.BuildBooleanNode(stepNode != null),
                 AstFactory.BuildBooleanNode(hasAmountOperator),
             };
-            //TODO shortest lacing?
+
             //TODO without more refactoring we cannot reference the names of the generate range functions. fix that.
             //maybe move to designscriptbuiltins and use type forwarding for enum?
-            var rangeExprFunc = AstFactory.BuildFunctionCall("GenerateRangeIL", arguments);
+
+            var rangeExprFunc = AstFactory.BuildFunctionCall(methodName, arguments);
             var idlist = new IdentifierListNode()
             {
                 LeftNode = new IdentifierNode("DSCore.RangeHelpers"),
@@ -913,6 +973,14 @@ namespace EmitMSIL
             throw new ArgumentException("Identifier node expected.");
         }
 
+        public void Dispose()
+        {
+            writer?.Dispose();
+        }
+        public void Reset()
+        {
+            writer?.Close();
+        }
     }
 
 }
