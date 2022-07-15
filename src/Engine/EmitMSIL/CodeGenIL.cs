@@ -56,7 +56,7 @@ namespace EmitMSIL
 
         public IDictionary<string, IList> Emit(List<AssociativeNode> astList)
         {
-            var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndCollect);
+            var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndSave);
 
             // Invoke emitted method (ExecuteIL.Execute)
             var t = compileResult.tbuilder.CreateType();
