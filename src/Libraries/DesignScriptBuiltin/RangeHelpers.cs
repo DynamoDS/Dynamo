@@ -31,11 +31,6 @@ namespace Builtin
 {
     //TODO for now suppress import into DS VM.
     [SupressImportIntoVM]
-    //TODO consider moving this entire file to DesignScriptBuiltins - this was not done now
-    //because DesignScriptBuiltins cannot reference protocore - where some range enums are defined
-    //and this refactor did not seem high priority at the moment. 
-    // cyclic dep. :)
-    //!! Everything in here should stay internal so we can move it.
     public class RangeHelpers
     {
         //TODO op is specified as a long - even though it is an int.
