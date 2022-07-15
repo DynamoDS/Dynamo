@@ -9,7 +9,7 @@ namespace FFITarget
     {
         public static IList ReturnIList(IEnumerable<int> data)
         {
-            return new List<object> { 1, 2.3, false, "asda", new DummyCollection() };
+            return data.ToList();
         }
 
         public static IEnumerable ReturnIEnumerable(IEnumerable data)
