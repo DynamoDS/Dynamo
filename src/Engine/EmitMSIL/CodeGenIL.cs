@@ -39,7 +39,7 @@ namespace EmitMSIL
             unchecked
             {
                 int hash = 0;
-                hash = (hash * 397) ^ className.GetHashCode();
+                if (className != null) hash = 0 ^ className.GetHashCode();
                 hash = (hash * 397) ^ methodName.GetHashCode();
                 return hash + numParameters;
             }
@@ -114,51 +114,67 @@ namespace EmitMSIL
             }
             else
             {
-                var modules = ProtoFFI.DLLFFIHandler.Modules.Values.OfType<ProtoFFI.CLRDLLModule>();
-                var assemblies = modules.Select(m => m.Assembly ?? (m.Module?.Assembly)).Where(m => m != null);
-                foreach (var asm in assemblies)
+                if (className != "BuildtIn")
                 {
-                    var type = asm.GetType(className);
-                    if (type == null) continue;
-
-                    // There should be a way to get the exact method after matching parameter types for a node
-                    // using its function descriptor. AST isn't sufficient for parameter type info.
-                    // Fist check for static methods
-                    mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
-                        m => m.Name == methodName && m.GetParameters().Length == args.Count).ToList();
-
-                    // Check for instance methods
-                    if (mi == null || !mi.Any())
+                    var modules = ProtoFFI.DLLFFIHandler.Modules.Values.OfType<ProtoFFI.CLRDLLModule>();
+                    var assemblies = modules.Select(m => m.Assembly ?? (m.Module?.Assembly)).Where(m => m != null);
+                    foreach (var asm in assemblies)
                     {
-                        mi = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
-                            m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).ToList();
-                    }
+                        var type = asm.GetType(className);
+                        if (type == null) continue;
 
-                    // Check for property getters
-                    if (mi == null || !mi.Any())
-                    {
-                        var prop = type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).Where(
-                                p => p.Name == methodName).FirstOrDefault();
+                        // There should be a way to get the exact method after matching parameter types for a node
+                        // using its function descriptor. AST isn't sufficient for parameter type info.
+                        // Fist check for static methods
+                        mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
+                            m => m.Name == methodName && m.GetParameters().Length == args.Count).ToList();
 
-                        if (prop != null)
+                        // Check for instance methods
+                        if (mi == null || !mi.Any())
                         {
-                            mi = prop.GetAccessors().ToList();
+                            mi = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
+                                m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).ToList();
                         }
-                    }
 
-                    // TODO: Add check for constructorinfo objects
+                        // Check for property getters
+                        if (mi == null || !mi.Any())
+                        {
+                            var prop = type
+                                .GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).Where(
+                                    p => p.Name == methodName).FirstOrDefault();
+
+                            if (prop != null)
+                            {
+                                mi = prop.GetAccessors().ToList();
+                            }
+                        }
+
+                        // TODO: Add check for constructorinfo objects
+
+                        if (mi != null)
+                        {
+                            methodCache.Add(key, mi);
+                            break;
+                        }
+
+                        //if (method != null)
+                        //{
+                        //    argTypes = method.GetParameters().Select(p => p.ParameterType).ToList();
+                        //    return method.ReturnType;
+                        //}
+                    }
+                }
+                else
+                {
+                    var type = this.GetType();
+                    var test = type.GetMethods(BindingFlags.Public | BindingFlags.Static).ToList();
+                    mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
+                        m => m.Name == "Add" && m.GetParameters().Length == args.Count).ToList();
 
                     if (mi != null)
                     {
                         methodCache.Add(key, mi);
-                        break;
                     }
-
-                    //if (method != null)
-                    //{
-                    //    argTypes = method.GetParameters().Select(p => p.ParameterType).ToList();
-                    //    return method.ReturnType;
-                    //}
                 }
             }
             if (mi == null)
@@ -166,6 +182,11 @@ namespace EmitMSIL
                 throw new MissingMethodException("No matching method found in loaded assemblies.");
             }
             return mi;
+        }
+
+        public static int Add(int a, int b)
+        {
+            return a + b;
         }
 
         private static HashSet<Type> GetTypeStatisticsForArray(ExprListNode array)
@@ -586,9 +607,16 @@ namespace EmitMSIL
             var fcn = node as FunctionCallNode;
             if (fcn == null) throw new ArgumentException("AST node must be a Function Call Node.");
 
+            var fcdn = node as FunctionDotCallNode;
+
             methodName = fcn.Function.Name;
             var args = fcn.FormalArguments;
             var numArgs = args.Count;
+
+            if (className == null)
+            {
+                className = "BuildtIn";
+            }
 
             if(compilePass == CompilePass.MethodLookup)
             {
