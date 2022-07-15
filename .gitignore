@@ -100,3 +100,6 @@ test/core/customast/test.txt
 test/core/files/test.png
 test/core/migration/writetext.txt
 logo.png
+/src/Notifications/node_modules
+/src/Notifications/package.json
+/src/Notifications/package-lock.json

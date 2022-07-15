@@ -23,8 +23,7 @@ namespace Dynamo.Notifications
         private static int notificationPopupVerticalOffset = 10;
 
         private static string htmlEmbeddedFile = "Dynamo.Notifications.Web.index.html";
-        private static string fontEmbeddedFile = "Dynamo.Notifications.Web.ArtifaktElement-Regular.woff";
-        private static string jsEmbeddedFile = "Dynamo.Notifications.Web.index.bundle.js";
+        private static string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynam0.notificati0ns.index.js";
 
         public NotificationCenterController(DynamoView dynamoView)
         {
@@ -65,12 +64,6 @@ namespace Dynamo.Notifications
             {
                 var jsString = reader.ReadToEnd();
                 htmlString = htmlString.Replace("#mainJs", jsString);
-            }
-
-            using (Stream stream = assembly.GetManifestResourceStream(fontEmbeddedFile))
-            {
-                var resourceBase64 = Utilities.ResourceUtilities.ConvertToBase64(stream);
-                htmlString = htmlString.Replace("#fontStyle", resourceBase64);
             }
 
             if(notificationUIPopup.webView.CoreWebView2 != null)

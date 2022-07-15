@@ -36,31 +36,14 @@ namespace DynamoCoreWpfTests.ViewExtensions
         {
             var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x=>x.ManifestModule.Name.Contains("Notifications.dll"));
             var htmlFile = "Dynamo.Notifications.Web.index.html";
-            var fontFile = "Dynamo.Notifications.Web.ArtifaktElement-Regular.woff";
-            var jsFile = "Dynamo.Notifications.Web.index.bundle.js";
 
-            var mainJstag = "#mainJs";
-            var fontStyleTag = "#fontStyle";            
+            var mainJstag = "#mainJs";     
 
             using (Stream stream = assembly.GetManifestResourceStream(htmlFile))
             using (StreamReader reader = new StreamReader(stream))
             {
                 string htmlString = reader.ReadToEnd();
                 Assert.IsTrue(htmlString.Contains(mainJstag));
-                Assert.IsTrue(htmlString.Contains(fontStyleTag));
-            }
-
-            using (Stream stream = assembly.GetManifestResourceStream(jsFile))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                var jsString = reader.ReadToEnd();
-                Assert.IsFalse(string.IsNullOrEmpty(jsString));
-            }
-
-            using (Stream stream = assembly.GetManifestResourceStream(fontFile))
-            {
-                var resourceBase64 = ResourceUtilities.ConvertToBase64(stream);
-                Assert.IsFalse(string.IsNullOrEmpty(resourceBase64));
             }
         }
     }
