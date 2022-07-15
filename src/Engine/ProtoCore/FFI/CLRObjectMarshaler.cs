@@ -1112,18 +1112,20 @@ namespace ProtoFFI
 
             if (mCachedObjType != objType)
             {
-                mCachedObjType = objType;
-
                 var classTable = runtimeCore.DSExecutable.classTable;
-                mCachedType = classTable.IndexOf(GetTypeName(objType));
+                var typeIndex = classTable.IndexOf(GetTypeName(objType));
                 
                 //Recursively get the base class type if available.
-                while (mCachedType == -1 && objType != null)
+                while (typeIndex == -1 && objType != null)
                 {
                     objType = objType.BaseType;
                     if (null != objType)
-                        mCachedType = classTable.IndexOf(GetTypeName(objType));
+                        typeIndex = classTable.IndexOf(GetTypeName(objType));
                 }
+
+                //Set cached values at end...  maybe need a lock?
+                mCachedObjType = objType;
+                mCachedType = typeIndex;
             }
 
             MetaData metadata;
@@ -1295,15 +1297,16 @@ namespace ProtoFFI
         /// <param name="dsobj"></param>
         private void BindObjects(object obj, StackValue dsobj)
         {
+            lock (DSObjectMap)
+            {
 #if DEBUG
-            if (DSObjectMap.ContainsKey(dsobj))
+                if (DSObjectMap.ContainsKey(dsobj))
                 throw new InvalidOperationException("Object reference already mapped");
 
             if (CLRObjectMap.ContainsKey(obj))
                 throw new InvalidOperationException("Object reference already mapped");
 #endif
-            lock (DSObjectMap)
-            {
+            
                 DSObjectMap[dsobj] = obj;
                 CLRObjectMap[obj] = dsobj;
             }

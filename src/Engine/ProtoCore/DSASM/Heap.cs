@@ -551,8 +551,11 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                heapElements.Add(hpe);
-                index = heapElements.Count - 1;
+                lock (heapElements)
+                {
+                    heapElements.Add(hpe);
+                    index = heapElements.Count - 1;
+                }
             }
 
             return index;
@@ -610,17 +613,21 @@ namespace ProtoCore.DSASM
 
         private bool TryFindFreeIndex(out int index)
         {
-            int freeItemCount = freeList.Count;
-            if (freeItemCount > 0)
+            //Need to lock freelist for heap allocation
+            lock (freeList)
             {
-                index = freeList[freeItemCount - 1];
-                freeList.RemoveAt(freeItemCount - 1);
-                return true;
-            }
-            else
-            {
-                index = Constants.kInvalidIndex;
-                return false;
+                int freeItemCount = freeList.Count;
+                if (freeItemCount > 0)
+                {
+                    index = freeList[freeItemCount - 1];
+                    freeList.RemoveAt(freeItemCount - 1);
+                    return true;
+                }
+                else
+                {
+                    index = Constants.kInvalidIndex;
+                    return false;
+                }
             }
         }
 

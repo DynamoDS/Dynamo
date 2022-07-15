@@ -241,11 +241,15 @@ namespace ProtoCore
             if (!sv.IsReferenceType)
                 return;
 
-            if (!callsiteGCRoots.ContainsKey(callSiteID))
-                callsiteGCRoots[callSiteID] = new List<StackValue>();
+            //need to lock the callsiteGDRoots and the stackvalue add
+            lock (callsiteGCRoots) 
+            { 
+                if (!callsiteGCRoots.ContainsKey(callSiteID))
+                    callsiteGCRoots[callSiteID] = new List<StackValue>();
 
-            List<StackValue> svs = callsiteGCRoots[callSiteID];
-            svs.Add(sv); 
+                List<StackValue> svs = callsiteGCRoots[callSiteID];
+                svs.Add(sv);
+            }
         }
 
         public void RemoveCallSiteGCRoot(Guid callSiteID)

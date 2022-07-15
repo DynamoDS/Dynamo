@@ -27,7 +27,7 @@ namespace ProtoCore.Lang
         public FFIActivationRecord activation;
         private FFIFunctionPointer mFunctionPointer;
         private Interpreter mInterpreter;
-        private ProcedureNode mFNode;
+        internal ProcedureNode mFNode;
 
         public FFIFunctionEndPoint(FFIActivationRecord record)
         {
@@ -47,7 +47,7 @@ namespace ProtoCore.Lang
             return true;
         }
 
-        private void Init(RuntimeCore runtimeCore)
+        internal void Init(RuntimeCore runtimeCore)
         {
             if (mInterpreter != null) return;
 
