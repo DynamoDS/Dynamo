@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Builtin;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
 using ProtoCore.Lang.Replication;
@@ -1032,28 +1033,22 @@ namespace ProtoCore.Lang
     }
     internal class RangeExpressionUtils
     {
+      
         // For to include start and end. 
         internal static StackValue[] GenerateRangeByStepNumber(decimal start, decimal end, int stepnum, bool isIntRange)
         {
             decimal stepsize = (stepnum == 1) ? 0 : (end - start) / (stepnum - 1);
+            //if this is really a double range - call double range method.
             isIntRange = isIntRange && (Math.Truncate(stepsize) == stepsize);
-
-            StackValue[] range = new StackValue[stepnum > 1 ? stepnum : 1];
-            range[0] = isIntRange ? StackValue.BuildInt((int)start) : StackValue.BuildDouble((double)start);
-
-            decimal cur = start;
-            for (int i = 1; i < stepnum - 1; ++i)
+            
+            if ( isIntRange )
             {
-                cur += stepsize;
-                range[i] = isIntRange ? StackValue.BuildInt((int)cur) : StackValue.BuildDouble((double)cur);
+                return RangeHelpers.GenerateRangeByStepNumberInt(start, end, stepnum).Select(x => StackValue.BuildInt(x)).ToArray();
             }
-
-            if (stepnum > 1)
+            else
             {
-                range[(int)stepnum - 1] = isIntRange ? StackValue.BuildInt((int)end) : StackValue.BuildDouble((double)end);
+                return RangeHelpers.GenerateRangeByStepNumberDouble(start, end, stepnum).Select(x => StackValue.BuildDouble(x)).ToArray();
             }
-
-            return range;
         }
 
         internal static StackValue RangeExpression(
@@ -1100,6 +1095,8 @@ namespace ProtoCore.Lang
 
             if (svStart.IsNumeric)
             {
+                //TODO replace this call with calls to RangeExpressionInt and RangeExpressionDouble...
+                //and then convert results to stackvalue[]
                 range = GenerateNumericRange(svStart, svEnd, svStep, svOp, hasStep, hasAmountOp, runtimeCore);
             }
             else
@@ -1124,6 +1121,8 @@ namespace ProtoCore.Lang
                 return StackValue.Null;
             }
         }
+
+   
 
         private static StackValue[] GenerateNumericRange(
             StackValue svStart,
