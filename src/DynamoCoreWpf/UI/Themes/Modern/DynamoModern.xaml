@@ -2875,17 +2875,17 @@
         </Setter>
     </Style>
 
-    <Style x:Key="FolderButtonStyle" TargetType="Button">
+    <Style x:Key="EditFolderButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Image Name="folderIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/folder_16_16.png"/>
+                        <Image Name="folderIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/edit_folder_16px_default.png"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="folderIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/folder-hover-16px.png" />
+                            <Setter TargetName="folderIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/edit_folder_16px_hover.png" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value=".5" />
@@ -3609,7 +3609,7 @@
                                 Grid.Row="1"
                                 BorderThickness="1,0,1,1"
                                 CornerRadius="0,0,4,4">
-                            <ContentPresenter Margin="12,0,0,15" />
+                            <ContentPresenter Margin="12,0,0,12" />
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -4830,7 +4830,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Grid Margin="0,0,10,10"
+                    <Grid Margin="0,0,10,5"
                                   MinWidth="186"
                                   MinHeight="67">
                         <Border x:Name="mouseOverBorder"
