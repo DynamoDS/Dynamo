@@ -126,4 +126,13 @@
   <data name="NullReferenceExceptionMessage" xml:space="preserve">
     <value>Cannot index into a null list, dictionary or string.</value>
   </data>
+  <data name="kInvalidAmountInRangeExpression" xml:space="preserve">
+    <value />
+  </data>
+  <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RangeExpressionOutOfMemory" xml:space="preserve">
+    <value />
+  </data>
 </root>

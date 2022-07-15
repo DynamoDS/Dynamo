@@ -788,6 +788,8 @@ namespace EmitMSIL
                 return null;
             }
             const string unselectedToken = "UNSELECTEDTOKEN";
+            const string intRangeMethodName = nameof(Builtin.RangeHelpers.GenerateRangeILInt);
+            const string doubleRangeMethodName = nameof(Builtin.RangeHelpers.GenerateRangeILDouble);
 
             var range = node as RangeExprNode;
             var fromNode = range.From;
@@ -820,17 +822,17 @@ namespace EmitMSIL
                    stepOp == DSASM.RangeStepOperator.Number && (Math.Abs(fint.Value - tint.Value) % (stpval-1) != 0)
                    )
                 {
-                    methodName = "GenerateRangeILDouble";
+                    methodName = doubleRangeMethodName;
                 }
                 else
                 {
-                    methodName = "GenerateRangeILInt";
+                    methodName = intRangeMethodName;
                 }
             }
 
             else if(fromNode is DoubleNode || toNode is DoubleNode || stepNode is DoubleNode)
             {
-                methodName = "GenerateRangeILDouble";
+                methodName = doubleRangeMethodName;
             }
 
             //we still have not selected a method, lets check if our inputs are idents and have known types.
@@ -841,11 +843,11 @@ namespace EmitMSIL
                 if (stepOp == DSASM.RangeStepOperator.StepSize)
                 {
                     if (new[] { fromNode, toNode, stepNode }.All(x => x is IdentifierNode ident && CheckIdentType<long>(ident))){
-                        methodName = "GenerateRangeILInt";
+                        methodName = intRangeMethodName;
                     }
                     else if (new[] { fromNode, toNode, stepNode }.All(x => x is IdentifierNode ident && CheckIdentType<double>(ident)))
                     {
-                        methodName = "GenerateRangeILDouble";
+                        methodName = doubleRangeMethodName;
                     }
                 }
             }
@@ -854,7 +856,7 @@ namespace EmitMSIL
                 //if we still have not been able to determine the type of range to generate, temporarily generate a double range.
                 //TODO when we add alphabetic ranges we'll want to check for string/char types in the above logic but,
                 //if we still get to this line we'll need to call a dynamic version of generate range that boxes objects.
-                methodName = "GenerateRangeILDouble";
+                methodName = doubleRangeMethodName;
             }
                
             //call the generate method we've selected.
@@ -885,13 +887,11 @@ namespace EmitMSIL
                 AstFactory.BuildBooleanNode(hasAmountOperator),
             };
 
-            //TODO without more refactoring we cannot reference the names of the generate range functions. fix that.
-            //maybe move to designscriptbuiltins and use type forwarding for enum?
-
+            
             var rangeExprFunc = AstFactory.BuildFunctionCall(methodName, arguments);
             var idlist = new IdentifierListNode()
             {
-                LeftNode = new IdentifierNode("DSCore.RangeHelpers"),
+                LeftNode = new IdentifierNode(typeof(Builtin.RangeHelpers).FullName),
                 RightNode = rangeExprFunc
             };
             //we want to cache the call to generate range, so traverse down in any case.

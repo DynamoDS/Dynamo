@@ -19,27 +19,27 @@ namespace Builtin.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class DesignScriptBuiltin {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal DesignScriptBuiltin() {
+        internal Resources() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Builtin.Properties.DesignScriptBuiltin", typeof(DesignScriptBuiltin).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Builtin.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace Builtin.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,25 +63,52 @@ namespace Builtin.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Index was out of range. If non-negative must be less than the size of the list. href=kIndexOutOfRange.html.
         /// </summary>
-        internal static string IndexOutOfRangeExceptionMessage {
+        public static string IndexOutOfRangeExceptionMessage {
             get {
                 return ResourceManager.GetString("IndexOutOfRangeExceptionMessage", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string kInvalidAmountInRangeExpression {
+            get {
+                return ResourceManager.GetString("kInvalidAmountInRangeExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string kNoStepSizeInAmountRangeExpression {
+            get {
+                return ResourceManager.GetString("kNoStepSizeInAmountRangeExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot index into a null list, dictionary or string..
         /// </summary>
-        internal static string NullReferenceExceptionMessage {
+        public static string NullReferenceExceptionMessage {
             get {
                 return ResourceManager.GetString("NullReferenceExceptionMessage", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string RangeExpressionOutOfMemory {
+            get {
+                return ResourceManager.GetString("RangeExpressionOutOfMemory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Index was out of range. If non-negative must be less than the size of the string. href=kIndexOutOfRange.html.
         /// </summary>
-        internal static string StringOverIndexingExceptionMessage {
+        public static string StringOverIndexingExceptionMessage {
             get {
                 return ResourceManager.GetString("StringOverIndexingExceptionMessage", resourceCulture);
             }

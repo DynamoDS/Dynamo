@@ -19,3 +19,5 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]
 [assembly: InternalsVisibleTo("ProtoAssociative")]
 [assembly: InternalsVisibleTo("DSCoreNodes")]
+
+[assembly:TypeForwardedTo(typeof(ProtoCore.DSASM.RangeStepOperator))]

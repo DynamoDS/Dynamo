@@ -31,7 +31,7 @@ namespace CodeGenILTests
         public void RangeTestInts_nullstep()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 0..10;";
 
             var ast = ParserUtils.Parse(dscode).Body;
@@ -43,7 +43,7 @@ import(""DSCoreNodes.dll"");
         public void RangeTestIntStep_ints()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 0..10..2;";
 
             var ast = ParserUtils.Parse(dscode).Body;
@@ -55,7 +55,7 @@ import(""DSCoreNodes.dll"");
         public void RangeTestDoubleStep_doubles()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 0..10..2.0;";
 
             var ast = ParserUtils.Parse(dscode).Body;
@@ -68,7 +68,7 @@ import(""DSCoreNodes.dll"");
         public void RangeTestAmountByStep_DoubleStep_IntRange()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 0..#10..5.0;";
 
             var ast = ParserUtils.Parse(dscode).Body;
@@ -80,7 +80,7 @@ import(""DSCoreNodes.dll"");
         public void RangeTestAmountByStep_IntStep_IntRange()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 0..#10..5;";
 
             var ast = ParserUtils.Parse(dscode).Body;
@@ -92,7 +92,7 @@ import(""DSCoreNodes.dll"");
         public void RangeTestDouble()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 0..1.1..0.1;";
 
             var ast = ParserUtils.Parse(dscode).Body;
@@ -105,7 +105,7 @@ import(""DSCoreNodes.dll"");
         public void DoubleAmountThrows()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 0..10..#5.0;";
 
             var ast = ParserUtils.Parse(dscode).Body;
@@ -125,7 +125,7 @@ import(""DSCoreNodes.dll"");
         public void RangeAmountDoubles()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 0.0..10.0..#5;";
 
             var ast = ParserUtils.Parse(dscode).Body;
@@ -137,7 +137,7 @@ import(""DSCoreNodes.dll"");
         public void RangeAmountInts_returnsDoubles()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 0..10..#5;";
 
             var ast = ParserUtils.Parse(dscode).Body;
@@ -149,7 +149,7 @@ import(""DSCoreNodes.dll"");
         public void RangeAmountInts_returnsInts()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 0..10..#2;";
 
             var ast = ParserUtils.Parse(dscode).Body;
@@ -163,7 +163,7 @@ import(""DSCoreNodes.dll"");
         public void RangeApproximateStep_Doubles()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 0..10..~3;";
 
             var ast = ParserUtils.Parse(dscode).Body;
@@ -180,7 +180,7 @@ import(""DSCoreNodes.dll"");
         public void SumIntRange_TypeCoerNeeded()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 x = 0..10;
 y = DSCore.Math.Sum(x);";
 
@@ -195,7 +195,7 @@ y = DSCore.Math.Sum(x);";
         public void Range_step_Ints_Idents()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 fr = 0;
 to = 10;
 step = 1;
@@ -210,7 +210,7 @@ fr..to..step;";
         public void Range_step_Doubles_Idents()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 fr = 0.0;
 to = 10.0;
 step = 1.0;
@@ -226,7 +226,7 @@ fr..to..step;";
         public void Range_step_Doubles_DifferentTypes_idents()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 fr = 0.0;
 to = 10;
 step = 1.0;
@@ -241,7 +241,7 @@ fr..to..step;";
         public void Range_amount_Doubles_idents()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 fr = 0;
 to = 10;
 step = 5;
@@ -259,7 +259,7 @@ fr..to..#step;";
         public void Range_Number_Step_IntAndDouble_DoubleRange_Idents()
         {
             var dscode = @"
-import(""DSCoreNodes.dll"");
+import(""DesignScriptBuiltin.dll"");
 fr = 0;
 to = 10;
 step = 5.0;
