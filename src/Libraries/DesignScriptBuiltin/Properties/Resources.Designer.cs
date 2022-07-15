@@ -22,7 +22,7 @@ namespace Builtin.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resources {
+    internal class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Builtin.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Builtin.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Builtin.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,25 +63,25 @@ namespace Builtin.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Index was out of range. If non-negative must be less than the size of the list. href=kIndexOutOfRange.html.
         /// </summary>
-        public static string IndexOutOfRangeExceptionMessage {
+        internal static string IndexOutOfRangeExceptionMessage {
             get {
                 return ResourceManager.GetString("IndexOutOfRangeExceptionMessage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to The amount in range expression should be an positive integer.
         /// </summary>
-        public static string kInvalidAmountInRangeExpression {
+        internal static string kInvalidAmountInRangeExpression {
             get {
                 return ResourceManager.GetString("kInvalidAmountInRangeExpression", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to No step size is specified in amount range expression.
         /// </summary>
-        public static string kNoStepSizeInAmountRangeExpression {
+        internal static string kNoStepSizeInAmountRangeExpression {
             get {
                 return ResourceManager.GetString("kNoStepSizeInAmountRangeExpression", resourceCulture);
             }
@@ -90,16 +90,16 @@ namespace Builtin.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Cannot index into a null list, dictionary or string..
         /// </summary>
-        public static string NullReferenceExceptionMessage {
+        internal static string NullReferenceExceptionMessage {
             get {
                 return ResourceManager.GetString("NullReferenceExceptionMessage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to The number of items in range expression is over limit.
         /// </summary>
-        public static string RangeExpressionOutOfMemory {
+        internal static string RangeExpressionOutOfMemory {
             get {
                 return ResourceManager.GetString("RangeExpressionOutOfMemory", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Builtin.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Index was out of range. If non-negative must be less than the size of the string. href=kIndexOutOfRange.html.
         /// </summary>
-        public static string StringOverIndexingExceptionMessage {
+        internal static string StringOverIndexingExceptionMessage {
             get {
                 return ResourceManager.GetString("StringOverIndexingExceptionMessage", resourceCulture);
             }

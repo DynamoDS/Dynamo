@@ -127,12 +127,12 @@
     <value>Cannot index into a null list, dictionary or string.</value>
   </data>
   <data name="kInvalidAmountInRangeExpression" xml:space="preserve">
-    <value />
+    <value>The amount in range expression should be an positive integer</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
-    <value />
+    <value>No step size is specified in amount range expression</value>
   </data>
   <data name="RangeExpressionOutOfMemory" xml:space="preserve">
-    <value />
+    <value>The number of items in range expression is over limit</value>
   </data>
 </root>

@@ -5,6 +5,7 @@ using ProtoCore.DSASM;
 
 namespace ProtoCore.DSASM
 {
+    [SupressImportIntoVM]
     //Type moved from Protocore and forwarded using type forward attribute.
     /// <summary>
     /// Type of range to create.
