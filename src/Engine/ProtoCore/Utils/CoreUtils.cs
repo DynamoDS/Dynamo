@@ -893,21 +893,21 @@ namespace ProtoCore.Utils
 
             return value.StringData;
         }
-
-        public static object GetDataOfCLRValue(object value)
+        
+        internal static object GetDataOfCLRValue(object value)
         {
-                // This is because stackvalues directly store value types
-                // while they store the string representation of reference types.
-                if (value is long || value is int || value is double || value is char || value is bool)
-                {
-                    return value;
-                }
-                else if (value is DesignScript.Builtin.Dictionary)
+            // This is because stackvalues directly store value types
+            // while they store the string representation of reference types.
+            if (value is long || value is int || value is double || value is char || value is bool)
+            {
+                return value;
+            }
+            else if (value is DesignScript.Builtin.Dictionary)
             {
                 throw new NotImplementedException("get clr value of DSDictionary.");
             }
-                //TODO expand.
-                else if(value is ICollection vc)
+            //TODO expand.
+            else if (value is ICollection vc)
             {
                 return vc.Cast<Object>().Select(x => GetDataOfCLRValue(x)).ToList();
             }
