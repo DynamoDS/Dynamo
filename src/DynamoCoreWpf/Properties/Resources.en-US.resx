@@ -389,7 +389,7 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>Submit a bug on github</comment>
   </data>
   <data name="CrashPromptDialogTitle" xml:space="preserve">
-    <value>{0} {0} has closed unexpectedly</value>
+    <value>{0} has closed unexpectedly</value>
   </data>
   <data name="CreateMember" xml:space="preserve">
     <value>Create</value>

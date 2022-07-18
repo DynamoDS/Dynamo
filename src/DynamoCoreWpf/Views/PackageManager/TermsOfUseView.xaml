@@ -12,6 +12,7 @@
         MaxWidth="550"
         mc:Ignorable="d"
         x:Name="TermsOfUseWindow"
+        ResizeMode="CanResizeWithGrip"
         Title="{x:Static p:Resources.TermsOfUseViewTitle}"
         Style="{DynamicResource DynamoWindowStyle}"
         AllowsTransparency="True"
