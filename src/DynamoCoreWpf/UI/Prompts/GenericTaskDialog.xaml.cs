@@ -112,6 +112,12 @@ namespace Dynamo.UI.Prompts
             this.Close();
         }
 
+        // ESC Button pressed triggers Window close        
+        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
+        }
+
         #endregion
     }
 }

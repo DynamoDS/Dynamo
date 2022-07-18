@@ -99,6 +99,12 @@ namespace Dynamo.UI.Views
             if (e.ChangedButton != MouseButton.Left) return;
             DragMove();
         }
+
+        // ESC Button pressed triggers Window close        
+        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 
     //http://www.rhyous.com/2011/08/01/loading-a-richtextbox-from-an-rtf-file-using-binding-or-a-richtextfile-control/

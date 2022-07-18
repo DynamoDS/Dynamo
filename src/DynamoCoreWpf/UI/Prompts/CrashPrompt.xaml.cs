@@ -148,5 +148,11 @@ namespace Dynamo.Nodes.Prompts
             if (e.ChangedButton != MouseButton.Left) return;
             DragMove();
         }
+
+        // ESC Button pressed triggers Window close        
+        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

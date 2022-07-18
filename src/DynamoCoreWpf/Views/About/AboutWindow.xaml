@@ -34,6 +34,12 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="Close" Executed="OnCloseExecuted" />
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Command="Close" Key="Esc"/>
+    </Window.InputBindings>
 
     <Grid Background="Transparent" MouseDown="UIElement_OnMouseDown">
         <Border Name="MainBorder" Style="{StaticResource NoStyleWindowBorderStyle}">
