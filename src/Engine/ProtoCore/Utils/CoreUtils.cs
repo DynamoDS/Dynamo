@@ -906,10 +906,9 @@ namespace ProtoCore.Utils
             {
                 throw new NotImplementedException("get clr value of DSDictionary.");
             }
-            //TODO expand.
-            else if (value is ICollection vc)
+            else if(value is IEnumerable ve)
             {
-                return vc.Cast<Object>().Select(x => GetDataOfCLRValue(x)).ToList();
+                return ve.Cast<object>().Select(x => GetDataOfCLRValue(x)).ToList();
             }
             return value.ToString();
         }
