@@ -79,7 +79,7 @@ namespace Dynamo.Tests
 
             var wcd2 = new serializationTestUtils.WorkspaceComparisonData(ws2, CurrentDynamoModel.EngineController, dsExecution: false);
 
-            serializationTestUtils.CompareWorkspaceModels(wcd1, wcd2, null);
+            serializationTestUtils.CompareWorkspaceModelsMSIL(wcd1, wcd2);
         }
 
         private void CheckForDummyNodes(WorkspaceModel ws)

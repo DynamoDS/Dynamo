@@ -16,7 +16,7 @@ namespace EmitMSIL
             return new DynamicMethod(methodName, returnType, parameterTypes);
         }
 
-        public static AssemblyBuilder CreateAssemblyBuilder(String assemblyName, bool bDebug)
+        public static AssemblyBuilder CreateAssemblyBuilder(String assemblyName, bool bDebug,AssemblyBuilderAccess access)
         {
             AssemblyName aname = new AssemblyName(assemblyName);
             AppDomain currentDomain = AppDomain.CurrentDomain; // Thread.GetDomain();
@@ -37,7 +37,7 @@ namespace EmitMSIL
             //AssemblyBuilder builder = currentDomain.DefineDynamicAssembly(aname, bDebug ? 
             //    AssemblyBuilderAccess.RunAndSave : AssemblyBuilderAccess.RunAndCollect, assemblyPath); // CPHCORE
             AssemblyBuilder builder = currentDomain.DefineDynamicAssembly(aname,
-                AssemblyBuilderAccess.RunAndSave, assemblyPath);
+                access, assemblyPath);
 #endif
 
             //if (bDebug)

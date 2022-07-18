@@ -16,7 +16,7 @@ namespace DesignScript
             {
                 if (dictionary == null)
                 {
-                    throw new BuiltinNullReferenceException(DesignScriptBuiltin.NullReferenceExceptionMessage);
+                    throw new BuiltinNullReferenceException(Resources.NullReferenceExceptionMessage);
                 }
 
                 try
@@ -45,7 +45,7 @@ namespace DesignScript
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    throw new IndexOutOfRangeException(DesignScriptBuiltin.IndexOutOfRangeExceptionMessage);
+                    throw new IndexOutOfRangeException(Resources.IndexOutOfRangeExceptionMessage);
                 }
             }
 
@@ -63,7 +63,7 @@ namespace DesignScript
             {
                 if (stringList == null)
                 {
-                    throw new BuiltinNullReferenceException(DesignScriptBuiltin.NullReferenceExceptionMessage);
+                    throw new BuiltinNullReferenceException(Resources.NullReferenceExceptionMessage);
                 }
                 while (index < 0)
                 {
@@ -78,7 +78,7 @@ namespace DesignScript
                 }
                 catch (System.IndexOutOfRangeException)
                 {
-                    throw new StringOverIndexingException(DesignScriptBuiltin.StringOverIndexingExceptionMessage);
+                    throw new StringOverIndexingException(Resources.StringOverIndexingExceptionMessage);
                 }
             }
         }
