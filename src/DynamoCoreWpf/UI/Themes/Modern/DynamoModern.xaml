@@ -1030,7 +1030,6 @@
     </Style>
 
 
-
     <Style x:Key="SDarkTextBox"
            BasedOn="{StaticResource {x:Type TextBox}}"
            TargetType="{x:Type TextBox}">
@@ -1046,6 +1045,55 @@
                             Background="#2c2c2c"
                             BorderBrush="#444"
                             BorderThickness="1px">
+                        <Grid>
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="5,5,0,0"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          Style="{DynamicResource ResourceKey=SDarkScrollViewer}" />
+                            <TextBlock x:Name="previewText"
+                                       Margin="5,5,0,0"
+                                       Padding="{TemplateBinding Padding}"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       Foreground="#555555"
+                                       IsHitTestVisible="False"
+                                       Text="{TemplateBinding Tag}"
+                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="borderText" Property="BorderBrush" Value="#666666" />
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="#555555" />
+                            <Setter TargetName="borderText" Property="BorderBrush" Value="#444444" />
+                        </Trigger>
+
+                        <Trigger Property="Text" Value="">
+                            <Setter TargetName="previewText" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SLightTextBox"
+           BasedOn="{StaticResource {x:Type TextBox}}"
+           TargetType="{x:Type TextBox}">
+        <Setter Property="Foreground" Value="{DynamicResource DarkerGreyBrush}" />
+        <Setter Property="CaretBrush" Value="White" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="FontSize" Value="11px" />
+        <Setter Property="Padding" Value="5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border Name="borderText"
+                            Background="{DynamicResource LightMidGreyOpacityBrush}"
+                            BorderBrush="#444"
+                            BorderThickness="0px">
                         <Grid>
                             <ScrollViewer x:Name="PART_ContentHost"
                                           Margin="5,5,0,0"
