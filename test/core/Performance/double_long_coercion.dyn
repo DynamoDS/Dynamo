@@ -1,0 +1,140 @@
+{
+  "Uuid": "29c09078-71b0-4b1f-aa96-2be80adfa9d1",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "double_long_coercion",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "12.3;",
+      "Id": "2783d7d295f64f95a1c37a81afe87e4b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7a1492a27c004a93ab424860e512614e",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.Factorial@int",
+      "Id": "26814aad62d645b4a7c40bd4cc172029",
+      "Inputs": [
+        {
+          "Id": "6a547499a5b8482187e6b39e0156bfe8",
+          "Name": "number",
+          "Description": "A positive integer\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "21e55b285602426bb2666da3cabae96c",
+          "Name": "number",
+          "Description": "The factorial result of the integer.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Finds the factorial result of a positive integer.\n\nMath.Factorial (number: int): int"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "7a1492a27c004a93ab424860e512614e",
+      "End": "6a547499a5b8482187e6b39e0156bfe8",
+      "Id": "dc636f38ccf1430e862d7e340d6bbd86",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.16",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.16.0.1640",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "2783d7d295f64f95a1c37a81afe87e4b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 239.0,
+        "Y": 304.0
+      },
+      {
+        "Name": "Math.Factorial",
+        "ShowGeometry": true,
+        "Id": "26814aad62d645b4a7c40bd4cc172029",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 583.2,
+        "Y": 281.20000000000005
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

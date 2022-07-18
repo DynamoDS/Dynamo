@@ -9,10 +9,13 @@ using System.Reflection.Emit;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
+using DSASM = ProtoCore.DSASM;
+using ProtoCore.Properties;
+using ProtoCore.Utils;
 
 namespace EmitMSIL
 {
-    public class CodeGenIL
+    public class CodeGenIL:IDisposable
     {
         private ILGenerator ilGen;
         internal string className;
@@ -51,7 +54,34 @@ namespace EmitMSIL
             writer = new StreamWriter(filePath);
         }
 
-        public void Emit(List<AssociativeNode> astList)
+        public IDictionary<string, IList> Emit(List<AssociativeNode> astList)
+        {
+            var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndSave);
+
+            // Invoke emitted method (ExecuteIL.Execute)
+            var t = compileResult.tbuilder.CreateType();
+            var mi = t.GetMethod("Execute");
+            var output = new Dictionary<string, IList>();
+            var obj = mi.Invoke(null, new object[] { null, methodCache, output });
+
+            compileResult.asmbuilder.Save("DynamicAssembly.dll");
+
+            return output;
+        }
+
+        internal Dictionary<string,IList> EmitAndExecute(List<AssociativeNode> astList)
+        {
+            var compileResult = CompileAstToDynamicType(astList,AssemblyBuilderAccess.RunAndCollect);
+
+            // Invoke emitted method (ExecuteIL.Execute)
+            var t = compileResult.tbuilder.CreateType();
+            var mi = t.GetMethod("Execute");
+            var output = new Dictionary<string, IList>();
+            mi.Invoke(null, new object[] { null, methodCache, output });
+            return output;
+        }
+
+        private (AssemblyBuilder asmbuilder,TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
         {
             compilePass = CompilePass.MethodLookup;
             foreach (var ast in astList)
@@ -60,7 +90,7 @@ namespace EmitMSIL
             }
 
             // 1. Create assembly builder (dynamic assembly)
-            var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false);
+            var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
             // 2. Create module builder
             var mod = BuilderHelper.CreateDLLModuleBuilder(asm, "DynamicModule");
             // 3. Create type builder (name it "ExecuteIL")
@@ -73,21 +103,14 @@ namespace EmitMSIL
 
             compilePass = CompilePass.emitIL;
             // 5. Traverse AST and use ILGen to emit code for Execute method
-            foreach(var ast in astList)
+            foreach (var ast in astList)
             {
                 DfsTraverse(ast);
             }
             EmitOpCode(OpCodes.Ret);
 
             writer.Close();
-
-            // Invoke emitted method (ExecuteIL.Execute)
-            var t = type.CreateType();
-            var mi = t.GetMethod("Execute");
-            var output = new Dictionary<string, IList>();
-            var obj = mi.Invoke(null, new object[] { null, methodCache, output });
-
-            asm.Save("DynamicAssembly.dll");
+            return (asm,type);
         }
 
         private Type EmitCoercionCode(Type argType, ParameterInfo param)
@@ -146,7 +169,7 @@ namespace EmitMSIL
 
                     // TODO: Add check for constructorinfo objects
 
-                    if (mi != null)
+                    if (mi != null && mi.Any())
                     {
                         methodCache.Add(key, mi);
                         break;
@@ -159,7 +182,7 @@ namespace EmitMSIL
                     //}
                 }
             }
-            if (mi == null)
+            if (mi == null || !mi.Any())
             {
                 throw new MissingMethodException("No matching method found in loaded assemblies.");
             }
@@ -283,7 +306,7 @@ namespace EmitMSIL
                     t = EmitNullNode(node);
                     break;
                 case AstKind.RangeExpression:
-                    EmitRangeExprNode(node);
+                    t = EmitRangeExprNode(node);
                     break;
                 case AstKind.LanguageBlock:
                     EmitLanguageBlockNode(node);
@@ -338,6 +361,12 @@ namespace EmitMSIL
                     break;
             }
             return t;
+        }
+
+        private LocalBuilder DeclareLocal(Type t)
+        {
+            writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {t}");
+            return ilGen.DeclareLocal(t);
         }
 
         private void EmitOpCode(OpCode opCode, LocalBuilder local)
@@ -416,10 +445,13 @@ namespace EmitMSIL
         {
             throw new NotImplementedException();
         }
-
+        
         private void EmitImportNode(AssociativeNode node)
         {
-            throw new NotImplementedException();
+            //doing absolutely nothing is actually
+            //enough to import binaries.
+            //TODO do other important things here!
+            //see: ProtoAssociative.CodeGen.EmitImportNode
         }
 
         private void EmitBinaryExpressionNode(AssociativeNode node)
@@ -429,9 +461,6 @@ namespace EmitMSIL
 
             if (bNode.Optr == ProtoCore.DSASM.Operator.assign)
             {
-                //var ti = new TypeInference();
-                //var t = ti.DfsTraverse(bNode.RightNode);
-
                 var t = DfsTraverse(bNode.RightNode);
 
                 if (compilePass == CompilePass.MethodLookup) return;
@@ -447,8 +476,7 @@ namespace EmitMSIL
                     throw new Exception("Variable redefinition is not allowed.");
                 }
                 variables.Add(lNode.Value, new Tuple<int, Type>(++localVarIndex, t));
-                ilGen.DeclareLocal(t);
-                writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {t}");
+                DeclareLocal(t);
 
                 EmitOpCode(OpCodes.Stloc, localVarIndex);
                 // Add variable to output dictionary: output.Add("varName", variable);
@@ -475,6 +503,9 @@ namespace EmitMSIL
                 DfsTraverse(bNode.LeftNode);
                 DfsTraverse(bNode.RightNode);
 
+                //TODO: Replace this!
+                // It needs to be replaced with emission of a builtin Function call to an Add function
+                // so we can call it via ReplicationLogic for replication scenarios.
                 EmitOpCode(OpCodes.Add);
             }
             // TODO: add Emit calls for other binary operators
@@ -494,13 +525,9 @@ namespace EmitMSIL
         private Type EmitIdentifierListNode(AssociativeNode node)
         {
             var iln = node as IdentifierListNode;
-            if(iln == null) throw new ArgumentException("AST node must be an Identifier List.");
-
-            var ident = iln.LeftNode as IdentifierNode;
-            if (ident == null) throw new ArgumentException("Left node of IdentifierListNode is expected to be an identifier.");
-
-            className = ident.Value;
-
+            if (iln == null) throw new ArgumentException("AST node must be an Identifier List.");
+            className = CoreUtils.GetIdentifierExceptMethodName(iln);
+           
             return DfsTraverse(iln.RightNode);
         }
 
@@ -602,8 +629,7 @@ namespace EmitMSIL
             var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
             EmitOpCode(OpCodes.Call, keygen);
 
-            var local = ilGen.DeclareLocal(typeof(IEnumerable<MethodBase>));
-            writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {typeof(IEnumerable<MethodBase>)}");
+            var local = DeclareLocal(typeof(IEnumerable<MethodBase>));
 
             EmitOpCode(OpCodes.Ldloca, local);
 
@@ -676,10 +702,159 @@ namespace EmitMSIL
             throw new NotImplementedException();
         }
 
-        private void EmitRangeExprNode(AssociativeNode node)
+
+
+        private double GetStepValueAsDouble(AssociativeNode stepNode)
         {
-            throw new NotImplementedException();
+            if(stepNode == null)
+            {
+                return 1;
+            }
+            if(stepNode is IntNode stpInt)
+            {
+                return stpInt.Value;
+            }
+            if(stepNode is DoubleNode stpDB)
+            {
+                return stpDB.Value;
+            }
+            return double.NaN;
         }
+
+        private bool CheckIdentType<T>(IdentifierNode ident)
+        {
+            if (variables.TryGetValue(ident.Value, out Tuple<int, Type> output))
+            {
+                if (typeof(T) == output.Item2)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+            private Type EmitRangeExprNode(AssociativeNode node)
+        {
+            //we don't do anything if this is the methodlookup phase
+            //as we need want to access the variable types which are not computed
+            //until the emitIL phase.
+            if (compilePass == CompilePass.MethodLookup)
+            {
+                return null;
+            }
+            const string unselectedToken = "UNSELECTEDTOKEN";
+            const string intRangeMethodName = nameof(Builtin.RangeHelpers.GenerateRangeILInt);
+            const string doubleRangeMethodName = nameof(Builtin.RangeHelpers.GenerateRangeILDouble);
+
+            var range = node as RangeExprNode;
+            var fromNode = range.From;
+            var toNode = range.To;
+            var stepNode = range.Step;
+            var stepOp = range.StepOperator;
+            var hasAmountOperator = range.HasRangeAmountOperator;
+
+            //TODO we may want to do this check again at runtime.
+            if(stepNode is DoubleNode && stepOp == DSASM.RangeStepOperator.Number)
+            {
+                throw new ArgumentException(Resources.kInvalidAmountInRangeExpression);
+            }
+
+
+            var methodName = unselectedToken;
+
+            var isIntStep = stepNode is IntNode stpInt ||
+                (hasAmountOperator && stepOp == DSASM.RangeStepOperator.StepSize && stepNode is DoubleNode stpDB && Math.Truncate(stpDB.Value) == stpDB.Value) ||
+                stepNode == null; 
+            
+
+            if (fromNode is IntNode fint && toNode is IntNode tint && isIntStep)
+            {
+
+                var stpval = GetStepValueAsDouble(stepNode);
+                //the requested range was not divided evenly by the approximate step, so we create a double range.
+                if (stepOp == DSASM.RangeStepOperator.ApproximateSize &&  Math.Abs(fint.Value - tint.Value)%stpval != 0 ||
+                 //the requested number of items does not fit evenly into the range, so we create a double range.
+                   stepOp == DSASM.RangeStepOperator.Number && (Math.Abs(fint.Value - tint.Value) % (stpval-1) != 0)
+                   )
+                {
+                    methodName = doubleRangeMethodName;
+                }
+                else
+                {
+                    methodName = intRangeMethodName;
+                }
+            }
+
+            else if(fromNode is DoubleNode || toNode is DoubleNode || stepNode is DoubleNode)
+            {
+                methodName = doubleRangeMethodName;
+            }
+
+            //we still have not selected a method, lets check if our inputs are idents and have known types.
+            if(methodName == unselectedToken)
+            {
+                //if we are generating a simple range and we have all doubles or ints we know what methods to call
+                //in other cases we can't determine which overload to call without the values of these idents.
+                if (stepOp == DSASM.RangeStepOperator.StepSize)
+                {
+                    if (new[] { fromNode, toNode, stepNode }.All(x => x is IdentifierNode ident && CheckIdentType<long>(ident))){
+                        methodName = intRangeMethodName;
+                    }
+                    else if (new[] { fromNode, toNode, stepNode }.All(x => x is IdentifierNode ident && CheckIdentType<double>(ident)))
+                    {
+                        methodName = doubleRangeMethodName;
+                    }
+                }
+            }
+            if (methodName == unselectedToken)
+            {
+                //if we still have not been able to determine the type of range to generate, temporarily generate a double range.
+                //TODO when we add alphabetic ranges we'll want to check for string/char types in the above logic but,
+                //if we still get to this line we'll need to call a dynamic version of generate range that boxes objects.
+                methodName = doubleRangeMethodName;
+            }
+               
+            //call the generate method we've selected.
+
+            IntNode op = null;
+            switch (stepOp)
+            {
+                case DSASM.RangeStepOperator.StepSize:
+                    op = new IntNode(0);
+                    break;
+                case DSASM.RangeStepOperator.Number:
+                    op = new IntNode(1);
+                    break;
+                case DSASM.RangeStepOperator.ApproximateSize:
+                    op = new IntNode(2);
+                    break;
+                default:
+                    op = new IntNode(-1);
+                    break;
+            }
+            var arguments = new List<AssociativeNode>
+            {
+                fromNode,
+                toNode,
+                stepNode ?? new NullNode(),
+                op,
+                AstFactory.BuildBooleanNode(stepNode != null),
+                AstFactory.BuildBooleanNode(hasAmountOperator),
+            };
+
+            
+            var rangeExprFunc = AstFactory.BuildFunctionCall(methodName, arguments);
+            var idlist = new IdentifierListNode()
+            {
+                LeftNode = new IdentifierNode(typeof(Builtin.RangeHelpers).FullName),
+                RightNode = rangeExprFunc
+            };
+            //we want to cache the call to generate range, so traverse down in any case.
+            var t = DfsTraverse(idlist);
+          
+            return t;
+        }
+
 
         private Type EmitNullNode(AssociativeNode node)
         {
@@ -778,6 +953,10 @@ namespace EmitMSIL
             throw new ArgumentException("Identifier node expected.");
         }
 
+        public void Dispose()
+        {
+            writer?.Dispose();
+        }
     }
 
 }

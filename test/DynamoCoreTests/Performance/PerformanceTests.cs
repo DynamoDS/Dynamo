@@ -61,8 +61,6 @@ namespace Dynamo.Tests
             // The big hammer, maybe not needed
             Cleanup();
 
-            // TODO, Switch to the new Engine
-
             Setup();
 
             OpenModel(filePath, dsExecution: false);
@@ -79,10 +77,11 @@ namespace Dynamo.Tests
 
             CheckForDummyNodes(ws2);
 
-            var wcd2 = new serializationTestUtils.WorkspaceComparisonData(ws2, CurrentDynamoModel.EngineController);
+            var wcd2 = new serializationTestUtils.WorkspaceComparisonData(ws2, CurrentDynamoModel.EngineController, dsExecution: false);
 
-            serializationTestUtils.CompareWorkspaceModels(wcd1, wcd2, null);
+            serializationTestUtils.CompareWorkspaceModelsMSIL(wcd1, wcd2);
         }
+
         private void CheckForDummyNodes(WorkspaceModel ws)
         {
             var dummyNodes = ws.Nodes.Where(n => n is DummyNode);
