@@ -20,6 +20,7 @@ namespace EmitMSIL
         private ILGenerator ilGen;
         internal string className;
         internal string methodName;
+        private bool builtIn; 
         private IDictionary<string, IList> input;
         private IDictionary<string, IList> output;
         private int localVarIndex = -1;
@@ -135,7 +136,7 @@ namespace EmitMSIL
             }
             else
             {
-                if (className != "BuildtIn")
+                if (!builtIn)
                 {
                     var modules = ProtoFFI.DLLFFIHandler.Modules.Values.OfType<ProtoFFI.CLRDLLModule>();
                     var assemblies = modules.Select(m => m.Assembly ?? (m.Module?.Assembly)).Where(m => m != null);
@@ -187,10 +188,7 @@ namespace EmitMSIL
                 }
                 else
                 {
-                    var type = this.GetType();
-                    var test = type.GetMethods(BindingFlags.Public | BindingFlags.Static).ToList();
-                    mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
-                        m => m.Name == "Add" && m.GetParameters().Length == args.Count).ToList();
+                    mi = BuiltIn.GetBuiltIn(methodName);
 
                     if (mi != null && mi.Any())
                     {
@@ -203,11 +201,6 @@ namespace EmitMSIL
                 throw new MissingMethodException("No matching method found in loaded assemblies.");
             }
             return mi;
-        }
-
-        public static int Add(int a, int b)
-        {
-            return a + b;
         }
 
         private static HashSet<Type> GetTypeStatisticsForArray(ExprListNode array)
@@ -561,7 +554,7 @@ namespace EmitMSIL
             var iln = node as IdentifierListNode;
             if (iln == null) throw new ArgumentException("AST node must be an Identifier List.");
             className = CoreUtils.GetIdentifierExceptMethodName(iln);
-           
+
             return DfsTraverse(iln.RightNode);
         }
 
@@ -627,18 +620,17 @@ namespace EmitMSIL
             var fcn = node as FunctionCallNode;
             if (fcn == null) throw new ArgumentException("AST node must be a Function Call Node.");
 
-            var fcdn = node as FunctionDotCallNode;
-
             methodName = fcn.Function.Name;
             var args = fcn.FormalArguments;
             var numArgs = args.Count;
+            builtIn = BuiltIn.IsBuiltIn(methodName);
 
-            if (className == null)
+            if (builtIn)
             {
-                className = "BuildtIn";
+                className = "BuiltIn";
             }
 
-            if(compilePass == CompilePass.MethodLookup)
+            if (compilePass == CompilePass.MethodLookup)
             {
                 FunctionLookup(args);
                 return null;

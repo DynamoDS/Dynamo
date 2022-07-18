@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuilderHelper.cs" />
+    <Compile Include="BuiltIn.cs" />
     <Compile Include="CodeGenIL.cs" />
     <Compile Include="ExecuteIL.cs" />
     <Compile Include="Program.cs" />
