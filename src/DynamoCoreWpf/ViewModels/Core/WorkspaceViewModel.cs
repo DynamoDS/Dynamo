@@ -1518,6 +1518,48 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void ShowAllWires(object paramter)
+        {
+            var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.AllConnectors.Any(x => !x.IsHidden)).ToList();
+            foreach (var nodeModel in nodeModels)
+            {
+                var connectors = nodeModel.AllConnectors;
+                var enumerator = connectors.GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    var connector = enumerator.Current;
+                    connector.IsHidden = false;
+                }
+            }
+        }
+
+        private bool CanShowAllWires(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>()
+                .Any(n => n.AllConnectors.Any(x => x.IsHidden));
+        }
+
+        private void HideAllWires(object paramter)
+        {
+            var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.AllConnectors.Any(x => !x.IsHidden)).ToList();
+            foreach (var nodeModel in nodeModels)
+            {
+                var connectors = nodeModel.AllConnectors;
+                var enumerator = connectors.GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    var connector = enumerator.Current;
+                    connector.IsHidden = true;
+                }
+            }
+        }
+
+        private bool CanHideAllWires(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>()
+                .Any(n => n.AllConnectors.Any(x => !x.IsHidden));
+        }
+
         /// <summary>
         /// Collapse a set of nodes and notes currently selected in workspace
         /// </summary>
@@ -1553,7 +1595,9 @@ namespace Dynamo.ViewModels
         {
             AlignSelectedCommand.RaiseCanExecuteChanged();
             ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
-            SetArgumentLacingCommand.RaiseCanExecuteChanged();           
+            SetArgumentLacingCommand.RaiseCanExecuteChanged();     
+            ShowAllWiresCommand.RaiseCanExecuteChanged();
+            HideAllWiresCommand.RaiseCanExecuteChanged();
             RaisePropertyChanged("HasSelection");
             RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");

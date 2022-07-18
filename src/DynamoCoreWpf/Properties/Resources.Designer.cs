@@ -547,6 +547,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide All Wires.
+        /// </summary>
+        public static string ContextMenuConnectionsHideAll {
+            get {
+                return ResourceManager.GetString("ContextMenuConnectionsHideAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show All Wires.
+        /// </summary>
+        public static string ContextMenuConnectionsShowAll {
+            get {
+                return ResourceManager.GetString("ContextMenuConnectionsShowAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy Contents.
         /// </summary>
         public static string ContextMenuCopy {
@@ -687,6 +705,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextMenuLacingShortest {
             get {
                 return ResourceManager.GetString("ContextMenuLacingShortest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Connections.
+        /// </summary>
+        public static string ContextMenuNodeConnections {
+            get {
+                return ResourceManager.GetString("ContextMenuNodeConnections", resourceCulture);
             }
         }
         
