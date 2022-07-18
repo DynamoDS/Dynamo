@@ -7,7 +7,7 @@
         MaxHeight="{x:Static SystemParameters.PrimaryScreenHeight}"
         MaxWidth="{x:Static SystemParameters.PrimaryScreenWidth}"
         MinHeight="170" MinWidth="300"
-        Height="260" Width="400"
+        Height="195" Width="400"
         Style="{DynamicResource DynamoWindowStyle}"
         AllowsTransparency="True"
         WindowStyle="None">
@@ -46,7 +46,7 @@
 
                 <!--  Title Bar + Close Button  -->
                 <DockPanel Grid.Row="0"
-                           Margin="20 15 18 30"
+                           Margin="15 15 14 30"
                            HorizontalAlignment="Stretch">
 
                     <Button Name="CloseButton"
@@ -88,7 +88,7 @@
                         PreviewKeyDown="OnEditWindowPreviewKeyDown"
                         x:FieldModifier="private" 
                         Grid.Row="1"
-                        Margin="20 0 20 15" 
+                        Margin="15 1 15 10" 
                         HorizontalAlignment="Stretch" 
                         Name="editText" 
                         IsHitTestVisible="True"
@@ -98,7 +98,7 @@
                 <StackPanel Grid.Row="2" Orientation="Horizontal" FlowDirection="RightToLeft">
                     <Button 
                         Content="{x:Static p:Resources.EditWindowAcceptButton}" 
-                        Margin="18 5 18 15"
+                        Margin="11 0 0 12"
                         MinWidth="90"
                         BorderBrush="#0696D7"
                         Foreground="White"
