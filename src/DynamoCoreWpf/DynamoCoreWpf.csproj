@@ -1525,8 +1525,8 @@
     <Resource Include="UI\Images\caret_down.png" />
     <Resource Include="UI\Images\down-hover-16px.png" />
     <Resource Include="UI\Images\down_16_16.png" />
-    <Resource Include="UI\Images\folder_16_16.png" />
-    <Resource Include="UI\Images\folder-hover-16px.png" />
+    <Resource Include="UI\Images\edit_folder_16px_default.png" />
+    <Resource Include="UI\Images\edit_folder_16px_hover.png" />
     <Resource Include="UI\Images\up_16_16.png" />
     <Resource Include="UI\Images\up-hover-16px.png" />
     <Resource Include="UI\Images\link-16px.png" />

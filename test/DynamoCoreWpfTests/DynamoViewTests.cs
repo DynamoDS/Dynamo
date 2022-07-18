@@ -105,5 +105,23 @@ namespace DynamoCoreWpfTests
             // After deleting all Warning nodes, the counter should get to 0 
             Assert.AreEqual((items[1] as FooterNotificationItem).NotificationCount, 0);
         }
+
+        [Test]
+        public void OpeningWorkspaceWithTrustWarning()
+        {
+            // Open workspace with test mode as false, to verify trust warning.
+            DynamoModel.IsTestMode = false;
+            Open(@"core\CustomNodes\TestAdd.dyn");
+
+            Assert.IsTrue(ViewModel.FileTrustViewModel.ShowWarningPopup);
+
+            // Close workspace
+            Assert.IsTrue(ViewModel.CloseHomeWorkspaceCommand.CanExecute(null));
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+
+            // Asert that the warning popup is closed, when the workspace is closed.
+            Assert.IsFalse(ViewModel.FileTrustViewModel.ShowWarningPopup);
+            DynamoModel.IsTestMode = true;
+        }
     }
 }

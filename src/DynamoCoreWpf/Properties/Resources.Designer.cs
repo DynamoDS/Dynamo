@@ -3516,6 +3516,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nothing is being dragged. If you see this message, most likely your recent Dynamo interaction is not recommended..
+        /// </summary>
+        public static string InvalidDraggingOperationMessgae {
+            get {
+                return ResourceManager.GetString("InvalidDraggingOperationMessgae", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid URL for login page!.
         /// </summary>
         public static string InvalidLoginUrl {
@@ -5178,7 +5187,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Node and Package Paths.
+        ///   Looks up a localized string similar to Node and Package File Locations.
         /// </summary>
         public static string PackagePathsExpanderName {
             get {
@@ -6284,7 +6293,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New Package Download Directory.
+        ///   Looks up a localized string similar to New Package Download Path.
         /// </summary>
         public static string PreferencesViewPackageDownloadDirectory {
             get {
@@ -7864,7 +7873,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Trusted location.
+        ///   Looks up a localized string similar to Trusted File Locations.
         /// </summary>
         public static string TrustedPathsExpanderName {
             get {
