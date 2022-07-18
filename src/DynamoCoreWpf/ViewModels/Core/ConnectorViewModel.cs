@@ -798,7 +798,7 @@ namespace Dynamo.ViewModels
         /// Toggles wire viz on/off. This can be overwritten when a node is selected in hidden mode.
         /// </summary>
         /// <param name="parameter"></param>
-        private void HideConnectorCommandExecute(object parameter)
+        internal void HideConnectorCommandExecute(object parameter)
         {
             // Use the inverse of the current visibility state,
             // unless the command is coming from the port, in

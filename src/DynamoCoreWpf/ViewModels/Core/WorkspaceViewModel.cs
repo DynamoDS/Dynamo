@@ -1518,30 +1518,40 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void ShowAllWires(object paramter)
+        private void ShowAllWires(object o)
         {
-            var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.AllConnectors.Any(x => !x.IsHidden)).ToList();
-            foreach (var nodeModel in nodeModels)
-            {
-                var connectors = nodeModel.AllConnectors;
-                var enumerator = connectors.GetEnumerator();
-                while (enumerator.MoveNext())
-                {
-                    var connector = enumerator.Current;
-                    connector.IsHidden = false;
-                }
-            }
+            var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.AllConnectors.Any(x => x.IsHidden)).ToList();
+            ShowHideAllWires(nodeModels, false);
         }
 
-        private bool CanShowAllWires(object parameter)
+        private bool CanShowAllWires(object o)
         {
             return DynamoSelection.Instance.Selection.OfType<NodeModel>()
                 .Any(n => n.AllConnectors.Any(x => x.IsHidden));
         }
 
-        private void HideAllWires(object paramter)
+        private void HideAllWires(object o)
         {
             var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.AllConnectors.Any(x => !x.IsHidden)).ToList();
+            ShowHideAllWires(nodeModels, true);
+
+        }
+
+        private bool CanHideAllWires(object o)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>()
+                .Any(n => n.AllConnectors.Any(x => !x.IsHidden));
+        }
+
+        /// <summary>
+        /// Shows or Hides all wires of a list of nodeModels
+        /// </summary>
+        /// <param name="nodeModels"></param>
+        /// <param name="isHidden"></param>
+        private void ShowHideAllWires(List<NodeModel> nodeModels, bool isHidden)
+        {
+            if (!nodeModels.Any()) return;
+
             foreach (var nodeModel in nodeModels)
             {
                 var connectors = nodeModel.AllConnectors;
@@ -1549,15 +1559,10 @@ namespace Dynamo.ViewModels
                 while (enumerator.MoveNext())
                 {
                     var connector = enumerator.Current;
-                    connector.IsHidden = true;
+                    if(connector != null)
+                        connector.IsHidden = isHidden;
                 }
             }
-        }
-
-        private bool CanHideAllWires(object parameter)
-        {
-            return DynamoSelection.Instance.Selection.OfType<NodeModel>()
-                .Any(n => n.AllConnectors.Any(x => !x.IsHidden));
         }
 
         /// <summary>
