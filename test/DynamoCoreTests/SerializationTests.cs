@@ -189,22 +189,8 @@ namespace Dynamo.Tests
                             portvalues.AddRange(n.OutPorts.Select(p =>
                             {
                                 var objs = n.GetCLRValue(p.Index, controller).Cast<object>();
-                                var values = objs.Select(x =>
-                                {
-                                    // This is because stackvalues directly store value types
-                                    // while they store the string representation of reference types.
-                                    if (x is long || x is int || x is double || x is char || x is bool)
-                                    {
-                                        return x;
-                                    }
-                                    else
-                                    {
-                                        return x.ToString();
-                                    }
-                                }).ToList();
-
-                                if(values.Count == 1) { return values[0]; }
-
+                                var values = objs.Select(x => ProtoCore.Utils.CoreUtils.GetDataOfCLRValue(x)).ToList();
+                                if (values.Count == 1) { return values[0]; }
                                 return values;
                             }));
                         }
