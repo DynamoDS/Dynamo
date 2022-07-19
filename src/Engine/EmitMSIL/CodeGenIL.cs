@@ -41,7 +41,7 @@ namespace EmitMSIL
             unchecked
             {
                 int hash = 0;
-                hash = (hash * 397) ^ className.GetHashCode(); ;
+                hash = (hash * 397) ^ className.GetHashCode();
                 hash = (hash * 397) ^ methodName.GetHashCode();
                 return hash + numParameters;
             }
@@ -519,7 +519,7 @@ namespace EmitMSIL
                 // so we can call it via ReplicationLogic for replication scenarios.
                 EmitOpCode(OpCodes.Add);
             }
-            // TODO: add Emit calls for other binary Operators
+            // TODO: add Emit calls for other binary operators
 
         }
 
