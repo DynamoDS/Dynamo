@@ -130,7 +130,7 @@
     <comment>About window title</comment>
   </data>
   <data name="AboutWindowUpToDate" xml:space="preserve">
-    <value>(Up-to-date)</value>
+    <value>(Up to date)</value>
     <comment>To indicate Dynamo is up to date</comment>
   </data>
   <data name="ChangeScaleFactorPromptCaptionText" xml:space="preserve">
@@ -1078,9 +1078,9 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
     <comment>Copy crash details</comment>
   </data>
   <data name="CrashPromptDialogCrashMessage" xml:space="preserve">
-    <value>Uh oh... something went wrong and {0} has crashed, sorry about that.
+    <value>Something went wrong and Dynamo has closed unexpectedly.
 
-You will get a chance to save your work.</value>
+Don't worry, you'll have the option to save your work.</value>
   </data>
   <data name="CrashPromptDialogDetailButton" xml:space="preserve">
     <value>Details</value>
@@ -1091,11 +1091,11 @@ You will get a chance to save your work.</value>
     <comment>Open folder that contains crash report</comment>
   </data>
   <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
-    <value>Submit Bug To Github</value>
+    <value>Submit bug to GitHub</value>
     <comment>Submit a bug on github</comment>
   </data>
   <data name="CrashPromptDialogTitle" xml:space="preserve">
-    <value>{0} has crashed</value>
+    <value>{0} has closed unexpectedly</value>
   </data>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Download Warning</value>
@@ -1141,7 +1141,7 @@ You will get a chance to save your work.</value>
     <value>Cancel</value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
-    <value>Agreement to collect usability data on your use of {0}</value>
+    <value>Agreement to Collect Usability Data</value>
   </data>
   <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
     <value>Clear</value>

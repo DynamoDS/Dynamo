@@ -13,6 +13,7 @@
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="UI\Images\AboutWindow\logo_about_dark.png" />
     <None Remove="UI\Images\Alignment\align_bottom.png" />
     <None Remove="UI\Images\Alignment\align_left.png" />
     <None Remove="UI\Images\Alignment\align_right.png" />
@@ -21,6 +22,13 @@
     <None Remove="UI\Images\Alignment\align_x_distribute.png" />
     <None Remove="UI\Images\Alignment\align_y_average.png" />
     <None Remove="UI\Images\Alignment\align_y_distribute.png" />
+    <None Remove="UI\Images\dynamonotext.png" />
+    <None Remove="UI\Images\maximize_16px_blue.png" />
+    <None Remove="UI\Images\maximize_16px_grey.png" />
+    <None Remove="UI\Images\minimize_16px_blue.png" />
+    <None Remove="UI\Images\minimize_16px_grey.png" />
+    <None Remove="UI\Images\minus_16px_blue.png" />
+    <None Remove="UI\Images\minus_16px_grey.png" />
     <None Remove="UI\Images\NodeStates\alert-64px.png" />
     <None Remove="UI\Images\NodeStates\error-64px.png" />
     <None Remove="UI\Images\NodeStates\frozen-64px.png" />
@@ -647,6 +655,9 @@
     <EmbeddedResource Include="UI\GuidedTour\DynamoOnboardingGuide_HouseCreationDS.dyn">
 	</EmbeddedResource>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
+    <Resource Include="UI\Images\AboutWindow\logo_about_dark.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Resource>
     <Resource Include="UI\Images\Alignment\align_bottom.png" />
     <Resource Include="UI\Images\Alignment\align_left.png" />
     <Resource Include="UI\Images\Alignment\align_right.png" />
@@ -788,6 +799,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\closetab_normal.png" />
+    <Resource Include="UI\Images\dynamonotext.png" />
+    <Resource Include="UI\Images\maximize_16px_blue.png" />
+    <Resource Include="UI\Images\maximize_16px_grey.png" />
+    <Resource Include="UI\Images\minimize_16px_blue.png" />
+    <Resource Include="UI\Images\minimize_16px_grey.png" />
+    <Resource Include="UI\Images\minus_16px_blue.png" />
+    <Resource Include="UI\Images\minus_16px_grey.png" />
     <Resource Include="UI\Images\NodeStates\alert-64px.png" />
     <Resource Include="UI\Images\NodeStates\error-64px.png" />
     <Resource Include="UI\Images\NodeStates\frozen-64px.png" />
