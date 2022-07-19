@@ -160,16 +160,22 @@ namespace EmitMSIL
         }
 
         // TODO: Look into array conversion performance 
-        private static object[] convertToArray(object o)
+        private static IEnumerable<object> convertToEnumerable(object o)
         {
-            System.Type type = o.GetType();
-            if (o is Array oldArr)
+            IEnumerable<object> oIEnum;
+            if (o is Array oArr)
             {
-                Array newArr = Array.CreateInstance(typeof(object), oldArr.Length);
-                Array.Copy(oldArr, newArr, oldArr.Length);
-                return newArr as object[];
+                oIEnum = oArr.Cast<object>();
             }
-            return new object[] { o };
+            else if (o is IEnumerable oEnum)
+            {
+                oIEnum = oEnum.Cast<object>();
+            }
+            else
+            {
+                oIEnum = new List<object>() { o };
+            }
+            return oIEnum;
         }
 
         private static bool isIndexable(System.Type type) => type.IsArray || type.IsAssignableFrom(typeof(IEnumerable));
@@ -219,8 +225,8 @@ namespace EmitMSIL
                 foreach (int repIndex in repIndecies)
                 {
                     // TODO: Investigate convertToArray performance
-                    object[] subParameters = convertToArray(formalParameters[repIndex]);
-                    parameters.Add(subParameters);
+                    var subParameters = convertToEnumerable(formalParameters[repIndex]).ToArray();
+                    parameters.Add(subParameters.ToArray());
 
                     if (subParameters.Length == 0)
                         hasEmptyArg = true;
