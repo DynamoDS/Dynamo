@@ -35,6 +35,9 @@ namespace EmitMSIL
             //Turn the replication guides into a guide -> List args data structure
             var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
+            // TODO: implement auto replication
+            //ComputeFeps(reducedArgs, mInfos, partialInstructions, out resolvesFeps, out replicationInstructions);
+            
             var finalFep = SelectFinalFep(mInfos, reducedArgs);
 
             object result;
