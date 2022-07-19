@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
 using System.Reflection.Emit;
 using ProtoCore.AST;
@@ -20,7 +18,7 @@ namespace EmitMSIL
         private ILGenerator ilGen;
         internal string className;
         internal string methodName;
-        private bool builtIn; 
+        private bool isOperator; 
         private IDictionary<string, IList> input;
         private IDictionary<string, IList> output;
         private int localVarIndex = -1;
@@ -136,7 +134,7 @@ namespace EmitMSIL
             }
             else
             {
-                if (!builtIn)
+                if (!isOperator)
                 {
                     var modules = ProtoFFI.DLLFFIHandler.Modules.Values.OfType<ProtoFFI.CLRDLLModule>();
                     var assemblies = modules.Select(m => m.Assembly ?? (m.Module?.Assembly)).Where(m => m != null);
@@ -188,9 +186,8 @@ namespace EmitMSIL
                 }
                 else
                 {
-                    mi = BuiltIn.GetBuiltIn(methodName);
-
-                    if (mi != null && mi.Any())
+                    mi = Operators.GetOperatorMethod(methodName);
+                    if (mi != null)
                     {
                         methodCache.Add(key, mi);
                     }
@@ -522,7 +519,7 @@ namespace EmitMSIL
                 // so we can call it via ReplicationLogic for replication scenarios.
                 EmitOpCode(OpCodes.Add);
             }
-            // TODO: add Emit calls for other binary operators
+            // TODO: add Emit calls for other binary Operators
 
         }
 
@@ -625,11 +622,11 @@ namespace EmitMSIL
             methodName = fcn.Function.Name;
             var args = fcn.FormalArguments;
             var numArgs = args.Count;
-            builtIn = BuiltIn.IsBuiltIn(methodName);
+            isOperator = Operators.IsOperator(methodName);
 
-            if (builtIn)
+            if (isOperator)
             {
-                className = nameof(BuiltIn);
+                className = nameof(Operators);
             }
 
             if (compilePass == CompilePass.MethodLookup)

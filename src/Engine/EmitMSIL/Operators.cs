@@ -6,9 +6,9 @@ using ProtoCore.Utils;
 
 namespace EmitMSIL
 {
-    public class BuiltIn
+    public class Operators
     {
-        private static string GetBuiltInMethodName(string name)
+        private static string GetOperatorMethodName(string name)
         {
             if (name[0] == '%')
             {
@@ -220,7 +220,7 @@ namespace EmitMSIL
             return false;
         }
 
-        public static bool IsBuiltIn(string name)
+        public static bool IsOperator(string name)
         {
             if (name.Length > 0)
             {
@@ -228,17 +228,17 @@ namespace EmitMSIL
             }
             return false;
         }
-        public static IEnumerable<MethodBase> GetBuiltIn(string name)
+        public static IEnumerable<MethodBase> GetOperatorMethod(string name)
         {
             var ret = new List<MethodBase>();
-            var mi = typeof(BuiltIn)?.GetMethod(GetBuiltInMethodName(name));
+            var mi = typeof(Operators)?.GetMethod(GetOperatorMethodName(name));
             if (mi != null)
             {
                 ret.Add(mi);
                 return ret;
             }
 
-            throw new MissingMethodException("No matching built in method found");
+            throw new MissingMethodException("No matching operator method found");
         }
     }
 }
