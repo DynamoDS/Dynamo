@@ -127,17 +127,13 @@ namespace EmitMSIL
             return new List<List<ReplicationGuide>>();
         }
 
-        private static MethodBase SelectFinalFep(
-            IEnumerable<MethodBase> functionEndPoints,
-            List<object> formalParameters)
+        private static MethodBase SelectFinalFep(IEnumerable<MethodBase> functionEndPoints, List<object> formalParameters)
         {
             // TODO: Determine final function endpoint here based on fitting runtime args to function parameters
             return functionEndPoints.FirstOrDefault();
         }
 
-        private static object ExecWithZeroRI(
-            MethodBase finalFep,
-            List<object> formalParameters)
+        private static object ExecWithZeroRI(MethodBase finalFep, List<object> formalParameters)
         {
             // TODO: CoerceParameters
             List<object> coercedParameters = formalParameters;//finalFep.CoerceParameters(formalParameters);
@@ -160,7 +156,7 @@ namespace EmitMSIL
             return result;
         }
 
-        // TODO: Look into array convertion performance 
+        // TODO: Look into array conversion performance 
         private static object[] convertToArray(object o)
         {
             System.Type type = o.GetType();
@@ -177,9 +173,7 @@ namespace EmitMSIL
 
         private static bool isIndexable(object o) => isIndexable(o.GetType());
 
-        private static object ExecWithRISlowPath(
-            MethodBase finalFep,
-            List<object> formalParameters,
+        private static object ExecWithRISlowPath(MethodBase finalFep, List<object> formalParameters,
             List<ReplicationInstruction> replicationInstructions)
         {
             //Recursion base case
