@@ -43,7 +43,7 @@ namespace EmitMSIL
             unchecked
             {
                 int hash = 0;
-                if (className != null) hash = 0 ^ className.GetHashCode();
+                hash = (hash * 397) ^ className.GetHashCode(); ;
                 hash = (hash * 397) ^ methodName.GetHashCode();
                 return hash + numParameters;
             }
