@@ -545,6 +545,8 @@ namespace EmitMSIL
             EmitArray(ot, eln.Exprs, (AssociativeNode el, int idx) => 
             {
                 Type t = DfsTraverse(el);
+                if (t == null) return;
+
                 if (ot == typeof(object) && t.IsValueType)
                 {
                     EmitOpCode(OpCodes.Box, t);
@@ -651,6 +653,9 @@ namespace EmitMSIL
             EmitArray(typeof(object), args, (AssociativeNode n, int index) => {
                 Type t = DfsTraverse(n);
                 t = EmitCoercionCode(t, parameters[index]);
+
+                if (t == null) return;
+
                 if (t.IsValueType)
                 {
                     EmitOpCode(OpCodes.Box, t);
