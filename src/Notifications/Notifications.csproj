@@ -10,13 +10,13 @@
 		<AssemblyName>Notifications</AssemblyName>
 	</PropertyGroup>
 
-	<Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
+	<!--<Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
 		<Exec Command="npm install @dynam0/notificati0ns" />	
 	</Target>
 
 	<Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
 		<Exec Command="npm install" />
-	</Target>
+	</Target>-->
 
 	<ItemGroup>
 		<None Remove="node_modules\%40dynam0\notificati0ns\index.js" />
