@@ -19,10 +19,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
-      <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
-      <Name>DesignScriptBuiltin</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
