@@ -8,8 +8,6 @@ namespace EmitMSIL
 {
     public class BuiltIn
     {
-        private const string typeName = "EmitMSIL.BuiltIn";
-
         private static string GetBuiltInMethodName(string name)
         {
             if (name[0] == '%')
@@ -233,7 +231,7 @@ namespace EmitMSIL
         public static IEnumerable<MethodBase> GetBuiltIn(string name)
         {
             var ret = new List<MethodBase>();
-            var mi = Type.GetType(typeName)?.GetMethod(GetBuiltInMethodName(name));
+            var mi = typeof(BuiltIn)?.GetMethod(GetBuiltInMethodName(name));
             if (mi != null)
             {
                 ret.Add(mi);

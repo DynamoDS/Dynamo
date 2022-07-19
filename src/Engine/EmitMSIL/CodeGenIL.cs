@@ -629,7 +629,7 @@ namespace EmitMSIL
 
             if (builtIn)
             {
-                className = "BuiltIn";
+                className = nameof(BuiltIn);
             }
 
             if (compilePass == CompilePass.MethodLookup)
