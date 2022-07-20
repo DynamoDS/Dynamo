@@ -1,8 +1,8 @@
-﻿using System;
+﻿using ProtoCore.DSASM;
+using ProtoCore.Utils;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ProtoCore.DSASM;
-using ProtoCore.Utils;
 
 namespace EmitMSIL
 {
@@ -23,7 +23,6 @@ namespace EmitMSIL
 
                 case double ad:
                     return !Double.IsNaN(ad) && !ad.Equals(0.0);
-
 
                 case string str:
                     return !string.IsNullOrEmpty(str);
@@ -106,6 +105,7 @@ namespace EmitMSIL
 
             return !data;
         }
+
         public static bool Eq(dynamic a, dynamic b)
         {
             if (a is bool || b is bool)
@@ -123,6 +123,7 @@ namespace EmitMSIL
                     double bd = b;
                     return MathUtils.Equals(ad, bd);
                 }
+
                 return a == b;
             }
 
@@ -151,6 +152,7 @@ namespace EmitMSIL
                     double bd = b;
                     return !MathUtils.Equals(ad, bd);
                 }
+
                 return a != b;
             }
 
@@ -217,7 +219,7 @@ namespace EmitMSIL
             if (methodName.Length > 0)
             {
                 methodName = methodName[0].ToString().ToUpper() + methodName.Substring(1);
-                
+
                 var ret = new List<MethodBase>();
                 var mi = typeof(Operators)?.GetMethod(methodName);
                 if (mi != null)
