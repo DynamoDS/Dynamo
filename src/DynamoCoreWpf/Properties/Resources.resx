@@ -3239,6 +3239,18 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
     <value>Unable To Access Directory</value>
   </data>
+  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
+    <value>Pin Wire</value>
+  </data>
+  <data name="ContextMenuConnectionsHideAll" xml:space="preserve">
+    <value>Hide All Wires</value>
+  </data>
+  <data name="ContextMenuConnectionsShowAll" xml:space="preserve">
+    <value>Show All Wires</value>
+  </data>
+  <data name="ContextMenuNodeConnections" xml:space="preserve">
+    <value>Node Connections</value>
+  </data>
   <data name="InvalidDraggingOperationMessgae" xml:space="preserve">
     <value>Nothing is being dragged. If you see this message, most likely your recent Dynamo interaction is not recommended.</value>
   </data>
