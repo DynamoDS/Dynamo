@@ -125,7 +125,6 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Conv_I4);
                 return typeof(int);
             }
-            // TODO: Add more coercion cases here.
             if(argType == typeof(double[]) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
             {
                 return EmitArrayCoercion<double, int>();
@@ -142,18 +141,21 @@ namespace EmitMSIL
             {
                 return EmitArrayCoercion<long, double>();
             }
-            if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
-            {
-                return EmitIListCoercion<double>();
-            }
-            if (typeof(IList).IsAssignableFrom(argType)  && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
-            {
-                return EmitIListCoercion<int>();
-            }
-            if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
-            {
-                return EmitIListCoercion<long>();
-            }
+            // TODO: The following cases do not work yet as EmitIListCoercion needs to be fixed.
+            //if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
+            //{
+            //    return EmitIListCoercion<double>();
+            //}
+            //if (typeof(IList).IsAssignableFrom(argType)  && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
+            //{
+            //    return EmitIListCoercion<int>();
+            //}
+            //if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
+            //{
+            //    return EmitIListCoercion<long>();
+            //}
+            // TODO: Add more coercion cases here.
+
             return argType;
         }
 
@@ -281,8 +283,6 @@ namespace EmitMSIL
 
             EmitOpCode(OpCodes.Clt);
 
-            //EmitOpCode(OpCodes.Stloc, counterIndex + 1);
-            //EmitOpCode(OpCodes.Ldloc, counterIndex + 1);
             EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel);
 
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
