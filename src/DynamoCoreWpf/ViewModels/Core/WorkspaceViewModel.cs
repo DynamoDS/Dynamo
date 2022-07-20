@@ -1555,12 +1555,11 @@ namespace Dynamo.ViewModels
             foreach (var nodeModel in nodeModels)
             {
                 var connectors = nodeModel.AllConnectors;
-                var enumerator = connectors.GetEnumerator();
-                while (enumerator.MoveNext())
+                foreach (var connector in connectors)
                 {
-                    var connector = enumerator.Current;
-                    if(connector != null)
+                    if (connector != null)
                         connector.IsHidden = isHidden;
+
                 }
             }
         }
