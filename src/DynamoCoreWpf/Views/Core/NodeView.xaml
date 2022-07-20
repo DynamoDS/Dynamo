@@ -340,7 +340,22 @@
                        IsHitTestVisible="False"
                        Style="{StaticResource SZoomFadeText}"
                        Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                       Visibility="Visible"
                        TextAlignment="Center" />
+            <TextBox Name="EditableNameBox"
+                     Margin="6,3,6,0"
+                     VerticalAlignment="Center"
+                     Background="{x:Null}"
+                     FontFamily="{StaticResource ArtifaktElementRegular}"
+                     FontSize="16px"
+                     FontWeight="Medium"
+                     Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                     IsHitTestVisible="True"
+                     BorderThickness="0"
+                     LostFocus="EditableNameBox_OnLostFocus"
+                     KeyDown="EditableNameBox_KeyDown"
+                     Visibility="Collapsed"
+                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
             <!--  Ellipse sits within Grid to increase size of MouseOver/ToolTip area  -->
             <Grid HorizontalAlignment="Right"
                   VerticalAlignment="Center"

@@ -59,7 +59,7 @@ namespace Dynamo.Wpf.UI
             switch (resourceName)
             {
                 case ResourceNames.ConsentForm.Title:
-                    resource = string.Format(Properties.Resources.UsageReportPromptDialogTitle,ProductName);
+                    resource = Properties.Resources.UsageReportPromptDialogTitle;
                     break;
             }
 

@@ -88,7 +88,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (Up-to-date).
+        ///   Looks up a localized string similar to (Up to date).
         /// </summary>
         public static string AboutWindowUpToDate {
             get {
@@ -916,9 +916,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uh oh... something went wrong and {0} has crashed, sorry about that.
+        ///   Looks up a localized string similar to Something went wrong and Dynamo has closed unexpectedly.
         ///
-        ///You will get a chance to save your work..
+        ///Don&apos;t worry, you&apos;ll have the option to save your work..
         /// </summary>
         public static string CrashPromptDialogCrashMessage {
             get {
@@ -945,7 +945,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Submit Bug To Github.
+        ///   Looks up a localized string similar to Submit bug to GitHub.
         /// </summary>
         public static string CrashPromptDialogSubmitBugButton {
             get {
@@ -954,7 +954,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} has crashed.
+        ///   Looks up a localized string similar to {0} has closed unexpectedly.
         /// </summary>
         public static string CrashPromptDialogTitle {
             get {
@@ -3548,6 +3548,15 @@ namespace Dynamo.Wpf.Properties {
         public static string InteractiveGuides {
             get {
                 return ResourceManager.GetString("InteractiveGuides", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing is being dragged. If you see this message, most likely your recent Dynamo interaction is not recommended..
+        /// </summary>
+        public static string InvalidDraggingOperationMessgae {
+            get {
+                return ResourceManager.GetString("InvalidDraggingOperationMessgae", resourceCulture);
             }
         }
         
@@ -8236,7 +8245,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Agreement to collect usability data on your use of {0}.
+        ///   Looks up a localized string similar to Agreement to Collect Usability Data.
         /// </summary>
         public static string UsageReportPromptDialogTitle {
             get {
