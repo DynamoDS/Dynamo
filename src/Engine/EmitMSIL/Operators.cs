@@ -10,39 +10,31 @@ namespace EmitMSIL
     {
         private static bool ToBoolean(dynamic a)
         {
-            if (a is bool ab)
+            switch (a)
             {
-                return ab;
-            }
+                case bool ab:
+                    return ab;
 
-            if (a is long al)
-            {
-                return al != 0;
-            }
+                case long al:
+                    return al != 0;
 
-            if (a is null)
-            {
-                return false;
-            }
+                case null:
+                    return false;
 
-            if (a is double ad)
-            {
-                return !Double.IsNaN(ad) && !ad.Equals(0.0);
+                case double ad:
+                    return !Double.IsNaN(ad) && !ad.Equals(0.0);
+
+
+                case string str:
+                    return !string.IsNullOrEmpty(str);
+
+                case char ac:
+                    return ac != 0;
             }
 
             if (a is Pointer)
             {
                 return true;
-            }
-
-            if (a is string str)
-            {
-                return !string.IsNullOrEmpty(str);
-            }
-
-            if (a is char ac)
-            {
-                return ac != 0;
             }
 
             return false;
