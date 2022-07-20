@@ -254,6 +254,20 @@ namespace ProtoCore.Utils
             return System.Enum.TryParse(realMethodName, out op);
         }
 
+        public static bool TryGetUnaryOperator(string methodName, out UnaryOperator op)
+        {
+            Validity.Assert(null != methodName);
+            if (!methodName.StartsWith(DSASM.Constants.kInternalNamePrefix))
+            {
+                op = UnaryOperator.None;
+                return false;
+            }
+
+            string realMethodName = methodName.Substring(Constants.kInternalNamePrefix.Length);
+            return System.Enum.TryParse(realMethodName, out op);
+        }
+
+
         public static string GetOperatorString(DSASM.Operator optr)
         {
             return Op.GetOpSymbol(optr);

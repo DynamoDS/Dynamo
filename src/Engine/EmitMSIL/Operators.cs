@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ProtoCore.DSASM;
 using ProtoCore.Utils;
 
 namespace EmitMSIL
 {
     public class Operators
     {
-        private static string GetOperatorMethodName(string name)
-        {
-            if (name[0] == '%')
-            {
-                name = name.Remove(0, 1);
-            }
-
-            return name[0].ToString().ToUpper() + name.Substring(1);
-        }
-
         private static bool ToBoolean(dynamic a)
         {
             if (a is bool ab)
@@ -219,22 +210,29 @@ namespace EmitMSIL
             return false;
         }
 
-        public static bool IsOperator(string name)
-        {
-            if (name.Length > 0)
-            {
-                return name[0] == '%';
-            }
-            return false;
-        }
         public static IEnumerable<MethodBase> GetOperatorMethod(string name)
         {
-            var ret = new List<MethodBase>();
-            var mi = typeof(Operators)?.GetMethod(GetOperatorMethodName(name));
-            if (mi != null)
+            string methodName = "";
+            if (CoreUtils.TryGetOperator(name, out Operator op))
             {
-                ret.Add(mi);
-                return ret;
+                methodName = op.ToString();
+            }
+            else if (CoreUtils.TryGetUnaryOperator(name, out UnaryOperator un))
+            {
+                methodName = un.ToString();
+            }
+
+            if (methodName.Length > 0)
+            {
+                methodName = methodName[0].ToString().ToUpper() + methodName.Substring(1);
+                
+                var ret = new List<MethodBase>();
+                var mi = typeof(Operators)?.GetMethod(methodName);
+                if (mi != null)
+                {
+                    ret.Add(mi);
+                    return ret;
+                }
             }
 
             throw new MissingMethodException("No matching operator method found");

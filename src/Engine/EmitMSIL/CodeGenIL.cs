@@ -622,7 +622,7 @@ namespace EmitMSIL
             methodName = fcn.Function.Name;
             var args = fcn.FormalArguments;
             var numArgs = args.Count;
-            isOperator = Operators.IsOperator(methodName);
+            isOperator = CoreUtils.IsInternalMethod(methodName);
 
             if (isOperator)
             {
