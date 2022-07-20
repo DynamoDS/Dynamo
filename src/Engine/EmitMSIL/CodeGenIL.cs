@@ -18,7 +18,7 @@ namespace EmitMSIL
         private ILGenerator ilGen;
         internal string className;
         internal string methodName;
-        private bool isOperator; 
+        private bool isInternal; 
         private IDictionary<string, IList> input;
         private IDictionary<string, IList> output;
         private int localVarIndex = -1;
@@ -134,7 +134,7 @@ namespace EmitMSIL
             }
             else
             {
-                if (!isOperator)
+                if (!isInternal)
                 {
                     var modules = ProtoFFI.DLLFFIHandler.Modules.Values.OfType<ProtoFFI.CLRDLLModule>();
                     var assemblies = modules.Select(m => m.Assembly ?? (m.Module?.Assembly)).Where(m => m != null);
@@ -186,7 +186,7 @@ namespace EmitMSIL
                 }
                 else
                 {
-                    mi = Operators.GetOperatorMethod(methodName);
+                    mi = Internals.GetInternalMethod(methodName);
                     if (mi != null || mi.Any())
                     {
                         methodCache.Add(key, mi);
@@ -622,11 +622,11 @@ namespace EmitMSIL
             methodName = fcn.Function.Name;
             var args = fcn.FormalArguments;
             var numArgs = args.Count;
-            isOperator = CoreUtils.IsInternalMethod(methodName);
+            isInternal = CoreUtils.IsInternalMethod(methodName);
 
-            if (isOperator)
+            if (isInternal)
             {
-                className = nameof(Operators);
+                className = nameof(Internals);
             }
 
             if (compilePass == CompilePass.MethodLookup)

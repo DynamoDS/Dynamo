@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace EmitMSIL
 {
-    public class Operators
+    public class Internals
     {
         private static bool ToBoolean(dynamic a)
         {
@@ -204,7 +204,7 @@ namespace EmitMSIL
             return false;
         }
 
-        public static IEnumerable<MethodBase> GetOperatorMethod(string name)
+        public static IEnumerable<MethodBase> GetInternalMethod(string name)
         {
             string methodName = "";
             if (CoreUtils.TryGetOperator(name, out Operator op))
@@ -221,7 +221,7 @@ namespace EmitMSIL
                 methodName = methodName[0].ToString().ToUpper() + methodName.Substring(1);
 
                 var ret = new List<MethodBase>();
-                var mi = typeof(Operators)?.GetMethod(methodName);
+                var mi = typeof(Internals)?.GetMethod(methodName);
                 if (mi != null)
                 {
                     ret.Add(mi);
