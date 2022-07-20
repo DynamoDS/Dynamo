@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.Reflection.Emit;
-using ProtoCore.AST;
+﻿using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
-using System.IO;
-using DSASM = ProtoCore.DSASM;
 using ProtoCore.Properties;
 using ProtoCore.Utils;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using DSASM = ProtoCore.DSASM;
 
 namespace EmitMSIL
 {
@@ -115,14 +113,180 @@ namespace EmitMSIL
 
         private Type EmitCoercionCode(Type argType, ParameterInfo param)
         {
+            if (param.ParameterType.IsAssignableFrom(argType)) return argType;
+
             if(argType == typeof(double) && param.ParameterType == typeof(long))
             {
                 EmitOpCode(OpCodes.Conv_I8);
                 return typeof(long);
             }
+            if (argType == typeof(double) || argType == typeof(long) && param.ParameterType == typeof(int))
+            {
+                EmitOpCode(OpCodes.Conv_I4);
+                return typeof(int);
+            }
             // TODO: Add more coercion cases here.
-
+            if(argType == typeof(double[]) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
+            {
+                return EmitArrayCoercion<double, int>();
+            }
+            if(argType == typeof(int[]) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
+            {
+                return EmitArrayCoercion<int, double>();
+            }
+            if (argType == typeof(double[]) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
+            {
+                return EmitArrayCoercion<double, long>();
+            }
+            if (argType == typeof(long[]) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
+            {
+                return EmitArrayCoercion<long, double>();
+            }
+            if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
+            {
+                return EmitIListCoercion<double>();
+            }
+            if (typeof(IList).IsAssignableFrom(argType)  && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
+            {
+                return EmitIListCoercion<int>();
+            }
+            if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
+            {
+                return EmitIListCoercion<long>();
+            }
             return argType;
+        }
+
+        // TODO: Does not work yet (intended to coerce IList to IEnumerable<T>)
+        private Type EmitIListCoercion<T>()
+        {
+            MethodInfo mInfo = null;
+            // Find length for IList to be coerced (already on top of eval stack), len
+            var prop = typeof(ICollection).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
+                                p => p.Name == nameof(ICollection.Count)).FirstOrDefault();
+
+            if (prop != null)
+            {
+                mInfo = prop.GetAccessors().FirstOrDefault();
+            }
+            //var mInfo = typeof(ICollection).GetMethod(nameof(ICollection.get_Count));
+            EmitOpCode(OpCodes.Callvirt, mInfo);
+
+            // var newarr = new T[len];
+            EmitOpCode(OpCodes.Newarr, typeof(T));
+
+            // Declare new array to store coerced values
+            var t = typeof(T).MakeArrayType();
+            var localBuilder = DeclareLocal(t);
+            var newArrIndex = localBuilder.LocalIndex;
+            EmitOpCode(OpCodes.Stloc, newArrIndex);
+
+            // Load array to be coerced.
+            EmitOpCode(OpCodes.Ldloc, localVarIndex);
+            // Emit new array
+            EmitOpCode(OpCodes.Ldloc, newArrIndex);
+
+            EmitOpCode(OpCodes.Ldc_I4_0);
+            mInfo = typeof(ICollection).GetMethod(nameof(ICollection.CopyTo));
+
+            // arr.CopyTo(newarr, 0);
+            EmitOpCode(OpCodes.Callvirt, mInfo);
+
+            EmitOpCode(OpCodes.Ldloc, newArrIndex);
+
+            return t;
+        }
+
+        private Type EmitArrayCoercion<S, T>()
+        {
+            // Find length for array to be coerced (already on top of eval stack), len
+            EmitOpCode(OpCodes.Ldlen);
+            EmitOpCode(OpCodes.Conv_I4);
+
+            // var newarr = new T[len];
+            EmitOpCode(OpCodes.Newarr, typeof(T));
+
+            // Declare new array to store coerced values
+            var t = typeof(T).MakeArrayType();
+            var localBuilder = DeclareLocal(t);
+            var newArrIndex = localBuilder.LocalIndex;
+            EmitOpCode(OpCodes.Stloc, newArrIndex);
+
+            // Emit for loop to loop over array and convert.
+
+            // i = 0;
+            var counterIndex = newArrIndex + 1;
+            EmitOpCode(OpCodes.Ldc_I4_0);
+            EmitOpCode(OpCodes.Stloc, counterIndex);
+
+            var loopBodyLabel = ilGen.DefineLabel();
+            var loopCondLabel = ilGen.DefineLabel();
+
+            EmitOpCode(OpCodes.Br_S, loopCondLabel);
+
+            // newarr[i] = (T)arr[i];
+            ilGen.MarkLabel(loopBodyLabel);
+
+            EmitOpCode(OpCodes.Ldloc, newArrIndex);
+            EmitOpCode(OpCodes.Ldloc, counterIndex);
+
+            // Load array to be coerced.
+            EmitOpCode(OpCodes.Ldloc, localVarIndex);
+            EmitOpCode(OpCodes.Ldloc, counterIndex);
+
+            if (typeof(S) == typeof(double))
+            {
+                EmitOpCode(OpCodes.Ldelem_R8);
+            }
+            else if (typeof(S) == typeof(long))
+            {
+                EmitOpCode(OpCodes.Ldelem_I8);
+            }
+            else if (typeof(S) == typeof(int))
+            {
+                EmitOpCode(OpCodes.Ldelem_I4);
+            }
+            if (typeof(T) == typeof(int))
+            {
+                EmitOpCode(OpCodes.Conv_I4);
+                EmitOpCode(OpCodes.Stelem_I4);
+            }
+            else if (typeof(T) == typeof(long))
+            {
+                EmitOpCode(OpCodes.Conv_I8);
+                EmitOpCode(OpCodes.Stelem_I8);
+            }
+            if (typeof(T) == typeof(double))
+            {
+                EmitOpCode(OpCodes.Conv_R8);
+                EmitOpCode(OpCodes.Stelem_R8);
+            }
+            // i++;
+            EmitOpCode(OpCodes.Ldloc, counterIndex);
+            EmitOpCode(OpCodes.Ldc_I4_1);
+
+            EmitOpCode(OpCodes.Add);
+            
+            EmitOpCode(OpCodes.Stloc, counterIndex);
+
+            // i < arr.Length;
+            ilGen.MarkLabel(loopCondLabel);
+
+            EmitOpCode(OpCodes.Ldloc, counterIndex);
+
+            // Load input array
+            EmitOpCode(OpCodes.Ldloc, localVarIndex);
+            EmitOpCode(OpCodes.Ldlen);
+            EmitOpCode(OpCodes.Conv_I4);
+
+            EmitOpCode(OpCodes.Clt);
+
+            //EmitOpCode(OpCodes.Stloc, counterIndex + 1);
+            //EmitOpCode(OpCodes.Ldloc, counterIndex + 1);
+            EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel);
+
+            EmitOpCode(OpCodes.Ldloc, newArrIndex);
+            return t;
         }
 
         private IEnumerable<MethodBase> FunctionLookup(IList args)
@@ -367,6 +531,12 @@ namespace EmitMSIL
         {
             writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {t}");
             return ilGen.DeclareLocal(t);
+        }
+
+        private void EmitOpCode(OpCode opCode, Label label)
+        {
+            ilGen.Emit(opCode, label);
+            writer.WriteLine($"{opCode} {label}");
         }
 
         private void EmitOpCode(OpCode opCode, LocalBuilder local)
