@@ -2522,7 +2522,12 @@ namespace Dynamo.Models
                                 connector.End != null && connector.End.Owner.IsSelected
                                     && !ClipBoard.Contains(connector));
 
+                var pins =
+                    connectors.SelectMany(x => x.ConnectorPinModels);
+
                 ClipBoard.AddRange(connectors);
+
+                ClipBoard.AddRange(pins);
             }
         }
 
@@ -2574,6 +2579,7 @@ namespace Dynamo.Models
             var nodes = ClipBoard.OfType<NodeModel>();
             var connectors = ClipBoard.OfType<ConnectorModel>();
             var notes = ClipBoard.OfType<NoteModel>();
+            var pins = ClipBoard.OfType<ConnectorPinModel>();
             // we only want to get groups that either has nested groups
             // or does not belong to a group here.
             // We handle creation of nested groups when creating the
@@ -2686,7 +2692,35 @@ namespace Dynamo.Models
                     select
                         ConnectorModel.Make(startNode, endNode, c.Start.Index, c.End.Index);
 
+
+                var newPins = new List<ConnectorPinModel>();
+                var oldAndNewConnectors = connectors.Zip(newConnectors, (o, n) => new { oldConnector = o, newConnector = n });
+
+                foreach (var on in oldAndNewConnectors)
+                {
+                    modelLookup.Add(on.oldConnector.GUID, on.newConnector);
+                }
+
+                foreach (var pin in pins)
+                {
+                    ModelBase connectorModel;
+                    var connector = modelLookup.TryGetValue(pin.ConnectorId, out connectorModel) && connectorModel as ConnectorModel != null ? connectorModel as ConnectorModel : null;
+                    if (connector != null)
+                    {
+                        double x = pin.CenterX + shiftX + offset;
+                        double y = pin.CenterY + shiftY + offset;
+
+                        var newPin = new ConnectorPinModel(x, y, Guid.NewGuid(), connector.GUID);
+
+                        connector.AddPin(newPin);
+                        newPins.Add(newPin);
+                    }
+                }
+
                 createdModels.AddRange(newConnectors);
+                createdModels.AddRange(newPins);
+
+                newItems = newItems.Concat(newPins);
 
                 //Grouping depends on the selected node models.
                 //so adding the group after nodes / notes are added to workspace.
