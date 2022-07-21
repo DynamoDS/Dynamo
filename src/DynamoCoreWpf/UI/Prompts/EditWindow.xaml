@@ -64,7 +64,7 @@
                             Click="MaximizeButton_OnClick"
                             DockPanel.Dock="Right"
                             Visibility="Collapsed"
-                            Style="{StaticResource NormalizeButtonStyle}" />
+                            Style="{StaticResource RestoreButtonStyle}" />
 
                     <Button Name="MinimizeButton"
                             Margin="0 0 25 0"
