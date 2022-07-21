@@ -18,6 +18,7 @@ namespace EmitMSIL
         private ILGenerator ilGen;
         internal string className;
         internal string methodName;
+        // True for internal methods (for example operators and unary operators)
         private bool isInternal; 
         private IDictionary<string, IList> input;
         private IDictionary<string, IList> output;
