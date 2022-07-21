@@ -19,7 +19,7 @@ namespace Dynamo.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -2002,7 +2002,9 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph currently contains some unresolved nodes, and cannot be saved until the nodes are resolved. If the graph is saved using SaveAs - the unresolved nodes will be removed from the file..
+        ///   Looks up a localized string similar to This may be caused by a missing package, incompatible package version, or missing host program. If you Save As, the unresolved nodes will be removed.
+        ///
+        ///Resolve or remove the unresolved nodes and try again..
         /// </summary>
         public static string UnresolvedNodesWarningMessage {
             get {
@@ -2011,7 +2013,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph cannot be saved until unresolved nodes are removed or resolved..
+        ///   Looks up a localized string similar to The graph has unresolved nodes and cannot be saved..
         /// </summary>
         public static string UnresolvedNodesWarningShortMessage {
             get {
@@ -2020,7 +2022,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Graph Contains Unresolved Nodes and Cannot Be Saved..
+        ///   Looks up a localized string similar to Unable to save graph.
         /// </summary>
         public static string UnresolvedNodesWarningTitle {
             get {

@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Dynamo.Models;
 
@@ -25,6 +27,7 @@ namespace Dynamo.UI.Prompts
 
             this.DialogIcon.Source = new BitmapImage(taskDialogParams.ImageUri);
             this.Title = taskDialogParams.DialogTitle;
+            this.TitleTextBlock.Text = taskDialogParams.DialogTitle;
             this.SummaryText.Text = taskDialogParams.Summary;
             this.DescriptionText.Text = taskDialogParams.Description;
 
@@ -33,6 +36,22 @@ namespace Dynamo.UI.Prompts
         }
 
         #endregion
+
+        private void CloseButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        /// <summary>
+        /// Lets the user drag this window around with their left mouse button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+            DragMove();
+        }
 
         #region Private Class Helper Methods
 
@@ -49,7 +68,7 @@ namespace Dynamo.UI.Prompts
             if (buttons == null)
                 return;
 
-            var style = SharedDictionaryManager.DynamoModernDictionary["STextButton"];
+            var style = SharedDictionaryManager.DynamoModernDictionary["CtaButtonStyle"];
 
             foreach (var button in buttons)
             {
@@ -57,6 +76,9 @@ namespace Dynamo.UI.Prompts
                 buttonElement.Tag = button.Item1;
                 buttonElement.Content = button.Item2;
                 buttonElement.Style = style as Style;
+                buttonElement.BorderBrush = (SolidColorBrush) new BrushConverter().ConvertFrom("#0696D7");
+                buttonElement.Foreground = Brushes.White;
+                buttonElement.Background = (SolidColorBrush) new BrushConverter().ConvertFrom("#0696D7");
                 buttonElement.Click += OnButtonElementClicked;
 
                 if (button.Item3 != false)
@@ -87,6 +109,12 @@ namespace Dynamo.UI.Prompts
         {
             int buttonId = (int)((sender as Button).Tag);
             this.taskDialogParams.ClickedButtonId = buttonId;
+            this.Close();
+        }
+
+        // ESC Button pressed triggers Window close        
+        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
             this.Close();
         }
 
