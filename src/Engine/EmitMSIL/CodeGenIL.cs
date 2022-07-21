@@ -171,7 +171,7 @@ namespace EmitMSIL
 
                         // TODO: Add check for constructorinfo objects
 
-                        if (mi != null || mi.Any())
+                        if (mi != null && mi.Any())
                         {
                             methodCache.Add(key, mi);
                             break;
@@ -187,7 +187,7 @@ namespace EmitMSIL
                 else
                 {
                     mi = Internals.GetInternalMethod(methodName);
-                    if (mi != null || mi.Any())
+                    if (mi != null && mi.Any())
                     {
                         methodCache.Add(key, mi);
                     }
