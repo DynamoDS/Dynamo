@@ -34,6 +34,22 @@
     <None Remove="UI\Images\NodeStates\frozen-64px.png" />
     <None Remove="UI\Images\NodeStates\hidden-64px.png" />
     <None Remove="UI\Images\NodeStates\info-64px.png" />
+    <None Remove="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\close-lighttheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\close-lighttheme-hover-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\max-darktheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\max-darktheme-hover-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\max-lighttheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\max-lighttheme-hover-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\min-darktheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\min-darktheme-hover-16px-1.png" />
+    <None Remove="UI\Images\TitleBarButtons\min-darktheme-hover-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\min-lighttheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\min-lighttheme-hover-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\restore-darktheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\restore-darktheme-hover-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\restore-lighttheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\restore-lighttheme-hover-16px.png" />
     <None Remove="UI\Images\warning_16px.png" />
     <None Remove="Views\FileTrust\FileTrustWarning.xaml" />
     <None Remove="Views\GuidedTour\HtmlPages\nodePackage.html" />
@@ -811,6 +827,22 @@
     <Resource Include="UI\Images\NodeStates\frozen-64px.png" />
     <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
     <Resource Include="UI\Images\NodeStates\info-64px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-hover-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\max-darktheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\max-darktheme-hover-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\max-lighttheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\max-lighttheme-hover-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\min-darktheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\min-darktheme-hover-16px-1.png" />
+    <Resource Include="UI\Images\TitleBarButtons\min-darktheme-hover-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\min-lighttheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\min-lighttheme-hover-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\restore-darktheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\restore-darktheme-hover-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\restore-lighttheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\restore-lighttheme-hover-16px.png" />
     <Resource Include="UI\Images\warning_16px.png" />
   </ItemGroup>
   <ItemGroup>
