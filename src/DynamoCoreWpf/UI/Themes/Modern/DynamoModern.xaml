@@ -2868,8 +2868,42 @@
         </Style.Triggers>
     </Style>
 
+    <!-- Window Control Button Styles - Base Button -->
+    <Style x:Key="BaseButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
-    <!-- Window Control Button Styles - Close Button -->
+    <!-- Window Control Button Dark Styles - Close Button -->
+    <Style x:Key="CloseButtonDarkStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="closeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-default-16px.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-hover-16px.png" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Window Control Button Light Styles - Close Button -->
     <Style x:Key="CloseButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
@@ -2891,7 +2925,25 @@
         </Setter>
     </Style>
 
-    <!-- Window Control Button Styles - Minimize Button -->
+    <!-- Window Control Button Dark Styles - Minimize Button -->
+    <Style x:Key="MinimizeButtonDarkStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="minimizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/min-darktheme-default-16px.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="minimizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/min-darktheme-hover-16px.png" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Window Control Button Light Styles - Minimize Button -->
     <Style x:Key="MinimizeButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -2914,7 +2966,25 @@
         </Setter>
     </Style>
 
-    <!-- Window Control Button Styles - Maximize Button -->
+    <!-- Window Control Button Dark Styles - Maximize Button -->
+    <Style x:Key="MaximizeButtonDarkStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="maximizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/max-darktheme-default-16px.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="maximizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/max-darktheme-hover-16px.png" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Window Control Button Light Styles - Maximize Button -->
     <Style x:Key="MaximizeButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -2937,8 +3007,26 @@
         </Setter>
     </Style>
 
-    <!-- Window Control Button Styles - Restore Button -->
-    <Style x:Key="ButtonStyle" TargetType="Button">
+    <!-- Window Control Button Dark Styles - Restore Button -->
+    <Style x:Key="RestoreButtonDarkStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="restoreIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/restore-darktheme-default-16px.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="restoreIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/restore-darktheme-hover-16px.png" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Window Control Button Light Styles - Restore Button -->
+    <Style x:Key="RestoreButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
