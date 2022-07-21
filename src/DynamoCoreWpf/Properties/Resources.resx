@@ -3221,7 +3221,7 @@ You can manage this in Preferences -&gt; Security.</value>
 {0}</value>
   </data>
   <data name="TrustLocationSkippedNotification" xml:space="preserve">
-    <value>No trusted location has been added.</value>
+    <value>File location was not added to trusted locations.</value>
   </data>
   <data name="MessagePackageTargetOtherHosts2" xml:space="preserve">
     <value>The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems.</value>
