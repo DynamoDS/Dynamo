@@ -39,22 +39,22 @@ namespace EmitMSIL
             return false;
         }
 
-        public static dynamic Add(dynamic a, dynamic b)
+        public static dynamic add(dynamic a, dynamic b)
         {
             return a + b;
         }
 
-        public static dynamic Sub(dynamic a, dynamic b)
+        public static dynamic sub(dynamic a, dynamic b)
         {
             return a - b;
         }
 
-        public static dynamic Mul(dynamic a, dynamic b)
+        public static dynamic mul(dynamic a, dynamic b)
         {
             return a * b;
         }
 
-        public static dynamic Div(dynamic a, dynamic b)
+        public static dynamic div(dynamic a, dynamic b)
         {
             //division is always carried out as a double
             double lhs = a;
@@ -63,7 +63,7 @@ namespace EmitMSIL
             return lhs / rhs;
         }
 
-        public static dynamic Mod(dynamic a, dynamic b)
+        public static dynamic mod(dynamic a, dynamic b)
         {
             var intMod = a % b;
 
@@ -83,7 +83,7 @@ namespace EmitMSIL
             return -a;
         }
 
-        public static bool And(dynamic a, dynamic b)
+        public static bool and(dynamic a, dynamic b)
         {
             bool lhs = ToBoolean(a);
             bool rhs = ToBoolean(b);
@@ -91,7 +91,7 @@ namespace EmitMSIL
             return lhs && rhs;
         }
 
-        public static bool Or(dynamic a, dynamic b)
+        public static bool or(dynamic a, dynamic b)
         {
             bool lhs = ToBoolean(a);
             bool rhs = ToBoolean(b);
@@ -106,7 +106,7 @@ namespace EmitMSIL
             return !data;
         }
 
-        public static bool Eq(dynamic a, dynamic b)
+        public static bool eq(dynamic a, dynamic b)
         {
             if (a is bool || b is bool)
             {
@@ -135,7 +135,7 @@ namespace EmitMSIL
             return a.Equals(b);
         }
 
-        public static bool Nq(dynamic a, dynamic b)
+        public static bool nq(dynamic a, dynamic b)
         {
             if (a is bool || b is bool)
             {
@@ -164,7 +164,7 @@ namespace EmitMSIL
             return !a.Equals(b);
         }
 
-        public static bool Gt(dynamic a, dynamic b)
+        public static bool gt(dynamic a, dynamic b)
         {
             if (a is double || b is double || a is long || b is long)
             {
@@ -174,7 +174,7 @@ namespace EmitMSIL
             return false;
         }
 
-        public static bool Lt(dynamic a, dynamic b)
+        public static bool lt(dynamic a, dynamic b)
         {
             if (a is double || b is double || a is long || b is long)
             {
@@ -184,7 +184,7 @@ namespace EmitMSIL
             return false;
         }
 
-        public static bool Ge(dynamic a, dynamic b)
+        public static bool ge(dynamic a, dynamic b)
         {
             if (a is double || b is double || a is long || b is long)
             {
@@ -194,7 +194,7 @@ namespace EmitMSIL
             return false;
         }
 
-        public static bool Le(dynamic a, dynamic b)
+        public static bool le(dynamic a, dynamic b)
         {
             if (a is double || b is double || a is long || b is long)
             {
@@ -218,8 +218,6 @@ namespace EmitMSIL
 
             if (methodName.Length > 0)
             {
-                methodName = methodName[0].ToString().ToUpper() + methodName.Substring(1);
-
                 var ret = new List<MethodBase>();
                 var mi = typeof(Internals)?.GetMethod(methodName);
                 if (mi != null)
