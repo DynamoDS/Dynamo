@@ -2904,8 +2904,7 @@
     </Style>
 
     <!-- Window Control Button Light Styles - Close Button -->
-    <Style x:Key="CloseButtonStyle" TargetType="Button">
-        <Setter Property="Cursor" Value="Hand"/>
+    <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -2915,9 +2914,6 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-lighttheme-hover-16px.png" />
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" Value=".5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -2944,9 +2940,7 @@
     </Style>
 
     <!-- Window Control Button Light Styles - Minimize Button -->
-    <Style x:Key="MinimizeButtonStyle" TargetType="Button">
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    <Style x:Key="MinimizeButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -2956,9 +2950,6 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="minimizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/min-lighttheme-hover-16px.png" />
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" Value=".5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -2985,9 +2976,7 @@
     </Style>
 
     <!-- Window Control Button Light Styles - Maximize Button -->
-    <Style x:Key="MaximizeButtonStyle" TargetType="Button">
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    <Style x:Key="MaximizeButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -2997,9 +2986,6 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="maximizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/max-lighttheme-hover-16px.png" />
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" Value=".5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -3026,9 +3012,7 @@
     </Style>
 
     <!-- Window Control Button Light Styles - Restore Button -->
-    <Style x:Key="RestoreButtonStyle" TargetType="Button">
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    <Style x:Key="RestoreButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -3038,9 +3022,6 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="restoreIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/restore-lighttheme-hover-16px.png" />
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" Value=".5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
