@@ -19,17 +19,17 @@ namespace Builtin.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class DesignScriptBuiltin {
+    internal class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal DesignScriptBuiltin() {
+        internal Resources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Builtin.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Builtin.Properties.DesignScriptBuiltin", typeof(DesignScriptBuiltin).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Builtin.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -70,11 +70,38 @@ namespace Builtin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The amount in range expression should be an positive integer.
+        /// </summary>
+        internal static string kInvalidAmountInRangeExpression {
+            get {
+                return ResourceManager.GetString("kInvalidAmountInRangeExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No step size is specified in amount range expression.
+        /// </summary>
+        internal static string kNoStepSizeInAmountRangeExpression {
+            get {
+                return ResourceManager.GetString("kNoStepSizeInAmountRangeExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot index into a null list, dictionary or string..
         /// </summary>
         internal static string NullReferenceExceptionMessage {
             get {
                 return ResourceManager.GetString("NullReferenceExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of items in range expression is over limit.
+        /// </summary>
+        internal static string RangeExpressionOutOfMemory {
+            get {
+                return ResourceManager.GetString("RangeExpressionOutOfMemory", resourceCulture);
             }
         }
         
