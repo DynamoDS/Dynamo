@@ -146,7 +146,7 @@ namespace EmitMSIL
             //{
             //    return EmitIListCoercion<double>();
             //}
-            //if (typeof(IList).IsAssignableFrom(argType)  && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
+            //if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
             //{
             //    return EmitIListCoercion<int>();
             //}
@@ -167,25 +167,23 @@ namespace EmitMSIL
             var prop = typeof(ICollection).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
                                 p => p.Name == nameof(ICollection.Count)).FirstOrDefault();
 
-            if (prop != null)
-            {
-                mInfo = prop.GetAccessors().FirstOrDefault();
-            }
-            //var mInfo = typeof(ICollection).GetMethod(nameof(ICollection.get_Count));
+            // mInfo is get_Count() method on ICollection.
+            mInfo = prop.GetAccessors().FirstOrDefault();
+
             EmitOpCode(OpCodes.Callvirt, mInfo);
 
             // var newarr = new T[len];
             EmitOpCode(OpCodes.Newarr, typeof(T));
 
             // Declare new array to store coerced values
-            var t = typeof(T).MakeArrayType();
+            var t = typeof(T[]);
             var localBuilder = DeclareLocal(t);
             var newArrIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, newArrIndex);
 
             // Load array to be coerced.
             EmitOpCode(OpCodes.Ldloc, localVarIndex);
-            // Emit new array
+            // Load new array
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
 
             EmitOpCode(OpCodes.Ldc_I4_0);
@@ -199,17 +197,17 @@ namespace EmitMSIL
             return t;
         }
 
-        private Type EmitArrayCoercion<S, T>()
+        private Type EmitArrayCoercion<Source, Target>()
         {
             // Find length for array to be coerced (already on top of eval stack), len
             EmitOpCode(OpCodes.Ldlen);
             EmitOpCode(OpCodes.Conv_I4);
 
             // var newarr = new T[len];
-            EmitOpCode(OpCodes.Newarr, typeof(T));
+            EmitOpCode(OpCodes.Newarr, typeof(Target));
 
             // Declare new array to store coerced values
-            var t = typeof(T).MakeArrayType();
+            var t = typeof(Target[]);
             var localBuilder = DeclareLocal(t);
             var newArrIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, newArrIndex);
@@ -236,29 +234,29 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldloc, localVarIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
-            if (typeof(S) == typeof(double))
+            if (typeof(Source) == typeof(double))
             {
                 EmitOpCode(OpCodes.Ldelem_R8);
             }
-            else if (typeof(S) == typeof(long))
+            else if (typeof(Source) == typeof(long))
             {
                 EmitOpCode(OpCodes.Ldelem_I8);
             }
-            else if (typeof(S) == typeof(int))
+            else if (typeof(Source) == typeof(int))
             {
                 EmitOpCode(OpCodes.Ldelem_I4);
             }
-            if (typeof(T) == typeof(int))
+            if (typeof(Target) == typeof(int))
             {
                 EmitOpCode(OpCodes.Conv_I4);
                 EmitOpCode(OpCodes.Stelem_I4);
             }
-            else if (typeof(T) == typeof(long))
+            else if (typeof(Target) == typeof(long))
             {
                 EmitOpCode(OpCodes.Conv_I8);
                 EmitOpCode(OpCodes.Stelem_I8);
             }
-            if (typeof(T) == typeof(double))
+            if (typeof(Target) == typeof(double))
             {
                 EmitOpCode(OpCodes.Conv_R8);
                 EmitOpCode(OpCodes.Stelem_R8);
