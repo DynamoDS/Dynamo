@@ -101,6 +101,8 @@
                      Color="#EEEEEE" />
     <SolidColorBrush x:Key="boolLabelBackground"
                      Color="#F9F9A5" />
+    <SolidColorBrush x:Key="nullLabelBackground"
+                     Color="#F9F9A5" />
 
     <!-- Node Autocomplete -->
     <SolidColorBrush x:Key="autocompletionWindow" Color="#535353" />
