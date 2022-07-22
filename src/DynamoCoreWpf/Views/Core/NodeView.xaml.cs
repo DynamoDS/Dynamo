@@ -446,7 +446,7 @@ namespace Dynamo.Controls
             {
                 Debug.WriteLine("Name double clicked!");
                 // If workspace is zoomed-out, open an Edit Name dialog, otherwise rename inline
-                if (viewModel.WorkspaceViewModel.Zoom < Configurations.ZoomThreshold)
+                if (viewModel.WorkspaceViewModel.Zoom < Configurations.ZoomDirectEditThreshold)
                 {
                     if (ViewModel != null && ViewModel.RenameCommand.CanExecute(null))
                     {
