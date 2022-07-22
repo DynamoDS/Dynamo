@@ -130,7 +130,7 @@
     <comment>About window title</comment>
   </data>
   <data name="AboutWindowUpToDate" xml:space="preserve">
-    <value>(Up-to-date)</value>
+    <value>(Up to date)</value>
     <comment>To indicate Dynamo is up to date</comment>
   </data>
   <data name="ActionMember" xml:space="preserve">
@@ -372,9 +372,9 @@
     <comment>Copy crash details</comment>
   </data>
   <data name="CrashPromptDialogCrashMessage" xml:space="preserve">
-    <value>Uh oh... something went wrong and {0} has crashed, sorry about that.
+    <value>Something went wrong and Dynamo has closed unexpectedly.
 
-You will get a chance to save your work.</value>
+Don't worry, you'll have the option to save your work.</value>
   </data>
   <data name="CrashPromptDialogDetailButton" xml:space="preserve">
     <value>Details</value>
@@ -385,11 +385,11 @@ You will get a chance to save your work.</value>
     <comment>Open folder that contains crash report</comment>
   </data>
   <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
-    <value>Submit Bug To Github</value>
+    <value>Submit bug to GitHub</value>
     <comment>Submit a bug on github</comment>
   </data>
   <data name="CrashPromptDialogTitle" xml:space="preserve">
-    <value>{0} has crashed</value>
+    <value>{0} has closed unexpectedly</value>
   </data>
   <data name="CreateMember" xml:space="preserve">
     <value>Create</value>
@@ -2106,7 +2106,7 @@ Installing the latest update requires Dynamo and any host applications to close.
 Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
-    <value>Agreement to collect usability data on your use of {0}</value>
+    <value>Agreement to Collect Usability Data</value>
   </data>
   <data name="UseLevelKeepListStructureHint" xml:space="preserve">
     <value>Keep 1 input list's nesting</value>
@@ -3234,7 +3234,7 @@ You can manage this in Preferences -&gt; Security.</value>
 {0}</value>
   </data>
   <data name="TrustLocationSkippedNotification" xml:space="preserve">
-    <value>No trusted location has been added.</value>
+    <value>File location was not added to trusted locations.</value>
   </data>
   <data name="MessagePackageTargetOtherHosts2" xml:space="preserve">
     <value>The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems.</value>
@@ -3251,5 +3251,20 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
     <value>Unable To Access Trusted Directory</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
+    <value>Pin Wire</value>
+  </data>
+  <data name="ContextMenuConnectionsHideAll" xml:space="preserve">
+    <value>Hide All Wires</value>
+  </data>
+  <data name="ContextMenuConnectionsShowAll" xml:space="preserve">
+    <value>Show All Wires</value>
+  </data>
+  <data name="ContextMenuNodeConnections" xml:space="preserve">
+    <value>Node Connections</value>
+  </data>
+  <data name="InvalidDraggingOperationMessgae" xml:space="preserve">
+    <value>Nothing is being dragged. If you see this message, most likely your recent Dynamo interaction is not recommended.</value>
   </data>
 </root>

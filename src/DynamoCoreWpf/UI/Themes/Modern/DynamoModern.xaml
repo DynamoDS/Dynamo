@@ -52,13 +52,21 @@
 
     <Color x:Key="DefaultBorderBrushDarkColor">Black</Color>
 
+
     <!--  Control-specific resources.  -->
     <Color x:Key="HeaderTopColor">#FFC5CBF9</Color>
     <Color x:Key="DatagridCurrentCellBorderColor">Black</Color>
     <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
     <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
 
+    <Color x:Key="DarkThemeBodyMediumColor">#F5F5F5</Color>
+    <Color x:Key="DarkThemeInputBoxBackgroundColor">#353535</Color>
+
+    <SolidColorBrush x:Key="DarkThemeBodyMediumBrush" Color="{DynamicResource DarkThemeBodyMediumColor}" />
+    <SolidColorBrush x:Key="DarkThemeInputBoxBackgroundBrush" Color="{DynamicResource DarkThemeInputBoxBackgroundColor}" />
+
     <clr:Double x:Key="NodeNameHeight">53</clr:Double>
+
 
     <!--  InfoBubble colors  -->
     <SolidColorBrush x:Key="InfoBubbleBackNormalBrush" Color="White" />
@@ -1022,7 +1030,6 @@
     </Style>
 
 
-
     <Style x:Key="SDarkTextBox"
            BasedOn="{StaticResource {x:Type TextBox}}"
            TargetType="{x:Type TextBox}">
@@ -1038,6 +1045,55 @@
                             Background="#2c2c2c"
                             BorderBrush="#444"
                             BorderThickness="1px">
+                        <Grid>
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="5,5,0,0"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          Style="{DynamicResource ResourceKey=SDarkScrollViewer}" />
+                            <TextBlock x:Name="previewText"
+                                       Margin="5,5,0,0"
+                                       Padding="{TemplateBinding Padding}"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       Foreground="#555555"
+                                       IsHitTestVisible="False"
+                                       Text="{TemplateBinding Tag}"
+                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="borderText" Property="BorderBrush" Value="#666666" />
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="#555555" />
+                            <Setter TargetName="borderText" Property="BorderBrush" Value="#444444" />
+                        </Trigger>
+
+                        <Trigger Property="Text" Value="">
+                            <Setter TargetName="previewText" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SLightTextBox"
+           BasedOn="{StaticResource {x:Type TextBox}}"
+           TargetType="{x:Type TextBox}">
+        <Setter Property="Foreground" Value="{DynamicResource DarkerGreyBrush}" />
+        <Setter Property="CaretBrush" Value="White" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="FontSize" Value="11px" />
+        <Setter Property="Padding" Value="5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border Name="borderText"
+                            Background="{DynamicResource LightMidGreyOpacityBrush}"
+                            BorderBrush="#444"
+                            BorderThickness="0px">
                         <Grid>
                             <ScrollViewer x:Name="PART_ContentHost"
                                           Margin="5,5,0,0"
@@ -2812,6 +2868,8 @@
         </Style.Triggers>
     </Style>
 
+
+    <!-- Window Control Button Styles - Close Button -->
     <Style x:Key="CloseButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
@@ -2823,6 +2881,75 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/close_blue.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Window Control Button Styles - Minimize Button -->
+    <Style x:Key="MinimizeButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="minimizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minus_16px_grey.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="minimizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minus_16px_blue.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Window Control Button Styles - Maximize Button -->
+    <Style x:Key="MaximizeButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="maximizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/maximize_16px_grey.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="maximizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/maximize_16px_blue.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Window Control Button Styles - Normalize Button -->
+    <Style x:Key="NormalizeButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="normalizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minimize_16px_grey.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="normalizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minimize_16px_blue.png" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value=".5" />
@@ -2875,17 +3002,17 @@
         </Setter>
     </Style>
 
-    <Style x:Key="FolderButtonStyle" TargetType="Button">
+    <Style x:Key="EditFolderButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Image Name="folderIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/folder_16_16.png"/>
+                        <Image Name="folderIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/edit_folder_16px_default.png"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="folderIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/folder-hover-16px.png" />
+                            <Setter TargetName="folderIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/edit_folder_16px_hover.png" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value=".5" />
@@ -3609,7 +3736,7 @@
                                 Grid.Row="1"
                                 BorderThickness="1,0,1,1"
                                 CornerRadius="0,0,4,4">
-                            <ContentPresenter Margin="12,0,0,15" />
+                            <ContentPresenter Margin="12,0,0,12" />
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -4830,7 +4957,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Grid Margin="0,0,10,10"
+                    <Grid Margin="0,0,10,5"
                                   MinWidth="186"
                                   MinHeight="67">
                         <Border x:Name="mouseOverBorder"
@@ -4936,4 +5063,175 @@
         </Setter.Value>
     </Setter>
     </Style>
+
+    <!-- UI No Style Window Border Style -->
+    <Style x:Key="NoStyleWindowBorderStyle" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="BorderThickness" Value="4"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#000" ShadowDepth="0" Opacity="0.25" BlurRadius="10.0" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- A rectangle used as a divider line -->
+    <Style x:Key="DividerRectangleStyle" TargetType="{x:Type Rectangle}">
+        <Setter Property="Height" Value="1px"/>
+        <Setter Property="Margin" Value="0 20 0 15"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <Setter Property="Fill" Value="#B7B7B7"/>
+        <Setter Property="UseLayoutRounding" Value="True"/>
+    </Style>
+
+    <!-- The default style for a TextBox in the Dark Theme -->
+    <Style x:Key="InputBoxDarkThemeStyle" TargetType="{x:Type TextBox}">
+        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+        <Setter Property="Foreground" Value="{StaticResource DarkThemeBodyMediumBrush}"/>
+        <Setter Property="Background" Value="{StaticResource DarkThemeInputBoxBackgroundBrush}"/>
+        <Setter Property="UseLayoutRounding" Value="True"/>
+        <Setter Property="FontSize" Value="12px"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="MinLines" Value="2"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="AcceptsReturn" Value="True"/>
+        <Setter Property="AcceptsTab" Value="True"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+    </Style>
+
+    <!-- Colors -->
+    <Color x:Key="MidGray">#999999</Color>
+    <Color x:Key="LightGray">#CCCCCC</Color>
+    <Color x:Key="Blue">#38abdf</Color>
+    <Color x:Key="MidLightBlue">#366a81</Color>
+    <Color x:Key="MidBlue">#365868</Color>
+    <Color x:Key="MidDarkBlue">#375f71</Color>
+    <Color x:Key="TextColor">#F5F5F5</Color>
+    <Color x:Key="GrayOpacity">#5C5C5C5C</Color>
+
+    <!--  Brushes  -->
+    <SolidColorBrush x:Key="MidGrayBrush" Color="{StaticResource MidGray}" />
+    <SolidColorBrush x:Key="LightGrayBrush" Color="{StaticResource LightGray}" />
+    <SolidColorBrush x:Key="BlueBrush" Color="{StaticResource Blue}" />
+    <SolidColorBrush x:Key="MidLightBlueBrush" Color="{StaticResource MidLightBlue}" />
+    <SolidColorBrush x:Key="MidBlueBrush" Color="{StaticResource MidBlue}" />
+    <SolidColorBrush x:Key="MidDarkBlueBrush" Color="{StaticResource MidDarkBlue}" />
+    <SolidColorBrush x:Key="TextColorBrush" Color="{StaticResource TextColor}" />
+    <SolidColorBrush x:Key="GrayOpacityBrush" Color="{StaticResource GrayOpacity}" />
+
+    <!-- Controls behaviour for mouseover on TextBox -->
+    <Style x:Key="BorderInputBoxDarkThemeStyle" TargetType="Border">
+        <Setter Property="BorderThickness" Value="0 0 0 1"></Setter>
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource MidGrayBrush}"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ElementName=editText, Path=IsMouseOver}" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource LightGrayBrush}"></Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ElementName=editText, Path=IsFocused}" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource BlueBrush}"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Controls behaviour for mouseover on TextBox -->
+    <Style x:Key="RectangleInputBoxDarkThemeStyle" TargetType="Rectangle">
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="Fill" Value="{StaticResource MidDarkBlueBrush}"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ElementName=editText, Path=IsFocused}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard SpeedRatio="2">
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0.75" Duration="0:0:1" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard SpeedRatio="2">
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0" Duration="0:0:1" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="HintingInputStyle" TargetType="TextBox">
+        <Setter Property="Margin" Value="0,0,0,12" />
+        <Setter Property="MinWidth" Value="62px" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Cursor" Value="IBeam" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Grid>
+                        <TextBox x:Name="InputTextBox"
+                                     Padding="8,10"
+                                     Background="#353535"
+                                     BorderThickness="0"
+                                     CaretBrush="{StaticResource Blue300Brush}"
+                                     Focusable="True"
+                                     FontFamily="{StaticResource ArtifaktElementRegular}"
+                                     FontSize="12px"
+                                     Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                     MaxLength="{TemplateBinding MaxLength}"
+                                     Tag="{TemplateBinding Tag}"
+                                     Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
+                                     TextWrapping="Wrap" />
+                        <TextBlock x:Name="WatermarkLabel"
+                                       Padding="10"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="12px"
+                                       Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                       IsHitTestVisible="False"
+                                       Opacity="0.5"
+                                       Text="{TemplateBinding Tag}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=InputTextBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <StackPanel Height="4px" VerticalAlignment="Bottom">
+                            <Rectangle Name="Underline"
+                                           Height="1px"
+                                           Fill="Transparent" />
+                            <Rectangle Name="UnderlineShadow"
+                                           Height="3px"
+                                           Fill="Transparent" />
+                        </StackPanel>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="Underline" Property="Rectangle.Fill" Value="{StaticResource Blue300Brush}" />
+                            <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#497386" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Underline" Property="Rectangle.Fill" Value="#9B9B9B" />
+                            <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#6E6E6E" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="BorderBrush" Value="{StaticResource DarkMidGreyBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

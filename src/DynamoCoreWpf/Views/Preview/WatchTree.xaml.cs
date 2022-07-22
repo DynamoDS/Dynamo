@@ -21,6 +21,7 @@ namespace Dynamo.Controls
         private readonly int defaultHeightSize = 200;
         private readonly int minWidthSize = 100;
         private readonly int minHeightSize = 38;
+        private readonly int minHeightForList = 83;
 
         public WatchTree(WatchViewModel vm)
         {
@@ -60,6 +61,7 @@ namespace Dynamo.Controls
                     if (_vm.IsCollection)
                     {
                         this.Height = defaultHeightSize;
+                        this.inputGrid.MinHeight = minHeightForList;
                     }
                     else
                     {
