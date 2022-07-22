@@ -244,7 +244,7 @@ namespace ProtoCore.Utils
         public static bool TryGetOperator(string methodName, out Operator op)
         {
             Validity.Assert(null != methodName);
-            if (!methodName.StartsWith(DSASM.Constants.kInternalNamePrefix))
+            if (!IsInternalMethod(methodName))
             {
                 op = Operator.none;
                 return false;
@@ -257,7 +257,7 @@ namespace ProtoCore.Utils
         public static bool TryGetUnaryOperator(string methodName, out UnaryOperator op)
         {
             Validity.Assert(null != methodName);
-            if (!methodName.StartsWith(DSASM.Constants.kInternalNamePrefix))
+            if (!IsInternalMethod(methodName))
             {
                 op = UnaryOperator.None;
                 return false;
