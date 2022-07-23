@@ -5276,22 +5276,63 @@
                         </TextBlock>
                         <StackPanel Height="4px" VerticalAlignment="Bottom">
                             <Rectangle Name="Underline"
-                                           Height="1px"
-                                           Fill="Transparent" />
+                                       Height="1px"
+                                       Fill="#9B9B9B"
+                                       Opacity="0"/>
                             <Rectangle Name="UnderlineShadow"
-                                           Height="3px"
-                                           Fill="Transparent" />
+                                       Height="3px"
+                                       Fill="#6E6E6E"
+                                       Opacity="0"/>
                         </StackPanel>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsFocused" Value="True">
+                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=InputTextBox}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard SpeedRatio="10">
+                                        <DoubleAnimation Storyboard.TargetName="Underline" Storyboard.TargetProperty="Opacity"
+                                                         To="0.75" Duration="0:0:1" />
+                                        <DoubleAnimation Storyboard.TargetName="UnderlineShadow" Storyboard.TargetProperty="Opacity"
+                                                                 To="0.75" Duration="0:0:1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard SpeedRatio="2">
+                                        <DoubleAnimation Storyboard.TargetName="Underline" Storyboard.TargetProperty="Opacity"
+                                                                 To="0" Duration="0:0:1" />
+                                        <DoubleAnimation Storyboard.TargetName="UnderlineShadow" Storyboard.TargetProperty="Opacity"
+                                                                 To="0" Duration="0:0:1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsFocused, ElementName=InputTextBox}" Value="True">
                             <Setter TargetName="Underline" Property="Rectangle.Fill" Value="{StaticResource Blue300Brush}" />
                             <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#497386" />
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Underline" Property="Rectangle.Fill" Value="#9B9B9B" />
-                            <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#6E6E6E" />
-                        </Trigger>
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard SpeedRatio="10" Name="FocusedStoryboard" >
+                                        <DoubleAnimation Storyboard.TargetName="Underline" Storyboard.TargetProperty="Opacity"
+                                                                 To="0.75" Duration="0:0:1" />
+                                        <DoubleAnimation Storyboard.TargetName="UnderlineShadow" Storyboard.TargetProperty="Opacity"
+                                                                 To="0.75" Duration="0:0:1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard SpeedRatio="2" FillBehavior="Stop">
+                                        <DoubleAnimation Storyboard.TargetName="Underline" Storyboard.TargetProperty="Opacity"
+                                                                 To="0" Duration="0:0:1" />
+                                        <DoubleAnimation Storyboard.TargetName="UnderlineShadow" Storyboard.TargetProperty="Opacity"
+                                                                 To="0" Duration="0:0:1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
