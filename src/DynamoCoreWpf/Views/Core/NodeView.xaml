@@ -48,6 +48,7 @@
                         <ResourceDictionary.MergedDictionaries>
                             <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                             <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                            <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                         </ResourceDictionary.MergedDictionaries>
                         <Style TargetType="{x:Type MenuItem}">
                             <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
@@ -350,6 +351,7 @@
                      FontSize="16px"
                      FontWeight="Medium"
                      Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                     SelectionBrush="{StaticResource NodeSelectionTextColor}" SelectionOpacity="0.6"
                      IsHitTestVisible="True"
                      BorderThickness="0"
                      LostFocus="EditableNameBox_OnLostFocus"
