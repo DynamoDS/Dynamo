@@ -124,7 +124,15 @@ namespace EmitMSIL
             {
                 result = ExecWithRISlowPath(finalFep, reducedArgs, replicationInstructions);
             }
-            return new[] { result };
+
+            var stackVal = ConvertToStackValue(result);
+            if (!stackVal.IsExplicitCall)
+            {
+                // An explicit call requires return coercion at the return instruction
+                stackVal = CallSite.PerformReturnTypeCoerce(finalFep, stackVal);
+            }
+
+            return new[] { ConvertFromStackValue(stackVal) };
         }
 
         private static List<CLRStackValue> ReduceArgs(List<CLRStackValue> args)
@@ -376,10 +384,6 @@ namespace EmitMSIL
             {
                 result = finalFep.method.Invoke(args[0], args.Skip(1).ToArray());
             }
-
-            // TODO: PerformReturnTypeCoerce
-            // An explicit call requires return coercion at the return instruction
-            //result = PerformReturnTypeCoerce(finalFep, ret);
 
             return result;
         }

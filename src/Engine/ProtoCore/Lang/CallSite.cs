@@ -2032,6 +2032,63 @@ namespace ProtoCore
             }
         }
 
+        internal static CLRStackValue PerformReturnTypeCoerce(CLRFunctionEndPoint procNode, CLRStackValue ret)
+        {
+            Validity.Assert(procNode != null, "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
+
+            System.Type returnType = (procNode.method as MethodInfo).ReturnType;
+            Type retType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(returnType);
+
+            if (retType.UID == (int)PrimitiveType.Var)
+            {
+                if (retType.rank < 0)
+                {
+                    return ret;
+                }
+                else
+                {
+                    CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType);
+                    return coercedRet;
+                }
+            }
+
+            if (ret.IsNull)
+            {
+                return ret;
+            }
+
+            if (ret.ProtoType.UID == retType.UID)
+            {
+                if (!ret.IsEnumerable && retType.IsIndexable)
+                {
+                    CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType);
+                    return coercedRet;
+                }
+                else
+                {
+                    return ret;
+                }
+            }
+
+            if (ret.IsEnumerable && retType.IsIndexable)
+            {
+                CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType);
+                return coercedRet;
+            }
+
+            if (TypeSystem.ConvertibleTo(ret.ProtoType.UID, retType.UID))
+            {
+                CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType);
+                return coercedRet;
+            }
+            else
+            {
+                //@TODO(Luke): log no-type coercion possible warning
+                System.Console.WriteLine($"{WarningID.ConversionNotPossible}{Resources.kConvertNonConvertibleTypes}");
+                return CLRStackValue.Null;
+            }
+        }
+
         public static StackValue PerformReturnTypeCoerce(FunctionEndPoint functionEndPoint, RuntimeCore runtimeCore, StackValue ret)
         {
             return PerformReturnTypeCoerce(functionEndPoint.procedureNode, runtimeCore, ret);

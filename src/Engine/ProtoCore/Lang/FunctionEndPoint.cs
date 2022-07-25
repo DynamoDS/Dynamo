@@ -19,6 +19,11 @@ namespace ProtoCore
             public ParameterInfo CLRInfo;
 
             public bool IsIndexable => ProtoInfo.IsIndexable;
+
+            public int Rank => ProtoInfo.rank;
+            public int UID => ProtoInfo.UID;
+
+            public System.Type CLRType => CLRInfo.ParameterType;
         }
 
         public MethodBase method;
@@ -210,15 +215,15 @@ namespace ProtoCore
                 {
                     continue;
                 }
-                else if (expectedType.CLRInfo.ParameterType == rcvdType)
+                else if (expectedType.CLRType == rcvdType)
                 {
                     continue;
                 }
-                else if (rcvdType != null && expectedType.CLRInfo.ParameterType != null)
+                else if (rcvdType != null && expectedType.CLRType != null)
                 {
                     int currentCost = ClassUtils.GetUpcastCountTo(
                         rcvdType,
-                        expectedType.CLRInfo.ParameterType);
+                        expectedType.CLRType);
                     distance += currentCost;
                 }
             }
@@ -376,11 +381,11 @@ namespace ProtoCore
                     //There are overloaded methods and the difference is the parameter type between int and double.
                     //Add this to make it call the correct one. - Randy
                     bool bContainsDouble = ArrayUtils.ContainsDoubleElement(args[i]);
-                    if (expectedType.ProtoInfo.UID == (int)PrimitiveType.Integer && bContainsDouble)
+                    if (expectedType.UID == (int)PrimitiveType.Integer && bContainsDouble)
                     {
                         currentScore = (int)ProcedureDistance.CoerceDoubleToIntScore;
                     }
-                    else if (expectedType.ProtoInfo.UID == (int)PrimitiveType.Double && !bContainsDouble)
+                    else if (expectedType.UID == (int)PrimitiveType.Double && !bContainsDouble)
                     {
                         currentScore = (int)ProcedureDistance.CoerceIntToDoubleScore;
                     }
@@ -389,7 +394,7 @@ namespace ProtoCore
                         currentScore = (int)ProcedureDistance.ExactMatchScore;
                     }
                 }
-                else if (expectedType.CLRInfo.ParameterType == rcvdType && (expectedType.IsIndexable == args[i].IsEnumerable))
+                else if (expectedType.CLRType == rcvdType && (expectedType.IsIndexable == args[i].IsEnumerable))
                 {
                     currentScore = (int)ProcedureDistance.ExactMatchScore;
                 }
@@ -484,7 +489,7 @@ namespace ProtoCore
                 CLRStackValue formalParam = formalParameters[i];
                 CLRFunctionEndPoint.ParamInfo targetParam = FormalParams[i];
 
-                CLRStackValue coercedParam = TypeSystem.Coerce(formalParam, targetParam, targetParam.ProtoInfo.rank);
+                CLRStackValue coercedParam = TypeSystem.Coerce(formalParam, targetParam.ProtoInfo);
                 fixedUpVersions.Add(coercedParam);
             }
 

@@ -585,17 +585,14 @@ namespace ProtoCore
             }
         }
 
-        internal static CLRStackValue Coerce(CLRStackValue sv, CLRFunctionEndPoint.ParamInfo targetParam, int targetRank)
+        internal static CLRStackValue Coerce(CLRStackValue sv, Type targetType)
         {
             //@TODO(Jun): FIX ME - abort coersion for default args
             if (sv.IsDefaultArgument)
                 return sv;
 
-            var targetProtoType = targetParam.ProtoInfo;
-            var targetCLRType = targetParam.CLRInfo.ParameterType;
-
-            if (!((sv.ProtoType.UID == targetProtoType.UID) ||
-                  ConvertibleTo(sv.ProtoType.UID, targetProtoType.UID) ||
+            if (!((sv.ProtoType.UID == targetType.UID) ||
+                  ConvertibleTo(sv.ProtoType.UID, targetType.UID) ||
                   sv.IsEnumerable))
             {
                 System.Console.WriteLine($"{Runtime.WarningID.ConversionNotPossible}{Resources.kConvertNonConvertibleTypes}");
@@ -603,18 +600,17 @@ namespace ProtoCore
             }
 
             //if it's an array
-            if (sv.IsEnumerable && !targetProtoType.IsIndexable)
+            if (sv.IsEnumerable && !targetType.IsIndexable)
             {
                 //This is an array rank reduction
                 //this may only be performed in recursion and is illegal here
-                string errorMessage = String.Format(Resources.kConvertArrayToNonArray, targetCLRType.FullName);
+                string errorMessage = String.Format(Resources.kConvertArrayToNonArray, targetType.ToString());
                 System.Console.WriteLine($"{Runtime.WarningID.ConversionNotPossible}{errorMessage}");
                 return CLRStackValue.Null;
             }
 
-
             if (sv.IsEnumerable &&
-                targetProtoType.IsIndexable)
+                targetType.IsIndexable)
             {
                 //We're being asked to convert an array into an array
                 //walk over the structure converting each othe elements
@@ -622,54 +618,63 @@ namespace ProtoCore
                 //Validity.Assert(targetType.rank != -1, "Arbitrary rank array conversion not yet implemented {2EAF557F-62DE-48F0-9BFA-F750BBCDF2CB}");
 
                 //Decrease level of reductions by one
-                int newTargetRank = Constants.kArbitraryRank;
-                if (targetRank != Constants.kArbitraryRank)
+                Type newTargetType = new Type();
+                newTargetType.UID = targetType.UID;
+                if (targetType.rank != Constants.kArbitraryRank)
                 {
-                    newTargetRank = targetProtoType.rank - 1;
+                    newTargetType.rank = targetType.rank - 1;
                 }
                 else
                 {
                     if (ArrayUtils.GetMaxRankForArray(sv) == 1)
                     {
                         //Last unpacking
-                        newTargetRank = 0;
+                        newTargetType.rank = 0;
                     }
                     else
                     {
-                        newTargetRank = Constants.kArbitraryRank;
+                        newTargetType.rank = Constants.kArbitraryRank;
                     }
                 }
 
                 List<CLRStackValue> coercedValues = new List<CLRStackValue>();
                 foreach (var item in sv.Value as IList<CLRStackValue>)
                 {
-                    var coercedValue = TypeSystem.Coerce(item, targetParam, newTargetRank);
+                    var coercedValue = Coerce(item, newTargetType);
                     coercedValues.Add(coercedValue);
                 }
 
-                return new CLRStackValue(coercedValues, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(coercedValues.GetType()), targetRank);
+                return new CLRStackValue(coercedValues, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(coercedValues.GetType()), targetType.rank);
             }
 
             // Null can be converted to Boolean so we will allow it in the case of indexable types
-            bool nullAsBool = sv.IsNull && (targetProtoType.UID == (int)PrimitiveType.Bool);
+            bool nullAsBool = sv.IsNull && (targetType.UID == (int)PrimitiveType.Bool);
             if (!sv.IsEnumerable && (!sv.IsNull || nullAsBool) &&
-                targetProtoType.IsIndexable &&
-                targetRank != DSASM.Constants.kArbitraryRank)
+                targetType.IsIndexable &&
+                targetType.rank != DSASM.Constants.kArbitraryRank)
             {
                 //We're being asked to promote the value into an array
-                if (targetProtoType.rank == 1)
+                if (targetType.rank == 1)
                 {
+                    Type newTargetType = new Type();
+                    newTargetType.UID = targetType.UID;
+                    newTargetType.Name = targetType.Name;
+                    newTargetType.rank = 0;
+
                     //Upcast once
-                    return Coerce(sv, targetParam, 0);
+                    return Coerce(sv, newTargetType);
                 }
                 else
                 {
-                    Validity.Assert(targetRank > 1, "Target rank should be greater than one for this clause");
+                    Validity.Assert(targetType.rank > 1, "Target rank should be greater than one for this clause");
 
-                    int newTargetRank = targetRank - 1;
+                    Type newTargetType = new Type();
+                    newTargetType.UID = targetType.UID;
+                    newTargetType.Name = targetType.Name;
+                    newTargetType.rank = targetType.rank - 1;
 
                     //Upcast once
-                    return Coerce(sv, targetParam, newTargetRank);
+                    return Coerce(sv, newTargetType);
                 }
             }
 
@@ -681,7 +686,7 @@ namespace ProtoCore
             }*/
 
             //If it's anything other than array, just create a new copy
-            switch (targetProtoType.UID)
+            switch (targetType.UID)
             {
                 case (int)PrimitiveType.InvalidType:
                     System.Console.WriteLine($"{Runtime.WarningID.InvalidType}{Resources.kInvalidType}");
@@ -746,11 +751,11 @@ namespace ProtoCore
                         List<CLRStackValue> coercedValues = new List<CLRStackValue>();
                         foreach (var item in sv.Value as IList<CLRStackValue>)
                         {
-                            var coercedValue = TypeSystem.Coerce(item, targetParam, item.Rank);
+                            var coercedValue = TypeSystem.Coerce(item, targetType);
                             coercedValues.Add(coercedValue);
                         }
 
-                        return new CLRStackValue(coercedValues, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(coercedValues.GetType()), targetRank);
+                        return new CLRStackValue(coercedValues, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(coercedValues.GetType()), targetType.rank);
                     }
 
                 default:
