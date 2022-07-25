@@ -374,7 +374,7 @@ namespace EmitMSIL
             ilGen.Emit(opCode, local);
             writer.WriteLine($"{opCode} {local}");
         }
-        
+
         private void EmitOpCode(OpCode opCode)
         {
             ilGen.Emit(opCode);
@@ -445,7 +445,7 @@ namespace EmitMSIL
         {
             throw new NotImplementedException();
         }
-        
+
         private void EmitImportNode(AssociativeNode node)
         {
             //doing absolutely nothing is actually
@@ -527,7 +527,7 @@ namespace EmitMSIL
             var iln = node as IdentifierListNode;
             if (iln == null) throw new ArgumentException("AST node must be an Identifier List.");
             className = CoreUtils.GetIdentifierExceptMethodName(iln);
-           
+
             return DfsTraverse(iln.RightNode);
         }
 
@@ -542,7 +542,7 @@ namespace EmitMSIL
             var arrayTypes = GetTypeStatisticsForArray(eln);
             var ot = GetOverallTypeForArray(arrayTypes);
 
-            EmitArray(ot, eln.Exprs, (AssociativeNode el, int idx) => 
+            EmitArray(ot, eln.Exprs, (AssociativeNode el, int idx) =>
             {
                 Type t = DfsTraverse(el);
                 if (t == null) return;
@@ -603,6 +603,90 @@ namespace EmitMSIL
             }
         }
 
+        //tries to emit opcodes for indexing an array or dictioanry
+        private (bool success,Type type) TryEmitIndexing(FunctionCallNode fcn)
+        {
+
+            //to emit the correct msil we need to know the type of collection we are indexing.
+            Type t = null;
+            var array = fcn.FormalArguments.FirstOrDefault();
+            if (array is IdentifierNode ident)
+            {
+                if (variables.TryGetValue(ident.Value, out Tuple<int, Type> output))
+                {
+                    t = output.Item2;
+                }
+                //load the identifer onto the stack.
+                EmitOpCode(OpCodes.Ldloc_0);
+            }
+
+            else if(array is ExprListNode listNode)
+            {
+                t = DfsTraverse(listNode);
+            }
+
+            if(t == null)
+            {
+                throw new NotImplementedException("unknown collection type - should generate GetValueAtIndex function call.");
+                return (false,null);
+            }
+            else if(t is IDictionary)
+            {
+                throw new NotImplementedException("emit direct dictionary indexing not implemented");
+                //TODO implement emit
+                if (t.IsGenericType)
+                {
+                    return (true, t.GenericTypeArguments[1]);
+                }
+                else
+                {
+                    return (true, typeof(object));
+                }
+            }
+            else if (t.IsArray)
+            {
+                EmitIndexingForArray(fcn.FormalArguments[0], fcn.FormalArguments[1], t.GetElementType());
+                return (true,t.GetElementType());
+            }
+            else if (t is IList)
+            {
+                throw new NotImplementedException("emit ILIST direct indexing not implemented");
+                //TODO implement emit
+                if (t.IsGenericType)
+                {
+                    return (true, t.GenericTypeArguments[0]);
+                }
+                else
+                {
+                    return (true, typeof(object));
+                }
+            }
+            //should not get here.
+            throw new Exception("unknown indexing case");
+            return (false,null);
+        }
+
+       
+        
+        private void EmitIndexingForArray(AssociativeNode array, AssociativeNode index,Type t)
+        {
+            //we'll make an assumption that index is always somehow a long.
+            long? IndexVal = null;
+            if(index is IntNode intIndex)
+            {
+                IndexVal = intIndex.Value;
+                EmitOpCode(OpCodes.Ldc_I4, (int)IndexVal);
+            }//if its an identifer, emit some code to lookup the value.
+            else if(index is IdentifierNode ident)
+            {
+                if (variables.TryGetValue(ident.Value, out Tuple<int, Type> output))
+                {
+                }
+            }
+            EmitOpCode(OpCodes.Ldelem_I8);
+        }
+
+
         private Type EmitFunctionCallNode(AssociativeNode node)
         {
             var fcn = node as FunctionCallNode;
@@ -612,7 +696,29 @@ namespace EmitMSIL
             var args = fcn.FormalArguments;
             var numArgs = args.Count;
 
-            if(compilePass == CompilePass.MethodLookup)
+            //if the method name is builtin.valueAtIndex then don't emit a function call yet.
+            //instead try to emit direct indexing... to do so, we'll need to wait until ilemit phase
+            //so variable dictionary has valid data.
+            if (className == Node.BuiltinGetValueAtIndexTypeName && methodName == Node.BuiltinValueAtIndexMethodName)
+            {
+                if(compilePass == CompilePass.MethodLookup)
+                {
+                    return null;
+                }
+                //try to emit indexing
+                else if(compilePass == CompilePass.emitIL)
+                {
+                    //if we succeed, no need to emit a function call for indexing.
+                    var indexResult = TryEmitIndexing(fcn);
+                    if (indexResult.success)
+                    {
+                        return indexResult.type;
+                    }
+                } 
+             
+            }
+
+            if (compilePass == CompilePass.MethodLookup)
             {
                 FunctionLookup(args);
                 return null;
