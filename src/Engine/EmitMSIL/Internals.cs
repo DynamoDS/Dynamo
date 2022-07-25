@@ -361,7 +361,7 @@ namespace EmitMSIL
             return null;
         }
 
-        public static IEnumerable<MethodBase> GetInternalMethod(string name)
+        public static MethodInfo GetInternalMethod(string name)
         {
             string methodName = "";
             if (CoreUtils.TryGetOperator(name, out Operator op))
@@ -375,13 +375,7 @@ namespace EmitMSIL
 
             if (methodName.Length > 0)
             {
-                var ret = new List<MethodBase>();
-                var mi = typeof(Internals)?.GetMethod(methodName);
-                if (mi != null)
-                {
-                    ret.Add(mi);
-                    return ret;
-                }
+                return typeof(Internals)?.GetMethod(methodName);
             }
 
             throw new MissingMethodException("No matching operator method found");

@@ -187,9 +187,10 @@ namespace EmitMSIL
                 }
                 else
                 {
-                    mi = Internals.GetInternalMethod(methodName);
-                    if (mi != null && mi.Any())
+                    var method = Internals.GetInternalMethod(methodName);
+                    if (method != null)
                     {
+                        mi = new List<MethodBase>() { method };
                         methodCache.Add(key, mi);
                     }
                 }
