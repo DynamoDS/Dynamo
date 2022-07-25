@@ -256,7 +256,8 @@ namespace EmitMSIL
                     arguments,
                     replicationInstructions);
 
-            List<CLRFunctionEndPoint> candidateFunctions = CallSite.GetCandidateFunctions(candidatesWithDistances);
+            // TODO: implement GetCandidateFunctions;
+            List<CLRFunctionEndPoint> candidateFunctions = candidatesWithDistances.Keys.ToList();//CallSite.GetCandidateFunctions(candidatesWithDistances);
 
             CLRFunctionEndPoint compliantTarget = candidateFunctions.Count > 0 ? candidateFunctions[0] : null;
                 /*GetCompliantTarget(
