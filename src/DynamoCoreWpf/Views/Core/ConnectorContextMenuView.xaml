@@ -26,10 +26,12 @@
                          Width="170"
                          MouseLeave="OnMouseLeaveContextMenu"
                          ContextMenuClosing="OnContextMenuClosing">
-                <MenuItem x:Name="BreakItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnection}" 
+                    <MenuItem x:Name="BreakItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnection}" 
                           Command="{Binding BreakConnectionsSurrogateCommand}"/>
                     <MenuItem x:Name="SelectItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderSelectConnected}" 
                           Command="{Binding SelectConnectedSurrogateCommand}"/>
+                    <MenuItem x:Name="PinItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderPinConnector}" 
+                              Command="{Binding PinConnectedSurrogateCommand}"/>
                     <MenuItem x:Name="HideItem" Command="{Binding HideConnectorSurrogateCommand}">
                         <MenuItem.Style>
                             <Style TargetType="MenuItem" BasedOn="{StaticResource ContextMenuItemStyle}">

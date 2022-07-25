@@ -95,6 +95,8 @@ namespace Dynamo.Controls
 
         private FileTrustWarning fileTrustWarningPopup = null;
 
+        internal ShortcutToolbar ShortcutBar { get { return shortcutBar; } }
+
         /// <summary>
         /// Constructor
         /// </summary>
