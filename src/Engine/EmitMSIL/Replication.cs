@@ -7,11 +7,82 @@ using ProtoCore;
 using ProtoCore.Lang.Replication;
 using ProtoCore.Exceptions;
 using ProtoCore.Properties;
+using ProtoCore.DSASM;
+using ProtoCore.Utils;
 
 namespace EmitMSIL
 {
     public class Replication
     {
+        internal static CLRStackValue ConvertToStackValue(object obj)
+        {
+            if (obj == null) return CLRStackValue.Null;
+
+            if (obj is IEnumerable arr)
+            {
+                List<CLRStackValue> list = new List<CLRStackValue>();
+                int maxRank = 0;
+                foreach (object item in arr)
+                {
+                    CLRStackValue mObj = ConvertToStackValue(item);
+                    maxRank = mObj.Rank > maxRank ? mObj.Rank : maxRank;
+
+                    list.Add(mObj);
+                }
+                return new CLRStackValue() { Value = list, Rank = maxRank + 1, 
+                    ProtoType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(arr.GetType()) };
+            }
+            return new CLRStackValue() { Value = obj, ProtoType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(obj.GetType()) };
+        }
+
+        internal static object ConvertFromStackValue(CLRStackValue sv)
+        {
+            if (sv.IsNull) return null;
+
+            if (sv.IsEnumerable)
+            {
+                var list = new List<object>();
+                foreach (var item in sv.Value as IEnumerable<CLRStackValue>)
+                {
+                    var mObj = ConvertFromStackValue(item);
+                    list.Add(mObj);
+                }
+                return list;
+            }
+            else
+            {
+                return sv.Value;
+            }
+        }
+
+        internal static List<CLRStackValue> MarshalArgumentsToStackValues(IList args)
+        {
+            List<CLRStackValue> stackValues = new List<CLRStackValue>();
+            foreach (var arg in args)
+            {
+                CLRStackValue mArg = ConvertToStackValue(arg);
+                stackValues.Add(mArg);
+            }
+            return stackValues;
+        }
+
+        internal static List<CLRFunctionEndPoint> MarshalMethodsToFEPs(IEnumerable<MethodBase> methods)
+        {
+            List<CLRFunctionEndPoint> feps = new List<CLRFunctionEndPoint>();
+            foreach (var method in methods)
+            {
+                List<CLRFunctionEndPoint.ParamInfo> formalParams = new List<CLRFunctionEndPoint.ParamInfo>();
+                foreach (var param in method.GetParameters())
+                {
+                    var dsType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(param.ParameterType);
+                    formalParams.Add(new CLRFunctionEndPoint.ParamInfo() { CLRInfo = param, ProtoInfo = dsType }); ;
+                }
+                CLRFunctionEndPoint fep = new CLRFunctionEndPoint() { method = method, Parameters = formalParams };
+                feps.Add(fep);
+            }
+            return feps;
+        }
+
         /// <summary>
         /// Invoke method with replication.
         /// </summary>
@@ -22,7 +93,9 @@ namespace EmitMSIL
         /// <returns></returns>
         public static IList ReplicationLogic(IEnumerable<MethodBase> mInfos, IList args, string[][] replicationAttrs)
         {
-            var reducedArgs = ReduceArgs(args);
+            var stackValues = MarshalArgumentsToStackValues(args);
+
+            var reducedArgs = ReduceArgs(stackValues);
 
             // Construct replicationGuides from replicationAttrs
             var replicationGuides = ConstructRepGuides(replicationAttrs);
@@ -35,31 +108,34 @@ namespace EmitMSIL
             //Turn the replication guides into a guide -> List args data structure
             var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
-            // TODO: implement auto replication
-            //ComputeFeps(reducedArgs, mInfos, partialInstructions, out resolvesFeps, out replicationInstructions);
-            
-            var finalFep = SelectFinalFep(mInfos, reducedArgs);
+            var feps = MarshalMethodsToFEPs(mInfos);
+
+            List<CLRFunctionEndPoint> resolvedFeps;
+            List<ReplicationInstruction> replicationInstructions;
+            ComputeFeps(reducedArgs, feps, partialInstructions, out resolvedFeps, out replicationInstructions);
+
+            var finalFep = SelectFinalFep(resolvedFeps, reducedArgs);
 
             object result;
-            if (partialInstructions.Count == 0)
+            if (replicationInstructions.Count == 0)
             {
                 result = ExecWithZeroRI(finalFep, reducedArgs);
             }
             else //replicated call
             {
-                result = ExecWithRISlowPath(finalFep, reducedArgs, partialInstructions);
+                result = ExecWithRISlowPath(finalFep, reducedArgs, replicationInstructions);
             }
             return new[] { result };
         }
 
-        private static List<object> ReduceArgs(IList args)
+        private static List<CLRStackValue> ReduceArgs(List<CLRStackValue> args)
         {
-            var reducedArgs = new List<object>();
+            var reducedArgs = new List<CLRStackValue>();
             foreach (var arg in args)
             {
-                if (arg is IList argList && argList.Count == 1)
+                if (arg.IsEnumerable && (arg.Value as IList).Count == 1)
                 {
-                    reducedArgs.Add(argList[0]);
+                    reducedArgs.Add((arg.Value as IList<CLRStackValue>)[0]);
                 }
                 else
                 {
@@ -130,26 +206,175 @@ namespace EmitMSIL
             return new List<List<ReplicationGuide>>();
         }
 
-        private static MethodBase SelectFinalFep(IEnumerable<MethodBase> functionEndPoints, List<object> formalParameters)
+        /// <summary>
+        /// Returns complete match attempts to locate a function endpoint where 1 FEP matches all of the requirements for dispatch
+        /// </summary>
+        private static MethodBase GetCompleteMatchFunctionEndPoint(List<object> arguments,
+            IEnumerable<MethodBase> funcGroup,
+            List<ReplicationInstruction> replicationInstructions)
+        {
+            //Exact match
+            var exactTypeMatchingCandindates = new List<MethodBase>();// funcGroup.GetExactTypeMatches(context, arguments, replicationInstructions, stackFrame, runtimeCore);
+
+            if (exactTypeMatchingCandindates.Count == 0)
+            {
+                return null;
+            }
+
+            MethodBase fep = null;
+            if (exactTypeMatchingCandindates.Count == 1)
+            {
+                //Exact match
+                fep = exactTypeMatchingCandindates[0];
+            }
+            else
+            {
+                fep = exactTypeMatchingCandindates[0];
+                //Exact match with upcast
+                //fep = SelectFEPFromMultiple(stackFrame, runtimeCore, exactTypeMatchingCandindates, arguments);
+            }
+
+            return fep;
+        }
+
+        private static CLRFunctionEndPoint GetCompliantFEP(
+            List<CLRStackValue> arguments,
+            IEnumerable<CLRFunctionEndPoint> funcGroup,
+            List<ReplicationInstruction> replicationInstructions,
+            bool allowArrayPromotion = false)
+        {
+            Dictionary<CLRFunctionEndPoint, int> candidatesWithDistances =
+                FunctionGroup.GetConversionDistances(
+                    funcGroup,
+                    arguments,
+                    replicationInstructions,
+                    allowArrayPromotion);
+
+            Dictionary<CLRFunctionEndPoint, int> candidatesWithCastDistances =
+                FunctionGroup.GetCastDistances(
+                    funcGroup,
+                    arguments,
+                    replicationInstructions);
+
+            List<CLRFunctionEndPoint> candidateFunctions = CallSite.GetCandidateFunctions(candidatesWithDistances);
+
+            CLRFunctionEndPoint compliantTarget = candidateFunctions.Count > 0 ? candidateFunctions[0] : null;
+                /*GetCompliantTarget(
+                    arguments,
+                    replicationInstructions,
+                    candidatesWithCastDistances,
+                    candidateFunctions,
+                    candidatesWithDistances);*/
+
+            return compliantTarget;
+        }
+
+        private static void ComputeFeps(List<CLRStackValue> arguments,
+            IEnumerable<CLRFunctionEndPoint> funcGroup,
+            List<ReplicationInstruction> instructions,
+            out List<CLRFunctionEndPoint> resolvedFeps,
+            out List<ReplicationInstruction> replicationInstructions)
+        {
+            replicationInstructions = null;
+            resolvedFeps = null;
+            var matchFound = false;
+
+            #region Case 1: Replication guide with exact match 
+            #endregion
+
+            var replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments);
+
+            #region Case 2: Replication and replication guide with exact match
+            #endregion
+
+            #region Case 3: Replication with type conversion
+            {
+                CLRFunctionEndPoint compliantTarget = GetCompliantFEP(arguments, funcGroup, instructions);
+                if (compliantTarget != null)
+                {
+                    resolvedFeps = new List<CLRFunctionEndPoint>() { compliantTarget };
+                    replicationInstructions = instructions;
+                    return;
+                }
+            }
+            #endregion
+
+            #region Case 4: Replication and replication guide with type conversion
+            {
+                if (arguments.Any(arg => arg.IsEnumerable))
+                {
+                    foreach (var replicationOption in replicationTrials)
+                    {
+                        CLRFunctionEndPoint compliantTarget = GetCompliantFEP(arguments, funcGroup, replicationOption);
+                        if (compliantTarget != null)
+                        {
+                            if (replicationInstructions == null ||
+                                CallSite.IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
+                            {
+                                resolvedFeps = new List<CLRFunctionEndPoint>() { compliantTarget };
+                                replicationInstructions = replicationOption;
+                                matchFound = true;
+                            }
+                        }
+                    }
+                    if (matchFound)
+                        return;
+                }
+            }
+            #endregion
+
+            #region Case 5: Replication and replication guide with type conversion and array promotion
+            {
+                //Add as a first attempt a no-replication, but allowing up-promoting
+                replicationTrials.Add(new List<ReplicationInstruction>());
+
+                foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
+                {
+                    CLRFunctionEndPoint compliantTarget = GetCompliantFEP(arguments, funcGroup, replicationOption, true);
+                    if (compliantTarget != null)
+                    {
+                        resolvedFeps = new List<CLRFunctionEndPoint>() { compliantTarget };
+                        replicationInstructions = replicationOption;
+                        return;
+                    }
+                }
+            }
+            #endregion
+
+            #region Case 6: Replication and replication guide with type conversion and array promotion, and OK if not all convertible
+            #endregion
+
+            resolvedFeps = new List<CLRFunctionEndPoint>();
+            replicationInstructions = instructions;
+        }
+
+        private static CLRFunctionEndPoint SelectFinalFep(IEnumerable<CLRFunctionEndPoint> functionEndPoints, List<CLRStackValue> formalParameters)
         {
             // TODO: Determine final function endpoint here based on fitting runtime args to function parameters
             return functionEndPoints.FirstOrDefault();
         }
 
-        private static object ExecWithZeroRI(MethodBase finalFep, List<object> formalParameters)
+        private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters)
         {
             // TODO: CoerceParameters
-            List<object> coercedParameters = formalParameters;//finalFep.CoerceParameters(formalParameters);
+            List<CLRStackValue> coercedParameters = formalParameters;//finalFep.CoerceParameters(formalParameters);
 
+            List<object> args = new List<object>();
+            foreach(var item in coercedParameters)
+            {
+                var arg = ConvertFromStackValue(item);
+                args.Add(arg);
+            }
+            
             // Testing invoking method without replication
             object result;
-            if (finalFep.IsStatic)
+            if (finalFep.method.IsStatic)
             {
-                result = finalFep.Invoke(null, coercedParameters.ToArray());
+                result = finalFep.method.Invoke(null, args.ToArray());
             }
             else
             {
-                result = finalFep.Invoke(coercedParameters[0], coercedParameters.Skip(1).ToArray());
+                result = finalFep.method.Invoke(args[0], args.Skip(1).ToArray());
             }
 
             // TODO: PerformReturnTypeCoerce
@@ -159,30 +384,20 @@ namespace EmitMSIL
             return result;
         }
 
-        // TODO: Look into array conversion performance 
-        private static IEnumerable<object> convertToEnumerable(object o)
+        private static IEnumerable<CLRStackValue> getSubParameters(CLRStackValue o)
         {
-            IEnumerable<object> oIEnum;
-            if (o is Array oArr)
+
+            if (ArrayUtils.IsEnumerable(o.GetType()))
             {
-                oIEnum = oArr.Cast<object>();
-            }
-            else if (o is IEnumerable oEnum)
-            {
-                oIEnum = oEnum.Cast<object>();
+                return o.Value as IEnumerable<CLRStackValue>;
             }
             else
             {
-                oIEnum = new List<object>() { o };
+                return new List<CLRStackValue>() { o };
             }
-            return oIEnum;
         }
 
-        private static bool isIndexable(System.Type type) => type.IsArray || type.IsAssignableFrom(typeof(IEnumerable));
-
-        private static bool isIndexable(object o) => isIndexable(o.GetType());
-
-        private static object ExecWithRISlowPath(MethodBase finalFep, List<object> formalParameters,
+        private static object ExecWithRISlowPath(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters,
             List<ReplicationInstruction> replicationInstructions)
         {
             //Recursion base case
@@ -204,7 +419,7 @@ namespace EmitMSIL
                 List<int> repIndecies = ri.ZipIndecies;
 
                 //this will hold the heap elements for all the arrays that are going to be replicated over
-                List<object[]> parameters = new List<object[]>();
+                List<CLRStackValue[]> parameters = new List<CLRStackValue[]>();
 
                 int retSize;
                 switch (algorithm)
@@ -225,7 +440,7 @@ namespace EmitMSIL
                 foreach (int repIndex in repIndecies)
                 {
                     // TODO: Investigate convertToArray performance
-                    var subParameters = convertToEnumerable(formalParameters[repIndex]).ToArray();
+                    var subParameters = getSubParameters(formalParameters[repIndex]).ToArray();
                     parameters.Add(subParameters.ToArray());
 
                     if (subParameters.Length == 0)
@@ -253,7 +468,7 @@ namespace EmitMSIL
                 for (int i = 0; i < retSize; i++)
                 {
                     //Build the call
-                    List<object> newFormalParams = formalParameters.ToList();
+                    List<CLRStackValue> newFormalParams = formalParameters.ToList();
                     for (int repIi = 0; repIi < repIndecies.Count; repIi++)
                     {
                         switch (algorithm)
@@ -295,12 +510,12 @@ namespace EmitMSIL
                 //this will hold the heap elements for all the arrays that are going to be replicated over
                 bool supressArray = false;
                 int retSize;
-                object[] array = null;
+                IList<CLRStackValue> array = null;
 
-                if (isIndexable(formalParameters[cartIndex]))
+                if (formalParameters[cartIndex].IsEnumerable)
                 {
-                    array = formalParameters[cartIndex] as object[];
-                    retSize = array.Length;
+                    array = formalParameters[cartIndex].Value as IList<CLRStackValue>;
+                    retSize = array.Count;
                 }
                 else
                 {
@@ -311,7 +526,7 @@ namespace EmitMSIL
                 object[] retSVs = new object[retSize];
 
                 //Build the call
-                List<object> newFormalParams = formalParameters.ToList();
+                List<CLRStackValue> newFormalParams = formalParameters.ToList();
                 if (supressArray)
                 {
                     List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);

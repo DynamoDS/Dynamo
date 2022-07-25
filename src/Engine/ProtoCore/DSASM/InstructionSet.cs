@@ -13,7 +13,7 @@ namespace ProtoCore.DSASM
         LX,
     }
 
-    public enum AddressType: int 
+    public enum AddressType : int
     {
         Invalid,
         Register,
@@ -99,7 +99,7 @@ namespace ProtoCore.DSASM
         CJMP,
         JDEP,
         DEP,
-        
+
         // TODO Jun: This is temporary until the lib system is implemented. 
         PUSH_ARRAYKEY,
         SETEXPUID
@@ -108,6 +108,31 @@ namespace ProtoCore.DSASM
     public struct MetaData
     {
         public int type;
+    }
+
+    internal struct CLRStackValue
+    {
+        public bool IsEnumerable => ArrayUtils.IsEnumerable(Type);
+
+        public bool IsDouble => Value is double;
+
+        public bool IsDefaultArgument => false;
+
+        public bool IsNull => Value == null;
+
+        public int Rank // default is 0
+        {
+            get;
+            set;
+        }
+
+        public Type ProtoType { get; set; }
+
+        public System.Type Type => Value?.GetType();
+
+        public object Value { get; set; }
+
+        internal static CLRStackValue Null => new CLRStackValue();
     }
 
     [System.Diagnostics.DebuggerDisplay("{optype}, opdata = {opdata}, metaData = {metaData.type}")]

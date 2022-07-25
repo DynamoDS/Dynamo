@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ProtoCore.DSASM;
 using ProtoCore.Lang.Replication;
 using ProtoCore.Properties;
@@ -177,6 +178,26 @@ namespace ProtoCore
             return ret;
         }
 
+        internal static Dictionary<CLRFunctionEndPoint, int> GetConversionDistances(IEnumerable<CLRFunctionEndPoint> functionEndPoints,
+            List<CLRStackValue> formalParams, List<ReplicationInstruction> replicationInstructions,
+            bool allowArrayPromotion = false)
+        {
+            Dictionary<CLRFunctionEndPoint, int> ret = new Dictionary<CLRFunctionEndPoint, int>();
+
+            //@PERF: Consider parallelising this
+            List<CLRStackValue> reducedParamSVs = Replicator.EstimateReducedParams(formalParams, replicationInstructions);
+
+            foreach (var fep in functionEndPoints)
+            {
+                int distance = FunctionEndPoint.GetConversionDistance(fep, reducedParamSVs, allowArrayPromotion);
+                if (distance !=
+                    (int)ProcedureDistance.InvalidDistance)
+                    ret.Add(fep, distance);
+            }
+
+            return ret;
+        }
+
         /// <summary>
         /// Returns a dictionary of the function end points that are type compatible
         /// with any branch of replicated parameters. 
@@ -228,7 +249,6 @@ namespace ProtoCore
                 if (!allowArrayPromotion)
                     Validity.Assert(reducedSVs[i].IsArray, "This should be an array otherwise this shouldn't have passed previous tests");
 
-
                 if (!allowArrayPromotion)
                 {
                     if (typ.rank != ArrayUtils.GetMaxRankForArray(reducedSVs[i], runtimeCore) &&
@@ -242,8 +262,7 @@ namespace ProtoCore
                         return true; //Invalid co-ercsion
                     
                 }
-
-
+                
                 Dictionary<ClassNode, int> arrayTypes = ArrayUtils.GetTypeStatisticsForArray(reducedSVs[i], runtimeCore);
 
                 ClassNode cn = null;
@@ -271,14 +290,10 @@ namespace ProtoCore
                     cn = commonBaseType; //From now on perform tests on the commmon base type
                 }
 
-    
-
                 ClassNode argTypeNode = classTable.ClassNodes[typ.UID];
 
                 //cn now represents the class node of the argument
                 //argTypeNode represents the class node of the argument
-
-
 
                 bool isNotExactTypeMatch = cn != argTypeNode;
                 bool argumentsNotNull = cn != runtimeCore.DSExecutable.classTable.ClassNodes[(int) PrimitiveType.Null];
@@ -292,18 +307,91 @@ namespace ProtoCore
                 if (isNotExactTypeMatch && argumentsNotNull && recievingTypeNotAVar && isNotConvertible)// && !isCalleeVar)
                 {
                     return true; //It's an invalid coersion
+                }
+            }
+            return false;
+        }
+        /*
+        internal static bool CheckInvalidArrayCoersion(CLRFunctionEndPoint fep, List<CLRStackValue> reducedSVs, bool allowArrayPromotion)
+        {
+            var formalParameters = fep.Parameters;
+            for (int i = 0; i < reducedSVs.Count; i++)
+            {
+                var type = formalParameters[i].protoCoreType;
+                var clrType = formalParameters[i].parameterInfo.ParameterType;
+                if (type.UID == (int)ProtoCore.PrimitiveType.InvalidType)
+                    return true;
+
+                if (!type.IsIndexable)
+                    continue; //It wasn't an array param, skip
+
+                //Compute the type of target param
+                if (!allowArrayPromotion)
+                    Validity.Assert(reducedSVs[i].IsEnumerable, "This should be an array otherwise this shouldn't have passed previous tests");
+
+                if (!allowArrayPromotion)
+                {
+                    if (type.rank != ArrayUtils.GetMaxRankForArray(reducedSVs[i]) &&
+                        type.rank != DSASM.Constants.kArbitraryRank)
+                        return true; //Invalid co-ercsion
+                }
+                else
+                {
+                    if (type.rank < ArrayUtils.GetMaxRankForArray(reducedSVs[i]) &&
+                        type.rank != DSASM.Constants.kArbitraryRank)
+                        return true; //Invalid co-ercsion
 
                 }
 
+                Dictionary<ClassNode, int> arrayTypes = ArrayUtils.GetTypeStatisticsForArray(reducedSVs[i]);
 
+                System.Type cn = null;
+
+                if (arrayTypes.Count == 0)
+                {
+                    //This was an empty array
+                    Validity.Assert(cn == null, "If it was an empty array, there shouldn't be a type node");
+                    cn = runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.Null];
+                }
+                else if (arrayTypes.Count == 1)
+                {
+                    //UGLY, get the key out of the array types, of which there is only one
+                    foreach (ClassNode key in arrayTypes.Keys)
+                        cn = key;
+                }
+                else if (arrayTypes.Count > 1)
+                {
+                    ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(arrayTypes, runtimeCore);
+
+                    if (commonBaseType == null)
+                        throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported(
+                            string.Format(Resources.ArrayWithNotSupported, "{0C644179-14F5-4172-8EF8-A2F3739901B2}"));
+
+                    cn = commonBaseType; //From now on perform tests on the commmon base type
+                }
+
+                System.Type argTypeNode = clrType;
+
+                //cn now represents the class node of the argument
+                //argTypeNode represents the class node of the argument
+                ProtoFFI.CLRObjectMarshaler.Get
+                bool isNotExactTypeMatch = cn != argTypeNode;
+                bool argumentsNotNull = cn != runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.Null];
+                bool recievingTypeNotAVar = argTypeNode != runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.Var];
+                bool isNotConvertible = !cn.ConvertibleTo(clrType);
+
+                //bool isCalleeVar = cn == core.classTable.list[(int) PrimitiveType.kTypeVar];
+
+
+                //Is it an invalid conversion?
+                if (isNotExactTypeMatch && argumentsNotNull && recievingTypeNotAVar && isNotConvertible)// && !isCalleeVar)
+                {
+                    return true; //It's an invalid coersion
+                }
             }
-
             return false;
-
-
         }
-
-
+        */
         public Dictionary<FunctionEndPoint, int> GetCastDistances(ProtoCore.Runtime.Context context, List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, ClassTable classTable, RuntimeCore runtimeCore)
         {
             Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
@@ -321,6 +409,23 @@ namespace ProtoCore
             return ret;
         }
 
+        internal static Dictionary<CLRFunctionEndPoint, int> GetCastDistances(IEnumerable<CLRFunctionEndPoint> funcGroup, List<CLRStackValue> formalParams, List<ReplicationInstruction> replicationInstructions)
+        {
+            Dictionary<CLRFunctionEndPoint, int> ret = new Dictionary<CLRFunctionEndPoint, int>();
+
+            //@PERF: Consider parallelising this
+
+            IEnumerable<CLRFunctionEndPoint> feps = funcGroup;
+            List<CLRStackValue> reducedParamSVs = Replicator.EstimateReducedParams(formalParams, replicationInstructions);
+
+            foreach (var fep in feps)
+            {
+                int dist = FunctionEndPoint.ComputeCastDistance(fep, reducedParamSVs);
+                ret.Add(fep, dist);
+            }
+
+            return ret;
+        }
 
         public override string ToString()
         {

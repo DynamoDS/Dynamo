@@ -825,7 +825,7 @@ namespace ProtoCore
         /// </summary>
         /// <returns>Returns true or false based on the condition described above. 
         /// </returns>
-        private static bool IsSimilarOptionButOfHigherRank(List<ReplicationInstruction> oldOption, List<ReplicationInstruction> newOption)
+        internal static bool IsSimilarOptionButOfHigherRank(List<ReplicationInstruction> oldOption, List<ReplicationInstruction> newOption)
         {
             if (oldOption.Count > 0 && newOption.Count > 0 && oldOption.Count < newOption.Count)
             {
@@ -1295,6 +1295,24 @@ namespace ProtoCore
                 {
                     continue;
                 }
+
+                candidateFunctions.Add(fep);
+            }
+            return candidateFunctions;
+        }
+
+        internal static List<CLRFunctionEndPoint> GetCandidateFunctions(Dictionary<CLRFunctionEndPoint, int> candidatesWithDistances)
+        {
+            List<CLRFunctionEndPoint> candidateFunctions = new List<CLRFunctionEndPoint>();
+
+            foreach (CLRFunctionEndPoint fep in candidatesWithDistances.Keys)
+            {  /* TODO: figure this out
+                if ((stackFrame.ThisPtr.IsPointer &&
+                     stackFrame.ThisPtr.Pointer == Constants.kInvalidIndex && fep.procedureNode != null
+                     && !fep.IsConstructor) && !fep.IsStatic)
+                {
+                    continue;
+                }*/
 
                 candidateFunctions.Add(fep);
             }

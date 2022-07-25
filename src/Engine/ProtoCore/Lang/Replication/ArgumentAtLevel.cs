@@ -3,6 +3,7 @@ using System.Linq;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
 using ProtoCore.Properties;
+using ProtoCore.Utils;
 
 namespace ProtoCore.Lang.Replication
 {
@@ -120,7 +121,7 @@ namespace ProtoCore.Lang.Replication
                 return new ArgumentAtLevel(argument);
             }
 
-            int maxDepth = Replicator.GetMaxReductionDepth(argument, runtimeCore);
+            int maxDepth = ArrayUtils.GetMaxRankForArray(argument, runtimeCore);
             int nestedLevel = maxDepth + atLevel.Level;
 
             // Promote the array
