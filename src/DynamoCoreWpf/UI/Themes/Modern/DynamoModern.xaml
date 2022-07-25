@@ -1964,6 +1964,14 @@
                                Grid.Row="0"
                                Focusable="false"
                                IsDirectionReversed="true">
+                            <Track.Resources>
+                                <!-- Set the Thumb's minimum height to 25.
+                                     The Thumb's minimum height is half the
+                                     value of VerticalScrollBarButtonHeightKey. -->
+                                <clr:Double x:Key="{x:Static SystemParameters.VerticalScrollBarButtonHeightKey}">
+                                    50
+                                </clr:Double>
+                            </Track.Resources>
                             <Track.Thumb>
                                 <Thumb x:Name="Thumb"
                                        Background="{TemplateBinding Foreground}"
@@ -5233,6 +5241,7 @@
         </Style.Triggers>
     </Style>
 
+    <!-- TextBox Style for inputting text with a grey/blue bottom bar to highlight hover/focus behavior -->
     <Style x:Key="HintingInputStyle" TargetType="TextBox">
         <Setter Property="Margin" Value="0,0,0,12" />
         <Setter Property="MinWidth" Value="62px" />
@@ -5343,5 +5352,4 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
 </ResourceDictionary>
