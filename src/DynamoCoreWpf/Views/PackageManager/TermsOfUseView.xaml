@@ -7,6 +7,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         Height="450"
+        MinHeight="350"
         Width="550"
         MinWidth="550"
         MaxWidth="550"
