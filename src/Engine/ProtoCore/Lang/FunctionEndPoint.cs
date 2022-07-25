@@ -8,11 +8,14 @@ using ProtoCore.Utils;
 
 namespace ProtoCore
 {
+    /// <summary>
+    /// Wrapper over MethodBase.
+    /// </summary>
     internal sealed class CLRFunctionEndPoint
     {
         internal struct ParamInfo
         {
-            public Type ProtoInfo;
+            public ProtoCore.Type ProtoInfo;
             public ParameterInfo CLRInfo;
 
             public bool IsIndexable => ProtoInfo.IsIndexable;

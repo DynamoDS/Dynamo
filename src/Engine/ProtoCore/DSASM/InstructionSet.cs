@@ -110,6 +110,9 @@ namespace ProtoCore.DSASM
         public int type;
     }
 
+    /// <summary>
+    /// Wrapper over all values emited by the MSIL compiler.
+    /// </summary>
     internal struct CLRStackValue
     {
         public bool IsEnumerable => ArrayUtils.IsEnumerable(Type);
@@ -126,7 +129,7 @@ namespace ProtoCore.DSASM
             set;
         }
 
-        public Type ProtoType { get; set; }
+        public ProtoCore.Type ProtoType { get; set; }
 
         public System.Type Type => Value?.GetType();
 
