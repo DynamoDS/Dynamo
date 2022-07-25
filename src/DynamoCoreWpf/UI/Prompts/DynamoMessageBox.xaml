@@ -119,7 +119,7 @@
                 <!--  Buttons  -->
                 <DockPanel Name="ButtonsDockPanel"
                            Grid.Row="2"
-                           Margin="0,0,20,20"
+                           Margin="16,0,20,20"
                            LastChildFill="False">
 
                     <Button Name="YesButton"
@@ -165,7 +165,7 @@
                             BorderBrush="#BFBFBF"
                             Click="CancelButton_OnClick"
                             Content="{x:Static p:Resources.GenericTaskDialogOptionCancel}"
-                            DockPanel.Dock="Right"
+                            DockPanel.Dock="Left"
                             Foreground="Black"
                             Style="{StaticResource CtaButtonStyle}"
                             Visibility="Collapsed" />
