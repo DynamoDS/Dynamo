@@ -135,7 +135,82 @@ namespace ProtoCore.DSASM
 
         public object Value { get; set; }
 
+
+        public CLRStackValue(object value, ProtoCore.Type protoType, int rank = 0)
+        {
+            this.Value = value;
+            this.ProtoType = protoType;
+            this.Rank = rank;
+        }
+
         internal static CLRStackValue Null => new CLRStackValue();
+
+        #region Converters
+        public CLRStackValue ToBoolean()
+        {
+            switch (ProtoType.UID)
+            {
+                case (int)PrimitiveType.Bool:
+                    return this;
+
+                case (int)PrimitiveType.Integer:
+                    return new CLRStackValue(Value != null, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(bool)));
+
+                case (int)PrimitiveType.InvalidType:
+                    return new CLRStackValue(false, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(bool)));
+
+                case (int)PrimitiveType.Double:
+                    double val = (double)Value;
+                    bool b = !Double.IsNaN(val) && !val.Equals(0.0);
+                    return new CLRStackValue(b, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(bool)));
+
+                case (int)PrimitiveType.Pointer:
+                    return new CLRStackValue(true, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(bool)));
+
+                case (int)PrimitiveType.String:
+                    string str = Value as string;
+                    return new CLRStackValue(!string.IsNullOrEmpty(str), ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(bool)));
+
+                case (int)PrimitiveType.Char:
+                    char c = Convert.ToChar(Value);
+                    return new CLRStackValue(c != 0, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(bool)));
+
+                default:
+                    return CLRStackValue.Null;
+            }
+        }
+
+        public CLRStackValue ToDouble()
+        {
+            switch (ProtoType.UID)
+            {
+                case (int)PrimitiveType.Integer:
+                    return new CLRStackValue(Convert.ToDouble((long)Value), ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(double)));
+
+                case (int)PrimitiveType.Double:
+                    return this;
+
+                default:
+                    return CLRStackValue.Null;
+            }
+        }
+
+        public CLRStackValue ToInteger()
+        {
+            switch (ProtoType.UID)
+            {
+                case (int)PrimitiveType.Integer:
+                    return this;
+
+                case (int)PrimitiveType.Double:
+                    double value = (double)Value;
+                    return new CLRStackValue((Int64)Math.Round(value, 0, MidpointRounding.AwayFromZero), ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(int)));
+
+                default:
+                    return CLRStackValue.Null;
+            }
+        }
+        #endregion
     }
 
     [System.Diagnostics.DebuggerDisplay("{optype}, opdata = {opdata}, metaData = {metaData.type}")]

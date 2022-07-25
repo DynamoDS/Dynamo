@@ -29,10 +29,9 @@ namespace EmitMSIL
 
                     list.Add(mObj);
                 }
-                return new CLRStackValue() { Value = list, Rank = maxRank + 1, 
-                    ProtoType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(arr.GetType()) };
+                return new CLRStackValue(list, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(arr.GetType()), maxRank + 1);
             }
-            return new CLRStackValue() { Value = obj, ProtoType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(obj.GetType()) };
+            return new CLRStackValue(obj, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(obj.GetType()));
         }
 
         internal static object ConvertFromStackValue(CLRStackValue sv)
@@ -358,7 +357,7 @@ namespace EmitMSIL
         private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters)
         {
             // TODO: CoerceParameters
-            List<CLRStackValue> coercedParameters = formalParameters;//finalFep.CoerceParameters(formalParameters);
+            List<CLRStackValue> coercedParameters = FunctionEndPoint.CoerceParameters(finalFep, formalParameters);
 
             List<object> args = new List<object>();
             foreach(var item in coercedParameters)

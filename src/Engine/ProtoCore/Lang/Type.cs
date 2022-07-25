@@ -135,6 +135,9 @@ namespace ProtoCore
             { typeof(char).FullName, "char" }
         };
 
+        private static TypeSystem instance;
+        internal static TypeSystem Instance => instance != null ? instance : new TypeSystem();
+
         public TypeSystem()
         {
             SetTypeSystem();
@@ -581,194 +584,156 @@ namespace ProtoCore
                         throw new NotImplementedException("Requested coercion not implemented");
             }
         }
-        /*
-        internal static CLRStackValue Coerce(CLRStackValue sv, System.Type targetType)
-        {
-            //TODO: Figure out DefaultArgument behavior
-            //if (sv.IsDefaultArgument)
-            //    return sv;
 
-            if (!(sv.Type == targetType ||
-                targetType.IsAssignableFrom(sv.Type)
-                || sv.IsEnumerable))
+        internal static CLRStackValue Coerce(CLRStackValue sv, CLRFunctionEndPoint.ParamInfo targetParam, int targetRank)
+        {
+            //@TODO(Jun): FIX ME - abort coersion for default args
+            if (sv.IsDefaultArgument)
+                return sv;
+
+            var targetProtoType = targetParam.ProtoInfo;
+            var targetCLRType = targetParam.CLRInfo.ParameterType;
+
+            if (!((sv.ProtoType.UID == targetProtoType.UID) ||
+                  ConvertibleTo(sv.ProtoType.UID, targetProtoType.UID) ||
+                  sv.IsEnumerable))
             {
-                Console.WriteLine($"{Runtime.WarningID.ConversionNotPossible}{Resources.kConvertNonConvertibleTypes}");
+                System.Console.WriteLine($"{Runtime.WarningID.ConversionNotPossible}{Resources.kConvertNonConvertibleTypes}");
                 return CLRStackValue.Null;
             }
 
             //if it's an array
-            if (sv.IsEnumerable && !ArrayUtils.IsEnumerable(targetType))
+            if (sv.IsEnumerable && !targetProtoType.IsIndexable)
             {
                 //This is an array rank reduction
                 //this may only be performed in recursion and is illegal here
-                string errorMessage = String.Format(Resources.kConvertArrayToNonArray, targetType.FullName);
-                Console.WriteLine($"{Runtime.WarningID.ConversionNotPossible}{errorMessage}");
+                string errorMessage = String.Format(Resources.kConvertArrayToNonArray, targetCLRType.FullName);
+                System.Console.WriteLine($"{Runtime.WarningID.ConversionNotPossible}{errorMessage}");
                 return CLRStackValue.Null;
             }
 
 
-            if (sv.IsEnumerable && ArrayUtils.IsEnumerable(targetType))
+            if (sv.IsEnumerable &&
+                targetProtoType.IsIndexable)
             {
-                targetType.GetArrayRank
                 //We're being asked to convert an array into an array
                 //walk over the structure converting each othe elements
 
                 //Validity.Assert(targetType.rank != -1, "Arbitrary rank array conversion not yet implemented {2EAF557F-62DE-48F0-9BFA-F750BBCDF2CB}");
 
                 //Decrease level of reductions by one
-                Type newTargetType = new Type();
-                newTargetType.UID = targetType.UID;
-                if (targetType.rank != Constants.kArbitraryRank)
+                int newTargetRank = Constants.kArbitraryRank;
+                if (targetRank != Constants.kArbitraryRank)
                 {
-                    newTargetType.rank = targetType.rank - 1;
+                    newTargetRank = targetProtoType.rank - 1;
                 }
                 else
                 {
                     if (ArrayUtils.GetMaxRankForArray(sv) == 1)
                     {
                         //Last unpacking
-                        newTargetType.rank = 0;
+                        newTargetRank = 0;
                     }
                     else
                     {
-                        newTargetType.rank = Constants.kArbitraryRank;
+                        newTargetRank = Constants.kArbitraryRank;
                     }
                 }
 
-                List<CLRStackValue> coercedArr = new List<CLRStackValue>();
+                List<CLRStackValue> coercedValues = new List<CLRStackValue>();
                 foreach (var item in sv.Value as IList<CLRStackValue>)
                 {
-                    coercedArr.Add(Coerce(item, );
+                    var coercedValue = TypeSystem.Coerce(item, targetParam, newTargetRank);
+                    coercedValues.Add(coercedValue);
                 }
-                return coerced;
+
+                return new CLRStackValue(coercedValues, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(coercedValues.GetType()), targetRank);
             }
 
             // Null can be converted to Boolean so we will allow it in the case of indexable types
-            bool nullAsBool = sv.IsNull && (targetType.UID == (int)PrimitiveType.Bool);
-            if (!sv.IsArray && (!sv.IsNull || nullAsBool) &&
-                targetType.IsIndexable &&
-                targetType.rank != DSASM.Constants.kArbitraryRank)
+            bool nullAsBool = sv.IsNull && (targetProtoType.UID == (int)PrimitiveType.Bool);
+            if (!sv.IsEnumerable && (!sv.IsNull || nullAsBool) &&
+                targetProtoType.IsIndexable &&
+                targetRank != DSASM.Constants.kArbitraryRank)
             {
                 //We're being asked to promote the value into an array
-                if (targetType.rank == 1)
+                if (targetProtoType.rank == 1)
                 {
-                    Type newTargetType = new Type();
-                    newTargetType.UID = targetType.UID;
-                    newTargetType.Name = targetType.Name;
-                    newTargetType.rank = 0;
-
                     //Upcast once
-                    StackValue coercedValue = Coerce(sv, newTargetType, runtimeCore);
-                    try
-                    {
-                        StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue });
-                        return newSv;
-                    }
-                    catch (RunOutOfMemoryException)
-                    {
-                        runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
-                        return StackValue.Null;
-                    }
+                    return Coerce(sv, targetParam, 0);
                 }
                 else
                 {
-                    Validity.Assert(targetType.rank > 1, "Target rank should be greater than one for this clause");
+                    Validity.Assert(targetRank > 1, "Target rank should be greater than one for this clause");
 
-                    Type newTargetType = new Type();
-                    newTargetType.UID = targetType.UID;
-                    newTargetType.Name = targetType.Name;
-                    newTargetType.rank = targetType.rank - 1;
+                    int newTargetRank = targetRank - 1;
 
                     //Upcast once
-                    StackValue coercedValue = Coerce(sv, newTargetType, runtimeCore);
-                    try
-                    {
-                        StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue });
-                        return newSv;
-                    }
-                    catch (RunOutOfMemoryException)
-                    {
-                        runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
-                        return StackValue.Null;
-                    }
+                    return Coerce(sv, targetParam, newTargetRank);
                 }
             }
 
+            /* TODO: implement this
             if (sv.IsPointer)
             {
                 StackValue ret = ClassCoerece(sv, targetType, runtimeCore);
                 return ret;
-            }
+            }*/
 
             //If it's anything other than array, just create a new copy
-            switch (targetType.UID)
+            switch (targetProtoType.UID)
             {
                 case (int)PrimitiveType.InvalidType:
-                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.InvalidType, Resources.kInvalidType);
-                    return StackValue.Null;
+                    System.Console.WriteLine($"{Runtime.WarningID.InvalidType}{Resources.kInvalidType}");
+                    return CLRStackValue.Null;
 
                 case (int)PrimitiveType.Bool:
-                    return sv.ToBoolean(runtimeCore);
+                    return sv.ToBoolean();
 
                 case (int)PrimitiveType.Char:
                     {
-                        StackValue newSV = sv.ShallowClone();
-                        newSV.metaData = new MetaData { type = (int)PrimitiveType.Char };
-                        return newSV;
+                        return new CLRStackValue(Convert.ToChar(sv.Value), ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(char)));
                     }
 
                 case (int)PrimitiveType.Double:
                     return sv.ToDouble();
 
                 case (int)PrimitiveType.FunctionPointer:
-                    if (sv.metaData.type != (int)PrimitiveType.FunctionPointer)
+                    if (sv.ProtoType.UID != (int)PrimitiveType.FunctionPointer)
                     {
-                        runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToFunction);
-                        return StackValue.Null;
+                        //runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToFunction);
+                        return CLRStackValue.Null;
                     }
                     return sv;
 
                 case (int)PrimitiveType.Integer:
                     {
-                        if (sv.metaData.type == (int)PrimitiveType.Double)
-                        {
-                            //TODO(lukechurch): Once the API is improved (MAGN-5174)
-                            //Replace this with a log entry notification
-                            //core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeConvertionCauseInfoLoss, Resources.kConvertDoubleToInt);
-                        }
                         return sv.ToInteger();
                     }
 
                 case (int)PrimitiveType.Null:
                     {
-                        if (sv.metaData.type != (int)PrimitiveType.Null)
+                        if (sv.ProtoType.UID != (int)PrimitiveType.Null)
                         {
-                            runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToNull);
-                            return StackValue.Null;
+                            //runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToNull);
+                            return CLRStackValue.Null;
                         }
                         return sv;
                     }
 
                 case (int)PrimitiveType.Pointer:
                     {
-                        if (sv.metaData.type != (int)PrimitiveType.Null)
+                        if (sv.ProtoType.UID != (int)PrimitiveType.Null)
                         {
-                            runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToPointer);
-                            return StackValue.Null;
+                            //runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToPointer);
+                            return CLRStackValue.Null;
                         }
                         return sv;
                     }
 
                 case (int)PrimitiveType.String:
                     {
-                        StackValue newSV = sv.ShallowClone();
-                        newSV.metaData = new MetaData { type = (int)PrimitiveType.String };
-                        if (sv.metaData.type == (int)PrimitiveType.Char)
-                        {
-                            char ch = Convert.ToChar(newSV.CharValue);
-                            newSV = StackValue.BuildString(ch.ToString(), rmem.Heap);
-                        }
-                        return newSV;
+                        return new CLRStackValue(Convert.ToString(sv.Value), ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(string)));
                     }
 
                 case (int)PrimitiveType.Var:
@@ -778,17 +743,58 @@ namespace ProtoCore
 
                 case (int)PrimitiveType.Array:
                     {
-                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
-                        return array.CopyArray(targetType, runtimeCore);
+                        List<CLRStackValue> coercedValues = new List<CLRStackValue>();
+                        foreach (var item in sv.Value as IList<CLRStackValue>)
+                        {
+                            var coercedValue = TypeSystem.Coerce(item, targetParam, item.Rank);
+                            coercedValues.Add(coercedValue);
+                        }
+
+                        return new CLRStackValue(coercedValues, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(coercedValues.GetType()), targetRank);
                     }
 
                 default:
                     if (sv.IsNull)
-                        return StackValue.Null;
+                        return CLRStackValue.Null;
                     else
                         throw new NotImplementedException("Requested coercion not implemented");
             }
         }
-        */
+
+        internal static bool ConvertibleTo(int svType, int targetType)
+        {
+            if (((int)PrimitiveType.Null == svType) || 
+                Instance.classTable.ClassNodes[svType].CoerceTypes.ContainsKey(targetType))
+            {
+                return true;
+            }
+
+            //chars are convertible to string
+
+            else if (svType == (int)PrimitiveType.Char && targetType == (int)PrimitiveType.String)
+            {
+                return true;
+            }
+
+            //user defined type to bool
+            else if (svType >= (int)PrimitiveType.MaxPrimitive && targetType == (int)PrimitiveType.Bool)
+            {
+                return true;
+            }
+
+            //string to boolean
+
+            else if (svType == (int)PrimitiveType.String && targetType == (int)PrimitiveType.Bool)
+            {
+                return true;
+            }
+            //char to boolean
+            else if (svType == (int)PrimitiveType.Char && targetType == (int)PrimitiveType.Bool)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

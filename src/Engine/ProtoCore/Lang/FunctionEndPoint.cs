@@ -475,6 +475,21 @@ namespace ProtoCore
             return fixedUpVersions;
         }
 
+        internal static List<CLRStackValue> CoerceParameters(CLRFunctionEndPoint fep, List<CLRStackValue> formalParameters)
+        {
+            var FormalParams = fep.Parameters;
+            List<CLRStackValue> fixedUpVersions = new List<CLRStackValue>();
+            for (int i = 0; i < formalParameters.Count; i++)
+            {
+                CLRStackValue formalParam = formalParameters[i];
+                CLRFunctionEndPoint.ParamInfo targetParam = FormalParams[i];
+
+                CLRStackValue coercedParam = TypeSystem.Coerce(formalParam, targetParam, targetParam.ProtoInfo.rank);
+                fixedUpVersions.Add(coercedParam);
+            }
+
+            return fixedUpVersions;
+        }
 
         public override string ToString()
         {
