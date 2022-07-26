@@ -19,7 +19,7 @@ namespace EmitMSIL
         internal string className;
         internal string methodName;
         // True for internal methods (for example operators and unary operators)
-        private bool isInternal; 
+        private bool isBuiltIn; 
         private IDictionary<string, IList> input;
         private IDictionary<string, IList> output;
         private int localVarIndex = -1;
@@ -135,7 +135,7 @@ namespace EmitMSIL
             }
             else
             {
-                if (!isInternal)
+                if (!isBuiltIn)
                 {
                     var modules = ProtoFFI.DLLFFIHandler.Modules.Values.OfType<ProtoFFI.CLRDLLModule>();
                     var assemblies = modules.Select(m => m.Assembly ?? (m.Module?.Assembly)).Where(m => m != null);
@@ -187,7 +187,7 @@ namespace EmitMSIL
                 }
                 else
                 {
-                    var method = Internals.GetInternalMethod(methodName);
+                    var method = BuiltIn.GetInternalMethod(methodName);
                     if (method != null)
                     {
                         mi = new List<MethodBase>() { method };
@@ -624,11 +624,11 @@ namespace EmitMSIL
             methodName = fcn.Function.Name;
             var args = fcn.FormalArguments;
             var numArgs = args.Count;
-            isInternal = CoreUtils.IsInternalMethod(methodName);
+            isBuiltIn = CoreUtils.IsInternalMethod(methodName);
 
-            if (isInternal)
+            if (isBuiltIn)
             {
-                className = nameof(Internals);
+                className = nameof(BuiltIn);
             }
 
             if (compilePass == CompilePass.MethodLookup)

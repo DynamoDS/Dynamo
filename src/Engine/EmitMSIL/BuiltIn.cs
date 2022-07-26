@@ -1,12 +1,11 @@
 ﻿using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace EmitMSIL
 {
-    public class Internals
+    public class BuiltIn
     {
         private static object ToBoolean(object a)
         {
@@ -375,7 +374,7 @@ namespace EmitMSIL
 
             if (methodName.Length > 0)
             {
-                return typeof(Internals)?.GetMethod(methodName);
+                return typeof(BuiltIn)?.GetMethod(methodName);
             }
 
             throw new MissingMethodException("No matching operator method found");
