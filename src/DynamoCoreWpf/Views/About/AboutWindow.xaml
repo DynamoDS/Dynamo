@@ -110,15 +110,8 @@
                         <RowDefinition Height="50"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
+                    <StackPanel Grid.Row="1" Orientation=" Vertical">
                         <TextBlock Name="DynamoCoreVersion"
-                                   Grid.Row="0"
                                    HorizontalAlignment="Center"
                                    Background="Transparent" 
                                    Foreground="{StaticResource DarkerGreyBrush}"
@@ -128,7 +121,6 @@
                         </TextBlock>
 
                         <TextBlock Name="GenericHostVersion"
-                                   Grid.Row="1"
                                    HorizontalAlignment="Center"
                                    Background="Transparent" 
                                    Foreground="{StaticResource DarkerGreyBrush}"
@@ -141,7 +133,6 @@
                         <TextBlock x:Name ="UpdateInfo"
                                    HorizontalAlignment="Center"
                                    FontSize="12" 
-                                   Grid.Row="{Binding HostVersion, Converter={StaticResource NullValueToGridRow1Converter}}"
                                    FontFamily="{StaticResource OpenSansRegular}" 
                                    Foreground="#168576"
                                    Margin="0"
@@ -150,7 +141,8 @@
                                      Text="{Binding Model.UpdateManager, Converter={StaticResource IsUpdateAvailableToTextConverter}, 
                                      ConverterParameter=DataContext, Mode=OneWay}"/>
                         </TextBlock>
-                    </Grid>
+                    </StackPanel>
+
                     <Button Name="DynamoWebsiteButton" Grid.Row="2" Click="OnClickLink" Style="{StaticResource CtaButtonStyle}"
                             HorizontalAlignment="Center"
                             Margin="3"
