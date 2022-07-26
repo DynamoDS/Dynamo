@@ -35,6 +35,19 @@ b=a[5];";
             Assert.AreEqual(5, output.Values.ToList()[1][0]);
         }
         [Test]
+        public void IndexIdentArrayWithIdent()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+a = [0,1,2,3,4,5];
+b = 5;
+c=a[b];";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(5, output.Values.ToList()[1][0]);
+        }
+        [Test]
         public void IndexArrayWithArrayConstants()
         {
             var dscode = @"

@@ -645,7 +645,7 @@ namespace EmitMSIL
             }
             else if (t.IsArray)
             {
-                EmitIndexingForArray(fcn.FormalArguments[0], fcn.FormalArguments[1], t.GetElementType());
+                TryEmitIndexingForArray(fcn.FormalArguments[0], fcn.FormalArguments[1], t.GetElementType());
                 return (true,t.GetElementType());
             }
             else if (t is IList)
@@ -668,22 +668,20 @@ namespace EmitMSIL
 
        
         
-        private void EmitIndexingForArray(AssociativeNode array, AssociativeNode index,Type t)
+        private bool TryEmitIndexingForArray(AssociativeNode array, AssociativeNode index,Type arrayElementType)
         {
-            //we'll make an assumption that index is always somehow a long.
-            long? IndexVal = null;
-            if(index is IntNode intIndex)
-            {
-                IndexVal = intIndex.Value;
-                EmitOpCode(OpCodes.Ldc_I4, (int)IndexVal);
-            }//if its an identifer, emit some code to lookup the value.
-            else if(index is IdentifierNode ident)
-            {
-                if (variables.TryGetValue(ident.Value, out Tuple<int, Type> output))
-                {
-                }
-            }
+
+            //TODO maybe implement iteration over array ie EmitForLoop(start,end,emitAction) - loads each item of array onto stack and does
+            //something - in this case the something would be nothing - once it's on the stack we'll emit a lookup.
+            //would need to be a level up from this?
+
+            var indexT = DfsTraverse(index);
+            //TODO if indexT is a collection then we need to generate multiple ldelem calls -
+            //we could also give up and let replication handle this.
+
+            //emit the call to do the lookup.
             EmitOpCode(OpCodes.Ldelem_I8);
+            return true;
         }
 
 
