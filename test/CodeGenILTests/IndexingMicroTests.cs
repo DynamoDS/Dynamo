@@ -59,5 +59,19 @@ c=a[b];";
             Assert.IsNotEmpty(output);
             CollectionAssert.AreEqual(new long[] { 0, 5 }, output.Values.ToList()[1][0] as long[]);
         }
+        [Test]
+        public void IndexNestedArray_WithIdent()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+a = [[0,1,2],[3,4,5]];
+b = 1;
+c = 0;
+d=a[b][c];";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(3, output.Values.ToList()[3][0]);
+        }
     }
 }

@@ -620,6 +620,11 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Ldloc_0);
             }
 
+            else if(array is IdentifierListNode idntl)
+            {
+                t = DfsTraverse(idntl);
+            }
+
             else if(array is ExprListNode listNode)
             {
                 t = DfsTraverse(listNode);
