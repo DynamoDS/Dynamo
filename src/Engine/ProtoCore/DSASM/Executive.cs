@@ -81,6 +81,11 @@ namespace ProtoCore.DSASM
             else updateRegisters.Add(astID, sv);
         }
 
+        internal bool DoesUpdateRegisterMatchAstID(long astID)
+        {
+            return updateRegisters.ContainsKey(astID);
+        }
+
         internal void DeleteUpdateRegister(long astID)
         {
             updateRegisters.Remove(astID);
@@ -2456,6 +2461,11 @@ namespace ProtoCore.DSASM
                     }
 
                     RecordExecutedGraphNode();
+
+                    if(Properties.executingGraphNode.RequiresSettingUpdateRegister)
+                    {
+                        SetAssociativeUpdateRegister(Properties.executingGraphNode.OriginalAstID, opVal);
+                    }
                     break;
 
                 case AddressType.StaticMemVarIndex:

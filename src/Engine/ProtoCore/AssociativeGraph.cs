@@ -755,6 +755,7 @@ namespace ProtoCore.AssociativeEngine
             }
 
             AssociativeGraph.GraphNode firstDirtyNode = null;
+            
             foreach (var node in nodeList)
             {
                 var bNode = node as AST.AssociativeAST.BinaryExpressionNode;
@@ -772,14 +773,23 @@ namespace ProtoCore.AssociativeEngine
                         {
                             gnode.updateBlock.startpc = gnode.updateBlock.updateRegisterStartPC;
                         }
-                        if (firstDirtyNode == null)
+                        firstDirtyNode = gnode;
+                        // Check if the first dirty graphnode matches an input node participating in an update cycle,
+                        // i.e. whose value is already present in the update-register dictionary.
+                        // Then mark it for updating its new stackvalue result in the update-register dictionary.
+                        if(bNode.IsInputExpression && !CoreUtils.IsPrimitiveASTNode(bNode.RightNode))
                         {
-                            firstDirtyNode = gnode;
+                            if(core.ExecutionInstance.CurrentDSASMExec.DoesUpdateRegisterMatchAstID(firstDirtyNode.OriginalAstID))
+                            {
+                                firstDirtyNode.RequiresSettingUpdateRegister = true;
+                            }
                         }
+                        break;
                     }
                 }
+                if (firstDirtyNode != null) return firstDirtyNode;
             }
-            return firstDirtyNode;
+            return null;
         }
 
         public static void MarkGraphNodesDirtyFromFunctionRedef(RuntimeCore runtimeCore, List<AST.AssociativeAST.AssociativeNode> fnodeList)
@@ -922,6 +932,8 @@ namespace ProtoCore.AssociativeGraph
         public bool isActive { get; set; }
 
         public bool IsLastNodeInSSA { get; set; }
+
+        internal bool RequiresSettingUpdateRegister = false;
 
         public GraphNode()
         {
