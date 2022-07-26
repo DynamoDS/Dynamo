@@ -321,5 +321,11 @@ namespace Dynamo.UI.Prompts
             CustomDialogResult = MessageBoxResult.Cancel;
             Close();
         }
+
+        // ESC Button pressed triggers Window close        
+        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

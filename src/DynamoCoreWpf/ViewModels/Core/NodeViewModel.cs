@@ -60,6 +60,7 @@ namespace Dynamo.ViewModels
         private bool canToggleFrozen = true;
         private bool isRenamed = false;
         private bool isNodeInCollapsedGroup = false;
+        private const string WatchNodeName = "Watch";
         #endregion
 
         #region public members
@@ -736,8 +737,13 @@ namespace Dynamo.ViewModels
         /// A collection of error/warning/info messages, dismissed via a sub-menu in the node Context Menu.
         /// </summary>
         [JsonIgnore]
-        public ObservableCollection<string> DismissedAlerts => nodeLogic.DismissedAlerts;       
+        public ObservableCollection<string> DismissedAlerts => nodeLogic.DismissedAlerts;
 
+
+        internal bool IsWatchNode
+        {
+            get => OriginalName.Contains(WatchNodeName);
+        }
         #endregion
 
         #region events

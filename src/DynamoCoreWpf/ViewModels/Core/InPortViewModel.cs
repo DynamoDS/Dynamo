@@ -305,7 +305,7 @@ namespace Dynamo.ViewModels
         {
             //This variable checks if the node is a function class
             var isCachedValueNull = node.NodeModel.CachedValue == null || node.NodeModel.CachedValue.Data == null;
-            isFunctionNode = isCachedValueNull && node.NodeModel.IsPartiallyApplied
+            isFunctionNode = isCachedValueNull && node.NodeModel.IsPartiallyApplied 
                 || !isCachedValueNull && node.NodeModel.CachedValue.IsFunction;
 
             if (isFunctionNode)
@@ -350,7 +350,7 @@ namespace Dynamo.ViewModels
                 PortBorderBrushColor = PortBorderBrushColorKeepListStructure;
             }
             // Port has a default value, shows blue marker
-            else if ((UsingDefaultValue && DefaultValueEnabled) || !isFunctionNode)
+            else if ((UsingDefaultValue && DefaultValueEnabled) || !isFunctionNode && !node.IsWatchNode)
             {
                 PortValueMarkerColor = PortValueMarkerBlue;
                 PortBackgroundColor = PortBackgroundColorDefault;
