@@ -65,7 +65,7 @@ namespace EmitMSIL
             return stackValues;
         }
 
-        internal static List<CLRFunctionEndPoint> MarshalMethodsToFEPs(IEnumerable<MethodBase> methods)
+        internal static List<CLRFunctionEndPoint> ConvertMethodsToFEPs(IEnumerable<MethodBase> methods)
         {
             List<CLRFunctionEndPoint> feps = new List<CLRFunctionEndPoint>();
             foreach (var method in methods)
@@ -92,6 +92,7 @@ namespace EmitMSIL
         /// <returns></returns>
         public static IList ReplicationLogic(IEnumerable<MethodBase> mInfos, IList args, string[][] replicationAttrs)
         {
+            // TODO: implement proper Marshaler
             var stackValues = MarshalArgumentsToStackValues(args);
 
             var reducedArgs = ReduceArgs(stackValues);
@@ -107,7 +108,7 @@ namespace EmitMSIL
             //Turn the replication guides into a guide -> List args data structure
             var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
-            var feps = MarshalMethodsToFEPs(mInfos);
+            var feps = ConvertMethodsToFEPs(mInfos);
 
             MSILRuntimeCore runtimeCore = MSILRuntimeCore.Instance;
 
@@ -127,6 +128,7 @@ namespace EmitMSIL
                 result = ExecWithRISlowPath(finalFep, reducedArgs, replicationInstructions, runtimeCore);
             }
 
+            // TODO: implement proper Marshaler
             var stackVal = ConvertToStackValue(result);
             if (!stackVal.IsExplicitCall)
             {
@@ -134,6 +136,7 @@ namespace EmitMSIL
                 stackVal = CallSite.PerformReturnTypeCoerce(finalFep, stackVal, runtimeCore);
             }
 
+            // TODO: implement proper Marshaler
             return new[] { ConvertFromStackValue(stackVal) };
         }
 
@@ -369,7 +372,7 @@ namespace EmitMSIL
         private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
         {
             // TODO: CoerceParameters
-            List<CLRStackValue> coercedParameters = FunctionEndPoint.CoerceParameters(finalFep, formalParameters, runtimeCore);
+            List<CLRStackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, runtimeCore);
 
             List<object> args = new List<object>();
             foreach(var item in coercedParameters)

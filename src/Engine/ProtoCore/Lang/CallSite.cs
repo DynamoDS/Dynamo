@@ -2036,7 +2036,7 @@ namespace ProtoCore
         {
             Validity.Assert(procNode != null, "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
 
-            System.Type returnType = (procNode.method as MethodInfo).ReturnType;
+            System.Type returnType = procNode.ReturnType;
             Type retType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(returnType);
 
             if (retType.UID == (int)PrimitiveType.Var)

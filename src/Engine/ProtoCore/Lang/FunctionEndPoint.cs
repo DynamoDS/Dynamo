@@ -33,6 +33,188 @@ namespace ProtoCore
             get;
             set;
         }
+
+        public System.Type ReturnType => (method as MethodInfo).ReturnType;
+
+        public static Dictionary<string, ProtoFFI.FFIHandler> FFIHandlers = new Dictionary<string, ProtoFFI.FFIHandler>();
+        private ProtoFFI.FFIFunctionPointer mFunctionPointer;
+
+        internal List<CLRStackValue> CoerceParameters(List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
+        {
+            List<CLRStackValue> fixedUpVersions = new List<CLRStackValue>();
+            for (int i = 0; i < formalParameters.Count; i++)
+            {
+                CLRStackValue formalParam = formalParameters[i];
+                CLRFunctionEndPoint.ParamInfo targetParam = Parameters[i];
+
+                CLRStackValue coercedParam = TypeSystem.Coerce(formalParam, targetParam.ProtoInfo, runtimeCore);
+                fixedUpVersions.Add(coercedParam);
+            }
+
+            return fixedUpVersions;
+        }
+
+        internal int GetConversionDistance(List<CLRStackValue> reducedParamSVs, bool allowArrayPromotion)
+        {
+            // If the replication strategy allows array promotion, first check for the case
+            // where it could be disabled using the [AllowArrayPromotion(false)] attribute
+            // and if so set it from the attribute.
+            if (allowArrayPromotion)
+            {
+                //TODO: Implement [AllowArrayPromotion(false)]
+                //allowArrayPromotion = ma.AllowArrayPromotion;
+            }
+            int dist = ComputeTypeDistance(reducedParamSVs, allowArrayPromotion);
+            if (dist >= 0 && dist != (int)ProcedureDistance.MaxDistance) //Is it possible to convert to this type?
+            {
+                // TODO: implement CheckInvalidArrayCoersion
+                //if (!FunctionGroup.CheckInvalidArrayCoersion(fep, reducedParamSVs, allowArrayPromotion))
+                return dist;
+            }
+
+            return (int)ProcedureDistance.InvalidDistance;
+        }
+
+        internal int ComputeCastDistance(List<CLRStackValue> args)
+        {
+            //Compute the cost to migrate a class calls argument types to the coresponding base types
+            //This cannot be used to determine whether a function can be called as it will ignore anything that doesn't
+            //it should only be used to determine which class is closer
+            if (args.Count != Parameters.Count)
+            {
+                return int.MaxValue;
+            }
+
+            if (0 == args.Count)
+            {
+                return 0;
+            }
+
+            int distance = 0;
+            for (int i = 0; i < args.Count; ++i)
+            {
+                var rcvdType = args[i].Type;
+
+                // If its a default argumnet, then it wasnt provided by the caller
+                // The rcvdType is the type of the argument signature
+                // TODO: figure out IsDefaultArgument
+                /*if (args[i].IsDefaultArgument)
+                {
+                    rcvdType = FormalParams[i].UID;
+                }*/
+
+                var expectedType = Parameters[i];
+                if (expectedType.IsIndexable != args[i].IsEnumerable) //Replication code will take care of this
+                {
+                    continue;
+                }
+                else if (expectedType.IsIndexable)  // both are arrays
+                {
+                    continue;
+                }
+                else if (expectedType.CLRType == rcvdType)
+                {
+                    continue;
+                }
+                else if (rcvdType != null && expectedType.CLRType != null)
+                {
+                    int currentCost = ClassUtils.GetUpcastCountTo(
+                        rcvdType,
+                        expectedType.CLRType);
+                    distance += currentCost;
+                }
+            }
+            return distance;
+        }
+
+        internal int ComputeTypeDistance(List<CLRStackValue> args, bool allowArrayPromotion = false)
+        {
+            if (args.Count == 0 && Parameters.Count == 0)
+            {
+                return (int)ProcedureDistance.ExactMatchDistance;
+            }
+
+            if (args.Count != Parameters.Count)
+            {
+                return (int)ProcedureDistance.MaxDistance;
+            }
+
+            int distance = (int)ProcedureDistance.MaxDistance;
+            // Jun Comment:
+            // Default args not provided by the caller would have been pushed by the call instruction as optype = DefaultArs
+            for (int i = 0; i < args.Count; ++i)
+            {
+                System.Type rcvdType = args[i].Type;
+
+                // If its a default argumnet, then it wasnt provided by the caller
+                // The rcvdType is the type of the argument signature
+                // TODO: figure out what to do about IsDefaultArgument
+                /*if (args[i].IsDefaultArgument)
+                {
+                    rcvdType = FormalParams[i].UID;
+                }*/
+
+                var expectedType = Parameters[i];
+                int currentScore = (int)ProcedureDistance.NotMatchScore;
+
+                //sv rank > param rank
+                if (allowArrayPromotion)
+                {
+                    //stop array -> single
+                    if (args[i].IsEnumerable && !expectedType.IsIndexable) //Replication code will take care of this
+                    {
+                        distance = (int)ProcedureDistance.MaxDistance;
+                        break;
+                    }
+                }
+                else
+                {
+                    //stop array -> single && single -> array
+                    if (args[i].IsEnumerable != expectedType.IsIndexable)
+                    //Replication code will take care of this
+                    {
+                        distance = (int)ProcedureDistance.MaxDistance;
+                        break;
+                    }
+                }
+
+                if (expectedType.IsIndexable && (Parameters[i].IsIndexable == args[i].IsEnumerable))
+                {
+                    //In case of conversion from double to int, add a conversion score.
+                    //There are overloaded methods and the difference is the parameter type between int and double.
+                    //Add this to make it call the correct one. - Randy
+                    bool bContainsDouble = ArrayUtils.ContainsDoubleElement(args[i]);
+                    if (expectedType.UID == (int)PrimitiveType.Integer && bContainsDouble)
+                    {
+                        currentScore = (int)ProcedureDistance.CoerceDoubleToIntScore;
+                    }
+                    else if (expectedType.UID == (int)PrimitiveType.Double && !bContainsDouble)
+                    {
+                        currentScore = (int)ProcedureDistance.CoerceIntToDoubleScore;
+                    }
+                    else
+                    {
+                        currentScore = (int)ProcedureDistance.ExactMatchScore;
+                    }
+                }
+                else if (expectedType.CLRType == rcvdType && (expectedType.IsIndexable == args[i].IsEnumerable))
+                {
+                    currentScore = (int)ProcedureDistance.ExactMatchScore;
+                }
+                else if (rcvdType != null/*TODO: figure out: ProtoCore.DSASM.Constants.kInvalidIndex*/)
+                {
+                    // TODO: Implement class coercion scores
+                    currentScore = (int)ProcedureDistance.CoerceScore;//classTable.ClassNodes[rcvdType].GetCoercionScore(expectedType);
+                    if (currentScore == (int)ProcedureDistance.NotMatchScore)
+                    {
+                        distance = (int)ProcedureDistance.MaxDistance;
+                        break;
+                    }
+                }
+                distance -= currentScore;
+            }
+            return distance;
+        }
     }
 
     public abstract class FunctionEndPoint
@@ -177,59 +359,6 @@ namespace ProtoCore
             return distance;
         }
 
-        internal static int ComputeCastDistance(CLRFunctionEndPoint fep, List<CLRStackValue> args)
-        {
-            var FormalParams = fep.Parameters;
-            //Compute the cost to migrate a class calls argument types to the coresponding base types
-            //This cannot be used to determine whether a function can be called as it will ignore anything that doesn't
-            //it should only be used to determine which class is closer
-            if (args.Count != FormalParams.Count)
-            {
-                return int.MaxValue;
-            }
-
-            if (0 == args.Count)
-            {
-                return 0;
-            }
-
-            int distance = 0;
-            for (int i = 0; i < args.Count; ++i)
-            {
-                var rcvdType = args[i].Type;
-
-                // If its a default argumnet, then it wasnt provided by the caller
-                // The rcvdType is the type of the argument signature
-                // TODO: figure out IsDefaultArgument
-                /*if (args[i].IsDefaultArgument)
-                {
-                    rcvdType = FormalParams[i].UID;
-                }*/
-
-                var expectedType = FormalParams[i];
-                if (expectedType.IsIndexable != args[i].IsEnumerable) //Replication code will take care of this
-                {
-                    continue;
-                }
-                else if (expectedType.IsIndexable)  // both are arrays
-                {
-                    continue;
-                }
-                else if (expectedType.CLRType == rcvdType)
-                {
-                    continue;
-                }
-                else if (rcvdType != null && expectedType.CLRType != null)
-                {
-                    int currentCost = ClassUtils.GetUpcastCountTo(
-                        rcvdType,
-                        expectedType.CLRType);
-                    distance += currentCost;
-                }
-            }
-            return distance;
-        }
-
         /// <summary>
         /// Compute the number of type transforms needed to turn the current type into the target type
         /// Note that this method returns int[] -> char[] as an exact match
@@ -323,96 +452,6 @@ namespace ProtoCore
             return distance;
         }
 
-        internal static int ComputeTypeDistance(CLRFunctionEndPoint fep, List<CLRStackValue> args, bool allowArrayPromotion = false)
-        {
-            var FormalParams = fep.Parameters;
-            if (args.Count == 0 && FormalParams.Count == 0)
-            {
-                return (int)ProcedureDistance.ExactMatchDistance;
-            }
-
-            if (args.Count != FormalParams.Count)
-            {
-                return (int)ProcedureDistance.MaxDistance;
-            }
-
-            int distance = (int)ProcedureDistance.MaxDistance;
-            // Jun Comment:
-            // Default args not provided by the caller would have been pushed by the call instruction as optype = DefaultArs
-            for (int i = 0; i < args.Count; ++i)
-            {
-                System.Type rcvdType = args[i].Type;
-
-                // If its a default argumnet, then it wasnt provided by the caller
-                // The rcvdType is the type of the argument signature
-                // TODO: figure out what to do about IsDefaultArgument
-                /*if (args[i].IsDefaultArgument)
-                {
-                    rcvdType = FormalParams[i].UID;
-                }*/
-
-                var expectedType = FormalParams[i];
-                int currentScore = (int)ProcedureDistance.NotMatchScore;
-
-                //sv rank > param rank
-                if (allowArrayPromotion)
-                {
-                    //stop array -> single
-                    if (args[i].IsEnumerable && !expectedType.IsIndexable) //Replication code will take care of this
-                    {
-                        distance = (int)ProcedureDistance.MaxDistance;
-                        break;
-                    }
-                }
-                else
-                {
-                    //stop array -> single && single -> array
-                    if (args[i].IsEnumerable != expectedType.IsIndexable)
-                    //Replication code will take care of this
-                    {
-                        distance = (int)ProcedureDistance.MaxDistance;
-                        break;
-                    }
-                }
-
-                if (expectedType.IsIndexable && (FormalParams[i].IsIndexable == args[i].IsEnumerable))
-                {
-                    //In case of conversion from double to int, add a conversion score.
-                    //There are overloaded methods and the difference is the parameter type between int and double.
-                    //Add this to make it call the correct one. - Randy
-                    bool bContainsDouble = ArrayUtils.ContainsDoubleElement(args[i]);
-                    if (expectedType.UID == (int)PrimitiveType.Integer && bContainsDouble)
-                    {
-                        currentScore = (int)ProcedureDistance.CoerceDoubleToIntScore;
-                    }
-                    else if (expectedType.UID == (int)PrimitiveType.Double && !bContainsDouble)
-                    {
-                        currentScore = (int)ProcedureDistance.CoerceIntToDoubleScore;
-                    }
-                    else
-                    {
-                        currentScore = (int)ProcedureDistance.ExactMatchScore;
-                    }
-                }
-                else if (expectedType.CLRType == rcvdType && (expectedType.IsIndexable == args[i].IsEnumerable))
-                {
-                    currentScore = (int)ProcedureDistance.ExactMatchScore;
-                }
-                else if (rcvdType != null/*TODO: figure out: ProtoCore.DSASM.Constants.kInvalidIndex*/)
-                {
-                    // TODO: Implement class coercion scores
-                    currentScore = (int)ProcedureDistance.CoerceScore;//classTable.ClassNodes[rcvdType].GetCoercionScore(expectedType);
-                    if (currentScore == (int)ProcedureDistance.NotMatchScore)
-                    {
-                        distance = (int)ProcedureDistance.MaxDistance;
-                        break;
-                    }
-                }
-                distance -= currentScore;
-            }
-            return distance;
-        }
-
         public int GetConversionDistance(List<StackValue> reducedParamSVs, ProtoCore.DSASM.ClassTable classTable, bool allowArrayPromotion, RuntimeCore runtimeCore)
         {
             // If the replication strategy allows array promotion, first check for the case
@@ -436,27 +475,6 @@ namespace ProtoCore
             return (int) ProcedureDistance.InvalidDistance;
         }
 
-        internal static int GetConversionDistance(CLRFunctionEndPoint fep, List<CLRStackValue> reducedParamSVs, bool allowArrayPromotion)
-        {
-            // If the replication strategy allows array promotion, first check for the case
-            // where it could be disabled using the [AllowArrayPromotion(false)] attribute
-            // and if so set it from the attribute.
-            if (allowArrayPromotion)
-            {
-                //TODO: Implement [AllowArrayPromotion(false)]
-                //allowArrayPromotion = ma.AllowArrayPromotion;
-            }
-            int dist = ComputeTypeDistance(fep, reducedParamSVs, allowArrayPromotion);
-            if (dist >= 0 && dist != (int)ProcedureDistance.MaxDistance) //Is it possible to convert to this type?
-            {
-                // TODO: implement CheckInvalidArrayCoersion
-                //if (!FunctionGroup.CheckInvalidArrayCoersion(fep, reducedParamSVs, allowArrayPromotion))
-                return dist;
-            }
-
-            return (int)ProcedureDistance.InvalidDistance;
-        }
-
         public abstract bool DoesPredicateMatch(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, List<ReplicationInstruction> replicationInstructions);
         public abstract StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, RuntimeCore runtimeCore);
 
@@ -474,22 +492,6 @@ namespace ProtoCore
                 Type targetType = FormalParams[i];
 
                 StackValue coercedParam = TypeSystem.Coerce(formalParam, targetType, runtimeCore);
-                fixedUpVersions.Add(coercedParam);
-            }
-
-            return fixedUpVersions;
-        }
-
-        internal static List<CLRStackValue> CoerceParameters(CLRFunctionEndPoint fep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
-        {
-            var FormalParams = fep.Parameters;
-            List<CLRStackValue> fixedUpVersions = new List<CLRStackValue>();
-            for (int i = 0; i < formalParameters.Count; i++)
-            {
-                CLRStackValue formalParam = formalParameters[i];
-                CLRFunctionEndPoint.ParamInfo targetParam = FormalParams[i];
-
-                CLRStackValue coercedParam = TypeSystem.Coerce(formalParam, targetParam.ProtoInfo, runtimeCore);
                 fixedUpVersions.Add(coercedParam);
             }
 

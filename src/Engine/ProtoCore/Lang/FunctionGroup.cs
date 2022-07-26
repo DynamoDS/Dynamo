@@ -189,7 +189,7 @@ namespace ProtoCore
 
             foreach (var fep in functionEndPoints)
             {
-                int distance = FunctionEndPoint.GetConversionDistance(fep, reducedParamSVs, allowArrayPromotion);
+                int distance = fep.GetConversionDistance(reducedParamSVs, allowArrayPromotion);
                 if (distance !=
                     (int)ProcedureDistance.InvalidDistance)
                     ret.Add(fep, distance);
@@ -420,7 +420,7 @@ namespace ProtoCore
 
             foreach (var fep in feps)
             {
-                int dist = FunctionEndPoint.ComputeCastDistance(fep, reducedParamSVs);
+                int dist = fep.ComputeCastDistance(reducedParamSVs);
                 ret.Add(fep, dist);
             }
 
