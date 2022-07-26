@@ -152,13 +152,33 @@
             <DataGrid.Columns>
 
                 <!-- Name -->
-                <DataGridTextColumn
+                <DataGridTemplateColumn
                     Header="Name"
-                    Binding="{Binding Name}"
-                    FontWeight="Light"
-                    Foreground="#F5F5F5"
                     IsReadOnly="True"
-                    Width="6*"></DataGridTextColumn>
+                    Width="6*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel HorizontalAlignment="Stretch">
+                                <TextBlock 
+                                    Text="{Binding Name}"
+                                    FontWeight="Light"
+                                    Foreground="#F5F5F5"
+                                    DockPanel.Dock="Left"></TextBlock>
+                                <Grid 
+                                    DockPanel.Dock="Right">
+                                    <Ellipse Name="nodeRenamedBlueDot"
+                                             Width="6"
+                                             Height="6"
+                                             Margin="0 0 6 0"
+                                             HorizontalAlignment="Right"
+                                             VerticalAlignment="Center"
+                                             Fill="{StaticResource Blue300Brush}"
+                                             Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                </Grid>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
                 <!-- Type -->
                 <DataGridTemplateColumn

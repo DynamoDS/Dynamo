@@ -43,7 +43,8 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private ElementState state;
         private ObservableCollection<NodeInfo> nodeInfos = new ObservableCollection<NodeInfo>();
         private string package;
-        private Guid nodeGuid; 
+        private Guid nodeGuid;
+        private bool isRenamed = false;
         
         public delegate void EventHandler(object sender, EventArgs args);
         public event EventHandler BubbleUpdate = delegate { };
@@ -306,6 +307,24 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
         }
         /// <summary>
+        /// Node returns null
+        /// </summary>
+        public bool IsRenamed
+        {
+            get
+            {
+                isRenamed = NodeModel.GetOriginalName() != NodeModel.Name;
+                return isRenamed;
+            }
+            internal set
+            {
+                if (isRenamed == value) return;
+                isRenamed = value;
+                RaisePropertyChanged(nameof(IsRenamed));
+            }
+        }
+
+        /// <summary>
         /// The correct icon for the Info Bubble
         /// </summary>
         public string InfoIcon
@@ -487,6 +506,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             {
                 case "Name":
                     RaisePropertyChanged(nameof(Name));
+                    RaisePropertyChanged(nameof(IsRenamed));
                     break;
                 case "IsVisible":
                     RaisePropertyChanged(nameof(StatusIsHidden));
