@@ -2462,9 +2462,13 @@ namespace ProtoCore.DSASM
 
                     RecordExecutedGraphNode();
 
-                    if(Properties.executingGraphNode.RequiresSettingUpdateRegister)
+                    if (runtimeCore.Options.IsDeltaExecution && IsGlobalScope())
                     {
-                        SetAssociativeUpdateRegister(Properties.executingGraphNode.OriginalAstID, opVal);
+                        if (Properties.executingGraphNode.RequiresSettingUpdateRegister)
+                        {
+                            SetAssociativeUpdateRegister(Properties.executingGraphNode.OriginalAstID, opVal);
+                            Properties.executingGraphNode.RequiresSettingUpdateRegister = false;
+                        }
                     }
                     break;
 
@@ -5166,6 +5170,7 @@ namespace ProtoCore.DSASM
             if (runtimeCore.Options.IsDeltaExecution && IsGlobalScope())
             {
                 runtimeCore.RecordExtecutedGraphNode(Properties.executingGraphNode);
+                
             }
         }
 
