@@ -425,6 +425,10 @@ namespace EmitMSIL
             ilGen.Emit(opCode, val);
             writer.WriteLine($"{opCode} {val}");
         }
+        private void EmitILComment(string comment)
+        {
+            writer.WriteLine($"//{comment}");
+        }
 
         private void EmitGroupExpressionNode(AssociativeNode node)
         {
@@ -617,6 +621,8 @@ namespace EmitMSIL
                     t = output.Item2;
                 }
                 //load the identifer onto the stack.
+                //TODO if we fail to emit indexing later, we don't want this on the stack -
+                //maybe we can emit a pop etc - or emit this in a finally block?
                 EmitOpCode(OpCodes.Ldloc_0);
             }
 
@@ -655,15 +661,16 @@ namespace EmitMSIL
             }
             else if (t == typeof(IList))
             {
-                throw new NotImplementedException("emit ILIST direct indexing not implemented");
-                //TODO implement emit
+              
                 if (t.IsGenericType)
                 {
+                    TryEmitIndexingForIList(fcn.FormalArguments[0], fcn.FormalArguments[1],t, t.GenericTypeArguments[0]);
                     return (true, t.GenericTypeArguments[0]);
                 }
                 else
                 {
-                    return (true, typeof(object));
+                    TryEmitIndexingForIList(fcn.FormalArguments[0], fcn.FormalArguments[1], t,typeof(object));
+                    return (true,typeof(object));
                 }
             }
             //should not get here.
@@ -672,7 +679,20 @@ namespace EmitMSIL
         }
 
        
-        
+        private bool TryEmitIndexingForIList(AssociativeNode array, AssociativeNode index, Type CollectionType, Type ListElementType)
+        {
+            var indexT = DfsTraverse(index);
+            var mi = typeof(IList).GetMethod("get_Item", BindingFlags.Instance|BindingFlags.Public);
+            if (CollectionType.IsGenericType)
+            {
+                mi = CollectionType.GetMethod("get_Item");
+            }
+            EmitOpCode(OpCodes.Callvirt, mi);
+            EmitILComment("INDEX OP END");
+
+            return true;
+        }
+
         private bool TryEmitIndexingForArray(AssociativeNode array, AssociativeNode index,Type arrayElementType)
         {
 

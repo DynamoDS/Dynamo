@@ -75,7 +75,7 @@ c=a[b];";
             Assert.AreEqual(1.1, output.Values.ToList()[2][0]);
         }
         [Test]
-        [Category("Failure")]
+        [Category("Failure")]//fails because we need to emit multiple ldelem opcodes per index.
         public void IndexArrayWithArrayConstants()
         {
             var dscode = @"
@@ -119,17 +119,62 @@ d=a[b][c];";
             Assert.AreEqual(4, output.Values.ToList()[3][0]);
         }
         [Test]
+        [Category("Failure")]//this is failing because range expression is wrapped in an extra level of nesting since it the result
+        //of a function call - 
         public void IndexIntoRange_WithIdent()
         {
             var dscode = @"
 import(""DesignScriptBuiltin.dll"");
-a = 0..10; //a is an ILIST
+a = 0..100..10; //a is an ILIST because of replication?
 b = 5;
 c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(4, output.Values.ToList()[2][5]);
+            Assert.AreEqual(40, output.Values.ToList()[2][0]);
+        }
+        [Test]
+        [Category("Failure")]//to accomplish this either need to generate a function call, or emit conditional il.
+        public void IndexIntoRange_WithNegativeIndex_Ident()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+a = [0,1,2,3,4,5,6,7,8,9,10,11,12];
+b = -5;
+c=a[b];";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(8, output.Values.ToList()[2][0]);
+        }
+        [Test]
+        public void IndexIntoArray_StringArray()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+a = [""1"",""2"",""AAA""];
+b = 2;
+c=a[b];";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual("AAA", output.Values.ToList()[2][0]);
+        }
+        [Test]
+        public void IndexIntoArray_ObjectArray()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""FFITarget.dll"");
+
+a = [FFITarget.DummyPoint2D.ByCoordinates(0,0),FFITarget.DummyPoint2D.ByCoordinates(1,1),FFITarget.DummyPoint2D.ByCoordinates(2,2)];
+b = 2;
+c=a[b];";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            //TODO uncler why this index result has an extra level of nesting in the output dictionary. Replication maybe?
+            Assert.AreEqual(2, (output.Values.ToList()[2][0] as dynamic)[0].X);
         }
         #endregion
     }

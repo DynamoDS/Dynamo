@@ -50,7 +50,7 @@ namespace EmitMSIL
             {
                 result = mi.Invoke(reducedArgs[0], reducedArgs.Skip(1).ToArray());
             }
-
+            //TODO return lists/arrays without extra wrapping in next PR.
             return new[] { result };
 
         }

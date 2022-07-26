@@ -27,7 +27,8 @@ namespace CodeGenILTests
             codeGen.Dispose();
         }
     }
-
+    //TODO these tests all require an extra level of unwrapping in their assert statements because replication logic wraps results.
+    //when this is changed, modify tests.
     public class RangeMicroTests : MicroTests
     {
         #region constants
