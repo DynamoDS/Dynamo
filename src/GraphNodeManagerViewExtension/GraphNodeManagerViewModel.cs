@@ -206,15 +206,15 @@ namespace Dynamo.GraphNodeManager
 
 
         private void InitializeFilters()
-        {   //TODO this should really not use localized text... it should use an enum etc.
+        {   
             FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_EmptyList, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/EmptyList.png" }); 
             FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Error, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Error.png" });
             FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Frozen, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Frozen.png" });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_MissingContent, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/MissingNode.png" });
             FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Function, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Function.png" });
             FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Information, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Info.png" });
             FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsInput, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/IsInput.png" });
             FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsOutput, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/IsOutput.png" });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_MissingContent, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/MissingNode.png" });
             FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Null, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Null.png" });
             FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Warning, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Alert.png" });
             FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_PreviewOff, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Hidden.png" });

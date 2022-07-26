@@ -115,7 +115,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Information.
+        ///   Looks up a localized string similar to Info.
         /// </summary>
         public static string Title_Information {
             get {
