@@ -378,4 +378,40 @@ namespace ProtoCore
             executedAstGuids.Clear();
         }
     }
+
+    internal class MSILRuntimeCore
+    {
+        // The global class table and function tables
+        internal ClassTable ClassTable { get; set; }
+        internal ProcedureTable ProcTable { get; set; }
+        internal ProcedureNode ProcNode { get; set; }
+        internal TypeSystem TypeSystem { get; set; }
+        internal InternalAttributes internalAttributes { get; set; }
+
+        protected MSILRuntimeCore()
+        {
+            ClassTable = new ClassTable();
+            TypeSystem = new TypeSystem();
+            TypeSystem.SetClassTable(ClassTable);
+            ProcNode = null;
+            ProcTable = new ProcedureTable(Constants.kGlobalScope);
+
+            // Initialize internal attributes
+            internalAttributes = new InternalAttributes(ClassTable);
+        }
+
+        private static MSILRuntimeCore instance;
+        internal static MSILRuntimeCore Instance => instance == null ? new MSILRuntimeCore() : instance;
+
+        internal CLRStackValue MakeStackValueArr(CLRStackValue val)
+        {
+            var values = new List<CLRStackValue> { val };
+            return new CLRStackValue(values, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(values.GetType()), val.Rank + 1);
+        }
+
+        internal bool ConvertibleTo(CLRStackValue from, Type to)
+        {
+            return ClassTable.ClassNodes[from.ProtoType.UID]?.ConvertibleTo(to.UID) ?? false;
+        }
+    }
 }

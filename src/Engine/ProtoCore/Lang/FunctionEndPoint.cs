@@ -480,7 +480,7 @@ namespace ProtoCore
             return fixedUpVersions;
         }
 
-        internal static List<CLRStackValue> CoerceParameters(CLRFunctionEndPoint fep, List<CLRStackValue> formalParameters)
+        internal static List<CLRStackValue> CoerceParameters(CLRFunctionEndPoint fep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
         {
             var FormalParams = fep.Parameters;
             List<CLRStackValue> fixedUpVersions = new List<CLRStackValue>();
@@ -489,7 +489,7 @@ namespace ProtoCore
                 CLRStackValue formalParam = formalParameters[i];
                 CLRFunctionEndPoint.ParamInfo targetParam = FormalParams[i];
 
-                CLRStackValue coercedParam = TypeSystem.Coerce(formalParam, targetParam.ProtoInfo);
+                CLRStackValue coercedParam = TypeSystem.Coerce(formalParam, targetParam.ProtoInfo, runtimeCore);
                 fixedUpVersions.Add(coercedParam);
             }
 

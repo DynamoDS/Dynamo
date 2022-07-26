@@ -369,6 +369,16 @@ namespace ProtoCore
             return sv;
         }
 
+        internal static CLRStackValue ClassCoerece(CLRStackValue sv, Type targetType)
+        {
+            //@TODO: Add proper coersion testing here.
+
+            if (targetType.UID == (int)PrimitiveType.Bool)
+                return new CLRStackValue(true, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(bool)));
+
+            return sv;
+        }
+
         public static StackValue Coerce(StackValue sv, int UID, int rank, RuntimeCore runtimeCore)
         {
             Type t = new Type();
@@ -585,14 +595,14 @@ namespace ProtoCore
             }
         }
 
-        internal static CLRStackValue Coerce(CLRStackValue sv, Type targetType)
+        internal static CLRStackValue Coerce(CLRStackValue sv, Type targetType, MSILRuntimeCore runtimeCore)
         {
             //@TODO(Jun): FIX ME - abort coersion for default args
             if (sv.IsDefaultArgument)
                 return sv;
 
             if (!((sv.ProtoType.UID == targetType.UID) ||
-                  ConvertibleTo(sv.ProtoType.UID, targetType.UID) ||
+                  runtimeCore.ConvertibleTo(sv, targetType) ||
                   sv.IsEnumerable))
             {
                 System.Console.WriteLine($"{Runtime.WarningID.ConversionNotPossible}{Resources.kConvertNonConvertibleTypes}");
@@ -640,7 +650,7 @@ namespace ProtoCore
                 List<CLRStackValue> coercedValues = new List<CLRStackValue>();
                 foreach (var item in sv.Value as IList<CLRStackValue>)
                 {
-                    var coercedValue = Coerce(item, newTargetType);
+                    var coercedValue = Coerce(item, newTargetType, runtimeCore);
                     coercedValues.Add(coercedValue);
                 }
 
@@ -662,7 +672,7 @@ namespace ProtoCore
                     newTargetType.rank = 0;
 
                     //Upcast once
-                    return Coerce(sv, newTargetType);
+                    return Coerce(sv, newTargetType, runtimeCore);
                 }
                 else
                 {
@@ -674,16 +684,15 @@ namespace ProtoCore
                     newTargetType.rank = targetType.rank - 1;
 
                     //Upcast once
-                    return Coerce(sv, newTargetType);
+                    return Coerce(sv, newTargetType, runtimeCore);
                 }
             }
 
-            /* TODO: implement this
             if (sv.IsPointer)
             {
-                StackValue ret = ClassCoerece(sv, targetType, runtimeCore);
+                CLRStackValue ret = ClassCoerece(sv, targetType);
                 return ret;
-            }*/
+            }
 
             //If it's anything other than array, just create a new copy
             switch (targetType.UID)
@@ -751,7 +760,7 @@ namespace ProtoCore
                         List<CLRStackValue> coercedValues = new List<CLRStackValue>();
                         foreach (var item in sv.Value as IList<CLRStackValue>)
                         {
-                            var coercedValue = TypeSystem.Coerce(item, targetType);
+                            var coercedValue = TypeSystem.Coerce(item, targetType, runtimeCore);
                             coercedValues.Add(coercedValue);
                         }
 
@@ -764,42 +773,6 @@ namespace ProtoCore
                     else
                         throw new NotImplementedException("Requested coercion not implemented");
             }
-        }
-
-        internal static bool ConvertibleTo(int svType, int targetType)
-        {
-            if (((int)PrimitiveType.Null == svType) || 
-                Instance.classTable.ClassNodes[svType].CoerceTypes.ContainsKey(targetType))
-            {
-                return true;
-            }
-
-            //chars are convertible to string
-
-            else if (svType == (int)PrimitiveType.Char && targetType == (int)PrimitiveType.String)
-            {
-                return true;
-            }
-
-            //user defined type to bool
-            else if (svType >= (int)PrimitiveType.MaxPrimitive && targetType == (int)PrimitiveType.Bool)
-            {
-                return true;
-            }
-
-            //string to boolean
-
-            else if (svType == (int)PrimitiveType.String && targetType == (int)PrimitiveType.Bool)
-            {
-                return true;
-            }
-            //char to boolean
-            else if (svType == (int)PrimitiveType.Char && targetType == (int)PrimitiveType.Bool)
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }

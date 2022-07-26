@@ -2032,7 +2032,7 @@ namespace ProtoCore
             }
         }
 
-        internal static CLRStackValue PerformReturnTypeCoerce(CLRFunctionEndPoint procNode, CLRStackValue ret)
+        internal static CLRStackValue PerformReturnTypeCoerce(CLRFunctionEndPoint procNode, CLRStackValue ret, MSILRuntimeCore runtimeCore)
         {
             Validity.Assert(procNode != null, "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
 
@@ -2047,7 +2047,7 @@ namespace ProtoCore
                 }
                 else
                 {
-                    CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType);
+                    CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
                     return coercedRet;
                 }
             }
@@ -2061,7 +2061,7 @@ namespace ProtoCore
             {
                 if (!ret.IsEnumerable && retType.IsIndexable)
                 {
-                    CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType);
+                    CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
                     return coercedRet;
                 }
                 else
@@ -2072,13 +2072,13 @@ namespace ProtoCore
 
             if (ret.IsEnumerable && retType.IsIndexable)
             {
-                CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType);
+                CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
                 return coercedRet;
             }
 
-            if (TypeSystem.ConvertibleTo(ret.ProtoType.UID, retType.UID))
+            if (runtimeCore.ConvertibleTo(ret, retType))
             {
-                CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType);
+                CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
                 return coercedRet;
             }
             else

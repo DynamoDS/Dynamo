@@ -109,27 +109,29 @@ namespace EmitMSIL
 
             var feps = MarshalMethodsToFEPs(mInfos);
 
+            MSILRuntimeCore runtimeCore = MSILRuntimeCore.Instance;
+
             List<CLRFunctionEndPoint> resolvedFeps;
             List<ReplicationInstruction> replicationInstructions;
-            ComputeFeps(reducedArgs, feps, partialInstructions, out resolvedFeps, out replicationInstructions);
+            ComputeFeps(reducedArgs, feps, partialInstructions, runtimeCore, out resolvedFeps, out replicationInstructions);
 
             var finalFep = SelectFinalFep(resolvedFeps, reducedArgs);
 
             object result;
             if (replicationInstructions.Count == 0)
             {
-                result = ExecWithZeroRI(finalFep, reducedArgs);
+                result = ExecWithZeroRI(finalFep, reducedArgs, runtimeCore);
             }
             else //replicated call
             {
-                result = ExecWithRISlowPath(finalFep, reducedArgs, replicationInstructions);
+                result = ExecWithRISlowPath(finalFep, reducedArgs, replicationInstructions, runtimeCore);
             }
 
             var stackVal = ConvertToStackValue(result);
             if (!stackVal.IsExplicitCall)
             {
                 // An explicit call requires return coercion at the return instruction
-                stackVal = CallSite.PerformReturnTypeCoerce(finalFep, stackVal);
+                stackVal = CallSite.PerformReturnTypeCoerce(finalFep, stackVal, runtimeCore);
             }
 
             return new[] { ConvertFromStackValue(stackVal) };
@@ -248,6 +250,7 @@ namespace EmitMSIL
             List<CLRStackValue> arguments,
             IEnumerable<CLRFunctionEndPoint> funcGroup,
             List<ReplicationInstruction> replicationInstructions,
+            MSILRuntimeCore runtimeCore,
             bool allowArrayPromotion = false)
         {
             Dictionary<CLRFunctionEndPoint, int> candidatesWithDistances =
@@ -280,6 +283,7 @@ namespace EmitMSIL
         private static void ComputeFeps(List<CLRStackValue> arguments,
             IEnumerable<CLRFunctionEndPoint> funcGroup,
             List<ReplicationInstruction> instructions,
+            MSILRuntimeCore runtimeCore,
             out List<CLRFunctionEndPoint> resolvedFeps,
             out List<ReplicationInstruction> replicationInstructions)
         {
@@ -297,7 +301,7 @@ namespace EmitMSIL
 
             #region Case 3: Replication with type conversion
             {
-                CLRFunctionEndPoint compliantTarget = GetCompliantFEP(arguments, funcGroup, instructions);
+                CLRFunctionEndPoint compliantTarget = GetCompliantFEP(arguments, funcGroup, instructions, runtimeCore);
                 if (compliantTarget != null)
                 {
                     resolvedFeps = new List<CLRFunctionEndPoint>() { compliantTarget };
@@ -313,7 +317,7 @@ namespace EmitMSIL
                 {
                     foreach (var replicationOption in replicationTrials)
                     {
-                        CLRFunctionEndPoint compliantTarget = GetCompliantFEP(arguments, funcGroup, replicationOption);
+                        CLRFunctionEndPoint compliantTarget = GetCompliantFEP(arguments, funcGroup, replicationOption, runtimeCore);
                         if (compliantTarget != null)
                         {
                             if (replicationInstructions == null ||
@@ -338,7 +342,7 @@ namespace EmitMSIL
 
                 foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                 {
-                    CLRFunctionEndPoint compliantTarget = GetCompliantFEP(arguments, funcGroup, replicationOption, true);
+                    CLRFunctionEndPoint compliantTarget = GetCompliantFEP(arguments, funcGroup, replicationOption, runtimeCore, true);
                     if (compliantTarget != null)
                     {
                         resolvedFeps = new List<CLRFunctionEndPoint>() { compliantTarget };
@@ -362,10 +366,10 @@ namespace EmitMSIL
             return functionEndPoints.FirstOrDefault();
         }
 
-        private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters)
+        private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
         {
             // TODO: CoerceParameters
-            List<CLRStackValue> coercedParameters = FunctionEndPoint.CoerceParameters(finalFep, formalParameters);
+            List<CLRStackValue> coercedParameters = FunctionEndPoint.CoerceParameters(finalFep, formalParameters, runtimeCore);
 
             List<object> args = new List<object>();
             foreach(var item in coercedParameters)
@@ -402,12 +406,12 @@ namespace EmitMSIL
         }
 
         private static object ExecWithRISlowPath(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters,
-            List<ReplicationInstruction> replicationInstructions)
+            List<ReplicationInstruction> replicationInstructions, MSILRuntimeCore runtimeCore)
         {
             //Recursion base case
             if (replicationInstructions.Count == 0)
             {
-                return ExecWithZeroRI(finalFep, formalParameters);
+                return ExecWithZeroRI(finalFep, formalParameters, runtimeCore);
             }
 
             //Get the replication instruction that this call will deal with
@@ -498,7 +502,7 @@ namespace EmitMSIL
                     }
 
                     List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
-                    retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs);
+                    retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs, runtimeCore);
                 }
 
                 return retSVs;
@@ -534,7 +538,7 @@ namespace EmitMSIL
                 if (supressArray)
                 {
                     List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
-                    return ExecWithRISlowPath(finalFep, newFormalParams, newRIs);
+                    return ExecWithRISlowPath(finalFep, newFormalParams, newRIs, runtimeCore);
                 }
 
                 //Now iterate over each of these options
@@ -544,7 +548,7 @@ namespace EmitMSIL
                     newFormalParams[cartIndex] = array[i];
 
                     List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
-                    retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs);
+                    retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs, runtimeCore);
                 }
 
                 return retSVs;

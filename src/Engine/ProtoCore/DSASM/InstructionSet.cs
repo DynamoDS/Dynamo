@@ -121,6 +121,8 @@ namespace ProtoCore.DSASM
 
         public bool IsDefaultArgument => false;
 
+        public bool IsPointer => false;
+
         public bool IsExplicitCall => false;
 
         public bool IsNull => Value == null;
