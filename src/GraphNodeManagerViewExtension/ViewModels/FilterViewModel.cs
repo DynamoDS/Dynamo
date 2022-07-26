@@ -8,6 +8,8 @@ namespace Dynamo.GraphNodeManager.ViewModels
         
         public string Name { get; internal set; }
 
+        public string FilterImage { get; internal set; }
+
         private bool isFilterOn = false;
         public bool IsFilterOn
         {

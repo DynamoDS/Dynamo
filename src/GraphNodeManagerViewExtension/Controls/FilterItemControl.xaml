@@ -36,7 +36,15 @@
                                              Converter={StaticResource BooleanToColorConverter},
                                              ConverterParameter=Default,
                                              UpdateSourceTrigger=PropertyChanged}">
-                    <ContentPresenter />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding FilterImage}" 
+                               Width="12" 
+                               Height="12" 
+                               SnapsToDevicePixels="True"
+                               VerticalAlignment="Stretch"
+                               Margin="2 0 0 0"/>
+                        <ContentPresenter />
+                    </StackPanel>
                 </Border>
 
                 <ControlTemplate.Triggers>
