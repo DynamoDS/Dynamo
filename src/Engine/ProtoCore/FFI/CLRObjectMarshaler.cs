@@ -132,6 +132,11 @@ namespace ProtoFFI
 
             return CastToObject(dsObject.IntegerValue);
         }
+
+        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            return new CLRStackValue(System.Convert.ToInt64(obj), GetMarshaledType(typeof(long)));
+        }
     }
 
     /// <summary>
@@ -167,6 +172,11 @@ namespace ProtoFFI
 
             return CastToDouble(dsObject.DoubleValue);
         }
+
+        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>
@@ -186,6 +196,11 @@ namespace ProtoFFI
         {
             return dsObject.BooleanValue;
         }
+
+        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>
@@ -204,6 +219,11 @@ namespace ProtoFFI
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
             return Convert.ToChar(dsObject.CharValue);
+        }
+
+        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -432,6 +452,11 @@ namespace ProtoFFI
             return arrList;
 
         }
+
+        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     class DictionaryMarshaler : PrimitiveMarshaler
@@ -580,6 +605,11 @@ namespace ProtoFFI
 
             return primitiveMarshaler.Marshal(obj, context, dsi, GetApproxDSType(obj));
         }
+
+        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>
@@ -603,6 +633,11 @@ namespace ProtoFFI
             if (dsString == null)
                 return null;
             return dsString.Value;
+        }
+
+        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -677,6 +712,33 @@ namespace ProtoFFI
             return marshaller;
         }
 
+        internal static CLRObjectMarshaler GetInstance(ProtoCore.MSILRuntimeCore core)
+        {
+            if (msilObjectMarshaler == null)
+            {
+                IDisposable[] disposables = null;
+                lock (syncroot)
+                {
+                    msilObjectMarshaler = new CLRObjectMarshaler(core);
+
+                    disposables = mPendingDisposables.ToArray();
+                    mPendingDisposables.Clear();
+                }
+                if (null != disposables)
+                {
+                    //Dispose pending disposals
+                    foreach (IDisposable obj in disposables)
+                    {
+                        if (null != obj)
+                        {
+                            obj.Dispose();
+                        }
+                    }
+                }
+            }
+            return msilObjectMarshaler;
+        }
+
         /// <summary>
         /// Marshals the given CLR object to expectedDSType StackValue
         /// </summary>
@@ -712,6 +774,37 @@ namespace ProtoFFI
             //6. Seems like a new object create a new DS object and bind it.
             return CreateDSObject(obj, context, dsi);
         }
+
+        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            ProtoCore.Type expectedDSType = CLRObjectMarshaler.GetProtoCoreType(type);
+            //1. Null object is marshaled as null
+            if (obj == null)
+                return CLRStackValue.Null;
+
+            //2. Get appropriate marshaler for the expectedDSType and objType
+            var marshaler = GetMarshalerForDsType(expectedDSType, obj.GetType());
+
+            //3. Got a marshaler, now marshal it.
+            if (marshaler != null)
+                return marshaler.Marshal(obj, type, runtimeCore);
+
+            //4. Didn't get the marshaler, could be a pointer or var type, check from map
+            // TODO: figure this out
+            //CLRStackValue retVal;
+            //if (CLRObjectMap.TryGetValue(obj, out retVal))
+            //    return retVal;
+
+            //5. If it is a StackValue, simply return it.
+            if (obj is CLRStackValue)
+            {
+                return (CLRStackValue)obj;
+            }
+
+            //6. Seems like a new object create a new DS object and bind it.
+            return CreateCLRDSObject(obj, runtimeCore);
+        }
+
 
         /// <summary>
         /// 
@@ -1133,6 +1226,31 @@ namespace ProtoFFI
             return retval;
         }
 
+        private CLRStackValue CreateCLRDSObject(object obj, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            //We are here, because we want to create DS object of user defined type.
+            Type objType = GetPublicType(obj.GetType());
+
+            if (mCachedObjType != objType)
+            {
+                mCachedObjType = objType;
+
+                var classTable = runtimeCore.ClassTable;
+                mCachedType = classTable.IndexOf(GetTypeName(objType));
+
+                //Recursively get the base class type if available.
+                while (mCachedType == -1 && objType != null)
+                {
+                    objType = objType.BaseType;
+                    if (null != objType)
+                        mCachedType = classTable.IndexOf(GetTypeName(objType));
+                }
+            }
+
+            CLRStackValue value = new CLRStackValue(obj, GetProtoCoreType(mCachedObjType));
+            return value;
+        }
+
         /// <summary>
         /// Initializes primary properties on the DS object for given FFI
         /// object.
@@ -1338,6 +1456,10 @@ namespace ProtoFFI
             runtimeCore.Dispose += core_Dispose;
         }
 
+        private CLRObjectMarshaler(ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+        }
+
         /// <summary>
         /// Dispose event handler.
         /// </summary>
@@ -1370,6 +1492,7 @@ namespace ProtoFFI
         private readonly Dictionary<StackValue, Object> DSObjectMap = new Dictionary<StackValue, object>(new PointerValueComparer());
         private readonly Dictionary<Object, StackValue> CLRObjectMap = new Dictionary<object, StackValue>(new ReferenceEqualityComparer());
         private static readonly Dictionary<ProtoCore.RuntimeCore, CLRObjectMarshaler> mObjectMarshlers = new Dictionary<ProtoCore.RuntimeCore, CLRObjectMarshaler>();
+        private static CLRObjectMarshaler msilObjectMarshaler;
         private static List<IDisposable> mPendingDisposables = new List<IDisposable>();
         private static readonly Object syncroot = new Object();
         #endregion

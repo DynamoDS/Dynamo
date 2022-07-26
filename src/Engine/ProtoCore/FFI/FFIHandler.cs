@@ -55,6 +55,11 @@ namespace ProtoFFI
         /// <param name="type">Type of DS Object expected</param>
         /// <returns>Marshaled object as Operand</returns>
         public abstract StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type);
+        
+        internal virtual CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// UnMarshales a given DS object to FFI object of given System.Type
@@ -65,6 +70,11 @@ namespace ProtoFFI
         /// <param name="type">Type of FFI object expected</param>
         /// <returns>Unmarshaled FFI object</returns>
         public abstract object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type type);
+
+        internal virtual object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Returns the marshaled Type of DS object for a given FFI object type

@@ -14,8 +14,10 @@ namespace EmitMSIL
 {
     public class Replication
     {
-        internal static CLRStackValue MarshalStackValue(object obj)
+        internal static CLRStackValue MarshalStackValue(object obj, MSILRuntimeCore runtimeCore)
         {
+            var marshaller = ProtoFFI.CLRObjectMarshaler.GetInstance(runtimeCore);
+
             if (obj == null) return CLRStackValue.Null;
 
             if (obj is IEnumerable arr)
@@ -24,17 +26,19 @@ namespace EmitMSIL
                 int maxRank = 0;
                 foreach (object item in arr)
                 {
-                    CLRStackValue mObj = MarshalStackValue(item);
+                    CLRStackValue mObj = MarshalStackValue(item, runtimeCore);
                     maxRank = mObj.Rank > maxRank ? mObj.Rank : maxRank;
-
                     list.Add(mObj);
                 }
-                return new CLRStackValue(list, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(arr.GetType()), maxRank + 1);
+                CLRStackValue dsList = marshaller.Marshal(list, list.GetType(), runtimeCore);
+                dsList.Rank += 1;//Increment rank
+                return dsList;
             }
-            return new CLRStackValue(obj, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(obj.GetType()));
+            CLRStackValue dsObj = marshaller.Marshal(obj, obj.GetType(), runtimeCore);
+            return dsObj;
         }
 
-        internal static object UnmarshalStackValue(CLRStackValue sv)
+        internal static object UnmarshalStackValue(CLRStackValue sv, MSILRuntimeCore runtimeCore)
         {
             if (sv.IsNull) return null;
 
@@ -43,7 +47,7 @@ namespace EmitMSIL
                 var list = new List<object>();
                 foreach (var item in sv.Value as IEnumerable<CLRStackValue>)
                 {
-                    var mObj = UnmarshalStackValue(item);
+                    var mObj = UnmarshalStackValue(item, runtimeCore);
                     list.Add(mObj);
                 }
                 return list;
@@ -54,13 +58,13 @@ namespace EmitMSIL
             }
         }
 
-        internal static List<CLRStackValue> MarshalStackValues(IList args)
+        internal static List<CLRStackValue> MarshalStackValues(IList args, MSILRuntimeCore runtimeCore)
         {
             List<CLRStackValue> stackValues = new List<CLRStackValue>();
             foreach (var arg in args)
             {
-                CLRStackValue mArg = MarshalStackValue(arg);
-                stackValues.Add(mArg);
+                CLRStackValue dsArg = MarshalStackValue(arg, runtimeCore);
+                stackValues.Add(dsArg);
             }
             return stackValues;
         }
@@ -92,8 +96,9 @@ namespace EmitMSIL
         /// <returns></returns>
         public static IList ReplicationLogic(IEnumerable<MethodBase> mInfos, IList args, string[][] replicationAttrs)
         {
-            // TODO: implement proper Marshaler
-            var stackValues = MarshalStackValues(args);
+            MSILRuntimeCore runtimeCore = MSILRuntimeCore.Instance;
+
+            var stackValues = MarshalStackValues(args, runtimeCore);
 
             var reducedArgs = ReduceArgs(stackValues);
 
@@ -109,8 +114,6 @@ namespace EmitMSIL
             var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
             var feps = ConvertMethodsToFEPs(mInfos);
-
-            MSILRuntimeCore runtimeCore = MSILRuntimeCore.Instance;
 
             List<CLRFunctionEndPoint> resolvedFeps;
             List<ReplicationInstruction> replicationInstructions;
@@ -129,15 +132,7 @@ namespace EmitMSIL
             }
 
             // TODO: implement proper Marshaler
-            var stackVal = MarshalStackValue(result);
-            if (!stackVal.IsExplicitCall)
-            {
-                // An explicit call requires return coercion at the return instruction
-                stackVal = CallSite.PerformReturnTypeCoerce(finalFep, stackVal, runtimeCore);
-            }
-
-            // TODO: implement proper Marshaler
-            return new[] { UnmarshalStackValue(stackVal) };
+            return new[] { result };
         }
 
         private static List<CLRStackValue> ReduceArgs(List<CLRStackValue> args)
@@ -376,7 +371,7 @@ namespace EmitMSIL
             List<object> args = new List<object>();
             foreach(var item in coercedParameters)
             {
-                var arg = MarshalStackValue(item);
+                var arg = UnmarshalStackValue(item, runtimeCore);
                 args.Add(arg);
             }
             
@@ -391,7 +386,16 @@ namespace EmitMSIL
                 result = finalFep.method.Invoke(args[0], args.Skip(1).ToArray());
             }
 
-            return result;
+            var marshaller = ProtoFFI.CLRObjectMarshaler.GetInstance(runtimeCore);
+            CLRStackValue dsRetValue = marshaller.Marshal(result, finalFep.ReturnType, runtimeCore);
+
+            if (!dsRetValue.IsExplicitCall)
+            {
+                // An explicit call requires return coercion at the return instruction
+                dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep, dsRetValue, runtimeCore);
+            }
+
+            return dsRetValue;
         }
 
         private static IEnumerable<CLRStackValue> getSubParameters(CLRStackValue o)
