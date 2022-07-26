@@ -635,7 +635,7 @@ namespace EmitMSIL
                 throw new NotImplementedException("unknown collection type - should generate GetValueAtIndex function call.");
                 return (false,null);
             }
-            else if(t is IDictionary)
+            else if(t == typeof(IDictionary))
             {
                 throw new NotImplementedException("emit direct dictionary indexing not implemented");
                 //TODO implement emit
@@ -653,7 +653,7 @@ namespace EmitMSIL
                 TryEmitIndexingForArray(fcn.FormalArguments[0], fcn.FormalArguments[1], t.GetElementType());
                 return (true,t.GetElementType());
             }
-            else if (t is IList)
+            else if (t == typeof(IList))
             {
                 throw new NotImplementedException("emit ILIST direct indexing not implemented");
                 //TODO implement emit
@@ -683,9 +683,9 @@ namespace EmitMSIL
             var indexT = DfsTraverse(index);
             //TODO if indexT is a collection then we need to generate multiple ldelem calls -
             //we could also give up and let replication handle this.
-
             //emit the call to do the lookup.
-            EmitOpCode(OpCodes.Ldelem_I8);
+
+            EmitOpCode(OpCodes.Ldelem,arrayElementType);
             return true;
         }
 
