@@ -14,7 +14,7 @@ namespace Dynamo.GraphNodeManager.Utilities
         /// Exports a collection of objects to CSV file
         /// </summary>
         /// <param name="exportObject"></param>
-        public static void ExportToCSV(object exportObject)
+        public static void ExportToCSV(object exportObject, string promptName)
         {
             var filePath = string.Empty;
 
@@ -22,11 +22,12 @@ namespace Dynamo.GraphNodeManager.Utilities
             {
                 Stream myStream;
                 
-                saveFileDialog.Filter = "csv files (*.csv)|*.json|All files (*.*)|*.*";
+                saveFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 2;
                 saveFileDialog.Title = "Save CSV file";
                 saveFileDialog.DefaultExt = "csv";
                 saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.FileName = promptName;
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -44,7 +45,7 @@ namespace Dynamo.GraphNodeManager.Utilities
         /// Export a collection of objects to JSON file
         /// </summary>
         /// <param name="exportObject"></param>
-        public static void ExportToJson(object exportObject)
+        public static void ExportToJson(object exportObject, string promptName)
         {
             var filePath = string.Empty;
 
@@ -57,6 +58,7 @@ namespace Dynamo.GraphNodeManager.Utilities
                 saveFileDialog.Title = "Save JSON file";
                 saveFileDialog.DefaultExt = "json";
                 saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.FileName = promptName;
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {

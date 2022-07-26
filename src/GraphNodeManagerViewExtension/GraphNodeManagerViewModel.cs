@@ -325,14 +325,15 @@ namespace Dynamo.GraphNodeManager
         {
             if (parameter == null) return;
             string type = parameter.ToString();
+            string promptName =  System.IO.Path.GetFileNameWithoutExtension(currentWorkspace.FileName);
 
             switch (type)
             {
                 case "CSV":
-                    Utilities.Utilities.ExportToCSV(Nodes.ToArray());
+                    Utilities.Utilities.ExportToCSV(Nodes.ToArray(), promptName);
                     break;
                 case "JSON":
-                    Utilities.Utilities.ExportToJson(Nodes.ToArray());
+                    Utilities.Utilities.ExportToJson(Nodes.ToArray(), promptName);
                     break;
             }
         }
