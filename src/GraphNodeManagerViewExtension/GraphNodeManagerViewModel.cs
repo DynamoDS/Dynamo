@@ -327,15 +327,33 @@ namespace Dynamo.GraphNodeManager
             string type = parameter.ToString();
             string promptName =  System.IO.Path.GetFileNameWithoutExtension(currentWorkspace.FileName);
 
+            var filteredNodes = FilteredNodesArray();
+
             switch (type)
             {
                 case "CSV":
-                    Utilities.Utilities.ExportToCSV(Nodes.ToArray(), promptName);
+                    Utilities.Utilities.ExportToCSV(filteredNodes, promptName);
                     break;
                 case "JSON":
-                    Utilities.Utilities.ExportToJson(Nodes.ToArray(), promptName);
+                    Utilities.Utilities.ExportToJson(filteredNodes, promptName);
                     break;
             }
+        }
+
+        /// <summary>
+        /// Helper method to return an Array of the currently active Nodes
+        /// </summary>
+        /// <returns></returns>
+        private GridNodeViewModel [] FilteredNodesArray()
+        {
+            var filteredNodes = new List<GridNodeViewModel>();
+
+            foreach (var item in GraphNodeManagerView.NodesInfoDataGrid.ItemsSource)
+            {
+                filteredNodes.Add((item as GridNodeViewModel));
+            }
+
+            return filteredNodes.ToArray();
         }
 
         /// <summary>
