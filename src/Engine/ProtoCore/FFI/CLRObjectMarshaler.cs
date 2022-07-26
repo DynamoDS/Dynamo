@@ -175,7 +175,7 @@ namespace ProtoFFI
 
         internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
         {
-            throw new NotImplementedException();
+            return new CLRStackValue(System.Convert.ToDouble(obj), GetMarshaledType(typeof(float)));
         }
     }
 
@@ -199,7 +199,7 @@ namespace ProtoFFI
 
         internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
         {
-            throw new NotImplementedException();
+            return new CLRStackValue(System.Convert.ToBoolean((bool)obj), GetMarshaledType(typeof(bool)));
         }
     }
 
