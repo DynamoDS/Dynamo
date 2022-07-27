@@ -5415,11 +5415,25 @@ namespace ProtoAssociative
 
                         if (bnode.IsInputExpression)
                         {
+                            // Emit the following instructions:
+                            // <-- mark this pc as graphnode's start pc if pushed value is a symbol (non-primitive value)
+                            // pop lx
+                            // <-- mark this pc as graphnode's start pc if pushed value is a primitive
+                            // push lx
+                            //var isRhsPrimitive = CoreUtils.IsPrimitiveASTNode(bnode.RightNode);
+                            //if (!isRhsPrimitive)
+                            //{
+                            //    graphNode.updateBlock.updateRegisterStartPC = pc;
+                            //}
+
                             StackValue regLX = StackValue.BuildRegister(Registers.LX);
                             EmitInstrConsole(kw.pop, kw.regLX);
                             EmitPopUpdateInstruction(regLX, bnode.OriginalAstID);
 
-                            graphNode.updateBlock.updateRegisterStartPC = pc;
+                            //if (isRhsPrimitive)
+                            {
+                                graphNode.updateBlock.updateRegisterStartPC = pc;
+                            }
 
                             EmitInstrConsole(kw.push, kw.regLX);
                             EmitPushUpdateInstruction(regLX, bnode.OriginalAstID);

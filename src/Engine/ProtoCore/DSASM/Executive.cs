@@ -81,10 +81,10 @@ namespace ProtoCore.DSASM
             else updateRegisters.Add(astID, sv);
         }
 
-        internal bool DoesUpdateRegisterMatchAstID(long astID)
-        {
-            return updateRegisters.ContainsKey(astID);
-        }
+        //internal bool DoesUpdateRegisterMatchAstID(long astID)
+        //{
+        //    return updateRegisters.ContainsKey(astID);
+        //}
 
         internal void DeleteUpdateRegister(long astID)
         {
@@ -2462,14 +2462,14 @@ namespace ProtoCore.DSASM
 
                     RecordExecutedGraphNode();
 
-                    if (runtimeCore.Options.IsDeltaExecution && IsGlobalScope())
-                    {
-                        if (Properties.executingGraphNode.RequiresSettingUpdateRegister)
-                        {
-                            SetAssociativeUpdateRegister(Properties.executingGraphNode.OriginalAstID, opVal);
-                            Properties.executingGraphNode.RequiresSettingUpdateRegister = false;
-                        }
-                    }
+                    //if (runtimeCore.Options.IsDeltaExecution && IsGlobalScope())
+                    //{
+                    //    if (Properties.executingGraphNode.RequiresUpdatingRegisters)
+                    //    {
+                    //        SetAssociativeUpdateRegister(Properties.executingGraphNode.OriginalAstID, opVal);
+                    //        Properties.executingGraphNode.RequiresUpdatingRegisters = false;
+                    //    }
+                    //}
                     break;
 
                 case AddressType.StaticMemVarIndex:

@@ -777,13 +777,13 @@ namespace ProtoCore.AssociativeEngine
                         // Check if the first dirty graphnode matches an input node participating in an update cycle,
                         // i.e. whose value is already present in the update-register dictionary.
                         // Then mark it for updating its new stackvalue result in the update-register dictionary.
-                        if(bNode.IsInputExpression && !CoreUtils.IsPrimitiveASTNode(bNode.RightNode))
-                        {
-                            if(core.ExecutionInstance.CurrentDSASMExec.DoesUpdateRegisterMatchAstID(firstDirtyNode.OriginalAstID))
-                            {
-                                firstDirtyNode.RequiresSettingUpdateRegister = true;
-                            }
-                        }
+                        //if(bNode.IsInputExpression && !CoreUtils.IsPrimitiveASTNode(bNode.RightNode))
+                        //{
+                        //    if(core.ExecutionInstance.CurrentDSASMExec.DoesUpdateRegisterMatchAstID(firstDirtyNode.OriginalAstID))
+                        //    {
+                        //        firstDirtyNode.RequiresUpdatingRegisters = true;
+                        //    }
+                        //}
                         break;
                     }
                 }
@@ -933,7 +933,7 @@ namespace ProtoCore.AssociativeGraph
 
         public bool IsLastNodeInSSA { get; set; }
 
-        internal bool RequiresSettingUpdateRegister = false;
+        //internal bool RequiresUpdatingRegisters = false;
 
         public GraphNode()
         {
