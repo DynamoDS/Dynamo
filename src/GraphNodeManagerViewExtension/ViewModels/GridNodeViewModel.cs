@@ -504,30 +504,30 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             switch (propertyName)
             {
-                case "Name":
+                case nameof(nodeModel.Name):
                     RaisePropertyChanged(nameof(Name));
                     RaisePropertyChanged(nameof(IsRenamed));
                     break;
-                case "IsVisible":
+                case nameof(nodeModel.IsVisible):
                     RaisePropertyChanged(nameof(StatusIsHidden));
                     break;
-                case "IsSetAsInput":
+                case nameof(nodeModel.IsSetAsInput):
                     RaisePropertyChanged(nameof(StateIsInput));
                     break;
-                case "IsSetAsOutput":
+                case nameof(nodeModel.IsSetAsOutput):
                     RaisePropertyChanged(nameof(StateIsOutput));
                     break;
-                case "IsInErrorState":
+                case nameof(nodeModel.IsInErrorState):
                     RaisePropertyChanged(nameof(IssuesHasError));
                     break;
-                case "IsFrozen":
+                case nameof(nodeModel.IsFrozen):
                     RaisePropertyChanged(nameof(StatusIsFrozen));
                     UpdateDownstreamNodes(nodeModel);
                     break;
-                case "State":
+                case nameof(nodeModel.State):
                     RaisePropertyChanged(nameof(State));
                     break;
-                case "DismissedAlertsCount":
+                case nameof(nodeModel.DismissedAlertsCount):
                     RaisePropertyChanged(nameof(DismissedAlertsCount));
                     break;
             }
