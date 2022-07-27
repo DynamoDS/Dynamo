@@ -5169,6 +5169,7 @@ namespace ProtoAssociative
             // bnode.RightNode.endCol = bnode.endCol;
 
             // Traverse the entire RHS expression
+            var pcBeforeEmittingRhs = pc;
             DfsTraverse(bnode.RightNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, bnode);
             subPass = ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier;
 
@@ -5416,21 +5417,21 @@ namespace ProtoAssociative
                         if (bnode.IsInputExpression)
                         {
                             // Emit the following instructions:
-                            // <-- mark this pc as graphnode's start pc if pushed value is a symbol (non-primitive value)
+                            // <-- if pushed value is a symbol (non-primitive value), mark the pc before the RHS is emitted at this point as the graphnode's start pc 
                             // pop lx
                             // <-- mark this pc as graphnode's start pc if pushed value is a primitive
                             // push lx
-                            //var isRhsPrimitive = CoreUtils.IsPrimitiveASTNode(bnode.RightNode);
-                            //if (!isRhsPrimitive)
-                            //{
-                            //    graphNode.updateBlock.updateRegisterStartPC = pc;
-                            //}
+                            var isRhsPrimitive = CoreUtils.IsPrimitiveASTNode(bnode.RightNode);
+                            if (!isRhsPrimitive)
+                            {
+                                graphNode.updateBlock.updateRegisterStartPC = pcBeforeEmittingRhs;
+                            }
 
                             StackValue regLX = StackValue.BuildRegister(Registers.LX);
                             EmitInstrConsole(kw.pop, kw.regLX);
                             EmitPopUpdateInstruction(regLX, bnode.OriginalAstID);
 
-                            //if (isRhsPrimitive)
+                            if (isRhsPrimitive)
                             {
                                 graphNode.updateBlock.updateRegisterStartPC = pc;
                             }

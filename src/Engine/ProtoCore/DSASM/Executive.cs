@@ -2462,14 +2462,6 @@ namespace ProtoCore.DSASM
 
                     RecordExecutedGraphNode();
 
-                    //if (runtimeCore.Options.IsDeltaExecution && IsGlobalScope())
-                    //{
-                    //    if (Properties.executingGraphNode.RequiresUpdatingRegisters)
-                    //    {
-                    //        SetAssociativeUpdateRegister(Properties.executingGraphNode.OriginalAstID, opVal);
-                    //        Properties.executingGraphNode.RequiresUpdatingRegisters = false;
-                    //    }
-                    //}
                     break;
 
                 case AddressType.StaticMemVarIndex:

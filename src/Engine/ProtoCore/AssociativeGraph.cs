@@ -773,23 +773,14 @@ namespace ProtoCore.AssociativeEngine
                         {
                             gnode.updateBlock.startpc = gnode.updateBlock.updateRegisterStartPC;
                         }
-                        firstDirtyNode = gnode;
-                        // Check if the first dirty graphnode matches an input node participating in an update cycle,
-                        // i.e. whose value is already present in the update-register dictionary.
-                        // Then mark it for updating its new stackvalue result in the update-register dictionary.
-                        //if(bNode.IsInputExpression && !CoreUtils.IsPrimitiveASTNode(bNode.RightNode))
-                        //{
-                        //    if(core.ExecutionInstance.CurrentDSASMExec.DoesUpdateRegisterMatchAstID(firstDirtyNode.OriginalAstID))
-                        //    {
-                        //        firstDirtyNode.RequiresUpdatingRegisters = true;
-                        //    }
-                        //}
-                        break;
+                        if (firstDirtyNode == null)
+                        {
+                            firstDirtyNode = gnode;
+                        }
                     }
                 }
-                if (firstDirtyNode != null) return firstDirtyNode;
             }
-            return null;
+            return firstDirtyNode;
         }
 
         public static void MarkGraphNodesDirtyFromFunctionRedef(RuntimeCore runtimeCore, List<AST.AssociativeAST.AssociativeNode> fnodeList)
@@ -932,8 +923,6 @@ namespace ProtoCore.AssociativeGraph
         public bool isActive { get; set; }
 
         public bool IsLastNodeInSSA { get; set; }
-
-        //internal bool RequiresUpdatingRegisters = false;
 
         public GraphNode()
         {
