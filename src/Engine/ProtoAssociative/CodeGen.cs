@@ -5169,7 +5169,6 @@ namespace ProtoAssociative
             // bnode.RightNode.endCol = bnode.endCol;
 
             // Traverse the entire RHS expression
-            var pcBeforeEmittingRhs = pc;
             DfsTraverse(bnode.RightNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, bnode);
             subPass = ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier;
 
@@ -5416,21 +5415,20 @@ namespace ProtoAssociative
 
                         if (bnode.IsInputExpression)
                         {
+                            
                             // Emit the following instructions:
-                            // <-- if pushed value is a symbol (non-primitive value), mark the pc before the RHS is emitted at this point as the graphnode's start pc 
                             // pop lx
                             // <-- mark this pc as graphnode's start pc if pushed value is a primitive
                             // push lx
-                            //var isRhsPrimitive = CoreUtils.IsPrimitiveASTNode(bnode.RightNode);
-                            //if (!isRhsPrimitive)
-                            //{
-                            //    graphNode.updateBlock.updateRegisterStartPC = pcBeforeEmittingRhs;
-                            //}
 
                             StackValue regLX = StackValue.BuildRegister(Registers.LX);
                             EmitInstrConsole(kw.pop, kw.regLX);
                             EmitPopUpdateInstruction(regLX, bnode.OriginalAstID);
 
+                            // In the case of the RHS being a primitive, we can skip executing instructions 
+                            // to push the updated value and pop it to the register as the register is directly updated.
+                            // In the case of a non-primitive, we let these instructions execute, so that the 
+                            // updated result from the VM can be pushed and popped to update the register.
                             if (CoreUtils.IsPrimitiveASTNode(bnode.RightNode))
                             {
                                 graphNode.updateBlock.updateRegisterStartPC = pc;
