@@ -94,13 +94,9 @@
                                 Margin="2 0 0 0"
                                 Opacity="0.5"
                                 VerticalAlignment="Center"
-                                Text="{Binding SearchBoxPrompt}">
-                            <TextBlock.Visibility>
-                                <MultiBinding Converter="{StaticResource MultiBooleanToVisibilityConverter}">
-                                    <Binding Path="SearchText"></Binding>
-                                    <Binding ElementName="SearchTextBox" Path="IsFocused"></Binding>
-                                </MultiBinding>
-                            </TextBlock.Visibility>
+                                Visibility="Visible"
+                                IsHitTestVisible="False"
+                                Text="{x:Static p:Resources.SearchBoxWatermarkText}">
                         </TextBlock>
 
                         <!-- Search Box -->
@@ -112,6 +108,7 @@
                             Cursor="IBeam"
                             HorizontalAlignment="Stretch"
                             TextChanged="SearchTextBox_OnTextChanged"
+                            IsKeyboardFocusWithinChanged="SearchTextBox_OnKeyboardFocusWithinChanged"
                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                         
                         <!-- Clear Search -->

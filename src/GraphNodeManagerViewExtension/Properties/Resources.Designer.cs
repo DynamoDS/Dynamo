@@ -79,6 +79,15 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string SearchBoxWatermarkText {
+            get {
+                return ResourceManager.GetString("SearchBoxWatermarkText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty list.
         /// </summary>
         public static string Title_EmptyList {

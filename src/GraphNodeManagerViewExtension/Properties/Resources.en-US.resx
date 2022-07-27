@@ -123,6 +123,9 @@
   <data name="MenuItemText" xml:space="preserve">
     <value>Show _Graph Node Manager</value>
   </data>
+  <data name="SearchBoxWatermarkText" xml:space="preserve">
+    <value>Search</value>
+  </data>
   <data name="Title_EmptyList" xml:space="preserve">
     <value>Empty list</value>
   </data>
