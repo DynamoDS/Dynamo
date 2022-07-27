@@ -5421,17 +5421,17 @@ namespace ProtoAssociative
                             // pop lx
                             // <-- mark this pc as graphnode's start pc if pushed value is a primitive
                             // push lx
-                            var isRhsPrimitive = CoreUtils.IsPrimitiveASTNode(bnode.RightNode);
-                            if (!isRhsPrimitive)
-                            {
-                                graphNode.updateBlock.updateRegisterStartPC = pcBeforeEmittingRhs;
-                            }
+                            //var isRhsPrimitive = CoreUtils.IsPrimitiveASTNode(bnode.RightNode);
+                            //if (!isRhsPrimitive)
+                            //{
+                            //    graphNode.updateBlock.updateRegisterStartPC = pcBeforeEmittingRhs;
+                            //}
 
                             StackValue regLX = StackValue.BuildRegister(Registers.LX);
                             EmitInstrConsole(kw.pop, kw.regLX);
                             EmitPopUpdateInstruction(regLX, bnode.OriginalAstID);
 
-                            if (isRhsPrimitive)
+                            if (CoreUtils.IsPrimitiveASTNode(bnode.RightNode))
                             {
                                 graphNode.updateBlock.updateRegisterStartPC = pc;
                             }
