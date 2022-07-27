@@ -24,7 +24,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
     /// </summary>
     public class GridNodeViewModel : NotificationObject
     {
-        #region Private Properties
+        #region Private Fields
         private string name = string.Empty;
         private bool stateIsInput = false;
         private bool stateIsOutput = false;
@@ -51,7 +51,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
 
         #endregion
 
-        #region Public Fields
+        #region Public Properties
         /// <summary>
         /// Node Name
         /// </summary>
