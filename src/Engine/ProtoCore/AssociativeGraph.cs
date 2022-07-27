@@ -755,7 +755,6 @@ namespace ProtoCore.AssociativeEngine
             }
 
             AssociativeGraph.GraphNode firstDirtyNode = null;
-            
             foreach (var node in nodeList)
             {
                 var bNode = node as AST.AssociativeAST.BinaryExpressionNode;

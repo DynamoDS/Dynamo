@@ -81,11 +81,6 @@ namespace ProtoCore.DSASM
             else updateRegisters.Add(astID, sv);
         }
 
-        //internal bool DoesUpdateRegisterMatchAstID(long astID)
-        //{
-        //    return updateRegisters.ContainsKey(astID);
-        //}
-
         internal void DeleteUpdateRegister(long astID)
         {
             updateRegisters.Remove(astID);
@@ -2461,7 +2456,6 @@ namespace ProtoCore.DSASM
                     }
 
                     RecordExecutedGraphNode();
-
                     break;
 
                 case AddressType.StaticMemVarIndex:
@@ -5162,7 +5156,6 @@ namespace ProtoCore.DSASM
             if (runtimeCore.Options.IsDeltaExecution && IsGlobalScope())
             {
                 runtimeCore.RecordExtecutedGraphNode(Properties.executingGraphNode);
-                
             }
         }
 
