@@ -324,8 +324,8 @@ namespace Dynamo.GraphNodeManager
         internal void ExportGraph(object parameter)
         {
             if (parameter == null) return;
-            string type = parameter.ToString();
-            string promptName =  System.IO.Path.GetFileNameWithoutExtension(currentWorkspace.FileName);
+            var type = parameter.ToString();
+            var promptName =  System.IO.Path.GetFileNameWithoutExtension(currentWorkspace.FileName);
 
             var filteredNodes = FilteredNodesArray();
 
@@ -346,14 +346,7 @@ namespace Dynamo.GraphNodeManager
         /// <returns></returns>
         private GridNodeViewModel [] FilteredNodesArray()
         {
-            var filteredNodes = new List<GridNodeViewModel>();
-
-            foreach (var item in GraphNodeManagerView.NodesInfoDataGrid.ItemsSource)
-            {
-                filteredNodes.Add((item as GridNodeViewModel));
-            }
-
-            return filteredNodes.ToArray();
+            return GraphNodeManagerView.NodesInfoDataGrid.ItemsSource.Cast<GridNodeViewModel>().ToArray();
         }
 
         /// <summary>
