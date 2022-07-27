@@ -214,11 +214,20 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export .
+        ///   Looks up a localized string similar to Export node data.
         /// </summary>
         public static string ToolTip_ExportToExcel {
             get {
                 return ResourceManager.GetString("ToolTip_ExportToExcel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export filtered node data.
+        /// </summary>
+        public static string ToolTip_ExportToExcelFiltered {
+            get {
+                return ResourceManager.GetString("ToolTip_ExportToExcelFiltered", resourceCulture);
             }
         }
     }

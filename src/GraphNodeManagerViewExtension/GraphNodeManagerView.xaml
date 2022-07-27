@@ -23,6 +23,7 @@
             <converters:StateToColorBrushConverter x:Key="StateToColorBrushConverter"/>
             <converters:StateToImageSourceConverter x:Key="StateToImageSourceConverter"/>
             <converters:StateToTextConverter x:Key="StateToTextConverter"/>
+            <converters:BooleanToToolTipTextConverter  x:Key="BooleanToToolTipTextConverter"></converters:BooleanToToolTipTextConverter>
             <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource GenericToolTipLight}"></Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -83,7 +84,7 @@
                             <TextBlock MaxWidth="320"
                                        Padding="5"
                                        Foreground="Black" FontSize="12"
-                                       Text="{x:Static p:Resources.ToolTip_ExportToExcel}"
+                                       Text="{Binding IsAnyFilterOn, Converter={StaticResource BooleanToToolTipTextConverter}, UpdateSourceTrigger=PropertyChanged}"
                                        TextWrapping="Wrap" />
                         </Grid>
                     </controls1:DynamoToolTip>
@@ -159,11 +160,14 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <DockPanel HorizontalAlignment="Stretch">
+                                <!-- Node Name -->
                                 <TextBlock 
                                     Text="{Binding Name}"
                                     FontWeight="Light"
                                     Foreground="#F5F5F5"
+                                    Margin="3 0 0 0"
                                     DockPanel.Dock="Left"></TextBlock>
+                                <!-- Blue Dot signifying Renamed Nodes -->
                                 <Grid 
                                     DockPanel.Dock="Right">
                                     <Ellipse Name="nodeRenamedBlueDot"

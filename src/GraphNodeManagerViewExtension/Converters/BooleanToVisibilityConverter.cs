@@ -242,4 +242,23 @@ namespace Dynamo.GraphNodeManager.Converters
             throw new NotImplementedException();
         }
     }
+
+    internal class BooleanToToolTipTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return Resources.ToolTip_ExportToExcelFiltered;    
+            }
+
+            return Resources.ToolTip_ExportToExcel;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+    }
 }
