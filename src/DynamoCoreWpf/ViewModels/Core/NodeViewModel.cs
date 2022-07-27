@@ -959,8 +959,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void UpdateModelDismissedAlertsCount()
         {
-            if(DismissedAlerts != null)
+            if (DismissedAlerts != null)
+            {
                 nodeLogic.DismissedAlertsCount = DismissedAlerts.Count;
+            }
         }
 
         /// <summary>
