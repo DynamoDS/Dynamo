@@ -134,11 +134,10 @@ namespace Dynamo.Wpf.Views.FileTrust
             {
                 if (dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName))
                     dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(string.Format(Properties.Resources.TrustLocationAddedNotification, fileTrustWarningViewModel.DynFileDirectoryName));
-            }
-            // The maximum workspaces always will be Two, The first one for the Dynamo file and the second one for a Custom Node
-            if (dynViewModel.Workspaces[0].RunSettingsViewModel.Model.RunType != RunType.Manual)
+            }            
+            if ((dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).RunSettingsViewModel.Model.RunType != RunType.Manual)
             {
-                dynViewModel.Workspaces[0].Model.RequestRun();
+                (dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).Model.RequestRun();
             }
             else
             {
