@@ -13,7 +13,8 @@ namespace Dynamo.GraphNodeManager.Utilities
         /// <summary>
         /// Exports a collection of objects to CSV file
         /// </summary>
-        /// <param name="exportObject"></param>
+        /// <param name="exportObject">The array of nodes to be exported.</param>
+        /// <param name="promptName">The default name to be provided for saving the file.</param>
         public static void ExportToCSV(object exportObject, string promptName)
         {
             var filePath = string.Empty;
@@ -44,7 +45,8 @@ namespace Dynamo.GraphNodeManager.Utilities
         /// <summary>
         /// Export a collection of objects to JSON file
         /// </summary>
-        /// <param name="exportObject"></param>
+        /// <param name="exportObject">The array of nodes to be exported.</param>
+        /// <param name="promptName">The default name to be provided for saving the file.</param>
         public static void ExportToJson(object exportObject, string promptName)
         {
             var filePath = string.Empty;
