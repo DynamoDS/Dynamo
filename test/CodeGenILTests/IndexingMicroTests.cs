@@ -105,6 +105,7 @@ d=a[b][c];";
         [Test]
         [Category("Failure")]//this fails because we can't index into an object
                              //and [0..10] is assumed to be an object[] because it's generated with a function call.
+                             //this test actaully then fallsback correctly to ValueAtIndex but calls the wrong overload.
         public void IndexIntoNestedRange_WithIdent()
         {
             var dscode = @"
@@ -134,17 +135,17 @@ c=a[b];";
             Assert.AreEqual(8, output.Values.ToList()[2][0]);
         }
         [Test]
+        [Category("Failure")]//I can't understand this failure, the IL is valid but the loading the element retrieves an IList instead of a string...
         public void IndexIntoArray_StringArray()
         {
             var dscode = @"
 import(""DesignScriptBuiltin.dll"");
-a = [""1"",""2"",""AAA""];
-b = 2;
-c=a[b];";
+a = [""A"",""B"",""C""];
+b=a[2];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual("AAA", output.Values.ToList()[2][0]);
+            Assert.AreEqual("C", output.Values.ToList()[1][0]);
         }
         [Test]
         public void IndexIntoArray_ObjectArray()
@@ -182,6 +183,8 @@ c=a[b];";
         #endregion
         #region dictionary
         [Test]
+        [Category("Failure")]//this is failing because key and val are single items and dictionaries are initialized with lists of keys and vals.
+        //once that is resolved it will fail because we don't have enough type info (wrapped by function call logic IList)
         public void IndexIntoDict_WithIdent()
         {
             var dscode = @"

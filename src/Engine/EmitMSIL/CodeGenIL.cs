@@ -608,43 +608,27 @@ namespace EmitMSIL
         }
 
         //tries to emit opcodes for indexing an array or dictioanry
-        private (bool success,Type type) TryEmitIndexing(FunctionCallNode fcn)
+        private (bool success, Type type) TryEmitIndexing(FunctionCallNode fcn)
         {
-
+            //if we fail to emit indexing, pop the array/index off the stack.
+            var toPopCount = 0;
             //to emit the correct msil we need to know the type of collection we are indexing.
-            Type t = null;
             var array = fcn.FormalArguments.FirstOrDefault();
-            if (array is IdentifierNode ident)
+            //emit load array to stack.
+            var t = DfsTraverse(array);
+            toPopCount++;
+
+            if (t == null)
             {
-                if (variables.TryGetValue(ident.Value, out Tuple<int, Type> output))
+                for (int i = 0; i < toPopCount; i++)
                 {
-                    t = output.Item2;
+                    EmitOpCode(OpCodes.Pop);
                 }
-                //load the identifer onto the stack.
-                //TODO if we fail to emit indexing later, we don't want this on the stack -
-                //maybe we can emit a pop etc - or emit this in a finally block?
-                EmitOpCode(OpCodes.Ldloc_0);
-            }
 
-            else if(array is IdentifierListNode idntl)
-            {
-                t = DfsTraverse(idntl);
+                return (false, null);
             }
-
-            else if(array is ExprListNode listNode)
+            else if (t == typeof(IDictionary))
             {
-                t = DfsTraverse(listNode);
-            }
-
-            if(t == null)
-            {
-                throw new NotImplementedException("unknown collection type - should generate GetValueAtIndex function call.");
-                return (false,null);
-            }
-            else if(t == typeof(IDictionary))
-            {
-                throw new NotImplementedException("emit direct dictionary indexing not implemented");
-                //TODO implement emit
                 if (t.IsGenericType)
                 {
                     return (true, t.GenericTypeArguments[1]);
@@ -659,9 +643,10 @@ namespace EmitMSIL
                 TryEmitIndexingForArray(fcn.FormalArguments[0], fcn.FormalArguments[1], t.GetElementType());
                 return (true,t.GetElementType());
             }
+            // TODO we may want to bail for IList currently and let 
+            // replication handle it as Ilist is usually a replicated output, and is nested. 
             else if (t == typeof(IList))
             {
-              
                 if (t.IsGenericType)
                 {
                     TryEmitIndexingForIList(fcn.FormalArguments[0], fcn.FormalArguments[1],t, t.GenericTypeArguments[0]);
@@ -673,8 +658,11 @@ namespace EmitMSIL
                     return (true,typeof(object));
                 }
             }
-            //should not get here.
-            throw new Exception("unknown indexing case");
+            EmitILComment("NOT ENOUGH TYPE INFO TO EMIT INDEXING");
+            for (int i = 0; i < toPopCount; i++)
+            {
+                EmitOpCode(OpCodes.Pop);
+            }
             return (false,null);
         }
 
@@ -688,21 +676,28 @@ namespace EmitMSIL
                 mi = collectionType.GetMethod("get_Item");
             }
             EmitOpCode(OpCodes.Callvirt, mi);
-            EmitILComment("INDEX OP END");
+            EmitILComment("INDEX ILST OPERATION END");
 
             return true;
         }
 
         private bool TryEmitIndexingForArray(AssociativeNode array, AssociativeNode index,Type arrayElementType)
         {
-
-      
+            //emit load index to stack.
             var indexT = DfsTraverse(index);
             //TODO if indexT is a collection then we need to generate multiple ldelem calls -
             //or we could also give up and let replication handle this by falling back to ValueAtIndex()
 
             //emit the call to do the lookup.
-            EmitOpCode(OpCodes.Ldelem,arrayElementType);
+            if (arrayElementType.IsValueType)
+            {
+                EmitOpCode(OpCodes.Ldelem, arrayElementType);
+            }
+            else
+            {
+                EmitOpCode(OpCodes.Ldelem_Ref);
+            }
+
             return true;
         }
 
@@ -1068,6 +1063,7 @@ namespace EmitMSIL
 
         private Type EmitIdentifierNode(AssociativeNode node)
         {
+          
             if (compilePass == CompilePass.MethodLookup) return null;
 
             // only handle identifiers on rhs of assignment expression for now.
