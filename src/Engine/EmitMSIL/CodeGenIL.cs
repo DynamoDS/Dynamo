@@ -679,13 +679,13 @@ namespace EmitMSIL
         }
 
        
-        private bool TryEmitIndexingForIList(AssociativeNode array, AssociativeNode index, Type CollectionType, Type ListElementType)
+        private bool TryEmitIndexingForIList(AssociativeNode array, AssociativeNode index, Type collectionType, Type listElementType)
         {
             var indexT = DfsTraverse(index);
             var mi = typeof(IList).GetMethod("get_Item", BindingFlags.Instance|BindingFlags.Public);
-            if (CollectionType.IsGenericType)
+            if (collectionType.IsGenericType)
             {
-                mi = CollectionType.GetMethod("get_Item");
+                mi = collectionType.GetMethod("get_Item");
             }
             EmitOpCode(OpCodes.Callvirt, mi);
             EmitILComment("INDEX OP END");
@@ -696,15 +696,12 @@ namespace EmitMSIL
         private bool TryEmitIndexingForArray(AssociativeNode array, AssociativeNode index,Type arrayElementType)
         {
 
-            //TODO maybe implement iteration over array ie EmitForLoop(start,end,emitAction) - loads each item of array onto stack and does
-            //something - in this case the something would be nothing - once it's on the stack we'll emit a lookup.
-            //would need to be a level up from this?
-
+      
             var indexT = DfsTraverse(index);
             //TODO if indexT is a collection then we need to generate multiple ldelem calls -
-            //we could also give up and let replication handle this.
-            //emit the call to do the lookup.
+            //or we could also give up and let replication handle this by falling back to ValueAtIndex()
 
+            //emit the call to do the lookup.
             EmitOpCode(OpCodes.Ldelem,arrayElementType);
             return true;
         }
@@ -732,13 +729,13 @@ namespace EmitMSIL
                 else if(compilePass == CompilePass.emitIL)
                 {
                     //if we succeed, no need to emit a function call for indexing.
+                    //if we fail to emit direct indexing, we should emit a function call for one of the ValueAtIndex() overloads.
                     var indexResult = TryEmitIndexing(fcn);
                     if (indexResult.success)
                     {
                         return indexResult.type;
                     }
                 } 
-             
             }
 
             if (compilePass == CompilePass.MethodLookup)

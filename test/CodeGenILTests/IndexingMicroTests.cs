@@ -118,21 +118,7 @@ d=a[b][c];";
             Assert.IsNotEmpty(output);
             Assert.AreEqual(4, output.Values.ToList()[3][0]);
         }
-        [Test]
-        [Category("Failure")]//this is failing because range expression is wrapped in an extra level of nesting since it the result
-        //of a function call - 
-        public void IndexIntoRange_WithIdent()
-        {
-            var dscode = @"
-import(""DesignScriptBuiltin.dll"");
-a = 0..100..10; //a is an ILIST because of replication?
-b = 5;
-c=a[b];";
-            var ast = ParserUtils.Parse(dscode).Body;
-            var output = codeGen.EmitAndExecute(ast);
-            Assert.IsNotEmpty(output);
-            Assert.AreEqual(40, output.Values.ToList()[2][0]);
-        }
+
         [Test]
         [Category("Failure")]//to accomplish this either need to generate a function call, or emit conditional il.
         public void IndexIntoRange_WithNegativeIndex_Ident()
@@ -175,6 +161,38 @@ c=a[b];";
             Assert.IsNotEmpty(output);
             //TODO uncler why this index result has an extra level of nesting in the output dictionary. Replication maybe?
             Assert.AreEqual(2, (output.Values.ToList()[2][0] as dynamic)[0].X);
+        }
+        #endregion
+        #region IList
+        [Test]
+        [Category("Failure")]//this is failing because range expression is wrapped in an extra level of nesting since it the result
+        //of a function call - 
+        public void IndexIntoRange_WithIdent()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+a = 0..100..10; //a is an ILIST because of replication?
+b = 5;
+c=a[b];";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(40, output.Values.ToList()[2][0]);
+        }
+        #endregion
+        #region dictionary
+        [Test]
+        public void IndexIntoDict_WithIdent()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+a = {""key"":""val""};
+b = ""key"";
+c=a[b];";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual("val", output.Values.ToList()[2][0]);
         }
         #endregion
     }
