@@ -126,8 +126,7 @@
                   MinColumnWidth="60"
                   RowDetailsVisibilityMode="Collapsed"
                   IsReadOnly="True"
-                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
-                  SelectionChanged="NodeTable_SelectionChanged">
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" >
             <DataGrid.Resources>
                 <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
                     <EventSetter Event="PreviewMouseLeftButtonUp" Handler="Row_PreviewClickHandler"/>
