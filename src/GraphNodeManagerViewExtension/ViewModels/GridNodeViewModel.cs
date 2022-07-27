@@ -307,7 +307,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
         }
         /// <summary>
-        /// Node returns null
+        /// Checks if the Node has been Renamed after its creation
         /// </summary>
         public bool IsRenamed
         {

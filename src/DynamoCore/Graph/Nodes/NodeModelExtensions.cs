@@ -127,7 +127,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="node">target NodeModel</param>
         /// <returns>Original node name as string</returns>
-        public static string GetOriginalName(this NodeModel node)
+        internal static string GetOriginalName(this NodeModel node)
         {
             if (node == null) return string.Empty;
             // For dummy node, return the current name so that does not appear to be renamed
