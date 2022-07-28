@@ -278,24 +278,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
             exitGuideWindow.IsOpen = true;
         }
 
-        /// <summary>
-        /// Shows/Hides the Popup based in if the DynamoView is Active or not
-        /// </summary>
-        /// <param name="isActive"></param>
-        internal void ManagePopupActivation(bool isActive)
-        {
-            if (GuideFlowEvents.IsAnyGuideActive)
-            {
-                if (currentGuide.CurrentStep.stepUIPopup.IsOpen == !isActive)
-                    currentGuide.CurrentStep.stepUIPopup.IsOpen = isActive;
-            }
-            else if (GuideFlowEvents.IsAnyGuideActive == false && GuideFlowEvents.IsGuideExited == false)
-            {
-                if(exitGuideWindow != null && currentGuide.Name.Equals(GuidesManager.PackagesGuideName))
-                    exitGuideWindow.IsOpen = isActive;
-            }
-        }
-
         private void ContinueTourButton_Click(object sender, RoutedEventArgs e)
         {
             exitGuideWindow.IsOpen = false;
