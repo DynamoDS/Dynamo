@@ -63,7 +63,7 @@ namespace Dynamo.Notifications
             using (StreamReader reader = new StreamReader(stream))
             {
                 var jsString = reader.ReadToEnd();
-                htmlString = htmlString.Replace("#mainJs", jsString);
+                htmlString = htmlString.Replace("mainJs", jsString);
             }
 
             if(notificationUIPopup.webView.CoreWebView2 != null)
