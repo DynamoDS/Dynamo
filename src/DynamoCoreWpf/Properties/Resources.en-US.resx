@@ -3234,7 +3234,7 @@ You can manage this in Preferences -&gt; Security.</value>
 {0}</value>
   </data>
   <data name="TrustLocationSkippedNotification" xml:space="preserve">
-    <value>No trusted location has been added.</value>
+    <value>File location was not added to trusted locations.</value>
   </data>
   <data name="MessagePackageTargetOtherHosts2" xml:space="preserve">
     <value>The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems.</value>
@@ -3251,6 +3251,18 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
     <value>Unable To Access Trusted Directory</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
+    <value>Pin Wire</value>
+  </data>
+  <data name="ContextMenuConnectionsHideAll" xml:space="preserve">
+    <value>Hide All Wires</value>
+  </data>
+  <data name="ContextMenuConnectionsShowAll" xml:space="preserve">
+    <value>Show All Wires</value>
+  </data>
+  <data name="ContextMenuNodeConnections" xml:space="preserve">
+    <value>Node Connections</value>
   </data>
   <data name="InvalidDraggingOperationMessgae" xml:space="preserve">
     <value>Nothing is being dragged. If you see this message, most likely your recent Dynamo interaction is not recommended.</value>

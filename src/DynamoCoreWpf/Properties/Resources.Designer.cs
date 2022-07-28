@@ -466,6 +466,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pin Wire.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderPinConnector {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderPinConnector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Connected.
         /// </summary>
         public static string ConnectorContextMenuHeaderSelectConnected {
@@ -534,6 +543,24 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextMenu {
             get {
                 return ResourceManager.GetString("ContextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide All Wires.
+        /// </summary>
+        public static string ContextMenuConnectionsHideAll {
+            get {
+                return ResourceManager.GetString("ContextMenuConnectionsHideAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show All Wires.
+        /// </summary>
+        public static string ContextMenuConnectionsShowAll {
+            get {
+                return ResourceManager.GetString("ContextMenuConnectionsShowAll", resourceCulture);
             }
         }
         
@@ -678,6 +705,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextMenuLacingShortest {
             get {
                 return ResourceManager.GetString("ContextMenuLacingShortest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Connections.
+        /// </summary>
+        public static string ContextMenuNodeConnections {
+            get {
+                return ResourceManager.GetString("ContextMenuNodeConnections", resourceCulture);
             }
         }
         
@@ -7892,7 +7928,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No trusted location has been added..
+        ///   Looks up a localized string similar to File location was not added to trusted locations..
         /// </summary>
         public static string TrustLocationSkippedNotification {
             get {
