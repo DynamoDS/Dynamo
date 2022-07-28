@@ -45,8 +45,6 @@ namespace TestUINodes
         {
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("File", "The selected file.")));
 
-            // This call is required to ensure that your ports are
-            // properly created.
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
@@ -74,7 +72,7 @@ namespace TestUINodes
             var func2 = AstFactory.BuildFunctionCall(
                 new Func<FileInfo, Bitmap>(DSCore.IO.Image.ReadFromFile), new List<AssociativeNode> { func1 });
 
-            // returns an identifier that is assigned to a bitmap
+            // returns an identifier that is assigned to a bitmap upon the call to Image.ReadFromFile.
             return new[]
             {
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), func2),
