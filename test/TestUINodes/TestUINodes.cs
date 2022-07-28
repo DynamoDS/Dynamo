@@ -38,7 +38,7 @@ namespace TestUINodes
     [NodeDescription("A test selection node.")]
     [OutPortTypes("var")]
     [IsDesignScriptCompatible]
-    //[IsVisibleInDynamoLibrary(false)]
+    [IsVisibleInDynamoLibrary(false)]
     public class TestSelectionNode : NodeModel
     {
         public TestSelectionNode()
