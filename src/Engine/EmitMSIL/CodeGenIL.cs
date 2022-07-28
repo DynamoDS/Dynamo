@@ -687,6 +687,7 @@ namespace EmitMSIL
         {
            //TODO - Dictionaries in DS will always(almost?) be the DS Dictionary wrapper - which is not a Dictionary
            //we have to either give it an indexer and call that or make a call to ValueAtKey()
+           //if we think we will encounter regular IDictionary here than we can still implement this.
 
             return false;
         }
