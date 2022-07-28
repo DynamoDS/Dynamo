@@ -61,13 +61,13 @@ namespace ProtoCore
             // and if so set it from the attribute.
             if (allowArrayPromotion)
             {
-                //TODO: Implement [AllowArrayPromotion(false)]
+                //TODO_MSIL: Implement [AllowArrayPromotion(false)]
                 //allowArrayPromotion = ma.AllowArrayPromotion;
             }
             int dist = ComputeTypeDistance(reducedParamSVs, allowArrayPromotion);
             if (dist >= 0 && dist != (int)ProcedureDistance.MaxDistance) //Is it possible to convert to this type?
             {
-                // TODO: implement CheckInvalidArrayCoersion
+                // TODO_MSIL: implement CheckInvalidArrayCoersion
                 //if (!FunctionGroup.CheckInvalidArrayCoersion(fep, reducedParamSVs, allowArrayPromotion))
                 return dist;
             }
@@ -75,7 +75,7 @@ namespace ProtoCore
             return (int)ProcedureDistance.InvalidDistance;
         }
 
-        internal int ComputeCastDistance(List<CLRStackValue> args, MSILRuntimeCore runtimeCore)
+        internal int ComputeCastDistance(List<CLRStackValue> args)
         {
             //Compute the cost to migrate a class calls argument types to the coresponding base types
             //This cannot be used to determine whether a function can be called as it will ignore anything that doesn't

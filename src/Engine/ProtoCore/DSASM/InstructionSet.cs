@@ -111,7 +111,7 @@ namespace ProtoCore.DSASM
     }
 
     /// <summary>
-    /// Wrapper over all values emited by the MSIL compiler.
+    /// Wrapper over all values handled by the MSIL/CLR engine.
     /// </summary>
     internal struct CLRStackValue
     {
@@ -119,11 +119,13 @@ namespace ProtoCore.DSASM
 
         public bool IsDouble => Value is double;
 
+        // TODO_MSIL: Figure out how to set/use this flag;
         public bool IsDefaultArgument => false;
 
-        // TODO: Figure out if we need to use an AddressType, like StackValue
+        // TODO_MSIL: Figure out if we need to use an AddressType, like StackValue
         public bool IsPointer => Type.IsClass;
 
+        // TODO_MSIL: Figure out how to set/use this flag;
         public bool IsExplicitCall => false;
 
         public bool IsNull => Value == null;
@@ -133,6 +135,7 @@ namespace ProtoCore.DSASM
 
         public System.Type Type => Value?.GetType();
 
+        // TODO_MSIL: Figure out how bad boxing/unboxing is for performance
         public object Value { get; set; }
 
 

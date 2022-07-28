@@ -46,7 +46,7 @@ namespace EmitMSIL
                     else
                         param = marshaller.UnMarshal(arg, paramType, runtimeCore);
 
-                    /*
+                    /*TODO_MSIL: Figure out how to set/use these flags
                     if (paraminfos[i].KeepReference && opArg.IsReferenceType)
                     {
                         referencedParameters.Add(opArg);
@@ -94,7 +94,7 @@ namespace EmitMSIL
                     var dsType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(param.ParameterType);
                     formalParams.Add(new CLRFunctionEndPoint.ParamInfo() { CLRInfo = param, ProtoInfo = dsType }); ;
                 }
-                CLRFunctionEndPoint fep = new CLRFunctionEndPoint() { method = method, Parameters = formalParams };
+                CLRFunctionEndPoint fep = new CLRFunctionEndPoint() { method = method, FormalParams = formalParams };
                 feps.Add(fep);
             }
             return feps;
@@ -110,6 +110,8 @@ namespace EmitMSIL
         /// <returns></returns>
         public static IList ReplicationLogic(IEnumerable<MethodBase> mInfos, IList args, string[][] replicationAttrs)
         {
+            // Static instance of MSILRuntimeCore
+            // TODO_MSIL: FIgure out how and when to set this runtimeCore (CodeGen should have it too)
             MSILRuntimeCore runtimeCore = MSILRuntimeCore.Instance;
 
             var stackValues = MarshalFunctionArguments(args, runtimeCore);
@@ -226,37 +228,6 @@ namespace EmitMSIL
             return new List<List<ReplicationGuide>>();
         }
 
-        /// <summary>
-        /// Returns complete match attempts to locate a function endpoint where 1 FEP matches all of the requirements for dispatch
-        /// </summary>
-        private static MethodBase GetCompleteMatchFunctionEndPoint(List<object> arguments,
-            IEnumerable<MethodBase> funcGroup,
-            List<ReplicationInstruction> replicationInstructions)
-        {
-            //Exact match
-            var exactTypeMatchingCandindates = new List<MethodBase>();// funcGroup.GetExactTypeMatches(context, arguments, replicationInstructions, stackFrame, runtimeCore);
-
-            if (exactTypeMatchingCandindates.Count == 0)
-            {
-                return null;
-            }
-
-            MethodBase fep = null;
-            if (exactTypeMatchingCandindates.Count == 1)
-            {
-                //Exact match
-                fep = exactTypeMatchingCandindates[0];
-            }
-            else
-            {
-                fep = exactTypeMatchingCandindates[0];
-                //Exact match with upcast
-                //fep = SelectFEPFromMultiple(stackFrame, runtimeCore, exactTypeMatchingCandindates, arguments);
-            }
-
-            return fep;
-        }
-
         private static CLRFunctionEndPoint GetCompliantFEP(
             List<CLRStackValue> arguments,
             IEnumerable<CLRFunctionEndPoint> funcGroup,
@@ -277,11 +248,12 @@ namespace EmitMSIL
                     arguments,
                     replicationInstructions);
 
-            // TODO: implement GetCandidateFunctions;
+            // TODO_MSIL: implement GetCandidateFunctions;
             List<CLRFunctionEndPoint> candidateFunctions = candidatesWithDistances.Keys.ToList();//CallSite.GetCandidateFunctions(candidatesWithDistances);
 
             CLRFunctionEndPoint compliantTarget = candidateFunctions.Count > 0 ? candidateFunctions[0] : null;
-                /*GetCompliantTarget(
+            // TODO_MSIL: implement GetCompliantTarget
+            /*GetCompliantTarget(
                     arguments,
                     replicationInstructions,
                     candidatesWithCastDistances,
@@ -302,11 +274,13 @@ namespace EmitMSIL
             resolvedFeps = null;
             var matchFound = false;
 
+            //TODO_MSIL: implement case 1
             #region Case 1: Replication guide with exact match 
             #endregion
 
             var replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments);
 
+            //TODO_MSIL: implement case 2
             #region Case 2: Replication and replication guide with exact match
             #endregion
 
@@ -364,6 +338,7 @@ namespace EmitMSIL
             }
             #endregion
 
+            //TODO_MSIL: implement case 6
             #region Case 6: Replication and replication guide with type conversion and array promotion, and OK if not all convertible
             #endregion
 
@@ -373,7 +348,7 @@ namespace EmitMSIL
 
         private static CLRFunctionEndPoint SelectFinalFep(IEnumerable<CLRFunctionEndPoint> functionEndPoints, List<CLRStackValue> formalParameters)
         {
-            // TODO: Determine final function endpoint here based on fitting runtime args to function parameters
+            // TODO_MSIL: Determine final function endpoint here based on fitting runtime args to function parameters
             return functionEndPoints.FirstOrDefault();
         }
 
@@ -381,7 +356,7 @@ namespace EmitMSIL
         {
             List<CLRStackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, runtimeCore);
 
-            List<object> args = UnmrshalFunctionArguments(finalFep.Parameters, coercedParameters, runtimeCore);
+            List<object> args = UnmrshalFunctionArguments(finalFep.FormalParams, coercedParameters, runtimeCore);
 
             // Testing invoking method without replication
             object result;
