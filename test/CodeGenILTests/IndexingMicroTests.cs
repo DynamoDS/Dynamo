@@ -160,7 +160,7 @@ c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            //TODO uncler why this index result has an extra level of nesting in the output dictionary. Replication maybe?
+            //TODO unclear why this index result has an extra level of nesting in the output dictionary. Replication maybe?
             Assert.AreEqual(2, (output.Values.ToList()[2][0] as dynamic)[0].X);
         }
         #endregion
@@ -190,6 +190,21 @@ c=a[b];";
             var dscode = @"
 import(""DesignScriptBuiltin.dll"");
 a = {""key"":""val""};
+b = ""key"";
+c=a[b];";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual("val", output.Values.ToList()[2][0]);
+        }
+        [Test]
+        [Category("Failure")]//this fails because Dictionary.ByKeysValues is called using replication, so the return value is not a dictionary
+        //it's an IList, so we generate the incorrect indexing.
+        public void IndexIntoDict_WithIdent2()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+a = DesignScript.Builtin.Dictionary.ByKeysValues([""key1"",""key2""],[""val"",""val2""]);
 b = ""key"";
 c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
