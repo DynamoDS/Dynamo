@@ -180,7 +180,7 @@ namespace ProtoCore
 
         internal static Dictionary<CLRFunctionEndPoint, int> GetConversionDistances(IEnumerable<CLRFunctionEndPoint> functionEndPoints,
             List<CLRStackValue> formalParams, List<ReplicationInstruction> replicationInstructions,
-            bool allowArrayPromotion = false)
+            MSILRuntimeCore runtimeCore, bool allowArrayPromotion = false)
         {
             Dictionary<CLRFunctionEndPoint, int> ret = new Dictionary<CLRFunctionEndPoint, int>();
 
@@ -189,7 +189,7 @@ namespace ProtoCore
 
             foreach (var fep in functionEndPoints)
             {
-                int distance = fep.GetConversionDistance(reducedParamSVs, allowArrayPromotion);
+                int distance = fep.GetConversionDistance(reducedParamSVs, runtimeCore, allowArrayPromotion);
                 if (distance !=
                     (int)ProcedureDistance.InvalidDistance)
                     ret.Add(fep, distance);

@@ -243,6 +243,7 @@ namespace EmitMSIL
                     funcGroup,
                     arguments,
                     replicationInstructions,
+                    runtimeCore,
                     allowArrayPromotion);
 
             Dictionary<CLRFunctionEndPoint, int> candidatesWithCastDistances =

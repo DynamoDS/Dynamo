@@ -422,5 +422,10 @@ namespace ProtoCore
             }
             return typeUID;
         }
+
+        internal int GetCoercionScore(int srcType, int targetType)
+        {
+            return ClassTable?.ClassNodes[srcType]?.GetCoercionScore(targetType) ?? (int)ProcedureDistance.NotMatchScore;
+        }
     }
 }
