@@ -644,7 +644,9 @@ namespace EmitMSIL
                 return (true,t.GetElementType());
             }
             // TODO we may want to bail for IList currently and let 
-            // replication handle it as Ilist is usually a replicated output, and is nested. 
+            // replication handle it as Ilist is usually a replicated output, and is nested.
+            //Today either we end up emitting IList index opcodes incorrectly for all func return vals,
+            //or we'll call the wrong overload until overload matching is fixed.
             else if (t == typeof(IList))
             {
                 if (t.IsGenericType)
@@ -677,6 +679,14 @@ namespace EmitMSIL
             }
             EmitOpCode(OpCodes.Callvirt, mi);
             EmitILComment("INDEX ILST OPERATION END");
+
+            return true;
+        }
+
+        private bool TryEmitIndexingForDictionary(AssociativeNode array, AssociativeNode index, Type collectionType, Type listElementType)
+        {
+           //TODO - Dictionaries in DS will always(almost?) be the DS Dictionary wrapper - which is not a Dictionary
+           //we have to either give it an indexer and call that or make a call to ValueAtKey()
 
             return true;
         }

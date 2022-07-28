@@ -205,7 +205,7 @@ c=a[b];";
             var dscode = @"
 import(""DesignScriptBuiltin.dll"");
 a = DesignScript.Builtin.Dictionary.ByKeysValues([""key1"",""key2""],[""val"",""val2""]);
-b = ""key"";
+b = ""key1"";
 c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
