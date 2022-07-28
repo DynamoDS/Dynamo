@@ -602,7 +602,7 @@ namespace ProtoFFI
             {
                 collection = ToICollection(dsObject, arrayType, runtimeCore);
             }
-            /*
+            /* TODO_MSIL: figure out if we need to handle these cases
             if (expectedCLRType.IsGenericType && !expectedCLRType.IsInterface)
             {
                 if (!collection.GetType().IsArray)
@@ -964,10 +964,9 @@ namespace ProtoFFI
                 return marshaler.Marshal(obj, expectedDSType, runtimeCore);
 
             //4. Didn't get the marshaler, could be a pointer or var type, check from map
-            // TODO: figure this out
-            //CLRStackValue retVal;
-            //if (CLRObjectMap.TryGetValue(obj, out retVal))
-            //    return retVal;
+            CLRStackValue retVal;
+            if (MSILCLRObjectMap.TryGetValue(obj, out retVal))
+                return retVal;
 
             //5. If it is a StackValue, simply return it.
             if (obj is CLRStackValue)
@@ -1394,6 +1393,19 @@ namespace ProtoFFI
                 {
                     DSObjectMap.Remove(dsObject);
                     CLRObjectMap.Remove(clrobject);
+                }
+            }
+        }
+
+        internal override void OnDispose(CLRStackValue dsObject)
+        {
+            lock (MSILDSObjectMap)
+            {
+                Object clrobject;
+                if (MSILDSObjectMap.TryGetValue(dsObject, out clrobject))
+                {
+                    MSILDSObjectMap.Remove(dsObject);
+                    MSILCLRObjectMap.Remove(clrobject);
                 }
             }
         }

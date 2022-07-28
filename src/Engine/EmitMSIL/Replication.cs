@@ -44,7 +44,10 @@ namespace EmitMSIL
                     if (arg.IsDefaultArgument)
                         param = System.Type.Missing;
                     else
+                    {
                         param = marshaller.UnMarshal(arg, paramType, runtimeCore);
+                        marshaller.OnDispose(arg);
+                    }
 
                     /*TODO_MSIL: Figure out how to set/use these flags
                     if (paraminfos[i].KeepReference && opArg.IsReferenceType)
@@ -378,7 +381,10 @@ namespace EmitMSIL
                 dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep, dsRetValue, runtimeCore);
             }
 
-            return marshaller.UnMarshal(dsRetValue, finalFep.ReturnType, runtimeCore);
+            var returnVal = marshaller.UnMarshal(dsRetValue, finalFep.ReturnType, runtimeCore);
+            marshaller.OnDispose(dsRetValue);
+
+            return returnVal;
         }
 
         private static IList<CLRStackValue> getSubParameters(CLRStackValue o)

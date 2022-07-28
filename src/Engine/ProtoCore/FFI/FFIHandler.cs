@@ -93,6 +93,11 @@ namespace ProtoFFI
         /// <param name="dsi">The current runtime interpreter</param>
         public abstract void OnDispose(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi); //callback method
 
+        internal virtual void OnDispose(CLRStackValue dsObject)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Returns a string representation for given DS object
         /// </summary>
