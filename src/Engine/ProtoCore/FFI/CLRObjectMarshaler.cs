@@ -133,9 +133,21 @@ namespace ProtoFFI
             return CastToObject(dsObject.IntegerValue);
         }
 
-        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
         {
-            return new CLRStackValue(System.Convert.ToInt64(obj), GetMarshaledType(typeof(long)));
+            return new CLRStackValue(Convert.ToInt64(obj), (int)ProtoCore.PrimitiveType.Integer);
+        }
+
+        internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            long integerValue = System.Convert.ToInt64(dsObject.Value);
+            if (integerValue > MaxValue || integerValue  < MinValue)
+            {
+                string message = String.Format(Resources.kFFIInvalidCast, integerValue, type.Name, MinValue, MaxValue);
+                runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.TypeMismatch, message);
+            }
+
+            return CastToObject(integerValue);
         }
     }
 
@@ -173,9 +185,21 @@ namespace ProtoFFI
             return CastToDouble(dsObject.DoubleValue);
         }
 
-        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
         {
-            return new CLRStackValue(System.Convert.ToDouble(obj), GetMarshaledType(typeof(float)));
+            return new CLRStackValue(System.Convert.ToDouble(obj), (int)ProtoCore.PrimitiveType.Double);
+        }
+
+        internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            double doubleValue = System.Convert.ToDouble(dsObject.Value);
+            if (doubleValue > MaxValue || doubleValue < MinValue || double.IsNaN(doubleValue))
+            {
+                string message = String.Format(Resources.kFFIInvalidCast, doubleValue, type.Name, MinValue, MaxValue);
+                runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.TypeMismatch, message);
+            }
+
+            return CastToDouble(doubleValue);
         }
     }
 
@@ -197,9 +221,14 @@ namespace ProtoFFI
             return dsObject.BooleanValue;
         }
 
-        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
         {
-            return new CLRStackValue(System.Convert.ToBoolean((bool)obj), GetMarshaledType(typeof(bool)));
+            return new CLRStackValue(obj, (int)ProtoCore.PrimitiveType.Bool);
+        }
+
+        internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            return dsObject.Value;
         }
     }
 
@@ -221,9 +250,14 @@ namespace ProtoFFI
             return Convert.ToChar(dsObject.CharValue);
         }
 
-        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
         {
-            throw new NotImplementedException();
+            return new CLRStackValue(obj, (int)ProtoCore.PrimitiveType.Char);
+        }
+
+        internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            return dsObject.Value;
         }
     }
 
@@ -413,6 +447,35 @@ namespace ProtoFFI
             return result.ToArray();
         }
 
+        protected List<T> UnMarshal<T>(CLRStackValue dsObject, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            var result = new List<T>();
+            if (!dsObject.IsEnumerable)
+                return result;
+
+            var dsElements = dsObject.Value as IList<CLRStackValue>;
+            Type objType = typeof(T);
+
+            foreach (var elem in dsElements)
+            {
+                object obj = primitiveMarshaler.UnMarshal(elem, objType, runtimeCore);
+                if (null == obj)
+                {
+                    if (objType.IsValueType)
+                        throw new System.InvalidCastException(
+                            string.Format(Resources.FailedToCastFromNull, objType.Name));
+
+                    result.Add(default(T));
+                }
+                else
+                {
+                    result.Add((T)obj);
+                }
+            }
+
+            return result;
+        }
+
         private ICollection ToICollection(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type arrayType)
         {
             if (arrayType.IsArray)
@@ -450,12 +513,114 @@ namespace ProtoFFI
             }
 
             return arrList;
-
         }
 
-        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        private IList ToICollection(CLRStackValue dsObject, System.Type arrayType, ProtoCore.MSILRuntimeCore runtimeCore)
         {
-            throw new NotImplementedException();
+            if (arrayType.IsArray)
+            {
+                //  processing only for the primitive types
+                //  anything else will be dealt with as it was earlier
+                //
+                if (arrayType.UnderlyingSystemType == typeof(int[]))
+                {
+                    return UnMarshal<int>(dsObject, runtimeCore);
+                }
+                else if(arrayType.UnderlyingSystemType == typeof(double[]))
+                {
+                    return UnMarshal<double>(dsObject, runtimeCore);
+                }
+                else if (arrayType.UnderlyingSystemType == typeof(bool[]))
+                {
+                    return UnMarshal<bool>(dsObject, runtimeCore);
+                }
+            }
+
+            var dsArrayValues = dsObject.Value as IList<CLRStackValue>;
+
+            //  use arraylist instead of object[], this allows us to correctly capture 
+            //  the type of objects being passed
+            //
+            List<object> arrList = new List<object>();
+            var elementType = arrayType.GetElementType();
+            if (elementType == null)
+                elementType = typeof(object);
+            foreach (var sv in dsArrayValues)
+            {
+                object obj = primitiveMarshaler.UnMarshal(sv, elementType, runtimeCore);
+                arrList.Add(obj);
+            }
+
+            return arrList;
+        }
+
+        internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            var collection = obj as IEnumerable;
+            Validity.Assert(null != collection, "Expected IEnumerable object for marshaling as collection");
+            if (null == collection)
+                return CLRStackValue.Null;
+
+            List<CLRStackValue> svs = new List<CLRStackValue>();
+            foreach (var item in collection)
+            {
+                if (item is CLRStackValue oldSv)
+                {
+                    svs.Add(oldSv);
+                    continue;
+                }
+                var newSv = primitiveMarshaler.Marshal(item, GetApproxDSType(item), runtimeCore);
+                svs.Add(newSv);
+            }
+            return new CLRStackValue(svs, (int)ProtoCore.PrimitiveType.Array);
+        }
+
+        internal override object UnMarshal(CLRStackValue dsObject, System.Type expectedCLRType, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            // If expected type is an IDictionary, log warning and return
+            if (expectedCLRType == typeof(IDictionary) ||
+                expectedCLRType.GetInterfaces()
+                    .Where(i => i.IsGenericType)
+                    .Select(i => i.GetGenericTypeDefinition())
+                    .Contains(typeof(IDictionary<,>)))
+            {
+                runtimeCore.LogWarning(WarningID.TypeMismatch, Resources.FailedToConvertArrayToDictionary);
+                return null;
+            }
+
+            var arrayType = expectedCLRType;
+            var elementType = expectedCLRType.GetElementType() ?? typeof(object);
+
+            if (expectedCLRType.IsGenericType)
+            {
+                elementType = expectedCLRType.GetGenericArguments().First();
+                arrayType = elementType.MakeArrayType();
+            }
+
+            IList collection = null;
+            if (dsObject.IsEnumerable)
+            {
+                collection = ToICollection(dsObject, arrayType, runtimeCore);
+            }
+            /*
+            if (expectedCLRType.IsGenericType && !expectedCLRType.IsInterface)
+            {
+                if (!collection.GetType().IsArray)
+                {
+                    Validity.Assert(collection is IList<object>);
+                    collection = (collection as IList<object>).ToArray(elementType);
+                }
+                return Activator.CreateInstance(expectedCLRType, new[] { collection });
+            }
+
+            if (expectedCLRType.IsArray || expectedCLRType.IsGenericType)
+            {
+                var list = collection as IList;
+                if (null != list)
+                    return list.ToArray(elementType);
+            }*/
+
+            return collection;
         }
     }
 
@@ -606,7 +771,12 @@ namespace ProtoFFI
             return primitiveMarshaler.Marshal(obj, context, dsi, GetApproxDSType(obj));
         }
 
-        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
         {
             throw new NotImplementedException();
         }
@@ -635,9 +805,14 @@ namespace ProtoFFI
             return dsString.Value;
         }
 
-        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
         {
-            throw new NotImplementedException();
+            return new CLRStackValue(obj, (int)ProtoCore.PrimitiveType.String);
+        }
+
+        internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            return dsObject.Value;
         }
     }
 
@@ -775,9 +950,8 @@ namespace ProtoFFI
             return CreateDSObject(obj, context, dsi);
         }
 
-        internal override CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal override CLRStackValue Marshal(object obj, ProtoCore.Type expectedDSType, ProtoCore.MSILRuntimeCore runtimeCore)
         {
-            ProtoCore.Type expectedDSType = CLRObjectMarshaler.GetProtoCoreType(type);
             //1. Null object is marshaled as null
             if (obj == null)
                 return CLRStackValue.Null;
@@ -787,7 +961,7 @@ namespace ProtoFFI
 
             //3. Got a marshaler, now marshal it.
             if (marshaler != null)
-                return marshaler.Marshal(obj, type, runtimeCore);
+                return marshaler.Marshal(obj, expectedDSType, runtimeCore);
 
             //4. Didn't get the marshaler, could be a pointer or var type, check from map
             // TODO: figure this out
@@ -802,7 +976,7 @@ namespace ProtoFFI
             }
 
             //6. Seems like a new object create a new DS object and bind it.
-            return CreateCLRDSObject(obj, runtimeCore);
+            return CreateDSObject(obj, runtimeCore);
         }
 
 
@@ -838,6 +1012,34 @@ namespace ProtoFFI
                 return clrObject;
 
             
+            return CreateCLRObject(dsObject, expectedCLRType);
+        }
+
+        internal override object UnMarshal(CLRStackValue dsObject, System.Type expectedCLRType, ProtoCore.MSILRuntimeCore runtimeCore)
+        {
+            if (dsObject.IsNull)
+                return null;
+
+            //Get the correct marshaler to unmarshal
+            var marshaler = GetMarshalerForCLRType(expectedCLRType, dsObject);
+            if (null != marshaler)
+                return marshaler.UnMarshal(dsObject, expectedCLRType, runtimeCore);
+
+            //The dsObject must be of pointer type
+            //Validity.Assert(dsObject.IsPointer || dsObject.IsFunctionPointer, "Operand type not supported for marshaling");
+
+            /*
+            if (dsObject.IsFunctionPointer)
+            {
+                return dsObject;
+            }*/
+
+            //Search in the DSObjectMap, for corresponding clrObject.
+            object clrObject = null;
+            if (MSILDSObjectMap.TryGetValue(dsObject, out clrObject))
+                return clrObject;
+
+
             return CreateCLRObject(dsObject, expectedCLRType);
         }
 
@@ -899,6 +1101,49 @@ namespace ProtoFFI
             return marshaler;
         }
 
+        private FFIObjectMarshaler GetMarshalerForCLRType(Type clrType, CLRStackValue value)
+        {
+            FFIObjectMarshaler marshaler = null;
+            //Expected CLR type is object, get marshaled clrType from dsType
+            Type expectedType = clrType;
+            if (expectedType == typeof(object))
+                expectedType = value.Type;
+            else if (clrType.IsGenericType && clrType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                expectedType = Nullable.GetUnderlyingType(clrType);
+
+            //If DS Type is array, it needs to be marshaled as collection.
+            bool isArray = value.IsEnumerable;
+
+            //Expected CLR type is not string, but is derived from IEnumerable
+            isArray = isArray || (typeof(string) != expectedType && typeof(IEnumerable).IsAssignableFrom(expectedType));
+
+            // If the source is a Dictionary and the target allows assignment of a Dictionary
+            if (IsDictionary(value) && DictionaryMarshaler.IsAssignableFromDictionary(expectedType))
+            {
+                var type = PrimitiveMarshaler.CreateType(ProtoCore.PrimitiveType.Var);
+                type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
+                return new DictionaryMarshaler(this, type);
+            }
+
+            if (isArray)
+            {
+                var type = PrimitiveMarshaler.CreateType(ProtoCore.PrimitiveType.Var);
+                type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
+                return new ArrayMarshaler(this, type);
+            }
+
+            // If the input ds object is pointer type then it can't be marshaled as primitive.
+            if (value.IsPointer)
+            {
+                return null;
+            }
+
+            if (!mPrimitiveMarshalers.TryGetValue(expectedType, out marshaler))
+                mPrimitiveMarshalers.TryGetValue(value.Type, out marshaler);
+
+            return marshaler;
+        }
+
         /// <summary>
         /// Returns appropriate marshaler for given DS Type.
         /// </summary>
@@ -951,6 +1196,12 @@ namespace ProtoFFI
         {
             object obj;
             return value.IsPointer && DSObjectMap.TryGetValue(value, out obj) && obj is DesignScript.Builtin.Dictionary;
+        }
+
+        internal bool IsDictionary(CLRStackValue value)
+        {
+            object obj;
+            return value.IsPointer && MSILDSObjectMap.TryGetValue(value, out obj) && obj is DesignScript.Builtin.Dictionary;
         }
 
         internal DesignScript.Builtin.Dictionary GetDictionary(StackValue value)
@@ -1226,7 +1477,7 @@ namespace ProtoFFI
             return retval;
         }
 
-        private CLRStackValue CreateCLRDSObject(object obj, ProtoCore.MSILRuntimeCore runtimeCore)
+        private CLRStackValue CreateDSObject(object obj, ProtoCore.MSILRuntimeCore runtimeCore)
         {
             //We are here, because we want to create DS object of user defined type.
             Type objType = GetPublicType(obj.GetType());
@@ -1235,20 +1486,21 @@ namespace ProtoFFI
             {
                 mCachedObjType = objType;
 
-                var classTable = runtimeCore.ClassTable;
-                mCachedType = classTable.IndexOf(GetTypeName(objType));
+                mCachedType = runtimeCore.GetProtoCoreTypeID(objType);
 
                 //Recursively get the base class type if available.
                 while (mCachedType == -1 && objType != null)
                 {
                     objType = objType.BaseType;
                     if (null != objType)
-                        mCachedType = classTable.IndexOf(GetTypeName(objType));
+                        mCachedType = runtimeCore.GetProtoCoreTypeID(objType);
                 }
             }
 
-            CLRStackValue value = new CLRStackValue(obj, GetProtoCoreType(mCachedObjType));
-            return value;
+            CLRStackValue retval = new CLRStackValue(obj, mCachedType);
+            BindObjects(obj, retval);
+
+            return retval;
         }
 
         /// <summary>
@@ -1427,6 +1679,22 @@ namespace ProtoFFI
             }
         }
 
+        private void BindObjects(object obj, CLRStackValue dsobj)
+        {
+#if DEBUG
+            if (MSILDSObjectMap.ContainsKey(dsobj))
+                throw new InvalidOperationException("Object reference already mapped");
+
+            if (MSILCLRObjectMap.ContainsKey(obj))
+                throw new InvalidOperationException("Object reference already mapped");
+#endif
+            lock (MSILDSObjectMap)
+            {
+                MSILDSObjectMap[dsobj] = obj;
+                MSILCLRObjectMap[obj] = dsobj;
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -1436,6 +1704,18 @@ namespace ProtoFFI
         /// <param name="type"></param>
         /// <returns></returns>
         private object CreateCLRObject(StackValue dsObject, Type type)
+        {
+            //Must be a user defined type, and expecting a var object
+            if (type == typeof(object) && dsObject.IsPointer)
+            {
+                BindObjects(dsObject, dsObject);
+                return dsObject;
+            }
+
+            throw new InvalidOperationException("Unable to locate managed object for given dsObject.");
+        }
+
+        private object CreateCLRObject(CLRStackValue dsObject, Type type)
         {
             //Must be a user defined type, and expecting a var object
             if (type == typeof(object) && dsObject.IsPointer)
@@ -1491,6 +1771,8 @@ namespace ProtoFFI
 
         private readonly Dictionary<StackValue, Object> DSObjectMap = new Dictionary<StackValue, object>(new PointerValueComparer());
         private readonly Dictionary<Object, StackValue> CLRObjectMap = new Dictionary<object, StackValue>(new ReferenceEqualityComparer());
+        private readonly Dictionary<CLRStackValue, Object> MSILDSObjectMap = new Dictionary<CLRStackValue, object>(new CLRPointerValueComparer());
+        private readonly Dictionary<Object, CLRStackValue> MSILCLRObjectMap = new Dictionary<object, CLRStackValue>(new ReferenceEqualityComparer());
         private static readonly Dictionary<ProtoCore.RuntimeCore, CLRObjectMarshaler> mObjectMarshlers = new Dictionary<ProtoCore.RuntimeCore, CLRObjectMarshaler>();
         private static CLRObjectMarshaler msilObjectMarshaler;
         private static List<IDisposable> mPendingDisposables = new List<IDisposable>();
@@ -1532,6 +1814,25 @@ namespace ProtoFFI
                 var hash = 0;
                 hash = (hash * 397) ^ obj.Pointer.GetHashCode();
                 hash = (hash * 397) ^ obj.metaData.type.GetHashCode();
+                return hash;
+            }
+        }
+    }
+
+    internal class CLRPointerValueComparer : IEqualityComparer<CLRStackValue>
+    {
+        public bool Equals(CLRStackValue x, CLRStackValue y)
+        {
+            return object.ReferenceEquals(x.Value, y.Value) && x.TypeUID == y.TypeUID;
+        }
+
+        public int GetHashCode(CLRStackValue obj)
+        {
+            unchecked
+            {
+                var hash = 0;
+                hash = (hash * 397) ^ obj.Value.GetHashCode();
+                hash = (hash * 397) ^ obj.TypeUID.GetHashCode();
                 return hash;
             }
         }

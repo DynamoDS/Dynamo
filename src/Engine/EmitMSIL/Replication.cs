@@ -14,59 +14,73 @@ namespace EmitMSIL
 {
     public class Replication
     {
-        internal static CLRStackValue MarshalStackValue(object obj, MSILRuntimeCore runtimeCore)
+        internal static List<CLRStackValue> MarshalFunctionArguments(IList args, MSILRuntimeCore runtimeCore)
         {
-            var marshaller = ProtoFFI.CLRObjectMarshaler.GetInstance(runtimeCore);
-
-            if (obj == null) return CLRStackValue.Null;
-
-            if (obj is IEnumerable arr)
-            {
-                List<CLRStackValue> list = new List<CLRStackValue>();
-                int maxRank = 0;
-                foreach (object item in arr)
-                {
-                    CLRStackValue mObj = MarshalStackValue(item, runtimeCore);
-                    maxRank = mObj.Rank > maxRank ? mObj.Rank : maxRank;
-                    list.Add(mObj);
-                }
-                CLRStackValue dsList = marshaller.Marshal(list, list.GetType(), runtimeCore);
-                dsList.Rank += 1;//Increment rank
-                return dsList;
-            }
-            CLRStackValue dsObj = marshaller.Marshal(obj, obj.GetType(), runtimeCore);
-            return dsObj;
-        }
-
-        internal static object UnmarshalStackValue(CLRStackValue sv, MSILRuntimeCore runtimeCore)
-        {
-            if (sv.IsNull) return null;
-
-            if (sv.IsEnumerable)
-            {
-                var list = new List<object>();
-                foreach (var item in sv.Value as IEnumerable<CLRStackValue>)
-                {
-                    var mObj = UnmarshalStackValue(item, runtimeCore);
-                    list.Add(mObj);
-                }
-                return list;
-            }
-            else
-            {
-                return sv.Value;
-            }
-        }
-
-        internal static List<CLRStackValue> MarshalStackValues(IList args, MSILRuntimeCore runtimeCore)
-        {
+            var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
             List<CLRStackValue> stackValues = new List<CLRStackValue>();
             foreach (var arg in args)
             {
-                CLRStackValue dsArg = MarshalStackValue(arg, runtimeCore);
-                stackValues.Add(dsArg);
+                var protoType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(arg.GetType());
+                CLRStackValue dsObj = marshaller.Marshal(arg, protoType, runtimeCore);
+                stackValues.Add(dsObj);
             }
             return stackValues;
+        }
+
+        internal static List<object> UnmrshalFunctionArguments(List<CLRFunctionEndPoint.ParamInfo> formalParams, List<CLRStackValue> args, MSILRuntimeCore runtimeCore)
+        {
+            var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
+            List<object> values = new List<object>();
+
+            Validity.Assert(formalParams.Count == args.Count);
+
+            for (int i = 0; i < args.Count; ++i)
+            {
+                CLRStackValue arg = args[i];
+                System.Type paramType = formalParams[i].CLRType;
+                try
+                {
+                    object param = null;
+                    if (arg.IsDefaultArgument)
+                        param = System.Type.Missing;
+                    else
+                        param = marshaller.UnMarshal(arg, paramType, runtimeCore);
+
+                    /*
+                    if (paraminfos[i].KeepReference && opArg.IsReferenceType)
+                    {
+                        referencedParameters.Add(opArg);
+                    }*/
+
+                    //null is passed for a value type, so we must return null 
+                    //rather than interpreting any value from null. fix defect 1462014 
+                    if (!paramType.IsGenericType && paramType.IsValueType && param == null)
+                    {
+                        //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
+
+                        runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation,
+                            string.Format(Resources.FailedToCastFromNull, paramType.Name));
+
+                        return null;
+                        //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+
+                    }
+
+                    values.Add(param);
+                }
+                catch (System.InvalidCastException ex)
+                {
+                    runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
+                    return null;
+                }
+                catch (InvalidOperationException)
+                {
+                    string message = String.Format(Resources.kFFIFailedToObtainObject, paramType.Name, formalParams[i].CLRInfo.Member.DeclaringType.Name, formalParams[i].CLRInfo.Member.Name);
+                    runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
+                    return null;
+                }
+            }
+            return values;
         }
 
         internal static List<CLRFunctionEndPoint> ConvertMethodsToFEPs(IEnumerable<MethodBase> methods)
@@ -98,7 +112,7 @@ namespace EmitMSIL
         {
             MSILRuntimeCore runtimeCore = MSILRuntimeCore.Instance;
 
-            var stackValues = MarshalStackValues(args, runtimeCore);
+            var stackValues = MarshalFunctionArguments(args, runtimeCore);
 
             var reducedArgs = ReduceArgs(stackValues);
 
@@ -131,7 +145,6 @@ namespace EmitMSIL
                 result = ExecWithRISlowPath(finalFep, reducedArgs, replicationInstructions, runtimeCore);
             }
 
-            // TODO: implement proper Marshaler
             return new[] { result };
         }
 
@@ -368,13 +381,8 @@ namespace EmitMSIL
         {
             List<CLRStackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, runtimeCore);
 
-            List<object> args = new List<object>();
-            foreach(var item in coercedParameters)
-            {
-                var arg = UnmarshalStackValue(item, runtimeCore);
-                args.Add(arg);
-            }
-            
+            List<object> args = UnmrshalFunctionArguments(finalFep.Parameters, coercedParameters, runtimeCore);
+
             // Testing invoking method without replication
             object result;
             if (finalFep.method.IsStatic)
@@ -386,8 +394,8 @@ namespace EmitMSIL
                 result = finalFep.method.Invoke(args[0], args.Skip(1).ToArray());
             }
 
-            var marshaller = ProtoFFI.CLRObjectMarshaler.GetInstance(runtimeCore);
-            CLRStackValue dsRetValue = marshaller.Marshal(result, finalFep.ReturnType, runtimeCore);
+            var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
+            CLRStackValue dsRetValue = marshaller.Marshal(result, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(finalFep.ReturnType), runtimeCore);
 
             if (!dsRetValue.IsExplicitCall)
             {
@@ -395,7 +403,7 @@ namespace EmitMSIL
                 dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep, dsRetValue, runtimeCore);
             }
 
-            return dsRetValue;
+            return marshaller.UnMarshal(dsRetValue, finalFep.ReturnType, runtimeCore);
         }
 
         private static IEnumerable<CLRStackValue> getSubParameters(CLRStackValue o)

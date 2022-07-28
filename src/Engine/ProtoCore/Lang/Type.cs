@@ -374,7 +374,7 @@ namespace ProtoCore
             //@TODO: Add proper coersion testing here.
 
             if (targetType.UID == (int)PrimitiveType.Bool)
-                return new CLRStackValue(true, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(bool)));
+                return new CLRStackValue(true, (int)PrimitiveType.Bool);
 
             return sv;
         }
@@ -601,7 +601,7 @@ namespace ProtoCore
             if (sv.IsDefaultArgument)
                 return sv;
 
-            if (!((sv.ProtoType.UID == targetType.UID) ||
+            if (!((sv.TypeUID == targetType.UID) ||
                   runtimeCore.ConvertibleTo(sv, targetType) ||
                   sv.IsEnumerable))
             {
@@ -654,7 +654,7 @@ namespace ProtoCore
                     coercedValues.Add(coercedValue);
                 }
 
-                return new CLRStackValue(coercedValues, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(coercedValues.GetType()), targetType.rank);
+                return new CLRStackValue(coercedValues, (int)PrimitiveType.Array);
             }
 
             // Null can be converted to Boolean so we will allow it in the case of indexable types
@@ -706,14 +706,14 @@ namespace ProtoCore
 
                 case (int)PrimitiveType.Char:
                     {
-                        return new CLRStackValue(Convert.ToChar(sv.Value), ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(char)));
+                        return new CLRStackValue(Convert.ToChar(sv.Value), (int)PrimitiveType.Char);
                     }
 
                 case (int)PrimitiveType.Double:
                     return sv.ToDouble();
 
                 case (int)PrimitiveType.FunctionPointer:
-                    if (sv.ProtoType.UID != (int)PrimitiveType.FunctionPointer)
+                    if (sv.TypeUID != (int)PrimitiveType.FunctionPointer)
                     {
                         //runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToFunction);
                         return CLRStackValue.Null;
@@ -727,7 +727,7 @@ namespace ProtoCore
 
                 case (int)PrimitiveType.Null:
                     {
-                        if (sv.ProtoType.UID != (int)PrimitiveType.Null)
+                        if (sv.TypeUID != (int)PrimitiveType.Null)
                         {
                             //runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToNull);
                             return CLRStackValue.Null;
@@ -737,7 +737,7 @@ namespace ProtoCore
 
                 case (int)PrimitiveType.Pointer:
                     {
-                        if (sv.ProtoType.UID != (int)PrimitiveType.Null)
+                        if (sv.TypeUID != (int)PrimitiveType.Null)
                         {
                             //runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToPointer);
                             return CLRStackValue.Null;
@@ -747,7 +747,7 @@ namespace ProtoCore
 
                 case (int)PrimitiveType.String:
                     {
-                        return new CLRStackValue(Convert.ToString(sv.Value), ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(typeof(string)));
+                        return new CLRStackValue(Convert.ToString(sv.Value), (int)PrimitiveType.String);
                     }
 
                 case (int)PrimitiveType.Var:
@@ -764,7 +764,7 @@ namespace ProtoCore
                             coercedValues.Add(coercedValue);
                         }
 
-                        return new CLRStackValue(coercedValues, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(coercedValues.GetType()), targetType.rank);
+                        return new CLRStackValue(coercedValues, (int)PrimitiveType.Array);
                     }
 
                 default:

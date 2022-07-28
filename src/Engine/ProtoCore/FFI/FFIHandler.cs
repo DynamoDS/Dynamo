@@ -56,7 +56,7 @@ namespace ProtoFFI
         /// <returns>Marshaled object as Operand</returns>
         public abstract StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type);
         
-        internal virtual CLRStackValue Marshal(object obj, Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal virtual CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
         {
             throw new NotImplementedException();
         }

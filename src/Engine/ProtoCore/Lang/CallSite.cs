@@ -2057,7 +2057,7 @@ namespace ProtoCore
                 return ret;
             }
 
-            if (ret.ProtoType.UID == retType.UID)
+            if (ret.TypeUID == retType.UID)
             {
                 if (!ret.IsEnumerable && retType.IsIndexable)
                 {

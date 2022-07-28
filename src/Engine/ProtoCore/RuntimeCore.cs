@@ -382,11 +382,11 @@ namespace ProtoCore
     internal class MSILRuntimeCore
     {
         // The global class table and function tables
-        internal ClassTable ClassTable { get; set; }
-        internal ProcedureTable ProcTable { get; set; }
-        internal ProcedureNode ProcNode { get; set; }
-        internal TypeSystem TypeSystem { get; set; }
-        internal InternalAttributes internalAttributes { get; set; }
+        private ClassTable ClassTable { get; set; }
+        private ProcedureTable ProcTable { get; set; }
+        private ProcedureNode ProcNode { get; set; }
+        private TypeSystem TypeSystem { get; set; }
+        private InternalAttributes internalAttributes { get; set; }
 
         protected MSILRuntimeCore()
         {
@@ -403,15 +403,24 @@ namespace ProtoCore
         private static MSILRuntimeCore instance;
         internal static MSILRuntimeCore Instance => instance == null ? new MSILRuntimeCore() : instance;
 
-        internal CLRStackValue MakeStackValueArr(CLRStackValue val)
-        {
-            var values = new List<CLRStackValue> { val };
-            return new CLRStackValue(values, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(values.GetType()), val.Rank + 1);
-        }
-
         internal bool ConvertibleTo(CLRStackValue from, Type to)
         {
-            return ClassTable.ClassNodes[from.ProtoType.UID]?.ConvertibleTo(to.UID) ?? false;
+            return ClassTable.ClassNodes[from.TypeUID]?.ConvertibleTo(to.UID) ?? false;
+        }
+
+        internal void LogWarning(Runtime.WarningID ID, string message)
+        {
+            System.Console.WriteLine($"{ID}{message}");
+        }
+
+        internal int GetProtoCoreTypeID(System.Type type)
+        {
+            int typeUID = ClassTable.IndexOf(CLRObjectMarshaler.GetTypeName(type));
+            if (typeUID == ProtoCore.DSASM.Constants.kInvalidIndex)
+            {
+                typeUID = CLRModuleType.GetProtoCoreType(type, null).UID;
+            }
+            return typeUID;
         }
     }
 }
