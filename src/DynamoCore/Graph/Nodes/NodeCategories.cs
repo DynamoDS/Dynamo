@@ -401,6 +401,25 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// Check if a give path is a relative path or not
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        internal static bool IsAbsolutePath(string path)
+        {
+            try
+            {
+                new Uri(path, UriKind.Absolute);
+                return true;
+            }
+            catch(Exception)
+            {
+                new Uri(path, UriKind.Relative);
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Returns words from text, e.g. ImportFromCSV to ("Import","From","CSV")
         /// </summary>
         /// <param name="text">incoming string</param>

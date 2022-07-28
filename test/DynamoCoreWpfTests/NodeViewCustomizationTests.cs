@@ -69,7 +69,7 @@ namespace DynamoCoreWpfTests
             Open(@"UI\CoreUINodes.dyn");
 
             var nodeView = NodeViewWithGuid("3d436f17-cc3d-4b84-afd9-fc71ff538b3b"); // NodeViewOf<StringInput>();
-            var element = nodeView.ChildrenOfType<TextBox>().First();
+            var element = nodeView.ChildrenOfType<TextBox>().First(x => string.IsNullOrEmpty(x.Name));
             Assert.AreEqual("\"ok\"", element.Text);
         }
 
