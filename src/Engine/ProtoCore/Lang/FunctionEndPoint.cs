@@ -28,7 +28,7 @@ namespace ProtoCore
 
         public MethodBase method;
 
-        public List<ParamInfo> Parameters
+        public List<ParamInfo> FormalParams
         {
             get;
             set;
@@ -45,7 +45,7 @@ namespace ProtoCore
             for (int i = 0; i < formalParameters.Count; i++)
             {
                 CLRStackValue formalParam = formalParameters[i];
-                CLRFunctionEndPoint.ParamInfo targetParam = Parameters[i];
+                CLRFunctionEndPoint.ParamInfo targetParam = FormalParams[i];
 
                 CLRStackValue coercedParam = TypeSystem.Coerce(formalParam, targetParam.ProtoInfo, runtimeCore);
                 fixedUpVersions.Add(coercedParam);
@@ -75,12 +75,12 @@ namespace ProtoCore
             return (int)ProcedureDistance.InvalidDistance;
         }
 
-        internal int ComputeCastDistance(List<CLRStackValue> args)
+        internal int ComputeCastDistance(List<CLRStackValue> args, MSILRuntimeCore runtimeCore)
         {
             //Compute the cost to migrate a class calls argument types to the coresponding base types
             //This cannot be used to determine whether a function can be called as it will ignore anything that doesn't
             //it should only be used to determine which class is closer
-            if (args.Count != Parameters.Count)
+            if (args.Count != FormalParams.Count)
             {
                 return int.MaxValue;
             }
@@ -93,17 +93,18 @@ namespace ProtoCore
             int distance = 0;
             for (int i = 0; i < args.Count; ++i)
             {
-                var rcvdType = args[i].Type;
+                int rcvdTypeId = args[i].TypeUID;
+                System.Type rcvdType = args[i].Type;
 
                 // If its a default argumnet, then it wasnt provided by the caller
                 // The rcvdType is the type of the argument signature
-                // TODO: figure out IsDefaultArgument
-                /*if (args[i].IsDefaultArgument)
+                if (args[i].IsDefaultArgument)
                 {
-                    rcvdType = FormalParams[i].UID;
-                }*/
+                    rcvdTypeId = FormalParams[i].UID;
+                    rcvdType = FormalParams[i].CLRType;
+                }
 
-                var expectedType = Parameters[i];
+                var expectedType = FormalParams[i];
                 if (expectedType.IsIndexable != args[i].IsEnumerable) //Replication code will take care of this
                 {
                     continue;
@@ -112,15 +113,15 @@ namespace ProtoCore
                 {
                     continue;
                 }
-                else if (expectedType.CLRType == rcvdType)
+                else if (expectedType.UID == rcvdTypeId)
                 {
                     continue;
                 }
-                else if (rcvdType != null && expectedType.CLRType != null)
+                else if (rcvdTypeId != Constants.kInvalidIndex && expectedType.UID != Constants.kInvalidIndex)
                 {
                     int currentCost = ClassUtils.GetUpcastCountTo(
-                        rcvdType,
-                        expectedType.CLRType);
+                        (rcvdTypeId, rcvdType),
+                        (expectedType.UID, expectedType.CLRType));
                     distance += currentCost;
                 }
             }
@@ -129,12 +130,12 @@ namespace ProtoCore
 
         internal int ComputeTypeDistance(List<CLRStackValue> args, bool allowArrayPromotion = false)
         {
-            if (args.Count == 0 && Parameters.Count == 0)
+            if (args.Count == 0 && FormalParams.Count == 0)
             {
                 return (int)ProcedureDistance.ExactMatchDistance;
             }
 
-            if (args.Count != Parameters.Count)
+            if (args.Count != FormalParams.Count)
             {
                 return (int)ProcedureDistance.MaxDistance;
             }
@@ -154,7 +155,7 @@ namespace ProtoCore
                     rcvdType = FormalParams[i].UID;
                 }*/
 
-                var expectedType = Parameters[i];
+                var expectedType = FormalParams[i];
                 int currentScore = (int)ProcedureDistance.NotMatchScore;
 
                 //sv rank > param rank
@@ -178,7 +179,7 @@ namespace ProtoCore
                     }
                 }
 
-                if (expectedType.IsIndexable && (Parameters[i].IsIndexable == args[i].IsEnumerable))
+                if (expectedType.IsIndexable && (FormalParams[i].IsIndexable == args[i].IsEnumerable))
                 {
                     //In case of conversion from double to int, add a conversion score.
                     //There are overloaded methods and the difference is the parameter type between int and double.
