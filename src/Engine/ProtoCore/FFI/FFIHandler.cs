@@ -95,7 +95,7 @@ namespace ProtoFFI
 
         internal virtual void OnDispose(CLRStackValue dsObject)
         {
-            throw new NotImplementedException();
+            return;
         }
 
         /// <summary>
