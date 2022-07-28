@@ -406,12 +406,12 @@ namespace EmitMSIL
             return marshaller.UnMarshal(dsRetValue, finalFep.ReturnType, runtimeCore);
         }
 
-        private static IEnumerable<CLRStackValue> getSubParameters(CLRStackValue o)
+        private static IList<CLRStackValue> getSubParameters(CLRStackValue o)
         {
 
-            if (ArrayUtils.IsEnumerable(o.GetType()))
+            if (o.IsEnumerable)
             {
-                return o.Value as IEnumerable<CLRStackValue>;
+                return o.Value as IList<CLRStackValue>;
             }
             else
             {

@@ -1,0 +1,69 @@
+﻿using NUnit.Framework;
+using ProtoCore.Utils;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CodeGenILTests
+{
+    class ReplicationTests
+    {
+        private EmitMSIL.CodeGenIL codeGen;
+        private Dictionary<string, IList> inputs = new Dictionary<string, IList>();
+
+        [SetUp]
+        public void Setup()
+        {
+            var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(assemblyPath, "OpCodesTEST.txt"));
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            codeGen.Dispose();
+        }
+
+        [Test]
+        public void MSIL_Arithmatic_List_And_List_Same_Length()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max([ 1, 4, 7, 2], [ 5, 8, 3, 6 ]);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[] { 5, 8, 7, 6 };
+            var result = output["list3"][0];
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void MSIL_Arithmatic_No_Replication()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list = DSCore.Math.Sum([ 1, 2, 3 ]);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list"));
+
+            var result = (double)output["list"][0];
+            Assert.AreEqual(6, result);
+        }
+    }
+}
