@@ -24,9 +24,15 @@ namespace EmitMSIL
         private IDictionary<string, IList> output;
         private int localVarIndex = -1;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
+        private Dictionary<int, Type> aSTTypeInfoMap = new Dictionary<int, Type>();
         private StreamWriter writer;
         private Dictionary<int, IEnumerable<MethodBase>> methodCache = new Dictionary<int, IEnumerable<MethodBase>>();
         private CompilePass compilePass;
+
+        /// <summary>
+        /// When false, emit calls will be nops. Default is true.
+        /// </summary>
+        internal bool EmitEnabled { get; set; } = true;
 
         private enum CompilePass
         {
@@ -34,6 +40,7 @@ namespace EmitMSIL
             MethodLookup,
             // Compile pass that performs the actual MSIL opCode emission
             emitIL,
+            GatherTypeInfo,
             Done
         }
 
@@ -100,6 +107,15 @@ namespace EmitMSIL
                 System.Reflection.MethodAttributes.Static, typeof(void), new[] { typeof(IDictionary<string, IList>),
                 typeof(IDictionary<int, IEnumerable<MethodBase>>), typeof(IDictionary<string, IList>)});
             ilGen = execMethod.GetILGenerator();
+
+            compilePass = CompilePass.GatherTypeInfo;
+            EmitEnabled = false;
+            // 5. Traverse AST and use ILGen to gather what type info we can.
+            foreach (var ast in astList)
+            {
+                DfsTraverse(ast);
+            }
+            EmitEnabled = true;
 
             compilePass = CompilePass.emitIL;
             // 5. Traverse AST and use ILGen to emit code for Execute method
@@ -360,47 +376,66 @@ namespace EmitMSIL
                     EmitGroupExpressionNode(node);
                     break;
             }
+            if(compilePass == CompilePass.GatherTypeInfo)
+            {
+                if (aSTTypeInfoMap.ContainsKey(node.ID))
+                {
+                    throw new Exception($"ast {node.ID}:{node.Kind} already exists in map, changing type?");
+                }
+                else
+                {
+                    aSTTypeInfoMap.Add(node.ID, t);
+                }
+            }
             return t;
         }
 
         private LocalBuilder DeclareLocal(Type t)
         {
+            if (!EmitEnabled) return null;
             writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {t}");
             return ilGen.DeclareLocal(t);
         }
 
         private void EmitOpCode(OpCode opCode, LocalBuilder local)
         {
-            ilGen.Emit(opCode, local);
-            writer.WriteLine($"{opCode} {local}");
+            if (!EmitEnabled) return;
+                ilGen.Emit(opCode, local);
+                writer.WriteLine($"{opCode} {local}");
         }
 
         private void EmitOpCode(OpCode opCode)
         {
+            if (!EmitEnabled) return;
             ilGen.Emit(opCode);
             writer.WriteLine(opCode);
         }
 
         private void EmitOpCode(OpCode opCode, Type t)
         {
+            if (!EmitEnabled) return;
+
             ilGen.Emit(opCode, t);
             writer.WriteLine($"{opCode} {t}");
         }
 
         private void EmitOpCode(OpCode opCode, int index)
         {
+            if (!EmitEnabled) return;
             ilGen.Emit(opCode, index);
             writer.WriteLine($"{opCode} {index}");
         }
 
         private void EmitOpCode(OpCode opCode, string str)
         {
+            if (!EmitEnabled) return;
             ilGen.Emit(opCode, str);
             writer.WriteLine($"{opCode} {str}");
         }
 
         private void EmitOpCode(OpCode opCode, MethodBase mBase)
         {
+            if (!EmitEnabled) return;
             var mInfo = mBase as MethodInfo;
             if (mInfo != null)
             {
@@ -416,17 +451,20 @@ namespace EmitMSIL
 
         private void EmitOpCode(OpCode opCode, double val)
         {
+            if (!EmitEnabled) return;
             ilGen.Emit(opCode, val);
             writer.WriteLine($"{opCode} {val}");
         }
 
         private void EmitOpCode(OpCode opCode, long val)
         {
+            if (!EmitEnabled) return;
             ilGen.Emit(opCode, val);
             writer.WriteLine($"{opCode} {val}");
         }
         private void EmitILComment(string comment)
         {
+            if (!EmitEnabled) return;
             writer.WriteLine($"//{comment}");
         }
 
@@ -474,15 +512,18 @@ namespace EmitMSIL
                 {
                     throw new Exception("Left node is expected to be an identifier.");
                 }
-                if (variables.ContainsKey(lNode.Value))
+                if (compilePass == CompilePass.GatherTypeInfo)
                 {
-                    // variable being assigned already exists in dictionary.
-                    throw new Exception("Variable redefinition is not allowed.");
+                    if (variables.ContainsKey(lNode.Value))
+                    {
+                        // variable being assigned already exists in dictionary.
+                        throw new Exception("Variable redefinition is not allowed.");
+                    }
+                    variables.Add(lNode.Value, new Tuple<int, Type>(++localVarIndex, t));
                 }
-                variables.Add(lNode.Value, new Tuple<int, Type>(++localVarIndex, t));
                 DeclareLocal(t);
-
-                EmitOpCode(OpCodes.Stloc, localVarIndex);
+                var currentLocalVarIndex = variables[lNode.Value].Item1;
+                EmitOpCode(OpCodes.Stloc, currentLocalVarIndex);
                 // Add variable to output dictionary: output.Add("varName", variable);
                 EmitOpCode(OpCodes.Ldarg_2);
                 EmitOpCode(OpCodes.Ldstr, lNode.Value);
@@ -610,9 +651,31 @@ namespace EmitMSIL
         //tries to emit opcodes for indexing an array or dictioanry
         private (bool success, Type type) TryEmitIndexing(FunctionCallNode fcn)
         {
+          
 
             //to emit the correct msil we need to know the type of collection we are indexing.
             var array = fcn.FormalArguments.FirstOrDefault();
+
+            //lets check the types in the astTypeMap - if enough info is known
+            //we can proceed to emit indexing opcodes.
+            if(compilePass == CompilePass.emitIL)
+            {
+                Type arrayT;
+                if (aSTTypeInfoMap.TryGetValue(array.ID, out arrayT))
+                {
+                    //can't handle these with compile time indexing.
+                    //TODO remove IList from this if stmt when we figure out function call return wrapping behavior.
+                    if (arrayT == null || arrayT == typeof(IList) || arrayT == typeof(object))
+                    {
+                        return (false, null);
+                    }
+                }
+                else
+                {
+                    return (false, null);
+                }
+            }
+          
             //emit load array to stack.
             var t = DfsTraverse(array);
 
@@ -735,10 +798,11 @@ namespace EmitMSIL
                     return null;
                 }
                 //try to emit indexing
-                else if (compilePass == CompilePass.emitIL)
                 {
                     //if we succeed, no need to emit a function call for indexing.
-                    //if we fail to emit direct indexing, we should emit a function call for one of the ValueAtIndex() overloads.
+                    //if we fail to emit direct indexing, we should emit a function
+                    //call for one of the ValueAtIndex() overloads or ValueAtIndexDynamic().
+
                     var indexResult = TryEmitIndexing(fcn);
                     if (indexResult.success)
                     {
@@ -773,8 +837,11 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Call, keygen);
 
             var local = DeclareLocal(typeof(IEnumerable<MethodBase>));
-
-            EmitOpCode(OpCodes.Ldloca, local);
+            //local could be null if we are not emitting currently.
+            if(local != null)
+            {
+                EmitOpCode(OpCodes.Ldloca, local);
+            }
 
             // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<MethodBase> mInfos)
             var dictLookup = typeof(IDictionary<int, IEnumerable<MethodBase>>).GetMethod(
@@ -782,7 +849,10 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Callvirt, dictLookup);
 
             EmitOpCode(OpCodes.Pop);
-            EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
+            if (local != null)
+            {
+                EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
+            }
 
             // Retrieve previously cached functions
             // TODO: Decide whether to process overloaded methods at compile time or leave it for runtime.
