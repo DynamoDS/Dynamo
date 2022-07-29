@@ -23,7 +23,11 @@ namespace Dynamo.Tests
         {
             var di = new DirectoryInfo(Path.Combine(TestDirectory, "core", "performance"));
             var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
-            return fis.Select(fi => fi.FullName).ToArray();
+
+            // Ignore aniform and lotsofcoloredstuff for now
+            return fis.Where(
+                    fi=>fi.Name != "aniform.dyn" 
+                    && fi.Name != "lotsofcoloredstuff.dyn").Select(fi => fi.FullName).ToArray();
         }
 
         [Test, TestCaseSource("FindWorkspaces"), Category("Performance")]
