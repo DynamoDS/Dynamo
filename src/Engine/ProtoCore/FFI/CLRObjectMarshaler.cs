@@ -447,11 +447,11 @@ namespace ProtoFFI
             return result.ToArray();
         }
 
-        protected List<T> UnMarshal<T>(CLRStackValue dsObject, ProtoCore.MSILRuntimeCore runtimeCore)
+        protected T[] UnMarshal<T>(CLRStackValue dsObject, ProtoCore.MSILRuntimeCore runtimeCore)
         {
             var result = new List<T>();
             if (!dsObject.IsEnumerable)
-                return result;
+                return result.ToArray();
 
             var dsElements = dsObject.Value as IList<CLRStackValue>;
             Type objType = typeof(T);
@@ -473,7 +473,7 @@ namespace ProtoFFI
                 }
             }
 
-            return result;
+            return result.ToArray();
         }
 
         private ICollection ToICollection(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type arrayType)
@@ -515,7 +515,7 @@ namespace ProtoFFI
             return arrList;
         }
 
-        private IList ToICollection(CLRStackValue dsObject, System.Type arrayType, ProtoCore.MSILRuntimeCore runtimeCore)
+        private ICollection ToICollection(CLRStackValue dsObject, System.Type arrayType, ProtoCore.MSILRuntimeCore runtimeCore)
         {
             if (arrayType.IsArray)
             {
@@ -541,7 +541,7 @@ namespace ProtoFFI
             //  use arraylist instead of object[], this allows us to correctly capture 
             //  the type of objects being passed
             //
-            List<object> arrList = new List<object>();
+            ArrayList arrList = new ArrayList();
             var elementType = arrayType.GetElementType();
             if (elementType == null)
                 elementType = typeof(object);
@@ -597,28 +597,36 @@ namespace ProtoFFI
                 arrayType = elementType.MakeArrayType();
             }
 
-            IList collection = null;
+            ICollection collection = null;
             if (dsObject.IsEnumerable)
             {
                 collection = ToICollection(dsObject, arrayType, runtimeCore);
             }
-            /* TODO_MSIL: figure out if we need to handle these cases
+            else
+            {
+                // If dsObject is non array pointer but the expectedCLRType is IEnumerable, promote the dsObject to a collection.
+                Validity.Assert(typeof(IEnumerable).IsAssignableFrom(expectedCLRType));
+                var obj = primitiveMarshaler.UnMarshal(dsObject, elementType, runtimeCore);
+                collection = new ArrayList(new object[] { obj });
+            }
+
+            // TODO_MSIL: figure out if we need to handle this case
             if (expectedCLRType.IsGenericType && !expectedCLRType.IsInterface)
             {
                 if (!collection.GetType().IsArray)
                 {
-                    Validity.Assert(collection is IList<object>);
-                    collection = (collection as IList<object>).ToArray(elementType);
+                    Validity.Assert(collection is ArrayList);
+                    collection = (collection as ArrayList).ToArray(elementType);
                 }
                 return Activator.CreateInstance(expectedCLRType, new[] { collection });
             }
 
             if (expectedCLRType.IsArray || expectedCLRType.IsGenericType)
             {
-                var list = collection as IList;
+                var list = collection as ArrayList;
                 if (null != list)
                     return list.ToArray(elementType);
-            }*/
+            }
 
             return collection;
         }

@@ -204,7 +204,7 @@ namespace EmitMSIL
         /// <param name="arguments"></param>
         /// <param name="partialReplicationGuides"></param>
         /// <returns></returns>
-        private static List<List<ReplicationGuide>> PerformRepGuideDemotion(IList arguments,
+        private static List<List<ReplicationGuide>> PerformRepGuideDemotion(List<CLRStackValue> arguments,
             List<List<ReplicationGuide>> providedReplicationGuides)
         {
             if (providedReplicationGuides.Count == 0)
@@ -219,7 +219,7 @@ namespace EmitMSIL
                 }
 
                 //We have rep guides
-                if (arguments[i] is IList)
+                if (arguments[i].IsEnumerable)
                 {
                     //Rep guides on array, use guides as provided
                     return providedReplicationGuides;

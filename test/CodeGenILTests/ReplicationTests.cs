@@ -65,5 +65,59 @@ list = DSCore.Math.Sum([ 1, 2, 3 ]);
             var result = (double)output["list"][0];
             Assert.AreEqual(6, result);
         }
+
+        [Test]
+        public void MSIL_Replication_BuiltinMethods()
+        {
+            string code =
+            @" 
+                import(""DesignScriptBuiltin.dll"");
+                import(""DSCoreNodes.dll"");
+                x = [0,1,2,3];
+                y = [0,1];
+                z = [ ""int"", ""double"" ];
+                test1 = DSCore.List.Contains (x, y);
+                test2 = DSCore.List.IndexOf (x, y);
+                test3 = DSCore.List.RemoveItemAtIndex (x, y);
+                test4 = DSCore.List.NormalizeDepth (x, y);
+            ";
+
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.AreEqual(output["test1"], new Object[] { new Object[] { true, true } });
+            Assert.AreEqual(output["test2"], new Object[] { new Object[] { 0, 1 } });
+            Assert.AreEqual(output["test3"], new Object[] { new Object[] { 2, 3 } });
+            Assert.AreEqual(output["test4"], new Object[] { new Object[] { new Object[] { 0, 1, 2, 3 }, new Object[] { 0, 1, 2, 3 } } });
+        }
+
+        [Test]
+        public void MSIL_ReplicationGuides_BuiltinMethods()
+        {
+            string code =
+            @" 
+                import(""DesignScriptBuiltin.dll"");
+                import(""DSCoreNodes.dll"");
+                x = [[0,1],[2,3]];
+                y = [0,1];
+                z = [ ""int"", ""double"" ];
+                test1 = DSCore.List.Contains(x<1>, y<2>);
+                test2 = DSCore.List.IndexOf(x<1>, y<2>);
+                test3 = DSCore.List.RemoveItemAtIndex(x<1>, y<2>);
+                test4 = DSCore.List.Insert(x<1>, y<2>, y<2>);
+                test5 = DSCore.List.NormalizeDepth(x<1>, y<2>);
+            ";
+
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.AreEqual(output["test1"][0], new Object[] { new Object[] { true, true }, new Object[] { false, false } });
+            Assert.AreEqual(output["test2"][0], new Object[] { new Object[] { 0, 1 }, new Object[] { -1, -1 } });
+            Assert.AreEqual(output["test3"][0], new Object[] { new Object[] { new Object[] { 1 }, new Object[] { 0 } }, new Object[] { new Object[] { 3 }, new Object[] { 2 } } });
+            Assert.AreEqual(output["test4"][0], new Object[] { new Object[] { new Object[] { 0, 0, 1 }, new Object[] { 0, 1, 1 } }, new Object[] { new Object[] { 0, 2, 3 }, new Object[] { 2, 1, 3 } } });
+            Assert.AreEqual(output["test5"][0], new Object[] { new Object[] { new Object[] { 0, 1 }, new Object[] { 0, 1 } }, new Object[] { new Object[] { 2, 3 }, new Object[] { 2, 3 } } });
+        }
     }
 }
