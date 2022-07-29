@@ -9,11 +9,10 @@ using System;
 
 namespace CodeGenILTests
 {
-    [TestFixture]
     public class MicroTests
     {
-        private EmitMSIL.CodeGenIL codeGen;
-        private Dictionary<string, IList> inputs = new Dictionary<string, IList>();
+        protected EmitMSIL.CodeGenIL codeGen;
+        protected Dictionary<string, IList> inputs = new Dictionary<string, IList>();
 
         [SetUp]
         public void Setup()
@@ -21,12 +20,19 @@ namespace CodeGenILTests
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(assemblyPath, "OpCodesTEST.txt"));
         }
+
         [TearDown]
         public void TearDown()
         {
             codeGen.Dispose();
         }
-#region constants
+    }
+
+    [TestFixture]
+    public class RangeMicroTests : MicroTests
+    {
+    #region constants
+
         [Test]
         public void RangeTestInts_nullstep()
         {
@@ -271,6 +277,5 @@ fr..#to..step;";
             CollectionAssert.AreEqual(new object[] { 0, 5, 10, 15, 20, 25, 30, 35, 40, 45 }, output.Values.ToList()[3][0] as double[]);
         }
         #endregion
-
     }
 }
