@@ -135,7 +135,8 @@ namespace ProtoFFI
 
         internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
         {
-            return new CLRStackValue(Convert.ToInt64(obj), (int)ProtoCore.PrimitiveType.Integer);
+            object value = obj.GetType() == typeof(long) ? obj : Convert.ToInt64(obj);
+            return new CLRStackValue(value, (int)ProtoCore.PrimitiveType.Integer);
         }
 
         internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
@@ -187,7 +188,8 @@ namespace ProtoFFI
 
         internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
         {
-            return new CLRStackValue(System.Convert.ToDouble(obj), (int)ProtoCore.PrimitiveType.Double);
+            object value = obj.GetType() == typeof(double) ? obj : Convert.ToDouble(obj);
+            return new CLRStackValue(value, (int)ProtoCore.PrimitiveType.Double);
         }
 
         internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
