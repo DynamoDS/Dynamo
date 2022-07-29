@@ -487,7 +487,7 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Ldarg_2);
                 EmitOpCode(OpCodes.Ldstr, lNode.Value);
                 // if t is a single value, wrap it in an array of the single value.
-                if (!typeof(IEnumerable).IsAssignableFrom(t))
+                if (!typeof(IEnumerable).IsAssignableFrom(t) || typeof(string).IsAssignableFrom(t))
                 {
                     var localVarIndxes = new List<int>() { localVarIndex };
                     EmitArray(t, localVarIndxes, (int varIdx, int _) =>

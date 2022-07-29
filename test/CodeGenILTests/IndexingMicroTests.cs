@@ -135,7 +135,6 @@ c=a[b];";
             Assert.AreEqual(8, output.Values.ToList()[2][0]);
         }
         [Test]
-        [Category("Failure")]//I can't understand this failure, the IL is valid but the loading the element retrieves an IList instead of a string...
         public void IndexIntoArray_StringArray()
         {
             var dscode = @"
@@ -145,7 +144,18 @@ b=a[2];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual("C", output.Values.ToList()[1][0]);
+            Assert.AreEqual("C", output["b"][0]);
+        }
+        [Test]
+        public void Simple_StringOutputTests()
+        {
+            var dscode = @"
+a = ""AAA"";";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual("AAA", output["a"][0]);
+            Assert.IsInstanceOf<string>(output["a"][0]);
         }
         [Test]
         public void IndexIntoArray_ObjectArray()
