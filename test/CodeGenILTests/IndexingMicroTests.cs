@@ -75,7 +75,7 @@ c=a[b];";
             Assert.AreEqual(1.1, output.Values.ToList()[2][0]);
         }
         [Test]
-        [Category("Failure")]//fails because we need to emit multiple ldelem opcodes per index.
+        [Category("Failure")]//fails because we need to emit multiple ldelem opcodes per index or fallback to replication.
         public void IndexArrayWithArrayConstants()
         {
             var dscode = @"
