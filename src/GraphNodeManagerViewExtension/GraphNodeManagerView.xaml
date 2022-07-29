@@ -9,6 +9,8 @@
              xmlns:p="clr-namespace:Dynamo.GraphNodeManager.Properties"
              xmlns:controls1="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
              x:Name="UserControl"
+             UseLayoutRounding="True"
+             SnapsToDevicePixels="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -115,7 +117,8 @@
                   AlternatingRowBackground="#3C3C3C"
                   AlternationCount="2"
                   FontSize="10"
-                  Foreground="#F5F5F5"
+                  FontFamily="{StaticResource ArtifaktElementBold}"
+                  Foreground="{StaticResource TextColorBrush}"
                   SelectionUnit="FullRow"
                   SelectionMode="Single"
                   ScrollViewer.CanContentScroll="True" 
@@ -165,7 +168,7 @@
                                 <TextBlock 
                                     Text="{Binding Name}"
                                     FontWeight="Light"
-                                    Foreground="#F5F5F5"
+                                    Foreground="{StaticResource TextColorBrush}"
                                     Margin="3 0 0 0"
                                     DockPanel.Dock="Left"></TextBlock>
                                 <!-- Blue Dot signifying Renamed Nodes -->
@@ -303,7 +306,9 @@
                             <TextBlock Text="{Binding Package}" 
                                        VerticalAlignment="Center" 
                                        Margin="13 10" 
-                                       Foreground="{StaticResource MidGrayBrush}"/>
+                                       FontWeight="Light"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       Foreground="{StaticResource TextColorBrush}"/>
                             <ItemsControl x:Name="DetailedRowItemControl"
                                           ItemsSource="{Binding NodeInfos, UpdateSourceTrigger=PropertyChanged}"
                                           AlternationCount="50">
@@ -324,10 +329,9 @@
                                                 <TextBlock Grid.Column="1" Margin="10 -2 10 0" 
                                                                TextWrapping="Wrap" 
                                                                VerticalAlignment="Top"
-                                                               SnapsToDevicePixels="True"
-                                                               FontWeight="UltraLight"
-                                                               FontStyle="Italic"
-                                                               Foreground="{StaticResource MidGrayBrush}"
+                                                               FontWeight="Light"
+                                                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                               Foreground="{StaticResource TextColorBrush}"
                                                                FontSize="11">
                                                     <TextBlock.Text>
                                                         <MultiBinding StringFormat="{}{0} {1}" >

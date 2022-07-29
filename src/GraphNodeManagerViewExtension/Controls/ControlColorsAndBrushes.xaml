@@ -45,6 +45,7 @@
         <Setter Property="FontSize" Value="10" />
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="6 0"/>
+        <Setter Property="UseLayoutRounding" Value="True"></Setter>
         <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
     </Style>
 
@@ -55,6 +56,8 @@
         <Setter Property="MinHeight" Value="24"></Setter>
         <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
         <Setter Property="BorderBrush" Value="#555555"/>
+        <Setter Property="UseLayoutRounding" Value="True"></Setter>
+        <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Background" Value="#555555" />
@@ -70,6 +73,8 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Margin" Value="1 0 0 0" />
         <Setter Property="MinHeight" Value="24"></Setter>
+        <Setter Property="UseLayoutRounding" Value="True"></Setter>
+        <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type DataGridCell}">
