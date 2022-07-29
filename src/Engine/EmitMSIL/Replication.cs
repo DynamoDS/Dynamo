@@ -117,6 +117,7 @@ namespace EmitMSIL
             // TODO_MSIL: FIgure out how and when to set this runtimeCore (CodeGen should have it too)
             MSILRuntimeCore runtimeCore = MSILRuntimeCore.Instance;
 
+            // TODO_MSIL: Emit these CLRStackValue's from the CodeGen stage.
             var stackValues = MarshalFunctionArguments(args, runtimeCore);
 
             var reducedArgs = ReduceArgs(stackValues);
@@ -132,6 +133,7 @@ namespace EmitMSIL
             //Turn the replication guides into a guide -> List args data structure
             var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
+            // TODO_MSIL: Emit these CLRFunctionEndpoint's from the CodeGen stage.
             var feps = ConvertMethodsToFEPs(mInfos);
 
             List<CLRFunctionEndPoint> resolvedFeps;

@@ -1121,7 +1121,7 @@ namespace ProtoFFI
                 expectedType = Nullable.GetUnderlyingType(clrType);
 
             //If DS Type is array, it needs to be marshaled as collection.
-            bool isArray = value.IsEnumerable;
+            bool isArray = value.Type.IsArray;
 
             //Expected CLR type is not string, but is derived from IEnumerable
             isArray = isArray || (typeof(string) != expectedType && typeof(IEnumerable).IsAssignableFrom(expectedType));

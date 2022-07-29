@@ -115,7 +115,8 @@ namespace ProtoCore.DSASM
     /// </summary>
     internal struct CLRStackValue
     {
-        public bool IsEnumerable => ArrayUtils.IsEnumerable(Type);
+        // TODO_MSIL: Figure out if we need to use an AddressType, like StackValue
+        public bool IsEnumerable => Type != typeof(string) && ArrayUtils.IsEnumerable(Type);
 
         public bool IsDouble => Value is double;
 
@@ -123,7 +124,7 @@ namespace ProtoCore.DSASM
         public bool IsDefaultArgument => false;
 
         // TODO_MSIL: Figure out if we need to use an AddressType, like StackValue
-        public bool IsPointer => Type.IsClass;
+        public bool IsPointer => Type != typeof(string) && !ArrayUtils.IsEnumerable(Type) && !Type.IsValueType && Type.IsClass;
 
         // TODO_MSIL: Figure out how to set/use this flag;
         public bool IsExplicitCall => false;
