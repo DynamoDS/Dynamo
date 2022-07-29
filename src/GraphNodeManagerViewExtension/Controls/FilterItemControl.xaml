@@ -41,6 +41,7 @@
                                Width="12" 
                                Height="12" 
                                SnapsToDevicePixels="True"
+                               UseLayoutRounding="True"
                                VerticalAlignment="Stretch"
                                Margin="2 0 0 0"/>
                         <ContentPresenter />

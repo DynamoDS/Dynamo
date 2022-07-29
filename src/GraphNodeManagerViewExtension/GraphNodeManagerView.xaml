@@ -111,6 +111,7 @@
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   Background="#353535"
+                  BorderThickness="0"
                   AlternatingRowBackground="#3C3C3C"
                   AlternationCount="2"
                   FontSize="10"
@@ -124,6 +125,7 @@
                   CanUserSortColumns="True"
                   HeadersVisibility="Column"
                   MinColumnWidth="60"
+                  Margin="-3 0"
                   RowDetailsVisibilityMode="Collapsed"
                   IsReadOnly="True"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" >
@@ -140,7 +142,7 @@
                                 <TextBlock 
                                     Text="{Binding Name}"
                                     Foreground="#BBBBBB"
-                                    Margin="3"
+                                    Margin="10 3 3 3"
                                     FontSize="12"
                                 />
                             </StackPanel>
@@ -211,7 +213,7 @@
                 <!-- State -->
                 <DataGridTemplateColumn
                     Header="State" 
-                    Width="4*"
+                    Width="3*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -236,7 +238,7 @@
                 <!-- Issues -->
                 <DataGridTemplateColumn
                     Header="Issues" 
-                    Width="4*"
+                    Width="3*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -269,7 +271,7 @@
                 <!-- Outputs -->
                 <DataGridTemplateColumn
                     Header="Outputs" 
-                    Width="Auto"
+                    Width="3*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

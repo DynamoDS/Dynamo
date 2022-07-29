@@ -32,23 +32,25 @@
         <Setter Property="GridLinesVisibility" Value="Vertical"/>
         <Setter Property="VerticalGridLinesBrush" Value="#555555"/>
         <Setter Property="UseLayoutRounding" Value="True"></Setter>
+        <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
     </Style>
 
     <!-- DataGridColumnHeader style -->
     <Style x:Key="ColumnHeaderStyle1" TargetType="DataGridColumnHeader">
-        <Setter Property="Height" Value="20"/>
-        <Setter Property="Background" Value="#333333"/>
-        <Setter Property="Foreground" Value="#999999"/>
+        <Setter Property="Height" Value="24"/>
+        <Setter Property="Background" Value="#353535"/>
+        <Setter Property="Foreground" Value="#bbbbbb"/>
+        <Setter Property="BorderThickness" Value="0 0 0 1"></Setter>
+        <Setter Property="BorderBrush" Value="#555"></Setter>
         <Setter Property="FontSize" Value="10" />
-        <Setter Property="BorderThickness" Value="0 0 1 0" />
-        <Setter Property="BorderBrush" Value="#555555"/>
-        <Setter Property="Margin" Value="0 0 0 0"/>
+        <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="6 0"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
     </Style>
 
     <!-- DataGridRow style -->
     <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-        <Setter Property="Background" Value="#333333"/>
+        <Setter Property="Background" Value="#353535"/>
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="MinHeight" Value="24"></Setter>
         <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
