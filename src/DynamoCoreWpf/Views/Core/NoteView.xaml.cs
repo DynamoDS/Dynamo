@@ -194,6 +194,10 @@ namespace Dynamo.Nodes
         {
             Panel.SetZIndex(noteTextBox, 0);
             ViewModel.IsOnEditMode = false;
+            
+            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(
+                    System.Guid.Empty, ViewModel.Model.GUID, nameof(NoteModel.Text), noteTextBox.Text));
         }
 
         private void noteTextBox_PreviewKeyDown(object sender, KeyEventArgs e)

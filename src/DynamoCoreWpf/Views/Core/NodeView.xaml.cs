@@ -484,7 +484,7 @@ namespace Dynamo.Controls
 
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
-                    System.Guid.Empty, ViewModel.NodeModel.GUID, "Name", NameBlock.Text));
+                    System.Guid.Empty, ViewModel.NodeModel.GUID, nameof(NodeModel.Name), NameBlock.Text));
         }
 
         private void EditableNameBox_OnLostFocus(object sender, RoutedEventArgs e)
