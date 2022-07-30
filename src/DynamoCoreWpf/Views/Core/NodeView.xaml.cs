@@ -481,6 +481,10 @@ namespace Dynamo.Controls
         {
             NameBlock.Visibility = Visibility.Visible;
             EditableNameBox.Visibility = Visibility.Collapsed;
+
+            ViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(
+                    System.Guid.Empty, ViewModel.NodeModel.GUID, "Name", NameBlock.Text));
         }
 
         private void EditableNameBox_OnLostFocus(object sender, RoutedEventArgs e)
