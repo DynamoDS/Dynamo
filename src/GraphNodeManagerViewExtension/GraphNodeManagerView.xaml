@@ -57,6 +57,8 @@
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
             </Grid>
+
+            <!-- Export Button -->
             <Image x:Name="ExportImage"
                        DockPanel.Dock="Right" 
                        Width="16px"
@@ -92,6 +94,8 @@
                     </controls1:DynamoToolTip>
                 </Image.ToolTip>
             </Image>
+
+            <!-- Clear Filter Button -->
             <Button x:Name="ClearFiltersButton"
                     DockPanel.Dock="Right"
                     Content="Clear all" 
@@ -112,9 +116,8 @@
                   Style="{StaticResource DataGridStyle1}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
-                  Background="#353535"
+                  Background="{StaticResource MainBackgroundColorBrush}"
                   BorderThickness="0"
-                  AlternatingRowBackground="#3C3C3C"
                   AlternationCount="2"
                   FontSize="10"
                   FontFamily="{StaticResource ArtifaktElementBold}"
@@ -357,6 +360,7 @@
                                                                 <TextBlock MaxWidth="320"
                                                                            Padding="5"
                                                                            Foreground="Black" FontSize="12"
+                                                                           FontFamily="{StaticResource ArtifaktElementRegular}"
                                                                            Text="{x:Static p:Resources.ToolTip_CopyToClipboard}"
                                                                            TextWrapping="Wrap" />
                                                             </Grid>
