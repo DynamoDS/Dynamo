@@ -107,10 +107,7 @@ namespace Dynamo.Controls
                 tt.Y = p.Y;
 
                 var st = GetChildScaleTransform();
-                if (child.IsMouseCaptured)
-                {
-                    NotifyViewSettingsChanged(tt.X, tt.Y, st.ScaleX);
-                }
+                NotifyViewSettingsChanged(tt.X, tt.Y, st.ScaleX);
             }
         }
 
@@ -130,7 +127,6 @@ namespace Dynamo.Controls
 
         private void child_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            PrintMousePosition(e);
             if (child != null && !child.IsMouseCaptured)
             {
                 //double zoom = e.Delta > 0 ? .1 : -.1;
@@ -215,21 +211,8 @@ namespace Dynamo.Controls
             if (handler != null)
             {
                 handler(new ViewSettingsChangedEventArgs(x, y, zoom));
-                var ws = DataContext as WorkspaceViewModel;
-//                ws?.DynamoViewModel.Model.Logger.Log($"X={x}, Y={y}, zoom={zoom}");
             }
         }
-
-        private void PrintMousePosition(MouseEventArgs e)
-        {
-            if (child != null)
-            {
-                var p = e.GetPosition(child);
-                var ws = DataContext as WorkspaceViewModel;
-              //  ws?.DynamoViewModel.Model.Logger.Log($"X={p.X}, Y={p.Y}");
-            }
-        }
-
         #endregion
     }
 }
