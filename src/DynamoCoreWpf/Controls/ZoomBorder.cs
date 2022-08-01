@@ -216,7 +216,7 @@ namespace Dynamo.Controls
             {
                 handler(new ViewSettingsChangedEventArgs(x, y, zoom));
                 var ws = DataContext as WorkspaceViewModel;
-                ws?.DynamoViewModel.Model.Logger.Log($"X={x}, Y={y}, zoom={zoom}");
+//                ws?.DynamoViewModel.Model.Logger.Log($"X={x}, Y={y}, zoom={zoom}");
             }
         }
 
