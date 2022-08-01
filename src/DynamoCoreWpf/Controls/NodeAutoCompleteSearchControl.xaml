@@ -98,7 +98,7 @@
                                                 <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/close_blue.png" />
+                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-hover-16px.png" />
                                             </Trigger>
                                         </Style.Triggers>
                                     </Style>

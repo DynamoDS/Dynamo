@@ -20,13 +20,6 @@ namespace Dynamo.Nodes
 {
     public partial class NoteView : IViewModelView<NoteViewModel>
     {
-        /// <summary>
-        /// Minimum workspace zoom to edit the note as a textbox,
-        /// If zoom is less than this value the note will be edited
-        /// through the EditWindow 
-        /// </summary>
-        private const double MINIMUM_ZOOM_DIRECT_NODE_EDIT = 0.5;
-
         private EditWindow editWindow;
         public NoteViewModel ViewModel { get; private set; }
 
@@ -108,7 +101,7 @@ namespace Dynamo.Nodes
         private void OnEditItemClick(object sender, RoutedEventArgs e)
         {
 
-            if (ViewModel.WorkspaceViewModel.Zoom > MINIMUM_ZOOM_DIRECT_NODE_EDIT)
+            if (ViewModel.WorkspaceViewModel.Zoom > Configurations.ZoomDirectEditThreshold)
             {
                 Panel.SetZIndex(noteTextBox, 1);
                 ViewModel.IsOnEditMode = true;
@@ -201,6 +194,10 @@ namespace Dynamo.Nodes
         {
             Panel.SetZIndex(noteTextBox, 0);
             ViewModel.IsOnEditMode = false;
+            
+            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(
+                    System.Guid.Empty, ViewModel.Model.GUID, nameof(NoteModel.Text), noteTextBox.Text));
         }
 
         private void noteTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
