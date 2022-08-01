@@ -351,7 +351,7 @@
                      FontSize="16px"
                      FontWeight="Medium"
                      Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                     SelectionBrush="{StaticResource NodeSelectionTextColor}" SelectionOpacity="0.6"
+                     SelectionBrush="{StaticResource NodeSelectionTextColor}" SelectionOpacity="0.2"
                      IsHitTestVisible="True"
                      BorderThickness="0"
                      LostFocus="EditableNameBox_OnLostFocus"
