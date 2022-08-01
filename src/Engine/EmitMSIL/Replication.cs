@@ -20,8 +20,17 @@ namespace EmitMSIL
             List<CLRStackValue> stackValues = new List<CLRStackValue>();
             foreach (var arg in args)
             {
-                var protoType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(arg.GetType());
-                CLRStackValue dsObj = marshaller.Marshal(arg, protoType, runtimeCore);
+                CLRStackValue dsObj;
+                if (arg != null)
+                {
+                    var protoType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(arg.GetType());
+                    dsObj = marshaller.Marshal(arg, protoType, runtimeCore);
+                }
+                else
+                {
+                    dsObj = CLRStackValue.Null;
+                }
+                
                 stackValues.Add(dsObj);
             }
             return stackValues;

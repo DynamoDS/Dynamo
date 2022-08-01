@@ -840,13 +840,20 @@ namespace EmitMSIL
                     op = new IntNode(-1);
                     break;
             }
+
+            bool hasStep = stepNode != null;
+            // The value of the dymy DoubleNode does not matter since the hasStep boolean will be false.
+            AssociativeNode dummyStepNode = AstFactory.BuildDoubleNode(1);
             var arguments = new List<AssociativeNode>
             {
                 fromNode,
                 toNode,
-                stepNode ?? new NullNode(),
+                // TODO_MSIL: Figure out a better solution for this scenario.
+                // Use DoubleNode(1) because standard replication cannot handle null to value type coerce
+                // The old VM handles builtin functions (like range expr) in a special way...that does not try coercion
+                hasStep ? stepNode : dummyStepNode,//NullNode()
                 op,
-                AstFactory.BuildBooleanNode(stepNode != null),
+                AstFactory.BuildBooleanNode(hasStep),
                 AstFactory.BuildBooleanNode(hasAmountOperator),
             };
 

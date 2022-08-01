@@ -124,7 +124,7 @@ namespace ProtoCore.DSASM
         public bool IsDefaultArgument => false;
 
         // TODO_MSIL: Figure out if we need to use an AddressType, like StackValue
-        public bool IsPointer => Type != typeof(string) && !ArrayUtils.IsEnumerable(Type) && !Type.IsValueType && Type.IsClass;
+        public bool IsPointer => Type != null && Type != typeof(string) && !ArrayUtils.IsEnumerable(Type) && !Type.IsValueType && Type.IsClass;
 
         // TODO_MSIL: Figure out how to set/use this flag;
         public bool IsExplicitCall => false;
@@ -146,7 +146,7 @@ namespace ProtoCore.DSASM
             this.TypeUID = protoType;
         }
 
-        internal static CLRStackValue Null => new CLRStackValue();
+        internal static CLRStackValue Null => new CLRStackValue(null, (int)PrimitiveType.Null);
 
         #region Converters
         public CLRStackValue ToBoolean()
