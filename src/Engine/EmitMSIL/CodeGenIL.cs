@@ -15,7 +15,7 @@ using ProtoCore.Utils;
 
 namespace EmitMSIL
 {
-    public class CodeGenIL:IDisposable
+    public class CodeGenIL : IDisposable
     {
         private ILGenerator ilGen;
         internal string className;
@@ -670,7 +670,10 @@ namespace EmitMSIL
                     var argGuides = argIdent.ReplicationGuides;
                     EmitArray(typeof(string), argGuides, (AssociativeNode gn, int gidx) =>
                     {
-                        EmitOpCode(OpCodes.Ldstr, (gn as ReplicationGuideNode).RepGuide.Name);
+                        var repGuideNode = gn as ReplicationGuideNode;
+                        var nodeGuide = repGuideNode.RepGuide as IdentifierNode;
+
+                        EmitOpCode(OpCodes.Ldstr, nodeGuide.Value);
                     });
                 }
                 else
