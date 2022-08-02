@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -119,60 +116,10 @@ namespace Dynamo.Wpf.Views.GuidedTour
             contentGrid.Children.Add(webBrowserComponent);
             Grid.SetRow(webBrowserComponent, 1);
 
-            LoadWebBrowser(hostControlInfo.HtmlPage);
+            ResourceUtilities.LoadWebBrowser(hostControlInfo.HtmlPage, webBrowserComponent, resourcesPath, mainFontStylePath, GetType().Assembly);
         }
 
-        /// <summary>
-        /// Loads HTML file from resource assembly and replace it's key values by base64 files
-        /// </summary>
-        /// <param name="htmlPage">Contains filename and resources to be loaded in page</param>
-        private async void LoadWebBrowser(HtmlPage htmlPage)
-        {
-            var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(htmlPage.FileName, GetType().Assembly, false, false);
-
-            bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage.Resources);
-            bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", mainFontStylePath);
-            await webBrowserComponent.EnsureCoreWebView2Async();
-            webBrowserComponent.NavigateToString(bodyHtmlPage);
-        }
-
-        /// <summary>
-        /// Loads resource from a dictionary and replaces its key by an embedded file
-        /// </summary>
-        /// <param name="bodyHtmlPage">Html page string</param>
-        /// <param name="resources">Resources to be loaded</param>
-        /// <returns></returns>
-        private string LoadResouces(string bodyHtmlPage, Dictionary<string, string> resources)
-        {
-            if (resources != null && resources.Any())
-            {
-                foreach (var resource in resources)
-                {
-                    bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, resource.Key, $"{resourcesPath}.{resource.Value}");
-                }
-            }
-            return bodyHtmlPage;
-        }
-
-        /// <summary>
-        /// Finds a key word inside the html page and replace by a resource file
-        /// </summary>
-        /// <param name="bodyHtmlPage">Current html page</param>
-        /// <param name="key">Key that is going to be replaced</param>
-        /// <param name="resourceFile">Resource file to be included in the page</param>
-        /// <returns></returns>
-        private string LoadResourceAndReplaceByKey(string bodyHtmlPage, string key, string resourceFile)
-        {
-            Stream resourceStream = ResourceUtilities.LoadResourceByUrl(resourceFile);
-
-            if (resourceStream != null)
-            {
-                var resourceBase64 = ResourceUtilities.ConvertToBase64(resourceStream);
-                bodyHtmlPage = bodyHtmlPage.Replace(key, resourceBase64);
-            }
-
-            return bodyHtmlPage;
-        }
+       
 
         private void StartTourButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
