@@ -1,0 +1,195 @@
+{
+  "Uuid": "a34e7f6f-86f1-4855-bcd0-59b9df1ef13d",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ilist_t_ienumerable_coerce",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.ArrayMember.foo",
+      "Id": "29fe08966d0c44889ef9d66ac8f393bd",
+      "Inputs": [
+        {
+          "Id": "3c6cf4f62b3f409185f97928e3fb9e94",
+          "Name": "arrayMember",
+          "Description": "FFITarget.ArrayMember",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0e4fa0f34aa54aec9231df2d7889c2a7",
+          "Name": "int[]",
+          "Description": "int[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "ArrayMember.foo ( ): int[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.ArrayMember.ArrayMember",
+      "Id": "26306b160dd349ecab55863aabfd060e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "66b4782427634317b53794e99bfb6a67",
+          "Name": "ArrayMember",
+          "Description": "ArrayMember",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "ArrayMember.ArrayMember ( ): ArrayMember"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.Sum@double[]",
+      "Id": "a7b04568fbd144c8843fafa295cd3e57",
+      "Inputs": [
+        {
+          "Id": "94ea9220265449f88691eddee7aae2ad",
+          "Name": "values",
+          "Description": "Numbers to add to sum\n\ndouble[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "acc2532bc0b3459c95faa0c09386aada",
+          "Name": "double",
+          "Description": "The sum of the values",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Find the sum of a series of numbers\n\nMath.Sum (values: double[]): double"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "0e4fa0f34aa54aec9231df2d7889c2a7",
+      "End": "94ea9220265449f88691eddee7aae2ad",
+      "Id": "5fe67c8f267141118b647c368a651b9e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "66b4782427634317b53794e99bfb6a67",
+      "End": "3c6cf4f62b3f409185f97928e3fb9e94",
+      "Id": "b8025ae7c0d648159c98fb4ef99feafe",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "FFITarget.dll",
+      "ReferenceType": "ZeroTouch",
+      "Nodes": [
+        "29fe08966d0c44889ef9d66ac8f393bd",
+        "26306b160dd349ecab55863aabfd060e"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.16",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.16.0.2097",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "ArrayMember.foo",
+        "ShowGeometry": true,
+        "Id": "29fe08966d0c44889ef9d66ac8f393bd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 429.19999999999993,
+        "Y": 201.20000000000005
+      },
+      {
+        "Name": "ArrayMember.ArrayMember",
+        "ShowGeometry": true,
+        "Id": "26306b160dd349ecab55863aabfd060e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 90.800000000000011,
+        "Y": 70.000000000000014
+      },
+      {
+        "Name": "Math.Sum",
+        "ShowGeometry": true,
+        "Id": "a7b04568fbd144c8843fafa295cd3e57",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 752.0,
+        "Y": 196.80000000000007
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

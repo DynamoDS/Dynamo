@@ -1,0 +1,290 @@
+{
+  "Uuid": "24ea4b09-52a8-4e99-bd20-d2bd04765335",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "list_ienumerable_coercion",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyTuple4.XYZ@double,double,double",
+      "Id": "41123644cdf9455bb3b9011d392ce65b",
+      "Inputs": [
+        {
+          "Id": "db4e43e9f42b43e290eabcf0b8f9b371",
+          "Name": "xValue",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "25471fdcf7154a919ca635c67a77754f",
+          "Name": "yValue",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e80c99acc07d459fb19d3f29c0814fea",
+          "Name": "zValue",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "98ec6843e28f4560949ce8d93125c3de",
+          "Name": "DummyTuple4",
+          "Description": "DummyTuple4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyTuple4.XYZ (xValue: double, yValue: double, zValue: double): DummyTuple4"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "10;\n12;\n15;",
+      "Id": "9733bda713e24688a0e979ba8895fa59",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4f7ec72f5922484a8bf54c994ecb788e",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "de0013d93e3746d98098247acf9cb159",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f21885d2c66e44209bd31e86ba66e1d2",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyCollection.ReturnIEnumerableOfInt@int[]",
+      "Id": "a2aea312e2e146aa9fa43220c8a7a21d",
+      "Inputs": [
+        {
+          "Id": "af5ccc0febd44711b99951c49d509f05",
+          "Name": "data",
+          "Description": "int[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c340ab30a11943cfaff3552c1b4c989a",
+          "Name": "int[]",
+          "Description": "int[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyCollection.ReturnIEnumerableOfInt (data: int[]): int[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyTuple4.Coordinates3",
+      "Id": "de0e5fd1bba04e8f853bd0a9f967b6f8",
+      "Inputs": [
+        {
+          "Id": "a5c3ec27ce9a4115b6826d61fdab63bb",
+          "Name": "dummyTuple4",
+          "Description": "FFITarget.DummyTuple4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e430ac60f4244bbdac1b2846202971df",
+          "Name": "double[]",
+          "Description": "double[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyTuple4.Coordinates3 ( ): double[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "98ec6843e28f4560949ce8d93125c3de",
+      "End": "a5c3ec27ce9a4115b6826d61fdab63bb",
+      "Id": "a47c49eb833f4dfea6b7bb0c2473d0aa",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4f7ec72f5922484a8bf54c994ecb788e",
+      "End": "db4e43e9f42b43e290eabcf0b8f9b371",
+      "Id": "5e2ee6acee6d45b5a7c24a2ce603c29b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "de0013d93e3746d98098247acf9cb159",
+      "End": "25471fdcf7154a919ca635c67a77754f",
+      "Id": "6cf2e79be1004e91a1f307c47689a268",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f21885d2c66e44209bd31e86ba66e1d2",
+      "End": "e80c99acc07d459fb19d3f29c0814fea",
+      "Id": "3eb0f9e66bc44bbf8c19c57623d96b06",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e430ac60f4244bbdac1b2846202971df",
+      "End": "af5ccc0febd44711b99951c49d509f05",
+      "Id": "759f26fdb65e4134b6fc151f007f587f",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "FFITarget.dll",
+      "ReferenceType": "ZeroTouch",
+      "Nodes": [
+        "41123644cdf9455bb3b9011d392ce65b",
+        "a2aea312e2e146aa9fa43220c8a7a21d",
+        "de0e5fd1bba04e8f853bd0a9f967b6f8"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.16",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.16.0.2097",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "DummyTuple4.XYZ",
+        "ShowGeometry": true,
+        "Id": "41123644cdf9455bb3b9011d392ce65b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 352.79999999999995,
+        "Y": 286.00000000000006
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "9733bda713e24688a0e979ba8895fa59",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 146.0,
+        "Y": 335.0
+      },
+      {
+        "Name": "DummyCollection.ReturnIEnumerableOfInt",
+        "ShowGeometry": true,
+        "Id": "a2aea312e2e146aa9fa43220c8a7a21d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 882.39999999999986,
+        "Y": 334.4
+      },
+      {
+        "Name": "DummyTuple4.Coordinates3",
+        "ShowGeometry": true,
+        "Id": "de0e5fd1bba04e8f853bd0a9f967b6f8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 646.0,
+        "Y": 112.80000000000001
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

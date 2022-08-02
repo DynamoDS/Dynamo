@@ -2,63 +2,13 @@
   "Uuid": "90d17120-2358-4be1-9768-09c2d97ff2bb",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "array_coerce",
+  "Name": "ilist_ienumerable_coerce",
   "ElementResolver": {
     "ResolutionMap": {}
   },
   "Inputs": [],
   "Outputs": [],
   "Nodes": [
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "DSCore.Math.RandomList@int",
-      "Id": "c55e82525dc64bd2a01aad2bfbf9d7b7",
-      "Inputs": [
-        {
-          "Id": "7416b2e6043a4d958fc41f06b54f0cc6",
-          "Name": "amount",
-          "Description": "Amount of random numbers the result list will contain.\n\nint",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "64c8509f35d74befa651372d0863adbc",
-          "Name": "number",
-          "Description": "List of random numbers between 0 and 1.",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
-      "Code": "3;",
-      "Id": "cb860c47117b415fbdc8ffaaa7244149",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "fb67c1b3f2b04ba39cd40da86276d2ea",
-          "Name": "",
-          "Description": "Value of expression at line 1",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
-    },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
@@ -88,19 +38,69 @@
       ],
       "Replication": "Auto",
       "Description": "Find the sum of a series of numbers\n\nMath.Sum (values: double[]): double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.UniqueItems@var[]..[]",
+      "Id": "5fec686070c84cc4a0aab687e2e18063",
+      "Inputs": [
+        {
+          "Id": "b8dafb69bccf4fc19d0abb20bd2fd8e2",
+          "Name": "list",
+          "Description": "List to filter duplicates out of.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4d32cc98c1d948dd9c02b696640b7fee",
+          "Name": "list",
+          "Description": "Filtered list.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a new list containing all unique items in the given list.\n\nList.UniqueItems (list: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[23,24.5,9.0E+05];",
+      "Id": "17ec258d2db64c18959351f40ca2f3ea",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7bba820a5cee4e94bec9a5f4dd99acb3",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
     }
   ],
   "Connectors": [
     {
-      "Start": "64c8509f35d74befa651372d0863adbc",
+      "Start": "4d32cc98c1d948dd9c02b696640b7fee",
       "End": "43eb0915454345779c4e58de10adce10",
-      "Id": "b18a318ff96d48c4b0385208e5216ebf",
+      "Id": "880f498fa08f44f28f9874834f647682",
       "IsHidden": "False"
     },
     {
-      "Start": "fb67c1b3f2b04ba39cd40da86276d2ea",
-      "End": "7416b2e6043a4d958fc41f06b54f0cc6",
-      "Id": "6e65b4cf439a42a294f8e26718409e0d",
+      "Start": "7bba820a5cee4e94bec9a5f4dd99acb3",
+      "End": "b8dafb69bccf4fc19d0abb20bd2fd8e2",
+      "Id": "a0d09f87444f480191042fb6b3a8ffbd",
       "IsHidden": "False"
     }
   ],
@@ -127,10 +127,10 @@
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
-      "HasRunWithoutCrash": true,
+      "HasRunWithoutCrash": false,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.15.0.5383",
-      "RunType": "Automatic",
+      "Version": "2.16.0.2097",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
@@ -148,26 +148,6 @@
     "ConnectorPins": [],
     "NodeViews": [
       {
-        "Name": "Math.RandomList",
-        "ShowGeometry": true,
-        "Id": "c55e82525dc64bd2a01aad2bfbf9d7b7",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 446.40000000000003,
-        "Y": 210.8
-      },
-      {
-        "Name": "Code Block",
-        "ShowGeometry": true,
-        "Id": "cb860c47117b415fbdc8ffaaa7244149",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 190.0,
-        "Y": 251.0
-      },
-      {
         "Name": "Math.Sum",
         "ShowGeometry": true,
         "Id": "afed373de5784bd3a89a9f24a7910edd",
@@ -176,6 +156,26 @@
         "Excluded": false,
         "X": 815.2,
         "Y": 308.8
+      },
+      {
+        "Name": "List.UniqueItems",
+        "ShowGeometry": true,
+        "Id": "5fec686070c84cc4a0aab687e2e18063",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 477.2000000000001,
+        "Y": 392.8
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "17ec258d2db64c18959351f40ca2f3ea",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 197.0,
+        "Y": 441.0
       }
     ],
     "Annotations": [],
