@@ -399,6 +399,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         /// <returns></returns>
         private bool IsNodeEmptyList(MirrorData mirrorData)
         {
+            if (mirrorData == null) return false;
             if (mirrorData.IsCollection)
             {
                 try
@@ -428,6 +429,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         /// <returns></returns>
         private bool IsNodeNull(MirrorData mirrorData)
         {
+            if (mirrorData == null) return false;
             if (mirrorData.IsCollection)
             {
                 try
