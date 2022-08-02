@@ -118,7 +118,7 @@ namespace Dynamo.Controls
             {
                 st.ScaleX = zoom;
                 st.ScaleY = zoom;
-                var tt = GetTranslateTransform(child);
+                var tt = GetChildTranslateTransform();
                 NotifyViewSettingsChanged(tt.X, tt.Y, zoom);
             }
         }
@@ -150,7 +150,7 @@ namespace Dynamo.Controls
                 (e.ChangedButton == MouseButton.Middle
                 || e.ChangedButton == MouseButton.Left && IsInPanMode()))
             {
-                var tt = GetTranslateTransform(child);
+                var tt = GetChildTranslateTransform();
                 start = e.GetPosition(this);
                 origin = new Point(tt.X, tt.Y);
                 child.CaptureMouse();
