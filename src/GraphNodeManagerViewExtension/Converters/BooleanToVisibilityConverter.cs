@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Globalization;
+using System.Web.UI.WebControls;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.GraphNodeManager.Properties;
 using Dynamo.UI;
+using FontStyle = System.Drawing.FontStyle;
 
 namespace Dynamo.GraphNodeManager.Converters
 {
@@ -242,7 +245,7 @@ namespace Dynamo.GraphNodeManager.Converters
             throw new NotImplementedException();
         }
     }
-
+    
     internal class BooleanToToolTipTextConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -253,6 +256,45 @@ namespace Dynamo.GraphNodeManager.Converters
             }
 
             return Resources.ToolTip_ExportToExcel;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+    }
+
+    internal class BooleanToFontStyleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return System.Windows.FontStyles.Italic;
+            }
+
+            return System.Windows.FontStyles.Normal;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+    }
+
+
+    internal class BooleanToFontFamilyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return new FontFamily("Open Sans");
+            }
+
+            return SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

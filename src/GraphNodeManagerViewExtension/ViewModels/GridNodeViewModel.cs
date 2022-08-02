@@ -456,7 +456,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private void PopulateNodeInfos()
         {
             int i = 0;
-            NodeModel.NodeInfos.ForEach(ni => nodeInfos.Add(new NodeInfo() { Message = GetNodeMessage(ni.Message), Index = $"{++i}/{NodeModel.NodeInfos.Count}", State = ni.State, HashCode = ni.GetHashCode() }));
+            NodeModel.NodeInfos.ForEach(ni => nodeInfos.Add(new NodeInfo() { Message = GetNodeMessage(ni.Message), Index = $"{++i}/{NodeModel.NodeInfos.Count}", State = ni.State, HashCode = ni.GetHashCode(), Dismissed = IsNodeMessageDismissed(ni.Message) } ));
         }
 
         /// <summary>
@@ -468,6 +468,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private string GetNodeMessage(string message)
         {
             return NodeModel.DismissedAlerts.Contains(message) ? $"{message} (dismissed)" : message;
+        }
+
+        private bool IsNodeMessageDismissed(string message)
+        {
+            return NodeModel.DismissedAlerts.Contains(message);
         }
 
         #region Setup and Constructors
@@ -529,6 +534,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
                     break;
                 case nameof(nodeModel.DismissedAlertsCount):
                     RaisePropertyChanged(nameof(DismissedAlertsCount));
+                    RaisePropertyChanged(nameof(NodeInfos));
                     break;
             }
         }

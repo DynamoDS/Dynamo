@@ -26,7 +26,10 @@
             <converters:StateToImageSourceConverter x:Key="StateToImageSourceConverter"/>
             <converters:StateToTextConverter x:Key="StateToTextConverter"/>
             <converters:BooleanToToolTipTextConverter  x:Key="BooleanToToolTipTextConverter"></converters:BooleanToToolTipTextConverter>
-            <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource GenericToolTipLight}"></Style>
+            <converters:BooleanToFontStyleConverter  x:Key="BooleanToFontStyleConverter"></converters:BooleanToFontStyleConverter>
+            <converters:BooleanToFontFamilyConverter  x:Key="BooleanToFontFamilyConverter"></converters:BooleanToFontFamilyConverter>
+
+<Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource GenericToolTipLight}"></Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid x:Name="MainGrid">
@@ -333,8 +336,9 @@
                                                                TextWrapping="Wrap" 
                                                                VerticalAlignment="Top"
                                                                FontWeight="Light"
-                                                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                               FontFamily="{Binding Dismissed, Converter={StaticResource BooleanToFontFamilyConverter}, UpdateSourceTrigger=PropertyChanged}"
                                                                Foreground="{StaticResource TextColorBrush}"
+                                                               FontStyle="{Binding Dismissed, Converter={StaticResource BooleanToFontStyleConverter}, UpdateSourceTrigger=PropertyChanged}"
                                                                FontSize="11">
                                                     <TextBlock.Text>
                                                         <MultiBinding StringFormat="{}{0} {1}" >
