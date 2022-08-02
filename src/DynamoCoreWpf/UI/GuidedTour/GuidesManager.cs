@@ -535,7 +535,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="content">The target content to display.</param>
         /// TODO: Make this API out of guide manager to a more generic place
-        internal void CreateRealTimeInfoWindow(string content)
+        internal void CreateRealTimeInfoWindow(string content, bool stayOpen = false)
         {
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
             UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
@@ -552,7 +552,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 VerticalOffset = ExitTourVerticalOffset,
                 HorizontalOffset = ExitTourHorizontalOffset,
                 Placement = PlacementMode.Left,
-                TextContent = content
+                TextContent = content,
+                StaysOpen = stayOpen
             };
 
             if (hostUIElement != null)
