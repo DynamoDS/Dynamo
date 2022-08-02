@@ -1,5 +1,6 @@
 ﻿using Dynamo.Controls;
 using Dynamo.Notifications.View;
+using Microsoft.Web.WebView2.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,12 +31,13 @@ namespace Dynamo.Notifications
             var shortcutBar = dynamoView.ShortcutBar;
             var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
 
-            notificationUIPopup = new NotificationUI();
-            notificationUIPopup.IsOpen = false;
+            notificationUIPopup = new NotificationUI();            
+            notificationUIPopup.IsOpen = true;
             notificationUIPopup.PlacementTarget = notificationsButton;
             notificationUIPopup.Placement = PlacementMode.Bottom;
             notificationUIPopup.HorizontalOffset = notificationPopupHorizontalOffset;
             notificationUIPopup.VerticalOffset = notificationPopupVerticalOffset;
+
 
             this.dynamoView = dynamoView;
             this.notificationsButton = notificationsButton;
@@ -44,8 +46,9 @@ namespace Dynamo.Notifications
             this.dynamoView.LocationChanged += DynamoView_LocationChanged;
             this.notificationsButton.Click += NotificationsButton_Click;
 
-            notificationUIPopup.webView.EnsureCoreWebView2Async();
-            notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;            
+            _ = AllowLocalSecurity();
+
+            //notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;            
         }
 
         private void WebView_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
@@ -66,8 +69,21 @@ namespace Dynamo.Notifications
                 htmlString = htmlString.Replace("#mainJs", jsString);
             }
 
-            if(notificationUIPopup.webView.CoreWebView2 != null)
+            if (notificationUIPopup.webView.CoreWebView2 != null)
                 notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
+        }
+
+        private async Task AllowLocalSecurity()
+        {
+            CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--allow-insecure-localhost");//--disable-web-security
+            CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
+
+            await notificationUIPopup.webView.EnsureCoreWebView2Async(environment);
+
+            notificationUIPopup.webView.CoreWebView2.Settings.AreHostObjectsAllowed = true;
+            notificationUIPopup.webView.CoreWebView2.Settings.IsWebMessageEnabled = true;
+            notificationUIPopup.webView.CoreWebView2.Settings.IsScriptEnabled = true;
+            notificationUIPopup.webView.CoreWebView2.Settings.AreDefaultScriptDialogsEnabled = true;
         }
 
         internal void Dispose()
@@ -77,7 +93,7 @@ namespace Dynamo.Notifications
             dynamoView.LocationChanged -= DynamoView_LocationChanged;
             notificationsButton.Click -= NotificationsButton_Click;
         }
-
+        
         private void DynamoView_LocationChanged(object sender, EventArgs e)
         {
             notificationUIPopup.Placement = PlacementMode.Bottom;
@@ -92,9 +108,9 @@ namespace Dynamo.Notifications
 
         private void NotificationsButton_Click(object sender, RoutedEventArgs e)
         {
-            notificationUIPopup.IsOpen = !notificationUIPopup.IsOpen;
-            if (notificationUIPopup.IsOpen)
-                notificationUIPopup.webView.Focus();
+            //notificationUIPopup.IsOpen = !notificationUIPopup.IsOpen;
+            //if (notificationUIPopup.IsOpen)
+            //    notificationUIPopup.webView.Focus();
         }        
     }
 }

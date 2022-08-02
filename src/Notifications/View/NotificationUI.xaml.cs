@@ -37,12 +37,12 @@ namespace Dynamo.Notifications.View
             //The BackgroundRectangle represent the tooltip background rectangle that is drawn over a Canvas
             //Needs to be moved 10 pixels over the X axis to show the direction pointers (Height was already increased above)
             //Needs to be moved 10 pixels over the Y axis to show the shadow at top and bottom.
-            BackgroundRectangle.Rect = new Rect(notificationsUIViewModel.PopupBordersOffSet, notificationsUIViewModel.PopupBordersOffSet, notificationsUIViewModel.PopupRectangleWidth, notificationsUIViewModel.PopupRectangleHeight);
+            //BackgroundRectangle.Rect = new Rect(notificationsUIViewModel.PopupBordersOffSet, .PopupBordersOffSet, notificationsUIViewModel.PopupRectangleWidth, notificationsUIViewModel.PopupRectangleHeight);
 
             //The CustomRichTextBox has a margin of 10 in left and 10 in right, also there is a indentation for drawing the PointerDirection of 10 of each side so that's why we are subtracting 40.
-            mainPopupGrid.Width = notificationsUIViewModel.PopupRectangleWidth;
-            mainPopupGrid.Height = notificationsUIViewModel.PopupRectangleHeight;
-            mainPopupGrid.Margin = new Thickness(notificationsUIViewModel.PopupBordersOffSet, notificationsUIViewModel.PopupBordersOffSet, 0, 0);
+            //mainPopupGrid.Width = notificationsUIViewModel.PopupRectangleWidth;
+            //mainPopupGrid.Height = notificationsUIViewModel.PopupRectangleHeight;
+            //mainPopupGrid.Margin = new Thickness(notificationsUIViewModel.PopupBordersOffSet, notificationsUIViewModel.PopupBordersOffSet, 0, 0);
         }
 
         internal void UpdatePopupLocation()
