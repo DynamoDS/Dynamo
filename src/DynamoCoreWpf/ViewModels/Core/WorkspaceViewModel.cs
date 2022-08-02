@@ -1310,7 +1310,7 @@ namespace Dynamo.ViewModels
 
             //set the current offset without triggering
             //any property change notices.
-            if (Model.X != p.X && Model.Y != p.Y)
+            if (Model.X != p.X || Model.Y != p.Y)
             {
                 Model.X = p.X;
                 Model.Y = p.Y;
