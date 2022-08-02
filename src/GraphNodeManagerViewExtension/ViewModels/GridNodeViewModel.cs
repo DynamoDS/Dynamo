@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
+using ProtoCore.AST.ImperativeAST;
 using ProtoCore.Mirror;
 
 namespace Dynamo.GraphNodeManager.ViewModels
@@ -244,7 +245,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             get
             {
-                isNull = NodeModel.CachedValue != null && NodeModel.CachedValue.IsNull;
+                isNull = IsNodeNull(NodeModel.CachedValue);
                 return isNull;
             }
             internal set
@@ -254,6 +255,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 RaisePropertyChanged(nameof(IsNull));
             }
         }
+
         /// <summary>
         /// Number of dismissed alerts - Warnings/Errors in a node
         /// </summary>
@@ -391,28 +393,60 @@ namespace Dynamo.GraphNodeManager.ViewModels
         #endregion
 
         /// <summary>
-        ///  Returns true only if it IsCollection and has no elements inside
+        ///  Returns true only if the node contains ANY (nested) empty lists 
         /// </summary>
         /// <param name="mirrorData"></param>
         /// <returns></returns>
         private bool IsNodeEmptyList(MirrorData mirrorData)
         {
-            if (mirrorData == null || !mirrorData.IsCollection) return false;
-
-            try
+            if (mirrorData.IsCollection)
             {
-                var list = mirrorData.GetElements();
-                foreach (var nested in list)
+                try
                 {
-                    if (!IsNodeEmptyList(nested))
-                        return false;
+                    var list = mirrorData.GetElements();
+                    if (!list.ToList().Any()) return true;
+
+                    foreach (var nested in list)
+                    {
+                        if (IsNodeEmptyList(nested))
+                            return true;
+                    }
+                    return false;
                 }
-                return true;
+                catch (Exception)
+                {
+                    return false;
+                }
             }
-            catch (Exception)
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the Node contains ANY (nested) null values
+        /// </summary>
+        /// <param name="mirrorData"></param>
+        /// <returns></returns>
+        private bool IsNodeNull(MirrorData mirrorData)
+        {
+            if (mirrorData.IsCollection)
             {
-                return false;
+                try
+                {
+                    var list = mirrorData.GetElements();
+                    foreach (var nested in list)
+                    {
+                        if (IsNodeNull(nested))
+                            return true;
+                    }
+                    return false;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
+            if (mirrorData.IsNull) return true;
+            return false;
         }
 
         /// <summary>
