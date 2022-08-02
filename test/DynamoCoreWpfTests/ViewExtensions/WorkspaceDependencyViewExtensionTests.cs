@@ -14,6 +14,7 @@ using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Dynamo.WorkspaceDependency;
 using Dynamo.Wpf.Extensions;
+using Dynamo.WorkspaceDependency.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -36,6 +37,14 @@ namespace DynamoCoreWpfTests
                 ProcessMode = TaskProcessMode.Synchronous,
                 Preferences = new PreferenceSettings() { CustomPackageFolders = new List<string>() { this.PackagesDirectory } }
             };
+        }
+
+        private WorkspaceDependencyViewExtension WorkspaceReferencesExtension
+        {
+            get
+            {
+                return (WorkspaceDependencyViewExtension)View.viewExtensionManager.ViewExtensions.FirstOrDefault(x => x.Name.Equals(Resources.ExtensionName));
+            }
         }
 
         protected override void GetLibrariesToPreload(List<string> libraries)
@@ -144,8 +153,7 @@ namespace DynamoCoreWpfTests
         {
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
-            WorkspaceDependencyViewExtension workspaceDependencyViewExtension = (WorkspaceDependencyViewExtension) extensionManager.ViewExtensions
-                                                                                .Where(ve => ve.Name.Equals("Workspace References")).FirstOrDefault();
+
             // Open a graph which should bring up the Workspace References view extension window with one tab
             Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
             Assert.AreEqual(1, View.ExtensionTabItems.Count);
@@ -153,16 +161,16 @@ namespace DynamoCoreWpfTests
             var loadedParams = new ViewLoadedParams(View, ViewModel);
 
             // Assert that the workspace references menu item is checked.
-            Assert.IsTrue(workspaceDependencyViewExtension.workspaceReferencesMenuItem.IsChecked);
+            Assert.IsTrue(WorkspaceReferencesExtension.workspaceReferencesMenuItem.IsChecked);
 
             // Closing the view extension side bar should trigger the Closed() on the workspace dependency view extension.
             // This will un-check the workspace references menu item.
-            loadedParams.CloseExtensioninInSideBar(workspaceDependencyViewExtension);
+            loadedParams.CloseExtensioninInSideBar(WorkspaceReferencesExtension);
 
             Assert.AreEqual(0, View.ExtensionTabItems.Count);
 
             // Assert that the workspace references menu item is un-checked.
-            Assert.IsFalse(workspaceDependencyViewExtension.workspaceReferencesMenuItem.IsChecked);
+            Assert.IsFalse(WorkspaceReferencesExtension.workspaceReferencesMenuItem.IsChecked);
         }
 
         /// <summary>
@@ -270,7 +278,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void TestPropertiesWithCodeInIt()
         {
-            Assert.AreEqual("Workspace References", viewExtension.Name);
+            Assert.AreEqual(Resources.ExtensionName, viewExtension.Name);
 
             Assert.AreEqual("A6706BF5-11C2-458F-B7C8-B745A77EF7FD", viewExtension.UniqueId);
         }
@@ -285,10 +293,7 @@ namespace DynamoCoreWpfTests
             Open(examplePath);
             Assert.AreEqual(1, View.ExtensionTabItems.Count);
 
-            var workspaceViewExtension = (WorkspaceDependencyViewExtension) View.viewExtensionManager.ViewExtensions
-                                                                                .Where(x => x.Name.Equals("Workspace References")).FirstOrDefault();
-
-            foreach (PackageDependencyRow packageDependencyRow in workspaceViewExtension.DependencyView.dataRows) 
+            foreach (PackageDependencyRow packageDependencyRow in WorkspaceReferencesExtension.DependencyView.dataRows)
             {
                 var dependencyInfo = packageDependencyRow.DependencyInfo;
                 Assert.Contains(dependencyInfo.Name, dependenciesList);
@@ -311,11 +316,8 @@ namespace DynamoCoreWpfTests
             examplePath = Path.Combine(@"core\LocalDefinitionsTest.dyn");
             Open(examplePath);
            
-            var workspaceViewExtension = (WorkspaceDependencyViewExtension)View.viewExtensionManager.ViewExtensions
-                                                                                .Where(x => x.Name.Equals("Workspace References")).FirstOrDefault();
-
-            Assert.AreEqual(1, workspaceViewExtension.DependencyView.localDefinitionDataRows.Count());
-            DependencyRow localDefinitionRow = workspaceViewExtension.DependencyView.localDefinitionDataRows.FirstOrDefault();
+            Assert.AreEqual(1, WorkspaceReferencesExtension.DependencyView.localDefinitionDataRows.Count());
+            DependencyRow localDefinitionRow = WorkspaceReferencesExtension.DependencyView.localDefinitionDataRows.FirstOrDefault();
             var dependencyInfo = localDefinitionRow.DependencyInfo;
             Assert.Contains(dependencyInfo.Name, dependenciesList);
         }
@@ -324,39 +326,35 @@ namespace DynamoCoreWpfTests
         public void VerifyExternalFileReferences()
         {
             List<string> dependenciesList = new List<string>() { "DynamoTest.xlsx", "Dynamo.png" };
-            DynamoModel.IsTestMode = false;
 
             // Open test file to verify the external file references. 
             var examplePath = Path.Combine(@"core\ExternalReferencesTest.dyn");
             Open(examplePath);
 
-            var workspaceViewExtension = (WorkspaceDependencyViewExtension)View.viewExtensionManager.ViewExtensions
-                                                                                .Where(x => x.Name.Equals("Workspace References")).FirstOrDefault();
+            WorkspaceReferencesExtension.DependencyView.DependencyRegen(Model.CurrentWorkspace, true);
 
-            workspaceViewExtension.DependencyView.TriggerDependencyRegen();
-
-            Assert.AreEqual(2, workspaceViewExtension.DependencyView.externalFilesDataRows.Count());
-            foreach (DependencyRow localDefinitionRow in workspaceViewExtension.DependencyView.externalFilesDataRows)
+            Assert.AreEqual(2, WorkspaceReferencesExtension.DependencyView.externalFilesDataRows.Count());
+            foreach (DependencyRow localDefinitionRow in WorkspaceReferencesExtension.DependencyView.externalFilesDataRows)
             {
                 var dependencyInfo = localDefinitionRow.DependencyInfo;
                 Assert.Contains(dependencyInfo.Name, dependenciesList);
             }
         }
+
         [Test]
         public void GetExternalFilesShouldBailIfGraphExecuting()
         {
-            DynamoModel.IsTestMode = false;
-
             // Open test file to verify the external file references are not computed when RunEnabled is false. 
             var examplePath = Path.Combine(@"core\ExternalReferencesTest.dyn");
             Open(examplePath);
             (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunEnabled = false;
+            WorkspaceReferencesExtension.DependencyView.DependencyRegen(Model.CurrentWorkspace, true);
             var results = Model.CurrentWorkspace.ExternalFiles;
             Assert.AreEqual(0, results.Count());
             (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunEnabled = true;
+            WorkspaceReferencesExtension.DependencyView.DependencyRegen(Model.CurrentWorkspace, true);
             results = Model.CurrentWorkspace.ExternalFiles;
             Assert.AreEqual(2, results.Count());
-
         }
     }
 }

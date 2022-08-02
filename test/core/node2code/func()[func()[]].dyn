@@ -1,0 +1,160 @@
+{
+  "Uuid": "1a1e71c9-5a11-487f-88b2-10ec20c0ab8c",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "func()[func()[]]",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "Math.Pow(x<1>, y<2>)[0][Math.Round(1..2)[0]];",
+      "Id": "47e4b4775d7e4102bdf225f096173111",
+      "Inputs": [
+        {
+          "Id": "e027054ae31746c7a5fc72156eee69a7",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3ff25fc8f2a2479babdaac3cc6a57364",
+          "Name": "y",
+          "Description": "y",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b30f6979306347b4a1158abd2c4e2aae",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1..4;",
+      "Id": "c65900a3b8b54c81b1374a2de5ed5b63",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "16632dd41c7c4bfd8e06a04b3c702b84",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "16632dd41c7c4bfd8e06a04b3c702b84",
+      "End": "3ff25fc8f2a2479babdaac3cc6a57364",
+      "Id": "6f38747d26cb4ac89279bde016d84477",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "16632dd41c7c4bfd8e06a04b3c702b84",
+      "End": "e027054ae31746c7a5fc72156eee69a7",
+      "Id": "f7c5bf1f795049fb8f675bb007eba856",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.15",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.15.0.4651",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "47e4b4775d7e4102bdf225f096173111",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 366.36841352447,
+        "Y": 456.037810181632
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "c65900a3b8b54c81b1374a2de5ed5b63",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 63.8719078002664,
+        "Y": 446.591066096767
+      }
+    ],
+    "Annotations": [],
+    "X": 50.1261108418671,
+    "Y": -66.95024468402562,
+    "Zoom": 1.0117759304742113
+  }
+}

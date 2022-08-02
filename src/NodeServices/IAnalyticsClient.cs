@@ -116,6 +116,16 @@ namespace Dynamo.Logging
         /// Events Category related to connectors
         /// </summary>
         ConnectorOperations,
+
+        /// <summary>
+        /// Events Category related to group styles
+        /// </summary>
+        GroupStyleOperations,
+
+        /// <summary>
+        /// Events Category related to guided tours
+        /// </summary>
+        GuidedTourOperations,
     }
 
     /// <summary>
@@ -374,6 +384,31 @@ namespace Dynamo.Logging
         /// Show event, when user wants to view Documentation.
         /// </summary>
         ViewDocumentation,
+
+        /// <summary>
+        /// Cancel operation, e.g. cancel adding a new group style 
+        /// </summary>
+        Cancel,
+
+        /// <summary>
+        /// Completed event, e.g. when a user completes a guided tour
+        /// </summary>
+        Completed,
+
+        /// <summary>
+        /// Next event, e.g. when a user clicks next on a guided tour
+        /// </summary>
+        Next,
+
+        /// <summary>
+        /// Previous event, e.g. when a user goes back on a guided tour
+        /// </summary>
+        Previous,
+
+        /// <summary>
+        /// TimeElapsed event, e.g. tracks the time elapsed since an event
+        /// </summary>
+        TimeElapsed,
     }
 
     /// <summary>

@@ -16,6 +16,7 @@
     MinHeight="300"
     MaxWidth="600"
     MaxHeight="700"
+    Style="{DynamicResource DynamoWindowStyle}"
     AllowsTransparency="True"
     ResizeMode="CanResizeWithGrip"
     WindowStartupLocation="CenterOwner"
@@ -966,35 +967,35 @@
                             CornerRadius="3,0,0,3" />
                     </Grid>
                     <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Unknown">
+                        <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="{x:Static p:Resources.PackageStateUnknown}">
                             <DataTrigger.Setters>
                                 <Setter TargetName="downloadStatusFlag" Property="Background" Value="#CC000000" />
                             </DataTrigger.Setters>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Downloaded">
+                        <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="{x:Static p:Resources.PackageDownloadStateDownloaded}">
                             <DataTrigger.Setters>
                                 <Setter TargetName="downloadStatusFlag" Property="Background" Value="Gray" />
                             </DataTrigger.Setters>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Downloading">
+                        <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="{x:Static p:Resources.PackageDownloadStateDownloading}">
                             <DataTrigger.Setters>
                                 <Setter TargetName="downloadStatusFlag" Property="Background" Value="Gray" />
                             </DataTrigger.Setters>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Error">
+                        <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="{x:Static p:Resources.PackageDownloadStateError}">
                             <DataTrigger.Setters>
                                 <Setter TargetName="downloadStatusFlag" Property="Background" Value="LightCoral" />
                                 <Setter TargetName="downloadCompletedIcon" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/package_error.png" />
                             </DataTrigger.Setters>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Installed">
+                        <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="{x:Static p:Resources.PackageDownloadStateInstalled}">
                             <DataTrigger.Setters>
                                 <Setter TargetName="downloadStatusFlag" Property="Background" Value="LightBlue" />
                                 <Setter TargetName="downloadCompletedIcon" Property="Visibility" Value="Visible" />
                                 <Setter TargetName="downloadingIcon" Property="Visibility" Value="Collapsed" />
                             </DataTrigger.Setters>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Installing">
+                        <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="{x:Static p:Resources.PackageDownloadStateInstalling}">
                             <DataTrigger.Setters>
                                 <Setter TargetName="downloadStatusFlag" Property="Background" Value="Gray" />
                             </DataTrigger.Setters>

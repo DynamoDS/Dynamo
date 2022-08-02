@@ -2,9 +2,23 @@
 using System.Collections.Generic;
 using Dynamo.Extensions;
 using Dynamo.Logging;
+using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.Wpf.Extensions
 {
+
+    /// <summary>
+    /// An object which may request a layout specification to be applied to the current library.
+    /// </summary>
+    internal interface ILayoutSpecSource
+    {
+        /// <summary>
+        /// Event that is raised when the LayoutSpecSource requests a LayoutSpec to be applied.
+        /// The string parameter here should be the layout spec json to merge into the existing spec.
+        /// </summary>
+        event Action<string> RequestApplyLayoutSpec;
+    }
+
     /// <summary>
     /// An object which may request ViewExtensions to be loaded and added to the ViewExtensionsManager.
     /// </summary>
@@ -32,6 +46,7 @@ namespace Dynamo.Wpf.Extensions
         private readonly List<IViewExtension> viewExtensions = new List<IViewExtension>();
         private readonly List<IExtensionStorageAccess> storageAccessViewExtensions = new List<IExtensionStorageAccess>();
         private readonly ViewExtensionLoader viewExtensionLoader = new ViewExtensionLoader();
+        private IExtensionManager extensionManager;
 
         public ViewExtensionManager()
         {
@@ -46,6 +61,14 @@ namespace Dynamo.Wpf.Extensions
         public ViewExtensionManager(IEnumerable<string> directoriesToVerify) : this()
         {
             this.viewExtensionLoader.DirectoriesToVerifyCertificates.AddRange(directoriesToVerify);
+        }
+
+        /// <summary>
+        /// Creates ViewExtensionManager with directories which require package certificate verification and access to the ExtensionManager.
+        /// </summary>
+        internal ViewExtensionManager(IExtensionManager manager,IEnumerable<string> directoriesToVerify) : this(directoriesToVerify)
+        {
+            extensionManager = manager;
         }
 
         private void RequestAddViewExtensionHandler(IViewExtension viewExtension)
@@ -65,12 +88,37 @@ namespace Dynamo.Wpf.Extensions
             return null;
         }
 
+        private void RequestApplyLayoutSpecHandler(string specJSON)
+        {
+            Log($"an extension requested application of {specJSON} layout spec");
+              try
+                {
+                //try to combine the layout specs.
+                    var customizationService = extensionManager.Service<ILibraryViewCustomization>();
+                //TODO if the layoutspec is empty, we're calling this too early, we can retry after x seconds?
+                    var originalLayoutSpec = customizationService.GetSpecification();
+                    var requestedLayoutSpec = LayoutSpecification.FromJSONString(specJSON);
+                    var merged = LayoutSpecification.MergeLayoutSpecs(originalLayoutSpec, requestedLayoutSpec);
+                    //update the library with the merged spec.
+                    customizationService.SetSpecification(merged);
+                }
+
+                catch (Exception ex)
+                {
+                    Log(ex.ToString());
+                }
+        }
+
         private void UnsubscribeViewExtension(IViewExtension obj)
         {
             if (obj is IViewExtensionSource)
             {
                 (obj as IViewExtensionSource).RequestLoadExtension -= RequestLoadViewExtensionHandler;
                 (obj as IViewExtensionSource).RequestAddExtension -= RequestAddViewExtensionHandler ;
+            }
+            if (obj is ILayoutSpecSource ls)
+            {
+                ls.RequestApplyLayoutSpec -= RequestApplyLayoutSpecHandler;
             }
         }
 
@@ -80,6 +128,10 @@ namespace Dynamo.Wpf.Extensions
             {
                 (obj as IViewExtensionSource).RequestLoadExtension += RequestLoadViewExtensionHandler;
                 (obj as IViewExtensionSource).RequestAddExtension += RequestAddViewExtensionHandler;
+            }
+            if (obj is ILayoutSpecSource ls)
+            {
+                ls.RequestApplyLayoutSpec += RequestApplyLayoutSpecHandler;
             }
         }
         public ViewExtensionLoader ExtensionLoader

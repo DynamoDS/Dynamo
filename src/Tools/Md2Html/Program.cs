@@ -23,10 +23,12 @@ namespace Md2Html
                     var line = Console.ReadLine();
                     if (line == @"<<<<<Sanitize>>>>>")
                     {
+                        Console.WriteLine(@"<<<<<Sod>>>>>");
                         Sanitize();
                     }
                     else if (line == @"<<<<<Convert>>>>>")
                     {
+                        Console.WriteLine(@"<<<<<Sod>>>>>");
                         Convert();
                     }
                     Console.WriteLine(@"<<<<<Eod>>>>>");

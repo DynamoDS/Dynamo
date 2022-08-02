@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Core;
@@ -130,6 +131,12 @@ namespace Dynamo.Models
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
+        /// <summary>
+        /// Indicating if ASM is loaded correctly, defaulting to true because integrators most likely have code for ASM preloading
+        /// During sandbox initializing, Dynamo checks specifically if ASM loading was correct
+        /// </summary>
+        internal bool IsASMLoaded = true;
+    
         #endregion
 
         #region static properties
@@ -376,6 +383,9 @@ namespace Dynamo.Models
         public AuthenticationManager AuthenticationManager { get; set; }
 
         internal static string DefaultPythonEngine { get; private set; }
+
+        internal static DynamoUtilities.DynamoFeatureFlagsManager FeatureFlags { get; private set; }
+
         #endregion
 
         #region initialization and disposal
@@ -435,6 +445,12 @@ namespace Dynamo.Models
         /// the Dynamo UI attached to it or not 
         /// </summary>
         public DynamoModelState State { get; internal set; } = DynamoModelState.NotStarted;
+
+        /// <summary>
+        /// CLIMode indicates if we are running in DynamoCLI or DynamoWPFCLI mode.
+        /// Note that in CLI mode Scheduler is synchronous.
+        /// </summary>
+        public bool CLIMode { get; internal set; }
 
         protected virtual void PreShutdownCore(bool shutdownHost)
         {
@@ -518,6 +534,11 @@ namespace Dynamo.Models
             /// TODO: Move this to IStartConfiguration in Dynamo 3.0
             /// </summary>
             public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
+
+            /// <summary>
+            /// CLIMode indicates if we are running in DynamoCLI or DynamoWPFCLI mode.
+            /// </summary>
+            public bool CLIMode { get; set; }
         }
 
         /// <summary>
@@ -560,6 +581,7 @@ namespace Dynamo.Models
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
                 // TODO: This fact should probably be revisited in 3.0.
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
+                CLIMode = defaultStartConfig.CLIMode;
             }
 
             ClipBoard = new ObservableCollection<ModelBase>();
@@ -601,7 +623,8 @@ namespace Dynamo.Models
             if (preferences is PreferenceSettings settings)
             {
                 PreferenceSettings = settings;
-                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;             
+                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+                PreferenceSettings.MessageLogged += LogMessage;
             }
 
             if (config is DefaultStartConfiguration defaultStartConfiguration)
@@ -611,18 +634,11 @@ namespace Dynamo.Models
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
 
-            var hostUpdateManager = config.UpdateManager;
-
-            if (hostUpdateManager != null)
+            if (UpdateManager != null)
             {
                 // For API compatibility now in Dynamo 2.0, integrators can set HostName in both ways
-                HostName = string.IsNullOrEmpty(hostUpdateManager.HostName)? HostAnalyticsInfo.HostName : hostUpdateManager.HostName;
-                HostVersion = hostUpdateManager.HostVersion?.ToString();
-            }
-            else
-            {
-                HostName = string.Empty;
-                HostVersion = null;
+                HostName = string.IsNullOrEmpty(UpdateManager.HostName) ? HostAnalyticsInfo.HostName : UpdateManager.HostName;
+                HostVersion = UpdateManager.HostVersion?.ToString();
             }
 
             bool areAnalyticsDisabledFromConfig = false;
@@ -644,9 +660,38 @@ namespace Dynamo.Models
             }
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
+            // or the feature flags client.
             if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
             {
                 AnalyticsService.Start(this, IsHeadless, IsTestMode);
+
+
+                //run process startup/reading on another thread so we don't block dynamo startup.
+                //if we end up needing to control aspects of dynamo model or view startup that we can't make
+                //event based/async then just run this on main thread - ie get rid of the Task.Run()
+                var mainThreadSyncContext = new SynchronizationContext();
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        //this will kill the CLI process after cacheing the flags in Dynamo process.
+                        using (FeatureFlags =
+                                new DynamoUtilities.DynamoFeatureFlagsManager(
+                                AnalyticsService.GetUserIDForSession(),
+                                mainThreadSyncContext,
+                                IsTestMode))
+                        {
+                            FeatureFlags.MessageLogged += LogMessageWrapper;
+                            //this will block task thread as it waits for data from feature flags process.
+                            FeatureFlags.CacheAllFlags();
+                        }
+                    }
+                    catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
+                });
+
+                //TODO just a test of feature flag event, safe to remove at any time.
+                DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckFeatureFlagTest;
+
             }
 
             if (!IsTestMode && PreferenceSettings.IsFirstRun)
@@ -675,6 +720,12 @@ namespace Dynamo.Models
                     PreferenceSettings.IsFirstRun = isFirstRun;
                 }
             }
+
+            if (PreferenceSettings.IsFirstRun && !IsTestMode)
+            {
+                PreferenceSettings.AddDefaultTrustedLocations();
+            }
+
             InitializePreferences(PreferenceSettings);
 
             // At this point, pathManager.PackageDirectories only has 1 element which is the directory
@@ -871,6 +922,28 @@ namespace Dynamo.Models
             State = DynamoModelState.StartedUIless;
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
+        }
+
+        private void CheckFeatureFlagTest()
+        {
+            if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
+            {
+                this.Logger.Log("EasterEggIcon1 is true FROM MODEL");
+
+            }
+            else
+            {
+                this.Logger.Log("EasterEggIcon1 is false FROM MODEL");
+            }
+
+            if (DynamoModel.FeatureFlags.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is var s && s != "NA")
+            {
+                this.Logger.Log("EasterEggMessage1 is enabled FROM MODEL");
+            }
+            else
+            {
+                this.Logger.Log("EasterEggMessage1 is disabled FROM MODEL");
+            }
         }
 
         private void SetDefaultPythonTemplate()
@@ -1188,6 +1261,7 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
                 PreferenceSettings.RequestUserDataFolder -= pathManager.GetUserDataFolder;
+                PreferenceSettings.MessageLogged -= LogMessage;
             }
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
@@ -1199,7 +1273,11 @@ namespace Dynamo.Models
             CustomNodeManager.MessageLogged -= LogMessage;
             CustomNodeManager.Dispose();
             MigrationManager.MessageLogged -= LogMessage;
-
+            if (FeatureFlags != null)
+            {
+                FeatureFlags.MessageLogged -= LogMessageWrapper;
+            }
+            DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckFeatureFlagTest;
         }
 
         private void InitializeCustomNodeManager()
@@ -1420,17 +1498,26 @@ namespace Dynamo.Models
            // I think this is consistent with the current behavior - IE today - if a nodeModel exists in an assembly, the rest of the assembly 
            // is not imported as ZT - the same will be true if the assembly contains a NodeViewCustomization.
 
-           // TODO(mjk) draw up matrix of current behaviors which nodeLib flag can control.
-            if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem)
-                && !(NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(assem)))
+            bool hasNodeModelOrNodeViewTypes;
+            try
+            {
+                hasNodeModelOrNodeViewTypes = NodeModelAssemblyLoader.ContainsNodeModelSubType(assem)
+                || (NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(assem));
+            } 
+            catch (Exception ex) {
+                throw new Exceptions.LibraryLoadFailedException(assem.Location, ex.Message);
+            }
+
+            // TODO(mjk) draw up matrix of current behaviors which nodeLib flag can control.
+            if (!hasNodeModelOrNodeViewTypes)
             {
                 if (suppressZeroTouchLibraryLoad)
                 {
-                    LibraryServices.LoadNodeLibrary(assem.Location, false);
+                    LibraryServices.LoadNodeLibrary(assem.Location, isExplicitlyImportedLib: false);
                 }
                 else
                 {
-                    LibraryServices.ImportLibrary(assem.Location);
+                    LibraryServices.ImportLibrary(assem.Location, isExplicitlyImportedLib: false);
                 }
 
                 return;
@@ -1848,7 +1935,7 @@ namespace Dynamo.Models
                 // TODO: #4258
                 // Remove this ResetEngine call when multiple home workspaces is supported.
                 // This call formerly lived in DynamoViewModel
-                ResetEngine();
+                ResetEngine(false);
 
                 if (hws.RunSettings.RunType == RunType.Periodic)
                 {
@@ -2634,6 +2721,8 @@ namespace Dynamo.Models
                     newAnnotations.Add(annotationModel);
                 }
 
+                DynamoSelection.Instance.ClearSelectionDisabled = true;
+
                 // Add the new Annotation's to the Workspace
                 foreach (var newAnnotation in newAnnotations)
                 {
@@ -2647,6 +2736,8 @@ namespace Dynamo.Models
                 {
                     AddToSelection(item);
                 }
+
+                DynamoSelection.Instance.ClearSelectionDisabled = false;
 
                 // Record models that are created as part of the command.
                 CurrentWorkspace.RecordCreatedModels(createdModels);
@@ -2743,6 +2834,10 @@ namespace Dynamo.Models
         private void LogMessage(ILogMessage obj)
         {
             Logger.Log(obj);
+        }
+        private void LogMessageWrapper(string m)
+        {
+            LogMessage(Dynamo.Logging.LogMessage.Info(m));
         }
 
 #if DEBUG_LIBRARY

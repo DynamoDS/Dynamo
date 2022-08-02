@@ -139,9 +139,13 @@ namespace Dynamo.UI.Prompts
                 BodyText = messageBoxText,
                 TitleText = caption,
                 MessageBoxButton = button,
-                MessageBoxImage = icon,
-                Owner = owner
+                MessageBoxImage = icon
             };
+
+            if (owner != null && owner.IsLoaded)
+            {
+                dynamoMessageBox.Owner = owner;
+            }
 
             dynamoMessageBox.ConfigureButtons(button);
             dynamoMessageBox.ShowDialog();
@@ -316,6 +320,12 @@ namespace Dynamo.UI.Prompts
         {
             CustomDialogResult = MessageBoxResult.Cancel;
             Close();
+        }
+
+        // ESC Button pressed triggers Window close        
+        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

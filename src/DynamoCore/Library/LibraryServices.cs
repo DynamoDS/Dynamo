@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Interfaces;
 using Dynamo.Library;
@@ -1079,7 +1080,8 @@ namespace Dynamo.Engine
                 IsVarArg = proc.IsVarArg,
                 ObsoleteMsg = obsoleteMessage,
                 CanUpdatePeriodically = canUpdatePeriodically,
-                IsBuiltIn = pathManager.PreloadedLibraries.Contains(library),
+                IsBuiltIn = pathManager.PreloadedLibraries.Contains(library)
+                    || library.StartsWith(PathManager.BuiltinPackagesDirectory),
                 IsPackageMember = packagedLibraries.Contains(library),
                 IsLacingDisabled = isLacingDisabled
             });

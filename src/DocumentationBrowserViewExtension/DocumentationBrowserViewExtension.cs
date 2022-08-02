@@ -176,6 +176,9 @@ namespace Dynamo.DocumentationBrowser
 
             // forward the event to the ViewModel to handle
             this.ViewModel?.HandleOpenDocumentationLinkEvent(args);
+
+            // Check the menu item
+            this.documentationBrowserMenuItem.IsChecked = true;
         }
 
         private void OnViewModelMessageLogged(ILogMessage msg)

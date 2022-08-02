@@ -52,13 +52,21 @@
 
     <Color x:Key="DefaultBorderBrushDarkColor">Black</Color>
 
+
     <!--  Control-specific resources.  -->
     <Color x:Key="HeaderTopColor">#FFC5CBF9</Color>
     <Color x:Key="DatagridCurrentCellBorderColor">Black</Color>
     <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
     <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
 
+    <Color x:Key="DarkThemeBodyMediumColor">#F5F5F5</Color>
+    <Color x:Key="DarkThemeInputBoxBackgroundColor">#353535</Color>
+
+    <SolidColorBrush x:Key="DarkThemeBodyMediumBrush" Color="{DynamicResource DarkThemeBodyMediumColor}" />
+    <SolidColorBrush x:Key="DarkThemeInputBoxBackgroundBrush" Color="{DynamicResource DarkThemeInputBoxBackgroundColor}" />
+
     <clr:Double x:Key="NodeNameHeight">53</clr:Double>
+
 
     <!--  InfoBubble colors  -->
     <SolidColorBrush x:Key="InfoBubbleBackNormalBrush" Color="White" />
@@ -117,6 +125,60 @@
         <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Background" Value="#343434" />
+    </Style>
+
+    <!--  Generic Dynamo ToolTip  -->
+    <Style x:Key="GenericToolTipLight" TargetType="ToolTip">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="MaxWidth" Value="300" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Grid x:Name="PopupGrid">
+                        <Grid x:Name="ShadowBackground" Background="Transparent">
+                            <Path Margin="5 0 0 0" Width="20" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Data="M0,6 L6,0 12,6Z" Stroke="Gray" Fill="White" Stretch="None" />
+                            <Border BorderThickness="1 0 1 1" CornerRadius="3" Margin="0 5 7 7" BorderBrush="#999999" Background="white" Padding="10,8">
+                                <ContentPresenter/>
+                            </Border>
+                            <Border BorderThickness="0 1 0 0" CornerRadius="0 0 3 0" Margin="16 5 9 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="7" BorderBrush="#999999" />
+                            <Border BorderThickness="0 1 0 0" CornerRadius="3 0 0 0" Margin="0 5 0 0"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="7" Width="6" BorderBrush="#999999" />
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Resources>
+            <Style TargetType="ContentPresenter">
+                <Style.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                        <Setter Property="FontSize" Value="12px" />
+                        <Setter Property="Foreground" Value="#232323" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </Style.Resources>
+    </Style>
+
+    <Style x:Key="GenericToolTipLightTop" TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
+        <Setter Property="Placement" Value="Top"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Grid x:Name="PopupGrid">
+                        <Grid x:Name="ShadowBackground" Background="Transparent">
+                            <Path Margin="5 0 0 0" x:Name="TooltipPointer" Width="20" Height="6" HorizontalAlignment="Left" VerticalAlignment="Bottom" Data="M0,0 L6,6 12,0Z" Stroke="Gray" Fill="White" Stretch="None"/>
+                            <Border BorderThickness="1 1 1 0" CornerRadius="3" Margin="0 7 7 5" BorderBrush="#999999" Background="white" Padding="10,8">
+                                <ContentPresenter/>
+                            </Border>
+                            <Border BorderThickness="0 0 0 1" CornerRadius="0 0 3 0" Margin="16 0 9 5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="7" BorderBrush="#999999" />
+                            <Border BorderThickness="0 0 0 1" CornerRadius="0 0 0 3" Margin="0 0 0 5"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="7" Width="6" BorderBrush="#999999" />
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Image x:Key="ComboDownIcon_normal" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/tick_selected.png" />
@@ -651,6 +713,31 @@
         </Setter>
     </Style>
 
+    <Style x:Key="TextButtonLink" TargetType="Button">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <TextBlock 
+                               Name="textBlock"        
+                               HorizontalAlignment="Left"                               
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               FontSize="14px"
+                               Background="Transparent"                        
+                               Foreground="#006FB4"
+                               Text="{TemplateBinding Content}"/>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="textBlock" Property="Background" Value="Transparent" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="InputStyle" TargetType="{x:Type TextBox}">
         <Setter Property="Margin" Value="0,0,0,12" />
         <Setter Property="MinWidth" Value="62px" />
@@ -681,6 +768,94 @@
                                 Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                 IsHitTestVisible="False"
                                 Opacity="0.5"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Text" Value=""/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Visibility" TargetName="WaterMarkLabel" Value="Visible"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="InputStyleWithIcon" TargetType="{x:Type TextBox}">
+        <Setter Property="Margin" Value="0,0,0,12" />
+        <Setter Property="MinWidth" Value="62px" />
+        <Setter Property="CaretBrush" Value="{StaticResource PrimaryCharcoal200Brush}" />
+        <Setter Property="Padding" Value="10,12,10,8"/>
+        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}"/>
+        <Setter Property="FontSize" Value="12px" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="25" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Row="0"
+							Grid.ColumnSpan="2"
+                            Background="#353535"
+                            BorderBrush="Transparent"                            
+                            BorderThickness="1"
+                            />
+                        <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
+                        <Label  x:Name="WaterMarkLabel"
+								Grid.Row="0"
+                                Padding="13,13,10,8"
+                                Content="{TemplateBinding Tag}" 
+                                VerticalAlignment="Center"
+                                Visibility="Collapsed"
+                                FontFamily="{StaticResource ArtifaktElementRegular}"
+                                FontSize="12px"
+                                Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                IsHitTestVisible="False"
+                                Opacity="0.5"/>
+                        <!--  This is the Canvas for the exclamation mark appearing when the Style that the user is trying to insert already exists  -->
+                        <Canvas Grid.Column="1" Margin="0,5,5,0"
+                                Visibility="{Binding Path=IsWarningEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Canvas.ToolTip>
+                                <ToolTip Content="{Binding CurrentWarningMessage}" Style="{StaticResource GenericToolTipLight}"/>
+                            </Canvas.ToolTip>
+                            <Path Fill="#FAA21B">
+                                <Path.Data>
+                                    <CombinedGeometry GeometryCombineMode="Exclude">
+                                        <CombinedGeometry.Geometry1>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="True" StartPoint="10,5">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="18,20" />
+                                                                    <LineSegment Point="2,20" />
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                        </CombinedGeometry.Geometry1>
+                                        <CombinedGeometry.Geometry2>
+                                            <GeometryGroup FillRule="EvenOdd">
+                                                <EllipseGeometry Center="10,18" RadiusX="1.5" RadiusY="1.5"/>
+                                                <RectangleGeometry Rect="8.5,8.5,3,7.5"/>
+                                            </GeometryGroup>
+                                        </CombinedGeometry.Geometry2>
+                                    </CombinedGeometry>
+                                </Path.Data>
+                            </Path>
+                        </Canvas>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <MultiTrigger>
@@ -855,7 +1030,6 @@
     </Style>
 
 
-
     <Style x:Key="SDarkTextBox"
            BasedOn="{StaticResource {x:Type TextBox}}"
            TargetType="{x:Type TextBox}">
@@ -871,6 +1045,55 @@
                             Background="#2c2c2c"
                             BorderBrush="#444"
                             BorderThickness="1px">
+                        <Grid>
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="5,5,0,0"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          Style="{DynamicResource ResourceKey=SDarkScrollViewer}" />
+                            <TextBlock x:Name="previewText"
+                                       Margin="5,5,0,0"
+                                       Padding="{TemplateBinding Padding}"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       Foreground="#555555"
+                                       IsHitTestVisible="False"
+                                       Text="{TemplateBinding Tag}"
+                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="borderText" Property="BorderBrush" Value="#666666" />
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="#555555" />
+                            <Setter TargetName="borderText" Property="BorderBrush" Value="#444444" />
+                        </Trigger>
+
+                        <Trigger Property="Text" Value="">
+                            <Setter TargetName="previewText" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SLightTextBox"
+           BasedOn="{StaticResource {x:Type TextBox}}"
+           TargetType="{x:Type TextBox}">
+        <Setter Property="Foreground" Value="{DynamicResource DarkerGreyBrush}" />
+        <Setter Property="CaretBrush" Value="White" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="FontSize" Value="11px" />
+        <Setter Property="Padding" Value="5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border Name="borderText"
+                            Background="{DynamicResource LightMidGreyOpacityBrush}"
+                            BorderBrush="#444"
+                            BorderThickness="0px">
                         <Grid>
                             <ScrollViewer x:Name="PART_ContentHost"
                                           Margin="5,5,0,0"
@@ -1874,40 +2097,6 @@
         </Setter>
     </Style>
 
-    <!--  Generic Dynamo ToolTip  -->
-    <Style x:Key="GenericToolTipLight" TargetType="ToolTip">
-        <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Setter Property="MaxWidth" Value="300" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ToolTip">
-                    <Grid x:Name="PopupGrid">
-                        <Grid x:Name="ShadowBackground" Background="Transparent">
-                            <Path Margin="5 0 0 0" Width="20" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Data="M0,6 L6,0 12,6Z" Stroke="Gray" Fill="White" Stretch="None" />
-                            <Border BorderThickness="1 0 1 1" CornerRadius="3" Margin="0 5 7 7" BorderBrush="#999999" Background="white" Padding="10,8">
-                                <ContentPresenter/>
-                            </Border>
-                            <Border BorderThickness="0 1 0 0" CornerRadius="0 0 3 0" Margin="16 5 9 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="7" BorderBrush="#999999" />
-                            <Border BorderThickness="0 1 0 0" CornerRadius="3 0 0 0" Margin="0 5 0 0"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="7" Width="6" BorderBrush="#999999" />
-                        </Grid>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Resources>
-            <Style TargetType="ContentPresenter">
-                <Style.Resources>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="TextWrapping" Value="Wrap" />
-                        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-                        <Setter Property="FontSize" Value="12px" />
-                        <Setter Property="Foreground" Value="#232323" />
-                    </Style>
-                </Style.Resources>
-            </Style>
-        </Style.Resources>
-    </Style>
-
     <Style x:Key="StartPageListBox" TargetType="ListBox">
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -2679,6 +2868,8 @@
         </Style.Triggers>
     </Style>
 
+
+    <!-- Window Control Button Styles - Close Button -->
     <Style x:Key="CloseButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
@@ -2690,6 +2881,75 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/close_blue.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Window Control Button Styles - Minimize Button -->
+    <Style x:Key="MinimizeButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="minimizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minus_16px_grey.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="minimizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minus_16px_blue.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Window Control Button Styles - Maximize Button -->
+    <Style x:Key="MaximizeButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="maximizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/maximize_16px_grey.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="maximizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/maximize_16px_blue.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Window Control Button Styles - Normalize Button -->
+    <Style x:Key="NormalizeButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="normalizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minimize_16px_grey.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="normalizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minimize_16px_blue.png" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value=".5" />
@@ -2742,17 +3002,17 @@
         </Setter>
     </Style>
 
-    <Style x:Key="FolderButtonStyle" TargetType="Button">
+    <Style x:Key="EditFolderButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Image Name="folderIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/folder_16_16.png"/>
+                        <Image Name="folderIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/edit_folder_16px_default.png"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="folderIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/folder-hover-16px.png" />
+                            <Setter TargetName="folderIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/edit_folder_16px_hover.png" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value=".5" />
@@ -3265,7 +3525,106 @@
                                                                                             TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                     <Grid RenderOptions.ClearTypeHint="Enabled">
                                         <ItemsPresenter x:Name="ItemsPresenter"
-                                                        Margin="2"
+                                                        Grid.IsSharedSizeScope="true"
+                                                        KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                        KeyboardNavigation.TabNavigation="Cycle"
+                                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Grid>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="False">
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ContextMenuItemFixedWidthStyle" TargetType="{x:Type MenuItem}">
+        <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="MinWidth" Value="250" />
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Padding" Value="20,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <DockPanel x:Name="dockPanel"
+                               HorizontalAlignment="Stretch"
+                               Background="Transparent"
+                               SnapsToDevicePixels="true">
+                        <Label x:Name="checkBox"
+                               Margin="0,0,-20,0"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Content="✓"
+                               DockPanel.Dock="Left"
+                               FontSize="9px"
+                               Foreground="White"
+                               Visibility="Collapsed" />
+                        <ContentPresenter x:Name="ContentPresenter"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center"
+                                          ContentSource="Header"
+                                          DockPanel.Dock="Left"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          TextBlock.Foreground="{StaticResource NodeContextMenuForeground}" />
+                        <Label x:Name="subMenuArrow"
+                               Margin="0,0,15,7"
+                               Padding="0"
+                               VerticalAlignment="Center"
+                               Content="&gt;"
+                               DockPanel.Dock="Right"
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               FontSize="13px"
+                               Foreground="{StaticResource Blue300Brush}">
+                            <Label.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1.5" />
+                            </Label.RenderTransform>
+                            <Label.Style>
+                                <Style TargetType="{x:Type Label}">
+                                    <Setter Property="Visibility" Value="Hidden" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <Popup x:Name="PART_Popup"
+                               AllowsTransparency="true"
+                               Focusable="false"
+                               HorizontalOffset="0"
+                               MaxWidth="182"
+                               IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                               Placement="Right"
+                               VerticalOffset="-2">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderThickness="0">
+                                <ScrollViewer x:Name="SubMenuScrollViewer"
+                                              CanContentScroll="true"
+                                              Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
+                                                                                            TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                    <Grid RenderOptions.ClearTypeHint="Enabled">
+                                        <ItemsPresenter x:Name="ItemsPresenter"
                                                         Grid.IsSharedSizeScope="true"
                                                         KeyboardNavigation.DirectionalNavigation="Cycle"
                                                         KeyboardNavigation.TabNavigation="Cycle"
@@ -3377,7 +3736,7 @@
                                 Grid.Row="1"
                                 BorderThickness="1,0,1,1"
                                 CornerRadius="0,0,4,4">
-                            <ContentPresenter Margin="12,0,0,15" />
+                            <ContentPresenter Margin="12,0,0,12" />
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -4001,8 +4360,57 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
-    
+
+    <!--This Style will be used in the FileTrustWarning.xaml file (there is one already using inverted colors) specifically for the Buttons "Settings" and "No, close file"-->
+    <Style x:Key="OutlinedButtonStyleInverted" TargetType="Button">
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder"
+                            BorderThickness="2"
+                            Background="Transparent"
+                            BorderBrush="{StaticResource Button.Outline.Default.Border}"
+                            CornerRadius="2">
+                        <Grid Background="Transparent">
+                            <Rectangle Stroke="Black" 
+                                       RadiusX="2" 
+                                       RadiusY="2" 
+                                       Opacity="0.5" 
+                                       StrokeThickness="1"/>
+                            <TextBlock HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center" 
+                                       FontSize="14"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       Padding="10,0,10,0">
+                                <ContentPresenter />
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                    <!--  According to the Hig Autodesk standards for Outlined buttons some colors/properties will be changed according to the event generated  -->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource Button.Outline.MouseOver.Border}" />
+                            <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource Button.Outline.Pressed.Border}" />
+                            <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Cursor" Value="Hand" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Foreground" Value="{StaticResource DynamoStandardLabelTextBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 
     <!--  This Style will be used for Note Text block (used when Note is on edit mode)  -->
     <Style x:Key="NoteTextBoxStyle" TargetType="TextBox">
@@ -4512,7 +4920,6 @@
                                                                                             TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                     <Grid RenderOptions.ClearTypeHint="Enabled">
                                         <ItemsPresenter x:Name="ItemsPresenter"
-                                                        Margin="2"
                                                         Grid.IsSharedSizeScope="true"
                                                         KeyboardNavigation.DirectionalNavigation="Cycle"
                                                         KeyboardNavigation.TabNavigation="Cycle"
@@ -4550,7 +4957,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Grid Margin="0,0,10,10"
+                    <Grid Margin="0,0,10,5"
                                   MinWidth="186"
                                   MinHeight="67">
                         <Border x:Name="mouseOverBorder"
@@ -4604,4 +5011,227 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <!--This Style is using in the FileTrustWarning.xaml file for the only checkbox in the Popup-->
+    <Style x:Key="CheckBoxFileTrustStyle" TargetType="{x:Type CheckBox}">
+    <Setter Property="SnapsToDevicePixels" Value="true" />
+    <Setter Property="OverridesDefaultStyle" Value="true" />
+    <Setter Property="Template">
+        <Setter.Value>
+            <ControlTemplate TargetType="CheckBox">
+                <BulletDecorator VerticalAlignment="Center" 
+                                 Background="Transparent">
+                    <BulletDecorator.Bullet>
+                        <Border x:Name="Border"
+                                    Width="13"
+                                    Height="13"
+                                    Background="#373737"
+                                    BorderBrush="{StaticResource MidGreyBrush}"
+                                    BorderThickness="1">
+                            <Image x:Name="CheckBoxTick"
+                                       Width="7"
+                                       Height="7"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/tick_selected.png"
+                                       Visibility="Hidden" />
+                        </Border>
+                    </BulletDecorator.Bullet>
+
+                    <ContentPresenter x:Name="contentPresent"
+                                          Margin="5,0,5,0"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          TextBlock.FontSize="14px"
+                                          TextBlock.Foreground="Black" />
+                </BulletDecorator>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsChecked" Value="true">
+                            <Setter TargetName="CheckBoxTick" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    <Trigger Property="IsChecked" Value="false">
+                        <Setter TargetName="Border" Property="Background" Value="White" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="True">
+                    <Setter TargetName="contentPresent" Property="TextBlock.Foreground" Value="Black" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter TargetName="contentPresent" Property="TextBlock.Foreground" Value="{StaticResource NormalBorderBrush}" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value>
+    </Setter>
+    </Style>
+
+    <!-- UI No Style Window Border Style -->
+    <Style x:Key="NoStyleWindowBorderStyle" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="BorderThickness" Value="4"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#000" ShadowDepth="0" Opacity="0.25" BlurRadius="10.0" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- A rectangle used as a divider line -->
+    <Style x:Key="DividerRectangleStyle" TargetType="{x:Type Rectangle}">
+        <Setter Property="Height" Value="1px"/>
+        <Setter Property="Margin" Value="0 20 0 15"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <Setter Property="Fill" Value="#B7B7B7"/>
+        <Setter Property="UseLayoutRounding" Value="True"/>
+    </Style>
+
+    <!-- The default style for a TextBox in the Dark Theme -->
+    <Style x:Key="InputBoxDarkThemeStyle" TargetType="{x:Type TextBox}">
+        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+        <Setter Property="Foreground" Value="{StaticResource DarkThemeBodyMediumBrush}"/>
+        <Setter Property="Background" Value="{StaticResource DarkThemeInputBoxBackgroundBrush}"/>
+        <Setter Property="UseLayoutRounding" Value="True"/>
+        <Setter Property="FontSize" Value="12px"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="MinLines" Value="2"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="AcceptsReturn" Value="True"/>
+        <Setter Property="AcceptsTab" Value="True"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+    </Style>
+
+    <!-- Colors -->
+    <Color x:Key="MidGray">#999999</Color>
+    <Color x:Key="LightGray">#CCCCCC</Color>
+    <Color x:Key="Blue">#38abdf</Color>
+    <Color x:Key="MidLightBlue">#366a81</Color>
+    <Color x:Key="MidBlue">#365868</Color>
+    <Color x:Key="MidDarkBlue">#375f71</Color>
+    <Color x:Key="TextColor">#F5F5F5</Color>
+    <Color x:Key="GrayOpacity">#5C5C5C5C</Color>
+
+    <!--  Brushes  -->
+    <SolidColorBrush x:Key="MidGrayBrush" Color="{StaticResource MidGray}" />
+    <SolidColorBrush x:Key="LightGrayBrush" Color="{StaticResource LightGray}" />
+    <SolidColorBrush x:Key="BlueBrush" Color="{StaticResource Blue}" />
+    <SolidColorBrush x:Key="MidLightBlueBrush" Color="{StaticResource MidLightBlue}" />
+    <SolidColorBrush x:Key="MidBlueBrush" Color="{StaticResource MidBlue}" />
+    <SolidColorBrush x:Key="MidDarkBlueBrush" Color="{StaticResource MidDarkBlue}" />
+    <SolidColorBrush x:Key="TextColorBrush" Color="{StaticResource TextColor}" />
+    <SolidColorBrush x:Key="GrayOpacityBrush" Color="{StaticResource GrayOpacity}" />
+
+    <!-- Controls behaviour for mouseover on TextBox -->
+    <Style x:Key="BorderInputBoxDarkThemeStyle" TargetType="Border">
+        <Setter Property="BorderThickness" Value="0 0 0 1"></Setter>
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource MidGrayBrush}"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ElementName=editText, Path=IsMouseOver}" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource LightGrayBrush}"></Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ElementName=editText, Path=IsFocused}" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource BlueBrush}"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Controls behaviour for mouseover on TextBox -->
+    <Style x:Key="RectangleInputBoxDarkThemeStyle" TargetType="Rectangle">
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="Fill" Value="{StaticResource MidDarkBlueBrush}"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ElementName=editText, Path=IsFocused}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard SpeedRatio="2">
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0.75" Duration="0:0:1" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard SpeedRatio="2">
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0" Duration="0:0:1" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="HintingInputStyle" TargetType="TextBox">
+        <Setter Property="Margin" Value="0,0,0,12" />
+        <Setter Property="MinWidth" Value="62px" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Cursor" Value="IBeam" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Grid>
+                        <TextBox x:Name="InputTextBox"
+                                     Padding="8,10"
+                                     Background="#353535"
+                                     BorderThickness="0"
+                                     CaretBrush="{StaticResource Blue300Brush}"
+                                     Focusable="True"
+                                     FontFamily="{StaticResource ArtifaktElementRegular}"
+                                     FontSize="12px"
+                                     Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                     MaxLength="{TemplateBinding MaxLength}"
+                                     Tag="{TemplateBinding Tag}"
+                                     Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
+                                     TextWrapping="Wrap" />
+                        <TextBlock x:Name="WatermarkLabel"
+                                       Padding="10"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="12px"
+                                       Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                       IsHitTestVisible="False"
+                                       Opacity="0.5"
+                                       Text="{TemplateBinding Tag}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=InputTextBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <StackPanel Height="4px" VerticalAlignment="Bottom">
+                            <Rectangle Name="Underline"
+                                           Height="1px"
+                                           Fill="Transparent" />
+                            <Rectangle Name="UnderlineShadow"
+                                           Height="3px"
+                                           Fill="Transparent" />
+                        </StackPanel>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="Underline" Property="Rectangle.Fill" Value="{StaticResource Blue300Brush}" />
+                            <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#497386" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Underline" Property="Rectangle.Fill" Value="#9B9B9B" />
+                            <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#6E6E6E" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="BorderBrush" Value="{StaticResource DarkMidGreyBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

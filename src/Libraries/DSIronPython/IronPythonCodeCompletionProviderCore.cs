@@ -300,7 +300,11 @@ namespace DSIronPython
         /// <returns></returns>
         public override bool IsSupportedEngine(string engineName)
         {
-           if (engineName == PythonEngineManager.IronPython2EngineName)
+            // Do not reference 'PythonEngineManager.IronPython2EngineName' here
+            // because it will break compatibility with Dynamo2.13.X
+            //
+            //if (engineName == PythonEngineManager.IronPython2EngineName)
+            if (engineName == "IronPython2")
             {
                 return true;
             }

@@ -586,7 +586,8 @@ namespace Dynamo.Graph.Nodes
                 {
                     func = targetClass.ProcTable.GetPropertyGetterByName(funcName);
                 }
-                type = func.ReturnType;
+                if(func != null) type = func.ReturnType;
+
                 return type;
             }
 

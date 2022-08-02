@@ -21,7 +21,7 @@ namespace Dynamo.Logging
             public void Dispose() { }
         }
 
-        private static IAnalyticsClient client = null;
+        internal static IAnalyticsClient client = null;
         
         /// <summary>
         /// Starts analytics client

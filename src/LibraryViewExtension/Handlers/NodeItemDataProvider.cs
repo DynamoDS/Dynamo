@@ -84,8 +84,12 @@ namespace Dynamo.LibraryUI.Handlers
         /// </summary>
         public static string GetFullyQualifiedName(NodeSearchElement element)
         {
+            if (element.ElementType.HasFlag(ElementTypes.Packaged) && element.ElementType.HasFlag(ElementTypes.BuiltIn))
+            {
+                return string.Format("{0}{1}.{2}", "bltinpkg://", element.FullCategoryName, element.Name);
+            }
             //If the node search element is part of a package, then we need to prefix pkg:// for it
-            if (element.ElementType.HasFlag(ElementTypes.Packaged))
+            else if (element.ElementType.HasFlag(ElementTypes.Packaged))
             {
                 //Use FullCategory and name as read from _customization.xml file
                 return string.Format("{0}{1}.{2}", "pkg://", element.FullCategoryName, element.Name);

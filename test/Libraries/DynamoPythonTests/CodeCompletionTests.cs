@@ -326,7 +326,7 @@ namespace DynamoPythonTests
         [Category("UnitTests")]
         public void CanFindDifferentTypesOfImportsAndLoad()
         {
-            var str = "from itertools import *\nimport math\nfrom sys import callstats\n";
+            var str = "from itertools import *\nimport math\nfrom sys import exit\n";
 
             var completionProvider = new DSCPythonCodeCompletionProviderCore();
             try
@@ -339,7 +339,7 @@ namespace DynamoPythonTests
             Assert.AreEqual(3, completionProvider.ImportedTypes.Count);
             Assert.IsTrue(completionProvider.ScopeHasVariable("repeat"));
             Assert.IsTrue(completionProvider.ScopeHasVariable("math"));
-            Assert.IsTrue(completionProvider.ScopeHasVariable("callstats"));
+            Assert.IsTrue(completionProvider.ScopeHasVariable("exit"));
         }
 
         [Test]

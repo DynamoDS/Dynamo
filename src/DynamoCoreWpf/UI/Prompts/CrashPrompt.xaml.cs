@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Markup;
 using System.Xml;
 using Dynamo.Core;
@@ -32,6 +33,7 @@ namespace Dynamo.Nodes.Prompts
 
             productName = dynamoViewModel.BrandingResourceProvider.ProductName;
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
+            TitleTextBlock.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
         }
 
@@ -41,6 +43,7 @@ namespace Dynamo.Nodes.Prompts
             this.CrashDetailsContent.Text = "Unknown error";
             productName = dynamoViewModel.BrandingResourceProvider.ProductName;
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
+            TitleTextBlock.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
         }
 
@@ -53,6 +56,7 @@ namespace Dynamo.Nodes.Prompts
 
             productName = dynamoViewModel.BrandingResourceProvider.ProductName;
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
+            TitleTextBlock.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
 
             if (args.HasDetails())
@@ -129,5 +133,26 @@ namespace Dynamo.Nodes.Prompts
             catch { }
         }
 
+        private void CloseButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        /// <summary>
+        /// Lets the user drag this window around with their left mouse button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+            DragMove();
+        }
+
+        // ESC Button pressed triggers Window close        
+        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

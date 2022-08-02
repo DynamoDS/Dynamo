@@ -63,7 +63,7 @@ namespace CoreNodeModelsWpf
                 if (value.CompareTo(model.Min) == -1)
                     model.Min = value;
 
-                model.Value = value;
+                model.UpdateValue(new Dynamo.Graph.UpdateValueParams(nameof(Value), value.ToString()));
             }
         }
 

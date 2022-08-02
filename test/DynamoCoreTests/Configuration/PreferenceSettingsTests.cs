@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Dynamo.Configuration;
 using Dynamo.Models;
 using NUnit.Framework;
@@ -153,6 +154,46 @@ namespace Dynamo.Tests.Configuration
             var token = settings.CustomPackageFolders[1];
 
             Assert.AreEqual(DynamoModel.BuiltInPackagesToken,token);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestSerializationDisableTrustWarnings()
+        {
+            //create new prefs
+            var prefs = new PreferenceSettings();
+            //assert default.
+            Assert.IsFalse(prefs.DisableTrustWarnings);
+            prefs.SetTrustWarningsDisabled(true);
+            Assert.True(prefs.DisableTrustWarnings);
+            //save
+            var tempPath = GetNewFileNameOnTempPath(".xml");
+            prefs.Save(tempPath);
+
+            //load
+            var settingsLoaded = PreferenceSettings.Load(tempPath);
+            Assert.IsTrue(settingsLoaded.DisableTrustWarnings);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestSerializationTrustedLocations()
+        {
+            //create new prefs
+            var prefs = new PreferenceSettings();
+            //assert default.
+            Assert.AreEqual(0, prefs.TrustedLocations.Count);
+            prefs.SetTrustedLocations(new List<string>() { Path.GetTempPath() });
+            Assert.AreEqual(1, prefs.TrustedLocations.Count);
+            //save
+            var tempPath = GetNewFileNameOnTempPath(".xml");
+            prefs.Save(tempPath);
+
+            //load
+            var settingsLoaded = PreferenceSettings.Load(tempPath);
+            Assert.AreEqual(1, settingsLoaded.TrustedLocations.Count);
+
+            Assert.IsTrue(settingsLoaded.IsTrustedLocation(Path.GetTempPath()));
         }
     }
 }

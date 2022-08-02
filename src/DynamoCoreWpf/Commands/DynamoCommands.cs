@@ -60,6 +60,15 @@ namespace Dynamo.ViewModels
             return (automationSettings.CurrentState == AutomationSettings.State.Recording);
         }
 
+        /// <summary>
+        /// Saves all recorded commands on disk (%TMP%/Commands-{0:yyyyMMdd-hhmmss}.xml)
+        /// </summary>
+        /// <returns>The path to the commands file</returns>
+        internal string DumpRecordedCommands()
+        {
+            return automationSettings.SaveRecordedCommands();
+        }
+
         #endregion
 
         #region Workspace Command Entry Point
@@ -103,9 +112,20 @@ namespace Dynamo.ViewModels
                     var dragC = command as DynamoModel.DragSelectionCommand;
 
                     if (DynamoModel.DragSelectionCommand.Operation.BeginDrag == dragC.DragOperation)
-                        CurrentSpaceViewModel.BeginDragSelection(dragC.MouseCursor);
+                    {
+                        try
+                        {
+                            CurrentSpaceViewModel.BeginDragSelection(dragC.MouseCursor);
+                        }
+                        catch (Exception ex)
+                        {
+                            model.Logger.Log(ex.Message);
+                        }
+                    }
                     else
+                    {
                         CurrentSpaceViewModel.EndDragSelection(dragC.MouseCursor);
+                    }
                     break;
 
                 case "DeleteModelCommand":

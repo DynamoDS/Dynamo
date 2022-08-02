@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using CefSharp;
 using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
-using Dynamo.LibraryUI;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Search.SearchElements;
@@ -19,6 +17,7 @@ using NUnit.Framework;
 
 namespace ViewExtensionLibraryTests
 {
+    /*
     class LibraryViewControllerTests : DynamoTestUIBase
     {
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }
@@ -138,4 +137,5 @@ namespace ViewExtensionLibraryTests
 
         }
     }
+    */
 }

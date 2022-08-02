@@ -42,8 +42,10 @@ using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
+using Dynamo.Wpf.Views.FileTrust;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
@@ -59,16 +61,12 @@ namespace Dynamo.Controls
     public partial class DynamoView : Window, IDisposable
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
-
-        //The "Packages" and "Get Started" strings needs to be hardcoded due that are hardcoded in the json file (no need localization)
-        private static string GetStartedGuideName = "Get Started";
-        private static string PackagesGuideName = "Packages";
-
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
         // internal for testing.
         internal readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
+        private double restoreWidth = 0;
         private DynamoViewModel dynamoViewModel;
         private readonly Stopwatch _timer;
         private StartPageViewModel startPage;
@@ -95,6 +93,10 @@ namespace Dynamo.Controls
         internal ViewExtensionManager viewExtensionManager;
         internal Watch3DView BackgroundPreview { get; private set; }
 
+        private FileTrustWarning fileTrustWarningPopup = null;
+
+        internal ShortcutToolbar ShortcutBar { get { return shortcutBar; } }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -119,7 +121,7 @@ namespace Dynamo.Controls
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;
 
             //Initialize the ViewExtensionManager with the CommonDataDirectory so that view extensions found here are checked first for dll's with signed certificates
-            viewExtensionManager = new ViewExtensionManager(new[] {dynamoViewModel.Model.PathManager.CommonDataDirectory });
+            viewExtensionManager = new ViewExtensionManager(dynamoViewModel.Model.ExtensionManager,new[] { dynamoViewModel.Model.PathManager.CommonDataDirectory });
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -174,9 +176,15 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    var logSource = ext as ILogSource;
-                    if (logSource != null)
+                    if (ext is ILogSource logSource)
+                    {
                         logSource.MessageLogged += Log;
+                    }
+
+                    if(ext is INotificationSource notificationSource)
+                    {
+                        notificationSource.NotificationLogged += LogNotification;
+                    }
 
                     ext.Startup(startupParams);
                     // if we are starting ViewExtension (A) which is a source of other extensions (like packageManager)
@@ -218,8 +226,12 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
             FocusableGrid.InputBindings.Clear();
-        }
 
+            if (fileTrustWarningPopup == null)
+            {
+                fileTrustWarningPopup = new FileTrustWarning(this);
+            }
+        }
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
             if (!(workspace is HomeWorkspaceModel hws))
@@ -742,6 +754,11 @@ namespace Dynamo.Controls
             //When the Dynamo window is moved to another place we need to update the Steps location
             if(dynamoViewModel.MainGuideManager != null)
                 dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
+
+            if (fileTrustWarningPopup != null && fileTrustWarningPopup.IsOpen)
+            {
+                fileTrustWarningPopup.UpdatePopupLocation();
+            }
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -751,7 +768,14 @@ namespace Dynamo.Controls
 
             //When the Dynamo window size is changed then we need to update the Steps location
             if (dynamoViewModel.MainGuideManager != null)
+            {
                 dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
+            }
+
+            if (fileTrustWarningPopup != null && fileTrustWarningPopup.IsOpen)
+            {
+                fileTrustWarningPopup.UpdatePopupLocation();
+            }
         }
 
         private void InitializeLogin()
@@ -924,7 +948,7 @@ namespace Dynamo.Controls
             // Initialize Guide Manager as a member on Dynamo ViewModel so other than guided tour,
             // other part of application can also leverage it.
             dynamoViewModel.MainGuideManager = new GuidesManager(_this, dynamoViewModel);
-
+            GuideFlowEvents.GuidedTourStart += GuideFlowEvents_GuidedTourStart;
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
                                                                      _timer.Elapsed, dynamoViewModel.BrandingResourceProvider.ProductName));
@@ -1008,6 +1032,28 @@ namespace Dynamo.Controls
                 this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(null); };
             }
             loaded = true;
+
+            
+            //The following code illustrates use of FeatureFlagsManager.
+            //safe to remove.
+            if (DynamoModel.FeatureFlags != null)
+            {
+                CheckTestFlags();
+            }
+            //if feature flags is not yet initialized, subscribe to the event and wait.
+            else
+            {
+                DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckTestFlags;
+            }
+           
+        }
+
+        private void GuideFlowEvents_GuidedTourStart(GuidedTourStateEventArgs args)
+        {
+            if(sidebarGrid.Visibility != Visibility.Visible || sidebarGrid.ActualWidth < 2)
+            {
+                OnCollapsedLeftSidebarClick(null, null);
+            }
         }
 
         /// <summary>
@@ -1019,6 +1065,33 @@ namespace Dynamo.Controls
             var workspace = this.ChildOfType<WorkspaceView>();
             if (workspace != null)
                 workspace.HideAllPopUp(obj);
+        }
+        /// <summary>
+        /// check some test flags from launch darkly.
+        /// code is safe to remove at any time.
+        /// </summary>
+        private void CheckTestFlags()
+        {
+
+            //feature flag test.
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("EasterEggIcon1", false) == true)
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true from view");
+            }
+            else
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is false from view");
+            }
+
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is string ffs && ffs != "NA")
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is enabled from view");
+                MessageBoxService.Show(this, ffs, "EasterEggMessage1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+            }
+            else
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is disabled from view");
+            }
         }
 
         private void TrackStartupAnalytics()
@@ -1535,6 +1608,7 @@ namespace Dynamo.Controls
             DynamoSelection.Instance.Selection.CollectionChanged -= Selection_CollectionChanged;
 
             dynamoViewModel.RequestUserSaveWorkflow -= DynamoViewModelRequestUserSaveWorkflow;
+            GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
 
             if (dynamoViewModel.Model != null)
             {
@@ -1553,6 +1627,16 @@ namespace Dynamo.Controls
             //when this view is finally disposed, dispose will be called on them.
             foreach (var ext in viewExtensionManager.ViewExtensions)
             {
+                if (ext is ILogSource logSource)
+                {
+                    logSource.MessageLogged -= Log;
+                }
+
+                if (ext is INotificationSource notificationSource)
+                {
+                    notificationSource.NotificationLogged -= LogNotification;
+                }
+
                 try
                 {
                     ext.Shutdown();
@@ -1573,6 +1657,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
+            DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckTestFlags;
 
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
@@ -2205,8 +2290,6 @@ namespace Dynamo.Controls
             UpdateHandleUnhoveredStyle(tb, collapseIcon);
         }
 
-        private double restoreWidth = 0;
-
         private void LibraryClicked(object sender, EventArgs e)
         {
             restoreWidth = sidebarGrid.ActualWidth;
@@ -2362,6 +2445,10 @@ namespace Dynamo.Controls
         {
             Log(LogMessage.Info(message));
         }
+        private void LogNotification(NotificationMessage notification)
+        {
+            dynamoViewModel.Model.Logger.LogNotification(notification.Sender, notification.Title,notification.ShortMessage, notification.DetailedMessage);
+        }
 
         private void Window_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -2386,9 +2473,9 @@ namespace Dynamo.Controls
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
             {
-                dynamoViewModel.MainGuideManager.LaunchTour(GetStartedGuideName);
+                dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.GetStartedGuideName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 sidebarGrid.Visibility = Visibility.Visible;
             }
@@ -2404,12 +2491,42 @@ namespace Dynamo.Controls
         {
             try
             {
-                dynamoViewModel.MainGuideManager.LaunchTour(PackagesGuideName);
+                dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.PackagesGuideName);
             }
             catch (Exception)
             {
                 sidebarGrid.Visibility = Visibility.Visible;
             }
+        }
+
+        private void FileTrustWarning_Click(object sender, RoutedEventArgs e)
+        {
+            var dynViewModel = DataContext as DynamoViewModel;
+            if (dynViewModel.FileTrustViewModel == null) return;
+            dynViewModel.FileTrustViewModel.ShowWarningPopup = true;
+        }
+
+        private void DynamoView_Activated(object sender, EventArgs e)
+        {
+            if (dynamoViewModel.MainGuideManager != null && dynamoViewModel.MainGuideManager.currentGuide != null)
+            {
+                dynamoViewModel.MainGuideManager.ManagePopupActivation(true);
+            }
+
+
+            if (fileTrustWarningPopup != null)
+            {
+                fileTrustWarningPopup.ManagePopupActivation(true);
+            }
+        }
+
+        private void DynamoView_Deactivated(object sender, EventArgs e)
+        {
+            if (dynamoViewModel.MainGuideManager != null && dynamoViewModel.MainGuideManager.currentGuide != null)
+                dynamoViewModel.MainGuideManager.ManagePopupActivation(false);
+
+            if(fileTrustWarningPopup != null)
+                fileTrustWarningPopup.ManagePopupActivation(false);
         }
 
         public void Dispose()
@@ -2422,6 +2539,9 @@ namespace Dynamo.Controls
 
             // Removing the tab items list handler
             ExtensionTabItems.CollectionChanged -= this.OnCollectionChanged;
+
+            if (fileTrustWarningPopup != null)
+                fileTrustWarningPopup.CleanPopup();
         }
     }
 }

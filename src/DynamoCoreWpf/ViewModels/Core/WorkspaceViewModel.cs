@@ -25,6 +25,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using DynamoUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
@@ -346,6 +347,9 @@ namespace Dynamo.ViewModels
             get { return Model == DynamoViewModel.CurrentSpace; }
         }
 
+        /// <summary>
+        /// Boolean indicating if the target workspace is home workspace (true), or custom node workspace (false)
+        /// </summary>
         [JsonIgnore]
         public bool IsHomeSpace
         {
@@ -1073,7 +1077,7 @@ namespace Dynamo.ViewModels
 
             // All the models in the selection will be modified, 
             // record their current states before anything gets changed.
-            SmartCollection<ISelectable> selection = DynamoSelection.Instance.Selection;
+            SmartObservableCollection<ISelectable> selection = DynamoSelection.Instance.Selection;
             IEnumerable<ModelBase> models = selection.OfType<ModelBase>();
             WorkspaceModel.RecordModelsForModification(models.ToList(), Model.UndoRecorder);
 
@@ -1277,7 +1281,7 @@ namespace Dynamo.ViewModels
             // if there are no other custom workspace that is opened.
             // 
 
-            if (this.IsHomeSpace)
+            if (IsHomeSpace)
             {
                 if (DynamoViewModel.CloseHomeWorkspaceCommand.CanExecute(null))
                     DynamoViewModel.CloseHomeWorkspaceCommand.Execute(null);
@@ -1406,7 +1410,7 @@ namespace Dynamo.ViewModels
             OnRequestZoomToFitView(this, zoomArgs);
         }
 
-        private void ResetFitViewToggle(object o)
+        internal void ResetFitViewToggle(object o)
         {
             _fitViewActualZoomToggle = false;
         }
@@ -1414,6 +1418,33 @@ namespace Dynamo.ViewModels
         private static bool CanResetFitViewToggle(object o)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Selects an Element by ID and focuses the view around it
+        /// </summary>
+        /// <param name="id"></param>
+        private void FocusNode(object id)
+        {
+            try
+            {
+                var node = DynamoViewModel.Model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == id.ToString());
+              
+                //select the element
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
+
+                DynamoViewModel.ShowElement(node, false);
+            }
+            catch
+            {
+                DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindNodeById);
+            }
+        }
+
+        private static bool CanFocusNode(object id)
+        {
+            return !string.IsNullOrEmpty(id.ToString());
         }
 
         private void FindById(object id)
@@ -1487,6 +1518,52 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void ShowAllWires(object o)
+        {
+            var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.AllConnectors.Any(x => x.IsHidden)).ToList();
+            ShowHideAllWires(nodeModels, false);
+        }
+
+        private bool CanShowAllWires(object o)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>()
+                .Any(n => n.AllConnectors.Any(x => x.IsHidden));
+        }
+
+        private void HideAllWires(object o)
+        {
+            var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.AllConnectors.Any(x => !x.IsHidden)).ToList();
+            ShowHideAllWires(nodeModels, true);
+
+        }
+
+        private bool CanHideAllWires(object o)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>()
+                .Any(n => n.AllConnectors.Any(x => !x.IsHidden));
+        }
+
+        /// <summary>
+        /// Shows or Hides all wires of a list of nodeModels
+        /// </summary>
+        /// <param name="nodeModels"></param>
+        /// <param name="isHidden"></param>
+        private void ShowHideAllWires(List<NodeModel> nodeModels, bool isHidden)
+        {
+            if (!nodeModels.Any()) return;
+
+            foreach (var nodeModel in nodeModels)
+            {
+                var connectors = nodeModel.AllConnectors;
+                foreach (var connector in connectors)
+                {
+                    if (connector != null)
+                        connector.IsHidden = isHidden;
+
+                }
+            }
+        }
+
         /// <summary>
         /// Collapse a set of nodes and notes currently selected in workspace
         /// </summary>
@@ -1522,7 +1599,9 @@ namespace Dynamo.ViewModels
         {
             AlignSelectedCommand.RaiseCanExecuteChanged();
             ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
-            SetArgumentLacingCommand.RaiseCanExecuteChanged();           
+            SetArgumentLacingCommand.RaiseCanExecuteChanged();     
+            ShowAllWiresCommand.RaiseCanExecuteChanged();
+            HideAllWiresCommand.RaiseCanExecuteChanged();
             RaisePropertyChanged("HasSelection");
             RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");

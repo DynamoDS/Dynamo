@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using Dynamo.Configuration;
+using DynamoUtilities;
 
 namespace Dynamo.Search
 {
@@ -321,13 +322,14 @@ namespace Dynamo.Search
         private static string[] SplitOnWhiteSpace(string s)
         {
             return s.Split(null);
-        }
+        }        
 
         private static bool ContainsSpecialCharacters(string element)
         {
-            return element.Contains("*") || element.Contains(".") || element.Contains(" ")
-                || element.Contains("\\");
+            Char[] invalidCharacters = PathHelper.SpecialAndInvalidCharacters();
+            return (!string.IsNullOrEmpty(element) && element.IndexOfAny(invalidCharacters) >= 0);
         }
+
         #endregion
 
         /// <summary>

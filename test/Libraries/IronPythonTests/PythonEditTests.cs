@@ -403,7 +403,7 @@ namespace IronPythonTests
                 }
                 else if (pythonEngine == PythonEngineVersion.CPython3)
                 {
-                    Assert.AreEqual(nodeValue, "3.8.10");
+                    Assert.AreEqual(nodeValue, "3.9.12");
                 }
             }
         }
@@ -477,11 +477,11 @@ namespace IronPythonTests
 
             UpdatePythonEngineAndRun(pynode1, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.10", "2.7.9" });
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.9.12", "2.7.9" });
 
             UpdatePythonEngineAndRun(pynode2, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.10", "3.8.10" });
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.9.12", "3.9.12" });
 
             UpdateEngineAndRunForAllPythonNodes(pythonNodes, PythonEngineVersion.IronPython2);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);

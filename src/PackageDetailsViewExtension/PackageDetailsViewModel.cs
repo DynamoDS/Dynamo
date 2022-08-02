@@ -83,6 +83,16 @@ namespace Dynamo.PackageDetails
         public bool IsPackageDeprecated { get; }
 
         /// <summary>
+        /// The site URL of the package whose details are being inspected.
+        /// </summary>
+        public string PackageSiteURL { get; }
+
+        /// <summary>
+        /// The repository URL of the package whose details are being inspected.
+        /// </summary>
+        public string PackageRepositoryURL { get; }
+
+        /// <summary>
         /// A reference to the ViewExtension.
         /// </summary>
         private PackageDetailsViewExtension PackageDetailsViewExtension { get; set; }
@@ -199,8 +209,10 @@ namespace Dynamo.PackageDetails
             IsPackageDeprecated = packageManagerSearchElement.IsDeprecated;
             PackageDetailsViewExtension = packageDetailsViewExtension;
             License = packageManagerSearchElement.Header.license;
+            PackageSiteURL = packageManagerSearchElement.SiteUrl;
+            PackageRepositoryURL = packageManagerSearchElement.RepositoryUrl;
 
-            if(!Models.DynamoModel.IsTestMode)
+            if (!Models.DynamoModel.IsTestMode)
             {
                 packageLoader.PackageAdded += PackageLoaderOnPackageAdded;
             }

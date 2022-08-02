@@ -216,6 +216,56 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
+        /// Tests whether the PackageDetailsViewModel displays the package links properly.
+        /// </summary>
+        [Test]
+        public void TestLinksDisplayedInView()
+        {
+            // Arrange
+            string someLink = "somelink";
+            PackageHeader packageHeader = new PackageHeader
+            {
+                _id = null,
+                name = string.Empty,
+                versions = PackageVersions,
+                latest_version_update = System.DateTime.Now,
+                num_versions = PackageVersions.Count,
+                comments = null,
+                num_comments = 0,
+                latest_comment = null,
+                votes = 0,
+                downloads = 0,
+                repository_url = someLink,
+                site_url = someLink,
+                banned = false,
+                deprecated = false,
+                @group = null,
+                engine = null,
+                license = null,
+                used_by = null,
+                host_dependencies = Hosts,
+                num_dependents = 0,
+                description = null,
+                maintainers = UsersList,
+                keywords = null
+            };
+            PackageManagerSearchElement packageManagerSearchElement = new PackageManagerSearchElement(packageHeader);
+
+            // Act
+            PackageDetailsViewExtension.OpenPackageDetails(packageManagerSearchElement);
+            PackageDetailsView packageDetailsView = PackageDetailsViewExtension.PackageDetailsView;
+
+            // Assert
+            Assert.IsNotNull(packageDetailsView.PackageWebsiteLink);
+            Assert.IsNotNull(packageDetailsView.PackageRepositoryLink);
+            Assert.IsInstanceOf<PackageDetailsViewModel>(packageDetailsView.DataContext);
+
+            PackageDetailsViewModel packageDetailsViewModel = packageDetailsView.DataContext as PackageDetailsViewModel;
+            Assert.AreEqual(someLink, packageDetailsViewModel.PackageRepositoryURL);
+            Assert.AreEqual(someLink, packageDetailsViewModel.PackageSiteURL);
+        }
+
+        /// <summary>
         /// Tests whether OpenDependencyDetails method works.
         /// This is fired when the user clicks a link to another dependency package.
         /// </summary>

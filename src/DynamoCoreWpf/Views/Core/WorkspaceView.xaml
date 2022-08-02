@@ -479,7 +479,6 @@
                                     <Popup x:Name="PART_Popup"
                                            AllowsTransparency="true"
                                            Focusable="false"
-                                           HorizontalOffset="-1"
                                            IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                            Placement="Right"
                                            VerticalOffset="-2">
@@ -492,7 +491,6 @@
                                                                                                         TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                                 <Grid RenderOptions.ClearTypeHint="Enabled">
                                                     <ItemsPresenter x:Name="ItemsPresenter"
-                                                                    Margin="2"
                                                                     Grid.IsSharedSizeScope="true"
                                                                     KeyboardNavigation.DirectionalNavigation="Cycle"
                                                                     KeyboardNavigation.TabNavigation="Cycle"
@@ -607,29 +605,77 @@
                     <!--  Align Menu  -->
                     <controls:ParentMenuItem  x:Name="Align" Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}">
                         <MenuItem Command="{Binding AlignSelectedCommand}"
-                                  CommandParameter="HorizontalCenter"
-                                  Header="{x:Static p:Resources.DynamoViewEditMenuAlignXAverage}" />
+                                  CommandParameter="HorizontalCenter">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_x_average.png" />
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignXAverage}" Foreground="White"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
                         <MenuItem Command="{Binding AlignSelectedCommand}"
-                                  CommandParameter="HorizontalLeft"
-                                  Header="{x:Static p:Resources.DynamoViewEditMenuAlignLeft}" />
+                                  CommandParameter="HorizontalLeft">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_left.png" />
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignLeft}" Foreground="White"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
                         <MenuItem Command="{Binding AlignSelectedCommand}"
-                                  CommandParameter="HorizontalRight"
-                                  Header="{x:Static p:Resources.DynamoViewEditMenuAlignRight}" />
+                                  CommandParameter="HorizontalRight">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_right.png" />
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignRight}" Foreground="White"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
                         <MenuItem Command="{Binding AlignSelectedCommand}"
-                                  CommandParameter="VerticalCenter"
-                                  Header="{x:Static p:Resources.DynamoViewEditMenuAlignYAverage}" />
+                                  CommandParameter="VerticalCenter">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_y_average.png" />
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignYAverage}" Foreground="White"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
                         <MenuItem Command="{Binding AlignSelectedCommand}"
-                                  CommandParameter="VerticalTop"
-                                  Header="{x:Static p:Resources.DynamoViewEditMenuAlignTop}" />
+                                  CommandParameter="VerticalTop">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_top.png" />
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignTop}" Foreground="White"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
                         <MenuItem Command="{Binding AlignSelectedCommand}"
-                                  CommandParameter="VerticalBottom"
-                                  Header="{x:Static p:Resources.DynamoViewEditMenuAlighBottom}" />
+                                  CommandParameter="VerticalBottom">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_bottom.png" />
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlighBottom}" Foreground="White"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
                         <MenuItem Command="{Binding AlignSelectedCommand}"
-                                  CommandParameter="VerticalDistribute"
-                                  Header="{x:Static p:Resources.DynamoViewEditMenuAlignYDistribute}" />
+                                  CommandParameter="VerticalDistribute">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_y_distribute.png" />
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignYDistribute}" Foreground="White"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
                         <MenuItem Command="{Binding AlignSelectedCommand}"
-                                  CommandParameter="HorizontalDistribute"
-                                  Header="{x:Static p:Resources.DynamoViewEditMenuAlignXDistribute}" />
+                                  CommandParameter="HorizontalDistribute">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="14" Height="14" Source="/DynamoCoreWpf;component/UI/Images/Alignment/align_X_distribute.png" />
+                                    <Label Content="{x:Static p:Resources.DynamoViewEditMenuAlignXDistribute}" Foreground="White"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
                     </controls:ParentMenuItem>
 
                     <!--  Create Custom Node  -->
@@ -649,6 +695,35 @@
                     <MenuItem Command="{Binding FindNodesFromSelectionCommand}"
                               Header="{x:Static p:Resources.ContextMenuNodesFromGeometry}"
                               Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+
+                    <!-- Node Connections Menu -->
+                    <controls:ParentMenuItem  x:Name="NodeConnectionsMenu" Header="{x:Static p:Resources.ContextMenuNodeConnections}" >
+
+                        <!--  Connections: Show All Wires  -->
+                        <MenuItem Command="{Binding Path=ShowAllWiresCommand}"
+                                  Header="{x:Static p:Resources.ContextMenuConnectionsShowAll}"
+                                  IsCheckable="True">
+                            <MenuItem.IsChecked>
+                                <Binding Converter="{StaticResource EnumToBoolConverter}"
+                                         ConverterParameter="Auto"
+                                         Mode="OneWay"
+                                         Path="SelectionArgumentLacing" />
+                            </MenuItem.IsChecked>
+                        </MenuItem>
+
+                        <!--  Connections: Hide All Wires  -->
+                        <MenuItem Command="{Binding Path=HideAllWiresCommand}"
+                                  Header="{x:Static p:Resources.ContextMenuConnectionsHideAll}"
+                                  IsCheckable="True">
+                            <MenuItem.IsChecked>
+                                <Binding Converter="{StaticResource EnumToBoolConverter}"
+                                         ConverterParameter="Shortest" 
+                                         Mode="OneWay"
+                                         Path="SelectionArgumentLacing" />
+                            </MenuItem.IsChecked>
+                        </MenuItem>
+
+                    </controls:ParentMenuItem>
 
                     <Separator Visibility="{Binding Path=CanCopyOrPaste, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 

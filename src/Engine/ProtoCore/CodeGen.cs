@@ -1286,6 +1286,25 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
+        protected void EmitPopUpdateInstruction(StackValue op,
+            int astID,
+            int blockId = Constants.kInvalidIndex,
+            int line = Constants.kInvalidIndex, int col = Constants.kInvalidIndex,
+            int eline = Constants.kInvalidIndex, int ecol = Constants.kInvalidIndex)
+        {
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.POP;
+            instr.op1 = op;
+            instr.op2 = StackValue.BuildInt(astID);
+            instr.op3 = StackValue.BuildBlockIndex(blockId);
+
+            // For debugging, assert here but these should raise runtime errors in the VM
+            Validity.Assert(op.IsRegister);
+
+            ++pc;
+            AppendInstruction(instr, line, col);
+        }
+
         protected void EmitSetElement(SymbolNode symbol,
            int blockId,
            int line = Constants.kInvalidIndex,
@@ -1404,6 +1423,23 @@ namespace ProtoCore
             instr.op1 = op;
             instr.op2 = StackValue.BuildClassIndex(globalClassIndex);
             instr.op3 = StackValue.BuildBlockIndex(blockId);
+
+            ++pc;
+            AppendInstruction(instr, line, col);
+        }
+
+        protected void EmitPushUpdateInstruction(StackValue op,
+            int astID,
+            int blockID = 0,
+            int line = Constants.kInvalidIndex,
+            int col = Constants.kInvalidIndex)
+        {
+            SetEntry();
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.PUSH;
+            instr.op1 = op;
+            instr.op2 = StackValue.BuildInt(astID);
+            instr.op3 = StackValue.BuildBlockIndex(blockID);
 
             ++pc;
             AppendInstruction(instr, line, col);

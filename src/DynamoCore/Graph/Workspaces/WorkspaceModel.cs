@@ -238,8 +238,16 @@ namespace Dynamo.Graph.Workspaces
         private bool hasNodeInSyncWithDefinition;
         protected Guid guid;
         private HashSet<Guid> dependencies = new HashSet<Guid>();
-
         private int delayGraphExecutionCounter = 0;
+
+        // For workspace references view extension.
+        private bool forceComputeWorkspaceReferences;
+        private List<INodeLibraryDependencyInfo> nodeLibraryDependencies;
+        private List<INodeLibraryDependencyInfo> nodeLocalDefinitions;
+        private List<INodeLibraryDependencyInfo> externalFileReferences;
+        private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
+        private Dictionary<Guid, DependencyInfo> localDefinitionsDictionary = new Dictionary<Guid, DependencyInfo>();
+        private Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
         private readonly string customNodeExtension = ".dyf";
 
         /// <summary>
@@ -641,65 +649,15 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                var packageDependencies = new Dictionary<PackageInfo, PackageDependencyInfo>();
-                foreach (var node in Nodes)
+                if (HasUnsavedChanges || ForceComputeWorkspaceReferences)
                 {
-                    var collected = GetNodePackage(node);
-                    if (nodePackageDictionary.ContainsKey(node.GUID))
-                    {
-                        var saved = nodePackageDictionary[node.GUID];
-                        if (!packageDependencies.ContainsKey(saved))
-                        {
-                            packageDependencies[saved] = new PackageDependencyInfo(saved);
-                        }
-                        packageDependencies[saved].AddDependent(node.GUID);
-
-                        // if the package is not installed.
-                        if (collected == null)
-                        {
-                            packageDependencies[saved].State = PackageDependencyState.Missing;
-                        }
-                        // If the state is Missing for at least one of the nodes,
-                        // we set the state of the whole package dependency to Missing.
-                        // Set other states accordingly, only if the PackageDependencyState(for that package)
-                        // is not set to Missing by any of the other nodes. 
-                        else if (packageDependencies[saved].State != PackageDependencyState.Missing)
-                        {
-                            if (saved.Name == collected.Name)
-                            {
-                                // if the correct version of package is installed.
-                                if (saved.Version == collected.Version)
-                                {
-                                    packageDependencies[saved].State = PackageDependencyState.Loaded;
-                                }
-                                // If incorrect version of package is installed and not marked for uninstall,
-                                // set the state. Otherwise, keep the RequiresRestart state away from overwritten.
-                                else if (packageDependencies[saved].State != PackageDependencyState.RequiresRestart)
-                                {
-                                    packageDependencies[saved].State = PackageDependencyState.IncorrectVersion;
-                                }
-                            }
-                            // if the package is not installed, but the nodes are resolved by a different package.
-                            else
-                            {
-                                packageDependencies[saved].State = PackageDependencyState.Warning;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (collected != null)
-                        {
-                            if (!packageDependencies.ContainsKey(collected))
-                            {
-                                packageDependencies[collected] = new PackageDependencyInfo(collected);
-                            }
-                            packageDependencies[collected].AddDependent(node.GUID);
-                            packageDependencies[collected].State = PackageDependencyState.Loaded;
-                        }
-                    }
+                    nodeLibraryDependencies = ComputeNodeLibraryDependencies();
+                    return nodeLibraryDependencies;
                 }
-                return packageDependencies.Values.ToList<INodeLibraryDependencyInfo>();
+                else
+                {
+                    return nodeLibraryDependencies;
+                }
             }
             set
             {
@@ -720,63 +678,22 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// Local Node Definitions that the nodes in this graph depend on
+        /// </summary>
         internal List<INodeLibraryDependencyInfo> NodeLocalDefinitions
         {
             get
             {
-                var nodeLocalDefinitions = new Dictionary<object, DependencyInfo>();
-
-                foreach (var node in Nodes)
+                if (HasUnsavedChanges || ForceComputeWorkspaceReferences)
                 {
-                    var collected = GetNodePackage(node);
-
-                    if (!nodePackageDictionary.ContainsKey(node.GUID) && collected == null)
-                    {
-                        string localDefinitionName;
-
-                        if (node.IsCustomFunction)
-                        {
-                            localDefinitionName = node.Name + customNodeExtension;
-
-                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
-                            {
-                                nodeLocalDefinitions[localDefinitionName] = new DependencyInfo(localDefinitionName);
-                            }
-
-                            nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
-                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.DYFFile;
-                        }
-                        else if (node is DSFunctionBase functionNode)
-                        {
-                            string assemblyPath = functionNode.Controller.Definition.Assembly;
-                            var directoryName = Path.GetDirectoryName(assemblyPath);
-
-                            // For the local definition reference, the assembly directory exists on disc.
-                            if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName))
-                            {
-                                localDefinitionName = Path.GetFileName(assemblyPath);
-
-                                if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
-                                {
-                                    nodeLocalDefinitions[localDefinitionName] = new DependencyInfo(localDefinitionName, assemblyPath);
-                                }
-
-                                nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
-                                nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.ZeroTouch;
-                            }
-                        }
-                        else if (node is DummyNode)
-                        {
-                            // Read the serialized value if the node is not resolved.
-                            if (localDefinitionsDictionary.TryGetValue(node.GUID, out var localDefinitionInfo))
-                            {
-                                nodeLocalDefinitions[localDefinitionInfo.Name] = localDefinitionInfo;
-                            }
-                        }
-                    }
+                    nodeLocalDefinitions = ComputeNodeLocalDefinitions();
+                    return nodeLocalDefinitions;
                 }
-
-                return nodeLocalDefinitions.Values.ToList<INodeLibraryDependencyInfo>();
+                else
+                {
+                    return nodeLocalDefinitions;
+                }
             }
             set
             {
@@ -795,11 +712,22 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// External File references that the nodes in this graph depend on
+        /// </summary>
         internal List<INodeLibraryDependencyInfo> ExternalFiles
         {
             get
             {
-                return GetExternalFiles();
+                if (HasUnsavedChanges || ForceComputeWorkspaceReferences)
+                {
+                    externalFileReferences = ComputeExternalFileReferences();
+                    return externalFileReferences;
+                }
+                else
+                {
+                    return externalFileReferences;
+                }
             }
             set
             {
@@ -819,10 +747,141 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// Computes the node library dependencies in the current workspace.
+        /// </summary>
+        /// <returns></returns>
+        private List<INodeLibraryDependencyInfo> ComputeNodeLibraryDependencies()
+        {
+            var packageDependencies = new Dictionary<PackageInfo, PackageDependencyInfo>();
+
+            foreach (var node in Nodes)
+            {
+                var collected = GetNodePackage(node);
+
+                if (nodePackageDictionary.ContainsKey(node.GUID))
+                {
+                    var saved = nodePackageDictionary[node.GUID];
+                    if (!packageDependencies.ContainsKey(saved))
+                    {
+                        packageDependencies[saved] = new PackageDependencyInfo(saved);
+                    }
+                    packageDependencies[saved].AddDependent(node.GUID);
+
+                    // if the package is not installed.
+                    if (collected == null)
+                    {
+                        packageDependencies[saved].State = PackageDependencyState.Missing;
+                    }
+                    // If the state is Missing for at least one of the nodes,
+                    // we set the state of the whole package dependency to Missing.
+                    // Set other states accordingly, only if the PackageDependencyState(for that package)
+                    // is not set to Missing by any of the other nodes. 
+                    else if (packageDependencies[saved].State != PackageDependencyState.Missing)
+                    {
+                        if (saved.Name == collected.Name)
+                        {
+                            // if the correct version of package is installed.
+                            if (saved.Version == collected.Version)
+                            {
+                                packageDependencies[saved].State = PackageDependencyState.Loaded;
+                            }
+                            // If incorrect version of package is installed and not marked for uninstall,
+                            // set the state. Otherwise, keep the RequiresRestart state away from overwritten.
+                            else if (packageDependencies[saved].State != PackageDependencyState.RequiresRestart)
+                            {
+                                packageDependencies[saved].State = PackageDependencyState.IncorrectVersion;
+                            }
+                        }
+                        // if the package is not installed, but the nodes are resolved by a different package.
+                        else
+                        {
+                            packageDependencies[saved].State = PackageDependencyState.Warning;
+                        }
+                    }
+                }
+                else
+                {
+                    if (collected != null)
+                    {
+                        if (!packageDependencies.ContainsKey(collected))
+                        {
+                            packageDependencies[collected] = new PackageDependencyInfo(collected);
+                        }
+                        packageDependencies[collected].AddDependent(node.GUID);
+                        packageDependencies[collected].State = PackageDependencyState.Loaded;
+                    }
+                }
+            }
+
+            return packageDependencies.Values.ToList<INodeLibraryDependencyInfo>();
+        }
+
+        /// <summary>
+        /// Computes the node local definitions in the current workspace.
+        /// </summary>
+        /// <returns></returns>
+        private List<INodeLibraryDependencyInfo> ComputeNodeLocalDefinitions()
+        {
+            var nodeLocalDefinitions = new Dictionary<object, DependencyInfo>();
+
+            foreach (var node in Nodes)
+            {
+                var collected = GetNodePackage(node);
+
+                if (!nodePackageDictionary.ContainsKey(node.GUID) && collected == null)
+                {
+                    string localDefinitionName;
+
+                    if (node.IsCustomFunction)
+                    {
+                        localDefinitionName = node.Name + customNodeExtension;
+
+                        if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
+                        {
+                            nodeLocalDefinitions[localDefinitionName] = new DependencyInfo(localDefinitionName);
+                        }
+
+                        nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
+                        nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.DYFFile;
+                    }
+                    else if (node is DSFunctionBase functionNode)
+                    {
+                        string assemblyPath = functionNode.Controller.Definition.Assembly;
+                        var directoryName = Path.GetDirectoryName(assemblyPath);
+
+                        // For the local definition reference, the assembly directory exists on disc.
+                        if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName))
+                        {
+                            localDefinitionName = Path.GetFileName(assemblyPath);
+
+                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
+                            {
+                                nodeLocalDefinitions[localDefinitionName] = new DependencyInfo(localDefinitionName, assemblyPath);
+                            }
+
+                            nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
+                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.ZeroTouch;
+                        }
+                    }
+                    else if (node is DummyNode)
+                    {
+                        // Read the serialized value if the node is not resolved.
+                        if (localDefinitionsDictionary.TryGetValue(node.GUID, out var localDefinitionInfo))
+                        {
+                            nodeLocalDefinitions[localDefinitionInfo.Name] = localDefinitionInfo;
+                        }
+                    }
+                }
+            }
+
+            return nodeLocalDefinitions.Values.ToList<INodeLibraryDependencyInfo>();
+        }
+
+        /// <summary>
         /// Computes the external file references if the Workspace Model is a HomeWorkspaceModel and graph is not running.
         /// </summary>
         /// <returns></returns>
-        private List<INodeLibraryDependencyInfo> GetExternalFiles()
+        private List<INodeLibraryDependencyInfo> ComputeExternalFileReferences()
         {
             var externalFiles = new Dictionary<object, DependencyInfo>();
 
@@ -838,7 +897,7 @@ namespace Dynamo.Graph.Workspaces
                     // Check for the file path string value at each of the output ports of all nodes in the workspace. 
                     foreach (var port in node.OutPorts)
                     {
-                        var id = node.GetAstIdentifierForOutputIndex(port.Index).Name;
+                        var id = node.GetAstIdentifierForOutputIndex(port.Index)?.Name;
                         var mirror = homeWorkspaceModel.EngineController.GetMirror(id);
                         var data = mirror?.GetData().Data;
 
@@ -876,10 +935,17 @@ namespace Dynamo.Graph.Workspaces
             return externalFiles.Values.ToList<INodeLibraryDependencyInfo>();
         }
 
-        private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
-        private Dictionary<Guid, DependencyInfo> localDefinitionsDictionary = new Dictionary<Guid, DependencyInfo>();
-        private Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
-
+        /// <summary>
+        /// This flag will indicate if the workspace references should be computed again.
+        /// </summary>
+        internal bool ForceComputeWorkspaceReferences
+        {
+            get { return forceComputeWorkspaceReferences; }
+            set
+            {
+                forceComputeWorkspaceReferences = value;
+            }
+        }
 
         /// <summary>
         ///     An author of the workspace
@@ -1233,9 +1299,13 @@ namespace Dynamo.Graph.Workspaces
 
             this.annotations = new List<AnnotationModel>(annotations);
 
-            this.NodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
-            this.NodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
-            this.ExternalFiles = new List<INodeLibraryDependencyInfo>();
+            NodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            NodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+            ExternalFiles = new List<INodeLibraryDependencyInfo>();
+
+            nodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            nodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+            externalFileReferences = new List<INodeLibraryDependencyInfo>();
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -1388,7 +1458,6 @@ namespace Dynamo.Graph.Workspaces
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;
-            ScaleFactor = 1.0;
             // Reset the workspace offset
             OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(X, Y)));
             workspaceLoaded = true;

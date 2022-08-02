@@ -71,7 +71,7 @@
                                    DockPanel.Dock="Left"
                                    FontFamily="{StaticResource ArtifaktElementRegular}"
                                    FontSize="14"
-                                   Foreground="{StaticResource DeafultSearchTextBlockText}"
+                                   Foreground="{StaticResource DefaultSearchTextBlockText}"
                                    IsHitTestVisible="False"
                                    Text="{x:Static resx:Resources.SearchTextBlockText}"
                                    Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" />
@@ -85,7 +85,7 @@
                              CaretBrush="{StaticResource CommonSidebarTextColor}"
                              FontFamily="{StaticResource ArtifaktElementRegular}"
                              FontSize="14"
-                             Foreground="{StaticResource DeafultSearchTextBlockText}"
+                             Foreground="{StaticResource DefaultSearchTextBlockText}"
                              IsEnabled="True"
                              Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>

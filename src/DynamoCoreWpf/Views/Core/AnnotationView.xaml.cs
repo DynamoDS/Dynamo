@@ -254,6 +254,8 @@ namespace Dynamo.Nodes
                 SetTextMaxWidth();
                 SetTextHeight();
             }
+
+            ViewModel.UpdateProxyPortsPosition();
         }
 
 
@@ -453,7 +455,9 @@ namespace Dynamo.Nodes
             var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItem;
             if (groupStyleItemSelected == null) return;
 
-            ViewModel.UpdateGroupStyle(groupStyleItemSelected);                
+            ViewModel.UpdateGroupStyle(groupStyleItemSelected);
+            // Tracking selecting group style item and if it is a default style by Dynamo
+            Logging.Analytics.TrackEvent(Actions.Select, Categories.GroupStyleOperations, nameof(GroupStyleItem), groupStyleItemSelected.IsDefault ? 1 : 0);
         }
 
         /// <summary>
@@ -464,6 +468,8 @@ namespace Dynamo.Nodes
         private void GroupStyleAnnotation_SubmenuOpened(object sender, RoutedEventArgs e)
         {
             ViewModel.ReloadGroupStyles();
+            // Tracking loading group style items
+            Logging.Analytics.TrackEvent(Actions.Load, Categories.GroupStyleOperations, nameof(GroupStyleItem) + "s");
         }
     }
 }

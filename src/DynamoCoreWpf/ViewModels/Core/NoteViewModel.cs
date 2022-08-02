@@ -16,7 +16,7 @@ using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.ViewModels
 {
-    public partial class NoteViewModel: ViewModelBase
+    public partial class NoteViewModel : ViewModelBase
     {
         private int DISTANCE_TO_PINNED_NODE = 16;
         private int DISTANCE_TO_PINNED_NODE_WITH_WARNING = 64;
@@ -131,7 +131,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (Model.PinnedNode==null)
+                if (Model.PinnedNode == null)
                 {
                     return null;
                 }
@@ -149,6 +149,7 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel = workspaceViewModel;
             _model = model;
             model.PropertyChanged += note_PropertyChanged;
+            model.UndoRequest += note_PinUnpinToNode;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             ZIndex = ++StaticZIndex; // places the note on top of all nodes/notes
 
@@ -166,8 +167,35 @@ namespace Dynamo.ViewModels
                 UnsuscribeFromPinnedNode();
             }
             _model.PropertyChanged -= note_PropertyChanged;
+            _model.UndoRequest -= note_PinUnpinToNode;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
         }
+
+        private void note_PinUnpinToNode(ModelBase obj)
+        {
+            if (Model.UndoRedoAction.Equals(NoteModel.UndoAction.Unpin))
+            {
+                UnpinFromNode(obj);
+                return;
+            }
+            if (Model.UndoRedoAction.Equals(NoteModel.UndoAction.Pin))
+            {
+                NodeModel node = WorkspaceViewModel.Model.Nodes
+                    .Where(x => x.GUID.Equals(Model.PinnedNodeGuid))
+                    .FirstOrDefault();
+
+                if (node == null) return;
+
+                // In case the user has selected a different Node before Undo
+                // We run the risk of pinning to the wrong Node
+                // Therefore clear selection before running
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
+                PinToNode(obj);
+                return;
+            }
+        }
+
 
         private void SelectionOnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -184,7 +212,7 @@ namespace Dynamo.ViewModels
 
         public void UpdateSizeFromView(double w, double h)
         {
-            this._model.SetSize(w,h);
+            this._model.SetSize(w, h);
             MoveNoteAbovePinnedNode();
         }
 
@@ -307,7 +335,6 @@ namespace Dynamo.ViewModels
             }
 
             Model.PinnedNode = nodeToPin;
-            Model.UndoRequest += UnpinFromNode;
 
             MoveNoteAbovePinnedNode();
             SubscribeToPinnedNode();
@@ -327,7 +354,7 @@ namespace Dynamo.ViewModels
             var noteSelection = DynamoSelection.Instance.Selection
                     .OfType<NoteModel>();
 
-            if (nodeSelection == null || noteSelection == null || 
+            if (nodeSelection == null || noteSelection == null ||
                 nodeSelection.Count() != 1 || noteSelection.Count() != 1)
                 return false;
 
@@ -361,7 +388,6 @@ namespace Dynamo.ViewModels
         private void UnpinFromNode(object parameters)
         {
             UnsuscribeFromPinnedNode();
-            Model.UndoRequest -= UnpinFromNode;
 
             Model.PinnedNode = null;
             WorkspaceViewModel.HasUnsavedChanges = true;

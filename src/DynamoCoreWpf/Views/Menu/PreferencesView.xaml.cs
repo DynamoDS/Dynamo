@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -68,6 +69,7 @@ namespace Dynamo.Wpf.Views
             dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
             dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
             dynamoViewModel.PreferencesViewModel.PackagePathsViewModel?.InitializeRootLocations();
+            dynamoViewModel.PreferencesViewModel.TrustedPathsViewModel?.InitializeTrustedLocations();
 
             // Init package paths for install 
             dynamoViewModel.PreferencesViewModel.InitPackagePathsForInstall();
@@ -101,8 +103,12 @@ namespace Dynamo.Wpf.Views
             managePackageCommandEvent?.Dispose();
             Analytics.TrackEvent(Actions.Close, Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            viewModel.TrustedPathsViewModel?.SaveSettingCommand?.Execute(null);
+            dynViewModel.ShowHideFileTrustWarningIfCurrentWorkspaceTrusted();
+
             viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
+            TrustedPathView.Dispose();
 
             RunGraphWhenScaleFactorUpdated();
 
@@ -159,6 +165,7 @@ namespace Dynamo.Wpf.Views
             viewModel.IsVisibleAddStyleBorder = true;
             viewModel.IsEnabledAddStyleButton = false;
             groupNameBox.Focus();
+            Logging.Analytics.TrackEvent(Actions.New, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
         private void ResetGroupStyleForm()
@@ -201,12 +208,14 @@ namespace Dynamo.Wpf.Views
             {
                 viewModel.AddStyle(newItem);
                 viewModel.ResetAddStyleControl();
+                Logging.Analytics.TrackEvent(Actions.Save, Categories.GroupStyleOperations, nameof(GroupStyleItem));
             }          
         }
 
         private void AddStyle_CancelButton_Click(object sender, RoutedEventArgs e)
         {
             viewModel.ResetAddStyleControl();
+            Logging.Analytics.TrackEvent(Actions.Cancel, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
         private void RemoveStyle_Click(object sender, RoutedEventArgs e)
@@ -221,6 +230,7 @@ namespace Dynamo.Wpf.Views
 
             //Remove the selected style from the list
             viewModel.RemoveStyleEntry(groupNameLabel.Content.ToString());
+            Logging.Analytics.TrackEvent(Actions.Delete, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
         private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)
@@ -301,7 +311,7 @@ namespace Dynamo.Wpf.Views
             }
         }
 
-        private void groupNameBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void groupNameBox_PreviewKeyUp(object sender, KeyEventArgs e)
         {
             var groupNameTextBox = sender as TextBox;
             if (groupNameBox == null) return;
@@ -320,6 +330,28 @@ namespace Dynamo.Wpf.Views
         private void GroupStylesListBox_LostFocus(object sender, RoutedEventArgs e)
         {
             GroupStylesListBox.UnselectAll();
+        }
+
+        private void DisableTrustWarningsChecked(object sender, RoutedEventArgs e)
+        {
+            if (viewModel != null)
+            {
+                viewModel.DisableTrustWarnings = (bool)(sender as ToggleButton).IsChecked;
+            }
+        }
+
+        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ScrollViewer scrollviewer = sender as ScrollViewer;
+            if (e.Delta > 0)
+            {
+                scrollviewer.LineUp();
+            }
+            else
+            {
+                scrollviewer.LineDown();
+            }
+            e.Handled = true;
         }
     }
 }

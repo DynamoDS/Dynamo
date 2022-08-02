@@ -17,6 +17,7 @@
         <!--  Grid that contains the entire port  -->
         <Grid Name="MainGrid"
               Background="Transparent"
+              HorizontalAlignment="Right"
               IsHitTestVisible="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Name="PortNameColumn" Width="*" />
@@ -45,6 +46,7 @@
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                             <Setter Property="Grid.Height" Value="14px" />
+                            <Setter Property="Grid.Margin" Value="0,3,0,0" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -101,7 +103,7 @@
                        Grid.Column="1"
                        Height="27px"
                        VerticalAlignment="Center"
-                       Fill="{Binding PortValueMarkerColor, UpdateSourceTrigger=PropertyChanged}"
+                       Fill="#999999"
                        IsHitTestVisible="False"
                        Visibility="{Binding PortDefaultValueMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                        SnapsToDevicePixels="True" />
@@ -125,7 +127,7 @@
                             <Setter Property="Margin" Value="13,3,10,0" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
-                                    <Setter Property="Margin" Value="7,1,0,0" />
+                                    <Setter Property="Margin" Value="12,1,0,0" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -168,6 +170,7 @@
                                 <Setter Property="BorderThickness" Value="0" />
                                 <Setter Property="Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
                                 <Setter Property="Width" Value="20px" />
+                                <Setter Property="Margin" Value="5,0,0,0" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

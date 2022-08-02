@@ -25,6 +25,7 @@ namespace DynamoCoreWpfTests
         {
             libraries.Add("FunctionObject.ds");
             libraries.Add("BuiltIn.ds");
+            libraries.Add("DSCPython.dll");
             libraries.Add("FFITarget.dll");
         }
 
@@ -534,6 +535,57 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewModelWarningWarningFrozenHidden.ImgGlyphOneSource.Split('/').Last(), "frozen-64px.png");
             Assert.AreEqual(nodeViewModelWarningWarningFrozenHidden.ImgGlyphTwoSource.Split('/').Last(), "hidden-64px.png");
             Assert.AreEqual(nodeViewModelWarningWarningFrozenHidden.ImgGlyphThreeSource.Split('/').Last(), "alert-64px.png");
+        }
+
+        [Test]
+        public void TestPortColors_NodeModel()
+        {
+            Open(@"UI\color_range_ports.dyn");
+            
+            // color range node
+            var nvm = NodeViewWithGuid("423d7eaf-9308-4129-b11f-14c186fa4279");
+
+            var portVMs = nvm.ViewModel.InPorts;
+            var outPorts = nvm.ViewModel.OutPorts;
+
+            Assert.AreEqual(3, portVMs.Count);
+            Assert.AreEqual(1, outPorts.Count);
+
+            Assert.AreEqual(InPortViewModel.PortValueMarkerRed.Color, (portVMs[0] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.AreEqual(InPortViewModel.PortValueMarkerRed.Color, (portVMs[1] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (portVMs[2] as InPortViewModel).PortValueMarkerColor.Color);
+
+            Assert.False((outPorts[0] as OutPortViewModel).PortDefaultValueMarkerVisible);
+
+            // python node
+            nvm = NodeViewWithGuid("0be84b72-d0d9-4deb-8fa8-7af9594ec6bc");
+            var portVM = nvm.ViewModel.InPorts;
+            var outport = nvm.ViewModel.OutPorts;
+
+            Assert.AreEqual(1, portVM.Count);
+            Assert.AreEqual(1, outport.Count);
+
+            Assert.AreEqual(InPortViewModel.PortValueMarkerRed.Color, (portVM[0] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.False((outport[0] as OutPortViewModel).PortDefaultValueMarkerVisible);
+
+            Run();
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (portVMs[0] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (portVMs[1] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (portVMs[2] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.False((outPorts[0] as OutPortViewModel).PortDefaultValueMarkerVisible);
+
+            Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (portVM[0] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.False((outport[0] as OutPortViewModel).PortDefaultValueMarkerVisible);
+
+            nvm = NodeViewWithGuid("e7699f76-1481-431e-a3a5-b13fa9ef3358");
+
+            var dportVMs = nvm.ViewModel.InPorts;
+            var doutPorts = nvm.ViewModel.OutPorts;
+
+            Assert.AreEqual(InPortViewModel.PortValueMarkerRed.Color, (dportVMs[0] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.True((doutPorts[0] as OutPortViewModel).PortDefaultValueMarkerVisible);
         }
     }
 }

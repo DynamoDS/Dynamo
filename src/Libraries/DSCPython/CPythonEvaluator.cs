@@ -336,7 +336,7 @@ for modname,mod in sys.modules.copy().items():
         /// NOTE: Calling SetupPython multiple times will add the install location to the path many times,
         /// potentially causing the environment variable to overflow.
         /// </summary>
-        private static void InstallPython()
+        internal static void InstallPython()
         {
             if (!isPythonInstalled)
             {

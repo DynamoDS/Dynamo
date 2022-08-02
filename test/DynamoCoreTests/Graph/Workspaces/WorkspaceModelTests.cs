@@ -319,5 +319,16 @@ namespace Dynamo.Tests
             // Assert
             Assert.IsNull(hws.Thumbnail);
         }
+
+        [Test]
+        public void ScaleFactorTest()
+        {
+            // Set scale factor to extra large
+            this.CurrentDynamoModel.CurrentWorkspace.ScaleFactor = 10000;
+            this.CurrentDynamoModel.ClearCurrentWorkspace();
+
+            // Assert scale factor did not got reset after workspace clear
+            Assert.AreEqual(this.CurrentDynamoModel.CurrentWorkspace.ScaleFactor, 10000);
+        }
     }
 }

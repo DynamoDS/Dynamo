@@ -1,0 +1,539 @@
+{
+  "Uuid": "e7c54e23-b9f2-407b-9dd8-991e20ea244f",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "instancing_no_instance_data",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.InstanceableClass_NoInstanceData.ByPositionAndAxes@double[]",
+      "Id": "a1c86d68c6ad4377874e5dc7a3770f78",
+      "Inputs": [
+        {
+          "Id": "bed41ad78f35433ea0e9c9ddb4d75ef6",
+          "Name": "position",
+          "Description": "double[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5c17c12aa4fd467d9464ff8a93f5bfbb",
+          "Name": "InstanceableClass_NoInstanceData",
+          "Description": "InstanceableClass_NoInstanceData",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "InstanceableClass_NoInstanceData.ByPositionAndAxes (position: double[]): InstanceableClass_NoInstanceData"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..100..0.1;",
+      "Id": "a9e4af45a81647698776d6819661a4b6",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f80651806e024138883169a066e8f953",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Chop@var[]..[],int[]",
+      "Id": "48f54fc769ea44f3ad7d69c3cf62a895",
+      "Inputs": [
+        {
+          "Id": "4d6f42209aaf44d092b606587ae980d9",
+          "Name": "list",
+          "Description": "List to chop into sublists\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "05aa9b824d3b426c86996415bf58eb96",
+          "Name": "lengths",
+          "Description": "Lengths of consecutive sublists to be created from the input list\n\nint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e7a98d32e5364e138d04f410c7603c5b",
+          "Name": "lists",
+          "Description": "Sublists created from the list",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Chop a list into a set of consecutive sublists with the specified lengths. List division begins at the top of the list.\n\nList.Chop (list: var[]..[], lengths: int[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "3;",
+      "Id": "9536bdf2280949dd9ddf0cb01c990834",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c79b24b5ec324eb396c54ee5be74cb62",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.Sin@double",
+      "Id": "280c9b9dd26b400e8ddb60b17b382801",
+      "Inputs": [
+        {
+          "Id": "582f968e9d854757b27f44b5e4a71fda",
+          "Name": "angle",
+          "Description": "Angle in degrees to take the sine of.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "14e798fd67c747539c5a02d819620087",
+          "Name": "double",
+          "Description": "Sine of the angle.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Finds the sine of an angle.\n\nMath.Sin (angle: double): double"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "49077111a6c54c3b993f24eb131bba0e",
+      "Inputs": [
+        {
+          "Id": "c6d473082d5a43068ab1f4010b3e70d3",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "86af29ffe5a24990982f7e1d341acc7b",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list out of the given inputs"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[x,y,z];",
+      "Id": "c63952d4b2814fb7a4f77380c0b3c796",
+      "Inputs": [
+        {
+          "Id": "1159f58b884c484fba03287819423dc7",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a303cd04104643258fa32fbe73051fde",
+          "Name": "y",
+          "Description": "y",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "eebcf0073fef4d75a718c1786c3bfdc3",
+          "Name": "z",
+          "Description": "z",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ac66796f2ce94e67a5c71b680ddc40a8",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
+      "Id": "08868e27636d405f86d0a3568815d7d2",
+      "Inputs": [
+        {
+          "Id": "71ccda38b1484d468518c53e6a5016a0",
+          "Name": "lists",
+          "Description": "List of lists to be transposed\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ef5af3ab6f944e8aa43b0f89cd6124aa",
+          "Name": "lists",
+          "Description": "List of transposed lists",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Swaps rows and columns in a list of lists. If there are some rows that are shorter than others, null values are inserted as place holders in the resultant array such that it is always rectangular.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x*5;",
+      "Id": "ecf9e095be134caf9e63a10b1888a055",
+      "Inputs": [
+        {
+          "Id": "01af3315ea8e4934ae810cd3a8c6e60a",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "177b92a086f047abb77bc017d454a79a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x*10;",
+      "Id": "9e64c94cebe04a9b8ac77c686e54a3c0",
+      "Inputs": [
+        {
+          "Id": "5847fd5010b8491c83a703ebfae7c107",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "035b5f4d22f5482e9fcd1c7ef4eec942",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f80651806e024138883169a066e8f953",
+      "End": "1159f58b884c484fba03287819423dc7",
+      "Id": "25c9f55360084cc08ce0ac3659b2b1ee",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f80651806e024138883169a066e8f953",
+      "End": "5847fd5010b8491c83a703ebfae7c107",
+      "Id": "afb9d390958e4e81b9d6828d71674da6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e7a98d32e5364e138d04f410c7603c5b",
+      "End": "bed41ad78f35433ea0e9c9ddb4d75ef6",
+      "Id": "e7f3433b870f49829b46448e4a52da15",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c79b24b5ec324eb396c54ee5be74cb62",
+      "End": "05aa9b824d3b426c86996415bf58eb96",
+      "Id": "c2c1df5579cc4e24a846036e0f0f5131",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "14e798fd67c747539c5a02d819620087",
+      "End": "01af3315ea8e4934ae810cd3a8c6e60a",
+      "Id": "a616cb7d613649179a3f3fc985e9c23f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ac66796f2ce94e67a5c71b680ddc40a8",
+      "End": "71ccda38b1484d468518c53e6a5016a0",
+      "Id": "479c6c9e1be04697aa97a187dd9e8b6a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ef5af3ab6f944e8aa43b0f89cd6124aa",
+      "End": "4d6f42209aaf44d092b606587ae980d9",
+      "Id": "4b0dcd05d9ba45f890e520b7b4986f3b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "177b92a086f047abb77bc017d454a79a",
+      "End": "a303cd04104643258fa32fbe73051fde",
+      "Id": "cd843f83d38442a4b2001f489d4f272b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "177b92a086f047abb77bc017d454a79a",
+      "End": "eebcf0073fef4d75a718c1786c3bfdc3",
+      "Id": "5740d20a18924745a3f68c523de0a353",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "035b5f4d22f5482e9fcd1c7ef4eec942",
+      "End": "582f968e9d854757b27f44b5e4a71fda",
+      "Id": "e293bcc74b914c57922d40f53c303388",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "FFITarget.dll",
+      "ReferenceType": "ZeroTouch",
+      "Nodes": [
+        "a1c86d68c6ad4377874e5dc7a3770f78"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.0.3136",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -3.1585779190063477,
+      "EyeY": 3.1332201957702637,
+      "EyeZ": 5.428257942199707,
+      "LookX": 9.0292158126831055,
+      "LookY": -1.915733814239502,
+      "LookZ": -5.2784929275512695,
+      "UpX": -0.030127804726362228,
+      "UpY": 0.99939084053039551,
+      "UpZ": 0.017613820731639862
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "InstanceableClass_NoInstanceData.ByPositionAndAxes",
+        "Id": "a1c86d68c6ad4377874e5dc7a3770f78",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 802.5,
+        "Y": 298.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "a9e4af45a81647698776d6819661a4b6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -87.601944352248779,
+        "Y": 253.93527489098187
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.Chop",
+        "Id": "48f54fc769ea44f3ad7d69c3cf62a895",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1061.8735115143681,
+        "Y": 668.78594600820315
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "9536bdf2280949dd9ddf0cb01c990834",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4.0,
+        "Y": 747.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.Sin",
+        "Id": "280c9b9dd26b400e8ddb60b17b382801",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 307.0,
+        "Y": 258.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List Create",
+        "Id": "49077111a6c54c3b993f24eb131bba0e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 499.676025917927,
+        "Y": 1051.08639308855
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "c63952d4b2814fb7a4f77380c0b3c796",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 420.0,
+        "Y": 780.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.Transpose",
+        "Id": "08868e27636d405f86d0a3568815d7d2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 717.37361276641786,
+        "Y": 954.14452284869651
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "ecf9e095be134caf9e63a10b1888a055",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 545.14331746884886,
+        "Y": 271.40193336916559
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "9e64c94cebe04a9b8ac77c686e54a3c0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 120.1713365062302,
+        "Y": 249.48921276325206
+      }
+    ],
+    "Annotations": [],
+    "X": 191.36079373308263,
+    "Y": -176.43747734191254,
+    "Zoom": 0.92109168443555667
+  }
+}

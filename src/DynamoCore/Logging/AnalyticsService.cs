@@ -13,7 +13,6 @@ namespace Dynamo.Logging
     {
         // Use the Analytics.Core interface so that we do not have to load the ADP assembly at this time.
         private static IAnalyticsUI adpAnalyticsUI;
-
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
@@ -106,6 +105,14 @@ namespace Dynamo.Logging
             {
                 adpAnalyticsUI.ShowOptInDialog(System.Threading.Thread.CurrentThread.CurrentUICulture.Name, false, host);
             }
+        }
+        internal static string GetUserIDForSession()
+        {
+            if (Analytics.client is DynamoAnalyticsClient dac)
+            {
+                return dac.Session?.UserId;
+            }
+            return null;
         }
     }
 }

@@ -3,7 +3,6 @@
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
-    <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
     <ProjectGuid>{AE7F2579-104A-4AF4-AA7B-614AE9E79279}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -11,10 +10,6 @@
     <AssemblyName>ViewExtensionLibraryTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-	<PackageRefence Include="cef.redist.x64" Version="3.3325.1758" />
-	<PackageRefence Include="cef.redist.x86" Version="3.3325.1758" />
-	<PackageRefence Include="CefSharp.Common" Version="65.0.1" />
-	<PackageRefence Include="CefSharp.Wpf" Version="65.0.1" />
 	<PackageRefence Include="Moq" Version="4.2.1507.118" />
 	<PackageRefence Include="Newtonsoft.Json" Version="8.0.3" />
 	<PackageRefence Include="NUnit" Version="2.6.3" />
@@ -49,11 +44,7 @@
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\LibraryViewExtension\LibraryViewExtension.csproj">
-      <Project>{8eacbfd1-1cd4-4519-a5fc-215d40a67204}</Project>
-      <Name>LibraryViewExtension</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    <ProjectReference Include="..\..\src\LibraryViewExtensionMSWebBrowser\LibraryViewExtensionMSWebBrowser.csproj" />
     <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}</Project>
       <Name>DynamoShapeManager</Name>
@@ -78,6 +69,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="resources\Dynamo.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Moq" Version="4.2.1507.118" />
+    <PackageReference Include="NUnit" Version="2.6.3" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

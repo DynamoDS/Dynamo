@@ -34,6 +34,12 @@ namespace Dynamo.Utilities
             public bool IsEnabled;
         }
 
+        /// <summary>
+        /// Adds a debug mode
+        /// </summary>
+        /// <param name="name">Name of the debug mode</param>
+        /// <param name="description">Name about the debug mode</param>
+        /// /// <param name="isEnabled">Sets if the debug mode should be enabled on startup</param>
         internal static void AddDebugMode(string name, string description, bool isEnabled = false)
         {
             debugModes[name] = new DebugMode()

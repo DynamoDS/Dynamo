@@ -44,13 +44,13 @@
             <Setter Property="ScrollViewer.CanContentScroll"
                     Value="true" />
             <Setter Property="Width"
-                    Value="152" />
+                    Value="150" />
             <Setter Property="Height"
                     Value="54" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBox">
-                        <Grid Margin="0,9,4,8">
+                        <Grid Margin="0,13,4,8">
                             <ScrollViewer Margin="0"
                                           Focusable="false">
                                 <WrapPanel IsItemsHost="True" />
@@ -337,7 +337,7 @@
                                                    Height="15"/>
                                             <TextBlock Text="{Binding Name}" 
                                                         TextTrimming="CharacterEllipsis"
-                                                        MaxWidth="129"
+                                                        MaxWidth="148"
                                                         Margin="5,0,5,0"
                                                         Foreground="{StaticResource NodeContextMenuForeground}"
                                                         FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -358,7 +358,9 @@
                         </Style>
                     </MenuItem.Resources>
                 </MenuItem>
-                <MenuItem Name="ColorMenuItem" Header="{x:Static p:Resources.GroupContextMenuColor}">
+                <MenuItem Name="ColorMenuItem" 
+                          Header="{x:Static p:Resources.GroupContextMenuColor}"
+                          Style="{StaticResource ContextMenuItemFixedWidthStyle}">
                     <ListBox ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
                              SelectionChanged="OnNodeColorSelectionChanged"
                              Height="Auto"
@@ -383,7 +385,9 @@
                         </ListBox.Items>
                     </ListBox>
                 </MenuItem>
-                <MenuItem Name="ChangeSize" Header="{x:Static p:Resources.GroupContextMenuFont}">
+                <MenuItem Name="ChangeSize" 
+                          Header="{x:Static p:Resources.GroupContextMenuFont}"
+                          Style="{StaticResource ContextMenuItemFixedWidthStyle}">
                     <MenuItem Name="FontSize0"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="14"
@@ -731,7 +735,7 @@
                                 </CombinedGeometry.Geometry1>
                                 <CombinedGeometry.Geometry2>
                                     <GeometryGroup FillRule="EvenOdd"
-                                                   Children="{Binding NestedGroupsGeometryCollection}" />
+                                                   Children="{Binding NestedGroupsGeometries}" />
                                 </CombinedGeometry.Geometry2>
                             </CombinedGeometry>
                         </Path.Data>
