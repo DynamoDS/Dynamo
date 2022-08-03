@@ -176,11 +176,18 @@ namespace Dynamo.Wpf.Views.FileTrust
         /// This method will show/hide the Popup when the main window is Activated or Deactivated
         /// </summary>
         internal void ManagePopupActivation(bool activate)
-        {
-            if (dynViewModel.FileTrustViewModel.ShowWarningPopup == !activate &&
+        {           
+            if ((dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).CurrentNotificationMessage == string.Empty)
+            {
+                IsOpen = false;
+            }
+            else
+            {
+                if (dynViewModel.FileTrustViewModel.ShowWarningPopup == !activate &&
                !string.IsNullOrEmpty(dynViewModel.FileTrustViewModel.DynFileDirectoryName) &&
                RunSettings.ForceBlockRun == true)
-                IsOpen = activate;
+                    IsOpen = activate;
+            }                                    
         }
 
         private void SetUpPopup()
