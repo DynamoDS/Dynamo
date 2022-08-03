@@ -56,6 +56,7 @@
   <ItemGroup>
   <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.9046" />
   <PackageReference Include="Greg" Version="2.3.0.1646" />
+  <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
 	<PackageReference Include="RestSharp" Version="106.12.0" />
 	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" CopyXML="true" />
@@ -355,9 +356,6 @@
     <Compile Include="Views\GuidedTour\ExitGuideWindow.xaml.cs">
       <DependentUpon>ExitGuideWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\GuidedTour\WebBrowserWindow.xaml.cs">
-      <DependentUpon>WebBrowserWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\GuidedTour\RealTimeInfoWindow.xaml.cs">
       <DependentUpon>RealTimeInfoWindow.xaml</DependentUpon>
     </Compile>
@@ -513,10 +511,6 @@
     <Page Include="Views\GuidedTour\ExitGuideWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\GuidedTour\WebBrowserWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Core\ConnectorContextMenuView.xaml">
       <SubType>Designer</SubType>
