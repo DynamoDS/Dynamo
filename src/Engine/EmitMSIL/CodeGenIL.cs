@@ -112,16 +112,37 @@ namespace EmitMSIL
             return (asm,type);
         }
 
+        // Given a double value on the stack, emit call to Math.Round(arg, 0, MidpointRounding.AwayFromZero);
+        // to convert to int or long.
+        private void EmitMathRound()
+        {
+            EmitOpCode(OpCodes.Ldc_I4_0);
+            EmitOpCode(OpCodes.Ldc_I4_1);
+            var roundMethod = typeof(Math).GetMethod(nameof(Math.Round), new[] { typeof(double), typeof(int), typeof(MidpointRounding) });
+            EmitOpCode(OpCodes.Call, roundMethod);
+        }
+
         private Type EmitCoercionCode(Type argType, ParameterInfo param)
         {
             if (param.ParameterType.IsAssignableFrom(argType)) return argType;
 
             if(argType == typeof(double) && param.ParameterType == typeof(long))
             {
+                // Call Math.Round(arg, 0, MidpointRounding.AwayFromZero);
+                EmitMathRound();
+
                 EmitOpCode(OpCodes.Conv_I8);
                 return typeof(long);
             }
-            if ((argType == typeof(double) || argType == typeof(long)) && param.ParameterType == typeof(int))
+            if (argType == typeof(double) && param.ParameterType == typeof(int))
+            {
+                // Call Math.Round(arg, 0, MidpointRounding.AwayFromZero);
+                EmitMathRound();
+
+                EmitOpCode(OpCodes.Conv_I4);
+                return typeof(int);
+            }
+            if (argType == typeof(long) && param.ParameterType == typeof(int))
             {
                 EmitOpCode(OpCodes.Conv_I4);
                 return typeof(int);
@@ -315,11 +336,19 @@ namespace EmitMSIL
             }
             if (typeof(Target) == typeof(int))
             {
+                if (typeof(Source) == typeof(double))
+                {
+                    EmitMathRound();
+                }
                 EmitOpCode(OpCodes.Conv_I4);
                 EmitOpCode(OpCodes.Stelem_I4);
             }
             else if (typeof(Target) == typeof(long))
             {
+                if (typeof(Source) == typeof(double))
+                {
+                    EmitMathRound();
+                }
                 EmitOpCode(OpCodes.Conv_I8);
                 EmitOpCode(OpCodes.Stelem_I8);
             }
