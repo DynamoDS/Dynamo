@@ -43,11 +43,6 @@ namespace Dynamo.Wpf.Controls
             var hsvm = (HomeWorkspaceViewModel)((DynamoViewModel)DataContext).HomeSpaceViewModel;            
             // Commented this after MAGN - 8423
             //hsvm.ClearWarning();
-            if (hsvm.IsHomeSpace && !hsvm.IsCurrentSpace)
-            {
-                hsvm.DynamoViewModel.FileTrustViewModel.ShowWarningPopup = false;
-                hsvm.ClearWarning();
-            }
         }
 
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)

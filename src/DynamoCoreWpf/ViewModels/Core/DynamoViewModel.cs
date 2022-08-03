@@ -111,7 +111,13 @@ namespace Dynamo.ViewModels
 
         public bool ViewingHomespace
         {
-            get { return model.CurrentWorkspace == HomeSpace; }
+            get {
+                if (model.CurrentWorkspace != HomeSpace)
+                {
+                    onNotViewingHomeSpace();
+                }
+                return model.CurrentWorkspace == HomeSpace; 
+            }
         }
 
         public int ScaleFactorLog
@@ -805,6 +811,15 @@ namespace Dynamo.ViewModels
             if (NodeViewReady != null)
             {
                 this.NodeViewReady(nodeView, new EventArgs());
+            }
+        }
+
+        internal event EventHandler NotViewingHomeSpace;
+        internal void onNotViewingHomeSpace()
+        {
+            if (NotViewingHomeSpace != null)
+            {
+                this.NotViewingHomeSpace(null, new EventArgs());
             }
         }
 

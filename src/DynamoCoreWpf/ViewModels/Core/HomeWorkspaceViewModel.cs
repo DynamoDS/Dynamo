@@ -128,8 +128,13 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
 
             dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
-
+            dynamoViewModel.NotViewingHomeSpace += DynamoViewModel_NotViewingHomeSpace;
             SetupFooterNotificationItems();
+        }
+
+        private void DynamoViewModel_NotViewingHomeSpace(object sender, EventArgs e)
+        {
+            ClearWarning();
         }
 
         /// <summary>

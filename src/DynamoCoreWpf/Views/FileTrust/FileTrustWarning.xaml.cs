@@ -47,6 +47,11 @@ namespace Dynamo.Wpf.Views.FileTrust
             SetUpPopup();
 
             HomeWorkspaceModel.WorkspaceClosed += CloseWarningPopup;
+            dynViewModel.NotViewingHomeSpace += DynViewModel_NotViewingHomeSpace; ;
+        }
+        private void DynViewModel_NotViewingHomeSpace(object sender, EventArgs e)
+        {
+            IsOpen = false;
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -176,18 +181,11 @@ namespace Dynamo.Wpf.Views.FileTrust
         /// This method will show/hide the Popup when the main window is Activated or Deactivated
         /// </summary>
         internal void ManagePopupActivation(bool activate)
-        {           
-            if ((dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).CurrentNotificationMessage == string.Empty)
-            {
-                IsOpen = false;
-            }
-            else
-            {
-                if (dynViewModel.FileTrustViewModel.ShowWarningPopup == !activate &&
-               !string.IsNullOrEmpty(dynViewModel.FileTrustViewModel.DynFileDirectoryName) &&
-               RunSettings.ForceBlockRun == true)
-                    IsOpen = activate;
-            }                                    
+        {
+            if (dynViewModel.FileTrustViewModel.ShowWarningPopup == !activate &&
+           !string.IsNullOrEmpty(dynViewModel.FileTrustViewModel.DynFileDirectoryName) &&
+           RunSettings.ForceBlockRun == true)
+                IsOpen = activate;
         }
 
         private void SetUpPopup()
