@@ -28,8 +28,9 @@
             <converters:BooleanToToolTipTextConverter  x:Key="BooleanToToolTipTextConverter"></converters:BooleanToToolTipTextConverter>
             <converters:BooleanToFontStyleConverter  x:Key="BooleanToFontStyleConverter"></converters:BooleanToFontStyleConverter>
             <converters:BooleanToFontFamilyConverter  x:Key="BooleanToFontFamilyConverter"></converters:BooleanToFontFamilyConverter>
-
-<Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource GenericToolTipLight}"></Style>
+            <converters:InverseBooleanToVisibilityConverter  x:Key="InverseBooleanToVisibilityConverter"></converters:InverseBooleanToVisibilityConverter>
+            
+            <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource GenericToolTipLight}"></Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid x:Name="MainGrid">
@@ -331,6 +332,7 @@
                                                            Margin="5 0"
                                                            Source="{Binding State, Converter={StaticResource StateToImageSourceConverter}}" 
                                                            Style="{StaticResource ImageStyle}"
+                                                           Visibility="{Binding Dismissed, Converter={StaticResource InverseBooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"
                                                            VerticalAlignment="Top"></Image>
                                                 <TextBlock Grid.Column="1" Margin="10 -2 10 0" 
                                                                TextWrapping="Wrap" 
