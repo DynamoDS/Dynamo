@@ -1488,51 +1488,55 @@ namespace Dynamo.Models
                 BeginCreateConnections
             }
 
-            void setProperties(int portIndex, PortType portType, Mode mode)
+            void setProperties(int portIndex, PortType portType, Mode mode, bool isHidden)
             {
                 PortIndex = portIndex;
                 Type = portType;
                 ConnectionMode = mode;
+                IsHidden = isHidden;
             }
 
             /// <summary>
-            ///
+            /// Recordable command ConnectionCommand constructor
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
             /// <param name="portType"></param>
             /// <param name="mode"></param>
+            /// <param name="isHidden"></param>
             [JsonConstructor]
-            public MakeConnectionCommand(string nodeId, int portIndex, PortType portType, Mode mode)
+            public MakeConnectionCommand(string nodeId, int portIndex, PortType portType, Mode mode, bool isHidden = true)
                 : base(new[] { Guid.Parse(nodeId) })
             {
-                setProperties(portIndex, portType, mode);
+                setProperties(portIndex, portType, mode, isHidden);
             }
 
             /// <summary>
-            ///
+            /// Recordable command ConnectionCommand constructor
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
             /// <param name="portType"></param>
             /// <param name="mode"></param>
-            public MakeConnectionCommand(Guid nodeId, int portIndex, PortType portType, Mode mode)
+            /// <param name="isHidden"></param>
+            public MakeConnectionCommand(Guid nodeId, int portIndex, PortType portType, Mode mode, bool isHidden = true)
                 : base(new[] { nodeId })
             {
-                setProperties(portIndex, portType, mode);
+                setProperties(portIndex, portType, mode, isHidden);
             }
 
             /// <summary>
-            ///
+            /// Recordable command ConnectionCommand constructor
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
             /// <param name="portType"></param>
             /// <param name="mode"></param>
-            public MakeConnectionCommand(IEnumerable<Guid> nodeId, int portIndex, PortType portType, Mode mode)
+            /// <param name="isHidden"></param>
+            public MakeConnectionCommand(IEnumerable<Guid> nodeId, int portIndex, PortType portType, Mode mode, bool isHidden = true)
                 : base(nodeId)
             {
-                setProperties(portIndex, portType, mode);
+                setProperties(portIndex, portType, mode, isHidden);
             }
 
             internal static MakeConnectionCommand DeserializeCore(XmlElement element)
@@ -1541,10 +1545,10 @@ namespace Dynamo.Models
                 int portIndex = helper.ReadInteger("PortIndex");
                 var portType = ((PortType)helper.ReadInteger("Type"));
                 var mode = ((Mode)helper.ReadInteger("ConnectionMode"));
-
+                var isHidden = helper.ReadBoolean("IsHidden");
                 var modelGuids = DeserializeGuid(element, helper);
 
-                return new MakeConnectionCommand(modelGuids, portIndex, portType, mode);
+                return new MakeConnectionCommand(modelGuids, portIndex, portType, mode, isHidden);
             }
 
             #endregion
@@ -1559,6 +1563,9 @@ namespace Dynamo.Models
 
             [DataMember]
             public Mode ConnectionMode { get; private set; }
+
+            [DataMember]
+            internal bool IsHidden { get; private set; }
 
             #endregion
 
@@ -1576,6 +1583,7 @@ namespace Dynamo.Models
                 helper.SetAttribute("PortIndex", PortIndex);
                 helper.SetAttribute("Type", ((int)Type));
                 helper.SetAttribute("ConnectionMode", ((int)ConnectionMode));
+                helper.SetAttribute("IsHidden", IsHidden);
             }
 
             #endregion
