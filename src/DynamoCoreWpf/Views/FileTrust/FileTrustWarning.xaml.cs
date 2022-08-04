@@ -179,6 +179,7 @@ namespace Dynamo.Wpf.Views.FileTrust
             }
 
             HomeWorkspaceModel.WorkspaceClosed -= CloseWarningPopup;
+            dynViewModel.PropertyChanged -= DynViewModel_PropertyChanged;
         }
 
         /// <summary>

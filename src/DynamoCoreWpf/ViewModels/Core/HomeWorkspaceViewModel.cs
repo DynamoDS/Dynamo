@@ -504,6 +504,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             RunSettingsViewModel.Dispose();
             RunSettingsViewModel = null;
             DynamoViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
+            DynamoViewModel.Model.PropertyChanged -= DynamoViewModel_PropertyChanged;
         }
     }
 
