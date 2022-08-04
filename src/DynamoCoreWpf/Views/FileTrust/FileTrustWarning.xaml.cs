@@ -188,8 +188,8 @@ namespace Dynamo.Wpf.Views.FileTrust
         internal void ManagePopupActivation(bool activate)
         {
             if (dynViewModel.FileTrustViewModel.ShowWarningPopup == !activate &&
-           !string.IsNullOrEmpty(dynViewModel.FileTrustViewModel.DynFileDirectoryName) &&
-           RunSettings.ForceBlockRun == true)
+               !string.IsNullOrEmpty(dynViewModel.FileTrustViewModel.DynFileDirectoryName) &&
+               RunSettings.ForceBlockRun == true)
                 IsOpen = activate;
         }
 

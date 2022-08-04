@@ -337,7 +337,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// <param name="hasErrors"></param>
         private void UpdateFooterItems(bool hasInfo, bool hasWarnings, bool hasErrors)
         {
-
+            
             if (hasErrors)
                 FooterNotificationItems[0].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Error);
             else
