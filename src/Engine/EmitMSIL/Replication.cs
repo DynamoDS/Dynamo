@@ -36,7 +36,7 @@ namespace EmitMSIL
             return stackValues;
         }
 
-        internal static List<object> UnmrshalFunctionArguments(List<CLRFunctionEndPoint.ParamInfo> formalParams, List<CLRStackValue> args, MSILRuntimeCore runtimeCore)
+        internal static List<object> UnmarshalFunctionArguments(List<CLRFunctionEndPoint.ParamInfo> formalParams, List<CLRStackValue> args, MSILRuntimeCore runtimeCore)
         {
             var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
             List<object> values = new List<object>();
@@ -371,7 +371,7 @@ namespace EmitMSIL
         {
             List<CLRStackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, runtimeCore);
 
-            List<object> args = UnmrshalFunctionArguments(finalFep.FormalParams, coercedParameters, runtimeCore);
+            List<object> args = UnmarshalFunctionArguments(finalFep.FormalParams, coercedParameters, runtimeCore);
 
             // Testing invoking method without replication
             object result;
@@ -456,7 +456,7 @@ namespace EmitMSIL
                 {
                     // TODO: Investigate convertToArray performance
                     var subParameters = getSubParameters(formalParameters[repIndex]).ToArray();
-                    parameters.Add(subParameters.ToArray());
+                    parameters.Add(subParameters);
 
                     if (subParameters.Length == 0)
                         hasEmptyArg = true;
@@ -523,7 +523,7 @@ namespace EmitMSIL
                 int cartIndex = ri.CartesianIndex;
 
                 //this will hold the heap elements for all the arrays that are going to be replicated over
-                bool supressArray = false;
+                bool suppressArray = false;
                 int retSize;
                 IList<CLRStackValue> array = null;
 
@@ -535,14 +535,14 @@ namespace EmitMSIL
                 else
                 {
                     retSize = 1;
-                    supressArray = true;
+                    suppressArray = true;
                 }
 
                 object[] retSVs = new object[retSize];
 
                 //Build the call
                 List<CLRStackValue> newFormalParams = formalParameters.ToList();
-                if (supressArray)
+                if (suppressArray)
                 {
                     List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
                     return ExecWithRISlowPath(finalFep, newFormalParams, newRIs, runtimeCore);

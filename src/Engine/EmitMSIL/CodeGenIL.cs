@@ -842,7 +842,7 @@ namespace EmitMSIL
             }
 
             bool hasStep = stepNode != null;
-            // The value of the dymy DoubleNode does not matter since the hasStep boolean will be false.
+            // The value of the dummy DoubleNode does not matter since the hasStep boolean will be false.
             AssociativeNode dummyStepNode = AstFactory.BuildDoubleNode(1);
             var arguments = new List<AssociativeNode>
             {

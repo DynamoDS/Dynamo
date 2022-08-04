@@ -334,11 +334,8 @@ namespace ProtoCore
             Dictionary<CLRFunctionEndPoint, int> ret = new Dictionary<CLRFunctionEndPoint, int>();
 
             //@PERF: Consider parallelising this
-
-            IEnumerable<CLRFunctionEndPoint> feps = funcGroup;
             List<CLRStackValue> reducedParamSVs = Replicator.EstimateReducedParams(formalParams, replicationInstructions);
-
-            foreach (var fep in feps)
+            foreach (CLRFunctionEndPoint fep in funcGroup)
             {
                 int dist = fep.ComputeCastDistance(reducedParamSVs);
                 ret.Add(fep, dist);

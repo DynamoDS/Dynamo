@@ -157,7 +157,7 @@ namespace ProtoCore.DSASM
                     return this;
 
                 case (int)PrimitiveType.Integer:
-                    return new CLRStackValue(Value != null, (int)PrimitiveType.Bool);
+                    return new CLRStackValue(Value != null && (int)Value != 0, (int)PrimitiveType.Bool);
 
                 case (int)PrimitiveType.InvalidType:
                     return new CLRStackValue(false, (int)PrimitiveType.Bool);

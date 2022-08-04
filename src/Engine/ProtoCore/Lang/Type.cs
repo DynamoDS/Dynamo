@@ -369,7 +369,7 @@ namespace ProtoCore
             return sv;
         }
 
-        internal static CLRStackValue ClassCoerece(CLRStackValue sv, Type targetType)
+        internal static CLRStackValue ClassCoerce(CLRStackValue sv, Type targetType)
         {
             //@TODO: Add proper coersion testing here.
 
@@ -690,7 +690,7 @@ namespace ProtoCore
 
             if (sv.IsPointer)
             {
-                CLRStackValue ret = ClassCoerece(sv, targetType);
+                CLRStackValue ret = ClassCoerce(sv, targetType);
                 return ret;
             }
 
