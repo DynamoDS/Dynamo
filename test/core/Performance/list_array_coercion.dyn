@@ -1,0 +1,335 @@
+{
+  "Uuid": "24ea4b09-52a8-4e99-bd20-d2bd04765335",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "list_array_coercion",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyTuple4.XYZ@double,double,double",
+      "Id": "41123644cdf9455bb3b9011d392ce65b",
+      "Inputs": [
+        {
+          "Id": "db4e43e9f42b43e290eabcf0b8f9b371",
+          "Name": "xValue",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "25471fdcf7154a919ca635c67a77754f",
+          "Name": "yValue",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e80c99acc07d459fb19d3f29c0814fea",
+          "Name": "zValue",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "98ec6843e28f4560949ce8d93125c3de",
+          "Name": "DummyTuple4",
+          "Description": "DummyTuple4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyTuple4.XYZ (xValue: double, yValue: double, zValue: double): DummyTuple4"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1;\n2;\n0;",
+      "Id": "9733bda713e24688a0e979ba8895fa59",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b60b283d2a824f9398039f9ee690b441",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cad43de9c6164ad4bfa9e922a41eedbf",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1a87c7edfd5b40b691a2a9dd4580c358",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyTuple4.Coordinates3",
+      "Id": "de0e5fd1bba04e8f853bd0a9f967b6f8",
+      "Inputs": [
+        {
+          "Id": "a5c3ec27ce9a4115b6826d61fdab63bb",
+          "Name": "dummyTuple4",
+          "Description": "FFITarget.DummyTuple4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e430ac60f4244bbdac1b2846202971df",
+          "Name": "double[]",
+          "Description": "double[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyTuple4.Coordinates3 ( ): double[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.TestData.RemoveItemsAtIndices@var[]..[],int[]",
+      "Id": "7c4a94a0345b445ebb9a950d2bdbfcb1",
+      "Inputs": [
+        {
+          "Id": "5c3e580603404ff4bf1cca729fdc1eb8",
+          "Name": "list",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0e91419e4bdb4f36850a3f61ca694524",
+          "Name": "indices",
+          "Description": "int[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "35e19c2a4e2048bda353e393408b570f",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "TestData.RemoveItemsAtIndices (list: var[]..[], indices: int[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[\"a\", \"b\", \"c\", \"d\"];",
+      "Id": "a45ddcf5dd1147bbb5be6e611492cbe2",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8b8ef66aea034800a101f559fb423832",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "98ec6843e28f4560949ce8d93125c3de",
+      "End": "a5c3ec27ce9a4115b6826d61fdab63bb",
+      "Id": "a47c49eb833f4dfea6b7bb0c2473d0aa",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b60b283d2a824f9398039f9ee690b441",
+      "End": "db4e43e9f42b43e290eabcf0b8f9b371",
+      "Id": "5482db5707964d91ab3142077f5662a4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cad43de9c6164ad4bfa9e922a41eedbf",
+      "End": "25471fdcf7154a919ca635c67a77754f",
+      "Id": "8db36823f53c4293b4e9f952025b6269",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1a87c7edfd5b40b691a2a9dd4580c358",
+      "End": "e80c99acc07d459fb19d3f29c0814fea",
+      "Id": "de046b2b9e3a4a6382438eb5e2423387",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e430ac60f4244bbdac1b2846202971df",
+      "End": "0e91419e4bdb4f36850a3f61ca694524",
+      "Id": "e751f3fab4d240b09def5e45eef82a7c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8b8ef66aea034800a101f559fb423832",
+      "End": "5c3e580603404ff4bf1cca729fdc1eb8",
+      "Id": "8f14548c17f34091b703c2c4183e911b",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "FFITarget.dll",
+      "ReferenceType": "ZeroTouch",
+      "Nodes": [
+        "41123644cdf9455bb3b9011d392ce65b",
+        "de0e5fd1bba04e8f853bd0a9f967b6f8",
+        "7c4a94a0345b445ebb9a950d2bdbfcb1"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.16",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.16.0.2097",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "DummyTuple4.XYZ",
+        "ShowGeometry": true,
+        "Id": "41123644cdf9455bb3b9011d392ce65b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 334.39999999999992,
+        "Y": 136.00000000000006
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "9733bda713e24688a0e979ba8895fa59",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 70.400000000000034,
+        "Y": 155.0
+      },
+      {
+        "Name": "DummyTuple4.Coordinates3",
+        "ShowGeometry": true,
+        "Id": "de0e5fd1bba04e8f853bd0a9f967b6f8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 646.0,
+        "Y": 112.80000000000001
+      },
+      {
+        "Name": "TestData.RemoveItemsAtIndices",
+        "ShowGeometry": true,
+        "Id": "7c4a94a0345b445ebb9a950d2bdbfcb1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 931.60000000000014,
+        "Y": 300.40000000000003
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "a45ddcf5dd1147bbb5be6e611492cbe2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 533.0,
+        "Y": 407.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

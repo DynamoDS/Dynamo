@@ -37,6 +37,7 @@
     <SolidColorBrush x:Key="PrimaryCharcoal300Brush" Color="{StaticResource PrimaryCharcoal300}" />
     <SolidColorBrush x:Key="LightGreyBrush" Color="{StaticResource LightGrey}" />
     <SolidColorBrush x:Key="LightMidGreyBrush" Color="{StaticResource LightMidGrey}" />
+    <SolidColorBrush x:Key="LightMidGreyOpacityBrush" Color="{StaticResource LightMidGrey}" Opacity="0.2" />
     <SolidColorBrush x:Key="MidGreyBrush" Color="{StaticResource MidGrey}" />
     <SolidColorBrush x:Key="DarkMidGreyBrush" Color="{StaticResource DarkMidGrey}" />
     <SolidColorBrush x:Key="DarkGreyBrush" Color="{StaticResource DarkGrey}" />
@@ -106,8 +107,8 @@
     <SolidColorBrush x:Key="AutocompletionWindowFontColor" Color="#F5F5F5" />
 
     <!--  Update Manager  -->
-    <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed" />
-    <SolidColorBrush x:Key="UpdateManagerUpToDateBrush" Color="Green" />
+    <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="#AF1B1B" />
+    <SolidColorBrush x:Key="UpdateManagerUpToDateBrush" Color="#168576" />
 
     <!--  3D  -->
     <Color x:Key="EdgeColor">#000000</Color>
@@ -176,4 +177,6 @@
 
     <!--  Connector  -->
     <SolidColorBrush x:Key="ConnectorHoverStateColor" Color="#808080" />
+
+    <!-- Modal Pattern --> 
 </ResourceDictionary>

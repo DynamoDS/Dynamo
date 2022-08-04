@@ -156,10 +156,15 @@ namespace EmitMSIL
             {
                 result = ExecWithZeroRI(finalFep, reducedArgs, runtimeCore);
             }
+            else if(mi.IsConstructor) // Constructors cannot be replicated over yet
+            {
+                result = (mi as ConstructorInfo).Invoke(reducedArgs.ToArray());
+            }
             else //replicated call
             {
                 result = ExecWithRISlowPath(finalFep, reducedArgs, replicationInstructions, runtimeCore);
             }
+            if (result is IList) return (IList)result;
 
             return new[] { result };
         }
