@@ -9,7 +9,6 @@ using System;
 
 namespace CodeGenILTests
 {
-    [TestFixture]
     public class MicroTests
     {
         protected EmitMSIL.CodeGenIL codeGen;
@@ -21,17 +20,19 @@ namespace CodeGenILTests
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(assemblyPath, "OpCodesTEST.txt"));
         }
+
         [TearDown]
         public void TearDown()
         {
             codeGen.Dispose();
         }
     }
-    //TODO these tests all require an extra level of unwrapping in their assert statements because replication logic wraps results.
-    //when this is changed, modify tests.
+
+    [TestFixture]
     public class RangeMicroTests : MicroTests
     {
-        #region constants
+    #region constants
+
         [Test]
         public void RangeTestInts_nullstep()
         {
@@ -42,7 +43,7 @@ import(""DesignScriptBuiltin.dll"");
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output.Values.ToList().First()[0] as long[]);
+            CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10 }, output.Values.ToList().First() as long[]);
         }
         [Test]
         public void RangeTestIntStep_ints()
@@ -54,7 +55,7 @@ import(""DesignScriptBuiltin.dll"");
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 2, 4, 6, 8, 10 }, output.Values.ToList().First()[0] as long[]);
+            CollectionAssert.AreEqual(new object[] { 0, 2, 4, 6, 8, 10 }, output.Values.ToList().First() as long[]);
         }
         [Test]
         public void RangeTestDoubleStep_doubles()
@@ -66,7 +67,7 @@ import(""DesignScriptBuiltin.dll"");
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 2, 4, 6, 8, 10 }, output.Values.ToList().First()[0] as double[]);
+            CollectionAssert.AreEqual(new object[] { 0, 2, 4,6,8,10 }, output.Values.ToList().First() as double[]);
         }
 
         [Test]
@@ -79,7 +80,7 @@ import(""DesignScriptBuiltin.dll"");
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 5, 10, 15, 20, 25, 30, 35, 40, 45 }, output.Values.ToList().First()[0] as long[]);
+            CollectionAssert.AreEqual(new object[] { 0, 5, 10, 15, 20, 25,30,35, 40,45 }, output.Values.ToList().First() as long[]);
         }
         [Test]
         public void RangeTestAmountByStep_IntStep_IntRange()
@@ -91,8 +92,9 @@ import(""DesignScriptBuiltin.dll"");
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 5, 10, 15, 20, 25, 30, 35, 40, 45 }, output.Values.ToList().First()[0] as long[]);
+            CollectionAssert.AreEqual(new object[] { 0, 5, 10, 15, 20, 25, 30, 35, 40, 45 }, output.Values.ToList().First() as long[]);
         }
+
         [Test]
         public void RangeTestDouble()
         {
@@ -103,7 +105,7 @@ import(""DesignScriptBuiltin.dll"");
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0, 1.1 }, output.Values.ToList().First()[0] as double[]);
+            CollectionAssert.AreEqual(new object[] { 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0,1.1 }, output.Values.ToList().First() as double[]);
         }
 
         [Test]
@@ -119,7 +121,7 @@ import(""DesignScriptBuiltin.dll"");
 
                 var output = codeGen.EmitAndExecute(ast);
                 Assert.IsNotEmpty(output);
-                Assert.AreEqual(null, output.Values.ToList().First()[0]);
+                Assert.AreEqual(null, output.Values.ToList().First());
 
             });
 
@@ -136,8 +138,9 @@ import(""DesignScriptBuiltin.dll"");
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 2.5, 5, 7.5, 10 }, output.Values.ToList().First()[0] as double[]);
+            CollectionAssert.AreEqual(new object[] { 0,2.5,5,7.5,10 }, output.Values.ToList().First() as double[]);
         }
+
         [Test]
         public void RangeAmountInts_returnsDoubles()
         {
@@ -148,8 +151,9 @@ import(""DesignScriptBuiltin.dll"");
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 2.5, 5, 7.5, 10 }, output.Values.ToList().First()[0] as double[]);
+            CollectionAssert.AreEqual(new object[] { 0, 2.5, 5, 7.5, 10 }, output.Values.ToList().First() as double[]);
         }
+
         [Test]
         public void RangeAmountInts_returnsInts()
         {
@@ -160,7 +164,7 @@ import(""DesignScriptBuiltin.dll"");
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 10 }, output.Values.ToList().First()[0] as long[]);
+            CollectionAssert.AreEqual(new object[] { 0, 10 }, output.Values.ToList().First() as long[]);
         }
 
 
@@ -175,25 +179,26 @@ import(""DesignScriptBuiltin.dll"");
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
             //irrational numbers! 0,3.33333,6.66666,10
-            CollectionAssert.AreEqual(new object[] { 0, 10d / 3d, (10d / 3d) * 2, 10 }, output.Values.ToList().First()[0] as double[]);
+            CollectionAssert.AreEqual(new object[] { 0, 10d/3d, (10d / 3d)*2, 10 }, output.Values.ToList().First() as double[]);
         }
 
 
-        [Category("Failure")]
         [Test]
-        //'Object of type 'System.int64[]' cannot be converted to type 'System.Collections.Generic.IEnumerable`1[System.Double]'.'
+        //'Object of type 'System.int64[]' can be converted to type 'System.Collections.Generic.IEnumerable`1[System.Double]'.'
         public void SumIntRange_TypeCoerNeeded()
         {
             var dscode = @"
 import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
 x = 0..10;
 y = DSCore.Math.Sum(x);";
 
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(55, output.Values.ToList().First()[0]);
+            Assert.AreEqual(55, output.Values.ToList()[1][0]);
         }
+
         #endregion
         #region identifers
         [Test]
@@ -209,7 +214,7 @@ fr..to..step;";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output.Values.ToList()[3][0] as long[]);
+            CollectionAssert.AreEqual(new object[] { 0,1,2,3,4,5,6,7,8,9,10 }, output.Values.ToList()[3] as long[]);
         }
         [Test]
         public void Range_step_Doubles_Idents()
@@ -224,7 +229,7 @@ fr..to..step;";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output.Values.ToList()[3][0] as double[]);
+            CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output.Values.ToList()[3] as double[]);
         }
 
         [Test]
@@ -240,7 +245,7 @@ fr..to..step;";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output.Values.ToList()[3][0] as double[]);
+            CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output.Values.ToList()[3] as double[]);
         }
         [Test]
         public void Range_amount_Doubles_idents()
@@ -255,7 +260,7 @@ fr..to..#step;";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 2.5, 5, 7.5, 10 }, output.Values.ToList()[3][0] as double[]);
+            CollectionAssert.AreEqual(new object[] { 0, 2.5, 5, 7.5, 10 }, output.Values.ToList()[3] as double[]);
         }
         //NOTE that is test illustrates the difference between the from..#amount..step range form where step is a double that 
         //can be represnted by an int - in the old vm and if we know the types we can create an int range - but when using identifers, we
@@ -273,9 +278,8 @@ fr..#to..step;";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new object[] { 0, 5, 10, 15, 20, 25, 30, 35, 40, 45 }, output.Values.ToList()[3][0] as double[]);
+            CollectionAssert.AreEqual(new object[] { 0, 5, 10, 15, 20, 25, 30, 35, 40, 45 }, output.Values.ToList()[3] as double[]);
         }
         #endregion
-
     }
 }

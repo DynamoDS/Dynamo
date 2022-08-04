@@ -8,6 +8,7 @@
              xmlns:um="clr-namespace:Dynamo.Updates"
              xmlns:updateManager="clr-namespace:Dynamo.Updates;assembly=DynamoCore"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d"
              Height="Auto"
              Width="Auto"
@@ -131,7 +132,7 @@
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel x:Name="ShortcutBarLeft" Orientation="Horizontal" />
+                            <StackPanel x:Name="ShortcutBarRight" Orientation="Horizontal" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
@@ -139,6 +140,34 @@
                 <Menu HorizontalAlignment="Right"
                       Style="{StaticResource MainMenu}"
                       IsMainMenu="True">
+                    <MenuItem Name="MenuItem"
+                              Margin="0 0 -30 0">
+                        <MenuItem.Header>
+                                <Button x:Name="notificationsButton" 
+                                        BorderBrush="Transparent"                                         
+                                        Background="Transparent">
+                                    <DockPanel>
+                                    <fa:FontAwesome Margin="0,0,20,0"  
+                                                    DockPanel.Dock="Bottom" 
+                                                    Icon="BellOutline" 
+                                                    Foreground="{StaticResource Blue400Brush}" 
+                                                    FontSize="20px"/>
+                                    <Border DockPanel.Dock="Top" Background="{StaticResource Blue400Brush}" CornerRadius="2" 
+                                                Padding="2" Height="15" Width="15" VerticalAlignment="Center" 
+                                                HorizontalAlignment="Center">
+                                        <!--TODO insert data bind for the notifications -->
+                                        <TextBlock     
+                                                FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                Foreground="White" 
+                                                FontWeight="Bold" 
+                                                TextAlignment="Center"
+                                                FontSize="9">99
+                                        </TextBlock>
+                                        </Border>                                   
+                                    </DockPanel>                                   
+                                </Button>                                
+                        </MenuItem.Header>
+                    </MenuItem>
                     <MenuItem Name="exportMenu"
                               Cursor="Hand"
                               Focusable="False"

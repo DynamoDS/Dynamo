@@ -27,7 +27,7 @@ namespace Dynamo.ViewModels
 
         #region State Machine Related Methods/Data Members
 
-        private StateMachine stateMachine = null;
+        private readonly StateMachine stateMachine = null;
         private List<DraggedNode> draggedNodes = new List<DraggedNode>();
 
         // When a new connector is created or a single connector is selected,
@@ -146,19 +146,12 @@ namespace Dynamo.ViewModels
 
             if (draggedNodes.Count <= 0) // There is nothing to drag.
             {
-                string message = "Shouldn't get here if nothing is dragged";
-                throw new InvalidOperationException(message);
+                throw new InvalidOperationException(Wpf.Properties.Resources.InvalidDraggingOperationMessgae);
             }
         }
 
         internal void UpdateDraggedSelection(Point2D mouseCursor)
         {
-            if (draggedNodes.Count <= 0)
-            {
-                throw new InvalidOperationException(
-                    "UpdateDraggedSelection cannot be called now");
-            }
-
             foreach (DraggedNode draggedNode in draggedNodes)
                 draggedNode.Update(mouseCursor);
         }
@@ -343,7 +336,7 @@ namespace Dynamo.ViewModels
             List<ModelBase> changedPositionModels = new List<ModelBase>();
             foreach (DraggedNode draggedNode in draggedNodes)
             {
-                //Checks if the draggednoded has changed its position
+                //Checks if the dragged node has changed its position
                 if (draggedNode.HasChangedPosition(mousePoint))
                 {
                     ModelBase model = DynamoSelection.Instance.Selection.
@@ -351,7 +344,7 @@ namespace Dynamo.ViewModels
 
                     changedPositionModels.Add(model);
 
-                    //The nodes are being reseted to inital position for recording the model purposes 
+                    //The nodes are being reseted to initial position for recording the model purposes 
                     draggedNode.UpdateInitialPosition();
                 }
             }
@@ -363,15 +356,13 @@ namespace Dynamo.ViewModels
         private void OnDragSelectionStarted(object sender, EventArgs e)
         {
             //Debug.WriteLine("Drag started : Visualization paused.");
-            if (DragSelectionStarted != null)
-                DragSelectionStarted(sender, e);
+            DragSelectionStarted?.Invoke(sender, e);
         }
 
         private void OnDragSelectionEnded(object sender, EventArgs e)
         {
             //Debug.WriteLine("Drag ended : Visualization unpaused.");
-            if (DragSelectionEnded != null)
-                DragSelectionEnded(sender, e);
+            DragSelectionEnded?.Invoke(sender, e);
         }
 
         #endregion
@@ -384,10 +375,12 @@ namespace Dynamo.ViewModels
         /// </summary>
         public class DraggedNode
         {
-            double deltaX = 0, deltaY = 0;
-            ILocatable locatable = null;
+            private readonly double deltaX = 0;
+            private readonly double deltaY = 0;
+            readonly ILocatable locatable = null;
             internal Guid guid;
-            double initialPositionX = 0, initialPositionY = 0;
+            private readonly double initialPositionX = 0;
+            private readonly double initialPositionY = 0;
 
             /// <summary>
             /// Construct a DraggedNode for a given ILocatable object.
@@ -399,9 +392,6 @@ namespace Dynamo.ViewModels
             /// <param name="mouseCursor">The mouse cursor at the point this 
             /// DraggedNode object is constructed. This is used to determine the 
             /// offset of the ILocatable from the mouse cursor.</param>
-            /// <param name="region">The region within which the ILocatable can 
-            /// be moved. However, the movement of ILocatable will be limited by 
-            /// region and that it cannot be moved beyond the region.</param>
             /// 
             public DraggedNode(ILocatable locatable, Point2D mouseCursor)
             {

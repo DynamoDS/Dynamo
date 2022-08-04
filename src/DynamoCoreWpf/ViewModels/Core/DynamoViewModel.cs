@@ -2362,7 +2362,7 @@ namespace Dynamo.ViewModels
 
         private bool CanCloseHomeWorkspace(object parameter)
         {
-            return HomeSpace.RunSettings.RunEnabled;
+            return HomeSpace.RunSettings.RunEnabled || RunSettings.ForceBlockRun;
         }
 
         /// <summary>

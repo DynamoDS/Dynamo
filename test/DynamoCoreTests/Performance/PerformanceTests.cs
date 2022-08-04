@@ -17,13 +17,18 @@ namespace Dynamo.Tests
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("GeometryColor.dll");
+            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
         public object[] FindWorkspaces()
         {
             var di = new DirectoryInfo(Path.Combine(TestDirectory, "core", "performance"));
             var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
-            return fis.Select(fi => fi.FullName).ToArray();
+
+            // Ignore aniform and lotsofcoloredstuff for now
+            return fis.Where(
+                    fi=>fi.Name != "aniform.dyn" 
+                    && fi.Name != "lotsofcoloredstuff.dyn").Select(fi => fi.FullName).ToArray();
         }
 
         [Test, TestCaseSource("FindWorkspaces"), Category("Performance")]

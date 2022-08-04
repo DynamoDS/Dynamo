@@ -46,11 +46,16 @@ namespace EmitMSIL
                 //Validity.Assert(args.Count == mi.GetParameters().Length);
                 result = mi.Invoke(null, reducedArgs.ToArray());
             }
+            else if(mi.IsConstructor)
+            {
+                result = (mi as ConstructorInfo).Invoke(reducedArgs.ToArray());
+            }
             else
             {
                 result = mi.Invoke(reducedArgs[0], reducedArgs.Skip(1).ToArray());
             }
-            //TODO return lists/arrays without extra wrapping in next PR.
+            if (result is IList) return (IList)result;
+
             return new[] { result };
 
         }
