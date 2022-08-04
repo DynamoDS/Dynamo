@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -61,7 +62,12 @@ namespace EmitMSIL
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute");
             var output = new Dictionary<string, IList>();
+
+            var timer = new Stopwatch();
+            timer.Start();
             var obj = mi.Invoke(null, new object[] { null, methodCache, output });
+            timer.Stop();
+            Console.WriteLine("New Engine execution time: {0} ms", timer.ElapsedMilliseconds);
 
             compileResult.asmbuilder.Save("DynamicAssembly.dll");
 

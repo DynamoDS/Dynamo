@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Graph.Nodes;
@@ -57,6 +58,7 @@ namespace Dynamo.Tests
 
             if (((HomeWorkspaceModel)ws1).RunSettings.RunType == Dynamo.Models.RunType.Manual)
             {
+                Console.WriteLine(@"Executing using old engine");
                 RunCurrentModel();
             }
 
@@ -74,6 +76,7 @@ namespace Dynamo.Tests
 
             if (((HomeWorkspaceModel)ws2).RunSettings.RunType == Dynamo.Models.RunType.Manual)
             {
+                Console.WriteLine(@"Executing using new engine");
                 RunCurrentModel();
             }
 

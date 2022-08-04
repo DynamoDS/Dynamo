@@ -13,6 +13,7 @@ using ProtoFFI;
 using Dynamo.Utilities;
 using System.IO;
 using System.Collections;
+using System.Diagnostics;
 
 namespace ProtoScript.Runners
 {
@@ -1656,6 +1657,8 @@ namespace ProtoScript.Runners
 
         private void CompileAndExecuteForDeltaExecution(List<AssociativeNode> astList)
         {
+            var timer = new Stopwatch();
+            timer.Start();
             // Make a copy of the ASTs to be executed
             // We dont want the compiler to modify the ASTs cached in the liverunner
             List<AssociativeNode> dispatchASTList = new List<AssociativeNode>();
@@ -1674,6 +1677,8 @@ namespace ProtoScript.Runners
             ResetForDeltaExecution();
             CompileAndExecute(dispatchASTList);
             PostExecution();
+            timer.Stop();
+            Console.WriteLine("Old Engine execution time: {0} ms", timer.ElapsedMilliseconds);
         }
 
         private List<Guid> PreviewInternal(GraphSyncData syncData)
