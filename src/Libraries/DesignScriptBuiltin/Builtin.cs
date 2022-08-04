@@ -18,11 +18,17 @@ namespace DesignScript
             /// <returns></returns>
             public static object ValueAtIndexDynamic(object collection, object index)
             {
+                //make int cast valid
+                if (index is long longi)
+                {
+                    index = Convert.ToInt32(longi);
+                }
                 switch (collection)
                 {
                     case Dictionary dict:
                         return ValueAtIndex(dict,index as string);
                     case IList list:
+                      
                         return ValueAtIndex(list, (int)index);
                     case string strList:
                         return ValueAtIndex(strList, (int)index);

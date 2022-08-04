@@ -176,8 +176,6 @@ c=a[b];";
         #endregion
         #region IList
         [Test]
-        [Category("Failure")]//this is failing because range expression is wrapped in an extra level of nesting since it the result
-        //of a function call - 
         public void IndexIntoRange_WithIdent()
         {
             var dscode = @"
@@ -188,7 +186,7 @@ c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(40, output.Values.ToList()[2][0]);
+            Assert.AreEqual(50, output["c"][0]);
         }
         #endregion
         #region dictionary
