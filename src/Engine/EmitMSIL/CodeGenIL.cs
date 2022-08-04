@@ -28,11 +28,6 @@ namespace EmitMSIL
         private Dictionary<int, IEnumerable<MethodBase>> methodCache = new Dictionary<int, IEnumerable<MethodBase>>();
         private CompilePass compilePass;
 
-        /// <summary>
-        /// When false, emit calls will be nops. Default is true.
-        /// </summary>
-        internal bool EmitEnabled { get; set; } = true;
-
         private enum CompilePass
         {
             // Compile pass to perform method lookup and populate method cache only
@@ -108,13 +103,11 @@ namespace EmitMSIL
             ilGen = execMethod.GetILGenerator();
 
             compilePass = CompilePass.GatherTypeInfo;
-            EmitEnabled = false;
             // 5. Traverse AST and use ILGen to gather what type info we can.
             foreach (var ast in astList)
             {
                 DfsTraverse(ast);
             }
-            EmitEnabled = true;
 
             compilePass = CompilePass.emitIL;
             // 5. Traverse AST and use ILGen to emit code for Execute method
@@ -138,7 +131,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Call, roundMethod);
         }
 
-        private Type EmitCoercionCode(Type argType, ParameterInfo param)
+        private Type EmitCoercionCode(AssociativeNode arg,Type argType, ParameterInfo param)
         {
             if (param.ParameterType.IsAssignableFrom(argType)) return argType;
 
@@ -166,39 +159,39 @@ namespace EmitMSIL
 
             if (argType == typeof(double[]) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitArrayCoercion<double, int>(param.ParameterType);
+                return EmitArrayCoercion<double, int>(arg,param.ParameterType);
             }
             if (argType == typeof(int[]) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitArrayCoercion<int, double>(param.ParameterType);
+                return EmitArrayCoercion<int, double>(arg,param.ParameterType);
             }
             if (argType == typeof(double[]) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitArrayCoercion<double, long>(param.ParameterType);
+                return EmitArrayCoercion<double, long>(arg,param.ParameterType);
             }
             if (argType == typeof(long[]) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitArrayCoercion<long, double>(param.ParameterType);
+                return EmitArrayCoercion<long, double>(arg,param.ParameterType);
             }
             if (argType == typeof(long[]) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitArrayCoercion<long, int>(param.ParameterType);
+                return EmitArrayCoercion<long, int>(arg,param.ParameterType);
             }
             if (argType == typeof(int[]) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitArrayCoercion<int, long>(param.ParameterType);
+                return EmitArrayCoercion<int, long>(arg,param.ParameterType);
             }
             if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitIListCoercion<double>();
+                return EmitIListCoercion<double>(arg);
             }
             if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitIListCoercion<int>();
+                return EmitIListCoercion<int>(arg);
             }
             if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitIListCoercion<long>();
+                return EmitIListCoercion<long>(arg);
             }
             // TODO: Add more coercion cases here.
 
@@ -206,8 +199,13 @@ namespace EmitMSIL
         }
 
         // TODO: Does not work yet (intended to coerce IList to IEnumerable<T>)
-        private Type EmitIListCoercion<T>()
+        private Type EmitIListCoercion<T>(AssociativeNode arg)
         {
+            if (compilePass == CompilePass.GatherTypeInfo)
+            {
+                return typeof(T[]);
+            }
+
             // Find length for IList to be coerced (already on top of eval stack), len
             var prop = typeof(ICollection).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
                                 p => p.Name == nameof(ICollection.Count)).FirstOrDefault();
@@ -251,7 +249,15 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
             // Load array to be coerced.
-            EmitOpCode(OpCodes.Ldloc, localVarIndex);
+            var currentVarIndex = localVarIndex;
+            if (arg is IdentifierNode ident)
+            {
+                currentVarIndex = variables[ident.Value].Item1;
+            }
+            //TODO fix SomeFunction([1,2,3]) case
+            //where emitExpression directly emits args.
+
+            EmitOpCode(OpCodes.Ldloc, currentVarIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
             prop = typeof(IList).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
@@ -301,7 +307,7 @@ namespace EmitMSIL
         }
 
         // Coerce int/long/double arrays to IEnumerable<T> or IList<T>
-        private Type EmitArrayCoercion<Source, Target>(Type ienumerableParamType)
+        private Type EmitArrayCoercion<Source, Target>(AssociativeNode arg,Type ienumerableParamType)
         {
             // Find length for array to be coerced (already on top of eval stack), len
             EmitOpCode(OpCodes.Ldlen);
@@ -335,7 +341,15 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
             // Load array to be coerced.
-            EmitOpCode(OpCodes.Ldloc, localVarIndex);
+            var currentVarIndex = localVarIndex;
+            if(arg is IdentifierNode ident)
+            {
+            currentVarIndex = variables[ident.Value].Item1;
+            }
+            //TODO fix SomeFunction([1,2,3]) case
+            //where emitExpression directly emits args.
+
+            EmitOpCode(OpCodes.Ldloc, currentVarIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
             if (typeof(Source) == typeof(double))
@@ -678,56 +692,56 @@ namespace EmitMSIL
 
         private LocalBuilder DeclareLocal(Type t)
         {
-            if (!EmitEnabled) return null;
+            if (compilePass == CompilePass.GatherTypeInfo) return null;
             writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {t}");
             return ilGen.DeclareLocal(t);
         }
 
         private void EmitOpCode(OpCode opCode, Label label)
         {
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, label);
             writer.WriteLine($"{opCode} {label}");
         }
 
         private void EmitOpCode(OpCode opCode, LocalBuilder local)
         {
-            if (!EmitEnabled) return;
-                ilGen.Emit(opCode, local);
-                writer.WriteLine($"{opCode} {local}");
+            if (compilePass == CompilePass.GatherTypeInfo) return;
+            ilGen.Emit(opCode, local);
+            writer.WriteLine($"{opCode} {local}");
         }
 
         private void EmitOpCode(OpCode opCode)
         {
-            if (!EmitEnabled) return;
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode);
             writer.WriteLine(opCode);
         }
 
         private void EmitOpCode(OpCode opCode, Type t)
         {
-            if (!EmitEnabled) return;
-
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, t);
             writer.WriteLine($"{opCode} {t}");
         }
 
         private void EmitOpCode(OpCode opCode, int index)
         {
-            if (!EmitEnabled) return;
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, index);
             writer.WriteLine($"{opCode} {index}");
         }
 
         private void EmitOpCode(OpCode opCode, string str)
         {
-            if (!EmitEnabled) return;
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, str);
             writer.WriteLine($"{opCode} {str}");
         }
 
         private void EmitOpCode(OpCode opCode, MethodBase mBase)
         {
-            if (!EmitEnabled) return;
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             var mInfo = mBase as MethodInfo;
             if (mInfo != null)
             {
@@ -743,20 +757,20 @@ namespace EmitMSIL
 
         private void EmitOpCode(OpCode opCode, double val)
         {
-            if (!EmitEnabled) return;
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, val);
             writer.WriteLine($"{opCode} {val}");
         }
 
         private void EmitOpCode(OpCode opCode, long val)
         {
-            if (!EmitEnabled) return;
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, val);
             writer.WriteLine($"{opCode} {val}");
         }
         private void EmitILComment(string comment)
         {
-            if (!EmitEnabled) return;
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             writer.WriteLine($"//{comment}");
         }
 
@@ -787,7 +801,6 @@ namespace EmitMSIL
             //TODO do other important things here!
             //see: ProtoAssociative.CodeGen.EmitImportNode
         }
-
         private void EmitBinaryExpressionNode(AssociativeNode node)
         {
             var bNode = node as BinaryExpressionNode;
@@ -1177,11 +1190,11 @@ namespace EmitMSIL
                 Type t = DfsTraverse(n);
                 if (isStatic)
                 {
-                    t = EmitCoercionCode(t, parameters[index]);
+                    t = EmitCoercionCode(n,t, parameters[index]);
                 }
                 else if (index > 0)
                 {
-                    t = EmitCoercionCode(t, parameters[index - 1]);
+                    t = EmitCoercionCode(n,t, parameters[index - 1]);
                 }
 
                 if (t == null) return;
