@@ -19,11 +19,11 @@ namespace Dynamo.Notifications
         DynamoView dynamoView;
         Button notificationsButton;
 
-        private static int notificationPopupHorizontalOffset = -285;
-        private static int notificationPopupVerticalOffset = 10;
+        private static readonly int notificationPopupHorizontalOffset = -285;
+        private static readonly int notificationPopupVerticalOffset = 10;
 
-        private static string htmlEmbeddedFile = "Dynamo.Notifications.Web.index.html";
-        private static string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynam0.notificati0ns.index.js";
+        private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
+        private static readonly string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.bundle.js";
 
         public NotificationCenterController(DynamoView dynamoView)
         {
@@ -63,7 +63,7 @@ namespace Dynamo.Notifications
             using (StreamReader reader = new StreamReader(stream))
             {
                 var jsString = reader.ReadToEnd();
-                htmlString = htmlString.Replace("#mainJs", jsString);
+                htmlString = htmlString.Replace("mainJs", jsString);
             }
 
             if(notificationUIPopup.webView.CoreWebView2 != null)
