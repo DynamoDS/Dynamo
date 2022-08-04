@@ -999,7 +999,7 @@ namespace EmitMSIL
             {
                 return (false, null);
             }
-            else if (t == typeof(IDictionary))
+            else if (typeof(IDictionary).IsAssignableFrom(t))
             {
                 if (t.IsGenericType)
                 {
@@ -1013,7 +1013,7 @@ namespace EmitMSIL
                 }
             }
             //builtin DS dict is a wrapper
-            else if (t == typeof(DesignScript.Builtin.Dictionary))
+            else if (typeof(DesignScript.Builtin.Dictionary).IsAssignableFrom(t))
             {
                 //TODO
                 //emit function call for ValueAtKey or fallback to replication.
