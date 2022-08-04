@@ -156,10 +156,6 @@ namespace EmitMSIL
             {
                 result = ExecWithZeroRI(finalFep, reducedArgs, runtimeCore);
             }
-            else if(mi.IsConstructor) // Constructors cannot be replicated over yet
-            {
-                result = (mi as ConstructorInfo).Invoke(reducedArgs.ToArray());
-            }
             else //replicated call
             {
                 result = ExecWithRISlowPath(finalFep, reducedArgs, replicationInstructions, runtimeCore);
@@ -383,6 +379,10 @@ namespace EmitMSIL
             if (finalFep.method.IsStatic)
             {
                 result = finalFep.method.Invoke(null, args.ToArray());
+            }
+            else if (finalFep.method.IsConstructor)
+            {
+                result = (finalFep.method as ConstructorInfo).Invoke(args.ToArray());
             }
             else
             {
