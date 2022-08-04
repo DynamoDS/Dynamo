@@ -134,7 +134,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         private void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "CurrentSpace" && !(sender as DynamoViewModel).ViewingHomespace)
+            if (e.PropertyName == nameof(DynamoViewModel.CurrentSpace) && !(sender as DynamoViewModel).ViewingHomespace)
             {
                 ClearWarning();
             }
