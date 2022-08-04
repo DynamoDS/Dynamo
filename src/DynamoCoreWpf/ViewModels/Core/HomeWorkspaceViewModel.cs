@@ -278,7 +278,6 @@ namespace Dynamo.Wpf.ViewModels.Core
             if(IsHomeSpace && !IsCurrentSpace)
             {
                 SetCurrentWarning(NotificationLevel.Mild, string.Empty);
-                DynamoViewModel.FileTrustViewModel.ShowWarningPopup = false;
                 return;
             }
             if (RunSettings.ForceBlockRun)

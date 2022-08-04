@@ -111,9 +111,7 @@ namespace Dynamo.ViewModels
 
         public bool ViewingHomespace
         {
-            get {                
-                return model.CurrentWorkspace == HomeSpace; 
-            }
+            get { return model.CurrentWorkspace == HomeSpace; }
         }
 
         public int ScaleFactorLog
@@ -1105,7 +1103,7 @@ namespace Dynamo.ViewModels
                         this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
-                    //RaisePropertyChanged("RunEnabled");                    
+                    //RaisePropertyChanged("RunEnabled");
                     break;
 
                 case "EnablePresetOptions":
