@@ -980,6 +980,7 @@ namespace EmitMSIL
                 {
                     //can't handle these with compile time indexing.
                     //TODO remove IList from this if stmt when we figure out function call return wrapping behavior.
+                    //this is still a problem for BuiltIn Dictionaries that are wrapped in an IList.
                     if (arrayT == null || arrayT == typeof(IList) || arrayT == typeof(object))
                     {
                         return (false, null);
@@ -1133,6 +1134,7 @@ namespace EmitMSIL
                     else
                     {
                         methodName = nameof(DesignScript.Builtin.Get.ValueAtIndexDynamic);
+                        EmitILComment("NOT ENOUGH TYPE INFO TO EMIT INDEXING, EMIT VALUEATINDEXDYNAMIC FUNCTION CALL");
                     }
                 }
             }

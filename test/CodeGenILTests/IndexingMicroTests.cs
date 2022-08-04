@@ -206,8 +206,6 @@ c=a[b];";
             Assert.AreEqual("val", output.Values.ToList()[2][0]);
         }
         [Test]
-        [Category("Failure")]//this fails because Dictionary.ByKeysValues is called using replication, so the return value is not a dictionary
-        //it's an IList, so we generate the incorrect indexing.
         public void IndexIntoDict_WithIdent2()
         {
             var dscode = @"
@@ -218,7 +216,7 @@ c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual("val", output.Values.ToList()[2][0]);
+            Assert.AreEqual("val", output["c"][0]);
         }
         #endregion
     }
