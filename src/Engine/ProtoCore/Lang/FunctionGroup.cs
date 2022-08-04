@@ -178,7 +178,7 @@ namespace ProtoCore
             return ret;
         }
 
-        internal static Dictionary<CLRFunctionEndPoint, int> GetConversionDistances(IEnumerable<CLRFunctionEndPoint> functionEndPoints,
+        internal static Dictionary<CLRFunctionEndPoint, int> GetConversionDistances(List<CLRFunctionEndPoint> functionEndPoints,
             List<CLRStackValue> formalParams, List<ReplicationInstruction> replicationInstructions,
             MSILRuntimeCore runtimeCore, bool allowArrayPromotion = false)
         {
@@ -329,7 +329,7 @@ namespace ProtoCore
             return ret;
         }
 
-        internal static Dictionary<CLRFunctionEndPoint, int> GetCastDistances(IEnumerable<CLRFunctionEndPoint> funcGroup, List<CLRStackValue> formalParams, List<ReplicationInstruction> replicationInstructions)
+        internal static Dictionary<CLRFunctionEndPoint, int> GetCastDistances(List<CLRFunctionEndPoint> funcGroup, List<CLRStackValue> formalParams, List<ReplicationInstruction> replicationInstructions)
         {
             Dictionary<CLRFunctionEndPoint, int> ret = new Dictionary<CLRFunctionEndPoint, int>();
 

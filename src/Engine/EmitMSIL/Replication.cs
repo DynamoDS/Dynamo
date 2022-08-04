@@ -244,7 +244,7 @@ namespace EmitMSIL
 
         private static CLRFunctionEndPoint GetCompliantFEP(
             List<CLRStackValue> arguments,
-            IEnumerable<CLRFunctionEndPoint> funcGroup,
+            List<CLRFunctionEndPoint> funcGroup,
             List<ReplicationInstruction> replicationInstructions,
             MSILRuntimeCore runtimeCore,
             bool allowArrayPromotion = false)
@@ -279,7 +279,7 @@ namespace EmitMSIL
         }
 
         private static void ComputeFeps(List<CLRStackValue> arguments,
-            IEnumerable<CLRFunctionEndPoint> funcGroup,
+            List<CLRFunctionEndPoint> funcGroup,
             List<ReplicationInstruction> instructions,
             MSILRuntimeCore runtimeCore,
             out List<CLRFunctionEndPoint> resolvedFeps,
@@ -361,7 +361,7 @@ namespace EmitMSIL
             replicationInstructions = instructions;
         }
 
-        private static CLRFunctionEndPoint SelectFinalFep(IEnumerable<CLRFunctionEndPoint> functionEndPoints, List<CLRStackValue> formalParameters)
+        private static CLRFunctionEndPoint SelectFinalFep(List<CLRFunctionEndPoint> functionEndPoints, List<CLRStackValue> formalParameters)
         {
             // TODO_MSIL: Determine final function endpoint here based on fitting runtime args to function parameters
             return functionEndPoints.FirstOrDefault();
@@ -433,7 +433,6 @@ namespace EmitMSIL
                 //The size of the array will be the minimum size of the passed arrays
                 List<int> repIndecies = ri.ZipIndecies;
 
-                //this will hold the heap elements for all the arrays that are going to be replicated over
                 List<CLRStackValue[]> parameters = new List<CLRStackValue[]>();
 
                 int retSize;
