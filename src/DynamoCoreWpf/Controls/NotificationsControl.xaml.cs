@@ -42,7 +42,7 @@ namespace Dynamo.Wpf.Controls
         {
             var hsvm = (HomeWorkspaceViewModel)((DynamoViewModel)DataContext).HomeSpaceViewModel;            
             // Commented this after MAGN - 8423
-            //hsvm.ClearWarning();
+            // hsvm.ClearWarning();
         }
 
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)

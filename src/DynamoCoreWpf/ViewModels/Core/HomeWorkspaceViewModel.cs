@@ -128,13 +128,16 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
 
             dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
-            dynamoViewModel.NotViewingHomeSpace += DynamoViewModel_NotViewingHomeSpace;
+            dynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
             SetupFooterNotificationItems();
         }
 
-        private void DynamoViewModel_NotViewingHomeSpace(object sender, EventArgs e)
+        private void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            ClearWarning();
+            if (e.PropertyName == "CurrentSpace" && !((sender as DynamoViewModel).HomeSpaceViewModel as HomeWorkspaceViewModel).IsCurrentSpace)
+            {
+                ClearWarning();
+            }
         }
 
         /// <summary>

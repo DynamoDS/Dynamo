@@ -47,11 +47,15 @@ namespace Dynamo.Wpf.Views.FileTrust
             SetUpPopup();
 
             HomeWorkspaceModel.WorkspaceClosed += CloseWarningPopup;
-            dynViewModel.NotViewingHomeSpace += DynViewModel_NotViewingHomeSpace; ;
+            dynViewModel.PropertyChanged += DynViewModel_PropertyChanged;
         }
-        private void DynViewModel_NotViewingHomeSpace(object sender, EventArgs e)
+
+        private void DynViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            IsOpen = false;
+            if (e.PropertyName == "CurrentSpace" && !((sender as DynamoViewModel).HomeSpaceViewModel as HomeWorkspaceViewModel).IsCurrentSpace)
+            {
+                IsOpen = false;
+            }
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -139,10 +143,10 @@ namespace Dynamo.Wpf.Views.FileTrust
             {
                 if (dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName))
                     dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(string.Format(Properties.Resources.TrustLocationAddedNotification, fileTrustWarningViewModel.DynFileDirectoryName));
-            }            
-            if ((dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).RunSettingsViewModel.Model.RunType != RunType.Manual)
+            }
+            if (dynViewModel.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType != RunType.Manual)
             {
-                (dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).Model.RequestRun();
+                dynViewModel.Model.CurrentWorkspace.RequestRun();
             }
             else
             {

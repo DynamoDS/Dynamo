@@ -111,11 +111,7 @@ namespace Dynamo.ViewModels
 
         public bool ViewingHomespace
         {
-            get {
-                if (model.CurrentWorkspace != HomeSpace)
-                {
-                    onNotViewingHomeSpace();
-                }
+            get {                
                 return model.CurrentWorkspace == HomeSpace; 
             }
         }
@@ -814,15 +810,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal event EventHandler NotViewingHomeSpace;
-        internal void onNotViewingHomeSpace()
-        {
-            if (NotViewingHomeSpace != null)
-            {
-                this.NotViewingHomeSpace(null, new EventArgs());
-            }
-        }
-
         #region Event handler destroy/create
 
         protected virtual void UnsubscribeAllEvents()
@@ -1118,7 +1105,7 @@ namespace Dynamo.ViewModels
                         this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
-                    //RaisePropertyChanged("RunEnabled");
+                    //RaisePropertyChanged("RunEnabled");                    
                     break;
 
                 case "EnablePresetOptions":
