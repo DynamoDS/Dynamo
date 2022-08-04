@@ -835,7 +835,7 @@ namespace EmitMSIL
                 // if t is a single value, wrap it in an array of the single value.
                 if (!typeof(IEnumerable).IsAssignableFrom(t) || typeof(string).IsAssignableFrom(t))
                 {
-                    var localVarIndxes = new List<int>() { localVarIndex };
+                    var localVarIndxes = new List<int>() { currentLocalVarIndex };
                     EmitArray(t, localVarIndxes, (int varIdx, int _) =>
                     {
                         EmitOpCode(OpCodes.Ldloc, varIdx);
@@ -843,7 +843,7 @@ namespace EmitMSIL
                 }
                 else
                 {
-                    EmitOpCode(OpCodes.Ldloc, localVarIndex);
+                    EmitOpCode(OpCodes.Ldloc, currentLocalVarIndex);
                 }
                 var mInfo = typeof(IDictionary<string, IList>).GetMethod(nameof(IDictionary<string, IList>.Add));
                 EmitOpCode(OpCodes.Callvirt, mInfo);
