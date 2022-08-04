@@ -504,7 +504,7 @@ namespace Dynamo.ViewModels
                     return PreviewState.None;
                 }
 
-                if (Nodevm.ShowExecutionPreview)
+                if (Nodevm.ShowExecutionPreview || NodeEnd.ShowExecutionPreview)
                 {
                     return PreviewState.ExecutionPreview;
                 }
