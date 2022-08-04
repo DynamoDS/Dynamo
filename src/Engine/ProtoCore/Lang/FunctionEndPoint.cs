@@ -34,7 +34,21 @@ namespace ProtoCore
             set;
         }
 
-        public System.Type ReturnType => (method as MethodInfo).ReturnType;
+        public System.Type ReturnType
+        {
+            get
+            {
+                if (method is MethodInfo mInfo)
+                {
+                    return mInfo.ReturnType;
+                }
+                else if (method is ConstructorInfo cInfo)
+                {
+                    return cInfo.DeclaringType;
+                }
+                return null;
+            }
+        }
 
         public static Dictionary<string, ProtoFFI.FFIHandler> FFIHandlers = new Dictionary<string, ProtoFFI.FFIHandler>();
         private ProtoFFI.FFIFunctionPointer mFunctionPointer;
