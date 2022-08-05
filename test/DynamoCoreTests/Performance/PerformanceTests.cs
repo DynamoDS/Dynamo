@@ -18,6 +18,7 @@ namespace Dynamo.Tests
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("GeometryColor.dll");
+            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
         public object[] FindWorkspaces()
