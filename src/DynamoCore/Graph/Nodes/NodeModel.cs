@@ -1087,7 +1087,7 @@ namespace Dynamo.Graph.Nodes
         public ObservableCollection<string> DismissedAlerts { get; set; } = new ObservableCollection<string>();
 
 
-        private int _dismissedAlertsCount;
+        private int dismissedAlertsCount;
         /// <summary>
         ///     Returns the number of dismissed error/warning/info messages.
         /// </summary>
@@ -1096,14 +1096,14 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return _dismissedAlertsCount;
+                return dismissedAlertsCount;
             }
 
             internal set // Private setter, see "ArgumentLacing" for details.
             {
-                if (_dismissedAlertsCount != value)
+                if (dismissedAlertsCount != value)
                 {
-                    _dismissedAlertsCount = value;
+                    dismissedAlertsCount = value;
                     RaisePropertyChanged(nameof(DismissedAlertsCount));
                 }
             }
