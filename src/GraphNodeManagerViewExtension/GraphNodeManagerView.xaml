@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:Dynamo.GraphNodeManager.Converters"
+             xmlns:dynconverters="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
              xmlns:controls="clr-namespace:Dynamo.GraphNodeManager.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:p="clr-namespace:Dynamo.GraphNodeManager.Properties"
@@ -20,7 +21,8 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ResourceDictionary Source="Controls/ControlColorsAndBrushes.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <dynconverters:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <dynconverters:InverseBoolToVisibilityConverter  x:Key="InverseBooleanToVisibilityConverter"></dynconverters:InverseBoolToVisibilityConverter>
             <converters:StateToVisibilityCollapsedConverter x:Key="StateToVisibilityCollapsedConverter"/>
             <converters:StateToColorBrushConverter x:Key="StateToColorBrushConverter"/>
             <converters:StateToImageSourceConverter x:Key="StateToImageSourceConverter"/>
@@ -28,7 +30,6 @@
             <converters:BooleanToToolTipTextConverter  x:Key="BooleanToToolTipTextConverter"></converters:BooleanToToolTipTextConverter>
             <converters:BooleanToFontStyleConverter  x:Key="BooleanToFontStyleConverter"></converters:BooleanToFontStyleConverter>
             <converters:BooleanToFontFamilyConverter  x:Key="BooleanToFontFamilyConverter"></converters:BooleanToFontFamilyConverter>
-            <converters:InverseBooleanToVisibilityConverter  x:Key="InverseBooleanToVisibilityConverter"></converters:InverseBooleanToVisibilityConverter>
             
             <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource GenericToolTipLight}"></Style>
         </ResourceDictionary>
