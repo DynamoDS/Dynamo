@@ -330,7 +330,7 @@ namespace Dynamo.ViewModels
             var listLevelAndItemCount = GetMaximumDepthAndItemNumber(this);
             maxListLevel = listLevelAndItemCount.Item1;
             NumberOfItems = listLevelAndItemCount.Item2;
-            IsCollection = maxListLevel + numberOfItems > 5;
+            IsCollection = maxListLevel + numberOfItems > 1 || (Children.Count > 0 && (Children[0].NodeLabel == LIST || Children[0].NodeLabel == DICTIONARY));
         }
 
         private Tuple<int, int> GetMaximumDepthAndItemNumber(WatchViewModel wvm)
@@ -350,7 +350,7 @@ namespace Dynamo.ViewModels
             }
 
             // if it's a list, recurse
-            if (wvm.NodeLabel == LIST || wvm.NodeLabel == DICTIONARY)
+            if (wvm.NodeLabel == LIST)
             {
                 var depthAndNumbers = wvm.Children.Select(GetMaximumDepthAndItemNumber);
                 var maxDepth = depthAndNumbers.Select(t => t.Item1).DefaultIfEmpty(1).Max() + 1;
