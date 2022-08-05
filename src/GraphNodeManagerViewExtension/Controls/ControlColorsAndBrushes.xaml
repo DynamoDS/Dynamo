@@ -1,29 +1,17 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+    </ResourceDictionary.MergedDictionaries>
 
     <!-- Colors -->
     <Color x:Key="MidGrayColor">#999999</Color>
-    <Color x:Key="LightGrayColor">#CCCCCC</Color>
-    <Color x:Key="BlueColor">#38abdf</Color>
-    <Color x:Key="MidLightBlueColor">#366a81</Color>
-    <Color x:Key="MidBlueColor">#365868</Color>
-    <Color x:Key="MidDarkBlueColor">#375f71</Color>
-    <Color x:Key="TextColor">#F5F5F5</Color>
-    <Color x:Key="GrayOpacityColor">#5C5C5C5C</Color>
-    <Color x:Key="MainBackgroundColor">#353535</Color>
-    <Color x:Key="SecondaryBackgroundColor">#3c3c3c</Color>
     <Color x:Key="BorderColor">#555</Color>
 
     <!--  Brushes  -->
     <SolidColorBrush x:Key="MidGrayBrush" Color="{StaticResource MidGrayColor}" />
-    <SolidColorBrush x:Key="LightGrayBrush" Color="{StaticResource LightGrayColor}" />
-    <SolidColorBrush x:Key="BlueBrush" Color="{StaticResource BlueColor}" />
-    <SolidColorBrush x:Key="MidLightBlueBrush" Color="{StaticResource MidLightBlueColor}" />
-    <SolidColorBrush x:Key="MidBlueBrush" Color="{StaticResource MidBlueColor}" />
-    <SolidColorBrush x:Key="MidDarkBlueBrush" Color="{StaticResource MidDarkBlueColor}" />
-    <SolidColorBrush x:Key="TextColorBrush" Color="{StaticResource TextColor}" />
-    <SolidColorBrush x:Key="GrayOpacityBrush" Color="{StaticResource GrayOpacityColor}" />
-    <SolidColorBrush x:Key="MainBackgroundColorBrush" Color="{StaticResource MainBackgroundColor}" />
-    <SolidColorBrush x:Key="SecondaryBackgroundColorBrush" Color="{StaticResource SecondaryBackgroundColor}" />
     <SolidColorBrush x:Key="BorderColorBrush" Color="{StaticResource BorderColor}" />
 
     <!-- DataGrid style -->
@@ -44,7 +32,7 @@
     <!-- DataGridColumnHeader style -->
     <Style x:Key="ColumnHeaderStyle1" TargetType="DataGridColumnHeader">
         <Setter Property="Height" Value="24"/>
-        <Setter Property="Background" Value="{StaticResource MainBackgroundColorBrush}"/>
+        <Setter Property="Background" Value="{StaticResource ExtensionBackgroundColor}"/>
         <Setter Property="Foreground" Value="#bbbbbb"/>
         <Setter Property="BorderThickness" Value="0 0 0 1"></Setter>
         <Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}"></Setter>
@@ -66,7 +54,7 @@
         <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
         <Style.Triggers>
             <Trigger Property="AlternationIndex" Value="1">
-                <Setter Property="Background" Value="{StaticResource SecondaryBackgroundColorBrush}"/>
+                <Setter Property="Background" Value="{StaticResource DarkerGreyBrush}"/>
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="#434343"/>
@@ -127,7 +115,7 @@
 
     <!-- Button Style -->
     <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
-        <Setter Property="Foreground" Value="{StaticResource TextColorBrush}"></Setter>
+        <Setter Property="Foreground" Value="{StaticResource DarkThemeBodyMediumBrush}"></Setter> 
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"></Setter>
         <Setter Property="FontSize" Value="10"></Setter>
@@ -142,7 +130,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource BlueBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource Blue400Brush}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource MidLightBlueBrush}" />

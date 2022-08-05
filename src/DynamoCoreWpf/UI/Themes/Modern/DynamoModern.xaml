@@ -753,7 +753,7 @@
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Grid>
                         <Border 
-                            Background="#353535"
+                            Background="{StaticResource DarkThemeInputBoxBackgroundColor}"
                             BorderBrush="Transparent"                            
                             BorderThickness="1"
                             />
@@ -805,7 +805,7 @@
                         </Grid.ColumnDefinitions>
                         <Border Grid.Row="0"
 							Grid.ColumnSpan="2"
-                            Background="#353535"
+                            Background="{StaticResource DarkThemeInputBoxBackgroundColor}"
                             BorderBrush="Transparent"                            
                             BorderThickness="1"
                             />
@@ -5175,7 +5175,7 @@
                     <Grid>
                         <TextBox x:Name="InputTextBox"
                                      Padding="8,10"
-                                     Background="#353535"
+                                     Background="{StaticResource DarkThemeInputBoxBackgroundColor}"
                                      BorderThickness="0"
                                      CaretBrush="{StaticResource Blue300Brush}"
                                      Focusable="True"

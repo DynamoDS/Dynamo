@@ -121,12 +121,12 @@
                   Style="{StaticResource DataGridStyle1}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
-                  Background="{StaticResource MainBackgroundColorBrush}"
+                  Background="{StaticResource ExtensionBackgroundColor}"
                   BorderThickness="0"
                   AlternationCount="2"
                   FontSize="10"
                   FontFamily="{StaticResource ArtifaktElementBold}"
-                  Foreground="{StaticResource TextColorBrush}"
+                  Foreground="{StaticResource DarkThemeBodyMediumBrush}"
                   SelectionUnit="FullRow"
                   SelectionMode="Single"
                   ScrollViewer.CanContentScroll="True" 
@@ -176,7 +176,7 @@
                                 <TextBlock 
                                     Text="{Binding Name}"
                                     FontWeight="Light"
-                                    Foreground="{StaticResource TextColorBrush}"
+                                    Foreground="{StaticResource DarkThemeBodyMediumBrush}"
                                     Margin="3 0 0 0"
                                     DockPanel.Dock="Left"></TextBlock>
                                 <!-- Blue Dot signifying Renamed Nodes -->
@@ -316,7 +316,7 @@
                                        Margin="13 10" 
                                        FontWeight="Light"
                                        FontFamily="{StaticResource ArtifaktElementRegular}"
-                                       Foreground="{StaticResource TextColorBrush}"/>
+                                       Foreground="{StaticResource DarkThemeBodyMediumBrush}"/>
                             <ItemsControl x:Name="DetailedRowItemControl"
                                           ItemsSource="{Binding NodeInfos, UpdateSourceTrigger=PropertyChanged}"
                                           AlternationCount="50">
@@ -340,7 +340,7 @@
                                                                VerticalAlignment="Top"
                                                                FontWeight="Light"
                                                                FontFamily="{Binding Dismissed, Converter={StaticResource BooleanToFontFamilyConverter}, UpdateSourceTrigger=PropertyChanged}"
-                                                               Foreground="{StaticResource TextColorBrush}"
+                                                               Foreground="{StaticResource DarkThemeBodyMediumBrush}"
                                                                FontStyle="{Binding Dismissed, Converter={StaticResource BooleanToFontStyleConverter}, UpdateSourceTrigger=PropertyChanged}"
                                                                FontSize="11">
                                                     <TextBlock.Text>
