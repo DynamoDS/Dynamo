@@ -18,7 +18,9 @@ namespace CodeGenILTests
         public void Setup()
         {
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(assemblyPath, "OpCodesTEST.txt"));
+            var outputpath = Path.Combine(assemblyPath, "MSILTestOutput");
+            System.IO.Directory.CreateDirectory(outputpath);
+            codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(outputpath, $"OpCodesTEST{NUnit.Framework.TestContext.CurrentContext.Test.Name}.txt"));
         }
 
         [TearDown]
