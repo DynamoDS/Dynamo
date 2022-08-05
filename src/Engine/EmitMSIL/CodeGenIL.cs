@@ -851,7 +851,7 @@ namespace EmitMSIL
                     }
                     variables.Add(lNode.Value, new Tuple<int, Type>(++localVarIndex, t));
                 }
-                DeclareLocal(t);
+                DeclareLocal(t,lNode.Value);
                 var currentLocalVarIndex = variables[lNode.Value].Item1;
                 EmitOpCode(OpCodes.Stloc, currentLocalVarIndex);
                 // Add variable to output dictionary: output.Add("varName", variable);

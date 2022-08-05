@@ -103,9 +103,6 @@ d=a[b][c];";
         }
 
         [Test]
-        [Category("Failure")]//this fails because we can't index into an object
-                             //and [0..10] is assumed to be an object[] because it's generated with a function call.
-                             //this test actaully then fallsback correctly to ValueAtIndex but calls the wrong overload.
         public void IndexIntoNestedRange_WithIdent()
         {
             var dscode = @"
@@ -117,7 +114,7 @@ d=a[b][c];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(4, output.Values.ToList()[3][0]);
+            Assert.AreEqual(5, output.Values.ToList()[3][0]);
         }
 
         [Test]
