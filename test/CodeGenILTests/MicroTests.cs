@@ -211,11 +211,11 @@ y = DSCore.Math.Sum([1,2,3]);";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(55, output.Values.ToList()[1][0]);
+            Assert.AreEqual(6, output.Values.ToList()[1][0]);
         }
 
         [Test]
-        public void Foo()
+        public void Coerce_MultipleCalls()
         {
             var code = @"
 import(""DesignScriptBuiltin.dll"");
