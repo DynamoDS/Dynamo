@@ -1,23 +1,19 @@
-﻿using Dynamo.Controls;
-using Dynamo.Notifications.View;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Dynamo.Controls;
+using Dynamo.Notifications.View;
 
 namespace Dynamo.Notifications
 {
     public class NotificationCenterController
     {
-        NotificationUI notificationUIPopup;
-        DynamoView dynamoView;
-        Button notificationsButton;
+        readonly NotificationUI notificationUIPopup;
+        readonly DynamoView dynamoView;
+        readonly Button notificationsButton;
 
         private static readonly int notificationPopupHorizontalOffset = -285;
         private static readonly int notificationPopupVerticalOffset = 10;
@@ -25,7 +21,7 @@ namespace Dynamo.Notifications
         private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
         private static readonly string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.bundle.js";
 
-        public NotificationCenterController(DynamoView dynamoView)
+        internal NotificationCenterController(DynamoView dynamoView)
         {
             var shortcutBar = dynamoView.ShortcutBar;
             var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
