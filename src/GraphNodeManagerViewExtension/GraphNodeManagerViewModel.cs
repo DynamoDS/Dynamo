@@ -207,17 +207,17 @@ namespace Dynamo.GraphNodeManager
 
         private void InitializeFilters()
         {   
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_EmptyList, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/EmptyList.png" }); 
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Error, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Error.png" });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Frozen, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Frozen.png" });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Function, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Function.png" });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Information, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Info.png" });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsInput, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/IsInput.png" });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsOutput, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/IsOutput.png" });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_MissingContent, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/MissingNode.png" });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Null, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Null.png" });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Warning, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Alert.png" });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_PreviewOff, FilterImage = "pack://application:,,,/GraphNodeManagerViewExtension;component/Images/Hidden.png" });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_EmptyList, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.EmptyList)  }); 
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Error, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Error) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Frozen, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Frozen) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Function, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Function) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Information, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Info) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsInput, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.IsInput) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsOutput, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.IsOutput) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_MissingContent, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.MissingNode) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Null, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Null) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Warning, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Alert) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_PreviewOff, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Hidden) });
 
             filterDictionary = new Dictionary<string, FilterViewModel>(FilterItems.ToDictionary(fi => fi.Name));
         }

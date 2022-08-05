@@ -38,8 +38,8 @@
                                              UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding FilterImage}" 
-                               Width="12" 
-                               Height="12" 
+                               Width="10" 
+                               Height="10" 
                                SnapsToDevicePixels="True"
                                UseLayoutRounding="True"
                                VerticalAlignment="Stretch"

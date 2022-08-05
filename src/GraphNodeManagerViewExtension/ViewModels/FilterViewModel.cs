@@ -1,4 +1,5 @@
 ﻿using Dynamo.Core;
+using System.Windows.Media;
 
 namespace Dynamo.GraphNodeManager.ViewModels
 {
@@ -18,7 +19,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         /// <summary>
         /// Image icon associated with the Filter
         /// </summary>
-        public string FilterImage { get; internal set; }
+        public ImageSource FilterImage { get; internal set; }
 
         /// <summary>
         /// The toggle that controls the visibility of the Filtered elements
