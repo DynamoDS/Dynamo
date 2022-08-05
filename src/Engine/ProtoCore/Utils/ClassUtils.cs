@@ -53,7 +53,6 @@ namespace ProtoCore.Utils
             return upcastChain.IndexOf(toID);
         }
 
-        // TODO_MSIL: replace with the existing ClassNode signature of this function when ClassNode are properly populated in MSIL.
         internal static int GetUpcastCountTo((int id, System.Type type) from, (int id, System.Type type) target)
         {
             if (from.id == target.id)

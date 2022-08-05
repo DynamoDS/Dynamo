@@ -282,8 +282,6 @@ namespace ProtoFFI
         {
             var collection = obj as IEnumerable;
             Validity.Assert(null != collection, "Expected IEnumerable object for marshaling as collection");
-            if (null == collection) 
-                return StackValue.Null;
 
             if (collection is ICollection)
                 return ToDSArray(collection as ICollection, context, dsi, type);
