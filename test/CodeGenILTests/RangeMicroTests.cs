@@ -201,6 +201,39 @@ y = DSCore.Math.Sum(x);";
             Assert.AreEqual(55, output.Values.ToList()[1][0]);
         }
 
+        [Test, Category("Failure")]
+        //'Object of type 'System.int64[]' can be converted to type 'System.Collections.Generic.IEnumerable`1[System.Double]'.'
+        public void SumIntArray_TypeCoerNeeded()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+y = DSCore.Math.Sum([1,2,3]);";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(6, output.Values.ToList()[1][0]);
+        }
+
+        [Test]
+        public void Coerce_MultipleCalls()
+        {
+            var code = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+x = [0,1,2,3];
+y = [0,1];
+test2 = DSCore.List.RemoveItemAtIndex (x, y);
+test3 = DSCore.List.RemoveItemAtIndex (x, y);";
+
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(new long[] { 2, 3 }, output["test2"]);
+            Assert.AreEqual(new long[] { 2, 3 }, output["test3"]);
+        }
+
         #endregion
         #region identifers
         [Test]

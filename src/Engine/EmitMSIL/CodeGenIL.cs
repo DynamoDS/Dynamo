@@ -134,7 +134,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Call, roundMethod);
         }
 
-        private Type EmitCoercionCode(AssociativeNode arg,Type argType, ParameterInfo param)
+        private Type EmitCoercionCode(AssociativeNode arg, Type argType, ParameterInfo param)
         {
             if (param.ParameterType.IsAssignableFrom(argType)) return argType;
 
@@ -162,27 +162,27 @@ namespace EmitMSIL
 
             if (argType == typeof(double[]) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitArrayCoercion<double, int>(arg,param.ParameterType);
+                return EmitArrayCoercion<double, int>(arg, param.ParameterType);
             }
             if (argType == typeof(int[]) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitArrayCoercion<int, double>(arg,param.ParameterType);
+                return EmitArrayCoercion<int, double>(arg, param.ParameterType);
             }
             if (argType == typeof(double[]) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitArrayCoercion<double, long>(arg,param.ParameterType);
+                return EmitArrayCoercion<double, long>(arg, param.ParameterType);
             }
             if (argType == typeof(long[]) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitArrayCoercion<long, double>(arg,param.ParameterType);
+                return EmitArrayCoercion<long, double>(arg, param.ParameterType);
             }
             if (argType == typeof(long[]) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitArrayCoercion<long, int>(arg,param.ParameterType);
+                return EmitArrayCoercion<long, int>(arg, param.ParameterType);
             }
             if (argType == typeof(int[]) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitArrayCoercion<int, long>(arg,param.ParameterType);
+                return EmitArrayCoercion<int, long>(arg, param.ParameterType);
             }
             if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
             {
@@ -200,6 +200,7 @@ namespace EmitMSIL
 
             return argType;
         }
+
         private Type EmitIListCoercion<T>(AssociativeNode arg)
         {
             if (compilePass == CompilePass.GatherTypeInfo)
@@ -217,17 +218,17 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Callvirt, mInfo);
 
             // len = source.Count;
-            var localBuilder = DeclareLocal(typeof(int));
+            var localBuilder = DeclareLocal(typeof(int), "length of IList to coerce");
             var sourceArrayLengthIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, sourceArrayLengthIndex);
 
             // Load length of source array, var newarr = new Target[len];
-            EmitOpCode(OpCodes.Ldloc, localBuilder.LocalIndex);
+            EmitOpCode(OpCodes.Ldloc, sourceArrayLengthIndex);
             EmitOpCode(OpCodes.Newarr, typeof(T));
 
             // Declare new array to store coerced values
             var t = typeof(T[]);
-            localBuilder = DeclareLocal(t);
+            localBuilder = DeclareLocal(t, "coerced array");
             var newArrIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, newArrIndex);
 
@@ -308,7 +309,7 @@ namespace EmitMSIL
         }
 
         // Coerce int/long/double arrays to IEnumerable<T> or IList<T>
-        private Type EmitArrayCoercion<Source, Target>(AssociativeNode arg,Type ienumerableParamType)
+        private Type EmitArrayCoercion<Source, Target>(AssociativeNode arg, Type ienumerableParamType)
         {
             if (compilePass == CompilePass.GatherTypeInfo)
             {
@@ -329,7 +330,7 @@ namespace EmitMSIL
 
             // Declare new array to store coerced values
             var t = typeof(Target[]);
-            var localBuilder = DeclareLocal(t);
+            var localBuilder = DeclareLocal(t, "coerced array");
             var newArrIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, newArrIndex);
 
@@ -424,7 +425,7 @@ namespace EmitMSIL
 
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
 
-            if(typeof(IList<Target>).IsAssignableFrom(ienumerableParamType))
+            if(typeof(List<Target>).IsAssignableFrom(ienumerableParamType))
             {
                 var requiredType = typeof(Target);
                 var toListMethod = typeof(Enumerable).GetMethod(nameof(Enumerable.ToList));
@@ -707,10 +708,10 @@ namespace EmitMSIL
             return t;
         }
 
-        private LocalBuilder DeclareLocal(Type t)
-        {
+        private LocalBuilder DeclareLocal(Type t, string identifier)
+        {         
             if (compilePass == CompilePass.GatherTypeInfo) return null;
-            writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {t}");
+            writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {t} {identifier}");
             return ilGen.DeclareLocal(t);
         }
 
@@ -1167,7 +1168,7 @@ namespace EmitMSIL
             var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
             EmitOpCode(OpCodes.Call, keygen);
 
-            var local = DeclareLocal(typeof(IEnumerable<MethodBase>));
+            var local = DeclareLocal(typeof(IEnumerable<MethodBase>), "mInfos");
             //local could be null if we are not emitting currently.
             if(local != null)
             {
@@ -1201,11 +1202,11 @@ namespace EmitMSIL
                 Type t = DfsTraverse(n);
                 if (isStatic)
                 {
-                    t = EmitCoercionCode(n,t, parameters[index]);
+                    t = EmitCoercionCode(n, t, parameters[index]);
                 }
                 else if (index > 0)
                 {
-                    t = EmitCoercionCode(n,t, parameters[index - 1]);
+                    t = EmitCoercionCode(n, t, parameters[index - 1]);
                 }
 
                 if (t == null) return;
