@@ -23,7 +23,10 @@ namespace EmitMSIL
         private IDictionary<string, IList> output;
         private int localVarIndex = -1;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
-        private Dictionary<int, Type> aSTTypeInfoMap = new Dictionary<int, Type>();
+        /// <summary>
+        /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
+        /// </summary>
+        private Dictionary<int, Type> astTypeInfoMap = new Dictionary<int, Type>();
         private StreamWriter writer;
         private Dictionary<int, IEnumerable<MethodBase>> methodCache = new Dictionary<int, IEnumerable<MethodBase>>();
         private CompilePass compilePass;
@@ -103,14 +106,14 @@ namespace EmitMSIL
             ilGen = execMethod.GetILGenerator();
 
             compilePass = CompilePass.GatherTypeInfo;
-            // 5. Traverse AST and use ILGen to gather what type info we can.
+            // 5. Traverse AST and gather what type info we can.
             foreach (var ast in astList)
             {
                 DfsTraverse(ast);
             }
 
             compilePass = CompilePass.emitIL;
-            // 5. Traverse AST and use ILGen to emit code for Execute method
+            // 6. Traverse AST and use ILGen to emit code for Execute method
             foreach (var ast in astList)
             {
                 DfsTraverse(ast);
@@ -197,8 +200,6 @@ namespace EmitMSIL
 
             return argType;
         }
-
-        // TODO: Does not work yet (intended to coerce IList to IEnumerable<T>)
         private Type EmitIListCoercion<T>(AssociativeNode arg)
         {
             if (compilePass == CompilePass.GatherTypeInfo)
@@ -342,9 +343,9 @@ namespace EmitMSIL
 
             // Load array to be coerced.
             var currentVarIndex = localVarIndex;
-            if(arg is IdentifierNode ident)
+            if (arg is IdentifierNode ident)
             {
-            currentVarIndex = variables[ident.Value].Item1;
+                currentVarIndex = variables[ident.Value].Item1;
             }
             //TODO fix SomeFunction([1,2,3]) case
             //where emitExpression directly emits args.
@@ -678,13 +679,13 @@ namespace EmitMSIL
             }
             if(compilePass == CompilePass.GatherTypeInfo)
             {
-                if (aSTTypeInfoMap.ContainsKey(node.ID))
+                if (astTypeInfoMap.ContainsKey(node.ID))
                 {
                     throw new Exception($"ast {node.ID}:{node.Kind} already exists in map, changing type?");
                 }
                 else
                 {
-                    aSTTypeInfoMap.Add(node.ID, t);
+                    astTypeInfoMap.Add(node.ID, t);
                 }
             }
             return t;
@@ -976,7 +977,7 @@ namespace EmitMSIL
             if(compilePass == CompilePass.emitIL)
             {
                 Type arrayT;
-                if (aSTTypeInfoMap.TryGetValue(array.ID, out arrayT))
+                if (astTypeInfoMap.TryGetValue(array.ID, out arrayT))
                 {
                     //can't handle these with compile time indexing.
                     //TODO remove IList from this if stmt when we figure out function call return wrapping behavior.
@@ -1003,12 +1004,12 @@ namespace EmitMSIL
             {
                 if (t.IsGenericType)
                 {
-                    TryEmitIndexingForDictionary(fcn.FormalArguments[0], fcn.FormalArguments[1], t);
+                    EmitIndexingForDictionary(fcn.FormalArguments[0], fcn.FormalArguments[1], t);
                     return (true, t.GenericTypeArguments[0]);
                 }
                 else
                 {
-                    TryEmitIndexingForDictionary(fcn.FormalArguments[0], fcn.FormalArguments[1], t);
+                    EmitIndexingForDictionary(fcn.FormalArguments[0], fcn.FormalArguments[1], t);
                     return (true, typeof(object));
                 }
             }
@@ -1021,7 +1022,7 @@ namespace EmitMSIL
 
             else if (t.IsArray)
             {
-                TryEmitIndexingForArray(fcn.FormalArguments[0], fcn.FormalArguments[1], t.GetElementType());
+                EmitIndexingForArray(fcn.FormalArguments[0], fcn.FormalArguments[1], t.GetElementType());
                 return (true, t.GetElementType());
             }
             // TODO we may want to bail for IList currently and let 
@@ -1032,12 +1033,12 @@ namespace EmitMSIL
             {
                 if (t.IsGenericType)
                 {
-                    TryEmitIndexingForIList(fcn.FormalArguments[0], fcn.FormalArguments[1], t, t.GenericTypeArguments[0]);
+                    EmitIndexingForIList(fcn.FormalArguments[0], fcn.FormalArguments[1], t, t.GenericTypeArguments[0]);
                     return (true, t.GenericTypeArguments[0]);
                 }
                 else
                 {
-                    TryEmitIndexingForIList(fcn.FormalArguments[0], fcn.FormalArguments[1], t, typeof(object));
+                    EmitIndexingForIList(fcn.FormalArguments[0], fcn.FormalArguments[1], t, typeof(object));
                     return (true, typeof(object));
                 }
             }
@@ -1046,7 +1047,7 @@ namespace EmitMSIL
         }
 
 
-        private bool TryEmitIndexingForIList(AssociativeNode array, AssociativeNode index, Type collectionType, Type listElementType)
+        private void EmitIndexingForIList(AssociativeNode array, AssociativeNode index, Type collectionType, Type listElementType)
         {
             var indexT = DfsTraverse(index);
             var mi = typeof(IList).GetMethod("get_Item", BindingFlags.Instance | BindingFlags.Public);
@@ -1056,11 +1057,9 @@ namespace EmitMSIL
             }
             EmitOpCode(OpCodes.Callvirt, mi);
             EmitILComment("INDEX ILIST OPERATION END");
-
-            return true;
         }
 
-        private bool TryEmitIndexingForDictionary(AssociativeNode array, AssociativeNode index, Type collectionType)
+        private void EmitIndexingForDictionary(AssociativeNode array, AssociativeNode index, Type collectionType)
         {
             var indexT = DfsTraverse(index);
             var mi = typeof(IDictionary).GetMethod("get_Item", BindingFlags.Instance | BindingFlags.Public);
@@ -1070,11 +1069,9 @@ namespace EmitMSIL
             }
             EmitOpCode(OpCodes.Callvirt, mi);
             EmitILComment("INDEX IDICTIONARY OPERATION END");
-
-            return true;
         }
 
-        private bool TryEmitIndexingForArray(AssociativeNode array, AssociativeNode index, Type arrayElementType)
+        private void EmitIndexingForArray(AssociativeNode array, AssociativeNode index, Type arrayElementType)
         {
             //emit load index to stack.
             var indexT = DfsTraverse(index);
@@ -1090,8 +1087,7 @@ namespace EmitMSIL
             {
                 EmitOpCode(OpCodes.Ldelem_Ref);
             }
-
-            return true;
+            EmitILComment("INDEX ARRAY OPERATION END");
         }
 
 
