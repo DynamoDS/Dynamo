@@ -310,6 +310,16 @@ namespace EmitMSIL
         // Coerce int/long/double arrays to IEnumerable<T> or IList<T>
         private Type EmitArrayCoercion<Source, Target>(AssociativeNode arg,Type ienumerableParamType)
         {
+            if (compilePass == CompilePass.GatherTypeInfo)
+            {
+                var returnType = typeof(Target[]);
+                if (typeof(IList<Target>).IsAssignableFrom(ienumerableParamType))
+                {
+                    returnType = typeof(List<Target>);
+                }
+
+                return returnType;
+            }
             // Find length for array to be coerced (already on top of eval stack), len
             EmitOpCode(OpCodes.Ldlen);
             EmitOpCode(OpCodes.Conv_I4);
@@ -337,6 +347,7 @@ namespace EmitMSIL
 
             // newarr[i] = (Target)arr[i];
             ilGen.MarkLabel(loopBodyLabel);
+            EmitILComment("label:body");
 
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
@@ -398,11 +409,12 @@ namespace EmitMSIL
 
             // i < arr.Length;
             ilGen.MarkLabel(loopCondLabel);
+            EmitILComment("label:cond");
 
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
             // Load input array
-            EmitOpCode(OpCodes.Ldloc, localVarIndex);
+            EmitOpCode(OpCodes.Ldloc, currentVarIndex);
             EmitOpCode(OpCodes.Ldlen);
             EmitOpCode(OpCodes.Conv_I4);
 
@@ -656,7 +668,7 @@ namespace EmitMSIL
                     EmitUnaryExpressionNode(node);
                     break;
                 case AstKind.BinaryExpression:
-                    EmitBinaryExpressionNode(node);
+                    t = EmitBinaryExpressionNode(node);
                     break;
                 case AstKind.Import:
                     EmitImportNode(node);
@@ -679,9 +691,13 @@ namespace EmitMSIL
             }
             if(compilePass == CompilePass.GatherTypeInfo)
             {
+                //if the map already contains the node id AND it has changed type, then throw.
                 if (astTypeInfoMap.ContainsKey(node.ID))
                 {
-                    throw new Exception($"ast {node.ID}:{node.Kind} already exists in map, changing type?");
+                    if(t != astTypeInfoMap[node.ID])
+                    {
+                        throw new Exception($"ast {node.ID}:{node.Kind} already exists in map, and has changed type {astTypeInfoMap[node.ID]}-> {t}");
+                    }
                 }
                 else
                 {
@@ -802,7 +818,14 @@ namespace EmitMSIL
             //TODO do other important things here!
             //see: ProtoAssociative.CodeGen.EmitImportNode
         }
-        private void EmitBinaryExpressionNode(AssociativeNode node)
+        /// <summary>
+        /// Emits binary expression IL, returns type of RHS if assignment.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns>T of right hand side if assignment.</returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="Exception"></exception>
+        private Type EmitBinaryExpressionNode(AssociativeNode node)
         {
             var bNode = node as BinaryExpressionNode;
             if (bNode == null) throw new ArgumentException("AST node must be a Binary Expression");
@@ -811,7 +834,7 @@ namespace EmitMSIL
             {
                 var t = DfsTraverse(bNode.RightNode);
 
-                if (compilePass == CompilePass.MethodLookup) return;
+                if (compilePass == CompilePass.MethodLookup) return null;
 
                 var lNode = bNode.LeftNode as IdentifierNode;
                 if (lNode == null)
@@ -848,19 +871,9 @@ namespace EmitMSIL
                 }
                 var mInfo = typeof(IDictionary<string, IList>).GetMethod(nameof(IDictionary<string, IList>.Add));
                 EmitOpCode(OpCodes.Callvirt, mInfo);
+                return t;
             }
-            else if (bNode.Optr == ProtoCore.DSASM.Operator.add)
-            {
-                DfsTraverse(bNode.LeftNode);
-                DfsTraverse(bNode.RightNode);
-
-                //TODO: Replace this!
-                // It needs to be replaced with emission of a builtin Function call to an Add function
-                // so we can call it via ReplicationLogic for replication scenarios.
-                EmitOpCode(OpCodes.Add);
-            }
-            // TODO: add Emit calls for other binary operators
-
+            return null;
         }
 
         private void EmitUnaryExpressionNode(AssociativeNode node)
