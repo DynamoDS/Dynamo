@@ -1,19 +1,19 @@
 using Dynamo.Controls;
-using Dynamo.Wpf;
-using System;
 using CoreNodeModels.Input;
 using CoreNodeModelsWpf.Controls;
-
+using System.Windows.Controls;
+using System.Windows;
+using Dynamo.Wpf;
 
 namespace CoreNodeModelsWpf.Nodes
 {
     /// <summary>
     /// View customizer for DropDown node model.
     /// </summary>
-    public class CustomSelectionNodeModelNodeViewCustomization : INodeViewCustomization<CustomSelectionNodeModel>
+    public class CustomSelectionNodeModelNodeViewCustomization : DropDownNodeViewCustomization, INodeViewCustomization<CustomSelectionNodeModel>
     {
         /// <summary>
-        /// Customize the visual appearance of the custom dropdown node
+        /// Customize the visual appearance of the custom dropdown node.
         /// </summary>
         /// <param name="model"></param>
         /// <param name="nodeView"></param>
@@ -22,16 +22,17 @@ namespace CoreNodeModelsWpf.Nodes
             nodeView.inputGrid.Children.Add(
                 new CustomSelectionControl()
                 {
-                    DataContext = model
+                    DataContext = new CustomSelectionViewModel(model),
                 });
-        }
 
+            // Add the dropdown.
+            base.CustomizeView(model, nodeView);
 
-        /// <summary>
-        /// This method does not do anything for now
-        /// </summary>
-        public void Dispose()
-        {
+            var dropdown = (FrameworkElement)nodeView.inputGrid.Children[1];
+
+            // Add margin to the dropdown to show the expander.
+            dropdown.Margin = new Thickness(40, 0, 0, 0);
+            dropdown.VerticalAlignment = VerticalAlignment.Top;
         }
     }
 }

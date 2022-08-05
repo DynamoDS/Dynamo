@@ -1,24 +1,22 @@
-﻿<UserControl x:Class="CoreNodeModelsWpf.Controls.CustomSelectionControl"
+<UserControl x:Class="CoreNodeModelsWpf.Controls.CustomSelectionControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:localProperties="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:core="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:model="clr-namespace:CoreNodeModelsWpf"
              mc:Ignorable="d"
              d:DesignHeight="200" d:DesignWidth="300"
-             MinHeight="23" Width="197">
+             d:DataContext="{d:DesignInstance Type=model:CustomSelectionViewModel, IsDesignTimeCreatable=True}"
+             Width="250">
 
     <UserControl.Resources>
         <ResourceDictionary>
-
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-
-            <SolidColorBrush x:Key="EnumItemBackgroundColor" Color="#404040"/>
-            <SolidColorBrush x:Key="RemoveButtonColor" Color="#DDDDDD" />
-            <SolidColorBrush x:Key="HighlightedRemoveButtonColor" Color="#999999" />
 
             <Style x:Key="EnumItemsListItemStyle"  TargetType="{x:Type ListBoxItem}">
                 <Setter Property="Padding" Value="0" />
@@ -38,133 +36,75 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
-
-            <Style x:Key="RemoveButtonStyle" TargetType="{x:Type Button}">
-                <Setter Property="Foreground" Value="{StaticResource RemoveButtonColor}" />
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="BorderBrush" Value="{x:Null}"/>
-                <Setter Property="Background" Value="{x:Null}"/>
-                <Setter Property="ClickMode" Value="Press" />
-                <Setter Property="Margin" Value="5,8,0,5"/>
-                <Setter Property="Height" Value="10" />
-                <Setter Property="Width" Value="10"/>
+            <Style x:Key="ThinLabel" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}"/>
+                <Setter Property="FontWeight" Value="Medium"/>
+                <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal300Brush}" />
                 <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Button}">
-                            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
-                                <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True">
-                        <Setter Property="Foreground" Value="{StaticResource HighlightedRemoveButtonColor}"/>
-                    </DataTrigger>
-                </Style.Triggers>
             </Style>
-
-            <Style x:Key="RemoveButtonImage" TargetType="{x:Type Image}">
-                <Setter Property="Source">
-                    <Setter.Value>
-                        <DrawingImage>
-                            <DrawingImage.Drawing>
-                                <GeometryDrawing Brush="{Binding ElementName=RemoveBtn, Path=Foreground}">
-                                    <GeometryDrawing.Pen>
-                                        <Pen Brush="{Binding ElementName=RemoveBtn, Path=Foreground}" Thickness="5"/>
-                                    </GeometryDrawing.Pen>
-                                    <GeometryDrawing.Geometry>
-                                        <PathGeometry>
-                                            <PathGeometry.Figures>
-                                                <PathFigure StartPoint="0,0">
-                                                    <LineSegment Point="25,25"/>
-                                                </PathFigure>
-                                                <PathFigure StartPoint="0,25">
-                                                    <LineSegment Point="25,0"/>
-                                                </PathFigure>
-                                            </PathGeometry.Figures>
-                                        </PathGeometry>
-                                    </GeometryDrawing.Geometry>
-                                </GeometryDrawing>
-                            </DrawingImage.Drawing>
-                        </DrawingImage>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="26"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="40"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Expander Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Background="Transparent" Margin="2,1,0,0" ExpandDirection="Down" Padding="0" BorderThickness="0">
-            <Grid Margin="20,5,0,0" >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+    <Expander
+        Margin="0,-1,0,0"
+        IsExpanded="False"
+        IsHitTestVisible="True"
+        Template="{StaticResource ExpanderTemplate}">
+        <DockPanel Margin="-20,50,0,0" Grid.IsSharedSizeScope="True">
+            <Grid DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="display"/>
+                    <ColumnDefinition SharedSizeGroup="value"/>
+                </Grid.ColumnDefinitions>
 
-                <Grid Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Margin="6,6,3,3" Text="{x:Static localProperties:CoreNodeModelWpfResources.LblDisplay}" Style="{ DynamicResource LabelStyle}"/>
-                    <TextBlock Grid.Column="1" Margin="0,6,0,3" Text="{x:Static localProperties:CoreNodeModelWpfResources.LblValue}" Style="{ DynamicResource LabelStyle}"/>
-                </Grid>
-
-                <ListBox Grid.Row="1" x:Name="EnumItemsListbox" Background="Transparent" ItemsSource="{Binding Items}" BorderThickness="0" PreviewKeyDown="EnumItemsListbox_PreviewKeyDown"
-                         ItemContainerStyle="{StaticResource EnumItemsListItemStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                    <ListBox.Style>
-                        <Style TargetType="ListBox">
-                            <Setter Property="ItemTemplate">
-                                <Setter.Value>
-                                    <DataTemplate>
-                                        <ContentControl Content="{Binding}">
-                                            <ContentControl.Style>
-                                                <Style TargetType="ContentControl">
-                                                    <Setter Property="ContentTemplate">
-                                                        <Setter.Value>
-                                                            <DataTemplate>
-                                                                <Grid Margin="0,0,0,5">
-                                                                    <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                        <ColumnDefinition Width="Auto"/>
-                                                                    </Grid.ColumnDefinitions>
-                                                                    <TextBox Grid.Column="0" Margin="2,2,0,0" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Style="{DynamicResource InputStyle}"/>
-                                                                    <TextBox Grid.Column="1" Margin="3,2,0,0" Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource InputStyle}"/>
-                                                                    <Button x:Name="RemoveBtn" Grid.Column="2" Command="{Binding RemoveCommand}" Style="{StaticResource RemoveButtonStyle}" >
-                                                                        <Image Style="{StaticResource RemoveButtonImage}"/>
-                                                                    </Button>
-                                                                </Grid>
-                                                            </DataTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style>
-                                            </ContentControl.Style>
-                                        </ContentControl>
-                                    </DataTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListBox.Style>
-                </ListBox>
-
-                <Button Grid.Row="2" Margin="0,0,17,0" Content="{x:Static localProperties:CoreNodeModelWpfResources.LblAdd}" Width="60" HorizontalAlignment="Right" Command="{Binding AddCommand}" Style="{DynamicResource STextButton}" />
+                <TextBlock Grid.Column="0"
+                           Text="{x:Static localProperties:CoreNodeModelWpfResources.LblDisplay}"
+                           Style="{StaticResource ThinLabel}" />
+                <TextBlock Grid.Column="1"
+                           Text="{x:Static localProperties:CoreNodeModelWpfResources.LblValue}"
+                           Style="{StaticResource ThinLabel}" />
             </Grid>
-        </Expander>
-        <ComboBox Grid.Row="0" Grid.Column="1" Height="25" VerticalAlignment="Top" SelectedValue="{Binding SelectedItem, Mode=TwoWay}" ItemsSource="{Binding ValidItems}" DisplayMemberPath="Name" Style="{DynamicResource RefreshComboBox}"/>
-    </Grid>
+
+            <core:DynamoNodeButton Style="{StaticResource SingleCharButton}"
+                                   Margin="0,11,1,0"
+                                   DockPanel.Dock="Bottom"
+                                   Command="{Binding AddCommand}"
+                                   HorizontalAlignment="Right"
+                                   Content="+" />
+            
+            <ListBox x:Name="EnumItemsListbox"
+                     Margin="0,4,0,0"
+                     Background="Transparent"
+                     ItemsSource="{Binding Model.Items}"
+                     BorderThickness="0"
+                     PreviewKeyDown="EnumItemsListbox_PreviewKeyDown"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ItemContainerStyle="{StaticResource EnumItemsListItemStyle}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,8,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="105" SharedSizeGroup="display"/>
+                                <ColumnDefinition Width="105" SharedSizeGroup="value"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Column="0" Style="{StaticResource InputStyle}" Margin="0,0,5,0" Text="{Binding Name}" />
+                            <TextBox Grid.Column="1" Style="{StaticResource InputStyle}" Margin="0,0,0,0" Text="{Binding Item}" />
+                            
+                            <core:DynamoNodeButton Grid.Column="2"
+                                                   Style="{StaticResource SingleCharButton}"
+                                                   HorizontalAlignment="Right"
+                                                   Command="{Binding ElementName=EnumItemsListbox, Path=DataContext.RemoveCommand}"
+                                                   CommandParameter="{Binding}"
+                                                   Content="-"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+        </DockPanel>
+    </Expander>
 </UserControl>
 

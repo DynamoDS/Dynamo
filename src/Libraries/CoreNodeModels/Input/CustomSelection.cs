@@ -1,15 +1,13 @@
 using Autodesk.DesignScript.Runtime;
-using Dynamo.Graph;
+
 using Dynamo.Graph.Nodes;
-using Newtonsoft.Json;
+
 using ProtoCore.AST.AssociativeAST;
+
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using System.Xml;
 
 [assembly: InternalsVisibleTo("CoreNodeModelsWpf")]
 
@@ -28,97 +26,18 @@ namespace CoreNodeModels.Input
     [IsDesignScriptCompatible]
     public class CustomSelectionNodeModel : DSDropDownBase
     {
-        private ObservableCollection<CustomSelectionItemViewModel> items = new ObservableCollection<CustomSelectionItemViewModel>();
-        private CustomSelectionItemViewModel selectedItem;
-
-        /// <summary>
-        /// This command is bound to the Add button in the GUI
-        /// </summary>
-        [JsonIgnore]
-        public ICommand AddCommand { get; private set; }
-
-        /// <summary>
-        /// All menu items
-        /// </summary>
-        public ObservableCollection<CustomSelectionItemViewModel> Items
-        {
-            get => items;
-            private set
-            {
-                items = value;
-
-                foreach (var item in items)
-                {
-                    InitItem(item);
-                }
-
-                PopulateItems();
-                RaisePropertyChanged(nameof(Items));
-            }
-        }
-
-        /// <summary>
-        /// The menu items with valid names and values. This property is bound to the combo box in the GUI
-        /// </summary>
-        [JsonIgnore]
-        public ObservableCollection<CustomSelectionItemViewModel> ValidItems
-            => new ObservableCollection<CustomSelectionItemViewModel>(Items.Where(item => item.IsValid));
-
-
-        /// <summary>
-        /// the currently selected menu item
-        /// </summary>
-        public CustomSelectionItemViewModel SelectedItem
-        {
-            get => selectedItem;
-            set
-            {
-                selectedItem = value == null ? null : Items.FirstOrDefault(item => item.Name == value.Name);
-                RaisePropertyChanged(nameof(SelectedItem));
-                OnNodeModified();
-            }
-        }
-
-
-
-
-
         /// <summary>
         /// Construct a new Custom Dropdown Menu node
         /// </summary>
         public CustomSelectionNodeModel() : base("Value")
         {
-            RegisterAllPorts();
-
+            // TODO: This isn't done in RevitDropDown. Necessary?
             ArgumentLacing = LacingStrategy.Disabled;
 
-            Items = new ObservableCollection<CustomSelectionItemViewModel>()
-            {
-                new CustomSelectionItemViewModel(new CustomSelectionItem() {Name = "One", Value = "1"}),
-                new CustomSelectionItemViewModel(new CustomSelectionItem {Name = "Two", Value = "2"}),
-                new CustomSelectionItemViewModel(new CustomSelectionItem {Name = "Three", Value = "3"}),
-            };
-
-            SelectedItem = Items.FirstOrDefault();
-
-            AddCommand = new AddMenuItemCommand(AddMenuItem);
+            Items.Add(new DynamoDropDownItem("One", "1"));
+            Items.Add(new DynamoDropDownItem("Two", "2"));
+            Items.Add(new DynamoDropDownItem("Three", "3"));
         }
-
-
-        [JsonConstructor]
-        private CustomSelectionNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base("Value", inPorts, outPorts)
-        {
-            AddCommand = new AddMenuItemCommand(AddMenuItem);
-            items.CollectionChanged += OnCollectionChanged;
-        }
-
-
-        private void OnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            RaisePropertyChanged(nameof(ValidItems));
-            OnNodeModified();
-        }
-
 
         /// <summary>
         /// Build the AST for this node
@@ -128,8 +47,7 @@ namespace CoreNodeModels.Input
         [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            object value = GetSelectedValue();
-            AssociativeNode associativeNode = AstFactory.BuildPrimitiveNodeFromObject(value);
+            AssociativeNode associativeNode = AstFactory.BuildPrimitiveNodeFromObject(GetSelectedValue());
 
             return new List<AssociativeNode> { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), associativeNode) };
         }
@@ -141,55 +59,9 @@ namespace CoreNodeModels.Input
         [IsVisibleInDynamoLibrary(false)]
         internal void Log(Exception ex)
         {
-            base.Log(ex.Message, Dynamo.Logging.WarningLevel.Error);
-            base.Log(ex.StackTrace, Dynamo.Logging.WarningLevel.Error);
+            Log(ex.Message, Dynamo.Logging.WarningLevel.Error);
+            Log(ex.StackTrace, Dynamo.Logging.WarningLevel.Error);
         }
-
-        /// <summary>
-        /// Dispose this node
-        /// </summary>
-        public override void Dispose()
-        {
-            base.Dispose();
-            items.CollectionChanged -= OnCollectionChanged;
-        }
-
-        private void AddMenuItem()
-        {
-            var newItem = new CustomSelectionItemViewModel(new CustomSelectionItem());
-            InitItem(newItem);
-
-            Items.Add(newItem);
-        }
-
-
-        private bool IsUnique(CustomSelectionItem item)
-        {
-            return Items.Count(x => x.Name == item.Name) <= 1;
-        }
-
-
-        private void OnItemChanged()
-        {
-            RaisePropertyChanged(nameof(ValidItems));
-
-            foreach (var item in Items)
-                item.Validate();
-
-            OnNodeModified();
-        }
-
-
-        private void OnRemoveRequested(CustomSelectionItemViewModel item)
-        {
-            item.IsUnique -= IsUnique;
-            item.ItemChanged -= OnItemChanged;
-            item.RemoveRequested -= OnRemoveRequested;
-            Items.Remove(item);
-            RaisePropertyChanged(nameof(ValidItems));
-            RaisePropertyChanged(nameof(SelectedItem));
-        }
-
 
         /// <summary>
         /// Return the selected item as an int, or a double, or a string
@@ -197,143 +69,41 @@ namespace CoreNodeModels.Input
         /// <returns></returns>
         private object GetSelectedValue()
         {
-            if (SelectedItem == null)
+            if (SelectedIndex == -1)
+            {
                 return null;
-
-            int intValue = 0;
-            if (Items.All(item => int.TryParse(item.Value, out intValue)))
-            {
-                int.TryParse(SelectedItem.Value, out intValue);
-                return intValue;
             }
 
-            double doubleValue = 0.0;
-            if (Items.All(item => double.TryParse(item.Value, out doubleValue)))
+            DynamoDropDownItem selectedItem = Items[SelectedIndex];
+
+            if (selectedItem?.Item is string value)
             {
-                double.TryParse(SelectedItem.Value, out doubleValue);
-                return doubleValue;
-            }
-
-            return SelectedItem.Value;
-        }
-
-        private void InitItem(CustomSelectionItemViewModel item)
-        {
-            item.IsUnique += IsUnique;
-            item.ItemChanged += OnItemChanged;
-            item.RemoveRequested += OnRemoveRequested;
-        }
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context);
-
-            var xmlDocument = element.OwnerDocument;
-            var enumItemsNode = xmlDocument.CreateElement("Items");
-
-            foreach (CustomSelectionItemViewModel item in Items)
-            {
-                if (item.IsValid)
+                if (string.IsNullOrWhiteSpace(value))
                 {
-                    var itemNode = xmlDocument.CreateElement("Item");
-                    itemNode.SetAttribute("Name", item.Name);
-                    itemNode.SetAttribute("Value", item.Value?.ToString());
-
-                    enumItemsNode.AppendChild(itemNode);
-                }
-            }
-
-            element.AppendChild(enumItemsNode);
-
-            if (SelectedItem != null)
-            {
-                var selectedItemNode = xmlDocument.CreateElement("SelectedItem");
-                selectedItemNode.SetAttribute("Name", SelectedItem.Name);
-
-                element.AppendChild(selectedItemNode);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
-        {
-            base.DeserializeCore(nodeElement, context);
-
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (subNode.Name.Equals("Items"))
-                {
-                    DeserializeEnumItems(subNode);
+                    return value;
                 }
 
-                if (subNode.Name.Equals("SelectedItem"))
+                if (Items.All(item => item is null || ( item.Item is string v && ( string.IsNullOrEmpty(v) || int.TryParse(v, out _) ) )))
                 {
-                    foreach (XmlAttribute attribute in subNode.Attributes)
-                    {
-                        if (attribute.Name == "Name")
-                        {
-                            SelectedItem = Items.FirstOrDefault(item => item.Name == attribute.Value);
-                        }
-                    }
+                    int.TryParse(value, out int intValue);
+                    return intValue;
                 }
+
+                if (Items.All(item => item is null || ( item.Item is string v && ( string.IsNullOrEmpty(v) || double.TryParse(v, out _) ) )))
+                {
+                    double.TryParse(value, out double doubleValue);
+                    return doubleValue;
+                }
+
+                return value;
             }
+
+            return selectedItem?.Item;
         }
 
         protected override SelectionState PopulateItemsCore(string currentSelection)
         {
-            base.Items.Clear();
-
-            foreach (CustomSelectionItemViewModel enumItem in Items)
-            {
-                base.Items.Add(new DynamoDropDownItem(enumItem.Name, enumItem.Value));
-            }
-
-            SelectedIndex = 0;
-
             return SelectionState.Restore;
-        }
-
-        private void DeserializeEnumItems(XmlNode itemsNode)
-        {
-            Items.Clear();
-
-            foreach (XmlNode childNode in itemsNode.ChildNodes)
-            {
-                var name = string.Empty;
-                var value = string.Empty;
-
-                foreach (XmlAttribute attribute in childNode.Attributes)
-                {
-                    if (attribute.Name == "Name")
-                    {
-                        name = attribute.Value;
-                    }
-                    else if (attribute.Name == "Value")
-                    {
-                        value = attribute.Value;
-                    }
-                }
-
-                var newItem = new CustomSelectionItemViewModel(new CustomSelectionItem() { Name = name, Value = value });
-                InitItem(newItem);
-
-                Items.Add(newItem);
-                RaisePropertyChanged(nameof(Items));
-            }
-        }
-
-
-        class AddMenuItemCommand : ICommand
-        {
-            private readonly Action execute;
-            public event EventHandler CanExecuteChanged;
-
-            public AddMenuItemCommand(Action execute)
-            {
-                this.execute = execute;
-            }
-
-            public bool CanExecute(object parameter) => true;
-            public void Execute(object parameter) => execute();
         }
     }
 }

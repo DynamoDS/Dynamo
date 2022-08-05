@@ -1,11 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+
 using CoreNodeModels;
 using CoreNodeModels.Input;
+
+using CoreNodeModelsWpf;
+
 using Dynamo.PackageManager;
 using NUnit.Framework;
 using SystemTestServices;
@@ -44,11 +46,12 @@ namespace Dynamo.Tests.Nodes
 
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
 
-            object itemsAsObject = node.GetType().GetProperty(nameof(CustomSelectionNodeModel.Items), typeof(ObservableCollection<CustomSelectionItemViewModel>)).GetValue(node);
+            object itemsAsObject = node.GetType().GetProperty(nameof(DSDropDownBase.Items), typeof(ObservableCollection<DynamoDropDownItem>)).GetValue(node);
             Assert.NotNull(itemsAsObject);
-            var items = (ObservableCollection<CustomSelectionItemViewModel>)(itemsAsObject);
+            var items = (ObservableCollection<DynamoDropDownItem>)itemsAsObject;
             Assert.AreEqual(3, items.Count);
             Assert.AreEqual("One", items[0].Name);
+            Assert.AreEqual(1, items[0].Item);
         }
 
 
@@ -74,11 +77,10 @@ namespace Dynamo.Tests.Nodes
 
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
 
-            object selectedItemAsObject = node.GetType().GetProperty(nameof(CustomSelectionNodeModel.SelectedItem)).GetValue(node);
+            object selectedItemAsObject = node.GetType().GetProperty(nameof(CustomSelectionNodeModel.SelectedString)).GetValue(node);
             Assert.NotNull(selectedItemAsObject);
-            var selectedItem = (CustomSelectionItemViewModel)selectedItemAsObject;
-            Assert.AreEqual("2", selectedItem.Value);
-            Assert.AreEqual("Two", selectedItem.Name);
+            string selectedItem = (string)selectedItemAsObject;
+            Assert.AreEqual("Two", selectedItem);
         }
 
 
