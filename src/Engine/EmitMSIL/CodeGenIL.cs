@@ -314,7 +314,7 @@ namespace EmitMSIL
             if (compilePass == CompilePass.GatherTypeInfo)
             {
                 var returnType = typeof(Target[]);
-                if (typeof(IList<Target>).IsAssignableFrom(ienumerableParamType))
+                if (typeof(List<Target>).IsAssignableFrom(ienumerableParamType))
                 {
                     returnType = typeof(List<Target>);
                 }
@@ -1064,10 +1064,12 @@ namespace EmitMSIL
         private void EmitIndexingForIList(AssociativeNode array, AssociativeNode index, Type collectionType, Type listElementType)
         {
             var indexT = DfsTraverse(index);
-            var mi = typeof(IList).GetMethod("get_Item", BindingFlags.Instance | BindingFlags.Public);
+            var prop = typeof(IList).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
+                                  p => p.Name == "Item").FirstOrDefault();
+            var mi = prop.GetAccessors().FirstOrDefault();
             if (collectionType.IsGenericType)
             {
-                mi = collectionType.GetMethod("get_Item");
+                mi = collectionType.GetProperty("Item", BindingFlags.Public | BindingFlags.Instance).GetAccessors().FirstOrDefault();
             }
             EmitOpCode(OpCodes.Callvirt, mi);
             EmitILComment("INDEX ILIST OPERATION END");
