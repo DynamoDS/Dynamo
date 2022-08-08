@@ -277,7 +277,6 @@ namespace Dynamo.Models
         }
 
         internal bool DSExecutionEngine = true;
-        internal static long executionTime = 0;
 
         /// <summary>
         ///     Debugging settings for this instance of Dynamo.
