@@ -128,8 +128,16 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
 
             dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
-
+            dynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
             SetupFooterNotificationItems();
+        }
+
+        private void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(DynamoViewModel.CurrentSpace) && !(sender as DynamoViewModel).ViewingHomespace)
+            {
+                ClearWarning();
+            }
         }
 
         /// <summary>
@@ -496,6 +504,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             RunSettingsViewModel.Dispose();
             RunSettingsViewModel = null;
             DynamoViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
+            DynamoViewModel.Model.PropertyChanged -= DynamoViewModel_PropertyChanged;
         }
     }
 

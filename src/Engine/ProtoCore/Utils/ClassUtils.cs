@@ -51,8 +51,32 @@ namespace ProtoCore.Utils
                 return int.MaxValue;
 
             return upcastChain.IndexOf(toID);
+        }
 
+        internal static int GetUpcastCountTo((int id, System.Type type) from, (int id, System.Type type) target)
+        {
+            if (from.id == target.id)
+            {
+                return 0;
+            }
 
+            int index = -1;
+            System.Type parent = from.type;
+            while(parent != null)
+            {
+                index++;
+                if (parent == target.type)
+                {
+                    return index;
+                }
+                parent = parent.BaseType;
+            }
+
+            if (from.id == (int)ProtoCore.PrimitiveType.Var)
+            {
+                return index + 1;
+            }
+            return int.MaxValue;
         }
 
         // classScope is a global context, it tells we are in which class's scope
