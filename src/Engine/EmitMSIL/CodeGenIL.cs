@@ -191,6 +191,22 @@ namespace EmitMSIL
 
         private Type EmitIListCoercion<T>(AssociativeNode arg)
         {
+            LocalBuilder localBuilder;
+            // Load array to be coerced.
+            int currentVarIndex = localVarIndex;
+            if (arg is IdentifierNode ident)
+            {
+                currentVarIndex = variables[ident.Value].Item1;
+            }
+            else
+            {
+                localBuilder = DeclareLocal(typeof(IList), "IList to coerce");
+                currentVarIndex = localBuilder.LocalIndex;
+
+                EmitOpCode(OpCodes.Stloc, currentVarIndex);
+                EmitOpCode(OpCodes.Ldloc, currentVarIndex);
+            }
+
             // Find length for IList to be coerced (already on top of eval stack), len
             var prop = typeof(ICollection).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
                                 p => p.Name == nameof(ICollection.Count)).FirstOrDefault();
@@ -201,7 +217,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Callvirt, mInfo);
 
             // len = source.Count;
-            var localBuilder = DeclareLocal(typeof(int), "length of IList to coerce");
+            localBuilder = DeclareLocal(typeof(int), "length of IList to coerce");
             var sourceArrayLengthIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, sourceArrayLengthIndex);
 
@@ -234,11 +250,6 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
             // Load array to be coerced.
-            var currentVarIndex = localVarIndex;
-            if (arg is IdentifierNode ident)
-            {
-                currentVarIndex = variables[ident.Value].Item1;
-            }
             EmitOpCode(OpCodes.Ldloc, currentVarIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
@@ -291,6 +302,21 @@ namespace EmitMSIL
         // Coerce int/long/double arrays to IEnumerable<T> or IList<T>
         private Type EmitArrayCoercion<Source, Target>(AssociativeNode arg, Type ienumerableParamType)
         {
+            LocalBuilder localBuilder;
+            // Load array to be coerced.
+            int currentVarIndex = localVarIndex;
+            if (arg is IdentifierNode ident)
+            {
+                currentVarIndex = variables[ident.Value].Item1;
+            }
+            else
+            {
+                localBuilder = DeclareLocal(typeof(Source[]), "array to coerce");
+                currentVarIndex = localBuilder.LocalIndex;
+
+                EmitOpCode(OpCodes.Stloc, currentVarIndex);
+                EmitOpCode(OpCodes.Ldloc, currentVarIndex);
+            }
             // Find length for array to be coerced (already on top of eval stack), len
             EmitOpCode(OpCodes.Ldlen);
             EmitOpCode(OpCodes.Conv_I4);
@@ -300,7 +326,7 @@ namespace EmitMSIL
 
             // Declare new array to store coerced values
             var t = typeof(Target[]);
-            var localBuilder = DeclareLocal(t, "coerced array");
+            localBuilder = DeclareLocal(t, "coerced array");
             var newArrIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, newArrIndex);
 
@@ -322,13 +348,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
-            // Load array to be coerced.
-            int currentVarIndex = localVarIndex;
-            var ident = arg as IdentifierNode;
-            if (ident != null)
-            {
-                currentVarIndex = variables[ident.Value].Item1;
-            }
+            
             EmitOpCode(OpCodes.Ldloc, currentVarIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
@@ -948,7 +968,7 @@ namespace EmitMSIL
             var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
             EmitOpCode(OpCodes.Call, keygen);
 
-            var local = DeclareLocal(typeof(IEnumerable<MethodBase>), "mInfos");
+            var local = DeclareLocal(typeof(IEnumerable<MethodBase>), "cached MethodBase objects");
 
             EmitOpCode(OpCodes.Ldloca, local);
 
