@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,7 +14,7 @@ namespace CoreNodeModelsWpf.Controls
     /// </summary>
     public partial class CustomSelectionControl : UserControl
     {
-        private readonly CustomSelectionNodeModel model;
+        private readonly CustomSelection model;
 
         /// <summary>
         /// Create the control for the custom dropdown menu and editor

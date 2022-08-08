@@ -8,7 +8,7 @@ namespace CoreNodeModelsWpf
 {
     public class CustomSelectionViewModel : NotificationObject
     {
-        public CustomSelectionNodeModel Model { get; }
+        public CustomSelection Model { get; }
 
         /// <summary>
         /// This command is bound to the Add button in the GUI
@@ -36,7 +36,7 @@ namespace CoreNodeModelsWpf
         {
         }
 
-        public CustomSelectionViewModel(CustomSelectionNodeModel model)
+        public CustomSelectionViewModel(CustomSelection model)
         {
             Model = model;
 

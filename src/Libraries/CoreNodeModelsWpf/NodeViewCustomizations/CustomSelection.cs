@@ -10,14 +10,14 @@ namespace CoreNodeModelsWpf.Nodes
     /// <summary>
     /// View customizer for DropDown node model.
     /// </summary>
-    public class CustomSelectionNodeModelNodeViewCustomization : DropDownNodeViewCustomization, INodeViewCustomization<CustomSelectionNodeModel>
+    public class CustomSelectionNodeViewCustomization : DropDownNodeViewCustomization, INodeViewCustomization<CustomSelection>
     {
         /// <summary>
         /// Customize the visual appearance of the custom dropdown node.
         /// </summary>
         /// <param name="model"></param>
         /// <param name="nodeView"></param>
-        public void CustomizeView(CustomSelectionNodeModel model, NodeView nodeView)
+        public void CustomizeView(CustomSelection model, NodeView nodeView)
         {
             var formControl = new CustomSelectionControl(new CustomSelectionViewModel(model));
 

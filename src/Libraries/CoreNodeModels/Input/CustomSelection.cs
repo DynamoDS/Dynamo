@@ -1,12 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
+
 using Autodesk.DesignScript.Runtime;
 
 using Dynamo.Graph.Nodes;
 
 using ProtoCore.AST.AssociativeAST;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace CoreNodeModels.Input
 {
@@ -21,12 +20,12 @@ namespace CoreNodeModels.Input
     [OutPortTypes("var")]
     [OutPortDescriptions("Selected value")]
     [IsDesignScriptCompatible]
-    public class CustomSelectionNodeModel : DSDropDownBase
+    public class CustomSelection : DSDropDownBase
     {
         /// <summary>
         /// Construct a new Custom Dropdown Menu node
         /// </summary>
-        public CustomSelectionNodeModel() : base("Value")
+        public CustomSelection() : base("Value")
         {
             // TODO: This isn't done in RevitDropDown. Necessary?
             ArgumentLacing = LacingStrategy.Disabled;

@@ -74,7 +74,7 @@ namespace Dynamo.Tests.Nodes
 
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
 
-            object selectedItemAsObject = node.GetType().GetProperty(nameof(CustomSelectionNodeModel.SelectedString)).GetValue(node);
+            object selectedItemAsObject = node.GetType().GetProperty(nameof(CustomSelection.SelectedString)).GetValue(node);
             Assert.NotNull(selectedItemAsObject);
             string selectedItem = (string)selectedItemAsObject;
             Assert.AreEqual("Two", selectedItem);
