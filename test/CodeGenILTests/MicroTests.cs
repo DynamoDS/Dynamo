@@ -215,7 +215,7 @@ y = DSCore.Math.Sum([1,2,3]);";
         }
 
         [Test]
-        //'Object of type 'System.int64[]' can be converted to type 'System.Collections.Generic.IEnumerable`1[System.Double]'.'
+        //'Object of type 'IList' can be converted to type 'System.Collections.Generic.IEnumerable`1[System.Double]'.'
         public void SumIntTempRange_TypeCoerNeeded()
         {
             var dscode = @"

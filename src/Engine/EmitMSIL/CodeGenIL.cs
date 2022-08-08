@@ -200,7 +200,7 @@ namespace EmitMSIL
             }
             else
             {
-                localBuilder = DeclareLocal(typeof(IList), "array to coerce");
+                localBuilder = DeclareLocal(typeof(IList), "IList to coerce");
                 currentVarIndex = localBuilder.LocalIndex;
 
                 EmitOpCode(OpCodes.Stloc, currentVarIndex);
