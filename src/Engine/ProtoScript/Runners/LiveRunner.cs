@@ -1249,7 +1249,8 @@ namespace ProtoScript.Runners
             Dictionary<string, IList> input = new Dictionary<string, IList>();
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             var codeGenIL = new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"));
-            (graphOutput, ExecutionTime) = codeGenIL.Emit(finalDeltaAstList);
+            graphOutput = codeGenIL.Emit(finalDeltaAstList);
+            ExecutionTime = codeGenIL.ExecutionTime;
         }
 
         internal IList GetNodeValue(string variableName)

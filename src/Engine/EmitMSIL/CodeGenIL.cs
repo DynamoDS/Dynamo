@@ -35,6 +35,7 @@ namespace EmitMSIL
         private StreamWriter writer;
         private Dictionary<int, IEnumerable<MethodBase>> methodCache = new Dictionary<int, IEnumerable<MethodBase>>();
         private CompilePass compilePass;
+        internal TimeSpan ExecutionTime;
 
         private enum CompilePass
         {
@@ -63,7 +64,7 @@ namespace EmitMSIL
             writer = new StreamWriter(filePath);
         }
 
-        public (IDictionary<string, IList>, TimeSpan) Emit(List<AssociativeNode> astList)
+        public IDictionary<string, IList> Emit(List<AssociativeNode> astList)
         {
             var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndSave);
 
@@ -76,10 +77,11 @@ namespace EmitMSIL
             timer.Start();
             var obj = mi.Invoke(null, new object[] { null, methodCache, output });
             timer.Stop();
+            ExecutionTime = timer.Elapsed;
 
             compileResult.asmbuilder.Save("DynamicAssembly.dll");
 
-            return (output, timer.Elapsed);
+            return output;
         }
 
         internal Dictionary<string, IList> EmitAndExecute(List<AssociativeNode> astList)
