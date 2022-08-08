@@ -245,7 +245,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Br_S, loopCondLabel.Value);
 
             // newarr[i] = (Target)arr[i];
-            MarkLabel(loopBodyLabel.Value,"label:body")
+            MarkLabel(loopBodyLabel.Value, "label:body");
 
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
@@ -419,7 +419,7 @@ namespace EmitMSIL
 
             EmitOpCode(OpCodes.Clt);
 
-            EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel);
+            EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel.Value);
 
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
 
