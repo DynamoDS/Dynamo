@@ -21,7 +21,7 @@
               IsHitTestVisible="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Name="PortNameColumn" Width="*" />
-                <ColumnDefinition Name="ValueMarkerColumn" Width="5px" />
+                <ColumnDefinition Name="ValueMarkerColumn" Width="{Binding Path=ValueMarkerWidth}" />
                 <ColumnDefinition Name="PortSnappingColumn" Width="25px" />
             </Grid.ColumnDefinitions>
 
