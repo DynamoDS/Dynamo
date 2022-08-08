@@ -12,7 +12,7 @@ namespace Dynamo.Tests
     [TestFixture, Category("Performance")]
     public class PerformanceTests : DynamoModelTestBase
     {
-        private List<(string, long, long)> ExecutionData;
+        private List<(string, TimeSpan, TimeSpan)> ExecutionData;
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -43,7 +43,7 @@ namespace Dynamo.Tests
         [TestFixtureSetUp]
         public void SetupPerformanceTests()
         {
-            ExecutionData = new List<(string, long, long)>();
+            ExecutionData = new List<(string, TimeSpan, TimeSpan)>();
         }
 
         [TestFixtureTearDown]
@@ -52,7 +52,7 @@ namespace Dynamo.Tests
             Console.WriteLine("{0,50}{1,10}{2,10}", "Graph", "Old ms", "New ms");
             ExecutionData.ForEach(item =>
             {
-                Console.WriteLine("{0,50}{1,10}{2,10}", item.Item1, item.Item2, item.Item3);
+                Console.WriteLine("{0,50}{1,10}{2,10}", item.Item1, item.Item2.Milliseconds, item.Item3.Milliseconds);
             });
             ExecutionData.Clear();
         }
@@ -116,7 +116,7 @@ namespace Dynamo.Tests
 
             var newEngineExecutionTime = model.EngineController.ExecutionTime;
 
-            Console.WriteLine("Execution time old Engine={0} ms, new Engine={1} ms", oldEngineExecutionTime, newEngineExecutionTime);
+            Console.WriteLine("Execution time old Engine={0} ms, new Engine={1} ms", oldEngineExecutionTime.Milliseconds, newEngineExecutionTime.Milliseconds);
             var execution = (Path.GetFileName(filePath), oldEngineExecutionTime, newEngineExecutionTime);
             ExecutionData.Add(execution);
         }

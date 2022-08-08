@@ -1196,7 +1196,7 @@ namespace ProtoScript.Runners
     {
         private IDictionary<string, IList> graphOutput;
         internal bool DSExecutionEngine = true;
-        internal long ExecutionTime = 0;
+        internal TimeSpan ExecutionTime;
 
         internal class DebugByteCodeMode : IDisposable
         {
@@ -1679,7 +1679,7 @@ namespace ProtoScript.Runners
             CompileAndExecute(dispatchASTList);
             PostExecution();
             timer.Stop();
-            ExecutionTime = timer.ElapsedMilliseconds;
+            ExecutionTime = timer.Elapsed;
         }
 
         private List<Guid> PreviewInternal(GraphSyncData syncData)

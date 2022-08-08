@@ -45,7 +45,7 @@ namespace Dynamo.Engine
         internal static event Action VMLibrariesReset;
 
         internal bool DSExecutionEngine { get; set; }
-        internal long ExecutionTime {
+        internal TimeSpan ExecutionTime {
             get => liveRunnerServices.ExecutionTime;
         }
 

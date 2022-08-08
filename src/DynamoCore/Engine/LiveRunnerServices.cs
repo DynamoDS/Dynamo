@@ -66,7 +66,7 @@ namespace Dynamo.Engine
             }
         }
 
-        internal long ExecutionTime
+        internal TimeSpan ExecutionTime
         {
             get => (liveRunner as LiveRunner).ExecutionTime;
         }
