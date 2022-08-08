@@ -10,22 +10,22 @@
 		<AssemblyName>Notifications</AssemblyName>
 	</PropertyGroup>
 
-	<Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
-		<Exec Command="npm install @dynamods/notifications-center@latest" />	
+	<!--<Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
+		<Exec Command="npm install @dynam0/notificati0ns" />	
 	</Target>
 
 	<Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
 		<Exec Command="npm install" />
-	</Target>
+	</Target>-->
 
 	<ItemGroup>
-		<None Remove="node_modules\%40dynamods\package.json" />
-		<None Remove="node_modules\%40dynamods\README.md" />
+		<None Remove="node_modules\%40dynam0\notificati0ns\index.js" />
 		<None Remove="View\NotificationUI.xaml" />
+		<None Remove="Web\index.html" />
 	</ItemGroup>
 	<ItemGroup>
-		<EmbeddedResource Include="node_modules\@dynamods\notifications-center\build\index.bundle.js" />
-		<EmbeddedResource Include="node_modules\@dynamods\notifications-center\build\index.html" />
+		<EmbeddedResource Include="node_modules\@dynam0\notificati0ns\index.js" />
+		<EmbeddedResource Include="Web\index.html" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />

@@ -918,12 +918,7 @@ namespace Dynamo.Graph.Nodes
         [JsonIgnore]
         public bool AreAllOutputsConnected
         {
-            get { 
-                return 
-                    outPorts != null &&
-                    outPorts.Count > 0 &&
-                    outPorts.All(p => p.IsConnected); 
-            }
+            get { return outPorts.All(p => p.IsConnected); }
         }
 
         /// <summary>
@@ -932,12 +927,7 @@ namespace Dynamo.Graph.Nodes
         [JsonIgnore]
         internal bool AreAllInputsDisconnected
         {
-            get { 
-                return 
-                    inPorts != null &&
-                    inPorts.Count > 0 &&
-                    inPorts.All(p => !p.IsConnected); 
-            }
+            get { return inPorts.All(p => !p.IsConnected); }
         }
 
         /// <summary>

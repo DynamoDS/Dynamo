@@ -53,24 +53,24 @@
                             Click="CloseButton_OnClick"
                             DockPanel.Dock="Right"
                             Margin="25 0 0 0"
-                            Style="{StaticResource CloseButtonDarkStyle}" />
+                            Style="{StaticResource CloseButtonStyle}" />
 
                     <Button Name="MaximizeButton"
                             Click="MaximizeButton_OnClick"
                             DockPanel.Dock="Right"
-                            Style="{StaticResource MaximizeButtonDarkStyle}" />
+                            Style="{StaticResource MaximizeButtonStyle}" />
 
                     <Button Name="NormalizeButton"
                             Click="MaximizeButton_OnClick"
                             DockPanel.Dock="Right"
                             Visibility="Collapsed"
-                            Style="{StaticResource RestoreButtonDarkStyle}" />
+                            Style="{StaticResource NormalizeButtonStyle}" />
 
                     <Button Name="MinimizeButton"
                             Margin="0 0 25 0"
                             Click="MinimizeButton_OnClick"
                             DockPanel.Dock="Right"
-                            Style="{StaticResource MinimizeButtonDarkStyle}" />
+                            Style="{StaticResource MinimizeButtonStyle}" />
 
                     <TextBlock Name="TitleTextBlock"
                                VerticalAlignment="Center"

@@ -47,15 +47,6 @@ namespace Dynamo.Wpf.Views.FileTrust
             SetUpPopup();
 
             HomeWorkspaceModel.WorkspaceClosed += CloseWarningPopup;
-            dynViewModel.PropertyChanged += DynViewModel_PropertyChanged;
-        }
-
-        private void DynViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "CurrentSpace" && !dynViewModel.ViewingHomespace)
-            {
-                IsOpen = false;
-            }
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -179,7 +170,6 @@ namespace Dynamo.Wpf.Views.FileTrust
             }
 
             HomeWorkspaceModel.WorkspaceClosed -= CloseWarningPopup;
-            dynViewModel.PropertyChanged -= DynViewModel_PropertyChanged;
         }
 
         /// <summary>

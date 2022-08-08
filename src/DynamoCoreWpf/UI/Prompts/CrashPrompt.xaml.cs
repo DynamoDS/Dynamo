@@ -110,8 +110,6 @@ namespace Dynamo.Nodes.Prompts
 
         private void Details_Click(object sender, RoutedEventArgs e)
         {
-            this.Height = this.ActualHeight + 250;
-            this.ResizeMode = ResizeMode.CanResizeWithGrip;
             this.btnDetails.Visibility = Visibility.Collapsed;
             this.CrashDetailsContent.Visibility = Visibility.Visible;
             this.btnCopy.Visibility = Visibility.Visible;

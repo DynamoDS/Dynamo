@@ -34,9 +34,8 @@ namespace DSCore.File
                 // if not, convert the relative path to absolute path first
                 InitialDirectory = Utilities.IsAbsolutePath(model.Value) ? 
                                         Path.GetDirectoryName(model.Value) : 
-                                        (string.IsNullOrEmpty(workspaceModel.FileName) ? string.Empty : 
-                                        Path.GetDirectoryName(Utilities.MakeAbsolutePath(workspaceModel.FileName, model.Value)))
-            };
+                                        Path.GetDirectoryName(Utilities.MakeAbsolutePath(workspaceModel.FileName, model.Value))
+        };
 
             if (openDialog.ShowDialog() == DialogResult.OK)
             {

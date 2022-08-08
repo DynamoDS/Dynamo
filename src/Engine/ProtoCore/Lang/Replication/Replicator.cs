@@ -337,52 +337,7 @@ namespace ProtoCore.Lang.Replication
 
             return reducedParamTypes;
         }
-        
-        /// <summary>
-        /// Compute the effects of the replication guides on the formal parameter lists
-        /// The results of this loose data, and will not be correct on jagged arrays of hetrogenius types
-        /// </summary>
-        /// <param name="formalParams"></param>
-        /// <param name="replicationInstructions"></param>
-        /// <returns></returns>
-        internal static List<CLRStackValue> EstimateReducedParams(List<CLRStackValue> formalParams, List<ReplicationInstruction> replicationInstructions)
-        {
-            //Compute the reduced Type args
-            List<CLRStackValue> reducedParamTypes = new List<CLRStackValue>(formalParams);
-            foreach (ReplicationInstruction ri in replicationInstructions)
-            {
-                var indices = ri.Zipped ? ri.ZipIndecies : new List<int> { ri.CartesianIndex };
-                foreach (int index in indices)
-                {
-                    //This should generally be a collection, so we need to do a one phase unboxing
-                    var target = reducedParamTypes[index];
-                    CLRStackValue reducedSV;
 
-                    if (target.IsEnumerable)
-                    {
-                        var array = target.Value as IList<CLRStackValue>;
-                        //It is a collection, so cast it to an array and pull the type of the first element
-                        //The elements of the array are still type structures
-                        if (array.Count == 0)
-                            reducedSV = CLRStackValue.Null;
-                        else
-                            reducedSV = array[0];
-                    }
-                    else
-                    {
-#if DEBUG
-                        System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
-#endif
-                        reducedSV = target;
-                    }
-
-                    reducedParamTypes[index] = reducedSV;
-                }
-            }
-
-            return reducedParamTypes;
-        }
-        
         public static List<List<int>> BuildReductions(List<int> reductionDepths)
         {
             int argumentCount = reductionDepths.Count;
@@ -469,58 +424,7 @@ namespace ProtoCore.Lang.Replication
         /// <returns></returns>
         public static List<List<ReplicationInstruction>> BuildReplicationCombinations(List<ReplicationInstruction> providedControl, List<StackValue> formalParams, RuntimeCore runtimeCore)
         {
-            List<int> maxReductionDepths = formalParams.Select(p => ArrayUtils.GetMaxRankForArray(p, runtimeCore)).ToList();
-
-            int maxDepth = maxReductionDepths.Sum();
-            if (maxDepth == 0)
-                return new List<List<ReplicationInstruction>>();
-
-            // Reduce reduction level on parameter if the parameter has replication guides 
-            if (providedControl.Count > 0)
-            {
-                var reversedControl = new List<ReplicationInstruction>(providedControl);
-                reversedControl.Reverse();
-
-                foreach (ReplicationInstruction ri in reversedControl)
-                {
-                    if (ri.Zipped)
-                    {
-                        foreach (int idx in ri.ZipIndecies)
-                        {
-                            if (maxReductionDepths[idx] > 0)
-                                maxReductionDepths[idx] = maxReductionDepths[idx] - 1;
-                        }
-                    }
-                    else
-                    {
-                        if (maxReductionDepths[ri.CartesianIndex] > 0)
-                        {
-                            maxReductionDepths[ri.CartesianIndex] = maxReductionDepths[ri.CartesianIndex] - 1;
-                        }
-                    }
-                }
-            }
-
-            // Generate reduction lists (x1, x2, ..., xn) 
-            if (maxReductionDepths.Any(r => r < 0) || maxReductionDepths.All(r => r == 0))
-                return new List<List<ReplicationInstruction>> { providedControl };
-
-            List<List<int>> reductions = BuildReductions(maxReductionDepths);
-            var ret = reductions.Select(rs => ReductionToInstructions(rs, providedControl)).ToList();
-            return ret;
-        }
-
-        /// <summary>
-        /// Build all possible replications based on the rank of parameters and
-        /// the provided replicatoin guide.
-        /// </summary>
-        /// <param name="providedControl"></param>
-        /// <param name="formalParams"></param>
-        /// <param name="runtimeCore"></param>
-        /// <returns></returns>
-        internal static List<List<ReplicationInstruction>> BuildReplicationCombinations(List<ReplicationInstruction> providedControl, List<CLRStackValue> formalParams)
-        {
-            List<int> maxReductionDepths = formalParams.Select(p => ArrayUtils.GetMaxRankForArray(p)).ToList();
+            List<int> maxReductionDepths = formalParams.Select(p => GetMaxReductionDepth(p, runtimeCore)).ToList();
 
             int maxDepth = maxReductionDepths.Sum();
             if (maxDepth == 0)
@@ -559,6 +463,47 @@ namespace ProtoCore.Lang.Replication
             List<List<int>> reductions = BuildReductions(maxReductionDepths);
             var ret = reductions.Select(rs => ReductionToInstructions(rs, providedControl)).ToList();
             return ret;
+        }
+
+        /// <summary>
+        /// Returns the maximum depth to which an element can be reduced
+        /// This will include cases where only partial reduction can be performed on jagged arrays
+        /// </summary>
+        /// <param name="sv"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public static int GetMaxReductionDepth(StackValue sv, RuntimeCore runtimeCore)
+        {
+            return RecursiveProtectGetMaxReductionDepth(sv, runtimeCore, 0);
+        }
+
+        /// <summary>
+        /// This computes the max depth to which the element can be reduced
+        /// It contains a protected envelope 
+        /// </summary>
+        /// <param name="sv"></param>
+        /// <param name="core"></param>
+        /// <param name="depthCount"></param>
+        /// <returns></returns>
+        private static int RecursiveProtectGetMaxReductionDepth(StackValue sv, RuntimeCore runtimeCore, int depthCount)
+        {
+            Validity.Assert(depthCount < 1000, 
+                "StackOverflow protection trap. This is almost certainly a VM cycle-in-array bug. {0B530165-2E38-431D-88D9-56B0636364CD}");
+
+            //PERF(Luke): Could be non-recursive
+            if (!sv.IsArray)
+                return 0;
+
+            int maxReduction = 0;
+
+            //De-ref the sv
+            var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
+            foreach (var subSv in array.Values)
+            {
+                maxReduction = Math.Max(maxReduction, RecursiveProtectGetMaxReductionDepth(subSv, runtimeCore, depthCount + 1));
+            }
+
+            return 1 + maxReduction;   
         }
     }
 }

@@ -266,65 +266,36 @@ namespace ProtoCore.Utils
             return usageFreq;
         }
 
-        private static int GetMaxRankForArray<T>(T sv, Func<T, System.Collections.IEnumerable> asArr, int tracer)
+        private static int GetMaxRankForArray(StackValue array, RuntimeCore runtimeCore, int tracer)
         {
             if (tracer > RECURSION_LIMIT)
                 throw new CompilerInternalException("Internal Recursion limit exceeded in Rank Check - Possible heap corruption {3317D4F6-4758-4C19-9680-75B68DA0436D}");
 
-            var array = asArr(sv);
-            if (array == null)
+            if (!array.IsArray)
                 return 0;
             //throw new ArgumentException("The stack value provided was not an array");
+
+            int ret = 1;
 
             int largestSub = 0;
 
             //This is the element on the heap that manages the data structure
-            foreach (T item in array)
+            foreach (var sv in runtimeCore.Heap.ToHeapObject<DSArray>(array).Values)
             {
-                largestSub = Math.Max(largestSub, GetMaxRankForArray(item, asArr, tracer + 1));
+                if (sv.IsArray)
+                {
+                    int subArrayRank = GetMaxRankForArray(sv, runtimeCore, tracer + 1);
+                    largestSub = Math.Max(subArrayRank, largestSub);
+                }
             }
 
-            return largestSub + 1;
+            return largestSub + ret;
         }
 
-        public static int GetMaxRankForArray(StackValue sv, RuntimeCore runtimeCore)
+        public static int GetMaxRankForArray(StackValue array, RuntimeCore runtimeCore)
         {
-            return RecursiveProtectGetMaxReductionDepth(sv, (x) => {
-                return x.IsArray ? runtimeCore.Heap.ToHeapObject<DSArray>(x)?.Values : null;
-                }, 0);
-        }
+            return GetMaxRankForArray(array, runtimeCore, 0);
 
-        internal static int GetMaxRankForArray(CLRStackValue sv)
-        {
-            return RecursiveProtectGetMaxReductionDepth(sv, (x) => x.IsEnumerable ? x.Value as IList<CLRStackValue> : null, 0);
-        }
-
-        /// This computes the max depth to which the element can be reduced
-        /// It contains a protected envelope 
-        /// </summary>
-        /// <param name="sv"></param>
-        /// <param name="core"></param>
-        /// <param name="depthCount"></param>
-        /// <returns></returns>
-        private static int RecursiveProtectGetMaxReductionDepth<T>(T sv, Func<T, System.Collections.IEnumerable> asArr, int depthCount)
-        {
-            Validity.Assert(depthCount < 1000,
-                "StackOverflow protection trap. This is almost certainly a VM cycle-in-array bug. {0B530165-2E38-431D-88D9-56B0636364CD}");
-
-            System.Collections.IEnumerable arr = asArr(sv);
-            if (arr == null)
-            {
-                return 0;
-            }
-
-            int maxReduction = 0;
-            //De-ref the sv
-            foreach (T subSv in arr)
-            {
-                maxReduction = Math.Max(maxReduction, RecursiveProtectGetMaxReductionDepth(subSv, asArr, depthCount + 1));
-            }
-
-            return 1 + maxReduction;
         }
 
         /// <summary>
@@ -343,15 +314,6 @@ namespace ProtoCore.Utils
             return array.Values.Any(
                         v => (v.IsArray && ContainsDoubleElement(v, runtimeCore)) ||
                              (exe.TypeSystem.GetType(v) == (int)PrimitiveType.Double));
-        }
-
-        internal static bool ContainsDoubleElement(CLRStackValue sv)
-        {
-            if (!sv.IsEnumerable)
-                return sv.IsDouble;
-
-            var svArr = sv.Value as IList<CLRStackValue>;
-            return svArr.Any(v => ContainsDoubleElement(v));
         }
 
         /// <summary>
@@ -591,8 +553,5 @@ namespace ProtoCore.Utils
                 hs.IntersectWith(lists[i]);
             return hs;
         }
-
-        internal static bool IsEnumerable(System.Type type) => typeof(System.Collections.IEnumerable).IsAssignableFrom(type);
-        internal static bool IsEnumerable<T>(System.Type type) => typeof(System.Collections.Generic.IEnumerable<T>).IsAssignableFrom(type);
     }
 }

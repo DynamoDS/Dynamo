@@ -87,7 +87,6 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0"
-                  x:Name="contentGrid"
                   DataContext="{Binding Step}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
@@ -103,7 +102,7 @@
                         <SolidColorBrush Color="{StaticResource PopupTitleBorderColor}" 
                                          Opacity="0.3"/>
                     </Border.BorderBrush>
-                    <Grid x:Name="titleGrid">
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="10*"/>
                             <ColumnDefinition Width="*"/>
@@ -136,7 +135,6 @@
             
             
             <Grid Grid.Row="1" 
-                  x:Name="bottomGrid"
                   Margin="0,10,0,10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

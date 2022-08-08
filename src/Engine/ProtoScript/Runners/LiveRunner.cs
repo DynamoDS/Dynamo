@@ -262,8 +262,8 @@ namespace ProtoScript.Runners
             if (changeSet.ForceExecuteASTList.Count > 0)
             {
                 // Mark all graphnodes dirty which are associated with the force exec ASTs
-                var firstDirtyNode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope(
-                    runtimeCore, changeSet.ForceExecuteASTList);
+                ProtoCore.AssociativeGraph.GraphNode firstDirtyNode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope
+(runtimeCore, changeSet.ForceExecuteASTList);
                 Validity.Assert(firstDirtyNode != null);
 
                 // If the only ASTs to execute are force exec, then set the entrypoint here.
@@ -756,19 +756,18 @@ namespace ProtoScript.Runners
                 }
                 else
                 {
-                    var unmodifiedASTs = GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes);
                     if (st.ForceExecution)
                     {
                         // Get the cached AST and append it to the changeSet
-                        csData.ForceExecuteASTList.AddRange(unmodifiedASTs);
+                        csData.ForceExecuteASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
                     }
 
                     // Update the cached AST to reflect the change
 
                     List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
 
-                    // Get all the unmodified ASTs and append them to the cached ast list 
-                    newCachedASTList.AddRange(unmodifiedASTs);
+                    // Get all the unomodified ASTs and append them to the cached ast list 
+                    newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
 
                     // Append all the modified ASTs to the cached ast list 
                     newCachedASTList.AddRange(modifiedASTList);
@@ -811,7 +810,6 @@ namespace ProtoScript.Runners
                 if (!modifiedSubTree.IsInput)
                 {
                     redefinitionAllowed = false;
-                    break;
                 }
             }
 

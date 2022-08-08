@@ -272,15 +272,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             stepUIPopup.IsOpen = false;
 
-            if (HostPopupInfo.HtmlPage != null && !string.IsNullOrEmpty(HostPopupInfo.HtmlPage.FileName))
-            {
-                var webBrowser = (stepUIPopup as PopupWindow).webBrowserComponent;
-                if(webBrowser != null)
-                {
-                    webBrowser.Dispose();
-                }               
-            }
-
             //Disable the HightlightArea functionality
             SetHighlightSection(false);
 
@@ -430,6 +421,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if(stepUIPopup is PopupWindow)
             {
                 var stepUiPopupWindow = (PopupWindow)stepUIPopup;
+                UpdatePopupLocationInvoke(stepUiPopupWindow?.webBrowserWindow);
             }
         }
 
@@ -493,7 +485,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 positionMethod.Invoke(popUp, null);
             }
         }
-        
+
         /// <summary>
         /// This method will execute an UIAutomation action over a specific UIElement
         /// </summary>
