@@ -12,7 +12,7 @@ namespace Dynamo.Tests
     [TestFixture, Category("Performance")]
     public class PerformanceTests : DynamoModelTestBase
     {
-        private List<(string, TimeSpan, TimeSpan)> ExecutionData;
+        private List<(string graph, TimeSpan oldEngineExecutionTime, TimeSpan newEngineExecutionTime)> executionData;
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -43,18 +43,19 @@ namespace Dynamo.Tests
         [TestFixtureSetUp]
         public void SetupPerformanceTests()
         {
-            ExecutionData = new List<(string, TimeSpan, TimeSpan)>();
+            executionData = new List<(string, TimeSpan, TimeSpan)>();
         }
 
         [TestFixtureTearDown]
         public void TeardownPerformanceTests()
         {
             Console.WriteLine("{0,50}{1,10}{2,10}", "Graph", "Old ms", "New ms");
-            ExecutionData.ForEach(item =>
+            executionData.ForEach(item =>
             {
-                Console.WriteLine("{0,50}{1,10}{2,10}", item.Item1, item.Item2.Milliseconds, item.Item3.Milliseconds);
+                var (graph, oldEngineExecutionTime, newEngineExecutionTime) = item;
+                Console.WriteLine("{0,50}{1,10}{2,10}", graph, oldEngineExecutionTime.Milliseconds, newEngineExecutionTime.Milliseconds);
             });
-            ExecutionData.Clear();
+            executionData.Clear();
         }
 
         [Test, TestCaseSource("FindWorkspaces"), Category("Performance")]
@@ -118,7 +119,7 @@ namespace Dynamo.Tests
 
             Console.WriteLine("Execution time old Engine={0} ms, new Engine={1} ms", oldEngineExecutionTime.Milliseconds, newEngineExecutionTime.Milliseconds);
             var execution = (Path.GetFileName(filePath), oldEngineExecutionTime, newEngineExecutionTime);
-            ExecutionData.Add(execution);
+            executionData.Add(execution);
         }
 
         private void CheckForDummyNodes(WorkspaceModel ws)
