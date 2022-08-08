@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -15,13 +16,20 @@ namespace CoreNodeModelsWpf.Controls
     /// </summary>
     public partial class CustomSelectionControl : UserControl
     {
+        private readonly CustomSelectionNodeModel model;
+
         /// <summary>
         /// Create the control for the custom dropdown menu and editor
         /// </summary>
-        public CustomSelectionControl()
+        public CustomSelectionControl(CustomSelectionViewModel viewModel)
         {
+            DataContext = viewModel;
+            model = viewModel.Model;
+
             InitializeComponent();
         }
+
+        public ComboBox BaseComboBox { get; set; }
 
         private void EnumItemsListbox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -48,12 +56,20 @@ namespace CoreNodeModelsWpf.Controls
             }
             catch (Exception ex)
             {
-                var viewModel = DataContext as CustomSelectionNodeModel;
-                if (viewModel != null)
-                {
-                    viewModel.Log(ex);
-                }
+                model.Log(ex);
             }
+        }
+
+        private void ItemNameChanged(object sender, RoutedEventArgs e)
+        {
+            BaseComboBox?.Items.Refresh();
+        }
+
+        private void ItemValueChanged(object sender, RoutedEventArgs e)
+        {
+            BaseComboBox?.Items.Refresh();
+
+            model.OnNodeModified();
         }
     }
 }

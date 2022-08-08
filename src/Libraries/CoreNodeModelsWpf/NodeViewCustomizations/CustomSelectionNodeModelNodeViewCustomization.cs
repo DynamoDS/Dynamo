@@ -19,16 +19,16 @@ namespace CoreNodeModelsWpf.Nodes
         /// <param name="nodeView"></param>
         public void CustomizeView(CustomSelectionNodeModel model, NodeView nodeView)
         {
-            nodeView.inputGrid.Children.Add(
-                new CustomSelectionControl()
-                {
-                    DataContext = new CustomSelectionViewModel(model),
-                });
+            var formControl = new CustomSelectionControl(new CustomSelectionViewModel(model));
+
+            nodeView.inputGrid.Children.Add(formControl);
 
             // Add the dropdown.
             base.CustomizeView(model, nodeView);
 
-            var dropdown = (FrameworkElement)nodeView.inputGrid.Children[1];
+            var dropdown = (ComboBox)nodeView.inputGrid.Children[1];
+
+            formControl.BaseComboBox = dropdown;
 
             // Add margin to the dropdown to show the expander.
             dropdown.Margin = new Thickness(40, 0, 0, 0);
