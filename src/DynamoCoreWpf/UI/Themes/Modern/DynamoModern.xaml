@@ -3,6 +3,7 @@
                     xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
                     xmlns:clr="clr-namespace:System;assembly=mscorlib"
                     xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCoreWpf"
+                    xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
                     xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
                     xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
                     xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
@@ -1456,6 +1457,8 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style TargetType="{x:Type nodes:DynamoNodeButton}" BasedOn="{StaticResource SNodeTextButton}" />
 
     <Style x:Key="SingleCharButton" TargetType="{x:Type Button}" BasedOn="{StaticResource SNodeTextButton}">
         <Setter Property="Foreground" Value="#999999" />

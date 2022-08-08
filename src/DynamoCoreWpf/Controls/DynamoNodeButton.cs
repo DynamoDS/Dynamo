@@ -15,14 +15,17 @@ namespace Dynamo.Nodes
         private string eventName = string.Empty;
         private ModelBase model = null;
         private DynamoViewModel dynamoViewModel;
+
         private DynamoViewModel DynamoViewModel
         {
             get
             {
-                if (this.dynamoViewModel != null) return this.dynamoViewModel;
+                if (this.dynamoViewModel != null)
+                    return this.dynamoViewModel;
 
                 var f = WpfUtilities.FindUpVisualTree<NodeView>(this);
-                if (f != null) this.dynamoViewModel = f.ViewModel.DynamoViewModel;
+                if (f != null)
+                    this.dynamoViewModel = f.ViewModel.DynamoViewModel;
 
                 return this.dynamoViewModel;
             }
@@ -30,7 +33,6 @@ namespace Dynamo.Nodes
 
         public DynamoNodeButton()
         {
-            Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SNodeTextButton"];
         }
 
         public DynamoNodeButton(ModelBase model, string eventName)
@@ -43,12 +45,12 @@ namespace Dynamo.Nodes
 
         private void OnDynamoNodeButtonClick(object sender, RoutedEventArgs e)
         {
-            // If this DynamoNodeButton was created with an associated model 
-            // and the event name, then the owner of this button (a ModelBase) 
+            // If this DynamoNodeButton was created with an associated model
+            // and the event name, then the owner of this button (a ModelBase)
             // needs the "ModelEventCommand" to be sent when user clicks
             // on the button.
-            // 
-            if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
+            //
+            if (null != this.model && ( !string.IsNullOrEmpty(this.eventName) ))
             {
                 var command = new DynamoModel.ModelEventCommand(model.GUID, eventName);
                 this.DynamoViewModel.ExecuteCommand(command);
