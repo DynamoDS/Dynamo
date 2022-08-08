@@ -1,4 +1,4 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ template debug="false" hostspecific="false" language="C#" #>
 using System;
 using System.Reflection;
 using System.Resources;
