@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Dynamo.Notifications;
 
 namespace DynamoCoreWpfTests.ViewExtensions
 {
@@ -36,9 +35,9 @@ namespace DynamoCoreWpfTests.ViewExtensions
         public void ValidateNotificationsUIEmbededFiles()
         {
             var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x=>x.ManifestModule.Name.Contains("Notifications.dll"));
-            var htmlFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
+            var htmlFile = "Dynamo.Notifications.Web.index.html";
 
-            var mainJstag = "mainJs";     
+            var mainJstag = "#mainJs";     
 
             using (Stream stream = assembly.GetManifestResourceStream(htmlFile))
             using (StreamReader reader = new StreamReader(stream))

@@ -13,7 +13,7 @@ namespace ProtoCore.DSASM
         LX,
     }
 
-    public enum AddressType : int
+    public enum AddressType: int 
     {
         Invalid,
         Register,
@@ -99,7 +99,7 @@ namespace ProtoCore.DSASM
         CJMP,
         JDEP,
         DEP,
-
+        
         // TODO Jun: This is temporary until the lib system is implemented. 
         PUSH_ARRAYKEY,
         SETEXPUID
@@ -108,112 +108,6 @@ namespace ProtoCore.DSASM
     public struct MetaData
     {
         public int type;
-    }
-
-    /// <summary>
-    /// Wrapper over all values handled by the MSIL/CLR engine.
-    /// </summary>
-    internal struct CLRStackValue
-    {
-        // TODO_MSIL: Figure out if we need to use an AddressType, like StackValue
-        public bool IsEnumerable => Type != typeof(string) && ArrayUtils.IsEnumerable(Type);
-
-        public bool IsDouble => Value is double;
-
-        // TODO_MSIL: Figure out how to set/use this flag;
-        public bool IsDefaultArgument => false;
-
-        // TODO_MSIL: Figure out if we need to use an AddressType, like StackValue
-        public bool IsPointer => Type != null && Type != typeof(string) && !ArrayUtils.IsEnumerable(Type) && !Type.IsValueType && Type.IsClass;
-
-        // TODO_MSIL: Figure out how to set/use this flag;
-        public bool IsExplicitCall => false;
-
-        public bool IsNull => Value == null;
-
-        // Equivalent to StackValue.metaData.type
-        public int TypeUID { get; set; }
-
-        public System.Type Type => Value?.GetType();
-
-        // TODO_MSIL: Figure out how bad boxing/unboxing is for performance
-        public object Value { get; set; }
-
-
-        public CLRStackValue(object value, int protoType)
-        {
-            this.Value = value;
-            this.TypeUID = protoType;
-        }
-
-        internal static CLRStackValue Null => new CLRStackValue(null, (int)PrimitiveType.Null);
-
-        #region Converters
-        public CLRStackValue ToBoolean()
-        {
-            switch (TypeUID)
-            {
-                case (int)PrimitiveType.Bool:
-                    return this;
-
-                case (int)PrimitiveType.Integer:
-                    return new CLRStackValue(Value != null && (int)Value != 0, (int)PrimitiveType.Bool);
-
-                case (int)PrimitiveType.InvalidType:
-                    return new CLRStackValue(false, (int)PrimitiveType.Bool);
-
-                case (int)PrimitiveType.Double:
-                    double val = (double)Value;
-                    bool b = !Double.IsNaN(val) && !val.Equals(0.0);
-                    return new CLRStackValue(b, (int)PrimitiveType.Bool);
-
-                case (int)PrimitiveType.Pointer:
-                    return new CLRStackValue(true, (int)PrimitiveType.Bool);
-
-                case (int)PrimitiveType.String:
-                    string str = Value as string;
-                    return new CLRStackValue(!string.IsNullOrEmpty(str), (int)PrimitiveType.Bool);
-
-                case (int)PrimitiveType.Char:
-                    char c = Convert.ToChar(Value);
-                    return new CLRStackValue(c != 0, (int)PrimitiveType.Bool);
-
-                default:
-                    return CLRStackValue.Null;
-            }
-        }
-
-        public CLRStackValue ToDouble()
-        {
-            switch (TypeUID)
-            {
-                case (int)PrimitiveType.Integer:
-                    return new CLRStackValue(Convert.ToDouble((long)Value), (int)PrimitiveType.Double);
-
-                case (int)PrimitiveType.Double:
-                    return this;
-
-                default:
-                    return CLRStackValue.Null;
-            }
-        }
-
-        public CLRStackValue ToInteger()
-        {
-            switch (TypeUID)
-            {
-                case (int)PrimitiveType.Integer:
-                    return this;
-
-                case (int)PrimitiveType.Double:
-                    double value = (double)Value;
-                    return new CLRStackValue((Int64)Math.Round(value, 0, MidpointRounding.AwayFromZero), (int)PrimitiveType.Integer);
-
-                default:
-                    return CLRStackValue.Null;
-            }
-        }
-        #endregion
     }
 
     [System.Diagnostics.DebuggerDisplay("{optype}, opdata = {opdata}, metaData = {metaData.type}")]

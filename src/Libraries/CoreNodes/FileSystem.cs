@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Autodesk.DesignScript.Runtime;
-using Dynamo.Events;
 using Dynamo.Graph.Nodes;
-using Dynamo.Logging;
-using Dynamo.Session;
 using Path = System.IO.Path;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -445,13 +440,6 @@ namespace DSCore.IO
 
         private static Bitmap FromPixelsHelper(IEnumerable<Color> colors, int width, int height)
         {
-            //if the color data is larger than will fit in the bitmap buffer
-            //then this can cause an access violation - so we'll throw an exception.
-            if(colors?.Count() > width * height)
-            {
-                throw new ArgumentOutOfRangeException("colors", Properties.Resources.BitmapOverflowError);
-            }
-            
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var data = bitmap.LockBits(
                 new Rectangle(0, 0, width, height),

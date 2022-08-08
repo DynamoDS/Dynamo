@@ -1136,11 +1136,6 @@ namespace ProtoFFI
         {
             return CLRObjectMarshaler.GetInstance(runtimeCore);
         }
-
-        internal static CLRObjectMarshaler GetMarshaler(ProtoCore.MSILRuntimeCore runtimeCore)
-        {
-            return CLRObjectMarshaler.GetInstance(runtimeCore);
-        }
     }
 
     /// <summary>

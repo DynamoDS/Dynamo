@@ -224,7 +224,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This method exits from tour 
         /// </summary>
-        internal void ExitTour()
+        private void ExitTour()
         {
 
             if (currentGuide != null)
@@ -276,6 +276,24 @@ namespace Dynamo.Wpf.UI.GuidedTour
             exitGuideWindow.ContinueTourButton.Click += ContinueTourButton_Click;
 
             exitGuideWindow.IsOpen = true;
+        }
+
+        /// <summary>
+        /// Shows/Hides the Popup based in if the DynamoView is Active or not
+        /// </summary>
+        /// <param name="isActive"></param>
+        internal void ManagePopupActivation(bool isActive)
+        {
+            if (GuideFlowEvents.IsAnyGuideActive)
+            {
+                if (currentGuide.CurrentStep.stepUIPopup.IsOpen == !isActive)
+                    currentGuide.CurrentStep.stepUIPopup.IsOpen = isActive;
+            }
+            else if (GuideFlowEvents.IsAnyGuideActive == false && GuideFlowEvents.IsGuideExited == false)
+            {
+                if(exitGuideWindow != null && currentGuide.Name.Equals(GuidesManager.PackagesGuideName))
+                    exitGuideWindow.IsOpen = isActive;
+            }
         }
 
         private void ContinueTourButton_Click(object sender, RoutedEventArgs e)
@@ -517,7 +535,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="content">The target content to display.</param>
         /// TODO: Make this API out of guide manager to a more generic place
-        internal void CreateRealTimeInfoWindow(string content, bool stayOpen = false)
+        internal void CreateRealTimeInfoWindow(string content)
         {
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
             UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
@@ -534,8 +552,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 VerticalOffset = ExitTourVerticalOffset,
                 HorizontalOffset = ExitTourHorizontalOffset,
                 Placement = PlacementMode.Left,
-                TextContent = content,
-                StaysOpen = stayOpen
+                TextContent = content
             };
 
             if (hostUIElement != null)
