@@ -7,9 +7,6 @@ using ProtoCore.AST.AssociativeAST;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("CoreNodeModelsWpf")]
 
 namespace CoreNodeModels.Input
 {
@@ -37,6 +34,8 @@ namespace CoreNodeModels.Input
             Items.Add(new DynamoDropDownItem("One", "1"));
             Items.Add(new DynamoDropDownItem("Two", "2"));
             Items.Add(new DynamoDropDownItem("Three", "3"));
+
+            SelectedIndex = 0;
         }
 
         /// <summary>
@@ -50,17 +49,6 @@ namespace CoreNodeModels.Input
             AssociativeNode associativeNode = AstFactory.BuildPrimitiveNodeFromObject(GetSelectedValue());
 
             return new List<AssociativeNode> { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), associativeNode) };
-        }
-
-        /// <summary>
-        /// Log an exception
-        /// </summary>
-        /// <param name="ex"></param>
-        [IsVisibleInDynamoLibrary(false)]
-        internal void Log(Exception ex)
-        {
-            Log(ex.Message, Dynamo.Logging.WarningLevel.Error);
-            Log(ex.StackTrace, Dynamo.Logging.WarningLevel.Error);
         }
 
         /// <summary>
