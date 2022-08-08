@@ -239,13 +239,13 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldc_I4_0);
             EmitOpCode(OpCodes.Stloc, counterIndex);
 
-            var loopBodyLabel = ilGen.DefineLabel();
-            var loopCondLabel = ilGen.DefineLabel();
+            var loopBodyLabel = DefineLabel();
+            var loopCondLabel = DefineLabel();
 
-            EmitOpCode(OpCodes.Br_S, loopCondLabel);
+            EmitOpCode(OpCodes.Br_S, loopCondLabel.Value);
 
             // newarr[i] = (Target)arr[i];
-            ilGen.MarkLabel(loopBodyLabel);
+            MarkLabel(loopBodyLabel.Value,"label:body")
 
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
@@ -293,7 +293,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Stloc, counterIndex);
 
             // i < len;
-            ilGen.MarkLabel(loopCondLabel);
+            MarkLabel(loopCondLabel.Value,"label:cond");
 
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
@@ -301,7 +301,7 @@ namespace EmitMSIL
 
             EmitOpCode(OpCodes.Clt);
 
-            EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel);
+            EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel.Value);
 
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
 
@@ -341,14 +341,13 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldc_I4_0);
             EmitOpCode(OpCodes.Stloc, counterIndex);
 
-            var loopBodyLabel = ilGen.DefineLabel();
-            var loopCondLabel = ilGen.DefineLabel();
+            var loopBodyLabel = DefineLabel();
+            var loopCondLabel = DefineLabel();
 
-            EmitOpCode(OpCodes.Br_S, loopCondLabel);
+            EmitOpCode(OpCodes.Br_S, loopCondLabel.Value);
 
             // newarr[i] = (Target)arr[i];
-            ilGen.MarkLabel(loopBodyLabel);
-            EmitILComment("label:body");
+            MarkLabel(loopBodyLabel.Value, "label:body");
 
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
@@ -409,8 +408,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Stloc, counterIndex);
 
             // i < arr.Length;
-            ilGen.MarkLabel(loopCondLabel);
-            EmitILComment("label:cond");
+            MarkLabel(loopCondLabel.Value,"label:cond");
 
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
@@ -790,6 +788,19 @@ namespace EmitMSIL
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             writer.WriteLine($"//{comment}");
+        }
+
+        private Label? DefineLabel()
+        {
+            if (compilePass == CompilePass.GatherTypeInfo) return null;
+            return ilGen.DefineLabel();
+        }
+
+        private void MarkLabel(Label label,string labelcomment = "")
+        {
+            if (compilePass == CompilePass.GatherTypeInfo) return;
+            writer.WriteLine($"//{labelcomment}");
+            ilGen.MarkLabel(label);
         }
 
         private void EmitGroupExpressionNode(AssociativeNode node)
