@@ -14,6 +14,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Engine\EmitMSIL\EmitMSIL.csproj" />
+    <ProjectReference Include="..\Engine\FFITarget\FFITarget.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

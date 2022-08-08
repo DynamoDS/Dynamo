@@ -49,7 +49,6 @@ list3 = DSCore.Math.Max([ 1, 4, 7, 2], [ 5, 8, 3, 6 ]);
         }
 
         [Test]
-        [Category("Failure")] // Fails due to compile time coercion
         public void MSIL_Arithmatic_No_Replication()
         {
             string dscode = @"
@@ -137,6 +136,120 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.AreEqual(output["test3"], new Object[] { new Object[] { new Object[] { 1 }, new Object[] { 0 } }, new Object[] { new Object[] { 3 }, new Object[] { 2 } } });
             Assert.AreEqual(output["test4"], new Object[] { new Object[] { new Object[] { 0, 0, 1 }, new Object[] { 0, 1, 1 } }, new Object[] { new Object[] { 0, 2, 3 }, new Object[] { 2, 1, 3 } } });
             Assert.AreEqual(output["test5"], new Object[] { new Object[] { new Object[] { 0, 1 }, new Object[] { 0, 1 } }, new Object[] { new Object[] { 2, 3 }, new Object[] { 2, 3 } } });
+        }
+
+
+        private bool AreEqual(object a, object b)
+        {
+            if (a == null && b == null) return true;
+
+            if (a == null || b == null) return false;
+
+            if (a.GetType() == typeof(int) && b.GetType() == typeof(int))
+            {
+                return (int)a == (int)b;
+            }
+
+            bool isAIEnum = typeof(IEnumerable<object>).IsAssignableFrom(a.GetType());
+            bool isBIEnum = typeof(IEnumerable<object>).IsAssignableFrom(b.GetType());
+            if (isAIEnum && isBIEnum)
+            {
+                var aIEnum = (a as IEnumerable<object>).ToList();
+                var bIEnum = (b as IEnumerable<object>).ToList();
+
+                if (aIEnum.Count() != bIEnum.Count()) 
+                { 
+                    return false; 
+                }
+
+                for (int ii=0; ii < aIEnum.Count(); ii++)
+                {
+                    if (!AreEqual(aIEnum[ii], bIEnum[ii]))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            else if (isAIEnum || isBIEnum)
+            {
+                return false;
+            }
+
+            var aR = a as FFITarget.ReplicationTestA;
+            var bR = a as FFITarget.ReplicationTestA;
+            if (aR != null && bR != null)
+            {
+                return aR.X == bR.X &&
+                       aR.Y == bR.Y &&
+                       aR.Z == bR.Z;
+            }
+            return false;
+        }
+
+        [Test]
+        public void MSIL_FuncCall_Double_SomeGuides()
+        {
+            string code =
+            @"
+            import(""DesignScriptBuiltin.dll"");
+            import (""FFITarget.dll"");
+            x = [0.0,1.0];
+            y = [2.0,3.0];
+            z = [4.0,5.0 ];
+            test1 = FFITarget.ReplicationTestA.ReplicationTestA(x, y, z);  
+            test2 = FFITarget.ReplicationTestA.ReplicationTestA(0,0,0);
+            test3 = FFITarget.ReplicationTestA.ReplicationTestA(x<1>, y<2>, z); 
+            test4 = FFITarget.ReplicationTestA.foo(x, y<2>, z);      
+            ";
+
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(AreEqual(
+                new Object[] {
+                    new FFITarget.ReplicationTestA() { X = 0, Y = 2, Z = 4 },
+                    new FFITarget.ReplicationTestA() { X = 1, Y = 3, Z = 5 }
+                },
+                output["test1"]));
+
+            Assert.IsTrue(AreEqual(
+                new Object[] { new FFITarget.ReplicationTestA() { X = 0, Y = 0, Z = 0 } },
+                output["test2"]));
+
+            Assert.IsTrue(AreEqual(
+                new Object[] {
+                    new Object[] {
+                        new Object[] {
+                            new FFITarget.ReplicationTestA() { X = 0, Y = 2, Z = 4 },
+                            new FFITarget.ReplicationTestA() { X = 1, Y = 2, Z = 5 }
+                        },
+                        new Object[] {
+                            new FFITarget.ReplicationTestA() { X = 0, Y = 3, Z = 4 },
+                            new FFITarget.ReplicationTestA() { X = 1, Y = 3, Z = 5 }
+                        }
+                    },
+                    new Object[] {
+                        new Object[] {
+                            new FFITarget.ReplicationTestA() { X = 1, Y = 2, Z = 4 },
+                            new FFITarget.ReplicationTestA() { X = 1, Y = 2, Z = 5 }
+                        },
+                        new Object[] {
+                            new FFITarget.ReplicationTestA() { X = 1, Y = 3, Z = 4 },
+                            new FFITarget.ReplicationTestA() { X = 1, Y = 3, Z = 5 }
+                        }
+                    },
+                },
+                output["test3"]));
+
+            Assert.IsTrue(AreEqual(
+                new Object[] {
+                    new Object[] { 6, 8 },
+                    new Object[] { 7, 9 }
+                },
+                output["test4"]));
         }
     }
 }
