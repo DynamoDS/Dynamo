@@ -44,11 +44,12 @@ list3 = DSCore.Math.Max([ 1, 4, 7, 2], [ 5, 8, 3, 6 ]);
             Assert.IsTrue(output.ContainsKey("list3"));
 
             var expectedResult = new int[] { 5, 8, 7, 6 };
-            var result = output["list3"][0];
+            var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
 
         [Test]
+        [Category("Failure")] // Fails due to compile time coercion
         public void MSIL_Arithmatic_No_Replication()
         {
             string dscode = @"
@@ -64,6 +65,24 @@ list = DSCore.Math.Sum([ 1, 2, 3 ]);
 
             var result = (double)output["list"][0];
             Assert.AreEqual(6, result);
+        }
+
+        [Test]
+        public void MSIL_List_No_Replication()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list = DSCore.List.Reverse([ 1, 2, 3 ]);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list"));
+
+            var result = output["list"];
+            Assert.AreEqual(new object[] { 3, 2, 1 }, result);
         }
 
         [Test]
@@ -86,10 +105,10 @@ list = DSCore.Math.Sum([ 1, 2, 3 ]);
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
 
-            Assert.AreEqual(output["test1"], new Object[] { new Object[] { true, true } });
-            Assert.AreEqual(output["test2"], new Object[] { new Object[] { 0, 1 } });
-            Assert.AreEqual(output["test3"], new Object[] { new Object[] { 2, 3 } });
-            Assert.AreEqual(output["test4"], new Object[] { new Object[] { new Object[] { 0, 1, 2, 3 }, new Object[] { 0, 1, 2, 3 } } });
+            Assert.AreEqual(output["test1"], new Object[] { true, true });
+            Assert.AreEqual(output["test2"], new Object[] { 0, 1 });
+            Assert.AreEqual(output["test3"], new Object[] { 2, 3 });
+            Assert.AreEqual(output["test4"], new Object[] { new Object[] { 0, 1, 2, 3 }, new Object[] { 0, 1, 2, 3 } });
         }
 
         [Test]
@@ -113,11 +132,11 @@ list = DSCore.Math.Sum([ 1, 2, 3 ]);
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
 
-            Assert.AreEqual(output["test1"][0], new Object[] { new Object[] { true, true }, new Object[] { false, false } });
-            Assert.AreEqual(output["test2"][0], new Object[] { new Object[] { 0, 1 }, new Object[] { -1, -1 } });
-            Assert.AreEqual(output["test3"][0], new Object[] { new Object[] { new Object[] { 1 }, new Object[] { 0 } }, new Object[] { new Object[] { 3 }, new Object[] { 2 } } });
-            Assert.AreEqual(output["test4"][0], new Object[] { new Object[] { new Object[] { 0, 0, 1 }, new Object[] { 0, 1, 1 } }, new Object[] { new Object[] { 0, 2, 3 }, new Object[] { 2, 1, 3 } } });
-            Assert.AreEqual(output["test5"][0], new Object[] { new Object[] { new Object[] { 0, 1 }, new Object[] { 0, 1 } }, new Object[] { new Object[] { 2, 3 }, new Object[] { 2, 3 } } });
+            Assert.AreEqual(output["test1"], new Object[] { new Object[] { true, true }, new Object[] { false, false } });
+            Assert.AreEqual(output["test2"], new Object[] { new Object[] { 0, 1 }, new Object[] { -1, -1 } });
+            Assert.AreEqual(output["test3"], new Object[] { new Object[] { new Object[] { 1 }, new Object[] { 0 } }, new Object[] { new Object[] { 3 }, new Object[] { 2 } } });
+            Assert.AreEqual(output["test4"], new Object[] { new Object[] { new Object[] { 0, 0, 1 }, new Object[] { 0, 1, 1 } }, new Object[] { new Object[] { 0, 2, 3 }, new Object[] { 2, 1, 3 } } });
+            Assert.AreEqual(output["test5"], new Object[] { new Object[] { new Object[] { 0, 1 }, new Object[] { 0, 1 } }, new Object[] { new Object[] { 2, 3 }, new Object[] { 2, 3 } } });
         }
     }
 }
