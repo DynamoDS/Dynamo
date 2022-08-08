@@ -224,7 +224,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This method exits from tour 
         /// </summary>
-        private void ExitTour()
+        internal void ExitTour()
         {
 
             if (currentGuide != null)
