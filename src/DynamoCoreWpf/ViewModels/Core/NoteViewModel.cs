@@ -468,8 +468,8 @@ namespace Dynamo.ViewModels
             if (PinnedNode == null) return;
 
             var distanceToNode = DISTANCE_TO_PINNED_NODE;
-            if ((Model.PinnedNode.State == ElementState.Error ||
-                Model.PinnedNode.State == ElementState.Warning) && Model.PinnedNode.DismissedAlerts.Count == 0)
+            if (Model.PinnedNode.State == ElementState.Error ||
+                Model.PinnedNode.State == ElementState.Warning)
             {
                 distanceToNode = DISTANCE_TO_PINNED_NODE_WITH_WARNING;
             }

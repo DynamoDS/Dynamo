@@ -1104,19 +1104,12 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
                     //RaisePropertyChanged("RunEnabled");
-                    ExitGuidedTourIfOpened();
                     break;
 
                 case "EnablePresetOptions":
                     RaisePropertyChanged("EnablePresetOptions");
                     break;
             }
-        }
-
-        private void ExitGuidedTourIfOpened()
-        {
-            if (GuideFlowEvents.IsAnyGuideActive)
-                MainGuideManager.ExitTour();
         }
 
         // TODO(Sriram): This method is currently not used, but it should really 

@@ -84,7 +84,7 @@
                             Click="MaximizeButton_OnClick"
                             DockPanel.Dock="Right"
                             Visibility="Collapsed"
-                            Style="{StaticResource RestoreButtonStyle}" />
+                            Style="{StaticResource NormalizeButtonStyle}" />
 
                     <Button Name="MinimizeButton"
                             Margin="0 0 25 0"
@@ -110,8 +110,15 @@
                         <RowDefinition Height="50"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="1" Orientation=" Vertical">
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
                         <TextBlock Name="DynamoCoreVersion"
+                                   Grid.Row="0"
                                    HorizontalAlignment="Center"
                                    Background="Transparent" 
                                    Foreground="{StaticResource DarkerGreyBrush}"
@@ -121,6 +128,7 @@
                         </TextBlock>
 
                         <TextBlock Name="GenericHostVersion"
+                                   Grid.Row="1"
                                    HorizontalAlignment="Center"
                                    Background="Transparent" 
                                    Foreground="{StaticResource DarkerGreyBrush}"
@@ -133,6 +141,7 @@
                         <TextBlock x:Name ="UpdateInfo"
                                    HorizontalAlignment="Center"
                                    FontSize="12" 
+                                   Grid.Row="{Binding HostVersion, Converter={StaticResource NullValueToGridRow1Converter}}"
                                    FontFamily="{StaticResource OpenSansRegular}" 
                                    Foreground="#168576"
                                    Margin="0"
@@ -141,8 +150,7 @@
                                      Text="{Binding Model.UpdateManager, Converter={StaticResource IsUpdateAvailableToTextConverter}, 
                                      ConverterParameter=DataContext, Mode=OneWay}"/>
                         </TextBlock>
-                    </StackPanel>
-
+                    </Grid>
                     <Button Name="DynamoWebsiteButton" Grid.Row="2" Click="OnClickLink" Style="{StaticResource CtaButtonStyle}"
                             HorizontalAlignment="Center"
                             Margin="3"

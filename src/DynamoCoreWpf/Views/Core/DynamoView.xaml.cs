@@ -2508,6 +2508,12 @@ namespace Dynamo.Controls
 
         private void DynamoView_Activated(object sender, EventArgs e)
         {
+            if (dynamoViewModel.MainGuideManager != null && dynamoViewModel.MainGuideManager.currentGuide != null)
+            {
+                dynamoViewModel.MainGuideManager.ManagePopupActivation(true);
+            }
+
+
             if (fileTrustWarningPopup != null)
             {
                 fileTrustWarningPopup.ManagePopupActivation(true);
@@ -2516,6 +2522,9 @@ namespace Dynamo.Controls
 
         private void DynamoView_Deactivated(object sender, EventArgs e)
         {
+            if (dynamoViewModel.MainGuideManager != null && dynamoViewModel.MainGuideManager.currentGuide != null)
+                dynamoViewModel.MainGuideManager.ManagePopupActivation(false);
+
             if(fileTrustWarningPopup != null)
                 fileTrustWarningPopup.ManagePopupActivation(false);
         }

@@ -42,12 +42,12 @@ namespace Dynamo.ViewModels
         public const string EMPTY_DICTIONARY = "Empty Dictionary";
         public const string DICTIONARY = "Dictionary";
 
-        private ObservableCollection<WatchViewModel> children = new ObservableCollection<WatchViewModel>();
-        private string label;
-        private string link;
-        private bool showRawData;
-        private string path = "";
-        private bool isOneRowContent;
+        private ObservableCollection<WatchViewModel> _children = new ObservableCollection<WatchViewModel>();
+        private string _label;
+        private string _link;
+        private bool _showRawData;
+        private string _path = "";
+        private bool _isOneRowContent;
         private readonly Action<string> tagGeometry;
         private bool isCollection;
         private string valueType;
@@ -68,10 +68,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public ObservableCollection<WatchViewModel> Children
         {
-            get { return children; }
+            get { return _children; }
             set
             {
-                children = value;
+                _children = value;
                 RaisePropertyChanged("Children");
             }
         }
@@ -81,10 +81,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string NodeLabel
         {
-            get { return label; }
+            get { return _label; }
             set
             {
-                label = value;
+                _label = value;
                 RaisePropertyChanged("NodeLabel");
             }
         }
@@ -94,10 +94,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string Link
         {
-            get { return link; }
+            get { return _link; }
             set
             {
-                link = value;
+                _link = value;
                 RaisePropertyChanged("Link");
             }
         }
@@ -110,7 +110,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                var splits = Path.Split(':');
+                var splits = _path.Split(':');
                 if (splits.Count() == 1)
                     return string.Empty;
                 return splits.Any() ? string.Format(NodeLabel == LIST ? "{0}" : " {0} ", splits.Last()) : string.Empty;
@@ -126,10 +126,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string Path
         {
-            get { return path; }
+            get { return _path; }
             set
             {
-                path = value;
+                _path = value;
                 RaisePropertyChanged("Path");
             }
         }
@@ -142,10 +142,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool ShowRawData
         {
-            get { return showRawData; }
+            get { return _showRawData; }
             set
             {
-                showRawData = value;
+                _showRawData = value;
                 RaisePropertyChanged("ShowRawData");
             }
         }
@@ -159,10 +159,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsOneRowContent
         {
-            get { return isOneRowContent; }
+            get { return _isOneRowContent; }
             set
             {
-                isOneRowContent = value;
+                _isOneRowContent = value;
                 RaisePropertyChanged("IsOneRowContent");
             }
         }
@@ -238,13 +238,13 @@ namespace Dynamo.ViewModels
         public WatchViewModel(string label, string path, Action<string> tagGeometry, bool expanded = false)
         {
             FindNodeForPathCommand = new DelegateCommand(FindNodeForPath, CanFindNodeForPath);
-            Path = path;
-            NodeLabel = label;
+            _path = path;
+            _label = label;
             IsNodeExpanded = expanded;
             this.tagGeometry = tagGeometry;
-            NumberOfItems = 0;
+            numberOfItems = 0;
             maxListLevel = 0;
-            IsCollection = label == WatchViewModel.LIST || label == WatchViewModel.DICTIONARY;
+            isCollection = label == WatchViewModel.LIST || label == WatchViewModel.DICTIONARY;
         }
 
         private static string GetStringFromObject(object obj)
@@ -330,7 +330,7 @@ namespace Dynamo.ViewModels
             var listLevelAndItemCount = GetMaximumDepthAndItemNumber(this);
             maxListLevel = listLevelAndItemCount.Item1;
             NumberOfItems = listLevelAndItemCount.Item2;
-            IsCollection = maxListLevel + numberOfItems > 5;
+            IsCollection = maxListLevel > 1 || (this._children != null && this.Children.Count > 0 && this._children[0].NodeLabel == WatchViewModel.LIST);
         }
 
         private Tuple<int, int> GetMaximumDepthAndItemNumber(WatchViewModel wvm)
@@ -350,7 +350,7 @@ namespace Dynamo.ViewModels
             }
 
             // if it's a list, recurse
-            if (wvm.NodeLabel == LIST || wvm.NodeLabel == DICTIONARY)
+            if (wvm.NodeLabel == LIST)
             {
                 var depthAndNumbers = wvm.Children.Select(GetMaximumDepthAndItemNumber);
                 var maxDepth = depthAndNumbers.Select(t => t.Item1).DefaultIfEmpty(1).Max() + 1;

@@ -3267,7 +3267,4 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="InvalidDraggingOperationMessgae" xml:space="preserve">
     <value>Nothing is being dragged. If you see this message, most likely your recent Dynamo interaction is not recommended.</value>
   </data>
-  <data name="UngroupParentGroupWarning" xml:space="preserve">
-    <value>Dynamo cannot ungroup when there is no parent group.</value>
-  </data>
 </root>

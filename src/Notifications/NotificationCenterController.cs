@@ -1,27 +1,31 @@
-﻿using System;
+﻿using Dynamo.Controls;
+using Dynamo.Notifications.View;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Dynamo.Controls;
-using Dynamo.Notifications.View;
 
 namespace Dynamo.Notifications
 {
     public class NotificationCenterController
     {
-        readonly NotificationUI notificationUIPopup;
-        readonly DynamoView dynamoView;
-        readonly Button notificationsButton;
+        NotificationUI notificationUIPopup;
+        DynamoView dynamoView;
+        Button notificationsButton;
 
-        private static readonly int notificationPopupHorizontalOffset = -285;
-        private static readonly int notificationPopupVerticalOffset = 10;
+        private static int notificationPopupHorizontalOffset = -285;
+        private static int notificationPopupVerticalOffset = 10;
 
-        private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
-        private static readonly string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.bundle.js";
+        private static string htmlEmbeddedFile = "Dynamo.Notifications.Web.index.html";
+        private static string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynam0.notificati0ns.index.js";
 
-        internal NotificationCenterController(DynamoView dynamoView)
+        public NotificationCenterController(DynamoView dynamoView)
         {
             var shortcutBar = dynamoView.ShortcutBar;
             var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
@@ -59,7 +63,7 @@ namespace Dynamo.Notifications
             using (StreamReader reader = new StreamReader(stream))
             {
                 var jsString = reader.ReadToEnd();
-                htmlString = htmlString.Replace("mainJs", jsString);
+                htmlString = htmlString.Replace("#mainJs", jsString);
             }
 
             if(notificationUIPopup.webView.CoreWebView2 != null)

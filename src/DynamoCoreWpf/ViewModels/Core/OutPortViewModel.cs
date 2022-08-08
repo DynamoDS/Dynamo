@@ -309,7 +309,7 @@ namespace Dynamo.ViewModels
 
         protected override void RefreshPortColors()
         {
-            PortDefaultValueMarkerVisible = node.NodeModel.CachedValue != null && node.NodeModel.CachedValue.IsFunction && !node.IsWatchNode;
+            PortDefaultValueMarkerVisible = node.NodeModel.CachedValue != null && node.NodeModel.CachedValue.IsFunction;
         }
     }
 }

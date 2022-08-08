@@ -33,7 +33,6 @@
       <Private>False</Private>
       <Name>DynamoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\CoreNodes\CoreNodes.csproj" />
     <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</Project>
       <Name>Units</Name>

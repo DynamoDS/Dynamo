@@ -251,7 +251,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;)&apos; expected - Incomplete Closure.
+        ///   Looks up a localized string similar to &apos;)&apos; expected - Imcomplete Closure.
         /// </summary>
         public static string CloseBracketExpected {
             get {
