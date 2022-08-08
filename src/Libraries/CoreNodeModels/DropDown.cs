@@ -1,12 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security;
 using System.Xml;
 using CoreNodeModels.Properties;
-
-using Dynamo.Core;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
@@ -16,29 +14,10 @@ namespace CoreNodeModels
     /// <summary>
     /// A class used to store a name and associated item for a drop down menu
     /// </summary>
-    public class DynamoDropDownItem : NotificationObject, IComparable
+    public class DynamoDropDownItem : IComparable
     {
-        private string name;
-        private object item;
-
-        public string Name
-        {
-            get => name;
-            set
-            {
-                name = value;
-                RaisePropertyChanged(nameof(Name));
-            }
-        }
-        public object Item
-        {
-            get => item;
-            set
-            {
-                item = value;
-                RaisePropertyChanged(nameof(Item));
-            }
-        }
+        public string Name { get; set; }
+        public object Item { get; set; }
 
         public override string ToString()
         {
