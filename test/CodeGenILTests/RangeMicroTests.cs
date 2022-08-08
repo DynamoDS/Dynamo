@@ -18,7 +18,9 @@ namespace CodeGenILTests
         public void Setup()
         {
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(assemblyPath, "OpCodesTEST.txt"));
+            var outputpath = Path.Combine(assemblyPath, "MSILTestOutput");
+            System.IO.Directory.CreateDirectory(outputpath);
+            codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(outputpath, $"OpCodesTEST{NUnit.Framework.TestContext.CurrentContext.Test.Name}.txt"));
         }
 
         [TearDown]
@@ -124,8 +126,8 @@ import(""DesignScriptBuiltin.dll"");
                 Assert.AreEqual(null, output.Values.ToList().First());
 
             });
-            
-           
+
+
         }
 
         [Test]
@@ -167,7 +169,7 @@ import(""DesignScriptBuiltin.dll"");
             CollectionAssert.AreEqual(new object[] { 0, 10 }, output.Values.ToList().First() as long[]);
         }
 
-       
+
         [Test]
         public void RangeApproximateStep_Doubles()
         {

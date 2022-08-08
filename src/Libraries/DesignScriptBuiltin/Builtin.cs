@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections;
-using Autodesk.DesignScript.Runtime;
+﻿using Autodesk.DesignScript.Runtime;
 using Builtin.Properties;
+using System;
+using System.Collections;
 
 namespace DesignScript
 {
@@ -10,6 +10,34 @@ namespace DesignScript
         [IsVisibleInDynamoLibrary(false)]
         public static class Get
         {
+            /// <summary>
+            /// Selects correct overload of ValueAtIndex at runtime based on collection type.
+            /// </summary>
+            /// <param name="collection"></param>
+            /// <param name="index"></param>
+            /// <returns></returns>
+            public static object ValueAtIndexDynamic(object collection, object index)
+            {
+                //make int cast valid
+                if (index is long longi)
+                {
+                    index = Convert.ToInt32(longi);
+                }
+                switch (collection)
+                {
+                    case Dictionary dict:
+                        return ValueAtIndex(dict,index as string);
+                    case IList list:
+                      
+                        return ValueAtIndex(list, (int)index);
+                    case string strList:
+                        return ValueAtIndex(strList, (int)index);
+                   
+                    default:
+                        return null;
+                }
+            }
+
             // The indexing syntax a["foo"] or b[1] are syntactic sugar for these methods.
 
             public static object ValueAtIndex(Dictionary dictionary, string key)
