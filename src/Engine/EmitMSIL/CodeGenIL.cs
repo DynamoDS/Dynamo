@@ -21,6 +21,9 @@ namespace EmitMSIL
         // True for internal methods (for example operators and unary operators)
         private IDictionary<string, IList> input;
         private IDictionary<string, IList> output;
+        /// <summary>
+        /// counter for local variables, should only be used directly during MethodLookup or GatherTypeInfo phase. It will incorrect during EmitIL phase. 
+        /// </summary>
         private int localVarIndex = -1;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
         /// <summary>
