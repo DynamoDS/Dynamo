@@ -79,6 +79,7 @@
                      ItemsSource="{Binding Model.Items}"
                      BorderThickness="0"
                      PreviewKeyDown="EnumItemsListbox_PreviewKeyDown"
+                     KeyboardNavigation.TabNavigation="None"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ItemContainerStyle="{StaticResource EnumItemsListItemStyle}">
                 <ListBox.ItemTemplate>

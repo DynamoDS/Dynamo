@@ -33,30 +33,28 @@ namespace CoreNodeModelsWpf.Controls
 
         private void EnumItemsListbox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            var listBox = sender as ListBox;
-            if (listBox == null)
-                return;
-
-            try
+            if (!( sender is ListBox listBox ))
             {
-                if (e.Key == Key.Tab)
-                {
-                    List<TextBox> textBoxes = listBox.ChildrenOfType<TextBox>().ToList();
+                return;
+            }
 
-                    for (int i = 0; i < textBoxes.Count - 1; i++)
+            if (e.Key == Key.Tab)
+            {
+                int offset = e.KeyboardDevice.Modifiers == System.Windows.Input.ModifierKeys.Shift ? 0 : 1;
+
+                var textBoxes = listBox.ChildrenOfType<TextBox>().ToList();
+
+                for (int i = 0; i < textBoxes.Count; i++)
+                {
+                    if (textBoxes[i].IsKeyboardFocused)
                     {
-                        if (textBoxes[i].IsKeyboardFocused)
-                        {
-                            textBoxes[i + 1].Focus();
-                            textBoxes[i + 1].CaretIndex = textBoxes[i + 1].Text.Length;
-                            return;
-                        }
+                        TextBox nextBox = textBoxes[( i + offset ) % textBoxes.Count];
+                        nextBox.Focus();
+                        nextBox.CaretIndex = nextBox.Text.Length;
+
+                        return;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                model.Log(ex);
             }
         }
 
