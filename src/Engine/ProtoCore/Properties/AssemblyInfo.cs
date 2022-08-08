@@ -21,5 +21,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DSCoreNodes")]
 [assembly: InternalsVisibleTo("EmitMSIL")]
 
-
 [assembly:TypeForwardedTo(typeof(ProtoCore.DSASM.RangeStepOperator))]

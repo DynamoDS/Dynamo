@@ -119,20 +119,8 @@
                 <!--  Buttons  -->
                 <DockPanel Name="ButtonsDockPanel"
                            Grid.Row="2"
-                           Margin="0,0,20,20"
+                           Margin="16,0,20,20"
                            LastChildFill="False">
-                    
-                    <Button Name="NoButton"
-                            MinWidth="90"
-                            Margin="0"
-                            Click="NoButton_OnClick"
-                            Content="{x:Static p:Resources.GenericTaskDialogOptionNo}"
-                            DockPanel.Dock="Right"
-                            Background="White"
-                            BorderBrush="#BFBFBF"
-                            Foreground="Black"
-                            Style="{StaticResource CtaButtonStyle}"
-                            Visibility="Collapsed" />
 
                     <Button Name="YesButton"
                             MinWidth="90"
@@ -158,6 +146,18 @@
                             Style="{StaticResource CtaButtonStyle}"
                             Visibility="Collapsed" />
 
+                    <Button Name="NoButton"
+                            MinWidth="90"
+                            Margin="0"
+                            Click="NoButton_OnClick"
+                            Content="{x:Static p:Resources.GenericTaskDialogOptionNo}"
+                            DockPanel.Dock="Right"
+                            Background="White"
+                            BorderBrush="#BFBFBF"
+                            Foreground="Black"
+                            Style="{StaticResource CtaButtonStyle}"
+                            Visibility="Collapsed" />
+
                     <Button Name="CancelButton"
                             MinWidth="90"
                             Margin="0"
@@ -165,7 +165,7 @@
                             BorderBrush="#BFBFBF"
                             Click="CancelButton_OnClick"
                             Content="{x:Static p:Resources.GenericTaskDialogOptionCancel}"
-                            DockPanel.Dock="Right"
+                            DockPanel.Dock="Left"
                             Foreground="Black"
                             Style="{StaticResource CtaButtonStyle}"
                             Visibility="Collapsed" />

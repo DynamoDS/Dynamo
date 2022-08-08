@@ -211,6 +211,22 @@ namespace EmitMSIL
                 return typeof(T[]);
             }
 
+            LocalBuilder localBuilder;
+            // Load array to be coerced.
+            int currentVarIndex = localVarIndex;
+            if (arg is IdentifierNode ident)
+            {
+                currentVarIndex = variables[ident.Value].Item1;
+            }
+            else
+            {
+                localBuilder = DeclareLocal(typeof(IList), "IList to coerce");
+                currentVarIndex = localBuilder.LocalIndex;
+
+                EmitOpCode(OpCodes.Stloc, currentVarIndex);
+                EmitOpCode(OpCodes.Ldloc, currentVarIndex);
+            }
+
             // Find length for IList to be coerced (already on top of eval stack), len
             var prop = typeof(ICollection).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
                                 p => p.Name == nameof(ICollection.Count)).FirstOrDefault();
@@ -221,7 +237,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Callvirt, mInfo);
 
             // len = source.Count;
-            var localBuilder = DeclareLocal(typeof(int), "length of IList to coerce");
+            localBuilder = DeclareLocal(typeof(int), "length of IList to coerce");
             var sourceArrayLengthIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, sourceArrayLengthIndex);
 
@@ -254,14 +270,6 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
             // Load array to be coerced.
-            var currentVarIndex = localVarIndex;
-            if (arg is IdentifierNode ident)
-            {
-                currentVarIndex = variables[ident.Value].Item1;
-            }
-            //TODO fix SomeFunction([1,2,3]) case
-            //where emitExpression directly emits args.
-
             EmitOpCode(OpCodes.Ldloc, currentVarIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
@@ -324,6 +332,21 @@ namespace EmitMSIL
 
                 return returnType;
             }
+            LocalBuilder localBuilder;
+            // Load array to be coerced.
+            int currentVarIndex = localVarIndex;
+            if (arg is IdentifierNode ident)
+            {
+                currentVarIndex = variables[ident.Value].Item1;
+            }
+            else
+            {
+                localBuilder = DeclareLocal(typeof(Source[]), "array to coerce");
+                currentVarIndex = localBuilder.LocalIndex;
+
+                EmitOpCode(OpCodes.Stloc, currentVarIndex);
+                EmitOpCode(OpCodes.Ldloc, currentVarIndex);
+            }
             // Find length for array to be coerced (already on top of eval stack), len
             EmitOpCode(OpCodes.Ldlen);
             EmitOpCode(OpCodes.Conv_I4);
@@ -333,7 +356,7 @@ namespace EmitMSIL
 
             // Declare new array to store coerced values
             var t = typeof(Target[]);
-            var localBuilder = DeclareLocal(t, "coerced array");
+            localBuilder = DeclareLocal(t, "coerced array");
             var newArrIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, newArrIndex);
 
@@ -355,15 +378,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
-            // Load array to be coerced.
-            var currentVarIndex = localVarIndex;
-            if (arg is IdentifierNode ident)
-            {
-                currentVarIndex = variables[ident.Value].Item1;
-            }
-            //TODO fix SomeFunction([1,2,3]) case
-            //where emitExpression directly emits args.
-
+            
             EmitOpCode(OpCodes.Ldloc, currentVarIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
@@ -1184,7 +1199,7 @@ namespace EmitMSIL
             var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
             EmitOpCode(OpCodes.Call, keygen);
 
-            var local = DeclareLocal(typeof(IEnumerable<MethodBase>), "mInfos");
+            var local = DeclareLocal(typeof(IEnumerable<MethodBase>), "cached MethodBase objects");
             //local could be null if we are not emitting currently.
             if(local != null)
             {
@@ -1241,7 +1256,10 @@ namespace EmitMSIL
                     var argGuides = argIdent.ReplicationGuides;
                     EmitArray(typeof(string), argGuides, (AssociativeNode gn, int gidx) =>
                     {
-                        EmitOpCode(OpCodes.Ldstr, (gn as ReplicationGuideNode).RepGuide.Name);
+                        var repGuideNode = gn as ReplicationGuideNode;
+                        var nodeGuide = repGuideNode.RepGuide as IdentifierNode;
+
+                        EmitOpCode(OpCodes.Ldstr, nodeGuide.Value);
                     });
                 }
                 else
@@ -1409,13 +1427,20 @@ namespace EmitMSIL
                     op = new IntNode(-1);
                     break;
             }
+
+            bool hasStep = stepNode != null;
+            // The value of the dummy DoubleNode does not matter since the hasStep boolean will be false.
+            AssociativeNode dummyStepNode = AstFactory.BuildDoubleNode(1);
             var arguments = new List<AssociativeNode>
             {
                 fromNode,
                 toNode,
-                stepNode ?? new NullNode(),
+                // TODO_MSIL: Figure out a better solution for this scenario.
+                // Use DoubleNode(1) because standard replication cannot handle null to value type coerce
+                // The old VM handles builtin functions (like range expr) in a special way...that does not try coercion
+                hasStep ? stepNode : dummyStepNode,//NullNode()
                 op,
-                AstFactory.BuildBooleanNode(stepNode != null),
+                AstFactory.BuildBooleanNode(hasStep),
                 AstFactory.BuildBooleanNode(hasAmountOperator),
             };
 
