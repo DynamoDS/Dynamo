@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ProtoCore.DSASM;
 using ProtoCore.Lang.Replication;
 using ProtoCore.Properties;
@@ -177,6 +178,26 @@ namespace ProtoCore
             return ret;
         }
 
+        internal static Dictionary<CLRFunctionEndPoint, int> GetConversionDistances(List<CLRFunctionEndPoint> functionEndPoints,
+            List<CLRStackValue> formalParams, List<ReplicationInstruction> replicationInstructions,
+            MSILRuntimeCore runtimeCore, bool allowArrayPromotion = false)
+        {
+            Dictionary<CLRFunctionEndPoint, int> ret = new Dictionary<CLRFunctionEndPoint, int>();
+
+            //@PERF: Consider parallelising this
+            List<CLRStackValue> reducedParamSVs = Replicator.EstimateReducedParams(formalParams, replicationInstructions);
+
+            foreach (var fep in functionEndPoints)
+            {
+                int distance = fep.GetConversionDistance(reducedParamSVs, runtimeCore, allowArrayPromotion);
+                if (distance !=
+                    (int)ProcedureDistance.InvalidDistance)
+                    ret.Add(fep, distance);
+            }
+
+            return ret;
+        }
+
         /// <summary>
         /// Returns a dictionary of the function end points that are type compatible
         /// with any branch of replicated parameters. 
@@ -228,7 +249,6 @@ namespace ProtoCore
                 if (!allowArrayPromotion)
                     Validity.Assert(reducedSVs[i].IsArray, "This should be an array otherwise this shouldn't have passed previous tests");
 
-
                 if (!allowArrayPromotion)
                 {
                     if (typ.rank != ArrayUtils.GetMaxRankForArray(reducedSVs[i], runtimeCore) &&
@@ -242,8 +262,7 @@ namespace ProtoCore
                         return true; //Invalid co-ercsion
                     
                 }
-
-
+                
                 Dictionary<ClassNode, int> arrayTypes = ArrayUtils.GetTypeStatisticsForArray(reducedSVs[i], runtimeCore);
 
                 ClassNode cn = null;
@@ -271,14 +290,10 @@ namespace ProtoCore
                     cn = commonBaseType; //From now on perform tests on the commmon base type
                 }
 
-    
-
                 ClassNode argTypeNode = classTable.ClassNodes[typ.UID];
 
                 //cn now represents the class node of the argument
                 //argTypeNode represents the class node of the argument
-
-
 
                 bool isNotExactTypeMatch = cn != argTypeNode;
                 bool argumentsNotNull = cn != runtimeCore.DSExecutable.classTable.ClassNodes[(int) PrimitiveType.Null];
@@ -292,18 +307,11 @@ namespace ProtoCore
                 if (isNotExactTypeMatch && argumentsNotNull && recievingTypeNotAVar && isNotConvertible)// && !isCalleeVar)
                 {
                     return true; //It's an invalid coersion
-
                 }
-
-
             }
-
             return false;
-
-
         }
-
-
+  
         public Dictionary<FunctionEndPoint, int> GetCastDistances(ProtoCore.Runtime.Context context, List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, ClassTable classTable, RuntimeCore runtimeCore)
         {
             Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
@@ -321,6 +329,20 @@ namespace ProtoCore
             return ret;
         }
 
+        internal static Dictionary<CLRFunctionEndPoint, int> GetCastDistances(List<CLRFunctionEndPoint> funcGroup, List<CLRStackValue> formalParams, List<ReplicationInstruction> replicationInstructions)
+        {
+            Dictionary<CLRFunctionEndPoint, int> ret = new Dictionary<CLRFunctionEndPoint, int>();
+
+            //@PERF: Consider parallelising this
+            List<CLRStackValue> reducedParamSVs = Replicator.EstimateReducedParams(formalParams, replicationInstructions);
+            foreach (CLRFunctionEndPoint fep in funcGroup)
+            {
+                int dist = fep.ComputeCastDistance(reducedParamSVs);
+                ret.Add(fep, dist);
+            }
+
+            return ret;
+        }
 
         public override string ToString()
         {
