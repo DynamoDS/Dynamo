@@ -388,7 +388,7 @@ namespace ProtoCore
         private TypeSystem TypeSystem { get; set; }
         private InternalAttributes internalAttributes { get; set; }
 
-        protected MSILRuntimeCore()
+        internal MSILRuntimeCore()
         {
             ClassTable = new ClassTable();
             TypeSystem = new TypeSystem();
@@ -399,9 +399,6 @@ namespace ProtoCore
             // Initialize internal attributes
             internalAttributes = new InternalAttributes(ClassTable);
         }
-
-        private static MSILRuntimeCore instance;
-        internal static MSILRuntimeCore Instance => instance == null ? new MSILRuntimeCore() : instance;
 
         internal bool ConvertibleTo(CLRStackValue from, Type to)
         {

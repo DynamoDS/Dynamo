@@ -124,7 +124,7 @@ namespace EmitMSIL
         {
             // Static instance of MSILRuntimeCore
             // TODO_MSIL: FIgure out how and when to set this runtimeCore (CodeGen should have it too)
-            MSILRuntimeCore runtimeCore = MSILRuntimeCore.Instance;
+            MSILRuntimeCore runtimeCore = new MSILRuntimeCore();
 
             // TODO_MSIL: Emit these CLRStackValue's from the CodeGen stage.
             var stackValues = MarshalFunctionArguments(args, runtimeCore);
