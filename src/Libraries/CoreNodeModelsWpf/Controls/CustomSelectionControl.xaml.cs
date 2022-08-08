@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
+
 using CoreNodeModels.Input;
+
 using Dynamo.Utilities;
 
 namespace CoreNodeModelsWpf.Controls
@@ -18,7 +18,7 @@ namespace CoreNodeModelsWpf.Controls
         /// <summary>
         /// Create the control for the custom dropdown menu and editor
         /// </summary>
-        public  CustomSelectionControl()
+        public CustomSelectionControl()
         {
             InitializeComponent();
         }

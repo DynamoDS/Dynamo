@@ -6,10 +6,10 @@ using System.Linq;
 using CoreNodeModels;
 using CoreNodeModels.Input;
 
-using CoreNodeModelsWpf;
-
 using Dynamo.PackageManager;
+
 using NUnit.Framework;
+
 using SystemTestServices;
 
 namespace Dynamo.Tests.Nodes
@@ -25,7 +25,6 @@ namespace Dynamo.Tests.Nodes
         }
 
         [Test]
-        /// This test makes sure all the saved menu items are retrieved correctly
         public void OpenJsonDYNWithCorrectMenuItems()
         {
             // Define package loading reference path
@@ -36,7 +35,7 @@ namespace Dynamo.Tests.Nodes
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package
-            loader.LoadPackages(new List<Package> {pkg});
+            loader.LoadPackages(new List<Package> { pkg });
             // Assert expected package was loaded
             Assert.AreEqual(pkg.Name, "Dynamo Samples");
 
@@ -54,9 +53,7 @@ namespace Dynamo.Tests.Nodes
             Assert.AreEqual(1, items[0].Item);
         }
 
-
         [Test]
-        /// This test makes sure all the saved menu items are retrieved correctly
         public void OpenJsonDYNWithCorrectSelectedItem()
         {
             // Define package loading reference path
@@ -82,8 +79,5 @@ namespace Dynamo.Tests.Nodes
             string selectedItem = (string)selectedItemAsObject;
             Assert.AreEqual("Two", selectedItem);
         }
-
-
-
     }
 }

@@ -14,6 +14,7 @@ namespace CoreNodeModelsWpf
         /// This command is bound to the Add button in the GUI
         /// </summary>
         public DelegateCommand AddCommand { get; }
+
         public DelegateCommand RemoveCommand { get; }
 
         private void AddItem(object obj)
@@ -35,14 +36,12 @@ namespace CoreNodeModelsWpf
         {
         }
 
-
         public CustomSelectionViewModel(CustomSelectionNodeModel model)
         {
             Model = model;
-            
+
             AddCommand = new DelegateCommand(AddItem);
             RemoveCommand = new DelegateCommand(RemoveItem);
         }
     }
-
 }
