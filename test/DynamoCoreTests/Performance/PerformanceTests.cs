@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using NUnit.Framework;
@@ -11,6 +12,8 @@ namespace Dynamo.Tests
     [TestFixture, Category("Performance")]
     public class PerformanceTests : DynamoModelTestBase
     {
+        private List<(string, long, long)> ExecutionData;
+
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");
@@ -30,6 +33,23 @@ namespace Dynamo.Tests
             return fis.Where(
                     fi=>fi.Name != "aniform.dyn" 
                     && fi.Name != "lotsofcoloredstuff.dyn").Select(fi => fi.FullName).ToArray();
+        }
+
+        [TestFixtureSetUp]
+        public void SetupPerformanceTests()
+        {
+            ExecutionData = new List<(string, long, long)>();
+        }
+
+        [TestFixtureTearDown]
+        public void TeardownPerformanceTests()
+        {
+            Console.WriteLine("{0,50}{1,10}{2,10}", "Graph", "Old ms", "New ms");
+            ExecutionData.ForEach(item =>
+            {
+                Console.WriteLine("{0,50}{1,10}{2,10}", item.Item1, item.Item2, item.Item3);
+            });
+            ExecutionData.Clear();
         }
 
         [Test, TestCaseSource("FindWorkspaces"), Category("Performance")]
@@ -65,6 +85,8 @@ namespace Dynamo.Tests
 
             var wcd1 = new serializationTestUtils.WorkspaceComparisonData(ws1, CurrentDynamoModel.EngineController);
 
+            var oldEngineExecutionTime = model.EngineController.ExecutionTime;
+
             // The big hammer, maybe not needed
             Cleanup();
 
@@ -88,6 +110,12 @@ namespace Dynamo.Tests
             var wcd2 = new serializationTestUtils.WorkspaceComparisonData(ws2, CurrentDynamoModel.EngineController, dsExecution: false);
 
             serializationTestUtils.CompareWorkspaceModelsMSIL(wcd1, wcd2);
+
+            var newEngineExecutionTime = model.EngineController.ExecutionTime;
+
+            Console.WriteLine("Execution time old Engine={0} ms, new Engine={1} ms", oldEngineExecutionTime, newEngineExecutionTime);
+            var execution = (Path.GetFileName(filePath), oldEngineExecutionTime, newEngineExecutionTime);
+            ExecutionData.Add(execution);
         }
 
         private void CheckForDummyNodes(WorkspaceModel ws)

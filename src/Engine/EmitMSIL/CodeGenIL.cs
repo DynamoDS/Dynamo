@@ -54,7 +54,7 @@ namespace EmitMSIL
             writer = new StreamWriter(filePath);
         }
 
-        public IDictionary<string, IList> Emit(List<AssociativeNode> astList)
+        public (IDictionary<string, IList>, long) Emit(List<AssociativeNode> astList)
         {
             var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndSave);
 
@@ -67,11 +67,10 @@ namespace EmitMSIL
             timer.Start();
             var obj = mi.Invoke(null, new object[] { null, methodCache, output });
             timer.Stop();
-            Console.WriteLine("New Engine execution time: {0} ms", timer.ElapsedMilliseconds);
 
             compileResult.asmbuilder.Save("DynamicAssembly.dll");
 
-            return output;
+            return (output, timer.ElapsedMilliseconds);
         }
 
         internal Dictionary<string,IList> EmitAndExecute(List<AssociativeNode> astList)

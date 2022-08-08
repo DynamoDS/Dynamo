@@ -66,6 +66,10 @@ namespace Dynamo.Engine
             }
         }
 
+        internal long ExecutionTime
+        {
+            get => (liveRunner as LiveRunner).ExecutionTime;
+        }
 
         /// <summary>
         /// TPDP

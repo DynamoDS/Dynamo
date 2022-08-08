@@ -1196,6 +1196,7 @@ namespace ProtoScript.Runners
     {
         private IDictionary<string, IList> graphOutput;
         internal bool DSExecutionEngine = true;
+        internal long ExecutionTime = 0;
 
         internal class DebugByteCodeMode : IDisposable
         {
@@ -1248,7 +1249,7 @@ namespace ProtoScript.Runners
             Dictionary<string, IList> input = new Dictionary<string, IList>();
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             var codeGenIL = new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"));
-            graphOutput = codeGenIL.Emit(finalDeltaAstList);
+            (graphOutput, ExecutionTime) = codeGenIL.Emit(finalDeltaAstList);
         }
 
         internal IList GetNodeValue(string variableName)
@@ -1678,7 +1679,7 @@ namespace ProtoScript.Runners
             CompileAndExecute(dispatchASTList);
             PostExecution();
             timer.Stop();
-            Console.WriteLine("Old Engine execution time: {0} ms", timer.ElapsedMilliseconds);
+            ExecutionTime = timer.ElapsedMilliseconds;
         }
 
         private List<Guid> PreviewInternal(GraphSyncData syncData)
