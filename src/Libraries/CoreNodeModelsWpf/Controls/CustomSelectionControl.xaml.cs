@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -60,6 +59,15 @@ namespace CoreNodeModelsWpf.Controls
 
         private void ItemNameChanged(object sender, RoutedEventArgs e)
         {
+            int selectedIndex = BaseComboBox.SelectedIndex;
+
+            if (selectedIndex != -1)
+            {
+                // This hack forces the combo box to update the display of the selected item.
+                BaseComboBox.SelectedIndex = -1;
+                BaseComboBox.SelectedIndex = selectedIndex;
+            }
+
             BaseComboBox?.Items.Refresh();
         }
 
