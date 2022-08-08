@@ -18,7 +18,9 @@ namespace CodeGenILTests
         public void Setup()
         {
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(assemblyPath, "OpCodesTEST.txt"));
+            var outputpath = Path.Combine(assemblyPath, "MSILTestOutput");
+            System.IO.Directory.CreateDirectory(outputpath);
+            codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(outputpath, $"OpCodesTEST{NUnit.Framework.TestContext.CurrentContext.Test.Name}.txt"));
         }
 
         [TearDown]
@@ -124,8 +126,8 @@ import(""DesignScriptBuiltin.dll"");
                 Assert.AreEqual(null, output.Values.ToList().First());
 
             });
-            
-           
+
+
         }
 
         [Test]
@@ -167,7 +169,7 @@ import(""DesignScriptBuiltin.dll"");
             CollectionAssert.AreEqual(new object[] { 0, 10 }, output.Values.ToList().First() as long[]);
         }
 
-       
+
         [Test]
         public void RangeApproximateStep_Doubles()
         {
@@ -199,7 +201,7 @@ y = DSCore.Math.Sum(x);";
             Assert.AreEqual(55, output.Values.ToList()[1][0]);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         //'Object of type 'System.int64[]' can be converted to type 'System.Collections.Generic.IEnumerable`1[System.Double]'.'
         public void SumIntArray_TypeCoerNeeded()
         {
@@ -211,7 +213,22 @@ y = DSCore.Math.Sum([1,2,3]);";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(6, output.Values.ToList()[1][0]);
+            Assert.AreEqual(6, output["y"][0]);
+        }
+
+        [Test]
+        //'Object of type 'IList' can be converted to type 'System.Collections.Generic.IEnumerable`1[System.Double]'.'
+        public void SumIntTempRange_TypeCoerNeeded()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+y = DSCore.Math.Sum(0..10);";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(55, output["y"][0]);
         }
 
         [Test]

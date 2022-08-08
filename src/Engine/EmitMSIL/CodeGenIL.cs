@@ -21,8 +21,16 @@ namespace EmitMSIL
         // True for internal methods (for example operators and unary operators)
         private IDictionary<string, IList> input;
         private IDictionary<string, IList> output;
+        /// <summary>
+        /// counter for local variables, should only be used directly during GatherTypeInfo phase.
+        /// It will incorrect during other compiler phases.
+        /// </summary>
         private int localVarIndex = -1;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
+        /// <summary>
+        /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
+        /// </summary>
+        private Dictionary<int, Type> astTypeInfoMap = new Dictionary<int, Type>();
         private StreamWriter writer;
         private Dictionary<int, IEnumerable<MethodBase>> methodCache = new Dictionary<int, IEnumerable<MethodBase>>();
         private CompilePass compilePass;
@@ -33,6 +41,7 @@ namespace EmitMSIL
             MethodLookup,
             // Compile pass that performs the actual MSIL opCode emission
             emitIL,
+            GatherTypeInfo,
             Done
         }
 
@@ -68,9 +77,9 @@ namespace EmitMSIL
             return output;
         }
 
-        internal Dictionary<string,IList> EmitAndExecute(List<AssociativeNode> astList)
+        internal Dictionary<string, IList> EmitAndExecute(List<AssociativeNode> astList)
         {
-            var compileResult = CompileAstToDynamicType(astList,AssemblyBuilderAccess.RunAndCollect);
+            var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndCollect);
 
             // Invoke emitted method (ExecuteIL.Execute)
             var t = compileResult.tbuilder.CreateType();
@@ -80,7 +89,7 @@ namespace EmitMSIL
             return output;
         }
 
-        private (AssemblyBuilder asmbuilder,TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
+        private (AssemblyBuilder asmbuilder, TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
         {
             compilePass = CompilePass.MethodLookup;
             foreach (var ast in astList)
@@ -100,8 +109,15 @@ namespace EmitMSIL
                 typeof(IDictionary<int, IEnumerable<MethodBase>>), typeof(IDictionary<string, IList>)});
             ilGen = execMethod.GetILGenerator();
 
+            compilePass = CompilePass.GatherTypeInfo;
+            // 5. Traverse AST and gather what type info we can.
+            foreach (var ast in astList)
+            {
+                DfsTraverse(ast);
+            }
+
             compilePass = CompilePass.emitIL;
-            // 5. Traverse AST and use ILGen to emit code for Execute method
+            // 6. Traverse AST and use ILGen to emit code for Execute method
             foreach (var ast in astList)
             {
                 DfsTraverse(ast);
@@ -109,7 +125,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ret);
 
             writer.Close();
-            return (asm,type);
+            return (asm, type);
         }
 
         // Given a double value on the stack, emit call to Math.Round(arg, 0, MidpointRounding.AwayFromZero);
@@ -191,6 +207,27 @@ namespace EmitMSIL
 
         private Type EmitIListCoercion<T>(AssociativeNode arg)
         {
+            if (compilePass == CompilePass.GatherTypeInfo)
+            {
+                return typeof(T[]);
+            }
+
+            LocalBuilder localBuilder;
+            // Load array to be coerced.
+            int currentVarIndex = localVarIndex;
+            if (arg is IdentifierNode ident)
+            {
+                currentVarIndex = variables[ident.Value].Item1;
+            }
+            else
+            {
+                localBuilder = DeclareLocal(typeof(IList), "IList to coerce");
+                currentVarIndex = localBuilder.LocalIndex;
+
+                EmitOpCode(OpCodes.Stloc, currentVarIndex);
+                EmitOpCode(OpCodes.Ldloc, currentVarIndex);
+            }
+
             // Find length for IList to be coerced (already on top of eval stack), len
             var prop = typeof(ICollection).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
                                 p => p.Name == nameof(ICollection.Count)).FirstOrDefault();
@@ -201,7 +238,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Callvirt, mInfo);
 
             // len = source.Count;
-            var localBuilder = DeclareLocal(typeof(int), "length of IList to coerce");
+            localBuilder = DeclareLocal(typeof(int), "length of IList to coerce");
             var sourceArrayLengthIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, sourceArrayLengthIndex);
 
@@ -222,23 +259,18 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldc_I4_0);
             EmitOpCode(OpCodes.Stloc, counterIndex);
 
-            var loopBodyLabel = ilGen.DefineLabel();
-            var loopCondLabel = ilGen.DefineLabel();
+            var loopBodyLabel = DefineLabel();
+            var loopCondLabel = DefineLabel();
 
-            EmitOpCode(OpCodes.Br_S, loopCondLabel);
+            EmitOpCode(OpCodes.Br_S, loopCondLabel.Value);
 
             // newarr[i] = (Target)arr[i];
-            ilGen.MarkLabel(loopBodyLabel);
+            MarkLabel(loopBodyLabel.Value, "label:body");
 
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
             // Load array to be coerced.
-            var currentVarIndex = localVarIndex;
-            if (arg is IdentifierNode ident)
-            {
-                currentVarIndex = variables[ident.Value].Item1;
-            }
             EmitOpCode(OpCodes.Ldloc, currentVarIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
@@ -273,7 +305,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Stloc, counterIndex);
 
             // i < len;
-            ilGen.MarkLabel(loopCondLabel);
+            MarkLabel(loopCondLabel.Value,"label:cond");
 
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
@@ -281,7 +313,7 @@ namespace EmitMSIL
 
             EmitOpCode(OpCodes.Clt);
 
-            EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel);
+            EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel.Value);
 
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
 
@@ -291,6 +323,31 @@ namespace EmitMSIL
         // Coerce int/long/double arrays to IEnumerable<T> or IList<T>
         private Type EmitArrayCoercion<Source, Target>(AssociativeNode arg, Type ienumerableParamType)
         {
+            if (compilePass == CompilePass.GatherTypeInfo)
+            {
+                var returnType = typeof(Target[]);
+                if (typeof(List<Target>).IsAssignableFrom(ienumerableParamType))
+                {
+                    returnType = typeof(List<Target>);
+                }
+
+                return returnType;
+            }
+            LocalBuilder localBuilder;
+            // Load array to be coerced.
+            int currentVarIndex = localVarIndex;
+            if (arg is IdentifierNode ident)
+            {
+                currentVarIndex = variables[ident.Value].Item1;
+            }
+            else
+            {
+                localBuilder = DeclareLocal(typeof(Source[]), "array to coerce");
+                currentVarIndex = localBuilder.LocalIndex;
+
+                EmitOpCode(OpCodes.Stloc, currentVarIndex);
+                EmitOpCode(OpCodes.Ldloc, currentVarIndex);
+            }
             // Find length for array to be coerced (already on top of eval stack), len
             EmitOpCode(OpCodes.Ldlen);
             EmitOpCode(OpCodes.Conv_I4);
@@ -300,7 +357,7 @@ namespace EmitMSIL
 
             // Declare new array to store coerced values
             var t = typeof(Target[]);
-            var localBuilder = DeclareLocal(t, "coerced array");
+            localBuilder = DeclareLocal(t, "coerced array");
             var newArrIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, newArrIndex);
 
@@ -311,24 +368,18 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ldc_I4_0);
             EmitOpCode(OpCodes.Stloc, counterIndex);
 
-            var loopBodyLabel = ilGen.DefineLabel();
-            var loopCondLabel = ilGen.DefineLabel();
+            var loopBodyLabel = DefineLabel();
+            var loopCondLabel = DefineLabel();
 
-            EmitOpCode(OpCodes.Br_S, loopCondLabel);
+            EmitOpCode(OpCodes.Br_S, loopCondLabel.Value);
 
             // newarr[i] = (Target)arr[i];
-            ilGen.MarkLabel(loopBodyLabel);
+            MarkLabel(loopBodyLabel.Value, "label:body");
 
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
-            // Load array to be coerced.
-            int currentVarIndex = localVarIndex;
-            var ident = arg as IdentifierNode;
-            if (ident != null)
-            {
-                currentVarIndex = variables[ident.Value].Item1;
-            }
+            
             EmitOpCode(OpCodes.Ldloc, currentVarIndex);
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
@@ -376,7 +427,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Stloc, counterIndex);
 
             // i < arr.Length;
-            ilGen.MarkLabel(loopCondLabel);
+            MarkLabel(loopCondLabel.Value,"label:cond");
 
             EmitOpCode(OpCodes.Ldloc, counterIndex);
 
@@ -387,7 +438,7 @@ namespace EmitMSIL
 
             EmitOpCode(OpCodes.Clt);
 
-            EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel);
+            EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel.Value);
 
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
 
@@ -543,7 +594,7 @@ namespace EmitMSIL
                 return arrayTypes.FirstOrDefault();
             }
             // TODO: Do we need to address cases, where there are more than 2 types?
-            if(arrayTypes.Count == 2)
+            if (arrayTypes.Count == 2)
             {
                 bool isLong = false;
                 bool isDouble = false;
@@ -635,7 +686,7 @@ namespace EmitMSIL
                     EmitUnaryExpressionNode(node);
                     break;
                 case AstKind.BinaryExpression:
-                    EmitBinaryExpressionNode(node);
+                    t = EmitBinaryExpressionNode(node);
                     break;
                 case AstKind.Import:
                     EmitImportNode(node);
@@ -656,53 +707,76 @@ namespace EmitMSIL
                     EmitGroupExpressionNode(node);
                     break;
             }
+            if(compilePass == CompilePass.GatherTypeInfo)
+            {
+                //if the map already contains the node id AND it has changed type, then throw.
+                if (astTypeInfoMap.ContainsKey(node.ID))
+                {
+                    if(t != astTypeInfoMap[node.ID])
+                    {
+                        throw new Exception($"ast {node.ID}:{node.Kind} already exists in map, and has changed type {astTypeInfoMap[node.ID]}-> {t}");
+                    }
+                }
+                else
+                {
+                    astTypeInfoMap.Add(node.ID, t);
+                }
+            }
             return t;
         }
 
         private LocalBuilder DeclareLocal(Type t, string identifier)
-        {
+        {         
+            if (compilePass == CompilePass.GatherTypeInfo) return null;
             writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {t} {identifier}");
             return ilGen.DeclareLocal(t);
         }
 
         private void EmitOpCode(OpCode opCode, Label label)
         {
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, label);
             writer.WriteLine($"{opCode} {label}");
         }
 
         private void EmitOpCode(OpCode opCode, LocalBuilder local)
         {
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, local);
             writer.WriteLine($"{opCode} {local}");
         }
-        
+
         private void EmitOpCode(OpCode opCode)
         {
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode);
             writer.WriteLine(opCode);
         }
 
         private void EmitOpCode(OpCode opCode, Type t)
         {
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, t);
             writer.WriteLine($"{opCode} {t}");
         }
 
         private void EmitOpCode(OpCode opCode, int index)
         {
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, index);
             writer.WriteLine($"{opCode} {index}");
         }
 
         private void EmitOpCode(OpCode opCode, string str)
         {
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, str);
             writer.WriteLine($"{opCode} {str}");
         }
 
         private void EmitOpCode(OpCode opCode, MethodBase mBase)
         {
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             var mInfo = mBase as MethodInfo;
             if (mInfo != null)
             {
@@ -711,21 +785,41 @@ namespace EmitMSIL
             else
             {
                 var cInfo = mBase as ConstructorInfo;
-                if(cInfo != null) ilGen.Emit(opCode, cInfo);
+                if (cInfo != null) ilGen.Emit(opCode, cInfo);
             }
             writer.WriteLine($"{opCode} {mBase}");
         }
 
         private void EmitOpCode(OpCode opCode, double val)
         {
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, val);
             writer.WriteLine($"{opCode} {val}");
         }
 
         private void EmitOpCode(OpCode opCode, long val)
         {
+            if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, val);
             writer.WriteLine($"{opCode} {val}");
+        }
+        private void EmitILComment(string comment)
+        {
+            if (compilePass == CompilePass.GatherTypeInfo) return;
+            writer.WriteLine($"//{comment}");
+        }
+
+        private Label? DefineLabel()
+        {
+            if (compilePass == CompilePass.GatherTypeInfo) return null;
+            return ilGen.DefineLabel();
+        }
+
+        private void MarkLabel(Label label,string labelcomment = "")
+        {
+            if (compilePass == CompilePass.GatherTypeInfo) return;
+            writer.WriteLine($"//{labelcomment}");
+            ilGen.MarkLabel(label);
         }
 
         private void EmitGroupExpressionNode(AssociativeNode node)
@@ -747,7 +841,7 @@ namespace EmitMSIL
         {
             throw new NotImplementedException();
         }
-        
+
         private void EmitImportNode(AssociativeNode node)
         {
             //doing absolutely nothing is actually
@@ -755,8 +849,14 @@ namespace EmitMSIL
             //TODO do other important things here!
             //see: ProtoAssociative.CodeGen.EmitImportNode
         }
-
-        private void EmitBinaryExpressionNode(AssociativeNode node)
+        /// <summary>
+        /// Emits binary expression IL, returns type of RHS if assignment.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns>T of right hand side if assignment.</returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="Exception"></exception>
+        private Type EmitBinaryExpressionNode(AssociativeNode node)
         {
             var bNode = node as BinaryExpressionNode;
             if (bNode == null) throw new ArgumentException("AST node must be a Binary Expression");
@@ -765,29 +865,32 @@ namespace EmitMSIL
             {
                 var t = DfsTraverse(bNode.RightNode);
 
-                if (compilePass == CompilePass.MethodLookup) return;
+                if (compilePass == CompilePass.MethodLookup) return null;
 
                 var lNode = bNode.LeftNode as IdentifierNode;
-                if(lNode == null)
+                if (lNode == null)
                 {
                     throw new Exception("Left node is expected to be an identifier.");
                 }
-                if(variables.ContainsKey(lNode.Value))
+                if (compilePass == CompilePass.GatherTypeInfo)
                 {
-                    // variable being assigned already exists in dictionary.
-                    throw new Exception("Variable redefinition is not allowed.");
+                    if (variables.ContainsKey(lNode.Value))
+                    {
+                        // variable being assigned already exists in dictionary.
+                        throw new Exception("Variable redefinition is not allowed.");
+                    }
+                    variables.Add(lNode.Value, new Tuple<int, Type>(++localVarIndex, t));
                 }
-                variables.Add(lNode.Value, new Tuple<int, Type>(++localVarIndex, t));
-                DeclareLocal(t, lNode.Value);
-
-                EmitOpCode(OpCodes.Stloc, localVarIndex);
+                DeclareLocal(t,lNode.Value);
+                var currentLocalVarIndex = variables[lNode.Value].Item1;
+                EmitOpCode(OpCodes.Stloc, currentLocalVarIndex);
                 // Add variable to output dictionary: output.Add("varName", variable);
                 EmitOpCode(OpCodes.Ldarg_2);
                 EmitOpCode(OpCodes.Ldstr, lNode.Value);
                 // if t is a single value, wrap it in an array of the single value.
-                if (!typeof(IEnumerable).IsAssignableFrom(t))
+                if (!typeof(IEnumerable).IsAssignableFrom(t) || typeof(string).IsAssignableFrom(t))
                 {
-                    var localVarIndxes = new List<int>() { localVarIndex };
+                    var localVarIndxes = new List<int>() { currentLocalVarIndex };
                     EmitArray(t, localVarIndxes, (int varIdx, int _) =>
                     {
                         EmitOpCode(OpCodes.Ldloc, varIdx);
@@ -795,23 +898,13 @@ namespace EmitMSIL
                 }
                 else
                 {
-                    EmitOpCode(OpCodes.Ldloc, localVarIndex);
+                    EmitOpCode(OpCodes.Ldloc, currentLocalVarIndex);
                 }
                 var mInfo = typeof(IDictionary<string, IList>).GetMethod(nameof(IDictionary<string, IList>.Add));
                 EmitOpCode(OpCodes.Callvirt, mInfo);
+                return t;
             }
-            else if(bNode.Optr == ProtoCore.DSASM.Operator.add)
-            {
-                DfsTraverse(bNode.LeftNode);
-                DfsTraverse(bNode.RightNode);
-
-                //TODO: Replace this!
-                // It needs to be replaced with emission of a builtin Function call to an Add function
-                // so we can call it via ReplicationLogic for replication scenarios.
-                EmitOpCode(OpCodes.Add);
-            }
-            // TODO: add Emit calls for other binary operators
-
+            return null;
         }
 
         private void EmitUnaryExpressionNode(AssociativeNode node)
@@ -844,7 +937,7 @@ namespace EmitMSIL
             var arrayTypes = GetTypeStatisticsForArray(eln);
             var ot = GetOverallTypeForArray(arrayTypes);
 
-            EmitArray(ot, eln.Exprs, (AssociativeNode el, int idx) => 
+            EmitArray(ot, eln.Exprs, (AssociativeNode el, int idx) =>
             {
                 Type t = DfsTraverse(el);
                 if (t == null) return;
@@ -915,6 +1008,135 @@ namespace EmitMSIL
             }
         }
 
+        //tries to emit opcodes for indexing an array or dictioanry
+        private (bool success, Type type) TryEmitIndexing(FunctionCallNode fcn)
+        {
+          
+
+            //to emit the correct msil we need to know the type of collection we are indexing.
+            var array = fcn.FormalArguments.FirstOrDefault();
+
+            //lets check the types in the astTypeMap - if enough info is known
+            //we can proceed to emit indexing opcodes.
+            if(compilePass == CompilePass.emitIL)
+            {
+                Type arrayT;
+                if (astTypeInfoMap.TryGetValue(array.ID, out arrayT))
+                {
+                    //can't handle these with compile time indexing.
+                    //TODO remove IList from this if stmt when we figure out function call return wrapping behavior.
+                    //this is still a problem for BuiltIn Dictionaries that are wrapped in an IList.
+                    if (arrayT == null || arrayT == typeof(IList) || arrayT == typeof(object))
+                    {
+                        return (false, null);
+                    }
+                }
+                else
+                {
+                    return (false, null);
+                }
+            }
+          
+            //emit load array to stack.
+            var t = DfsTraverse(array);
+
+            if (t == null)
+            {
+                return (false, null);
+            }
+            else if (typeof(IDictionary).IsAssignableFrom(t))
+            {
+                if (t.IsGenericType)
+                {
+                    EmitIndexingForDictionary(fcn.FormalArguments[0], fcn.FormalArguments[1], t);
+                    return (true, t.GenericTypeArguments[0]);
+                }
+                else
+                {
+                    EmitIndexingForDictionary(fcn.FormalArguments[0], fcn.FormalArguments[1], t);
+                    return (true, typeof(object));
+                }
+            }
+            //builtin DS dict is a wrapper
+            else if (typeof(DesignScript.Builtin.Dictionary).IsAssignableFrom(t))
+            {
+                //TODO
+                //emit function call for ValueAtKey or fallback to replication.
+            }
+
+            else if (t.IsArray)
+            {
+                EmitIndexingForArray(fcn.FormalArguments[0], fcn.FormalArguments[1], t.GetElementType());
+                return (true, t.GetElementType());
+            }
+            // TODO we may want to bail for IList currently and let 
+            // replication handle it as Ilist is usually a replicated output, and is nested.
+            //Today either we end up emitting IList index opcodes incorrectly for all func return vals,
+            //or we'll call the wrong overload until overload matching is fixed.
+            else if (t == typeof(IList))
+            {
+                if (t.IsGenericType)
+                {
+                    EmitIndexingForIList(fcn.FormalArguments[0], fcn.FormalArguments[1], t, t.GenericTypeArguments[0]);
+                    return (true, t.GenericTypeArguments[0]);
+                }
+                else
+                {
+                    EmitIndexingForIList(fcn.FormalArguments[0], fcn.FormalArguments[1], t, typeof(object));
+                    return (true, typeof(object));
+                }
+            }
+            EmitILComment("NOT ENOUGH TYPE INFO TO EMIT INDEXING");
+            return (false, null);
+        }
+
+
+        private void EmitIndexingForIList(AssociativeNode array, AssociativeNode index, Type collectionType, Type listElementType)
+        {
+            var indexT = DfsTraverse(index);
+            var prop = typeof(IList).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
+                                  p => p.Name == "Item").FirstOrDefault();
+            var mi = prop.GetAccessors().FirstOrDefault();
+            if (collectionType.IsGenericType)
+            {
+                mi = collectionType.GetProperty("Item", BindingFlags.Public | BindingFlags.Instance).GetAccessors().FirstOrDefault();
+            }
+            EmitOpCode(OpCodes.Callvirt, mi);
+            EmitILComment("INDEX ILIST OPERATION END");
+        }
+
+        private void EmitIndexingForDictionary(AssociativeNode array, AssociativeNode index, Type collectionType)
+        {
+            var indexT = DfsTraverse(index);
+            var mi = typeof(IDictionary).GetMethod("get_Item", BindingFlags.Instance | BindingFlags.Public);
+            if (collectionType.IsGenericType)
+            {
+                mi = collectionType.GetMethod("get_Item");
+            }
+            EmitOpCode(OpCodes.Callvirt, mi);
+            EmitILComment("INDEX IDICTIONARY OPERATION END");
+        }
+
+        private void EmitIndexingForArray(AssociativeNode array, AssociativeNode index, Type arrayElementType)
+        {
+            //emit load index to stack.
+            var indexT = DfsTraverse(index);
+            //TODO if indexT is a collection then we need to generate multiple ldelem calls -
+            //or we could also give up and let replication handle this by falling back to ValueAtIndex()
+
+            //emit the call to do the lookup.
+            if (arrayElementType.IsValueType)
+            {
+                EmitOpCode(OpCodes.Ldelem, arrayElementType);
+            }
+            else
+            {
+                EmitOpCode(OpCodes.Ldelem_Ref);
+            }
+            EmitILComment("INDEX ARRAY OPERATION END");
+        }
+
+
         private Type EmitFunctionCallNode(AssociativeNode node)
         {
             var fcn = node as FunctionCallNode;
@@ -928,6 +1150,36 @@ namespace EmitMSIL
                 className = nameof(BuiltIn);
             }
 
+
+            //if the method name is builtin.valueAtIndex then don't emit a function call yet.
+            //instead try to emit direct indexing... to do so, we'll need to wait until ilemit phase
+            //so variable dictionary has valid data.
+            if (className == Node.BuiltinGetValueAtIndexTypeName && methodName == Node.BuiltinValueAtIndexMethodName)
+            {
+                if (compilePass == CompilePass.MethodLookup)
+                {
+                    return null;
+                }
+                //try to emit indexing
+                {
+                    //if we succeed, no need to emit a function call for indexing.
+                    //if we fail to emit direct indexing, we should emit a function
+                    //call for one of the ValueAtIndex() overloads or ValueAtIndexDynamic().
+
+                    var indexResult = TryEmitIndexing(fcn);
+                    if (indexResult.success)
+                    {
+                        return indexResult.type;
+                    }
+                    //if we fail to emit indexing at compile time, 
+                    //emit a function call to ValueAtIndexDynamic to avoid overload issues.
+                    else
+                    {
+                        methodName = nameof(DesignScript.Builtin.Get.ValueAtIndexDynamic);
+                        EmitILComment("NOT ENOUGH TYPE INFO TO EMIT INDEXING, EMIT VALUEATINDEXDYNAMIC FUNCTION CALL");
+                    }
+                }
+            }
 
             if (compilePass == CompilePass.MethodLookup)
             {
@@ -948,9 +1200,12 @@ namespace EmitMSIL
             var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
             EmitOpCode(OpCodes.Call, keygen);
 
-            var local = DeclareLocal(typeof(IEnumerable<MethodBase>), "mInfos");
-
-            EmitOpCode(OpCodes.Ldloca, local);
+            var local = DeclareLocal(typeof(IEnumerable<MethodBase>), "cached MethodBase objects");
+            //local could be null if we are not emitting currently.
+            if(local != null)
+            {
+                EmitOpCode(OpCodes.Ldloca, local);
+            }
 
             // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<MethodBase> mInfos)
             var dictLookup = typeof(IDictionary<int, IEnumerable<MethodBase>>).GetMethod(
@@ -958,7 +1213,10 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Callvirt, dictLookup);
 
             EmitOpCode(OpCodes.Pop);
-            EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
+            if (local != null)
+            {
+                EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
+            }
 
             // Retrieve previously cached functions
             // TODO: Decide whether to process overloaded methods at compile time or leave it for runtime.
@@ -1043,15 +1301,15 @@ namespace EmitMSIL
 
         private double GetStepValueAsDouble(AssociativeNode stepNode)
         {
-            if(stepNode == null)
+            if (stepNode == null)
             {
                 return 1;
             }
-            if(stepNode is IntNode stpInt)
+            if (stepNode is IntNode stpInt)
             {
                 return stpInt.Value;
             }
-            if(stepNode is DoubleNode stpDB)
+            if (stepNode is DoubleNode stpDB)
             {
                 return stpDB.Value;
             }
@@ -1070,7 +1328,7 @@ namespace EmitMSIL
             return false;
         }
 
-            private Type EmitRangeExprNode(AssociativeNode node)
+        private Type EmitRangeExprNode(AssociativeNode node)
         {
             //we don't do anything if this is the methodlookup phase
             //as we need want to access the variable types which are not computed
@@ -1091,7 +1349,7 @@ namespace EmitMSIL
             var hasAmountOperator = range.HasRangeAmountOperator;
 
             //TODO we may want to do this check again at runtime.
-            if(stepNode is DoubleNode && stepOp == DSASM.RangeStepOperator.Number)
+            if (stepNode is DoubleNode && stepOp == DSASM.RangeStepOperator.Number)
             {
                 throw new ArgumentException(Resources.kInvalidAmountInRangeExpression);
             }
@@ -1101,17 +1359,17 @@ namespace EmitMSIL
 
             var isIntStep = stepNode is IntNode stpInt ||
                 (hasAmountOperator && stepOp == DSASM.RangeStepOperator.StepSize && stepNode is DoubleNode stpDB && Math.Truncate(stpDB.Value) == stpDB.Value) ||
-                stepNode == null; 
-            
+                stepNode == null;
+
 
             if (fromNode is IntNode fint && toNode is IntNode tint && isIntStep)
             {
 
                 var stpval = GetStepValueAsDouble(stepNode);
                 //the requested range was not divided evenly by the approximate step, so we create a double range.
-                if (stepOp == DSASM.RangeStepOperator.ApproximateSize &&  Math.Abs(fint.Value - tint.Value)%stpval != 0 ||
-                 //the requested number of items does not fit evenly into the range, so we create a double range.
-                   stepOp == DSASM.RangeStepOperator.Number && (Math.Abs(fint.Value - tint.Value) % (stpval-1) != 0)
+                if (stepOp == DSASM.RangeStepOperator.ApproximateSize && Math.Abs(fint.Value - tint.Value) % stpval != 0 ||
+                   //the requested number of items does not fit evenly into the range, so we create a double range.
+                   stepOp == DSASM.RangeStepOperator.Number && (Math.Abs(fint.Value - tint.Value) % (stpval - 1) != 0)
                    )
                 {
                     methodName = doubleRangeMethodName;
@@ -1122,19 +1380,20 @@ namespace EmitMSIL
                 }
             }
 
-            else if(fromNode is DoubleNode || toNode is DoubleNode || stepNode is DoubleNode)
+            else if (fromNode is DoubleNode || toNode is DoubleNode || stepNode is DoubleNode)
             {
                 methodName = doubleRangeMethodName;
             }
 
             //we still have not selected a method, lets check if our inputs are idents and have known types.
-            if(methodName == unselectedToken)
+            if (methodName == unselectedToken)
             {
                 //if we are generating a simple range and we have all doubles or ints we know what methods to call
                 //in other cases we can't determine which overload to call without the values of these idents.
                 if (stepOp == DSASM.RangeStepOperator.StepSize)
                 {
-                    if (new[] { fromNode, toNode, stepNode }.All(x => x is IdentifierNode ident && CheckIdentType<long>(ident))){
+                    if (new[] { fromNode, toNode, stepNode }.All(x => x is IdentifierNode ident && CheckIdentType<long>(ident)))
+                    {
                         methodName = intRangeMethodName;
                     }
                     else if (new[] { fromNode, toNode, stepNode }.All(x => x is IdentifierNode ident && CheckIdentType<double>(ident)))
@@ -1150,7 +1409,7 @@ namespace EmitMSIL
                 //if we still get to this line we'll need to call a dynamic version of generate range that boxes objects.
                 methodName = doubleRangeMethodName;
             }
-               
+
             //call the generate method we've selected.
 
             IntNode op = null;
@@ -1186,7 +1445,7 @@ namespace EmitMSIL
                 AstFactory.BuildBooleanNode(hasAmountOperator),
             };
 
-            
+
             var rangeExprFunc = AstFactory.BuildFunctionCall(methodName, arguments);
             var idlist = new IdentifierListNode()
             {
@@ -1195,7 +1454,7 @@ namespace EmitMSIL
             };
             //we want to cache the call to generate range, so traverse down in any case.
             var t = DfsTraverse(idlist);
-          
+
             return t;
         }
 
@@ -1281,13 +1540,14 @@ namespace EmitMSIL
 
         private Type EmitIdentifierNode(AssociativeNode node)
         {
+
             if (compilePass == CompilePass.MethodLookup) return null;
 
             // only handle identifiers on rhs of assignment expression for now.
             if (node is IdentifierNode idNode)
             {
                 // local variables on rhs of expression should have already been defined.
-                if(!variables.TryGetValue(idNode.Value, out Tuple<int, Type> tup))
+                if (!variables.TryGetValue(idNode.Value, out Tuple<int, Type> tup))
                 {
                     throw new Exception("Variable is undefined!");
                 }
