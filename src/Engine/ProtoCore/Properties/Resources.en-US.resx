@@ -142,7 +142,7 @@
     <value>Checks if the list has a uniform depth</value>
   </data>
   <data name="CloseBracketExpected" xml:space="preserve">
-    <value>')' expected - Incomplete Closure</value>
+    <value>')' expected - Imcomplete Closure</value>
   </data>
   <data name="ContainsKeys" xml:space="preserve">
     <value>Checks if the specified key is present in the specified key-value pair list</value>

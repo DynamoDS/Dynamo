@@ -1964,14 +1964,6 @@
                                Grid.Row="0"
                                Focusable="false"
                                IsDirectionReversed="true">
-                            <Track.Resources>
-                                <!-- Set the Thumb's minimum height to 25.
-                                     The Thumb's minimum height is half the
-                                     value of VerticalScrollBarButtonHeightKey. -->
-                                <clr:Double x:Key="{x:Static SystemParameters.VerticalScrollBarButtonHeightKey}">
-                                    50
-                                </clr:Double>
-                            </Track.Resources>
                             <Track.Thumb>
                                 <Thumb x:Name="Thumb"
                                        Background="{TemplateBinding Foreground}"
@@ -2876,14 +2868,20 @@
         </Style.Triggers>
     </Style>
 
-    <!-- Window Control Button Styles - Base Button -->
-    <Style x:Key="BaseButtonStyle" TargetType="Button">
+
+    <!-- Window Control Button Styles - Close Button -->
+    <Style x:Key="CloseButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="closeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/close_grey.png"/>
+                    </Grid>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/close_blue.png" />
+                        </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value=".5" />
                         </Trigger>
@@ -2893,17 +2891,22 @@
         </Setter>
     </Style>
 
-    <!-- Window Control Button Dark Styles - Close Button -->
-    <Style x:Key="CloseButtonDarkStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+    <!-- Window Control Button Styles - Minimize Button -->
+    <Style x:Key="MinimizeButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Image Name="closeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-default-16px.png"/>
+                        <Image Name="minimizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minus_16px_grey.png"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-hover-16px.png" />
+                            <Setter TargetName="minimizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minus_16px_blue.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -2911,17 +2914,22 @@
         </Setter>
     </Style>
 
-    <!-- Window Control Button Light Styles - Close Button -->
-    <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+    <!-- Window Control Button Styles - Maximize Button -->
+    <Style x:Key="MaximizeButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Image Name="closeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-lighttheme-default-16px.png"/>
+                        <Image Name="maximizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/maximize_16px_grey.png"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-lighttheme-hover-16px.png" />
+                            <Setter TargetName="maximizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/maximize_16px_blue.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -2929,107 +2937,22 @@
         </Setter>
     </Style>
 
-    <!-- Window Control Button Dark Styles - Minimize Button -->
-    <Style x:Key="MinimizeButtonDarkStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+    <!-- Window Control Button Styles - Normalize Button -->
+    <Style x:Key="NormalizeButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Image Name="minimizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/min-darktheme-default-16px.png"/>
+                        <Image Name="normalizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minimize_16px_grey.png"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="minimizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/min-darktheme-hover-16px.png" />
+                            <Setter TargetName="normalizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minimize_16px_blue.png" />
                         </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!-- Window Control Button Light Styles - Minimize Button -->
-    <Style x:Key="MinimizeButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Image Name="minimizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/min-lighttheme-default-16px.png"/>
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="minimizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/min-lighttheme-hover-16px.png" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!-- Window Control Button Dark Styles - Maximize Button -->
-    <Style x:Key="MaximizeButtonDarkStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Image Name="maximizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/max-darktheme-default-16px.png"/>
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="maximizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/max-darktheme-hover-16px.png" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!-- Window Control Button Light Styles - Maximize Button -->
-    <Style x:Key="MaximizeButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Image Name="maximizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/max-lighttheme-default-16px.png"/>
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="maximizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/max-lighttheme-hover-16px.png" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!-- Window Control Button Dark Styles - Restore Button -->
-    <Style x:Key="RestoreButtonDarkStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Image Name="restoreIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/restore-darktheme-default-16px.png"/>
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="restoreIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/restore-darktheme-hover-16px.png" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!-- Window Control Button Light Styles - Restore Button -->
-    <Style x:Key="RestoreButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Image Name="restoreIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/restore-lighttheme-default-16px.png"/>
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="restoreIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/restore-lighttheme-hover-16px.png" />
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -5241,7 +5164,6 @@
         </Style.Triggers>
     </Style>
 
-    <!-- TextBox Style for inputting text with a grey/blue bottom bar to highlight hover/focus behavior -->
     <Style x:Key="HintingInputStyle" TargetType="TextBox">
         <Setter Property="Margin" Value="0,0,0,12" />
         <Setter Property="MinWidth" Value="62px" />
@@ -5285,63 +5207,22 @@
                         </TextBlock>
                         <StackPanel Height="4px" VerticalAlignment="Bottom">
                             <Rectangle Name="Underline"
-                                       Height="1px"
-                                       Fill="#9B9B9B"
-                                       Opacity="0"/>
+                                           Height="1px"
+                                           Fill="Transparent" />
                             <Rectangle Name="UnderlineShadow"
-                                       Height="3px"
-                                       Fill="#6E6E6E"
-                                       Opacity="0"/>
+                                           Height="3px"
+                                           Fill="Transparent" />
                         </StackPanel>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=InputTextBox}" Value="True">
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard SpeedRatio="10">
-                                        <DoubleAnimation Storyboard.TargetName="Underline" Storyboard.TargetProperty="Opacity"
-                                                         To="0.75" Duration="0:0:1" />
-                                        <DoubleAnimation Storyboard.TargetName="UnderlineShadow" Storyboard.TargetProperty="Opacity"
-                                                                 To="0.75" Duration="0:0:1" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard SpeedRatio="2">
-                                        <DoubleAnimation Storyboard.TargetName="Underline" Storyboard.TargetProperty="Opacity"
-                                                                 To="0" Duration="0:0:1" />
-                                        <DoubleAnimation Storyboard.TargetName="UnderlineShadow" Storyboard.TargetProperty="Opacity"
-                                                                 To="0" Duration="0:0:1" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </DataTrigger.ExitActions>
-
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsFocused, ElementName=InputTextBox}" Value="True">
+                        <Trigger Property="IsFocused" Value="True">
                             <Setter TargetName="Underline" Property="Rectangle.Fill" Value="{StaticResource Blue300Brush}" />
                             <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#497386" />
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard SpeedRatio="10" Name="FocusedStoryboard" >
-                                        <DoubleAnimation Storyboard.TargetName="Underline" Storyboard.TargetProperty="Opacity"
-                                                                 To="0.75" Duration="0:0:1" />
-                                        <DoubleAnimation Storyboard.TargetName="UnderlineShadow" Storyboard.TargetProperty="Opacity"
-                                                                 To="0.75" Duration="0:0:1" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard SpeedRatio="2" FillBehavior="Stop">
-                                        <DoubleAnimation Storyboard.TargetName="Underline" Storyboard.TargetProperty="Opacity"
-                                                                 To="0" Duration="0:0:1" />
-                                        <DoubleAnimation Storyboard.TargetName="UnderlineShadow" Storyboard.TargetProperty="Opacity"
-                                                                 To="0" Duration="0:0:1" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </DataTrigger.ExitActions>
-                        </DataTrigger>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Underline" Property="Rectangle.Fill" Value="#9B9B9B" />
+                            <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#6E6E6E" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -5352,4 +5233,5 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
 </ResourceDictionary>

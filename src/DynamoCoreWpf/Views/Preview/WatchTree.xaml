@@ -329,7 +329,7 @@
                         <TextBlock x:Name="listIndex"
                                    Width="Auto"
                                    Margin="{Binding Path=IsCollection, Converter={StaticResource ListIndexMarginConverter}}"
-                                   Padding="0,0,0,-1"                                   
+                                   Padding="0,0,0,-1"
                                    VerticalAlignment="Center"
                                    Background="{Binding Path=IsCollection, Converter={StaticResource ListIndexBackgroundConverter}}"
                                    FontFamily="{StaticResource SourceCodePro}"
@@ -352,17 +352,11 @@
 
                         <TextBlock Width="Auto"
                                    Margin="{Binding Path=IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}"
-                                   VerticalAlignment="Center"                                                                      
+                                   VerticalAlignment="Center"
+                                   Foreground="{Binding Path=ValueType, Converter={StaticResource ObjectTypeConverter}}"
                                    FontFamily="{StaticResource SourceCodePro}"
                                    Text="{Binding Path=NodeLabel}"
-                                   Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}" >
-                            <TextBlock.Foreground>
-                                <MultiBinding Converter="{StaticResource ObjectTypeConverter}">
-                                    <Binding Path="ValueType" />
-                                    <Binding Path="NodeLabel" />
-                                    </MultiBinding>
-                            </TextBlock.Foreground>
-                            </TextBlock>
+                                   Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
 
                         <Button Margin="10,2,2,2"
                                 Padding="4,0,4,0"

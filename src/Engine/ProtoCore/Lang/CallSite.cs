@@ -825,7 +825,7 @@ namespace ProtoCore
         /// </summary>
         /// <returns>Returns true or false based on the condition described above. 
         /// </returns>
-        internal static bool IsSimilarOptionButOfHigherRank(List<ReplicationInstruction> oldOption, List<ReplicationInstruction> newOption)
+        private static bool IsSimilarOptionButOfHigherRank(List<ReplicationInstruction> oldOption, List<ReplicationInstruction> newOption)
         {
             if (oldOption.Count > 0 && newOption.Count > 0 && oldOption.Count < newOption.Count)
             {
@@ -2029,63 +2029,6 @@ namespace ProtoCore
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.ConversionNotPossible,
                                               Resources.kConvertNonConvertibleTypes);
                 return StackValue.Null;
-            }
-        }
-
-        internal static CLRStackValue PerformReturnTypeCoerce(CLRFunctionEndPoint procNode, CLRStackValue ret, MSILRuntimeCore runtimeCore)
-        {
-            Validity.Assert(procNode != null, "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
-
-            System.Type returnType = procNode.ReturnType;
-            Type retType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(returnType);
-
-            if (retType.UID == (int)PrimitiveType.Var)
-            {
-                if (retType.rank < 0)
-                {
-                    return ret;
-                }
-                else
-                {
-                    CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
-                    return coercedRet;
-                }
-            }
-
-            if (ret.IsNull)
-            {
-                return ret;
-            }
-
-            if (ret.TypeUID == retType.UID)
-            {
-                if (!ret.IsEnumerable && retType.IsIndexable)
-                {
-                    CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
-                    return coercedRet;
-                }
-                else
-                {
-                    return ret;
-                }
-            }
-
-            if (ret.IsEnumerable && retType.IsIndexable)
-            {
-                CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
-                return coercedRet;
-            }
-
-            if (runtimeCore.ConvertibleTo(ret, retType))
-            {
-                CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
-                return coercedRet;
-            }
-            else
-            {
-                //@TODO(Luke): log no-type coercion possible warning
-                System.Console.WriteLine($"{WarningID.ConversionNotPossible}{Resources.kConvertNonConvertibleTypes}");
-                return CLRStackValue.Null;
             }
         }
 

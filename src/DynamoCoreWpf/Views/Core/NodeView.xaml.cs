@@ -446,7 +446,7 @@ namespace Dynamo.Controls
             {
                 Debug.WriteLine("Name double clicked!");
                 // If workspace is zoomed-out, open an Edit Name dialog, otherwise rename inline
-                if (viewModel.WorkspaceViewModel.Zoom < Configurations.ZoomDirectEditThreshold)
+                if (viewModel.WorkspaceViewModel.Zoom < Configurations.ZoomThreshold)
                 {
                     if (ViewModel != null && ViewModel.RenameCommand.CanExecute(null))
                     {
@@ -481,10 +481,6 @@ namespace Dynamo.Controls
         {
             NameBlock.Visibility = Visibility.Visible;
             EditableNameBox.Visibility = Visibility.Collapsed;
-
-            ViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.UpdateModelValueCommand(
-                    System.Guid.Empty, ViewModel.NodeModel.GUID, nameof(NodeModel.Name), NameBlock.Text));
         }
 
         private void EditableNameBox_OnLostFocus(object sender, RoutedEventArgs e)
