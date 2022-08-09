@@ -33,7 +33,7 @@ namespace Dynamo.Wpf.Utilities
         {
             try
             {
-                CerToolDir = GetCERToolLocation();
+                CerToolDir = string.IsNullOrEmpty(DynamoModel.CrashToolLocation) ? GetCERToolLocation() : DynamoModel.CrashToolLocation;
             }
             catch
             {}

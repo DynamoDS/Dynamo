@@ -41,6 +41,11 @@ namespace DynamoSandbox
                 Analytics.DisableAnalytics = true;
             }
 
+            if (!string.IsNullOrEmpty(cmdLineArgs.CrashReportLocation))
+            {
+                DynamoModel.CrashToolLocation = cmdLineArgs.CrashReportLocation;
+            }
+
             commandFilePath = cmdLineArgs.CommandFilePath;
             ASMPath = cmdLineArgs.ASMPath;
             analyticsInfo = cmdLineArgs.AnalyticsInfo;
@@ -102,8 +107,6 @@ namespace DynamoSandbox
 
                     if (viewModel != null)
                     {
-
-
                         if (CrashReportTool.IsCEREnabled())
                         {
                             CrashReportTool.OnCrashReportWindow(new CrashReportArgs(viewModel));

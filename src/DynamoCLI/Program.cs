@@ -20,6 +20,11 @@ namespace DynamoCLI
                     Dynamo.Logging.Analytics.DisableAnalytics = true;
                 }
 
+                if (!string.IsNullOrEmpty(cmdLineArgs.CrashReportLocation))
+                {
+                    DynamoModel.CrashToolLocation = cmdLineArgs.CrashReportLocation;
+                }
+
                 if (cmdLineArgs.KeepAlive)
                 {
                     var thread = new Thread(() => RunKeepAlive(cmdLineArgs));

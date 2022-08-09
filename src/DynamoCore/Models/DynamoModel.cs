@@ -166,6 +166,11 @@ namespace Dynamo.Models
         /// </summary>
         public static bool EnableMigrationLogging { get; set; }
 
+        /// <summary>
+        /// The Autodesk CrashReport tool location on disk (directory that contains the "senddmp.exe")
+        /// </summary>
+        public static string CrashToolLocation;
+
         #endregion
 
         #region public properties

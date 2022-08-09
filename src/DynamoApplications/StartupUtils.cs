@@ -108,6 +108,9 @@ namespace Dynamo.Applications
                 // Disables all analytics (Google and ADP)
                 bool disableAnalytics = false;
 
+                // CrashReport tool location
+                string crashReportLocation = string.Empty;
+
                 // Allow Dynamo launcher to identify Dynamo variation for log purpose like analytics, e.g. Dynamo Revit
                 var hostname = string.Empty;
 
@@ -132,6 +135,7 @@ namespace Dynamo.Applications
                 .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
                 .Add("da|DA|disableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
+                .Add("cr|CR|crashReportPath", "Specify the CrashReport tool location on disk ", cr => crashReportLocation = cr)
                 ;
                 optionsSet.Parse(args);
 
@@ -179,7 +183,9 @@ namespace Dynamo.Applications
             [Obsolete("This property will be removed in Dynamo 3.0 - please use AnalyticsInfo")]
             public string HostName { get; set; }
             public bool DisableAnalytics { get; set; }
-            public HostAnalyticsInfo AnalyticsInfo { get; set; } 
+            public HostAnalyticsInfo AnalyticsInfo { get; set; }
+
+            public string CrashReportLocation { get; set; }
         }
 
         /// <summary>
