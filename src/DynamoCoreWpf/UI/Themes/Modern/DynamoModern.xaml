@@ -1434,7 +1434,6 @@
                                        VerticalAlignment="Center"
                                        FontSize="{TemplateBinding FontSize}"
                                        FontWeight="Bold"
-                                       Foreground="{TemplateBinding Foreground}"
                                        Style="{StaticResource SZoomFadeText}"
                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Border>
@@ -1461,7 +1460,6 @@
     <Style TargetType="{x:Type nodes:DynamoNodeButton}" BasedOn="{StaticResource SNodeTextButton}" />
 
     <Style x:Key="SingleCharButton" TargetType="{x:Type Button}" BasedOn="{StaticResource SNodeTextButton}">
-        <Setter Property="Foreground" Value="#999999" />
         <Setter Property="FontSize" Value="28px" />
         <Setter Property="Height" Value="22px" />
         <Setter Property="Width" Value="22px" />
