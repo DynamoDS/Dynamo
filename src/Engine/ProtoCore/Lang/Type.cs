@@ -135,9 +135,6 @@ namespace ProtoCore
             { typeof(char).FullName, "char" }
         };
 
-        private static TypeSystem instance;
-        internal static TypeSystem Instance => instance != null ? instance : new TypeSystem();
-
         public TypeSystem()
         {
             SetTypeSystem();

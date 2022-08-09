@@ -1932,7 +1932,7 @@ namespace ProtoFFI
             unchecked
             {
                 var hash = 0;
-                hash = (hash * 397) ^ obj.Value.GetHashCode();
+                hash = (hash * 397) ^ obj.Value?.GetHashCode() ?? 0;
                 hash = (hash * 397) ^ obj.TypeUID.GetHashCode();
                 return hash;
             }
