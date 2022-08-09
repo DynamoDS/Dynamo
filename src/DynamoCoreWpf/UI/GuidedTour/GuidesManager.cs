@@ -516,7 +516,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// and display message passed as param
         /// </summary>
         /// <param name="content">The target content to display.</param>
-        /// <param name="stayOpen">boolean indicates if the popup will stay open untill user dismiss it.</param>
+        /// <param name="stayOpen">boolean indicates if the popup will stay open until user dismiss it.</param>
         /// TODO: Make this API out of guide manager to a more generic place
         internal void CreateRealTimeInfoWindow(string content, bool stayOpen = false)
         {
