@@ -21,7 +21,21 @@
               IsHitTestVisible="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Name="PortNameColumn" Width="*" />
-                <ColumnDefinition Name="ValueMarkerColumn" Width="{Binding Path=ValueMarkerWidth}" />
+                <ColumnDefinition Name="ValueMarkerColumn">
+                    <ColumnDefinition.Style>
+                        <Style TargetType="ColumnDefinition">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=PortDefaultValueMarkerVisible}" Value="True">
+                                    <Setter Property="Width" Value="5px" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=PortDefaultValueMarkerVisible}" Value="False">
+                                    <Setter Property="Width" Value="0px" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ColumnDefinition.Style>
+                 </ColumnDefinition>
+                
                 <ColumnDefinition Name="PortSnappingColumn" Width="25px" />
             </Grid.ColumnDefinitions>
 

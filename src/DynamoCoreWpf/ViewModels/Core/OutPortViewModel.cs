@@ -27,7 +27,6 @@ namespace Dynamo.ViewModels
         private string showHideWiresButtonContent = "";
         private bool hideWiresButtonEnabled;
         private bool portDefaultValueMarkerVisible;
-        private string valueMarkerWidth;
 
         /// <summary>
         /// Sets the condensed styling on Code Block output ports.
@@ -130,17 +129,6 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(PortDefaultValueMarkerVisible));
             }
         }
-
-        public string ValueMarkerWidth
-        {
-            get => valueMarkerWidth;
-            set
-            {
-                valueMarkerWidth = value;
-                RaisePropertyChanged(nameof(ValueMarkerWidth));
-            }
-        }
-
 
         /// <summary>
         /// Takes care of the multiple UI concerns when dealing with the Unhide/Hide Wires button
@@ -321,7 +309,6 @@ namespace Dynamo.ViewModels
         protected override void RefreshPortColors()
         {
             PortDefaultValueMarkerVisible = node.NodeModel.CachedValue != null && node.NodeModel.CachedValue.IsFunction && !node.IsWatchNode;
-            ValueMarkerWidth = PortDefaultValueMarkerVisible ? "5px" : "0px";
         }
     }
 }
