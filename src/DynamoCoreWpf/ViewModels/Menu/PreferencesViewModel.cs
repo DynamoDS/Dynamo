@@ -1065,7 +1065,7 @@ namespace Dynamo.ViewModels
                     description = Resources.ResourceManager.GetString("PreferencesViewShowWhitespaceInPythonEditor", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(NodeAutocompleteIsChecked):
-                    description = Resources.ResourceManager.GetString("PPreferencesViewEnableNodeAutoComplete", System.Globalization.CultureInfo.InvariantCulture);                    
+                    description = Resources.ResourceManager.GetString("PreferencesViewEnableNodeAutoComplete", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(EnableTSplineIsChecked):
                     description = Resources.ResourceManager.GetString("PreferencesViewEnableTSplineNodes", System.Globalization.CultureInfo.InvariantCulture);                    
