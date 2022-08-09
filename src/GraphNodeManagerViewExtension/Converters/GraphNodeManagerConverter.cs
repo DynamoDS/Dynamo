@@ -1,14 +1,11 @@
-﻿using System;
-using System.Globalization;
-using System.Web.UI.WebControls;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Media;
-using Dynamo.Graph.Nodes;
+﻿using Dynamo.Graph.Nodes;
 using Dynamo.GraphNodeManager.Properties;
 using Dynamo.UI;
-using FontStyle = System.Drawing.FontStyle;
+using System;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Media;
 
 namespace Dynamo.GraphNodeManager.Converters
 {
