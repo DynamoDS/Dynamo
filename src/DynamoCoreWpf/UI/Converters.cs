@@ -1298,6 +1298,24 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Converter for Notification Bell updates based on feature enabled or not
+    /// </summary>
+    public class BoolToFAIconNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+                return nameof(FontAwesome.WPF.FontAwesomeIcon.BellOutline);
+            return nameof(FontAwesome.WPF.FontAwesomeIcon.BellSlashOutline);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class BoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

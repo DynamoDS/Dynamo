@@ -27,6 +27,7 @@ namespace Dynamo.Configuration
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
         private bool disableTrustWarnings = false;
+        private bool isNotificationCenterEnabled;
         #region Constants
         /// <summary>
         /// Indicates the maximum number of files shown in Recent Files
@@ -442,7 +443,18 @@ namespace Dynamo.Configuration
         /// <summary>
         /// This defines if user wants to see the enabled Dynamo Notification Center.
         /// </summary>
-        public bool EnableNotificationCenter { get; set; }
+        public bool EnableNotificationCenter
+        {
+            get
+            {
+                return isNotificationCenterEnabled;
+            }
+            set
+            {
+                isNotificationCenterEnabled = value;
+                RaisePropertyChanged(nameof(EnableNotificationCenter));
+            }
+        }
 
         /// <summary>
         /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.

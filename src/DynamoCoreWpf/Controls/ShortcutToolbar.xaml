@@ -189,7 +189,8 @@
                                 <DockPanel>
                                     <fa:FontAwesome Margin="0,0,25,0"  
                                                     DockPanel.Dock="Top" 
-                                                    Icon="BellOutline"
+                                                    Icon="{Binding Path=DataContext.PreferenceSettings.EnableNotificationCenter, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Window}}, 
+                                                         Converter={StaticResource BoolToFAIconNameConverter}}"
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     Foreground="{StaticResource PrimaryCharcoal300Brush}"
@@ -203,12 +204,12 @@
                                             VerticalAlignment="Center" 
                                             HorizontalAlignment="Center">
                                         <!--TODO insert data bind for the notifications -->
-                                        <TextBlock     
-                                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                Foreground="White" 
-                                                FontWeight="DemiBold" 
-                                                TextAlignment="Center"
-                                                FontSize="9">8
+                                        <TextBlock Name="NotificationCount"
+                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                   Foreground="White" 
+                                                   FontWeight="DemiBold"
+                                                   TextAlignment="Center"
+                                                   FontSize="9">8
                                         </TextBlock>
                                     </Border>
                                 </DockPanel>

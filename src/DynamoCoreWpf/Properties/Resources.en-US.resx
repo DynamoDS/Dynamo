@@ -3271,6 +3271,11 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Dynamo cannot ungroup when there is no parent group.</value>
   </data>
   <data name="PreferencesViewEnableNotificationCenter" xml:space="preserve">
+    <value>Receive notification</value>
+    <comment>Preferences | Features | Notification Center | Receive notification</comment>
+  </data>
+  <data name="PreferencesViewNotificationCenter" xml:space="preserve">
     <value>Notification Center</value>
+    <comment>Preferences | Features | Notification Center</comment>
   </data>
 </root>

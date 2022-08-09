@@ -455,7 +455,7 @@
                                       Style="{StaticResource MenuExpanderStyle}" 
                                       IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=NotificationCenterExpander}"
                                       Grid.Row="1"
-                                      Header="{x:Static p:Resources.PreferencesViewEnableNotificationCenter}">
+                                      Header="{x:Static p:Resources.PreferencesViewNotificationCenter}">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
