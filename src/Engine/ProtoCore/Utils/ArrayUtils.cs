@@ -11,7 +11,7 @@ namespace ProtoCore.Utils
     {
         private static int RECURSION_LIMIT = 1024;
 
-        internal static ClassNode GetGreatestCommonSubclassForArrayInternal(Dictionary<ClassNode, int> typeStats, RuntimeCore runtimeCore)
+        internal static ClassNode GetGreatestCommonSubclassForArrayInternal(Dictionary<ClassNode, int> typeStats, ClassTable classTable)
         {
             //@PERF: This could be improved with a 
             List<List<int>> chains = new List<List<int>>();
@@ -19,7 +19,7 @@ namespace ProtoCore.Utils
 
             foreach (ClassNode cn in typeStats.Keys)
             {
-                List<int> chain = ClassUtils.GetClassUpcastChain(cn, runtimeCore);
+                List<int> chain = ClassUtils.GetClassUpcastChain(cn, classTable);
 
                 //Now add in the other conversions - as we don't have a common superclass yet
                 //@TODO(Jun): Remove this hack when we have a proper casting structure
@@ -69,7 +69,7 @@ namespace ProtoCore.Utils
                 return null;
 
             if (commonTypeIDs.Count == 1)
-                return runtimeCore.DSExecutable.classTable.ClassNodes[commonTypeIDs.First()];
+                return classTable.ClassNodes[commonTypeIDs.First()];
 
 
             List<int> lookupChain = chains[0];
@@ -98,7 +98,7 @@ namespace ProtoCore.Utils
                     orderedTypes.Add(typeToInsert);
             }
 
-            return runtimeCore.DSExecutable.classTable.ClassNodes[orderedTypes.First()];
+            return classTable.ClassNodes[orderedTypes.First()];
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace ProtoCore.Utils
 
             Dictionary<ClassNode, int> typeStats = GetTypeStatisticsForArray(array, runtimeCore);
 
-            return GetGreatestCommonSubclassForArrayInternal(typeStats, runtimeCore);
+            return GetGreatestCommonSubclassForArrayInternal(typeStats, runtimeCore.DSExecutable.classTable);
             
         }
 
@@ -140,6 +140,29 @@ namespace ProtoCore.Utils
                 if (!usageFreq.ContainsKey(sv.metaData.type))
                 {
                     usageFreq.Add(sv.metaData.type, sv);
+                }
+            }
+
+            return usageFreq;
+        }
+
+        internal static Dictionary<int, CLRStackValue> GetTypeExamplesForLayer(CLRStackValue paramStackValue, MSILRuntimeCore runtimeCore)
+        {
+            Dictionary<int, CLRStackValue> usageFreq = new Dictionary<int, CLRStackValue>();
+
+            if (!paramStackValue.IsEnumerable)
+            {
+                usageFreq.Add(paramStackValue.TypeUID, paramStackValue);
+                return usageFreq;
+            }
+
+            //This is the element on the heap that manages the data structure
+            var dsArray = paramStackValue.Value as IList<CLRStackValue>;
+            foreach (var sv in dsArray)
+            {
+                if (!usageFreq.ContainsKey(sv.TypeUID))
+                {
+                    usageFreq.Add(sv.TypeUID, sv);
                 }
             }
 
@@ -187,6 +210,39 @@ namespace ProtoCore.Utils
             return result;
         }
 
+        internal static List<CLRStackValue> GetTypeExamplesForLayerWithoutArraySampling(CLRStackValue array, MSILRuntimeCore runtimeCore)
+        {
+            var result = new List<CLRStackValue>();
+            var alreadyFoundTypes = new HashSet<int>();
+
+            if (!array.IsEnumerable)
+            {
+                result.Add(array);
+                return result;
+            }
+
+            var dsArray = array.Value as IList<CLRStackValue>;
+            foreach (var sv in dsArray)
+            {
+                if (sv.IsEnumerable)
+                {
+                    if (!IsEmpty(sv, runtimeCore))
+                    {
+                        result.Add(sv);
+                    }
+                }
+                else
+                {
+                    if (!alreadyFoundTypes.Contains(sv.TypeUID))
+                    {
+                        alreadyFoundTypes.Add(sv.TypeUID);
+                        result.Add(sv);
+                    }
+                }
+            }
+
+            return result;
+        }
 
         /// <summary>
         /// Generate type statistics for given layer of an array
@@ -265,6 +321,49 @@ namespace ProtoCore.Utils
 
             return usageFreq;
         }
+
+        internal static Dictionary<ClassNode, int> GetTypeStatisticsForArray(CLRStackValue array, MSILRuntimeCore runtimeCore)
+        {
+            if (!array.IsEnumerable)
+            {
+                Dictionary<ClassNode, int> ret = new Dictionary<ClassNode, int>();
+                ret.Add(runtimeCore.ClassTable.ClassNodes[array.TypeUID], 1);
+                return ret;
+            }
+
+            Dictionary<ClassNode, int> usageFreq = new Dictionary<ClassNode, int>();
+
+            //This is the element on the heap that manages the data structure
+            var dsArray = array.Value as IList<CLRStackValue>;
+            foreach (var sv in dsArray)
+            {
+                if (sv.IsEnumerable)
+                {
+                    //Recurse
+                    Dictionary<ClassNode, int> subLayer = GetTypeStatisticsForArray(sv, runtimeCore);
+                    foreach (ClassNode cn in subLayer.Keys)
+                    {
+                        if (!usageFreq.ContainsKey(cn))
+                            usageFreq.Add(cn, 0);
+
+                        usageFreq[cn] = usageFreq[cn] + subLayer[cn];
+
+                    }
+                }
+                else
+                {
+
+                    ClassNode cn = runtimeCore.ClassTable.ClassNodes[sv.TypeUID];
+                    if (!usageFreq.ContainsKey(cn))
+                        usageFreq.Add(cn, 0);
+
+                    usageFreq[cn] += 1;
+                }
+            }
+
+            return usageFreq;
+        }
+
 
         private static int GetMaxRankForArray<T>(T sv, Func<T, System.Collections.IEnumerable> asArr, int tracer)
         {
@@ -576,6 +675,15 @@ namespace ProtoCore.Utils
 
             var array = runtimeCore.Heap.ToHeapObject<DSArray>(arrayPointer);
             return array.Values.All(v => IsEmpty(v, runtimeCore));
+        }
+
+        internal static bool IsEmpty(CLRStackValue arrayPointer, MSILRuntimeCore runtimeCore)
+        {
+            if (!arrayPointer.IsEnumerable)
+                return false;
+
+            var array = arrayPointer.Value as IList<CLRStackValue>;
+            return array.All(v => IsEmpty(v, runtimeCore));
         }
 
         /// <summary>

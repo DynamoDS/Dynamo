@@ -1,34 +1,13 @@
 ﻿using NUnit.Framework;
 using ProtoCore.Utils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CodeGenILTests
 {
-    class ReplicationTests
+    class ReplicationTests : MicroTests
     {
-        private EmitMSIL.CodeGenIL codeGen;
-        private Dictionary<string, IList> inputs = new Dictionary<string, IList>();
-
-        [SetUp]
-        public void Setup()
-        {
-            var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(assemblyPath, "OpCodesTEST.txt"));
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            codeGen.Dispose();
-        }
-
         [Test]
         public void MSIL_Arithmatic_List_And_List_Same_Length()
         {

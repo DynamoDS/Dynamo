@@ -26,9 +26,9 @@ class C extends B {}
             ClassNode cnA = core.ClassTable.ClassNodes[idA];
             ClassNode cnB = core.ClassTable.ClassNodes[idB];
             ClassNode cnC = core.ClassTable.ClassNodes[idC];
-            List<int> idsA = ClassUtils.GetClassUpcastChain(cnA, runtimeCore);
-            List<int> idsB = ClassUtils.GetClassUpcastChain(cnB, runtimeCore);
-            List<int> idsC = ClassUtils.GetClassUpcastChain(cnC, runtimeCore);
+            List<int> idsA = ClassUtils.GetClassUpcastChain(cnA, runtimeCore.DSExecutable.classTable);
+            List<int> idsB = ClassUtils.GetClassUpcastChain(cnB, runtimeCore.DSExecutable.classTable);
+            List<int> idsC = ClassUtils.GetClassUpcastChain(cnC, runtimeCore.DSExecutable.classTable);
             Assert.IsTrue(idsA.Count == 2);
             Assert.IsTrue(idsA.Contains(idA));
 

@@ -112,6 +112,84 @@ namespace EmitMSIL
             return feps;
         }
 
+        private static CLRFunctionEndPoint SelectFinalFep(List<CLRFunctionEndPoint> functionEndPoint,
+                                        List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
+        {
+            List<ReplicationInstruction> replicationControl = new List<ReplicationInstruction>();
+            //We're never going to replicate so create an empty structure to allow us to use
+            //the existing utility methods
+
+            //Filter for exact matches
+
+            List<CLRFunctionEndPoint> exactTypeMatchingCandindates = new List<CLRFunctionEndPoint>();
+
+            foreach (CLRFunctionEndPoint possibleFep in functionEndPoint)
+            {
+                if (possibleFep.DoesTypeDeepMatch(formalParameters, runtimeCore))
+                {
+                    exactTypeMatchingCandindates.Add(possibleFep);
+                }
+            }
+
+
+            //There was an exact match, so dispath to it
+            if (exactTypeMatchingCandindates.Count > 0)
+            {
+                CLRFunctionEndPoint fep = null;
+
+                if (exactTypeMatchingCandindates.Count == 1)
+                {
+                    fep = exactTypeMatchingCandindates[0];
+                }
+                else
+                {
+                    fep = exactTypeMatchingCandindates[0];
+                    // TODO_MSIL: implement SelectFEPFromMultiple
+                    //fep = SelectFEPFromMultiple(stackFrame, runtimeCore, exactTypeMatchingCandindates, formalParameters);
+                }
+
+                return fep;
+            }
+            else
+            {
+                Dictionary<CLRFunctionEndPoint, int> candidatesWithDistances = new Dictionary<CLRFunctionEndPoint, int>();
+                Dictionary<CLRFunctionEndPoint, int> candidatesWithCastDistances = new Dictionary<CLRFunctionEndPoint, int>();
+
+                foreach (CLRFunctionEndPoint fep in functionEndPoint)
+                {
+                    //@TODO(Luke): Is this value for allow array promotion correct?
+                    int distance = fep.ComputeTypeDistance(formalParameters, runtimeCore, false);
+                    if (distance !=
+                        (int)ProcedureDistance.InvalidDistance)
+                        candidatesWithDistances.Add(fep, distance);
+                }
+
+                foreach (CLRFunctionEndPoint fep in functionEndPoint)
+                {
+                    int dist = fep.ComputeCastDistance(formalParameters);
+                    candidatesWithCastDistances.Add(fep, dist);
+                }
+
+                // TODO_MSIL: implement GetCandidateFunctions;
+                List<CLRFunctionEndPoint> candidateFunctions = candidatesWithDistances.Keys.ToList(); //GetCandidateFunctions(candidatesWithDistances);
+
+                if (candidateFunctions.Count == 0)
+                {
+                    runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AmbiguousMethodDispatch,
+                                                  Resources.kAmbigousMethodDispatch);
+                    return null;
+                }
+
+
+                CLRFunctionEndPoint compliantTarget = GetCompliantTarget(formalParameters, replicationControl,
+                                                                      runtimeCore, candidatesWithCastDistances,
+                                                                      candidateFunctions, candidatesWithDistances);
+
+                return compliantTarget;
+            }
+        }
+
+
         /// <summary>
         /// Invoke method with replication.
         /// </summary>
@@ -149,7 +227,7 @@ namespace EmitMSIL
             List<ReplicationInstruction> replicationInstructions;
             ComputeFeps(reducedArgs, feps, partialInstructions, runtimeCore, out resolvedFeps, out replicationInstructions);
 
-            var finalFep = SelectFinalFep(resolvedFeps, reducedArgs);
+            var finalFep = SelectFinalFep(resolvedFeps, reducedArgs, runtimeCore);
 
             object result;
             if (replicationInstructions.Count == 0)
@@ -268,14 +346,114 @@ namespace EmitMSIL
             List<CLRFunctionEndPoint> candidateFunctions = candidatesWithDistances.Keys.ToList();//CallSite.GetCandidateFunctions(candidatesWithDistances);
 
             CLRFunctionEndPoint compliantTarget = candidateFunctions.Count > 0 ? candidateFunctions[0] : null;
-            // TODO_MSIL: implement GetCompliantTarget
-            /*GetCompliantTarget(
+            GetCompliantTarget(
                     arguments,
                     replicationInstructions,
+                    runtimeCore,
                     candidatesWithCastDistances,
                     candidateFunctions,
-                    candidatesWithDistances);*/
+                    candidatesWithDistances);
 
+            return compliantTarget;
+        }
+
+        private static CLRFunctionEndPoint GetCompleteMatchFunctionEndPoint(
+            List<CLRStackValue> arguments,
+            List<CLRFunctionEndPoint> funcGroup,
+            List<ReplicationInstruction> replicationInstructions,
+            MSILRuntimeCore runtimeCore)
+        {
+            //Exact match
+            var exactTypeMatchingCandindates = FunctionGroup.GetExactTypeMatches(arguments, funcGroup, replicationInstructions, runtimeCore);
+
+            if (exactTypeMatchingCandindates.Count == 0)
+            {
+                return null;
+            }
+
+            CLRFunctionEndPoint fep = null;
+            if (exactTypeMatchingCandindates.Count == 1)
+            {
+                //Exact match
+                fep = exactTypeMatchingCandindates[0];
+            }
+            else
+            {
+                //Exact match with upcast
+                //TODO_MSIL: implement SelectFEPFromMultiple
+                //fep = SelectFEPFromMultiple(runtimeCore, exactTypeMatchingCandindates, arguments);
+                fep = exactTypeMatchingCandindates[0];
+            }
+
+            return fep;
+        }
+
+        private static CLRFunctionEndPoint GetCompliantTarget(List<CLRStackValue> formalParams,
+                                            List<ReplicationInstruction> replicationControl,
+                                            MSILRuntimeCore runtimeCore,
+                                            Dictionary<CLRFunctionEndPoint, int> candidatesWithCastDistances,
+                                            List<CLRFunctionEndPoint> candidateFunctions,
+                                            Dictionary<CLRFunctionEndPoint, int> candidatesWithDistances)
+        {
+            CLRFunctionEndPoint compliantTarget = null;
+            //Produce an ordered list of the graph costs
+            Dictionary<int, List<CLRFunctionEndPoint>> conversionCostList = new Dictionary<int, List<CLRFunctionEndPoint>>();
+
+            foreach (CLRFunctionEndPoint fep in candidateFunctions)
+            {
+                int cost = candidatesWithDistances[fep];
+                if (conversionCostList.ContainsKey(cost))
+                    conversionCostList[cost].Add(fep);
+                else
+                    conversionCostList.Add(cost, new List<CLRFunctionEndPoint> { fep });
+            }
+
+            List<int> conversionCosts = new List<int>(conversionCostList.Keys);
+            conversionCosts.Sort();
+
+            List<CLRFunctionEndPoint> fepsToSplit = new List<CLRFunctionEndPoint>();
+
+            foreach (int cost in conversionCosts)
+            {
+                foreach (CLRFunctionEndPoint funcFep in conversionCostList[cost])
+                {
+                    if (funcFep.DoesPredicateMatch(formalParams, replicationControl))
+                    {
+                        compliantTarget = funcFep;
+                        fepsToSplit.Add(funcFep);
+                    }
+                }
+
+                if (compliantTarget != null)
+                    break;
+            }
+
+            if (fepsToSplit.Count > 1)
+            {
+                int lowestCost = candidatesWithCastDistances[fepsToSplit[0]];
+                compliantTarget = fepsToSplit[0];
+
+                List<CLRFunctionEndPoint> lowestCostFeps = new List<CLRFunctionEndPoint>();
+
+                foreach (CLRFunctionEndPoint fep in fepsToSplit)
+                {
+                    if (candidatesWithCastDistances[fep] < lowestCost)
+                    {
+                        lowestCost = candidatesWithCastDistances[fep];
+                        compliantTarget = fep;
+                        lowestCostFeps = new List<CLRFunctionEndPoint>() { fep };
+                    }
+                    else if (candidatesWithCastDistances[fep] == lowestCost)
+                    {
+                        lowestCostFeps.Add(fep);
+                    }
+                }
+
+                //We have multiple feps, e.g. form overriding
+                if (lowestCostFeps.Count > 0)
+                    // TODO_MSIL: implement SelectFEPFromMultiple
+                    compliantTarget = lowestCostFeps[0];//SelectFEPFromMultiple(stackFrame, runtimeCore, lowestCostFeps, formalParams);
+            }
             return compliantTarget;
         }
 
@@ -292,6 +470,15 @@ namespace EmitMSIL
 
             //TODO_MSIL: implement case 1
             #region Case 1: Replication guide with exact match 
+            {
+                CLRFunctionEndPoint fep = GetCompleteMatchFunctionEndPoint(arguments, funcGroup, instructions, runtimeCore);
+                if (fep != null)
+                {
+                    resolvedFeps = new List<CLRFunctionEndPoint>() { fep };
+                    replicationInstructions = instructions;
+                    return;
+                }
+            }
             #endregion
 
             var replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments);
@@ -360,12 +547,6 @@ namespace EmitMSIL
 
             resolvedFeps = new List<CLRFunctionEndPoint>();
             replicationInstructions = instructions;
-        }
-
-        private static CLRFunctionEndPoint SelectFinalFep(List<CLRFunctionEndPoint> functionEndPoints, List<CLRStackValue> formalParameters)
-        {
-            // TODO_MSIL: Determine final function endpoint here based on fitting runtime args to function parameters
-            return functionEndPoints.FirstOrDefault();
         }
 
         private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)

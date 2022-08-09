@@ -273,6 +273,77 @@ namespace ProtoCore.Lang.Replication
             return reducedParams;
         }
 
+        internal static List<List<CLRStackValue>> ComputeAllReducedParams(
+            List<CLRStackValue> formalParams,
+            List<ReplicationInstruction> replicationInstructions,
+            MSILRuntimeCore runtimeCore,
+            bool performArraySampling = true)
+        {
+            //Copy the types so unaffected ones get copied back directly
+            var basicList = new List<CLRStackValue>(formalParams);
+
+            //Compute the reduced Type args
+            var reducedParams = new List<List<CLRStackValue>>();
+            reducedParams.Add(basicList);
+
+            foreach (var ri in replicationInstructions)
+            {
+                var indices = ri.Zipped ? ri.ZipIndecies : new List<int> { ri.CartesianIndex };
+                foreach (int index in indices)
+                {
+                    //This should generally be a collection, so we need to do a one phase unboxing
+                    var targets = reducedParams.Select(r => r[index]).ToList();
+                    var target = basicList[index];
+
+                    if (!target.IsEnumerable)
+                    {
+#if DEBUG
+                        System.Console.WriteLine(
+                            "WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
+#endif
+                        continue;
+                    }
+
+                    var array = target.Value as IList<CLRStackValue>;
+                    if (array.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    var arrayStats = new HashSet<CLRStackValue>();
+                    foreach (var targetTemp in targets)
+                    {
+                        List<CLRStackValue> temp;
+                        if (performArraySampling)
+                        {
+                            temp = ArrayUtils.GetTypeExamplesForLayer(targetTemp, runtimeCore).Values.ToList();
+                        }
+                        else
+                        {
+                            temp = ArrayUtils.GetTypeExamplesForLayerWithoutArraySampling(targetTemp, runtimeCore);
+                        }
+                        arrayStats.UnionWith(temp);
+                    }
+
+                    var clonedList = new List<List<CLRStackValue>>(reducedParams);
+                    reducedParams.Clear();
+
+                    foreach (var sv in arrayStats)
+                    {
+                        foreach (var lst in clonedList)
+                        {
+                            var newArgs = new List<CLRStackValue>(lst);
+                            newArgs[index] = sv;
+                            reducedParams.Add(newArgs);
+                        }
+                    }
+
+                }
+            }
+
+            return reducedParams;
+        }
+
         /// <summary>
         /// Similar to ComputeAllReducedParams except for the fact that all arrays are inspected
         /// for compatible types. As a result, the number of produced reduced params can increase

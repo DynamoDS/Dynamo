@@ -1172,11 +1172,11 @@ namespace EmitMSIL
                         return indexResult.type;
                     }
                     //if we fail to emit indexing at compile time, 
-                    //emit a function call to ValueAtIndexDynamic to avoid overload issues.
+                    //emit a function call to ValueAtIndex.
                     else
                     {
-                        methodName = nameof(DesignScript.Builtin.Get.ValueAtIndexDynamic);
-                        EmitILComment("NOT ENOUGH TYPE INFO TO EMIT INDEXING, EMIT VALUEATINDEXDYNAMIC FUNCTION CALL");
+                        methodName = nameof(DesignScript.Builtin.Get.ValueAtIndex);
+                        EmitILComment("NOT ENOUGH TYPE INFO TO EMIT INDEXING, EMIT ValueAtIndex FUNCTION CALL");
                     }
                 }
             }

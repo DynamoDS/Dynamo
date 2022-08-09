@@ -682,7 +682,7 @@ namespace ProtoFFI
             // If the target type is an IDictionary, marshal to that type
             if (expectedCLRType == typeof(IDictionary))
             {
-                return ToIDictionary(dsObject, context, dsi, expectedCLRType);
+                return ToIDictionary(primitiveMarshaler.GetDictionary(dsObject), expectedCLRType);
             }
 
             // If it's possible to assign a builtin Dictionary to the target type, then all we need to do is provide
@@ -705,14 +705,12 @@ namespace ProtoFFI
                 expectedCLRType.IsAssignableFrom(typeof(DesignScript.Builtin.Dictionary));
         }
 
-        private object ToIDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedType)
+        private object ToIDictionary(Dictionary dict, System.Type expectedType)
         {
             var targetDict = Activator.CreateInstance(typeof(Dictionary<object, object>)) as IDictionary;
-
-            var d = primitiveMarshaler.GetDictionary(dsObject);
-            foreach (var key in d.Keys)
+            foreach (var key in dict.Keys)
             {
-                targetDict[key] = d.ValueAtKey(key);
+                targetDict[key] = dict.ValueAtKey(key);
             }
 
             return targetDict;
@@ -743,6 +741,37 @@ namespace ProtoFFI
                     dsi.LogWarning(WarningID.TypeMismatch, e.Message);
                 }
                 
+            }
+
+            return targetDict;
+        }
+
+        private object ToGenericIDictionary(CLRStackValue dsObject, System.Type expectedType, ProtoCore.MSILRuntimeCore runtime)
+        {
+            var keyType = expectedType.GetGenericArguments().First();
+            var valueType = expectedType.GetGenericArguments().Last();
+            var instanceType = expectedType.GetGenericTypeDefinition().MakeGenericType(keyType, valueType);
+
+            var targetDict = Activator.CreateInstance(instanceType) as IDictionary;
+            var d = primitiveMarshaler.GetDictionary(dsObject);
+            foreach (var key in d.Keys)
+            {
+                try
+                {
+                    if (valueType != typeof(object))
+                    {
+                        targetDict[key] = Convert.ChangeType(d.ValueAtKey(key), valueType);
+                    }
+                    else
+                    {
+                        targetDict[key] = d.ValueAtKey(key);
+                    }
+                }
+                catch (Exception e)
+                {
+                    runtime.LogWarning(WarningID.TypeMismatch, e.Message);
+                }
+
             }
 
             return targetDict;
@@ -781,12 +810,59 @@ namespace ProtoFFI
 
         internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
         {
-            throw new NotImplementedException();
+            List<string> keys = null;
+            List<object> values = null;
+
+            if (obj is IDictionary)
+            {
+                var dict = (IDictionary)obj;
+                keys = dict.Keys.Cast<string>().ToList();
+                values = dict.Values.Cast<object>().ToList();
+            }
+            else if (obj is Dictionary)
+            {
+                var dict = (Dictionary)obj;
+                keys = dict.Keys.ToList();
+                values = dict.Values.ToList();
+            }
+            // TODO(pboyer) what if keys are not strings?
+            object dsdict = Dictionary.ByKeysValues(keys, values);
+            if (dsdict is CLRStackValue svDict)
+            {
+                return svDict;
+            }
+            return primitiveMarshaler.Marshal(dsdict, GetApproxDSType(obj), runtime);
         }
 
-        internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal override object UnMarshal(CLRStackValue dsObject, System.Type expectedCLRType, ProtoCore.MSILRuntimeCore runtimeCore)
         {
-            throw new NotImplementedException();
+            if (expectedCLRType.IsGenericType)
+            {
+                var isGenericDict = expectedCLRType.GetInterfaces()
+                                                   .Where(i => i.IsGenericType)
+                                                   .Select(i => i.GetGenericTypeDefinition())
+                                                   .Contains(typeof(IDictionary<,>));
+
+                if (isGenericDict)
+                {
+                    return ToGenericIDictionary(dsObject, expectedCLRType, runtimeCore);
+                }
+            }
+
+            // If the target type is an IDictionary, marshal to that type
+            if (expectedCLRType == typeof(IDictionary))
+            {
+                return ToIDictionary(primitiveMarshaler.GetDictionary(dsObject), expectedCLRType);
+            }
+
+            // If it's possible to assign a builtin Dictionary to the target type, then all we need to do is provide
+            // the CLR object.
+            if (expectedCLRType.IsAssignableFrom(typeof(DesignScript.Builtin.Dictionary)))
+            {
+                return primitiveMarshaler.GetDictionary(dsObject);
+            }
+
+            return null;
         }
     }
 
@@ -1214,6 +1290,11 @@ namespace ProtoFFI
         internal DesignScript.Builtin.Dictionary GetDictionary(StackValue value)
         {
             return DSObjectMap[value] as DesignScript.Builtin.Dictionary;
+        }
+
+        internal DesignScript.Builtin.Dictionary GetDictionary(CLRStackValue value)
+        {
+            return MSILDSObjectMap[value] as DesignScript.Builtin.Dictionary;
         }
 
         /// <summary>

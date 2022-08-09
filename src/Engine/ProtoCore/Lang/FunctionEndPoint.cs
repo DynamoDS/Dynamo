@@ -231,6 +231,80 @@ namespace ProtoCore
             }
             return distance;
         }
+
+        public bool DoesTypeDeepMatch(List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
+        {
+            if (formalParameters.Count != FormalParams.Count)
+                return false;
+
+            for (int i = 0; i < FormalParams.Count; i++)
+            {
+                if (FormalParams[i].IsIndexable != formalParameters[i].IsEnumerable)
+                    return false;
+
+                if (FormalParams[i].IsIndexable && formalParameters[i].IsEnumerable)
+                {
+                    if (FormalParams[i].Rank != ArrayUtils.GetMaxRankForArray(formalParameters[i])
+                        && FormalParams[i].Rank != DSASM.Constants.kArbitraryRank)
+                        return false;
+
+
+                    Type typ = FormalParams[i].ProtoInfo;
+                    Dictionary<ClassNode, int> arrayTypes = ArrayUtils.GetTypeStatisticsForArray(formalParameters[i], runtimeCore);
+
+                    ClassNode cn = null;
+
+                    if (arrayTypes.Count == 0)
+                    {
+                        //This was an empty array
+                        Validity.Assert(cn == null, "If it was an empty array, there shouldn't be a type node");
+                        cn = runtimeCore.ClassTable.ClassNodes[(int)PrimitiveType.Null];
+                    }
+                    else if (arrayTypes.Count == 1)
+                    {
+                        //UGLY, get the key out of the array types, of which there is only one
+                        foreach (ClassNode key in arrayTypes.Keys)
+                            cn = key;
+                    }
+                    else if (arrayTypes.Count > 1)
+                    {
+                        ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(arrayTypes, runtimeCore.ClassTable);
+
+                        if (commonBaseType == null)
+                            throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported(
+                                string.Format(Resources.ArrayWithNotSupported, "{0C644179-14F5-4172-8EF8-A2F3739901B2}"));
+
+                        cn = commonBaseType; //From now on perform tests on the commmon base type
+                    }
+
+
+                    ClassNode argTypeNode = runtimeCore.ClassTable.ClassNodes[typ.UID];
+
+                    //cn now represents the class node of the argument
+                    //argTypeNode represents the class node of the argument
+
+                    //TODO(Jun)This is worrying test
+
+                    //Disable var as exact match, otherwise resolution between double and var will fail
+                    if (cn != argTypeNode && cn != runtimeCore.ClassTable.ClassNodes[(int)PrimitiveType.Null] && argTypeNode != runtimeCore.ClassTable.ClassNodes[(int)PrimitiveType.Var])
+                        return false;
+
+                    //if (coersionScore != (int)ProcedureDistance.kExactMatchScore)
+                    //    return false;
+
+                    continue;
+                }
+
+                if (FormalParams[i].UID != formalParameters[i].TypeUID)
+                    return false;
+            }
+            return true;
+        }
+
+        public bool DoesPredicateMatch(List<CLRStackValue> formalParameters, List<ReplicationInstruction> replicationInstructions)
+        {
+            return true;
+        }
     }
 
     public abstract class FunctionEndPoint
@@ -289,7 +363,7 @@ namespace ProtoCore
                     }
                     else if (arrayTypes.Count > 1)
                     {
-                        ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(arrayTypes, runtimeCore);
+                        ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(arrayTypes, runtimeCore.DSExecutable.classTable);
 
                         if (commonBaseType == null)
                             throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported(
@@ -368,7 +442,7 @@ namespace ProtoCore
                     int currentCost = ClassUtils.GetUpcastCountTo(
                         classTable.ClassNodes[rcvdType],
                         classTable.ClassNodes[expectedType],
-                        runtimeCore);
+                        runtimeCore.DSExecutable.classTable);
                     distance += currentCost;
                 }
             }

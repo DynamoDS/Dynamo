@@ -382,7 +382,7 @@ namespace ProtoCore
     internal class MSILRuntimeCore
     {
         // The global class table and function tables
-        private ClassTable ClassTable { get; set; }
+        internal ClassTable ClassTable { get; set; }
         private ProcedureTable ProcTable { get; set; }
         private ProcedureNode ProcNode { get; set; }
         private TypeSystem TypeSystem { get; set; }
