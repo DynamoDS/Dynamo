@@ -6,40 +6,42 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.Controls;
 using Dynamo.Notifications.View;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Notifications
 {
     public class NotificationCenterController
     {
-        readonly NotificationUI notificationUIPopup;
-        readonly DynamoView dynamoView;
-        readonly Button notificationsButton;
+        private readonly NotificationUI notificationUIPopup;
+        private readonly DynamoView dynamoView;
+        private readonly DynamoViewModel dynamoViewModel;
+        private readonly Button notificationsButton;
 
         private static readonly int notificationPopupHorizontalOffset = -285;
         private static readonly int notificationPopupVerticalOffset = 10;
 
         private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
         private static readonly string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.bundle.js";
+        private static readonly string NotificationCenterButtonName = "notificationsButton";
 
-        internal NotificationCenterController(DynamoView dynamoView)
+        internal NotificationCenterController(DynamoView view)
         {
-            var shortcutBar = dynamoView.ShortcutBar;
-            var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
+            dynamoView = view;
+            dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
+            notificationsButton = (Button)view.ShortcutBar.FindName(NotificationCenterButtonName);
 
-            notificationUIPopup = new NotificationUI();
-            notificationUIPopup.IsOpen = false;
-            notificationUIPopup.PlacementTarget = notificationsButton;
-            notificationUIPopup.Placement = PlacementMode.Bottom;
-            notificationUIPopup.HorizontalOffset = notificationPopupHorizontalOffset;
-            notificationUIPopup.VerticalOffset = notificationPopupVerticalOffset;
+            dynamoView.SizeChanged += DynamoView_SizeChanged;
+            dynamoView.LocationChanged += DynamoView_LocationChanged;
+            notificationsButton.Click += NotificationsButton_Click;
 
-            this.dynamoView = dynamoView;
-            this.notificationsButton = notificationsButton;
-
-            this.dynamoView.SizeChanged += DynamoView_SizeChanged;
-            this.dynamoView.LocationChanged += DynamoView_LocationChanged;
-            this.notificationsButton.Click += NotificationsButton_Click;
-
+            notificationUIPopup = new NotificationUI
+            {
+                IsOpen = false,
+                PlacementTarget = notificationsButton,
+                Placement = PlacementMode.Bottom,
+                HorizontalOffset = notificationPopupHorizontalOffset,
+                VerticalOffset = notificationPopupVerticalOffset
+            };
             notificationUIPopup.webView.EnsureCoreWebView2Async();
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;            
         }
@@ -86,11 +88,19 @@ namespace Dynamo.Notifications
             notificationUIPopup.UpdatePopupLocation();
         }
 
+        // Notification Center button click handler
         private void NotificationsButton_Click(object sender, RoutedEventArgs e)
         {
-            notificationUIPopup.IsOpen = !notificationUIPopup.IsOpen;
-            if (notificationUIPopup.IsOpen)
-                notificationUIPopup.webView.Focus();
+            if (this.dynamoViewModel.PreferenceSettings.EnableNotificationCenter)
+            {
+                notificationUIPopup.IsOpen = !notificationUIPopup.IsOpen;
+                if (notificationUIPopup.IsOpen)
+                    notificationUIPopup.webView.Focus();
+            }
+            else
+            {
+                this.dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.NotificationCenterDisabledMsg);
+            }
         }        
     }
 }

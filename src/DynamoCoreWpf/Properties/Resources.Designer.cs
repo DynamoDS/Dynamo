@@ -6257,6 +6257,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notification Center.
+        /// </summary>
+        public static string PreferencesViewEnableNotificationCenter {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableNotificationCenter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable T-Spline nodes.
         /// </summary>
         public static string PreferencesViewEnableTSplineNodes {

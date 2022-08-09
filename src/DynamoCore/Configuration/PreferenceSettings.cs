@@ -440,6 +440,11 @@ namespace Dynamo.Configuration
         public bool EnableNodeAutoComplete { get; set; }
 
         /// <summary>
+        /// This defines if user wants to see the enabled Dynamo Notification Center.
+        /// </summary>
+        public bool EnableNotificationCenter { get; set; }
+
+        /// <summary>
         /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
         /// </summary>
         public string DefaultPythonEngine
@@ -626,6 +631,7 @@ namespace Dynamo.Configuration
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
+            EnableNotificationCenter = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
