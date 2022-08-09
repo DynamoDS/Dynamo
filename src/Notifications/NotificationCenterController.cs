@@ -88,7 +88,11 @@ namespace Dynamo.Notifications
             notificationUIPopup.UpdatePopupLocation();
         }
 
-        // Notification Center button click handler
+        /// <summary>
+        /// Notification Center button click handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NotificationsButton_Click(object sender, RoutedEventArgs e)
         {
             if (this.dynamoViewModel.PreferenceSettings.EnableNotificationCenter)
