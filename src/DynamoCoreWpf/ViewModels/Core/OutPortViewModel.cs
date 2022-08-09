@@ -130,6 +130,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+
         /// <summary>
         /// Takes care of the multiple UI concerns when dealing with the Unhide/Hide Wires button
         /// on the output port's context menu.
