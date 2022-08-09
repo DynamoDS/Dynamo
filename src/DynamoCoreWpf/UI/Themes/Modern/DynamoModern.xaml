@@ -1512,7 +1512,6 @@
         </Setter>
     </Style>
 
-
     <Style x:Key="DismissButtonStyle"
            TargetType="Button">
         <Setter Property="Template">
