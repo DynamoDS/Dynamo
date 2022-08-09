@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Events;
@@ -15,6 +16,7 @@ using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PythonServices;
 using Dynamo.Utilities;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -1010,6 +1012,7 @@ namespace Dynamo.ViewModels
         private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             string description = string.Empty;
+
             // C# does not support going through all cases when one of the case is true
             switch (e.PropertyName)
             {
@@ -1020,61 +1023,61 @@ namespace Dynamo.ViewModels
                     // Do nothing for now
                     break;
                 case nameof(SelectedNumberFormat):
-                    description = Res.DynamoViewSettingMenuNumberFormat;
+                    description = Resources.ResourceManager.GetString("DynamoViewSettingMenuNumberFormat", System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(SelectedPackagePathForInstall):
-                    description = Res.PreferencesViewSelectedPackagePathForDownload;
+                    description = Resources.ResourceManager.GetString("PreferencesViewSelectedPackagePathForDownload", System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(DisableBuiltInPackages):
-                    description = Res.PreferencesViewDisableBuiltInPackages;
+                    description = Resources.ResourceManager.GetString("PreferencesViewDisableBuiltInPackages", System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(DisableCustomPackages):
-                    description = Res.PreferencesViewDisableCustomPackages;
+                    description = Resources.ResourceManager.GetString("PreferencesViewDisableCustomPackages", System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(RunSettingsIsChecked):
-                    description = Res.PreferencesViewRunSettingsLabel;
+                    description = Resources.ResourceManager.GetString("PreferencesViewRunSettingsLabel", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(RunPreviewIsChecked):
-                    description = Res.DynamoViewSettingShowRunPreview;
+                    description = Resources.ResourceManager.GetString("DynamoViewSettingShowRunPreview", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(StyleItemsList):
                     // Do nothing for now
                     break;
                 case nameof(OptionsGeometryScale):
-                    description = Res.DynamoViewSettingsMenuChangeScaleFactor;
+                    description = Resources.ResourceManager.GetString("DynamoViewSettingsMenuChangeScaleFactor", System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowEdges):
-                    description = Res.PreferencesViewVisualSettingShowEdges;
+                    description = Resources.ResourceManager.GetString("PreferencesViewVisualSettingShowEdges", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(IsolateSelectedGeometry):
-                    description = Res.PreferencesViewVisualSettingsIsolateSelectedGeo;
+                    description = Resources.ResourceManager.GetString("PreferencesViewVisualSettingsIsolateSelectedGeo", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(TessellationDivisions):
-                    description = Res.PreferencesViewVisualSettingsRenderPrecision;
+                    description = Resources.ResourceManager.GetString("PreferencesViewVisualSettingsRenderPrecision", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(SelectedPythonEngine):
-                    description = Res.PreferencesViewDefaultPythonEngine;
+                    description = Resources.ResourceManager.GetString("PreferencesViewDefaultPythonEngine", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(HideIronPythonAlertsIsChecked):
-                    description = Res.PreferencesViewIsIronPythonDialogDisabled;
+                    description = Resources.ResourceManager.GetString("PreferencesViewIsIronPythonDialogDisabled", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(ShowWhitespaceIsChecked):
-                    description = Res.PreferencesViewShowWhitespaceInPythonEditor;
+                    description = Resources.ResourceManager.GetString("PreferencesViewShowWhitespaceInPythonEditor", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(NodeAutocompleteIsChecked):
-                    description = Res.PreferencesViewEnableNodeAutoComplete;
+                    description = Resources.ResourceManager.GetString("PPreferencesViewEnableNodeAutoComplete", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(EnableTSplineIsChecked):
-                    description = Res.PreferencesViewEnableTSplineNodes;
+                    description = Resources.ResourceManager.GetString("PreferencesViewEnableTSplineNodes", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(ShowPreviewBubbles):
-                    description = Res.PreferencesViewShowPreviewBubbles;
+                    description = Resources.ResourceManager.GetString("PreferencesViewShowPreviewBubbles", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(ShowCodeBlockLineNumber):
-                    description = Res.PreferencesViewShowCodeBlockNodeLineNumber;
+                    description = Resources.ResourceManager.GetString("PreferencesViewShowCodeBlockNodeLineNumber", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 case nameof(DisableTrustWarnings):
-                    description = Res.PreferencesViewTrustWarningHeader;
+                    description = Resources.ResourceManager.GetString("PreferencesViewTrustWarningHeader", System.Globalization.CultureInfo.InvariantCulture);                    
                     goto default;
                 default:
                     if (!string.IsNullOrEmpty(description))
