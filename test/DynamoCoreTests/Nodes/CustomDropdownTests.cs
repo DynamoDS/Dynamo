@@ -28,11 +28,11 @@ namespace Dynamo.Tests.Nodes
         public void OpenJsonDYNWithCorrectMenuItems()
         {
             // Define package loading reference path
-            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
-            var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
-            var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
-            var loader = pkgMan.PackageLoader;
-            var pkg = loader.ScanPackageDirectory(pkgDir);
+            string dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            string pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
+            PackageManagerExtension pkgMan = CurrentDynamoModel.GetPackageManagerExtension();
+            PackageLoader loader = pkgMan.PackageLoader;
+            Package pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package
             loader.LoadPackages(new List<Package> { pkg });
@@ -43,7 +43,7 @@ namespace Dynamo.Tests.Nodes
             string path = Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "extra", "CustomDropdownMenuNodeSample.dyn");
             RunModel(path);
 
-            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
+            Graph.Nodes.NodeModel node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
 
             object itemsAsObject = node.GetType().GetProperty(nameof(DSDropDownBase.Items), typeof(ObservableCollection<DynamoDropDownItem>)).GetValue(node);
             Assert.NotNull(itemsAsObject);
@@ -57,11 +57,11 @@ namespace Dynamo.Tests.Nodes
         public void OpenJsonDYNWithCorrectSelectedItem()
         {
             // Define package loading reference path
-            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
-            var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
-            var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
-            var loader = pkgMan.PackageLoader;
-            var pkg = loader.ScanPackageDirectory(pkgDir);
+            string dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            string pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
+            PackageManagerExtension pkgMan = CurrentDynamoModel.GetPackageManagerExtension();
+            PackageLoader loader = pkgMan.PackageLoader;
+            Package pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package
             loader.LoadPackages(new List<Package> { pkg });
@@ -72,7 +72,7 @@ namespace Dynamo.Tests.Nodes
             string path = Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "extra", "CustomDropdownMenuNodeSample.dyn");
             RunModel(path);
 
-            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
+            Graph.Nodes.NodeModel node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
 
             object selectedItemAsObject = node.GetType().GetProperty(nameof(CustomSelection.SelectedString)).GetValue(node);
             Assert.NotNull(selectedItemAsObject);
