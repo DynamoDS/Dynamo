@@ -10,45 +10,29 @@
   "Outputs": [],
   "Nodes": [
     {
-      "ConcreteType": "CoreNodeModels.Input.CustomSelectionNodeModel, CoreNodeModels",
-      "Items": [
+      "ConcreteType": "CoreNodeModels.Input.CustomSelection, CoreNodeModels",
+      "SerializedItems": [
         {
-          "RemoveCommand": {
-            "ConcreteType": "CoreNodeModels.CustomSelectionItemViewModel+RemoveMenuItemCommand, CoreNodeModels"
-          },
           "Name": "One",
-          "Value": "1"
+          "Item": "1"
         },
         {
-          "RemoveCommand": {
-            "ConcreteType": "CoreNodeModels.CustomSelectionItemViewModel+RemoveMenuItemCommand, CoreNodeModels"
-          },
           "Name": "Two",
-          "Value": "2"
+          "Item": "2"
         },
         {
-          "RemoveCommand": {
-            "ConcreteType": "CoreNodeModels.CustomSelectionItemViewModel+RemoveMenuItemCommand, CoreNodeModels"
-          },
           "Name": "Three",
-          "Value": "3"
+          "Item": "3"
         }
       ],
-      "SelectedItem": {
-        "RemoveCommand": {
-          "ConcreteType": "CoreNodeModels.CustomSelectionItemViewModel+RemoveMenuItemCommand, CoreNodeModels"
-        },
-        "Name": "Two",
-        "Value": "2"
-      },
-      "SelectedIndex": 0,
-      "SelectedString": "One",
+      "SelectedIndex": 1,
+      "SelectedString": "Two",
       "NodeType": "ExtensionNode",
-      "Id": "030953285f3c48819b912c9202016ff0",
+      "Id": "2c9b14f9f3b04c909cbbf4fc1bf58315",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "56d503e2946d47019651640f7fa0b069",
+          "Id": "c4f968efd3b34cd4ae68f7e1bb073213",
           "Name": "Value",
           "Description": "The selected Value",
           "UsingDefaultValue": false,
@@ -58,7 +42,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "A dropdown menu with customizable values"
+      "Description": "A dropdown menu with customizable values."
     }
   ],
   "Connectors": [],
@@ -87,7 +71,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.14.0.4254",
+      "Version": "2.16.0.2215",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -108,12 +92,12 @@
       {
         "Name": "Custom Dropdown Menu",
         "ShowGeometry": true,
-        "Id": "030953285f3c48819b912c9202016ff0",
+        "Id": "2c9b14f9f3b04c909cbbf4fc1bf58315",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 225.0,
-        "Y": 216.0
+        "X": 125.0,
+        "Y": 159.0
       }
     ],
     "Annotations": [],

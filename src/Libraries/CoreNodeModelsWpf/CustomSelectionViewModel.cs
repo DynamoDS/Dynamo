@@ -27,9 +27,10 @@ namespace CoreNodeModelsWpf
             if (parameter is DynamoDropDownItem item)
             {
                 Model.Items.Remove(item);
+
+                Model.OnNodeModified();
             }
 
-            Model.OnNodeModified();
         }
 
         public CustomSelectionViewModel()

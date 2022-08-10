@@ -1,9 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
 
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+
+using Newtonsoft.Json;
 
 using ProtoCore.AST.AssociativeAST;
 
@@ -22,6 +28,24 @@ namespace CoreNodeModels.Input
     [IsDesignScriptCompatible]
     public class CustomSelection : DSDropDownBase
     {
+        private List<DynamoDropDownItem> serializedItems;
+
+        public List<DynamoDropDownItem> SerializedItems
+        {
+            get => serializedItems;
+            set
+            {
+                serializedItems = value;
+
+                Items.Clear();
+                
+                foreach (DynamoDropDownItem item in serializedItems)
+                {
+                    Items.Add(item);
+                }
+            }
+        }
+
         /// <summary>
         /// Construct a new Custom Dropdown Menu node
         /// </summary>
@@ -35,6 +59,11 @@ namespace CoreNodeModels.Input
             Items.Add(new DynamoDropDownItem("Three", "3"));
 
             SelectedIndex = 0;
+        }
+
+        [JsonConstructor]
+        protected CustomSelection(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base("Value", inPorts, outPorts)
+        {
         }
 
         /// <summary>
@@ -92,5 +121,42 @@ namespace CoreNodeModels.Input
         {
             return SelectionState.Restore;
         }
+
+        [OnSerializing]
+        private void OnSerializing(StreamingContext context)
+        {
+            serializedItems = Items.ToList();
+        }
+
+        [Obsolete]
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
+        {
+            nodeElement.SetAttribute("serializedItems", JsonConvert.SerializeObject(Items));
+
+            base.SerializeCore(nodeElement, context);
+        }
+
+        [Obsolete]
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        {
+            base.DeserializeCore(nodeElement, context);
+
+            XmlAttribute itemsAttribute = nodeElement.Attributes["serializedItems"];
+
+            if (itemsAttribute == null)
+            {
+                return;
+            }
+
+            List<DynamoDropDownItem> items = JsonConvert.DeserializeObject<List<DynamoDropDownItem>>(itemsAttribute.Value);
+
+            Items.Clear();
+
+            foreach (DynamoDropDownItem item in items)
+            {
+                Items.Add(item);
+            }
+        }
+
     }
 }
