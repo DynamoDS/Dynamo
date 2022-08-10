@@ -185,7 +185,12 @@
                         <MenuItem.Header>
                             <Button x:Name="notificationsButton"
                                     BorderBrush="Transparent"
-                                    Background="Transparent">
+                                    BorderThickness="0"
+                                    Background="Transparent"
+                                    Cursor="Hand">
+                                <Button.ToolTip>
+                                    <ToolTip Content="{x:Static p:Resources.NotificationCenterButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
+                                </Button.ToolTip>
                                 <DockPanel>
                                     <fa:FontAwesome Margin="0,0,25,0"  
                                                     DockPanel.Dock="Top" 

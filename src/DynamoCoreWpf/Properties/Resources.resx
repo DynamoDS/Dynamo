@@ -3265,4 +3265,7 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Notification Center</value>
     <comment>Preferences | Features | Notification Center</comment>
   </data>
+  <data name="NotificationCenterButtonTooltip" xml:space="preserve">
+    <value>Click to view latest news from Dynamo Team.</value>
+  </data>
 </root>

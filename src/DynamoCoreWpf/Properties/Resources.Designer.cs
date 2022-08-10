@@ -4613,6 +4613,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click to view latest news from Dynamo Team..
+        /// </summary>
+        public static string NotificationCenterButtonTooltip {
+            get {
+                return ResourceManager.GetString("NotificationCenterButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to null.
         /// </summary>
         public static string NullString {
