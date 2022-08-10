@@ -61,7 +61,6 @@ namespace ProtoCore
         }
 
         public static Dictionary<string, ProtoFFI.FFIHandler> FFIHandlers = new Dictionary<string, ProtoFFI.FFIHandler>();
-        private ProtoFFI.FFIFunctionPointer mFunctionPointer;
 
         internal object Invoke(IList<object> args)
         {

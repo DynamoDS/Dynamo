@@ -610,7 +610,6 @@ namespace ProtoFFI
                 collection = new ArrayList(new object[] { obj });
             }
 
-            // TODO_MSIL: figure out if we need to handle this case
             if (expectedCLRType.IsGenericType && !expectedCLRType.IsInterface)
             {
                 if (!collection.GetType().IsArray)

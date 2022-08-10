@@ -481,7 +481,6 @@ namespace EmitMSIL
             resolvedFeps = null;
             var matchFound = false;
 
-            //TODO_MSIL: implement case 1
             #region Case 1: Replication guide with exact match 
             {
                 CLRFunctionEndPoint fep = GetCompleteMatchFunctionEndPoint(arguments, funcGroup, instructions, runtimeCore);
