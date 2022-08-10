@@ -11,7 +11,7 @@ namespace Dynamo.Tests
     [TestFixture, Category("Performance")]
     public class PerformanceTests : DynamoModelTestBase
     {
-        private List<(string graph, TimeSpan oldEngineExecutionTime, TimeSpan newEngineExecutionTime)> executionData;
+        private List<(string graph, TimeSpan oldEngineExecutionTime, TimeSpan newEngineCompileTime, TimeSpan newEngineExecutionTime)> executionData;
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -42,17 +42,20 @@ namespace Dynamo.Tests
         [TestFixtureSetUp]
         public void SetupPerformanceTests()
         {
-            executionData = new List<(string, TimeSpan, TimeSpan)>();
+            executionData = new List<(string, TimeSpan, TimeSpan, TimeSpan)>();
         }
 
         [TestFixtureTearDown]
         public void TeardownPerformanceTests()
         {
-            Console.WriteLine("{0,50}{1,10}{2,10}", "Graph", "Old ms", "New ms");
+            Console.WriteLine("{0,50}{1,11}{2,9}{3,9}{4,11}", "Graph", "Old C+E", "New C", "New E", "New C+E");
             executionData.ForEach(item =>
             {
-                var (graph, oldEngineExecutionTime, newEngineExecutionTime) = item;
-                Console.WriteLine("{0,50}{1,10}{2,10}", graph, oldEngineExecutionTime.Milliseconds, newEngineExecutionTime.Milliseconds);
+                var (graph, oldEngineCompileAndExecutionTime, newEngineCompileTime, newEngineExecutionTime) = item;
+                Console.WriteLine("{0,50}{1,11}{2,9}{3,9}{4,11}", graph,
+                    oldEngineCompileAndExecutionTime.Milliseconds, newEngineCompileTime.Milliseconds,
+                    newEngineExecutionTime.Milliseconds,
+                    newEngineCompileTime.Milliseconds + newEngineExecutionTime.Milliseconds);
             });
             executionData.Clear();
         }
@@ -89,7 +92,7 @@ namespace Dynamo.Tests
 
             var wcd1 = new serializationTestUtils.WorkspaceComparisonData(ws1, CurrentDynamoModel.EngineController);
 
-            var oldEngineExecutionTime = model.EngineController.ExecutionTime;
+            var oldEngineCompileAndExecutionTime = model.EngineController.CompileAndExecutionTime;
 
             // The big hammer, maybe not needed
             Cleanup();
@@ -114,10 +117,14 @@ namespace Dynamo.Tests
 
             serializationTestUtils.CompareWorkspaceModelsMSIL(wcd1, wcd2);
 
-            var newEngineExecutionTime = model.EngineController.ExecutionTime;
+            var newEngineCompileAndExecutionTime = model.EngineController.CompileAndExecutionTime;
 
-            Console.WriteLine("Execution time old Engine={0} ms, new Engine={1} ms", oldEngineExecutionTime.Milliseconds, newEngineExecutionTime.Milliseconds);
-            var execution = (Path.GetFileName(filePath), oldEngineExecutionTime, newEngineExecutionTime);
+            Console.WriteLine("Compile and Execution time old Engine={0} ms, new Engine={1}+{2} ms",
+                oldEngineCompileAndExecutionTime.executionTime.Milliseconds,
+                newEngineCompileAndExecutionTime.compileTime.Milliseconds,
+                newEngineCompileAndExecutionTime.executionTime.Milliseconds);
+            var execution = (Path.GetFileName(filePath), oldEngineCompileAndExecutionTime.executionTime,
+                newEngineCompileAndExecutionTime.compileTime, newEngineCompileAndExecutionTime.executionTime);
             executionData.Add(execution);
         }
 
