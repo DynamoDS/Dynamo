@@ -95,20 +95,36 @@ namespace EmitMSIL
             return values;
         }
 
-        internal static List<CLRFunctionEndPoint> ConvertMethodsToFEPs(IEnumerable<MethodBase> methods)
+        internal static List<CLRFunctionEndPoint> CreateFEPs(
+            IEnumerable<MethodBase> methods,
+            in List<CLRStackValue> args)
         {
+            bool firstArgIsThisPtr = false;
             List<CLRFunctionEndPoint> feps = new List<CLRFunctionEndPoint>();
-            foreach (var method in methods)
+            foreach (var mInfo in methods)
             {
                 List<CLRFunctionEndPoint.ParamInfo> formalParams = new List<CLRFunctionEndPoint.ParamInfo>();
-                foreach (var param in method.GetParameters())
+
+                if (!mInfo.IsStatic && !mInfo.IsConstructor)
+                {
+                    var thisPtrType = mInfo.DeclaringType;
+                    var dsType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(thisPtrType);
+                    formalParams.Add(new CLRFunctionEndPoint.ParamInfo() { ThisPtrType = thisPtrType, ProtoInfo = dsType });
+
+                    firstArgIsThisPtr = true;
+                }
+                
+                foreach (var param in mInfo.GetParameters())
                 {
                     var dsType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(param.ParameterType);
-                    formalParams.Add(new CLRFunctionEndPoint.ParamInfo() { CLRInfo = param, ProtoInfo = dsType }); ;
+                    formalParams.Add(new CLRFunctionEndPoint.ParamInfo() { CLRInfo = param, ProtoInfo = dsType });
                 }
-                CLRFunctionEndPoint fep = new CLRFunctionEndPoint() { method = method, FormalParams = formalParams };
+
+                CLRFunctionEndPoint fep = new CLRFunctionEndPoint(mInfo, formalParams);
+                
                 feps.Add(fep);
             }
+
             return feps;
         }
 
@@ -209,6 +225,9 @@ namespace EmitMSIL
 
             var reducedArgs = ReduceArgs(stackValues);
 
+            // TODO_MSIL: Emit these CLRFunctionEndpoint's from the CodeGen stage.
+            var feps = CreateFEPs(mInfos, in reducedArgs);
+
             // Construct replicationGuides from replicationAttrs
             var replicationGuides = ConstructRepGuides(replicationAttrs);
 
@@ -219,9 +238,6 @@ namespace EmitMSIL
             //Take the explicit replication guides and build the replication structure
             //Turn the replication guides into a guide -> List args data structure
             var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
-
-            // TODO_MSIL: Emit these CLRFunctionEndpoint's from the CodeGen stage.
-            var feps = ConvertMethodsToFEPs(mInfos);
 
             List<CLRFunctionEndPoint> resolvedFeps;
             List<ReplicationInstruction> replicationInstructions;
@@ -556,20 +572,8 @@ namespace EmitMSIL
             List<object> args = UnmarshalFunctionArguments(finalFep.FormalParams, coercedParameters, runtimeCore);
 
             // Testing invoking method without replication
-            object result;
-            if (finalFep.method.IsStatic)
-            {
-                result = finalFep.method.Invoke(null, args.ToArray());
-            }
-            else if (finalFep.method.IsConstructor)
-            {
-                result = (finalFep.method as ConstructorInfo).Invoke(args.ToArray());
-            }
-            else
-            {
-                result = finalFep.method.Invoke(args[0], args.Skip(1).ToArray());
-            }
-
+            object result = finalFep.Invoke(args);
+            
             var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
             CLRStackValue dsRetValue = marshaller.Marshal(result, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(finalFep.ReturnType), runtimeCore);
 

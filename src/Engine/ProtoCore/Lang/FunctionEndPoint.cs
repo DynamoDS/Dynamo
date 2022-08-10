@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using ProtoCore.DSASM;
@@ -17,17 +18,20 @@ namespace ProtoCore
         {
             public ProtoCore.Type ProtoInfo;
             public ParameterInfo CLRInfo;
+            internal System.Type ThisPtrType;
 
             public bool IsIndexable => ProtoInfo.IsIndexable;
 
             public int Rank => ProtoInfo.rank;
             public int UID => ProtoInfo.UID;
 
-            public System.Type CLRType => CLRInfo.ParameterType;
+            public System.Type CLRType => CLRInfo?.ParameterType ?? ThisPtrType;
         }
 
-        public MethodBase method;
+        private MethodBase method;
 
+        internal CLRStackValue ThisPtr;
+        
         public List<ParamInfo> FormalParams
         {
             get;
@@ -50,8 +54,32 @@ namespace ProtoCore
             }
         }
 
+        internal CLRFunctionEndPoint(MethodBase method, List<ParamInfo> formalParams)
+        {
+            this.method = method;
+            this.FormalParams = formalParams;
+        }
+
         public static Dictionary<string, ProtoFFI.FFIHandler> FFIHandlers = new Dictionary<string, ProtoFFI.FFIHandler>();
         private ProtoFFI.FFIFunctionPointer mFunctionPointer;
+
+        internal object Invoke(IList<object> args)
+        {
+            object result;
+            if (method.IsStatic)
+            {
+                result = method.Invoke(null, args.ToArray());
+            }
+            else if (method.IsConstructor)
+            {
+                result = (method as ConstructorInfo).Invoke(args.ToArray());
+            }
+            else
+            {
+                result = method.Invoke(args[0], args.Skip(1).ToArray());
+            }
+            return result;
+        }
 
         internal List<CLRStackValue> CoerceParameters(List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
         {
