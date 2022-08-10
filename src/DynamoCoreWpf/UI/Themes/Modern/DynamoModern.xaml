@@ -1415,7 +1415,9 @@
 
     <Style x:Key="SNodeTextButton" TargetType="{x:Type Button}">
         <Setter Property="FontSize" Value="17px"/>
-        
+        <Setter Property="Foreground" Value="{StaticResource Blue300Brush}" />
+        <Setter Property="Background" Value="#4D4D4D" />
+
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -1425,11 +1427,12 @@
                           Height="{TemplateBinding Height}">
                         <Border x:Name="roundedBorder"
                                 HorizontalAlignment="Stretch"
-                                Background="#4D4D4D"
+                                Background="{TemplateBinding Background}"
                                 CornerRadius="4">
                             <TextBlock x:Name="text"
                                        Margin="0,1,0,0"
                                        Padding="0"
+                                       Foreground="{TemplateBinding Foreground}"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        FontSize="{TemplateBinding FontSize}"
@@ -1440,16 +1443,8 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Button.IsMouseOver" Value="true">
-                            <Setter TargetName="roundedBorder" Property="Background" Value="#535353" />
-                            <Setter TargetName="text" Property="Foreground" Value="{StaticResource Blue300Brush}" />
-                        </Trigger>
-
-                        <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="text" Property="Foreground" Value="{StaticResource Blue300Brush}" />
-                        </Trigger>
-
-                        <Trigger Property="IsEnabled" Value="true">
-                            <Setter TargetName="text" Property="Foreground" Value="{StaticResource Blue300Brush}" />
+                            <Setter Property="Background" Value="#535353" />
+                            <Setter Property="Foreground" Value="{StaticResource Blue300Brush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -1460,6 +1455,7 @@
     <Style TargetType="{x:Type nodes:DynamoNodeButton}" BasedOn="{StaticResource SNodeTextButton}" />
 
     <Style x:Key="SingleCharButton" TargetType="{x:Type Button}" BasedOn="{StaticResource SNodeTextButton}">
+        <Setter Property="Foreground" Value="#999999" />
         <Setter Property="FontSize" Value="28px" />
         <Setter Property="Height" Value="22px" />
         <Setter Property="Width" Value="22px" />
