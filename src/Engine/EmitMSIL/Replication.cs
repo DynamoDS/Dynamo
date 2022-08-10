@@ -95,11 +95,8 @@ namespace EmitMSIL
             return values;
         }
 
-        internal static List<CLRFunctionEndPoint> CreateFEPs(
-            IEnumerable<MethodBase> methods,
-            in List<CLRStackValue> args)
+        internal static List<CLRFunctionEndPoint> CreateFEPs(IEnumerable<MethodBase> methods)
         {
-            bool firstArgIsThisPtr = false;
             List<CLRFunctionEndPoint> feps = new List<CLRFunctionEndPoint>();
             foreach (var mInfo in methods)
             {
@@ -107,11 +104,11 @@ namespace EmitMSIL
 
                 if (!mInfo.IsStatic && !mInfo.IsConstructor)
                 {
+                    // First argument is the this pointer
+                    // So we need to add an extra parameter to match the arguments
                     var thisPtrType = mInfo.DeclaringType;
                     var dsType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(thisPtrType);
                     formalParams.Add(new CLRFunctionEndPoint.ParamInfo() { ThisPtrType = thisPtrType, ProtoInfo = dsType });
-
-                    firstArgIsThisPtr = true;
                 }
                 
                 foreach (var param in mInfo.GetParameters())
@@ -226,7 +223,7 @@ namespace EmitMSIL
             var reducedArgs = ReduceArgs(stackValues);
 
             // TODO_MSIL: Emit these CLRFunctionEndpoint's from the CodeGen stage.
-            var feps = CreateFEPs(mInfos, in reducedArgs);
+            var feps = CreateFEPs(mInfos);
 
             // Construct replicationGuides from replicationAttrs
             var replicationGuides = ConstructRepGuides(replicationAttrs);
