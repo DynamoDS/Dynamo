@@ -174,7 +174,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
                 Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
-                Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource).Replace("_", ""), currentGuide.SequenceOrder);
+                Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", ""), currentGuide.SequenceOrder);
             }
         }
 
@@ -234,7 +234,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     tmpStep.StepClosed -= Popup_StepClosed;
                 }
 
-                string guidName = Resources.ResourceManager.GetString(currentGuide.GuideNameResource).Replace("_", "");
+                string guidName = Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", "");
                 if (currentGuide.TotalSteps - 1 == currentGuide.CurrentStep.Sequence)
                 {
                     Logging.Analytics.TrackEvent(Logging.Actions.Completed, Logging.Categories.GuidedTourOperations, guidName, currentGuide.CurrentStep.Sequence);
