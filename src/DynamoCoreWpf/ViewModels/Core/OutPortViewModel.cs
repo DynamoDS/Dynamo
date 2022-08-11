@@ -21,12 +21,15 @@ namespace Dynamo.ViewModels
         private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
 
         internal static SolidColorBrush PortValueMarkerGrey = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+        internal static int valueMarkerWidthWithFunction = 15;
+        internal static int valueMarkerWidthWithoutFunction = 0;
 
         private bool showContextMenu;
         private bool areConnectorsHidden;
         private string showHideWiresButtonContent = "";
         private bool hideWiresButtonEnabled;
         private bool portDefaultValueMarkerVisible;
+        private int valueMarkerWidth;
 
         /// <summary>
         /// Sets the condensed styling on Code Block output ports.
@@ -130,6 +133,29 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Returns the width from the ValueMarkerColumn
+        /// </summary>
+        public int ValueMarkerWidth
+        {
+            get => valueMarkerWidth;
+        }
+
+        /// <summary>
+        /// Returns the width to assign to the ValueMarkerColumn when is function state
+        /// </summary>
+        public int ValueMarkerWidthWithFunction
+        {
+            get => valueMarkerWidthWithFunction;
+        }
+
+        /// <summary>
+        /// Returns the width to assign to the ValueMarkerColumn when is not function state
+        /// </summary>
+        public int ValueMarkerWidthWithoutFunction
+        {
+            get => valueMarkerWidthWithoutFunction;
+        }
 
         /// <summary>
         /// Takes care of the multiple UI concerns when dealing with the Unhide/Hide Wires button
@@ -310,6 +336,7 @@ namespace Dynamo.ViewModels
         protected override void RefreshPortColors()
         {
             PortDefaultValueMarkerVisible = node.NodeModel.CachedValue != null && node.NodeModel.CachedValue.IsFunction && !node.IsWatchNode;
+            valueMarkerWidth = PortDefaultValueMarkerVisible ? valueMarkerWidthWithFunction : valueMarkerWidthWithoutFunction;
         }
     }
 }
