@@ -157,7 +157,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             }
 
             var aR = a as FFITarget.ReplicationTestA;
-            var bR = a as FFITarget.ReplicationTestA;
+            var bR = b as FFITarget.ReplicationTestA;
             if (aR != null && bR != null)
             {
                 return aR.X == bR.X &&
@@ -203,11 +203,11 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                     new Object[] {
                         new Object[] {
                             new FFITarget.ReplicationTestA() { X = 0, Y = 2, Z = 4 },
-                            new FFITarget.ReplicationTestA() { X = 1, Y = 2, Z = 5 }
+                            new FFITarget.ReplicationTestA() { X = 0, Y = 2, Z = 5 }
                         },
                         new Object[] {
                             new FFITarget.ReplicationTestA() { X = 0, Y = 3, Z = 4 },
-                            new FFITarget.ReplicationTestA() { X = 1, Y = 3, Z = 5 }
+                            new FFITarget.ReplicationTestA() { X = 0, Y = 3, Z = 5 }
                         }
                     },
                     new Object[] {
