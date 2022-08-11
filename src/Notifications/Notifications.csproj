@@ -10,12 +10,8 @@
 		<AssemblyName>Notifications</AssemblyName>
 	</PropertyGroup>
 
-	<Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
-		<Exec Command="npm install @dynamods/notifications-center@latest" />	
-	</Target>
-
-	<Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
-		<Exec Command="npm install" />
+	<Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+		<Exec Command="npm install @dynamods/notifications-center@latest" />
 	</Target>
 
 	<ItemGroup>

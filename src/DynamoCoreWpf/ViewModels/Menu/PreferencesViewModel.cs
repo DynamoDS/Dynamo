@@ -36,6 +36,14 @@ namespace Dynamo.ViewModels
         #region Private Properties
         private string savedChangesLabel;
         private string savedChangesTooltip;
+        private string currentWarningMessage;
+        private string selectedPackagePathForInstall;
+
+        private string selectedLanguage;
+        private string selectedFontSize;
+        private string selectedNumberFormat;
+        private string selectedPythonEngine;
+
         private ObservableCollection<string> languagesList;
         private ObservableCollection<string> packagePathsForInstall;
         private ObservableCollection<string> fontSizeList;
@@ -43,35 +51,20 @@ namespace Dynamo.ViewModels
         private StyleItem addStyleControl;
         private ObservableCollection<string> pythonEngineList;
 
-        private string selectedLanguage;
-        private string selectedFontSize;
-        private string selectedNumberFormat;
-        private string selectedPythonEngine;
-        private bool runPreviewEnabled;
-        private bool runPreviewIsChecked;
-        private bool hideIronPAlerts;
-        private bool showWhitespace;
-        private bool nodeAutocomplete;
-        private bool enableTSpline;
-        private bool showEdges;
-        private bool isolateSelectedGeometry;
-        private bool showCodeBlockLineNumber;
         private RunType runSettingsIsChecked;
         private Dictionary<string, TabSettings> preferencesTabs;
 
-        private PreferenceSettings preferenceSettings;
-        private DynamoPythonScriptEditorTextOptions pythonScriptEditorTextOptions;
-        private HomeWorkspaceModel homeSpace;
-        private DynamoViewModel dynamoViewModel;
-        private bool isWarningEnabled;
-        private string currentWarningMessage;
-        private bool isSaveButtonEnabled = true;
-        private GeometryScalingOptions optionsGeometryScale = null;
+        private readonly PreferenceSettings preferenceSettings;
+        private readonly DynamoPythonScriptEditorTextOptions pythonScriptEditorTextOptions;
+        private readonly DynamoViewModel dynamoViewModel;
+        private readonly InstalledPackagesViewModel installedPackagesViewModel;
 
-        private InstalledPackagesViewModel installedPackagesViewModel;
-        private string selectedPackagePathForInstall;
+        private bool isWarningEnabled;
+        private bool isSaveButtonEnabled = true;
         private bool isVisibleAddStyleBorder;
         private bool isEnabledAddStyleButton;
+        private GeometryScalingOptions optionsGeometryScale = null;
+
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -536,7 +529,6 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                showEdges = value;
                 dynamoViewModel.RenderPackageFactoryViewModel.ShowEdges = value;
                 RaisePropertyChanged(nameof(ShowEdges));
             }
@@ -553,7 +545,6 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                isolateSelectedGeometry = value;
                 dynamoViewModel.BackgroundPreviewViewModel.IsolationMode = value;
                 RaisePropertyChanged(nameof(IsolateSelectedGeometry));
             }
@@ -603,7 +594,6 @@ namespace Dynamo.ViewModels
             set
             {
                 preferenceSettings.ShowCodeBlockLineNumber = value;
-                showCodeBlockLineNumber = value;
                 RaisePropertyChanged(nameof(ShowCodeBlockLineNumber));
             }
         }
@@ -697,7 +687,6 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                hideIronPAlerts = value;
                 preferenceSettings.IsIronPythonDialogDisabled = value;
                 RaisePropertyChanged(nameof(HideIronPythonAlertsIsChecked));
             }
@@ -716,7 +705,6 @@ namespace Dynamo.ViewModels
             {
                 pythonScriptEditorTextOptions.ShowWhiteSpaceCharacters(value);
                 preferenceSettings.ShowTabsAndSpacesInScriptEditor = value;
-                showWhitespace = value;
                 RaisePropertyChanged(nameof(ShowWhitespaceIsChecked));
             }
         }
@@ -733,8 +721,23 @@ namespace Dynamo.ViewModels
             set
             {
                 preferenceSettings.EnableNodeAutoComplete = value;
-                nodeAutocomplete = value;
                 RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Notification Center" toogle button
+        /// </summary>
+        public bool NotificationCenterIsChecked
+        {
+            get
+            {
+                return preferenceSettings.EnableNotificationCenter;
+            }
+            set
+            {
+                preferenceSettings.EnableNotificationCenter = value;
+                RaisePropertyChanged(nameof(NotificationCenterIsChecked));
             }
         }
 
@@ -750,7 +753,6 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                enableTSpline = value;
                 HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.TSpline");
                 RaisePropertyChanged(nameof(EnableTSplineIsChecked));
             }
@@ -810,8 +812,6 @@ namespace Dynamo.ViewModels
         {
             this.preferenceSettings = dynamoViewModel.PreferenceSettings;
             this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
-            this.runPreviewEnabled = dynamoViewModel.HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled;
-            this.homeSpace = dynamoViewModel.HomeSpace;
             this.dynamoViewModel = dynamoViewModel;
             this.installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
                 dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
