@@ -45,6 +45,7 @@ namespace Dynamo.Engine
         internal static event Action VMLibrariesReset;
 
         internal bool DSExecutionEngine { get; set; }
+        internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime => liveRunnerServices.CompileAndExecutionTime;
 
         /// <summary>
         /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.

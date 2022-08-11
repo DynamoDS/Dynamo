@@ -5,6 +5,7 @@ using ProtoCore.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -34,6 +35,7 @@ namespace EmitMSIL
         private StreamWriter writer;
         private Dictionary<int, IEnumerable<MethodBase>> methodCache = new Dictionary<int, IEnumerable<MethodBase>>();
         private CompilePass compilePass;
+        internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
         private enum CompilePass
         {
@@ -64,13 +66,20 @@ namespace EmitMSIL
 
         public IDictionary<string, IList> Emit(List<AssociativeNode> astList)
         {
+            var timer = new Stopwatch();
+            timer.Start();
             var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndSave);
-
+            timer.Stop();
+            CompileAndExecutionTime.compileTime = timer.Elapsed;
             // Invoke emitted method (ExecuteIL.Execute)
+            timer.Restart();
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute");
             var output = new Dictionary<string, IList>();
+
             var obj = mi.Invoke(null, new object[] { null, methodCache, output });
+            timer.Stop();
+            CompileAndExecutionTime.executionTime = timer.Elapsed;
 
             compileResult.asmbuilder.Save("DynamicAssembly.dll");
 

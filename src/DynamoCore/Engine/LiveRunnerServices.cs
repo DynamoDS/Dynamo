@@ -65,7 +65,7 @@ namespace Dynamo.Engine
                 return liveRunner.RuntimeCore;
             }
         }
-
+        internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime => (liveRunner as LiveRunner).CompileAndExecutionTime;
 
         /// <summary>
         /// TPDP

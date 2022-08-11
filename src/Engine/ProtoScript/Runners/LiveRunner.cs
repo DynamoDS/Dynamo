@@ -13,6 +13,7 @@ using ProtoFFI;
 using Dynamo.Utilities;
 using System.IO;
 using System.Collections;
+using System.Diagnostics;
 
 namespace ProtoScript.Runners
 {
@@ -1195,6 +1196,7 @@ namespace ProtoScript.Runners
     {
         private IDictionary<string, IList> graphOutput;
         internal bool DSExecutionEngine = true;
+        internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
         internal class DebugByteCodeMode : IDisposable
         {
@@ -1248,6 +1250,7 @@ namespace ProtoScript.Runners
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             var codeGenIL = new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"));
             graphOutput = codeGenIL.Emit(finalDeltaAstList);
+            CompileAndExecutionTime = codeGenIL.CompileAndExecutionTime;
         }
 
         internal IList GetNodeValue(string variableName)
@@ -1656,6 +1659,8 @@ namespace ProtoScript.Runners
 
         private void CompileAndExecuteForDeltaExecution(List<AssociativeNode> astList)
         {
+            var timer = new Stopwatch();
+            timer.Start();
             // Make a copy of the ASTs to be executed
             // We dont want the compiler to modify the ASTs cached in the liverunner
             List<AssociativeNode> dispatchASTList = new List<AssociativeNode>();
@@ -1674,6 +1679,8 @@ namespace ProtoScript.Runners
             ResetForDeltaExecution();
             CompileAndExecute(dispatchASTList);
             PostExecution();
+            timer.Stop();
+            CompileAndExecutionTime = (new TimeSpan(0), timer.Elapsed);
         }
 
         private List<Guid> PreviewInternal(GraphSyncData syncData)
