@@ -21,7 +21,7 @@ namespace Dynamo.ViewModels
         private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
 
         internal static SolidColorBrush PortValueMarkerGrey = new SolidColorBrush(Color.FromRgb(153, 153, 153));
-        internal static int valueMarkerWidthWithFunction = 15;
+        internal static int valueMarkerWidthWithFunction = 5;
         internal static int valueMarkerWidthWithoutFunction = 0;
 
         private bool showContextMenu;
