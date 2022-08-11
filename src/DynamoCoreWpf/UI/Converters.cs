@@ -24,8 +24,6 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
-using PythonNodeModels;
-using SharpDX.DXGI;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -1292,6 +1290,24 @@ namespace Dynamo.Controls
             if (fullscreenWatchShowing)
                 return Visibility.Visible;
             return Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Converter for Notification Bell updates based on feature enabled or not
+    /// </summary>
+    public class BoolToFAIconNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+                return nameof(FontAwesome.WPF.FontAwesomeIcon.BellOutline);
+            return nameof(FontAwesome.WPF.FontAwesomeIcon.BellSlashOutline);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

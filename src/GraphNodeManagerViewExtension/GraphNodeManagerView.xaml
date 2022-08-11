@@ -81,9 +81,9 @@
                                      Style="{StaticResource ContextMenuStyle}"
                                      Background="#666666"
                                      Width="170">
-                        <MenuItem x:Name="CSVItem" Header="Export as CSV" Padding="10" FontSize="12"
+                        <MenuItem x:Name="CSVItem" Header="{x:Static p:Resources.MenuItemExportAsCSV}" Padding="10" FontSize="12"
                                       Command="{Binding ExportCommand}" CommandParameter="CSV"/>
-                        <MenuItem x:Name="JSONItem" Header="Export as JSON" Padding="10" FontSize="12"
+                        <MenuItem x:Name="JSONItem" Header="{x:Static p:Resources.MenuItemExportAsJSON}" Padding="10" FontSize="12"
                                       Command="{Binding ExportCommand}" CommandParameter="JSON"/>
                     </ContextMenu>
                 </Image.ContextMenu>
@@ -165,8 +165,11 @@
             <DataGrid.Columns>
 
                 <!-- Name -->
-                <DataGridTemplateColumn
-                    Header="Name"
+                <DataGridTextColumn
+                    Header="{x:Static p:Resources.HeaderNameName}"
+                    Binding="{Binding Name}"
+                    FontWeight="Light"
+                    Foreground="#F5F5F5"
                     IsReadOnly="True"
                     Width="6*">
                     <DataGridTemplateColumn.CellTemplate>
@@ -198,7 +201,7 @@
 
                 <!-- Type -->
                 <DataGridTemplateColumn
-                    Header="Type" 
+                    Header="{x:Static p:Resources.HeaderNameType}" 
                     Width="3*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
@@ -223,8 +226,8 @@
 
                 <!-- State -->
                 <DataGridTemplateColumn
-                    Header="State" 
-                    Width="3*"
+                    Header="{x:Static p:Resources.HeaderNameState}" 
+                    Width="4*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -248,8 +251,8 @@
 
                 <!-- Issues -->
                 <DataGridTemplateColumn
-                    Header="Issues" 
-                    Width="3*"
+                    Header="{x:Static p:Resources.HeaderNameIssues}" 
+                    Width="4*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -281,8 +284,8 @@
 
                 <!-- Outputs -->
                 <DataGridTemplateColumn
-                    Header="Outputs" 
-                    Width="3*"
+                    Header="{x:Static p:Resources.HeaderNameOutputs}" 
+                    Width="Auto"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

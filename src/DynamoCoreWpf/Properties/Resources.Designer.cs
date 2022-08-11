@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -4613,6 +4613,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click to view latest news from Dynamo Team..
+        /// </summary>
+        public static string NotificationCenterButtonTooltip {
+            get {
+                return ResourceManager.GetString("NotificationCenterButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to null.
         /// </summary>
         public static string NullString {
@@ -6257,6 +6266,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Receive notification.
+        /// </summary>
+        public static string PreferencesViewEnableNotificationCenter {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableNotificationCenter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable T-Spline nodes.
         /// </summary>
         public static string PreferencesViewEnableTSplineNodes {
@@ -6325,6 +6343,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewMarkdownDirectoryTooltip {
             get {
                 return ResourceManager.GetString("PreferencesViewMarkdownDirectoryTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notification Center.
+        /// </summary>
+        public static string PreferencesViewNotificationCenter {
+            get {
+                return ResourceManager.GetString("PreferencesViewNotificationCenter", resourceCulture);
             }
         }
         
@@ -7960,6 +7987,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UndeprecatingPackageMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UndeprecatingPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo cannot ungroup when there is no parent group..
+        /// </summary>
+        public static string UngroupParentGroupWarning {
+            get {
+                return ResourceManager.GetString("UngroupParentGroupWarning", resourceCulture);
             }
         }
         
