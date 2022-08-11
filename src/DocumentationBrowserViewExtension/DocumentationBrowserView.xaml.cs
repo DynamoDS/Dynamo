@@ -1,6 +1,11 @@
 ﻿using Dynamo.Logging;
+using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -14,6 +19,10 @@ namespace Dynamo.DocumentationBrowser
     {
         private const string ABOUT_BLANK_URI = "about:blank";
         private readonly DocumentationBrowserViewModel viewModel;
+        private const string FALLBACK_DOC_DIRECTORY_NAME = "fallback_docs";
+        private const string VIRTUAL_FOLDER_MAPPING = "appassets";
+        private const string URI_FILE_PREFIX = "file:///";
+        private const string HTTP_PREFIX = "http://";
 
         /// <summary>
         /// Construct a new DocumentationBrowserView given an appropriate viewmodel.
@@ -28,10 +37,9 @@ namespace Dynamo.DocumentationBrowser
             // subscribe to the link changed event on the view model
             // so we know when to navigate to a new documentation page/document
             viewModel.LinkChanged += NavigateToPage;
-
             // handle browser component events & disable certain features that are not needed
             this.documentationBrowser.AllowDrop = false;
-            this.documentationBrowser.Navigating += ShouldAllowNavigation;
+            this.documentationBrowser.NavigationStarting += ShouldAllowNavigation;
             this.documentationBrowser.DpiChanged += DocumentationBrowser_DpiChanged;
         }
 
@@ -41,7 +49,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 // it's possible we're trying to invoke this before the adaptDPI function is
                 // injected into the script scope, wrap this in a try catch.
-                documentationBrowser.InvokeScript("adaptDPI()");
+                documentationBrowser.ExecuteScriptAsync("adaptDPI()");
             }
             catch (Exception e)
             {
@@ -53,12 +61,11 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ShouldAllowNavigation(object sender, NavigatingCancelEventArgs e)
+        private void ShouldAllowNavigation(object sender, CoreWebView2NavigationStartingEventArgs e)
         {
-            // do not allow refreshes, back or forward navigation
-            if (e.NavigationMode != NavigationMode.New)
+            // if is not an URL then we should return otherwise it will crash when trying to open the URL in the default Web Browser
+            if(!e.Uri.StartsWith(HTTP_PREFIX.Substring(0,4)))
             {
-                e.Cancel = true;
                 return;
             }
 
@@ -68,7 +75,7 @@ namespace Dynamo.DocumentationBrowser
 
             // we want to cancel navigation when a clicked link would navigate 
             // away from the page the ViewModel wants to display
-            var isAboutBlankLink = e.Uri.OriginalString.Equals(ABOUT_BLANK_URI);
+            var isAboutBlankLink = e.Uri.ToString().Equals(ABOUT_BLANK_URI);
             var isRemoteLinkFromLocalDocument = !e.Uri.Equals(this.viewModel.Link);
 
             if (isAboutBlankLink || isRemoteLinkFromLocalDocument)
@@ -76,7 +83,7 @@ namespace Dynamo.DocumentationBrowser
                 // in either of these two cases, cancel the navigation 
                 // and redirect it to a new process that starts the default OS browser
                 e.Cancel = true;
-                Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+                Process.Start(new ProcessStartInfo(e.Uri));
             }
         }
 
@@ -88,17 +95,14 @@ namespace Dynamo.DocumentationBrowser
         /// <param name="link"></param>
         public void NavigateToPage(Uri link)
         {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                this.documentationBrowser.NavigateToString(this.viewModel.GetContent());
-            }));
+            InitializeAsync();
         }
 
         protected virtual void Dispose(bool disposing)
         {
             // Cleanup
             this.viewModel.LinkChanged -= NavigateToPage;
-            this.documentationBrowser.Navigating -= ShouldAllowNavigation;
+            this.documentationBrowser.NavigationStarting -= ShouldAllowNavigation;
             // Note to test writers
             // Disposing the document browser will cause future tests
             // that uses the Browser component to crash
@@ -107,6 +111,31 @@ namespace Dynamo.DocumentationBrowser
                 this.documentationBrowser.Dispose();
             }
             this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
+        }
+
+        async void InitializeAsync()
+        {
+            
+            string executingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var absoluteImagePath = Path.Combine(executingPath, FALLBACK_DOC_DIRECTORY_NAME);
+
+            //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
+            await documentationBrowser.EnsureCoreWebView2Async();
+
+            //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
+            this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, FALLBACK_DOC_DIRECTORY_NAME, CoreWebView2HostResourceAccessKind.DenyCors);
+
+            //This will remove special characters in paths (like <img src="/path")
+            string htmlContent = HttpUtility.UrlDecode(this.viewModel.GetContent());
+           
+            //Md2Html is adding the prefix "file:///" to the image paths but due that now we are using a virtual directory is not needed
+            //Instead we will be replacing it by "http://fallback_doc/resource_name" so we will using the virtual directory
+            htmlContent = htmlContent.Replace(URI_FILE_PREFIX + absoluteImagePath, HTTP_PREFIX + VIRTUAL_FOLDER_MAPPING);
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                this.documentationBrowser.NavigateToString(htmlContent);
+            }));
         }
 
         /// <summary>
