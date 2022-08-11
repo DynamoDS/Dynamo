@@ -13,18 +13,18 @@ namespace ProtoCore.Utils
         /// <param name="cn"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static List<int> GetClassUpcastChain(ClassNode cn, RuntimeCore runtimeCore)
+        public static List<int> GetClassUpcastChain(ClassNode cn, ClassTable classTable)
         {
             List<int> ret = new List<int>();
 
             //@TODO: Replace this with an ID
-            ret.Add(runtimeCore.DSExecutable.classTable.ClassNodes.IndexOf(cn));
+            ret.Add(classTable.ClassNodes.IndexOf(cn));
 
             ClassNode target = cn;
             while (target.Base != Constants.kInvalidIndex)
             {
                 ret.Add(target.Base);
-                target = runtimeCore.DSExecutable.classTable.ClassNodes[target.Base];
+                target = classTable.ClassNodes[target.Base];
             }
 
             if (!ret.Contains((int)(PrimitiveType.Var)))
@@ -41,18 +41,42 @@ namespace ProtoCore.Utils
         /// <param name="to"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static int GetUpcastCountTo(ClassNode from, ClassNode to, RuntimeCore runtimeCore)
+        public static int GetUpcastCountTo(ClassNode from, ClassNode to, ClassTable classTable)
         {
-            int toID = runtimeCore.DSExecutable.classTable.ClassNodes.IndexOf(to);
+            int toID = classTable.ClassNodes.IndexOf(to);
 
-            List<int> upcastChain = GetClassUpcastChain(from, runtimeCore);
+            List<int> upcastChain = GetClassUpcastChain(from, classTable);
 
             if (!upcastChain.Contains(toID))
                 return int.MaxValue;
 
             return upcastChain.IndexOf(toID);
+        }
 
+        internal static int GetUpcastCountTo((int id, System.Type type) from, (int id, System.Type type) target)
+        {
+            if (from.id == target.id)
+            {
+                return 0;
+            }
 
+            int index = -1;
+            System.Type parent = from.type;
+            while(parent != null)
+            {
+                index++;
+                if (parent == target.type)
+                {
+                    return index;
+                }
+                parent = parent.BaseType;
+            }
+
+            if (from.id == (int)ProtoCore.PrimitiveType.Var)
+            {
+                return index + 1;
+            }
+            return int.MaxValue;
         }
 
         // classScope is a global context, it tells we are in which class's scope

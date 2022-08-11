@@ -14,7 +14,7 @@ using DSASM = ProtoCore.DSASM;
 
 namespace EmitMSIL
 {
-    public class CodeGenIL:IDisposable
+    public class CodeGenIL : IDisposable
     {
         private ILGenerator ilGen;
         internal string className;
@@ -1181,11 +1181,11 @@ namespace EmitMSIL
                         return indexResult.type;
                     }
                     //if we fail to emit indexing at compile time, 
-                    //emit a function call to ValueAtIndexDynamic to avoid overload issues.
+                    //emit a function call to ValueAtIndex.
                     else
                     {
-                        methodName = nameof(DesignScript.Builtin.Get.ValueAtIndexDynamic);
-                        EmitILComment("NOT ENOUGH TYPE INFO TO EMIT INDEXING, EMIT VALUEATINDEXDYNAMIC FUNCTION CALL");
+                        methodName = nameof(DesignScript.Builtin.Get.ValueAtIndex);
+                        EmitILComment("NOT ENOUGH TYPE INFO TO EMIT INDEXING, EMIT ValueAtIndex FUNCTION CALL");
                     }
                 }
             }
@@ -1266,7 +1266,10 @@ namespace EmitMSIL
                     var argGuides = argIdent.ReplicationGuides;
                     EmitArray(typeof(string), argGuides, (AssociativeNode gn, int gidx) =>
                     {
-                        EmitOpCode(OpCodes.Ldstr, (gn as ReplicationGuideNode).RepGuide.Name);
+                        var repGuideNode = gn as ReplicationGuideNode;
+                        var nodeGuide = repGuideNode.RepGuide as IdentifierNode;
+
+                        EmitOpCode(OpCodes.Ldstr, nodeGuide.Value);
                     });
                 }
                 else
@@ -1434,13 +1437,20 @@ namespace EmitMSIL
                     op = new IntNode(-1);
                     break;
             }
+
+            bool hasStep = stepNode != null;
+            // The value of the dummy DoubleNode does not matter since the hasStep boolean will be false.
+            AssociativeNode dummyStepNode = AstFactory.BuildDoubleNode(1);
             var arguments = new List<AssociativeNode>
             {
                 fromNode,
                 toNode,
-                stepNode ?? new NullNode(),
+                // TODO_MSIL: Figure out a better solution for this scenario.
+                // Use DoubleNode(1) because standard replication cannot handle null to value type coerce
+                // The old VM handles builtin functions (like range expr) in a special way...that does not try coercion
+                hasStep ? stepNode : dummyStepNode,//NullNode()
                 op,
-                AstFactory.BuildBooleanNode(stepNode != null),
+                AstFactory.BuildBooleanNode(hasStep),
                 AstFactory.BuildBooleanNode(hasAmountOperator),
             };
 

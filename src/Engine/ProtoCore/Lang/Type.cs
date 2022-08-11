@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
@@ -13,7 +14,11 @@ namespace ProtoCore
     {
         public string Name;
         public int UID;
-        public int rank;
+        public int rank
+        {
+            get;
+            set;
+        }
 
         public bool IsIndexable
         {
@@ -361,6 +366,16 @@ namespace ProtoCore
             return sv;
         }
 
+        internal static CLRStackValue ClassCoerce(CLRStackValue sv, Type targetType)
+        {
+            //@TODO: Add proper coersion testing here.
+
+            if (targetType.UID == (int)PrimitiveType.Bool)
+                return new CLRStackValue(true, (int)PrimitiveType.Bool);
+
+            return sv;
+        }
+
         public static StackValue Coerce(StackValue sv, int UID, int rank, RuntimeCore runtimeCore)
         {
             Type t = new Type();
@@ -572,6 +587,186 @@ namespace ProtoCore
                 default:
                     if (sv.IsNull)
                         return StackValue.Null;
+                    else
+                        throw new NotImplementedException("Requested coercion not implemented");
+            }
+        }
+
+        internal static CLRStackValue Coerce(CLRStackValue sv, Type targetType, MSILRuntimeCore runtimeCore)
+        {
+            //@TODO(Jun): FIX ME - abort coersion for default args
+            if (sv.IsDefaultArgument)
+                return sv;
+
+            if (!((sv.TypeUID == targetType.UID) ||
+                  runtimeCore.ConvertibleTo(sv, targetType) ||
+                  sv.IsEnumerable))
+            {
+                System.Console.WriteLine($"{Runtime.WarningID.ConversionNotPossible}{Resources.kConvertNonConvertibleTypes}");
+                return CLRStackValue.Null;
+            }
+
+            //if it's an array
+            if (sv.IsEnumerable && !targetType.IsIndexable)
+            {
+                //This is an array rank reduction
+                //this may only be performed in recursion and is illegal here
+                string errorMessage = String.Format(Resources.kConvertArrayToNonArray, targetType.ToString());
+                System.Console.WriteLine($"{Runtime.WarningID.ConversionNotPossible}{errorMessage}");
+                return CLRStackValue.Null;
+            }
+
+            if (sv.IsEnumerable &&
+                targetType.IsIndexable)
+            {
+                //We're being asked to convert an array into an array
+                //walk over the structure converting each othe elements
+
+                //Validity.Assert(targetType.rank != -1, "Arbitrary rank array conversion not yet implemented {2EAF557F-62DE-48F0-9BFA-F750BBCDF2CB}");
+
+                //Decrease level of reductions by one
+                Type newTargetType = new Type();
+                newTargetType.UID = targetType.UID;
+                if (targetType.rank != Constants.kArbitraryRank)
+                {
+                    newTargetType.rank = targetType.rank - 1;
+                }
+                else
+                {
+                    if (ArrayUtils.GetMaxRankForArray(sv) == 1)
+                    {
+                        //Last unpacking
+                        newTargetType.rank = 0;
+                    }
+                    else
+                    {
+                        newTargetType.rank = Constants.kArbitraryRank;
+                    }
+                }
+
+                List<CLRStackValue> coercedValues = new List<CLRStackValue>();
+                foreach (var item in sv.Value as IList<CLRStackValue>)
+                {
+                    var coercedValue = Coerce(item, newTargetType, runtimeCore);
+                    coercedValues.Add(coercedValue);
+                }
+
+                return new CLRStackValue(coercedValues, (int)PrimitiveType.Array);
+            }
+
+            // Null can be converted to Boolean so we will allow it in the case of indexable types
+            bool nullAsBool = sv.IsNull && (targetType.UID == (int)PrimitiveType.Bool);
+            if (!sv.IsEnumerable && (!sv.IsNull || nullAsBool) &&
+                targetType.IsIndexable &&
+                targetType.rank != DSASM.Constants.kArbitraryRank)
+            {
+                //We're being asked to promote the value into an array
+                if (targetType.rank == 1)
+                {
+                    Type newTargetType = new Type();
+                    newTargetType.UID = targetType.UID;
+                    newTargetType.Name = targetType.Name;
+                    newTargetType.rank = 0;
+
+                    //Upcast once
+                    return Coerce(sv, newTargetType, runtimeCore);
+                }
+                else
+                {
+                    Validity.Assert(targetType.rank > 1, "Target rank should be greater than one for this clause");
+
+                    Type newTargetType = new Type();
+                    newTargetType.UID = targetType.UID;
+                    newTargetType.Name = targetType.Name;
+                    newTargetType.rank = targetType.rank - 1;
+
+                    //Upcast once
+                    return Coerce(sv, newTargetType, runtimeCore);
+                }
+            }
+
+            if (sv.IsPointer)
+            {
+                CLRStackValue ret = ClassCoerce(sv, targetType);
+                return ret;
+            }
+
+            //If it's anything other than array, just create a new copy
+            switch (targetType.UID)
+            {
+                case (int)PrimitiveType.InvalidType:
+                    System.Console.WriteLine($"{Runtime.WarningID.InvalidType}{Resources.kInvalidType}");
+                    return CLRStackValue.Null;
+
+                case (int)PrimitiveType.Bool:
+                    return sv.ToBoolean();
+
+                case (int)PrimitiveType.Char:
+                    {
+                        return new CLRStackValue(Convert.ToChar(sv.Value), (int)PrimitiveType.Char);
+                    }
+
+                case (int)PrimitiveType.Double:
+                    return sv.ToDouble();
+
+                case (int)PrimitiveType.FunctionPointer:
+                    if (sv.TypeUID != (int)PrimitiveType.FunctionPointer)
+                    {
+                        //runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToFunction);
+                        return CLRStackValue.Null;
+                    }
+                    return sv;
+
+                case (int)PrimitiveType.Integer:
+                    {
+                        return sv.ToInteger();
+                    }
+
+                case (int)PrimitiveType.Null:
+                    {
+                        if (sv.TypeUID != (int)PrimitiveType.Null)
+                        {
+                            //runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToNull);
+                            return CLRStackValue.Null;
+                        }
+                        return sv;
+                    }
+
+                case (int)PrimitiveType.Pointer:
+                    {
+                        if (sv.TypeUID != (int)PrimitiveType.Null)
+                        {
+                            //runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToPointer);
+                            return CLRStackValue.Null;
+                        }
+                        return sv;
+                    }
+
+                case (int)PrimitiveType.String:
+                    {
+                        return new CLRStackValue(Convert.ToString(sv.Value), (int)PrimitiveType.String);
+                    }
+
+                case (int)PrimitiveType.Var:
+                    {
+                        return sv;
+                    }
+
+                case (int)PrimitiveType.Array:
+                    {
+                        List<CLRStackValue> coercedValues = new List<CLRStackValue>();
+                        foreach (var item in sv.Value as IList<CLRStackValue>)
+                        {
+                            var coercedValue = TypeSystem.Coerce(item, targetType, runtimeCore);
+                            coercedValues.Add(coercedValue);
+                        }
+
+                        return new CLRStackValue(coercedValues, (int)PrimitiveType.Array);
+                    }
+
+                default:
+                    if (sv.IsNull)
+                        return CLRStackValue.Null;
                     else
                         throw new NotImplementedException("Requested coercion not implemented");
             }

@@ -378,4 +378,51 @@ namespace ProtoCore
             executedAstGuids.Clear();
         }
     }
+
+    internal class MSILRuntimeCore
+    {
+        // The global class table and function tables
+        internal ClassTable ClassTable { get; set; }
+        private ProcedureTable ProcTable { get; set; }
+        private ProcedureNode ProcNode { get; set; }
+        private TypeSystem TypeSystem { get; set; }
+        private InternalAttributes internalAttributes { get; set; }
+
+        internal MSILRuntimeCore()
+        {
+            ClassTable = new ClassTable();
+            TypeSystem = new TypeSystem();
+            TypeSystem.SetClassTable(ClassTable);
+            ProcNode = null;
+            ProcTable = new ProcedureTable(Constants.kGlobalScope);
+
+            // Initialize internal attributes
+            internalAttributes = new InternalAttributes(ClassTable);
+        }
+
+        internal bool ConvertibleTo(CLRStackValue from, Type to)
+        {
+            return ClassTable.ClassNodes[from.TypeUID]?.ConvertibleTo(to.UID) ?? false;
+        }
+
+        internal void LogWarning(Runtime.WarningID ID, string message)
+        {
+            System.Console.WriteLine($"{ID}{message}");
+        }
+
+        internal int GetProtoCoreTypeID(System.Type type)
+        {
+            int typeUID = ClassTable.IndexOf(CLRObjectMarshaler.GetTypeName(type));
+            if (typeUID == ProtoCore.DSASM.Constants.kInvalidIndex)
+            {
+                typeUID = CLRModuleType.GetProtoCoreType(type, null).UID;
+            }
+            return typeUID;
+        }
+
+        internal int GetCoercionScore(int srcType, int targetType)
+        {
+            return ClassTable?.ClassNodes[srcType]?.GetCoercionScore(targetType) ?? (int)ProcedureDistance.NotMatchScore;
+        }
+    }
 }
