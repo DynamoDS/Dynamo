@@ -165,13 +165,11 @@
             <DataGrid.Columns>
 
                 <!-- Name -->
-                <DataGridTextColumn
-                    Header="{x:Static p:Resources.HeaderNameName}"
-                    Binding="{Binding Name}"
-                    FontWeight="Light"
-                    Foreground="#F5F5F5"
-                    IsReadOnly="True"
-                    Width="6*">
+                <DataGridTemplateColumn
+                     Header="{x:Static p:Resources.HeaderNameName}"
+                     IsReadOnly="True"
+                     Width="6*">
+
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <DockPanel HorizontalAlignment="Stretch">
@@ -227,7 +225,7 @@
                 <!-- State -->
                 <DataGridTemplateColumn
                     Header="{x:Static p:Resources.HeaderNameState}" 
-                    Width="4*"
+                    Width="3*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -252,7 +250,7 @@
                 <!-- Issues -->
                 <DataGridTemplateColumn
                     Header="{x:Static p:Resources.HeaderNameIssues}" 
-                    Width="4*"
+                    Width="3*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -285,7 +283,7 @@
                 <!-- Outputs -->
                 <DataGridTemplateColumn
                     Header="{x:Static p:Resources.HeaderNameOutputs}" 
-                    Width="Auto"
+                    Width="3*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
