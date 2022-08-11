@@ -166,11 +166,6 @@ namespace Dynamo.Models
         /// </summary>
         public static bool EnableMigrationLogging { get; set; }
 
-        /// <summary>
-        /// The Autodesk CrashReport tool location on disk (directory that contains the "senddmp.exe")
-        /// </summary>
-        public static string CrashToolLocation;
-
         #endregion
 
         #region public properties
@@ -502,6 +497,22 @@ namespace Dynamo.Models
             /// No update checks or analytics collection should be done.
             /// </summary>
             bool IsHeadless { get; set; }
+        }
+
+        public struct CrashReporterStartupOptions
+        {
+            /// <summary>
+            /// The Autodesk CrashReport tool location on disk (directory that contains the "senddmp.exe")
+            /// </summary>
+            public string CERLocation { get; set; }
+        }
+
+        public interface IStartConfigCrashReporter
+        {
+            /// <summary>
+            /// CERLocation
+            /// </summary>
+            CrashReporterStartupOptions CRStartConfig { get; set; }
         }
 
         /// <summary>
