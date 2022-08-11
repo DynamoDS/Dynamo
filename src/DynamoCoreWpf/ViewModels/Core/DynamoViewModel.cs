@@ -1104,7 +1104,10 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
                     //RaisePropertyChanged("RunEnabled");
-                    ExitGuidedTourIfOpened();
+                    if (!DynamoModel.IsTestMode)
+                    {
+                        ExitGuidedTourIfOpened();
+                    }
                     break;
 
                 case "EnablePresetOptions":
