@@ -381,6 +381,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <!--This Grid row contains the Python section-->
@@ -449,12 +450,38 @@
                                 </StackPanel>
                             </Expander>
 
-                                <!--This Grid row contains the Experimental section-->
+                            <!--This Grid row contains the Notification Center section-->
+                            <Expander x:Name="NotificationCenterExpander" 
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=NotificationCenterExpander}"
+                                      Grid.Row="1"
+                                      Header="{x:Static p:Resources.PreferencesViewNotificationCenter}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
+                                        <ToggleButton Name="NotificationCenterToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=NotificationCenterIsChecked}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewEnableNotificationCenter}" 
+                                                   Margin="10,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+                            
+                            <!--This Grid row contains the Experimental section-->
                             <Expander x:Name="ExperimentalExpander" 
-                                          Style="{StaticResource MenuExpanderStyle}" 
-                                       IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExperimentalExpander}"
-                                          Grid.Row="1"
-                                          Header="{x:Static p:Resources.PreferencesViewExperimentalLabel}">
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExperimentalExpander}"
+                                      Grid.Row="2"
+                                      Header="{x:Static p:Resources.PreferencesViewExperimentalLabel}">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
