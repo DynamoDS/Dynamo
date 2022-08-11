@@ -174,7 +174,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
                 Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
-                Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource).Replace("_", ""), currentGuide.SequenceOrder);
+                Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", ""), currentGuide.SequenceOrder);
             }
         }
 
@@ -224,7 +224,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This method exits from tour 
         /// </summary>
-        private void ExitTour()
+        internal void ExitTour()
         {
 
             if (currentGuide != null)
@@ -234,7 +234,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     tmpStep.StepClosed -= Popup_StepClosed;
                 }
 
-                string guidName = Resources.ResourceManager.GetString(currentGuide.GuideNameResource).Replace("_", "");
+                string guidName = Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", "");
                 if (currentGuide.TotalSteps - 1 == currentGuide.CurrentStep.Sequence)
                 {
                     Logging.Analytics.TrackEvent(Logging.Actions.Completed, Logging.Categories.GuidedTourOperations, guidName, currentGuide.CurrentStep.Sequence);
@@ -276,24 +276,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
             exitGuideWindow.ContinueTourButton.Click += ContinueTourButton_Click;
 
             exitGuideWindow.IsOpen = true;
-        }
-
-        /// <summary>
-        /// Shows/Hides the Popup based in if the DynamoView is Active or not
-        /// </summary>
-        /// <param name="isActive"></param>
-        internal void ManagePopupActivation(bool isActive)
-        {
-            if (GuideFlowEvents.IsAnyGuideActive)
-            {
-                if (currentGuide.CurrentStep.stepUIPopup.IsOpen == !isActive)
-                    currentGuide.CurrentStep.stepUIPopup.IsOpen = isActive;
-            }
-            else if (GuideFlowEvents.IsAnyGuideActive == false && GuideFlowEvents.IsGuideExited == false)
-            {
-                if(exitGuideWindow != null && currentGuide.Name.Equals(GuidesManager.PackagesGuideName))
-                    exitGuideWindow.IsOpen = isActive;
-            }
         }
 
         private void ContinueTourButton_Click(object sender, RoutedEventArgs e)
@@ -534,8 +516,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// and display message passed as param
         /// </summary>
         /// <param name="content">The target content to display.</param>
+        /// <param name="stayOpen">boolean indicates if the popup will stay open until user dismiss it.</param>
         /// TODO: Make this API out of guide manager to a more generic place
-        internal void CreateRealTimeInfoWindow(string content)
+        internal void CreateRealTimeInfoWindow(string content, bool stayOpen = false)
         {
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
             UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
@@ -552,7 +535,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 VerticalOffset = ExitTourVerticalOffset,
                 HorizontalOffset = ExitTourHorizontalOffset,
                 Placement = PlacementMode.Left,
-                TextContent = content
+                TextContent = content,
+                StaysOpen = stayOpen
             };
 
             if (hostUIElement != null)

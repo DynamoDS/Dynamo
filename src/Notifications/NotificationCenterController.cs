@@ -1,49 +1,47 @@
-﻿using Dynamo.Controls;
-using Dynamo.Notifications.View;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Dynamo.Controls;
+using Dynamo.Notifications.View;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Notifications
 {
     public class NotificationCenterController
     {
-        NotificationUI notificationUIPopup;
-        DynamoView dynamoView;
-        Button notificationsButton;
+        private readonly NotificationUI notificationUIPopup;
+        private readonly DynamoView dynamoView;
+        private readonly DynamoViewModel dynamoViewModel;
+        private readonly Button notificationsButton;
 
-        private static int notificationPopupHorizontalOffset = -285;
-        private static int notificationPopupVerticalOffset = 10;
+        private static readonly int notificationPopupHorizontalOffset = -285;
+        private static readonly int notificationPopupVerticalOffset = 10;
 
-        private static string htmlEmbeddedFile = "Dynamo.Notifications.Web.index.html";
-        private static string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynam0.notificati0ns.index.js";
+        private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
+        private static readonly string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.bundle.js";
+        private static readonly string NotificationCenterButtonName = "notificationsButton";
 
-        public NotificationCenterController(DynamoView dynamoView)
+        internal NotificationCenterController(DynamoView view)
         {
-            var shortcutBar = dynamoView.ShortcutBar;
-            var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
+            dynamoView = view;
+            dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
+            notificationsButton = (Button)view.ShortcutBar.FindName(NotificationCenterButtonName);
 
-            notificationUIPopup = new NotificationUI();
-            notificationUIPopup.IsOpen = false;
-            notificationUIPopup.PlacementTarget = notificationsButton;
-            notificationUIPopup.Placement = PlacementMode.Bottom;
-            notificationUIPopup.HorizontalOffset = notificationPopupHorizontalOffset;
-            notificationUIPopup.VerticalOffset = notificationPopupVerticalOffset;
+            dynamoView.SizeChanged += DynamoView_SizeChanged;
+            dynamoView.LocationChanged += DynamoView_LocationChanged;
+            notificationsButton.Click += NotificationsButton_Click;
 
-            this.dynamoView = dynamoView;
-            this.notificationsButton = notificationsButton;
-
-            this.dynamoView.SizeChanged += DynamoView_SizeChanged;
-            this.dynamoView.LocationChanged += DynamoView_LocationChanged;
-            this.notificationsButton.Click += NotificationsButton_Click;
-
+            notificationUIPopup = new NotificationUI
+            {
+                IsOpen = false,
+                PlacementTarget = notificationsButton,
+                Placement = PlacementMode.Bottom,
+                HorizontalOffset = notificationPopupHorizontalOffset,
+                VerticalOffset = notificationPopupVerticalOffset
+            };
             notificationUIPopup.webView.EnsureCoreWebView2Async();
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;            
         }
@@ -63,7 +61,7 @@ namespace Dynamo.Notifications
             using (StreamReader reader = new StreamReader(stream))
             {
                 var jsString = reader.ReadToEnd();
-                htmlString = htmlString.Replace("#mainJs", jsString);
+                htmlString = htmlString.Replace("mainJs", jsString);
             }
 
             if(notificationUIPopup.webView.CoreWebView2 != null)
@@ -90,11 +88,23 @@ namespace Dynamo.Notifications
             notificationUIPopup.UpdatePopupLocation();
         }
 
+        /// <summary>
+        /// Notification Center button click handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NotificationsButton_Click(object sender, RoutedEventArgs e)
         {
-            notificationUIPopup.IsOpen = !notificationUIPopup.IsOpen;
-            if (notificationUIPopup.IsOpen)
-                notificationUIPopup.webView.Focus();
+            if (this.dynamoViewModel.PreferenceSettings.EnableNotificationCenter)
+            {
+                notificationUIPopup.IsOpen = !notificationUIPopup.IsOpen;
+                if (notificationUIPopup.IsOpen)
+                    notificationUIPopup.webView.Focus();
+            }
+            else
+            {
+                this.dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.NotificationCenterDisabledMsg);
+            }
         }        
     }
 }

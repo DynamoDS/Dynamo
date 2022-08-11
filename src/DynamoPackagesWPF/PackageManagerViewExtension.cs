@@ -125,8 +125,8 @@ namespace Dynamo.PackageManager.UI
                         if (viewExtension != null)
                         {
                             RequestAddExtension?.Invoke(viewExtension);
+                            this.requestedExtensions.Add(viewExtension);
                         }
-                        this.requestedExtensions.Add(viewExtension);
                     }
                 }
             }
