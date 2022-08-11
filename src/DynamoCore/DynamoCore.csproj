@@ -21,9 +21,6 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_227_0_0" Version="2.13.0.9054" GeneratePathProperty="true">
-      <ExcludeAssets>all</ExcludeAssets>
-    </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2220" GeneratePathProperty="true" />
     <PackageReference Include="Greg" Version="2.3.0.1646" />
 	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" CopyXML="true" />
@@ -141,7 +138,7 @@
       <OpenSourceLicenses Include="$(SolutionDir)..\doc\distrib\Open Source Licenses\**\*.*" />
       <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
       <ExternAnalytics Include="$(SolutionDir)..\extern\Analytics.NET\*.*" />
-      <LegacyBinariesToBinFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\*" />
+      <LegacyBinariesToBinFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\*\*" />
       <LegacyBinariesToEn-USFolder Include="$(SolutionDir)..\extern\legacy_remove_me\en-US\*" />
       <LegacyBinariesToNodesFolder Include="$(SolutionDir)..\extern\legacy_remove_me\nodes\*" />
     </ItemGroup>
@@ -168,7 +165,7 @@
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.Migrations.xml" DestinationFolder="$(OutputPath)" />
     <!--Remove these copy steps at the next launch of host products-->
-    <Copy SourceFiles="@(LegacyBinariesToBinFolder)" DestinationFolder="$(OutputPath)\" />
+    <Copy SourceFiles="@(LegacyBinariesToBinFolder)" DestinationFolder="$(OutputPath)\%(RecursiveDir)\" />
     <Copy SourceFiles="@(LegacyBinariesToEn-USFolder)" DestinationFolder="$(OutputPath)\en-US\" />
     <Copy SourceFiles="@(LegacyBinariesToNodesFolder)" DestinationFolder="$(OutputPath)\nodes\" />
     <Copy SourceFiles="$(SolutionDir)Config\upiconfig.xml" DestinationFolder="$(OutputPath)" />

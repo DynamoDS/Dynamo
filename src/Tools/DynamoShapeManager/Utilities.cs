@@ -46,53 +46,6 @@ namespace DynamoShapeManager
             //
 
         #region ASM DLLs per version (to be kept in sync with LibG)
-
-        private static readonly ISet<string> ASM227DllNames = new HashSet<string>()
-        {
-            "TBB.DLL",
-            "TBBMALLOC.DLL",
-            "TSPLINES9A.DLL",
-            "ASMAHL227A.DLL",
-            "ASMBASE227A.DLL",
-            "ASMBLND227A.DLL",
-            "ASMBOOL227A.DLL",
-            "ASMCOVR227A.DLL",
-            "ASMCSTR227A.DLL",
-            "ASMCT227A.DLL",
-            "ASMDATAX227A.DLL",
-            "ASMDEFM227A.DLL",
-            "ASMEULR227A.DLL",
-            "ASMFCT227A.DLL",
-            "ASMFREC227A.DLL",
-            "ASMGA227A.DLL",
-            "ASMHEAL227A.DLL",
-            "ASMIMPORT227A.DLL",
-            "ASMINTR227A.DLL",
-            "ASMKERN227A.DLL",
-            "ASMLAW227A.DLL",
-            "ASMLOP227A.DLL",
-            "ASMLOPT227A.DLL",
-            "ASMNPCH227A.DLL",
-            "ASMOFST227A.DLL",
-            "ASMOPER227A.DLL",
-            "ASMPID227A.DLL",
-            "ASMRBASE227A.DLL",
-            "ASMRBI227A.DLL",
-            "ASMREM227A.DLL",
-            "ASMSBAP227A.DLL",
-            "ASMSBOOL227A.DLL",
-            "ASMSHL227A.DLL",
-            "ASMSKIN227A.DLL",
-            "ASMSWP227A.DLL",
-            "ASMTOPT227A.DLL",
-            "ASMTWK227A.DLL",
-            "ASMUFLD227A.DLL",
-            "ASMWELD227A.DLL",
-            "ADPSDKWRAPPER.DLL",
-            "ADPSDKUI.DLL",
-            "ADPSDKCORE.DLL"
-        };
-
         private static readonly ISet<string> ASM228DllNames = new HashSet<string>()
         {
             "TBB.DLL",
@@ -597,8 +550,6 @@ namespace DynamoShapeManager
             {
                 case 228:
                     return !ASM228DllNames.Except(fileNames).Any();
-                case 227:
-                    return !ASM227DllNames.Except(fileNames).Any();
                 default:
                     // We don't know this version so it's safest to assume it's not complete.
                     return false;
