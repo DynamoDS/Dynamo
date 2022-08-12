@@ -140,34 +140,6 @@
                 <Menu HorizontalAlignment="Right"
                       Style="{StaticResource MainMenu}"
                       IsMainMenu="True">
-                    <MenuItem Name="MenuItem"
-                              Margin="0 0 -30 0">
-                        <MenuItem.Header>
-                                <Button x:Name="notificationsButton" 
-                                        BorderBrush="Transparent"                                         
-                                        Background="Transparent">
-                                    <DockPanel>
-                                    <fa:FontAwesome Margin="0,0,20,0"  
-                                                    DockPanel.Dock="Bottom" 
-                                                    Icon="BellOutline" 
-                                                    Foreground="{StaticResource Blue400Brush}" 
-                                                    FontSize="20px"/>
-                                    <Border DockPanel.Dock="Top" Background="{StaticResource Blue400Brush}" CornerRadius="2" 
-                                                Padding="2" Height="15" Width="15" VerticalAlignment="Center" 
-                                                HorizontalAlignment="Center">
-                                        <!--TODO insert data bind for the notifications -->
-                                        <TextBlock     
-                                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                Foreground="White" 
-                                                FontWeight="Bold" 
-                                                TextAlignment="Center"
-                                                FontSize="9">99
-                                        </TextBlock>
-                                        </Border>                                   
-                                    </DockPanel>                                   
-                                </Button>                                
-                        </MenuItem.Header>
-                    </MenuItem>
                     <MenuItem Name="exportMenu"
                               Cursor="Hand"
                               Focusable="False"
@@ -208,8 +180,51 @@
                             </MenuItem.ToolTip>
                         </MenuItem>
                     </MenuItem>
+                    <MenuItem Name="NotificationCenter"
+                              Margin="-15 0 -30 0">
+                        <MenuItem.Header>
+                            <Button x:Name="notificationsButton"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0"
+                                    Background="Transparent"
+                                    Cursor="Hand">
+                                <Button.ToolTip>
+                                    <ToolTip Content="{x:Static p:Resources.NotificationCenterButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
+                                </Button.ToolTip>
+                                <DockPanel>
+                                    <fa:FontAwesome Margin="0,0,25,0"  
+                                                    DockPanel.Dock="Top" 
+                                                    Icon="{Binding Path=DataContext.PreferenceSettings.EnableNotificationCenter, RelativeSource={RelativeSource AncestorType={x:Type Window}}, 
+                                                         Converter={StaticResource BoolToFAIconNameConverter}}"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{StaticResource PrimaryCharcoal300Brush}"
+                                                    FontSize="18px"/>
+                                    <Border DockPanel.Dock="Bottom" 
+                                            Background="{StaticResource Blue400Brush}" 
+                                            CornerRadius="2"
+                                            Padding="2"
+                                            Height="14"
+                                            Width="14"
+                                            VerticalAlignment="Center" 
+                                            HorizontalAlignment="Center">
+                                        <!--TODO insert data bind for the notifications -->
+                                        <TextBlock Name="NotificationCount"
+                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                   Foreground="White" 
+                                                   FontWeight="DemiBold"
+                                                   TextAlignment="Center"
+                                                   FontSize="9">8
+                                        </TextBlock>
+                                    </Border>
+                                </DockPanel>
+                            </Button>
+                        </MenuItem.Header>
+                    </MenuItem>
                 </Menu>
-                <controls:GraphUpdateNotificationControl x:Name="UpdateControl" HorizontalAlignment="Right" 
+                <!--The update indication-->
+                <controls:GraphUpdateNotificationControl x:Name="UpdateControl"
+                                                         HorizontalAlignment="Right" 
                                                          Margin="0,0,50,0"
                                                          Visibility="{Binding Path=DataContext.IsUpdateAvailable, RelativeSource={RelativeSource AncestorType={x:Type Window}}, 
                                                          Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>

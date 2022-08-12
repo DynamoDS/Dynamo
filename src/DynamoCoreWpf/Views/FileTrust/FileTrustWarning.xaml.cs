@@ -52,9 +52,16 @@ namespace Dynamo.Wpf.Views.FileTrust
 
         private void DynViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "CurrentSpace" && !dynViewModel.ViewingHomespace)
+            if (e.PropertyName == nameof(DynamoViewModel.CurrentSpace))
             {
-                IsOpen = false;
+                if (dynViewModel.ViewingHomespace)
+                {
+                    ManagePopupActivation(true);
+                }
+                else
+                {
+                    IsOpen = false;
+                }
             }
         }
 
