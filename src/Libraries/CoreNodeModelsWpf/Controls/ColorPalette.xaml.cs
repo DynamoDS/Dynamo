@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using System.Windows.Controls;
-using System.Windows.Markup;
+﻿using System.Windows.Controls;
 
 namespace CoreNodeModelsWpf.Controls
 {
@@ -12,7 +10,6 @@ namespace CoreNodeModelsWpf.Controls
         public ColorPaletteUI()
         {
             InitializeComponent();
-            Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
         }
     }
 }
