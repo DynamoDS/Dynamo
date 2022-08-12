@@ -167,7 +167,7 @@ namespace Dynamo.Tests
         {
             var versions = new List<Version>()
             {
-                    new Version(228,6,0)
+                    new Version(228,5,0)
             };
           
             var mockedInstalledASMs = new Dictionary<string, Tuple<int, int, int, int>>()
