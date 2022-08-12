@@ -1345,7 +1345,7 @@
         AABJRU5ErkJggg==
 </value>
   </data>
-  <data name="CoreNodeModels.Input.CustomSelectionNodeModel.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="CoreNodeModels.Input.CustomSelection.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAh
         OAAAITgBRZYxYAAAA8ZJREFUeF7tmttV4zAQhlMCJWwJlJBn1s564+zz0gF0AB1AB9CBlyT77BIoIe/c
@@ -1367,7 +1367,7 @@
         AAAAAAAAAAAAAAAAAAAAQDBms3/G6OUDtOjdugAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="CoreNodeModels.Input.CustomSelectionNodeModel.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="CoreNodeModels.Input.CustomSelection.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
         EwAACxMBAJqcGAAAAS1JREFUWEftkc1twzAMhTVCRvAIHsHn1g5Uu7lnhI6QEbxBuoEQpz13lB4N+HeF
