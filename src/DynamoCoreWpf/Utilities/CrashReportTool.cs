@@ -176,11 +176,6 @@ namespace Dynamo.Wpf.Utilities
             return installs.Cast<KeyValuePair<string, Tuple<int, int, int, int>>>().Select(x => x.Key).LastOrDefault();
         }
 
-        internal static bool IsCEREnabled()
-        {
-            return DynamoModel.FeatureFlags?.CheckFeatureFlag("CER", false) == true;
-        }
-
         // Calls external CER tool (with UI)
         internal static void OnCrashReportWindow(CrashReportArgs args)
         {

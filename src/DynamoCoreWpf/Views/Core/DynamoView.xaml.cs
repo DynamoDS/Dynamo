@@ -1305,7 +1305,7 @@ namespace Dynamo.Controls
 
         private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            if (CrashReportTool.IsCEREnabled() &&
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag("CER", false) == true &&
                 CrashReportTool.FindCERLocation(dynamoViewModel.Model))
             {
                 CrashReportTool.OnCrashReportWindow(new CrashReportArgs(dynamoViewModel));
