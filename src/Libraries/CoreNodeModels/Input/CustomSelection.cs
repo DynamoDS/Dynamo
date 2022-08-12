@@ -76,7 +76,7 @@ namespace CoreNodeModels.Input
         {
             AssociativeNode associativeNode = AstFactory.BuildPrimitiveNodeFromObject(GetSelectedValue());
 
-            return new List<AssociativeNode> { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), associativeNode) };
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), associativeNode) };
         }
 
         /// <summary>
@@ -139,8 +139,6 @@ namespace CoreNodeModels.Input
         [Obsolete]
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(nodeElement, context);
-
             XmlAttribute itemsAttribute = nodeElement.Attributes["serializedItems"];
 
             if (itemsAttribute == null)
@@ -156,6 +154,8 @@ namespace CoreNodeModels.Input
             {
                 Items.Add(item);
             }
+
+            base.DeserializeCore(nodeElement, context);
         }
 
     }
