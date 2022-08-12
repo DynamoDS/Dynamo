@@ -50,7 +50,7 @@ namespace Dynamo.Tests.Nodes
             var items = (ObservableCollection<DynamoDropDownItem>)itemsAsObject;
             Assert.AreEqual(3, items.Count);
             Assert.AreEqual("One", items[0].Name);
-            Assert.AreEqual(1, items[0].Item);
+            Assert.AreEqual("1", items[0].Item);
         }
 
         [Test]
