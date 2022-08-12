@@ -109,7 +109,7 @@ namespace Dynamo.Applications
                 bool disableAnalytics = false;
 
                 // CrashReport tool location
-                string crashReportLocation = string.Empty;
+                string cerLocation = string.Empty;
 
                 // Allow Dynamo launcher to identify Dynamo variation for log purpose like analytics, e.g. Dynamo Revit
                 var hostname = string.Empty;
@@ -135,7 +135,7 @@ namespace Dynamo.Applications
                 .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
                 .Add("da|DA|disableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
-                .Add("cr|CR|crashReportPath", "Specify the CrashReport tool location on disk ", cr => crashReportLocation = cr)
+                .Add("cr|CR|cerLocation", "Specify the crash error report tool location on disk ", cr => cerLocation = cr)
                 ;
                 optionsSet.Parse(args);
 
@@ -161,7 +161,8 @@ namespace Dynamo.Applications
                     ASMPath = asmPath,
                     KeepAlive = keepAlive,
                     DisableAnalytics = disableAnalytics,
-                    AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname,  ParentId = parentId, SessionId = sessionId }
+                    AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname, ParentId = parentId, SessionId = sessionId },
+                    CERLocation = cerLocation
                 };
             }
 
@@ -185,7 +186,7 @@ namespace Dynamo.Applications
             public bool DisableAnalytics { get; set; }
             public HostAnalyticsInfo AnalyticsInfo { get; set; }
 
-            public string CrashReportLocation { get; set; }
+            public string CERLocation { get; set; }
         }
 
         /// <summary>

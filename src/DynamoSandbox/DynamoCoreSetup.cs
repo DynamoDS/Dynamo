@@ -42,9 +42,9 @@ namespace DynamoSandbox
                 Analytics.DisableAnalytics = true;
             }
 
-            if (!string.IsNullOrEmpty(cmdLineArgs.CrashReportLocation))
+            if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {
-                CERLocation = cmdLineArgs.CrashReportLocation;
+                CERLocation = cmdLineArgs.CERLocation;
             }
 
             commandFilePath = cmdLineArgs.CommandFilePath;

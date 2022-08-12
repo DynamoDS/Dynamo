@@ -42,8 +42,7 @@ namespace Dynamo.Wpf.Utilities
         private static List<string> ProductsWithCER => new List<string>() { "Revit", "Civil", "Robot Structural Analysis" };
         private static readonly string CERExeName = "senddmp.exe";
 
-        private static bool searchedIntallLocations;
-        private static string CERInstallLocation;
+        private static string CERInstallLocation = null;
 
         private enum MINIDUMP_TYPE
         {
@@ -146,7 +145,7 @@ namespace Dynamo.Wpf.Utilities
 
         private static string FindCERToolInInstallLocations()
         {
-            if (searchedIntallLocations) return CERInstallLocation;
+            if (CERInstallLocation != null) return CERInstallLocation;
 
             string rootFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
@@ -169,7 +168,7 @@ namespace Dynamo.Wpf.Utilities
             var methodParams = new object[] { ProductsWithCER, CERExeName };
             var installs = installationsMethod.Invoke(null, methodParams) as IEnumerable;
 
-            CERInstallLocation = installs.Cast<KeyValuePair<string, Tuple<int, int, int, int>>>().Select(x => x.Key).LastOrDefault();
+            CERInstallLocation = installs.Cast<KeyValuePair<string, Tuple<int, int, int, int>>>().Select(x => x.Key).LastOrDefault() ?? string.Empty;
             return CERInstallLocation;
         }
 

@@ -80,7 +80,10 @@ namespace DynamoWPFCLI
                 model = Dynamo.Applications.StartupUtils.MakeModel(true, string.Empty, cmdLineArgs.AnalyticsInfo);
             }
 
-            model.CERLocation = cmdLineArgs.CrashReportLocation;
+            if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
+            {
+                model.CERLocation = cmdLineArgs.CERLocation;
+            }
 
             model.ShutdownCompleted += (m) => { ShutDown(); };
 
