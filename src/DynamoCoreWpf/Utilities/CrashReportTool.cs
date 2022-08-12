@@ -1,4 +1,5 @@
-﻿using Dynamo.Models;
+﻿using Dynamo.Core;
+using Dynamo.Models;
 using Dynamo.ViewModels;
 using System;
 using System.Collections;
@@ -12,19 +13,28 @@ using System.Runtime.InteropServices;
 
 namespace Dynamo.Wpf.Utilities
 {
-    internal class CrashReportArgs : EventArgs
+    /// <summary>
+    /// Event argument for CER (crash error reporting) tool.
+    /// It contains options on what to send out with the crash report.
+    /// </summary>
+    public sealed class CrashErrorReportArgs : CrashPromptArgs
     {
-        public bool SendLogFile = true;
-        public bool SendSettingsFile = true;
-        public bool SendDynFile = true;
-        public bool SendRecordedCommands = true;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <param name="e"></param>
+        public CrashErrorReportArgs(DynamoViewModel viewModel, Exception e) : base(e) 
+        {
+            this.viewModel = viewModel;
+        }
+
+        public bool SendLogFile { get; set; } = true;
+        public bool SendSettingsFile { get; set; } = true;
+        public bool SendDynFile { get; set; } = true;
+        public bool SendRecordedCommands { get; set; } = true;
 
         internal DynamoViewModel viewModel;
-
-        internal CrashReportArgs(DynamoViewModel dynamoViewModel)
-        {
-            viewModel = dynamoViewModel;
-        }
     }
 
     internal class CrashReportTool
@@ -168,7 +178,7 @@ namespace Dynamo.Wpf.Utilities
         /// </summary>
         /// <param name="args"></param>
         /// <returns>True if the CER tool process was successfully started. False otherwise</returns>
-        internal static bool ShowCERWindow(CrashReportArgs args)
+        internal static bool ShowCrashErrorReportWindow(CrashErrorReportArgs args)
         {
             if (DynamoModel.FeatureFlags?.CheckFeatureFlag("CER", false) == false)
             {
