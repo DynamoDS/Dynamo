@@ -234,13 +234,13 @@ namespace DynamoShapeManager
                     foreach (KeyValuePair<string, Tuple<int, int, int, int>> install in installations)
                     {
                         var installVersion = new Version(install.Value.Item1, install.Value.Item2, install.Value.Item3);
-                        if (version.Major == installVersion.Major && !versionToLocationDic.ContainsKey(installVersion))
+                        if (version.Major == installVersion.Major && version.Minor <= installVersion.Minor && !versionToLocationDic.ContainsKey(installVersion))
                         {
                             versionToLocationDic.Add(installVersion, install.Key);
                         }
                     }
 
-                    // When there is major version matching, continue the search
+                    // When there is major/minor version compat, continue the search
                     if (versionToLocationDic.Count != 0)
                     {
                         versionToLocationDic.TryGetValue(version, out location);
@@ -261,11 +261,12 @@ namespace DynamoShapeManager
                 // Fallback mechanism, look inside libg folders if any of them contains ASM dlls.
                 foreach (var v in versions)
                 {
-                    var folderName = string.Format("libg_{0}_{1}_{2}", v.Major, v.Minor, v.Build);
-                    var dir = new DirectoryInfo(Path.Combine(rootFolder, folderName));
-                    if (!dir.Exists)
+                    var dirpath = GetLibGPreloaderLocation(v, rootFolder);
+                    if (string.IsNullOrEmpty(dirpath))
+                    {
                         continue;
-
+                    }
+                    var dir = new DirectoryInfo(dirpath);
                     var files = dir.GetFiles(ASMFileMask);
                     if (!files.Any())
                         continue;
