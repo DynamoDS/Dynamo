@@ -147,29 +147,36 @@ namespace Dynamo.Wpf.Utilities
         {
             if (CERInstallLocation != null) return CERInstallLocation;
 
-            string rootFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
-            if (!File.Exists(assemblyPath))
-                throw new FileNotFoundException(assemblyPath);
-
-            var assembly = Assembly.LoadFrom(assemblyPath);
-
-            var type = assembly.GetType("DynamoInstallDetective.Utilities");
-
-            var installationsMethod = type.GetMethod(
-                "FindMultipleProductInstallations",
-                BindingFlags.Public | BindingFlags.Static);
-
-            if (installationsMethod == null)
+            try
             {
-                throw new MissingMethodException("Method 'DynamoInstallDetective.Utilities.FindProductInstallations' not found");
+                string rootFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
+                if (!File.Exists(assemblyPath))
+                    throw new FileNotFoundException(assemblyPath);
+
+                var assembly = Assembly.LoadFrom(assemblyPath);
+
+                var type = assembly.GetType("DynamoInstallDetective.Utilities");
+
+                var installationsMethod = type.GetMethod(
+                    "FindMultipleProductInstallations",
+                    BindingFlags.Public | BindingFlags.Static);
+
+                if (installationsMethod == null)
+                {
+                    throw new MissingMethodException("Method 'DynamoInstallDetective.Utilities.FindProductInstallations' not found");
+                }
+
+                var methodParams = new object[] { ProductsWithCER, CERExeName };
+                var installs = installationsMethod.Invoke(null, methodParams) as IEnumerable;
+
+                CERInstallLocation = installs.Cast<KeyValuePair<string, Tuple<int, int, int, int>>>().Select(x => x.Key).LastOrDefault() ?? string.Empty;
+                return CERInstallLocation;
             }
-
-            var methodParams = new object[] { ProductsWithCER, CERExeName };
-            var installs = installationsMethod.Invoke(null, methodParams) as IEnumerable;
-
-            CERInstallLocation = installs.Cast<KeyValuePair<string, Tuple<int, int, int, int>>>().Select(x => x.Key).LastOrDefault() ?? string.Empty;
-            return CERInstallLocation;
+            catch
+            {
+                return string.Empty;
+            }
         }
 
         /// <summary>
