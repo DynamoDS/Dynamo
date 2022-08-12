@@ -1305,12 +1305,11 @@ namespace Dynamo.Controls
 
         private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            if (DynamoModel.FeatureFlags?.CheckFeatureFlag("CER", false) == true &&
-                CrashReportTool.FindCERLocation(dynamoViewModel.Model))
+            if (CrashReportTool.ShowCERWindow(new CrashReportArgs(dynamoViewModel)))
             {
-                CrashReportTool.OnCrashReportWindow(new CrashReportArgs(dynamoViewModel));
                 return;
             }
+            // Backup crash reporting dialog (in case ADSK CER is not found)
             var prompt = new CrashPrompt(args, dynamoViewModel);
             prompt.ShowDialog();
         }
