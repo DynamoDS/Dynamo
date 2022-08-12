@@ -358,8 +358,7 @@ namespace EmitMSIL
             // TODO_MSIL: implement GetCandidateFunctions;
             List<CLRFunctionEndPoint> candidateFunctions = candidatesWithDistances.Keys.ToList();//CallSite.GetCandidateFunctions(candidatesWithDistances);
 
-            CLRFunctionEndPoint compliantTarget = candidateFunctions.Count > 0 ? candidateFunctions[0] : null;
-            GetCompliantTarget(
+            CLRFunctionEndPoint compliantTarget = GetCompliantTarget(
                     arguments,
                     replicationInstructions,
                     runtimeCore,
