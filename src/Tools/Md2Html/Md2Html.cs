@@ -16,6 +16,8 @@ namespace Md2Html
     {
         private readonly MarkdownPipeline pipeline;
         private static Md2Html instance;
+        static readonly string HTTP_IMAGE_PATH_PREFIX = @"http://";
+        private const string VIRTUAL_FOLDER_MAPPING = "appassets";
 
         internal static Md2Html Instance
         {
@@ -79,12 +81,9 @@ namespace Md2Html
                     continue;
 
                 var imageName = Path.GetFileName(image.Url);
-                var dir = Path.GetDirectoryName(mdFilePath);
+                var absoluteImagePath = Path.Combine(VIRTUAL_FOLDER_MAPPING, imageName);
 
-                var htmlImagePathPrefix = @"file:///";
-                var absoluteImagePath = Path.Combine(dir, imageName);
-
-                image.Url = $"{htmlImagePathPrefix}{absoluteImagePath}";
+                image.Url = $"{HTTP_IMAGE_PATH_PREFIX}{absoluteImagePath}";
             }
         }
 

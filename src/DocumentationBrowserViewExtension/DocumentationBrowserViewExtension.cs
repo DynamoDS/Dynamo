@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +21,9 @@ namespace Dynamo.DocumentationBrowser
         private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem documentationBrowserMenuItem;
         private PackageManagerExtension pmExtension;
+        private const string FALLBACK_DOC_DIRECTORY_NAME = "fallback_docs";
+        //these fields should only be directly set by tests.
+        internal DirectoryInfo fallbackDocPath;
 
         internal DocumentationBrowserView BrowserView { get; private set; }
         internal DocumentationBrowserViewModel ViewModel { get; private set; }
@@ -57,6 +61,24 @@ namespace Dynamo.DocumentationBrowser
         {
             pmExtension = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             PackageDocumentationManager.Instance.AddDynamoPaths(viewStartupParams.PathManager);
+
+            var pathManager = viewStartupParams.PathManager;
+            if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
+            {
+                var coreDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                fallbackDocPath = coreDir.Exists ? coreDir : null;
+            }
+
+            if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
+            {
+                var hostDir = new DirectoryInfo(Path.Combine(pathManager.HostApplicationDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                fallbackDocPath = hostDir.Exists ? hostDir : null;
+            }
+
+            if(this.BrowserView != null)
+            {
+                this.BrowserView.FallbackDirectoryName = fallbackDocPath.FullName;
+            }
         }
 
         public override void Loaded(ViewLoadedParams viewLoadedParams)

@@ -1,4 +1,5 @@
 ﻿using Dynamo.Logging;
+using Dynamo.Utilities;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using System;
@@ -19,10 +20,10 @@ namespace Dynamo.DocumentationBrowser
     {
         private const string ABOUT_BLANK_URI = "about:blank";
         private readonly DocumentationBrowserViewModel viewModel;
-        private const string FALLBACK_DOC_DIRECTORY_NAME = "fallback_docs";
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
-        private const string URI_FILE_PREFIX = "file:///";
-        private const string HTTP_PREFIX = "http://";
+        static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
+
+        public string FallbackDirectoryName { get; set; }
 
         /// <summary>
         /// Construct a new DocumentationBrowserView given an appropriate viewmodel.
@@ -64,7 +65,7 @@ namespace Dynamo.DocumentationBrowser
         private void ShouldAllowNavigation(object sender, CoreWebView2NavigationStartingEventArgs e)
         {
             // if is not an URL then we should return otherwise it will crash when trying to open the URL in the default Web Browser
-            if(!e.Uri.StartsWith(HTTP_PREFIX.Substring(0,4)))
+            if(!e.Uri.StartsWith(HTML_IMAGE_PATH_PREFIX.Substring(0,4)))
             {
                 return;
             }
@@ -115,22 +116,14 @@ namespace Dynamo.DocumentationBrowser
 
         async void InitializeAsync()
         {
-            
-            string executingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var absoluteImagePath = Path.Combine(executingPath, FALLBACK_DOC_DIRECTORY_NAME);
-
             //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
             await documentationBrowser.EnsureCoreWebView2Async();
 
             //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
-            this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, FALLBACK_DOC_DIRECTORY_NAME, CoreWebView2HostResourceAccessKind.DenyCors);
+            this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, FallbackDirectoryName, CoreWebView2HostResourceAccessKind.DenyCors);
 
             //This will remove special characters in paths (like <img src="/path")
             string htmlContent = HttpUtility.UrlDecode(this.viewModel.GetContent());
-           
-            //Md2Html is adding the prefix "file:///" to the image paths but due that now we are using a virtual directory is not needed
-            //Instead we will be replacing it by "http://fallback_doc/resource_name" so we will using the virtual directory
-            htmlContent = htmlContent.Replace(URI_FILE_PREFIX + absoluteImagePath, HTTP_PREFIX + VIRTUAL_FOLDER_MAPPING);
 
             Dispatcher.BeginInvoke(new Action(() =>
             {
