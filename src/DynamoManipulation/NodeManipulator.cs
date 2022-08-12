@@ -498,15 +498,24 @@ namespace Dynamo.Manipulation
             // and we must return immediately before proceeding with further calls to ProtoGeometry
             if (IsNodeNull(Node.CachedValue)) return packages;
 
-            AssignInputNodes();
-            
-            active = UpdatePosition();
-
-            if (!IsEnabled())
+            //it's possible the the node's return value is not null, but libG was not loaded correclty
+            //it could be a function, null check is not sufficent, wrap use of libG in a try catch.
+            try
             {
-                return packages;
+                AssignInputNodes();
+                active = UpdatePosition();
+                if (!IsEnabled())
+                {
+                    return packages;
+                }
             }
-
+            catch
+            {
+                if (!IsEnabled())
+                {
+                    return packages;
+                }
+            }
             // Blocking call to build render packages only in UI thread
             // to avoid race condition with gizmo members b/w scheduler and UI threads.
             // Race condition can occur if say one gizmo is moving due to another gizmo
