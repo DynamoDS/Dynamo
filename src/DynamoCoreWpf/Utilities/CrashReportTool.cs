@@ -29,21 +29,27 @@ namespace Dynamo.Wpf.Utilities
 
     internal class CrashReportTool
     {
-        static CrashReportTool()
+        internal static bool FindCERLocation(DynamoModel model)
         {
-            try
+            if (!string.IsNullOrEmpty(model.CERLocation) && 
+                File.Exists(Path.Combine(model.CERLocation, CERExe)))
             {
-                CerToolDir = string.IsNullOrEmpty(DynamoModel.CrashToolLocation) ? GetCERToolLocation() : DynamoModel.CrashToolLocation;
+                CERLocation = model.CERLocation;
             }
-            catch
-            {}
+            else
+            {
+                CERLocation = FindCERToolInInstallLocations();
+            }
+
+            return !string.IsNullOrEmpty(CERLocation) &&
+                File.Exists(Path.Combine(CERLocation, CERExe));
         }
 
         private static List<string> ProductsWithCER => new List<string>() { "Revit", "Civil", "Robot Structural Analysis" };
         private static readonly string CERExe = "senddmp.exe";
 
 
-        private static string CerToolDir;
+        private static string CERLocation;
 
         private enum MINIDUMP_TYPE
         {
@@ -144,7 +150,7 @@ namespace Dynamo.Wpf.Utilities
             return null;
         }
 
-        private static string GetCERToolLocation()
+        private static string FindCERToolInInstallLocations()
         {
             string rootFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
@@ -172,18 +178,18 @@ namespace Dynamo.Wpf.Utilities
 
         internal static bool IsCEREnabled()
         {
-            return !string.IsNullOrEmpty(CerToolDir) &&
-                Directory.Exists(CerToolDir) &&
-                DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("CER", false) == true;
+            return DynamoModel.FeatureFlags?.CheckFeatureFlag("CER", false) == true;
         }
 
         // Calls external CER tool (with UI)
         internal static void OnCrashReportWindow(CrashReportArgs args)
         {
             DynamoModel model = args.viewModel?.Model;
-            if (string.IsNullOrEmpty(CerToolDir))
+
+            var cerTool = Path.Combine(CERLocation, CERExe);
+            if (string.IsNullOrEmpty(cerTool) || !File.Exists(cerTool))
             {
-                model?.Logger?.LogError($"CERLocation was not provided in the DynamoCore.dll.config");
+                model?.Logger?.LogError($"The CER tool was not found");
                 return;
             }
 
@@ -244,7 +250,7 @@ namespace Dynamo.Wpf.Utilities
                     var upiConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "upiconfig.xml");
 
                     var cerArgs = $"/UPITOKEN {upiConfigFilePath} /DMP {miniDumpFilePath} /APPXML \"{appConfig}\" {extras}";
-                    var cerTool = Path.Combine(CerToolDir, CERExe);
+                    
                     Process.Start(new ProcessStartInfo(cerTool, cerArgs)).WaitForExit();
                 }
             }

@@ -22,6 +22,7 @@ namespace DynamoSandbox
         private SettingsMigrationWindow migrationWindow;
         private DynamoViewModel viewModel = null;
         private readonly string commandFilePath;
+        private readonly string CERLocation;
         private readonly Stopwatch startupTimer = Stopwatch.StartNew();
         private readonly string ASMPath;
         private readonly HostAnalyticsInfo analyticsInfo;
@@ -43,7 +44,7 @@ namespace DynamoSandbox
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CrashReportLocation))
             {
-                DynamoModel.CrashToolLocation = cmdLineArgs.CrashReportLocation;
+                CERLocation = cmdLineArgs.CrashReportLocation;
             }
 
             commandFilePath = cmdLineArgs.CommandFilePath;
@@ -59,6 +60,8 @@ namespace DynamoSandbox
                 DynamoModel model;
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
                 model = Dynamo.Applications.StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
+
+                model.CERLocation = CERLocation;
 
                 viewModel = DynamoViewModel.Start(
                     new DynamoViewModel.StartConfiguration()

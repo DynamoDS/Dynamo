@@ -1305,6 +1305,12 @@ namespace Dynamo.Controls
 
         private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
+            if (CrashReportTool.IsCEREnabled() &&
+                CrashReportTool.FindCERLocation(dynamoViewModel.Model))
+            {
+                CrashReportTool.OnCrashReportWindow(new CrashReportArgs(dynamoViewModel));
+                return;
+            }
             var prompt = new CrashPrompt(args, dynamoViewModel);
             prompt.ShowDialog();
         }

@@ -26,11 +26,6 @@ namespace DynamoWPFCLI
                     Dynamo.Logging.Analytics.DisableAnalytics = true;
                 }
 
-                if (!string.IsNullOrEmpty(cmdLineArgs.CrashReportLocation))
-                {
-                    DynamoModel.CrashToolLocation = cmdLineArgs.CrashReportLocation;
-                }
-
                 if (cmdLineArgs.KeepAlive)
                 {
                     var thread = new Thread(() => RunKeepAlive(cmdLineArgs));
@@ -84,6 +79,8 @@ namespace DynamoWPFCLI
             {
                 model = Dynamo.Applications.StartupUtils.MakeModel(true, string.Empty, cmdLineArgs.AnalyticsInfo);
             }
+
+            model.CERLocation = cmdLineArgs.CrashReportLocation;
 
             model.ShutdownCompleted += (m) => { ShutDown(); };
 

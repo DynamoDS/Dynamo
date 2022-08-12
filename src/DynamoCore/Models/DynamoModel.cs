@@ -136,7 +136,7 @@ namespace Dynamo.Models
         /// During sandbox initializing, Dynamo checks specifically if ASM loading was correct
         /// </summary>
         internal bool IsASMLoaded = true;
-    
+
         #endregion
 
         #region static properties
@@ -452,6 +452,11 @@ namespace Dynamo.Models
         /// </summary>
         public bool CLIMode { get; internal set; }
 
+        /// <summary>
+        /// The Autodesk CrashReport tool location on disk (directory that contains the "senddmp.exe")
+        /// </summary>
+        public string CERLocation { get; internal set; }
+
         protected virtual void PreShutdownCore(bool shutdownHost)
         {
         }
@@ -598,6 +603,11 @@ namespace Dynamo.Models
                 // TODO: This fact should probably be revisited in 3.0.
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
                 CLIMode = defaultStartConfig.CLIMode;
+            }
+
+            if (config is IStartConfigCrashReporter cerConfig)
+            {
+                CERLocation = cerConfig.CRStartConfig.CERLocation;
             }
 
             ClipBoard = new ObservableCollection<ModelBase>();
