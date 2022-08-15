@@ -23,9 +23,9 @@ namespace Dynamo.Notifications
         private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
         private static readonly string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.bundle.js";
 
-        private event Action<ILogMessage> MessageLogged;
+        private DynamoLogger logger;
 
-        internal NotificationCenterController(DynamoView dynamoView)
+        internal NotificationCenterController(DynamoView dynamoView, DynamoLogger dynLogger)
         {
             var shortcutBar = dynamoView.ShortcutBar;
             var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
@@ -45,7 +45,8 @@ namespace Dynamo.Notifications
             this.notificationsButton.Click += NotificationsButton_Click;
 
             notificationUIPopup.webView.EnsureCoreWebView2Async();
-            notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;            
+            notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
+            logger = dynLogger;
         }
 
         private void WebView_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
@@ -59,19 +60,18 @@ namespace Dynamo.Notifications
                 htmlString = reader.ReadToEnd();
             }
 
-            //Fetch notification URL from config
-            string notificationURL = FetchNotificationURL();
-
             using (Stream stream = assembly.GetManifestResourceStream(jsEmbeddedFile))
             using (StreamReader reader = new StreamReader(stream))
             {
                 var jsString = reader.ReadToEnd();
-                jsString = jsString.Replace("http://demo9540080.mockable.io/notifications", notificationURL);
                 htmlString = htmlString.Replace("mainJs", jsString);
             }
 
-            if(notificationUIPopup.webView.CoreWebView2 != null)
+            if (notificationUIPopup.webView.CoreWebView2 != null)
+            {
                 notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
+                RefreshNotifications();
+            }
         }
 
         internal void Dispose()
@@ -101,32 +101,24 @@ namespace Dynamo.Notifications
                 notificationUIPopup.webView.Focus();
         }
 
-        private string FetchNotificationURL()
+        private async void InvokeJS(string script)
         {
-            var path = this.GetType().Assembly.Location;
-            var config = ConfigurationManager.OpenExeConfiguration(path);
-            var key = config.AppSettings.Settings["notificationAddress"];
-            string url = null;
-            if (key != null)
-            {
-                url = key.Value;
-            }
-
-            OnMessageLogged(LogMessage.Info("Dynamo will use the notifications service at : "+ url));
-
-            if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
-            {
-                throw new ArgumentException("Incorrectly formatted URL provided for Notification service.", "url");
-            }
-
-            return url;
+            await notificationUIPopup.webView.CoreWebView2.ExecuteScriptAsync(script);
         }
 
-        private void OnMessageLogged(ILogMessage msg)
-        {
-            if (this.MessageLogged != null)
+        /// <summary>
+        /// Invokes the script on the notification web-app side to update the URL to fetch notifications from 
+        /// and that will trigger a re-render of the panel. If a URL us provided then that will be used
+        /// else the address will be fetched from the application configuration file.
+        /// </summary>
+        /// <param name="url">(Optional) If provided, this URL will be used to fetch notifications.</param>
+        public void RefreshNotifications(string url="") {
+            if (!string.IsNullOrEmpty(url))
             {
-                this.MessageLogged(msg);
+                InvokeJS(@"window.RequestNotifications('" + url + "');");
+            }
+            else {
+                InvokeJS(@"window.RequestNotifications('" + DynamoUtilities.PathHelper.getServiceBackendAddress(this, "notificationAddress") + "');");
             }
         }
     }
