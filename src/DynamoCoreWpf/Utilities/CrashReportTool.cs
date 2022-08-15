@@ -199,7 +199,7 @@ namespace Dynamo.Wpf.Utilities
             var cerToolPath = Path.Combine(cerToolDir, CERExeName);
             if (string.IsNullOrEmpty(cerToolPath) || !File.Exists(cerToolPath))
             {
-                model?.Logger?.LogError($"The CER tool was not found");
+                model?.Logger?.LogError($"The CER tool was not found at location {cerToolPath}");
                 return false;
             }
 
