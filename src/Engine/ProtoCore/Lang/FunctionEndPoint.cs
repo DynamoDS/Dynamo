@@ -327,11 +327,6 @@ namespace ProtoCore
             }
             return true;
         }
-
-        public bool DoesPredicateMatch(List<CLRStackValue> formalParameters, List<ReplicationInstruction> replicationInstructions)
-        {
-            return true;
-        }
     }
 
     public abstract class FunctionEndPoint
