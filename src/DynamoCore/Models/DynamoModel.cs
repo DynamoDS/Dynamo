@@ -939,7 +939,9 @@ namespace Dynamo.Models
                 }
             }
 
+#if DEBUG
             CurrentWorkspace.NodeAdded += CrashOnDemand.CurrentWorkspace_NodeAdded;
+#endif
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
 
