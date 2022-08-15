@@ -11,7 +11,7 @@
 	</PropertyGroup>
 
 	<Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
-		<Exec Command="npm install @dynamods/notifications-center@latest" />
+		<Exec Command="npm install --prefix ./ @dynamods/notifications-center@latest" />
 	</Target>
 
 	<ItemGroup>
