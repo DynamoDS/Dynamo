@@ -65,14 +65,14 @@ namespace Dynamo.DocumentationBrowser
             var pathManager = viewStartupParams.PathManager;
             if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
             {
-                var coreDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, FALLBACK_DOC_DIRECTORY_NAME));
-                fallbackDocPath = coreDir.Exists ? coreDir : null;
+                var docsDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                fallbackDocPath = docsDir.Exists ? docsDir : null;
             }
 
             if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
             {
-                var hostDir = new DirectoryInfo(Path.Combine(pathManager.HostApplicationDirectory, FALLBACK_DOC_DIRECTORY_NAME));
-                fallbackDocPath = hostDir.Exists ? hostDir : null;
+                var docsDir = new DirectoryInfo(Path.Combine(pathManager.HostApplicationDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                fallbackDocPath = docsDir.Exists ? docsDir : null;
             }
 
             if(this.BrowserView != null)

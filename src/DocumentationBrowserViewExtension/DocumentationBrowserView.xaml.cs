@@ -23,7 +23,7 @@ namespace Dynamo.DocumentationBrowser
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
 
-        public string FallbackDirectoryName { get; set; }
+        internal string FallbackDirectoryName { get; set; }
 
         /// <summary>
         /// Construct a new DocumentationBrowserView given an appropriate viewmodel.
