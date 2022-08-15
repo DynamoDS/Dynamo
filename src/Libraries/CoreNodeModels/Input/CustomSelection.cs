@@ -51,7 +51,6 @@ namespace CoreNodeModels.Input
         /// </summary>
         public CustomSelection() : base("Value")
         {
-            // TODO: This isn't done in RevitDropDown. Necessary?
             ArgumentLacing = LacingStrategy.Disabled;
 
             Items.Add(new DynamoDropDownItem("One", "1"));
