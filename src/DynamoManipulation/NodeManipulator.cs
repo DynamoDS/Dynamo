@@ -496,28 +496,14 @@ namespace Dynamo.Manipulation
 
             // This check is required if for some reason LibG fails to load, geometry nodes are null
             // and we must return immediately before proceeding with further calls to ProtoGeometry.
-            // It's possible the the node's return value is not null, but libG was still not loaded correclty.
-            // For example we could be returning a function, and checking for null or function is not sufficent here
-            // as direct manipulators should be created for function outputs. Additionally, checking for Function does not 
-            // indicate that LibG failed to load.
-            // Instead wrap use of libG in a try catch.
-            if (IsNodeNull(Node.CachedValue)) return packages;
 
-            try
+            if (IsNodeNull(Node.CachedValue) || Node.CachedValue.IsFunction) return packages;
+
+            AssignInputNodes();
+            active = UpdatePosition();
+            if (!IsEnabled())
             {
-                AssignInputNodes();
-                active = UpdatePosition();
-                if (!IsEnabled())
-                {
-                    return packages;
-                }
-            }
-            catch
-            {
-                if (!IsEnabled())
-                {
-                    return packages;
-                }
+                return packages;
             }
             // Blocking call to build render packages only in UI thread
             // to avoid race condition with gizmo members b/w scheduler and UI threads.
