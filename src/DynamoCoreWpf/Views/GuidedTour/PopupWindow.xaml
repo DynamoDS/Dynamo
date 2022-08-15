@@ -176,7 +176,9 @@
                 <Button Name="StartTourButton" 
                         Visibility="{Binding ShowPopupButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource PoupButtonStyle}"
-                        Grid.Column="3"                      
+                        Grid.Column="3"   
+                        MinWidth="130"
+                        Padding="10,0,10,0"
                         Margin="0,0,10,0"              
                         Content="{x:Static p:Resources.StartTourButtonText}"
                         Click="StartTourButton_Click" >
