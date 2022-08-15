@@ -28,7 +28,7 @@ namespace Dynamo.Notifications
 
         private DynamoLogger logger;
 
-        internal NotificationCenterController(DynamoView dynamoView, DynamoLogger dynLogger)
+        internal NotificationCenterController(DynamoView view, DynamoLogger dynLogger)
         {
             dynamoView = view;
             dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
