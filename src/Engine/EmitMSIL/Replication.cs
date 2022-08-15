@@ -358,8 +358,7 @@ namespace EmitMSIL
             // TODO_MSIL: implement GetCandidateFunctions;
             List<CLRFunctionEndPoint> candidateFunctions = candidatesWithDistances.Keys.ToList();//CallSite.GetCandidateFunctions(candidatesWithDistances);
 
-            CLRFunctionEndPoint compliantTarget = candidateFunctions.Count > 0 ? candidateFunctions[0] : null;
-            GetCompliantTarget(
+            CLRFunctionEndPoint compliantTarget = GetCompliantTarget(
                     arguments,
                     replicationInstructions,
                     runtimeCore,
@@ -426,15 +425,13 @@ namespace EmitMSIL
 
             List<CLRFunctionEndPoint> fepsToSplit = new List<CLRFunctionEndPoint>();
 
+            // TODO_MSIL: refactor this logic (it has redundant operations)
             foreach (int cost in conversionCosts)
             {
                 foreach (CLRFunctionEndPoint funcFep in conversionCostList[cost])
                 {
-                    if (funcFep.DoesPredicateMatch(formalParams, replicationControl))
-                    {
-                        compliantTarget = funcFep;
-                        fepsToSplit.Add(funcFep);
-                    }
+                    compliantTarget = funcFep;
+                    fepsToSplit.Add(funcFep);
                 }
 
                 if (compliantTarget != null)

@@ -156,7 +156,6 @@ namespace ProtoCore.Utils
                 return usageFreq;
             }
 
-            //This is the element on the heap that manages the data structure
             var dsArray = paramStackValue.Value as IList<CLRStackValue>;
             foreach (var sv in dsArray)
             {
