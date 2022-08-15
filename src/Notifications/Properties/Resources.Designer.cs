@@ -113,5 +113,14 @@ namespace Dynamo.Notifications.Properties {
                 return ResourceManager.GetString("ExtensionName", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notification Center feature is disabled. Enable it in preference panel to see latest news..
+        /// </summary>
+        public static string NotificationCenterDisabledMsg {
+            get {
+                return ResourceManager.GetString("NotificationCenterDisabledMsg", resourceCulture);
+            }
+        }
     }
 }
