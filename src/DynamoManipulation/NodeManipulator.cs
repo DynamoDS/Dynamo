@@ -494,12 +494,15 @@ namespace Dynamo.Manipulation
                 return packages;
             }
 
-            // This check is required as for some reason LibG fails to load, geometry nodes are null
-            // and we must return immediately before proceeding with further calls to ProtoGeometry
+            // This check is required if for some reason LibG fails to load, geometry nodes are null
+            // and we must return immediately before proceeding with further calls to ProtoGeometry.
+            // It's possible the the node's return value is not null, but libG was still not loaded correclty.
+            // For example we could be returning a function, and checking for null or function is not sufficent here
+            // as direct manipulators should be created for function outputs. Additionally, checking for Function does not 
+            // indicate that LibG failed to load.
+            // Instead wrap use of libG in a try catch.
             if (IsNodeNull(Node.CachedValue)) return packages;
 
-            //it's possible the the node's return value is not null, but libG was not loaded correclty
-            //it could be a function, null check is not sufficent, wrap use of libG in a try catch.
             try
             {
                 AssignInputNodes();
