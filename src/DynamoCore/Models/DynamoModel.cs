@@ -939,6 +939,8 @@ namespace Dynamo.Models
                 }
             }
 
+            CurrentWorkspace.NodeAdded += CrashOnDemand.CurrentWorkspace_NodeAdded;
+
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
 
             StartBackupFilesTimer();

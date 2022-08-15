@@ -210,7 +210,13 @@ namespace Dynamo.Wpf.Utilities
                 var cerDir = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "DynamoCER_Report_" +
                     DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd-HH-mm-ss")));
 
-                using (Scheduler.Disposable.Create(() => { cerDir.Delete(); }) )
+                using (Scheduler.Disposable.Create(() => {
+                    // Cleanup
+                    foreach (FileInfo file in cerDir.EnumerateFiles())
+                        file.Delete();
+                    foreach (DirectoryInfo dir in cerDir.EnumerateDirectories())
+                        dir.Delete(true);
+                }))
                 {
                     var filesToSend = new List<string>();
                     if (args.SendLogFile && model != null)
