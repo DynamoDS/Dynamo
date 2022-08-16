@@ -1305,9 +1305,9 @@ namespace Dynamo.Controls
 
         private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            if (CrashReportTool.ShowCrashErrorReportWindow(
+            if (CrashReportTool.ShowCrashErrorReportWindow(dynamoViewModel,
                 (args is CrashErrorReportArgs cerArgs) ? cerArgs : 
-                new CrashErrorReportArgs(dynamoViewModel, null)))
+                new CrashErrorReportArgs(null)))
             {
                 return;
             }

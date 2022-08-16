@@ -102,4 +102,22 @@ namespace Dynamo.Core
         }
     }
 
+    /// <summary>
+    /// Event argument for CER (crash error reporting) tool.
+    /// It contains options on what to send out with the crash report.
+    /// </summary>
+    public sealed class CrashErrorReportArgs : CrashPromptArgs
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        public CrashErrorReportArgs(Exception e) : base(e)
+        {}
+
+        public bool SendLogFile { get; set; } = true;
+        public bool SendSettingsFile { get; set; } = true;
+        public bool SendDynFile { get; set; } = true;
+        public bool SendRecordedCommands { get; set; } = true;
+    }
 }

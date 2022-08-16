@@ -367,7 +367,7 @@ namespace Dynamo.Tests.ModelsTest
             var crashArgs = new Dynamo.Core.CrashPromptArgs("Crash Event", "Test Message");
 
             var e = new Exception("Test");
-            var cerArgs = new CrashErrorReportArgs(null, e);
+            var cerArgs = new Dynamo.Core.CrashErrorReportArgs(e);
             var cArgs = new Dynamo.Core.CrashPromptArgs(e);
 
             //Act

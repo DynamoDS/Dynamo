@@ -13,30 +13,6 @@ using System.Runtime.InteropServices;
 
 namespace Dynamo.Wpf.Utilities
 {
-    /// <summary>
-    /// Event argument for CER (crash error reporting) tool.
-    /// It contains options on what to send out with the crash report.
-    /// </summary>
-    public sealed class CrashErrorReportArgs : CrashPromptArgs
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="viewModel"></param>
-        /// <param name="e"></param>
-        public CrashErrorReportArgs(DynamoViewModel viewModel, Exception e) : base(e) 
-        {
-            this.viewModel = viewModel;
-        }
-
-        public bool SendLogFile { get; set; } = true;
-        public bool SendSettingsFile { get; set; } = true;
-        public bool SendDynFile { get; set; } = true;
-        public bool SendRecordedCommands { get; set; } = true;
-
-        internal DynamoViewModel viewModel;
-    }
-
     internal class CrashReportTool
     {
         private static List<string> ProductsWithCER => new List<string>() { "Revit", "Civil", "Robot Structural Analysis" };
@@ -184,14 +160,14 @@ namespace Dynamo.Wpf.Utilities
         /// </summary>
         /// <param name="args"></param>
         /// <returns>True if the CER tool process was successfully started. False otherwise</returns>
-        internal static bool ShowCrashErrorReportWindow(CrashErrorReportArgs args)
+        internal static bool ShowCrashErrorReportWindow(DynamoViewModel viewModel, CrashErrorReportArgs args)
         {
             if (DynamoModel.FeatureFlags?.CheckFeatureFlag("CER", false) == false)
             {
                 return false;
             }
 
-            DynamoModel model = args.viewModel?.Model;
+            DynamoModel model = viewModel?.Model;
 
             string cerToolDir = !string.IsNullOrEmpty(model.CERLocation) ?
                 model.CERLocation : FindCERToolInInstallLocations();
@@ -245,9 +221,9 @@ namespace Dynamo.Wpf.Utilities
                         filesToSend.Add(dynFilePath);
                     }
 
-                    if (args.SendRecordedCommands && args.viewModel != null)
+                    if (args.SendRecordedCommands && viewModel != null)
                     {
-                        filesToSend.Add(args.viewModel.DumpRecordedCommands());
+                        filesToSend.Add(viewModel.DumpRecordedCommands());
                     }
 
                     var extras = string.Join(" ", filesToSend.Select(f => "/EXTRA " + f));

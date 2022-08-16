@@ -482,6 +482,7 @@ namespace Dynamo.Models
         {
         }
 
+        // TODO_Dynamo3.0: Replace the IStartConfiguration with a class or struct instance in order to avoid future breaking changes for every new option added.
         public interface IStartConfiguration
         {
             string Context { get; set; }
@@ -504,6 +505,9 @@ namespace Dynamo.Models
             bool IsHeadless { get; set; }
         }
 
+        /// <summary>
+        /// Options used to customize the CER (crash error reporting) experience.
+        /// </summary>
         public struct CrashReporterStartupOptions
         {
             /// <summary>
@@ -512,6 +516,10 @@ namespace Dynamo.Models
             public string CERLocation { get; set; }
         }
 
+        // Remove this interface in Dynamo3.0 and merge it back into IStartConfiguration.
+        /// <summary>
+        /// Use this interface to set the CER (crash error reporting) tool path. 
+        /// </summary>
         public interface IStartConfigCrashReporter
         {
             /// <summary>
@@ -1293,6 +1301,10 @@ namespace Dynamo.Models
                 PreferenceSettings.RequestUserDataFolder -= pathManager.GetUserDataFolder;
                 PreferenceSettings.MessageLogged -= LogMessage;
             }
+
+#if DEBUG
+            CurrentWorkspace.NodeAdded -= CrashOnDemand.CurrentWorkspace_NodeAdded;
+#endif
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             foreach (var ws in _workspaces)
