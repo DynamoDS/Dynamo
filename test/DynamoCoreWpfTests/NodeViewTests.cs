@@ -23,7 +23,8 @@ namespace DynamoCoreWpfTests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            libraries.Add("FunctionObject.ds");
+            libraries.Add("FunctionObject.ds");            
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("BuiltIn.ds");
             libraries.Add("DSCPython.dll");
             libraries.Add("FFITarget.dll");
@@ -586,6 +587,24 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(InPortViewModel.PortValueMarkerRed.Color, (dportVMs[0] as InPortViewModel).PortValueMarkerColor.Color);
             Assert.True((doutPorts[0] as OutPortViewModel).PortDefaultValueMarkerVisible);
+        }
+
+        [Test]
+        public void TestPortDefaultValueMarket_Visibility()
+        {
+            Open(@"UI\outport_valuemarker_portDefaultValueMarkerVisible.dyn");
+
+            var nodeWithFunction = NodeViewWithGuid("e3269c4b-2bab-43d0-b362-f0a589cbe02d");
+            var nodeWithOutFunction = NodeViewWithGuid("43985007-e995-494f-b3e7-7c5d6ba317c3");
+
+            var outPorts_Function = nodeWithFunction.ViewModel.OutPorts;
+            var outPorts_WithoutFunction = nodeWithOutFunction.ViewModel.OutPorts;
+
+            OutPortViewModel outPort_With_Function = outPorts_Function[0] as OutPortViewModel;
+            OutPortViewModel outPort_Without_Function = outPorts_WithoutFunction[0] as OutPortViewModel;
+
+            Assert.AreEqual(outPort_With_Function.ValueMarkerWidth, outPort_With_Function.ValueMarkerWidthWithFunction);
+            Assert.AreEqual(outPort_Without_Function.ValueMarkerWidth, outPort_Without_Function.ValueMarkerWidthWithoutFunction);
         }
     }
 }
