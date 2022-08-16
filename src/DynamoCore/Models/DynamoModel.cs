@@ -867,9 +867,7 @@ namespace Dynamo.Models
 
             if (extensions.Any())
             {
-                var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, new ExtensionLibraryLoader(this), CustomNodeManager,
-                    GetType().Assembly.GetName().Version, PreferenceSettings, LinterManager);
+                var startupParams = new StartupParams(this);
 
                 foreach (var ext in extensions)
                 {

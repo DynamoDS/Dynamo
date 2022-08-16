@@ -92,15 +92,15 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
+    <Compile Update="Properties\CoreNodeModelWpfResources.Designer.cs">
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CoreNodeModelWpfResources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Properties\Resources.en-US.Designer.cs">
-      <AutoGen>True</AutoGen>
+        <Compile Update="Properties\CoreNodeModelWpfResources.en-US.Designer.cs">
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.en-US.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CoreNodeModelWpfResources.en-US.resx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -110,13 +110,13 @@
     <Resource Include="Resources\MissingNode.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
+    <EmbeddedResource Update="Properties\CoreNodeModelWpfResources.en-US.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <LastGenOutput>CoreNodeModelWpfResources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Properties\Resources.en-US.resx">
+    <EmbeddedResource Update="Properties\CoreNodeModelWpfResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+      <LastGenOutput>CoreNodeModelWpfResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Target Name="BinaryCompatibilityOps" BeforeTargets="Build">
