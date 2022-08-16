@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
+using ProtoCore.AST.ImperativeAST;
 using ProtoCore.Mirror;
 
 namespace Dynamo.GraphNodeManager.ViewModels
@@ -24,7 +25,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
     /// </summary>
     public class GridNodeViewModel : NotificationObject
     {
-        #region Private Properties
+        #region Private Fields
         private string name = string.Empty;
         private bool stateIsInput = false;
         private bool stateIsOutput = false;
@@ -43,14 +44,15 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private ElementState state;
         private ObservableCollection<NodeInfo> nodeInfos = new ObservableCollection<NodeInfo>();
         private string package;
-        private Guid nodeGuid; 
+        private Guid nodeGuid;
+        private bool isRenamed = false;
         
         public delegate void EventHandler(object sender, EventArgs args);
         public event EventHandler BubbleUpdate = delegate { };
 
         #endregion
 
-        #region Public Fields
+        #region Public Properties
         /// <summary>
         /// Node Name
         /// </summary>
@@ -243,7 +245,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             get
             {
-                isNull = NodeModel.CachedValue != null && NodeModel.CachedValue.IsNull;
+                isNull = IsNodeNull(NodeModel.CachedValue);
                 return isNull;
             }
             internal set
@@ -253,6 +255,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 RaisePropertyChanged(nameof(IsNull));
             }
         }
+
         /// <summary>
         /// Number of dismissed alerts - Warnings/Errors in a node
         /// </summary>
@@ -260,7 +263,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             get
             {
-                dismissedAlertsCount = NodeModel.DismissedAlerts.Count;
+                dismissedAlertsCount = NodeModel.DismissedAlertsCount;
                 return dismissedAlertsCount;
             }
             internal set
@@ -305,6 +308,24 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 RaisePropertyChanged(nameof(InfoCount));
             }
         }
+        /// <summary>
+        /// Checks if the Node has been Renamed after its creation
+        /// </summary>
+        public bool IsRenamed
+        {
+            get
+            {
+                isRenamed = NodeModel.GetOriginalName() != NodeModel.Name;
+                return isRenamed;
+            }
+            internal set
+            {
+                if (isRenamed == value) return;
+                isRenamed = value;
+                RaisePropertyChanged(nameof(IsRenamed));
+            }
+        }
+
         /// <summary>
         /// The correct icon for the Info Bubble
         /// </summary>
@@ -372,23 +393,62 @@ namespace Dynamo.GraphNodeManager.ViewModels
         #endregion
 
         /// <summary>
-        ///  Returns true only if it IsCollection and has no elements inside
+        ///  Returns true only if the node contains ANY (nested) empty lists 
         /// </summary>
         /// <param name="mirrorData"></param>
         /// <returns></returns>
         private bool IsNodeEmptyList(MirrorData mirrorData)
         {
-            if (mirrorData == null || !mirrorData.IsCollection) return false;
+            if (mirrorData == null) return false;
+            if (mirrorData.IsCollection)
+            {
+                try
+                {
+                    var list = mirrorData.GetElements();
+                    if (!list.ToList().Any()) return true;
 
-            try
-            {
-                var list = mirrorData.GetElements();
-                return !list.Any();
+                    foreach (var nested in list)
+                    {
+                        if (IsNodeEmptyList(nested))
+                            return true;
+                    }
+                    return false;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
-            catch (Exception)
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the Node contains ANY (nested) null values
+        /// </summary>
+        /// <param name="mirrorData"></param>
+        /// <returns></returns>
+        private bool IsNodeNull(MirrorData mirrorData)
+        {
+            if (mirrorData == null) return false;
+            if (mirrorData.IsCollection)
             {
-                return false;
+                try
+                {
+                    var list = mirrorData.GetElements();
+                    foreach (var nested in list)
+                    {
+                        if (IsNodeNull(nested))
+                            return true;
+                    }
+                    return false;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
+            if (mirrorData.IsNull) return true;
+            return false;
         }
 
         /// <summary>
@@ -432,7 +492,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private void PopulateNodeInfos()
         {
             int i = 0;
-            NodeModel.NodeInfos.ForEach(ni => nodeInfos.Add(new NodeInfo() { Message = GetNodeMessage(ni.Message), Index = $"{++i}/{NodeModel.NodeInfos.Count}", State = ni.State, HashCode = ni.GetHashCode() }));
+            NodeModel.NodeInfos.ForEach(ni => nodeInfos.Add(new NodeInfo() { Message = GetNodeMessage(ni.Message), Index = $"{++i}/{NodeModel.NodeInfos.Count}", State = ni.State, HashCode = ni.GetHashCode(), Dismissed = IsNodeMessageDismissed(ni.Message) } ));
         }
 
         /// <summary>
@@ -444,6 +504,11 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private string GetNodeMessage(string message)
         {
             return NodeModel.DismissedAlerts.Contains(message) ? $"{message} (dismissed)" : message;
+        }
+
+        private bool IsNodeMessageDismissed(string message)
+        {
+            return NodeModel.DismissedAlerts.Contains(message);
         }
 
         #region Setup and Constructors
@@ -480,27 +545,32 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             switch (propertyName)
             {
-                case "Name":
+                case nameof(nodeModel.Name):
                     RaisePropertyChanged(nameof(Name));
+                    RaisePropertyChanged(nameof(IsRenamed));
                     break;
-                case "IsVisible":
+                case nameof(nodeModel.IsVisible):
                     RaisePropertyChanged(nameof(StatusIsHidden));
                     break;
-                case "IsSetAsInput":
+                case nameof(nodeModel.IsSetAsInput):
                     RaisePropertyChanged(nameof(StateIsInput));
                     break;
-                case "IsSetAsOutput":
+                case nameof(nodeModel.IsSetAsOutput):
                     RaisePropertyChanged(nameof(StateIsOutput));
                     break;
-                case "IsInErrorState":
+                case nameof(nodeModel.IsInErrorState):
                     RaisePropertyChanged(nameof(IssuesHasError));
                     break;
-                case "IsFrozen":
+                case nameof(nodeModel.IsFrozen):
                     RaisePropertyChanged(nameof(StatusIsFrozen));
                     UpdateDownstreamNodes(nodeModel);
                     break;
-                case "State":
+                case nameof(nodeModel.State):
                     RaisePropertyChanged(nameof(State));
+                    break;
+                case nameof(nodeModel.DismissedAlertsCount):
+                    RaisePropertyChanged(nameof(DismissedAlertsCount));
+                    RaisePropertyChanged(nameof(NodeInfos));
                     break;
             }
         }
