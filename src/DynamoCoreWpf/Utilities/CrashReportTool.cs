@@ -187,11 +187,18 @@ namespace Dynamo.Wpf.Utilities
                     DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd-HH-mm-ss")));
 
                 using (Scheduler.Disposable.Create(() => {
-                    // Cleanup
-                    foreach (FileInfo file in cerDir.EnumerateFiles())
-                        file.Delete();
-                    foreach (DirectoryInfo dir in cerDir.EnumerateDirectories())
-                        dir.Delete(true);
+                    try
+                    {
+                        // Cleanup
+                        foreach (FileInfo file in cerDir.EnumerateFiles())
+                            file.Delete();
+                        foreach (DirectoryInfo dir in cerDir.EnumerateDirectories())
+                            dir.Delete(true);
+                    }
+                    catch (Exception ex)
+                    {
+                        model?.Logger?.LogError($"Failed to cleanup the CER directory at {cerDir.FullName} : {ex.Message}");
+                    }
                 }))
                 {
                     var filesToSend = new List<string>();

@@ -109,15 +109,30 @@ namespace Dynamo.Core
     public sealed class CrashErrorReportArgs : CrashPromptArgs
     {
         /// <summary>
-        /// 
+        /// Constructs the options class to customize what CER will collect.
         /// </summary>
         /// <param name="e"></param>
         public CrashErrorReportArgs(Exception e) : base(e)
         {}
 
+        /// <summary>
+        /// Allow Dynamo to send the log file to the CER system.
+        /// </summary>
         public bool SendLogFile { get; set; } = true;
+
+        /// <summary>
+        /// Allow Dynamo to send the settings file to the CER system.
+        /// </summary>
         public bool SendSettingsFile { get; set; } = true;
+
+        /// <summary>
+        /// Allow Dynamo to send the model file to the CER system.
+        /// </summary>
         public bool SendDynFile { get; set; } = true;
+
+        /// <summary>
+        /// Allow Dynamo to send the recorded commands file to the CER system.
+        /// </summary>
         public bool SendRecordedCommands { get; set; } = true;
     }
 }
