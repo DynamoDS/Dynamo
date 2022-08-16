@@ -2514,8 +2514,8 @@ namespace Dynamo.Controls
         }
 
         private void DynamoView_Activated(object sender, EventArgs e)
-        {
-            if (fileTrustWarningPopup != null)
+        {            
+            if (fileTrustWarningPopup != null && dynamoViewModel.ViewingHomespace)
             {
                 fileTrustWarningPopup.ManagePopupActivation(true);
             }

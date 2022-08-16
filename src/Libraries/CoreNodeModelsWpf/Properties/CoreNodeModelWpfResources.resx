@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
   <data name="ColorPaletteUIRecentColors" xml:space="preserve">
     <value>Recent Colors</value>
+  </data>
+  <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
+    <value>Standard</value>
   </data>
   <data name="ColorPaletteUIStandardColors" xml:space="preserve">
     <value>Standard Colors</value>

@@ -59,6 +59,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.IsIronPythonDialogDisabled, false);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, true);
+            Assert.AreEqual(settings.EnableNotificationCenter, true);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
@@ -74,6 +75,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.IsIronPythonDialogDisabled, false);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, true);
+            Assert.AreEqual(settings.EnableNotificationCenter, true);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
@@ -87,6 +89,7 @@ namespace Dynamo.Tests.Configuration
             settings.DefaultPythonEngine = "CP3";
             settings.MaxNumRecentFiles = 24;
             settings.EnableNodeAutoComplete = false;
+            settings.EnableNotificationCenter = false;
             settings.DefaultRunType = RunType.Manual;
             settings.ViewExtensionSettings.Add(new ViewExtensionSettings()
             {
@@ -120,6 +123,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.DefaultPythonEngine, "CP3");
             Assert.AreEqual(settings.MaxNumRecentFiles, 24);
             Assert.AreEqual(settings.EnableNodeAutoComplete, false);
+            Assert.AreEqual(settings.EnableNotificationCenter, false);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 1);
             var extensionSettings = settings.ViewExtensionSettings[0];
             Assert.AreEqual(settings.DefaultRunType, RunType.Manual);
