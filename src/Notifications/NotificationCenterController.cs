@@ -122,7 +122,7 @@ namespace Dynamo.Notifications
 
         /// <summary>
         /// Invokes the script on the notification web-app side to update the URL to fetch notifications from 
-        /// and that will trigger a re-render of the panel. If a URL us provided then that will be used
+        /// and that will trigger a re-render of the panel. If a URL is provided then that will be used
         /// else the address will be fetched from the application configuration file.
         /// </summary>
         /// <param name="url">(Optional) If provided, this URL will be used to fetch notifications.</param>
