@@ -135,8 +135,7 @@ namespace Dynamo.Applications
                 .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
                 .Add("da|DA|disableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
-                .Add("cr|CR|cerLocation", "Specify the crash error report tool location on disk ", cr => cerLocation = cr)
-                ;
+                .Add("cr=|CR=|cerLocation", "Specify the crash error report tool location on disk ", cr => cerLocation = cr);
                 optionsSet.Parse(args);
 
                 if (showHelp)
