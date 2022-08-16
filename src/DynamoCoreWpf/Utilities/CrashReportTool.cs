@@ -1,4 +1,5 @@
-﻿using Dynamo.Models;
+﻿using Dynamo.Core;
+using Dynamo.Models;
 using Dynamo.ViewModels;
 using System;
 using System.Collections;
@@ -12,38 +13,12 @@ using System.Runtime.InteropServices;
 
 namespace Dynamo.Wpf.Utilities
 {
-    internal class CrashReportArgs : EventArgs
-    {
-        public bool SendLogFile = true;
-        public bool SendSettingsFile = true;
-        public bool SendDynFile = true;
-        public bool SendRecordedCommands = true;
-
-        internal DynamoViewModel viewModel;
-
-        internal CrashReportArgs(DynamoViewModel dynamoViewModel)
-        {
-            viewModel = dynamoViewModel;
-        }
-    }
-
     internal class CrashReportTool
     {
-        static CrashReportTool()
-        {
-            try
-            {
-                CerToolDir = GetCERToolLocation();
-            }
-            catch
-            {}
-        }
-
         private static List<string> ProductsWithCER => new List<string>() { "Revit", "Civil", "Robot Structural Analysis" };
-        private static readonly string CERExe = "senddmp.exe";
+        private static readonly string CERExeName = "senddmp.exe";
 
-
-        private static string CerToolDir;
+        private static string CERInstallLocation = null;
 
         private enum MINIDUMP_TYPE
         {
@@ -144,47 +119,64 @@ namespace Dynamo.Wpf.Utilities
             return null;
         }
 
-        private static string GetCERToolLocation()
+        private static string FindCERToolInInstallLocations()
         {
-            string rootFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
-            if (!File.Exists(assemblyPath))
-                throw new FileNotFoundException(assemblyPath);
+            if (CERInstallLocation != null) return CERInstallLocation;
 
-            var assembly = Assembly.LoadFrom(assemblyPath);
-
-            var type = assembly.GetType("DynamoInstallDetective.Utilities");
-
-            var installationsMethod = type.GetMethod(
-                "FindMultipleProductInstallations",
-                BindingFlags.Public | BindingFlags.Static);
-
-            if (installationsMethod == null)
+            try
             {
-                throw new MissingMethodException("Method 'DynamoInstallDetective.Utilities.FindProductInstallations' not found");
+                string rootFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
+                if (!File.Exists(assemblyPath))
+                    throw new FileNotFoundException(assemblyPath);
+
+                var assembly = Assembly.LoadFrom(assemblyPath);
+
+                var type = assembly.GetType("DynamoInstallDetective.Utilities");
+
+                var installationsMethod = type.GetMethod(
+                    "FindMultipleProductInstallations",
+                    BindingFlags.Public | BindingFlags.Static);
+
+                if (installationsMethod == null)
+                {
+                    throw new MissingMethodException("Method 'DynamoInstallDetective.Utilities.FindProductInstallations' not found");
+                }
+
+                var methodParams = new object[] { ProductsWithCER, CERExeName };
+                var installs = installationsMethod.Invoke(null, methodParams) as IEnumerable;
+
+                CERInstallLocation = installs.Cast<KeyValuePair<string, Tuple<int, int, int, int>>>().Select(x => x.Key).LastOrDefault() ?? string.Empty;
+                return CERInstallLocation;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Calls external CER tool (with UI)
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns>True if the CER tool process was successfully started. False otherwise</returns>
+        internal static bool ShowCrashErrorReportWindow(DynamoViewModel viewModel, CrashErrorReportArgs args)
+        {
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag("CER", false) == false)
+            {
+                return false;
             }
 
-            var methodParams = new object[] { ProductsWithCER, CERExe };
-            var installs = installationsMethod.Invoke(null, methodParams) as IEnumerable;
+            DynamoModel model = viewModel?.Model;
 
-            return installs.Cast<KeyValuePair<string, Tuple<int, int, int, int>>>().Select(x => x.Key).LastOrDefault();
-        }
+            string cerToolDir = !string.IsNullOrEmpty(model.CERLocation) ?
+                model.CERLocation : FindCERToolInInstallLocations();
 
-        internal static bool IsCEREnabled()
-        {
-            return !string.IsNullOrEmpty(CerToolDir) &&
-                Directory.Exists(CerToolDir) &&
-                DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("CER", false) == true;
-        }
-
-        // Calls external CER tool (with UI)
-        internal static void OnCrashReportWindow(CrashReportArgs args)
-        {
-            DynamoModel model = args.viewModel?.Model;
-            if (string.IsNullOrEmpty(CerToolDir))
+            var cerToolPath = Path.Combine(cerToolDir, CERExeName);
+            if (string.IsNullOrEmpty(cerToolPath) || !File.Exists(cerToolPath))
             {
-                model?.Logger?.LogError($"CERLocation was not provided in the DynamoCore.dll.config");
-                return;
+                model?.Logger?.LogError($"The CER tool was not found at location {cerToolPath}");
+                return false;
             }
 
             try
@@ -194,7 +186,20 @@ namespace Dynamo.Wpf.Utilities
                 var cerDir = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "DynamoCER_Report_" +
                     DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd-HH-mm-ss")));
 
-                using (Scheduler.Disposable.Create(() => { cerDir.Delete(); }) )
+                using (Scheduler.Disposable.Create(() => {
+                    try
+                    {
+                        // Cleanup
+                        foreach (FileInfo file in cerDir.EnumerateFiles())
+                            file.Delete();
+                        foreach (DirectoryInfo dir in cerDir.EnumerateDirectories())
+                            dir.Delete(true);
+                    }
+                    catch (Exception ex)
+                    {
+                        model?.Logger?.LogError($"Failed to cleanup the CER directory at {cerDir.FullName} : {ex.Message}");
+                    }
+                }))
                 {
                     var filesToSend = new List<string>();
                     if (args.SendLogFile && model != null)
@@ -223,9 +228,9 @@ namespace Dynamo.Wpf.Utilities
                         filesToSend.Add(dynFilePath);
                     }
 
-                    if (args.SendRecordedCommands && args.viewModel != null)
+                    if (args.SendRecordedCommands && viewModel != null)
                     {
-                        filesToSend.Add(args.viewModel.DumpRecordedCommands());
+                        filesToSend.Add(viewModel.DumpRecordedCommands());
                     }
 
                     var extras = string.Join(" ", filesToSend.Select(f => "/EXTRA " + f));
@@ -244,14 +249,16 @@ namespace Dynamo.Wpf.Utilities
                     var upiConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "upiconfig.xml");
 
                     var cerArgs = $"/UPITOKEN {upiConfigFilePath} /DMP {miniDumpFilePath} /APPXML \"{appConfig}\" {extras}";
-                    var cerTool = Path.Combine(CerToolDir, CERExe);
-                    Process.Start(new ProcessStartInfo(cerTool, cerArgs)).WaitForExit();
+                    
+                    Process.Start(new ProcessStartInfo(cerToolPath, cerArgs)).WaitForExit();
+                    return true;
                 }
             }
             catch(Exception ex)
             {
                 model?.Logger?.LogError($"Failed to invoke CER with the following error : {ex.Message}");
             }
+            return false;
         }
     }
 }
