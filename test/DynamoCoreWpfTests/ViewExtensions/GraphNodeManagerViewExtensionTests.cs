@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.GraphNodeManager;
 using Dynamo.GraphNodeManager.ViewModels;
@@ -11,6 +15,7 @@ using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using ProtoCore.Mirror;
 
 namespace DynamoCoreWpfTests
 {
@@ -157,7 +162,153 @@ namespace DynamoCoreWpfTests
             // Assert
             Assert.AreEqual(frozenNodes, frozenUINodes);
         }
+
+        /// <summary>
+        /// Test if the number of Nodes containing Null or Empty List matches what is shown on the UI
+        /// </summary>
+        [Test]
+        public void ContainsEmptyListOrNullTest()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            var viewExt = extensionManager.ViewExtensions
+                    .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
+                as GraphNodeManagerViewExtension;
+
+            var hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
+
+            // Arrange
+            LoadExtension(viewExt);
+
+            var view = viewExt.ManagerView;
+
+            Open(@"pkgs\Dynamo Samples\extra\GraphNodeManagerTestGraph_NullsEmptyLists.dyn");
+
+            hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
+            hwm.Run();
+
+            Utility.DispatcherUtil.DoEvents();
+
+            var images = WpfUtilities.ChildrenOfType<Image>(view.NodesInfoDataGrid);
+            
+            int nullNodesImageCount = GetImageCount(images, "Null");
+            int emptyListNodesImageCount = GetImageCount(images, "EmptyList"); 
+
+            int nullNodesCount = hwm.Nodes.Count(ContainsAnyNulls);
+            int emptyListNodesCount = hwm.Nodes.Count(ContainsAnyEmptyLists);
+
+            // Assert
+            Assert.AreEqual(emptyListNodesCount, emptyListNodesImageCount);
+            Assert.AreEqual(nullNodesCount, nullNodesImageCount);
+        }
+
         #endregion
 
+        #region Utilities
+
+        /// <summary>
+        /// Get the number of image elements containing a string
+        /// </summary>
+        /// <param name="images"></param>
+        /// <param name="match"></param>
+        /// <returns></returns>
+        private int GetImageCount(IEnumerable<Image> images, string match)
+        {
+            int i = 0;
+            foreach (var image in images)
+            {
+                if (image.Source == null) continue;
+                if (image.Visibility != Visibility.Visible) continue;
+                if (image.Source.ToString().Contains(match))
+                {
+                    i++;
+                }
+            }
+
+            return i;
+        }
+
+        private bool ContainsAnyEmptyLists(NodeModel nodeModel)
+        {
+            return IsNodeEmptyList(nodeModel.CachedValue);
+        }
+
+        private bool ContainsAnyNulls(NodeModel nodeModel)
+        {
+            return IsNodeNull(nodeModel.CachedValue);
+        }
+
+        /// <summary>
+        ///  Returns true only if the node contains ANY (nested) empty lists 
+        /// </summary>
+        /// <param name="mirrorData"></param>
+        /// <returns></returns>
+        private bool IsNodeEmptyList(MirrorData mirrorData)
+        {
+            if (mirrorData == null) return false;
+            if (mirrorData.IsCollection)
+            {
+                try
+                {
+                    var list = mirrorData.GetElements();
+                    if (!list.ToList().Any()) return true;
+
+                    foreach (var nested in list)
+                    {
+                        if (IsNodeEmptyList(nested))
+                            return true;
+                    }
+                    return false;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the Node contains ANY (nested) null values
+        /// </summary>
+        /// <param name="mirrorData"></param>
+        /// <returns></returns>
+        private bool IsNodeNull(MirrorData mirrorData)
+        {
+            if (mirrorData == null) return false;
+            if (mirrorData.IsCollection)
+            {
+                try
+                {
+                    var list = mirrorData.GetElements();
+                    foreach (var nested in list)
+                    {
+                        if (IsNodeNull(nested))
+                            return true;
+                    }
+                    return false;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            if (mirrorData.IsNull) return true;
+            return false;
+        }
+
+        public static IEnumerable<T> FindVisualChilds<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj == null) yield return (T)Enumerable.Empty<T>();
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                DependencyObject ithChild = VisualTreeHelper.GetChild(depObj, i);
+                if (ithChild == null) continue;
+                if (ithChild is T t) yield return t;
+                foreach (T childOfChild in FindVisualChilds<T>(ithChild)) yield return childOfChild;
+            }
+        }
+
+        #endregion
     }
 }

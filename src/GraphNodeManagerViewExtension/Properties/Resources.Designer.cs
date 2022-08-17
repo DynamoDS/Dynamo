@@ -61,6 +61,66 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Alert {
+            get {
+                object obj = ResourceManager.GetObject("Alert", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Clear {
+            get {
+                object obj = ResourceManager.GetObject("Clear", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Copy {
+            get {
+                object obj = ResourceManager.GetObject("Copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap EmptyList {
+            get {
+                object obj = ResourceManager.GetObject("EmptyList", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Error {
+            get {
+                object obj = ResourceManager.GetObject("Error", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export {
+            get {
+                object obj = ResourceManager.GetObject("Export", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Graph Node Manager.
         /// </summary>
         public static string ExtensionName {
@@ -70,6 +130,15 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Frozen {
+            get {
+                object obj = ResourceManager.GetObject("Frozen", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         ///   Looks up a localized string similar to Issues.
         /// </summary>
         public static string HeaderNameIssues {
@@ -79,6 +148,15 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Function {
+            get {
+                object obj = ResourceManager.GetObject("Function", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string HeaderNameName {
@@ -88,6 +166,15 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Hidden {
+            get {
+                object obj = ResourceManager.GetObject("Hidden", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         ///   Looks up a localized string similar to Outputs.
         /// </summary>
         public static string HeaderNameOutputs {
@@ -97,6 +184,15 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Info {
+            get {
+                object obj = ResourceManager.GetObject("Info", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         ///   Looks up a localized string similar to State.
         /// </summary>
         public static string HeaderNameState {
@@ -106,6 +202,15 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IsInput {
+            get {
+                object obj = ResourceManager.GetObject("IsInput", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         ///   Looks up a localized string similar to Type.
         /// </summary>
         public static string HeaderNameType {
@@ -115,6 +220,15 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IsOutput {
+            get {
+                object obj = ResourceManager.GetObject("IsOutput", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         ///   Looks up a localized string similar to Export as CSV.
         /// </summary>
         public static string MenuItemExportAsCSV {
@@ -142,7 +256,46 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty List.
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap MissingNode {
+            get {
+                object obj = ResourceManager.GetObject("MissingNode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Null {
+            get {
+                object obj = ResourceManager.GetObject("Null", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Search {
+            get {
+                object obj = ResourceManager.GetObject("Search", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string SearchBoxWatermarkText {
+            get {
+                return ResourceManager.GetString("SearchBoxWatermarkText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty list.
         /// </summary>
         public static string Title_EmptyList {
             get {
@@ -178,7 +331,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Information.
+        ///   Looks up a localized string similar to Info.
         /// </summary>
         public static string Title_Information {
             get {
@@ -187,7 +340,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Is Input.
+        ///   Looks up a localized string similar to Is input.
         /// </summary>
         public static string Title_IsInput {
             get {
@@ -196,7 +349,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Is Output.
+        ///   Looks up a localized string similar to Is output.
         /// </summary>
         public static string Title_IsOutput {
             get {
@@ -223,7 +376,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preview Off.
+        ///   Looks up a localized string similar to Preview off.
         /// </summary>
         public static string Title_PreviewOff {
             get {
@@ -259,7 +412,7 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dismissed Warnings.
+        ///   Looks up a localized string similar to Dismissed warnings.
         /// </summary>
         public static string ToolTip_DismissedWarnings {
             get {
@@ -268,11 +421,20 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export to Excel.
+        ///   Looks up a localized string similar to Export node data.
         /// </summary>
         public static string ToolTip_ExportToExcel {
             get {
                 return ResourceManager.GetString("ToolTip_ExportToExcel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export filtered node data.
+        /// </summary>
+        public static string ToolTip_ExportToExcelFiltered {
+            get {
+                return ResourceManager.GetString("ToolTip_ExportToExcelFiltered", resourceCulture);
             }
         }
     }

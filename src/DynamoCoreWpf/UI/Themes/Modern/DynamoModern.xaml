@@ -5158,7 +5158,7 @@
     <Style x:Key="InputBoxDarkThemeStyle" TargetType="{x:Type TextBox}">
         <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
         <Setter Property="Foreground" Value="{StaticResource DarkThemeBodyMediumBrush}"/>
-        <Setter Property="Background" Value="{StaticResource DarkThemeInputBoxBackgroundBrush}"/>
+        <Setter Property="Background" Value="#353535"/>
         <Setter Property="UseLayoutRounding" Value="True"/>
         <Setter Property="FontSize" Value="12px"/>
         <Setter Property="Padding" Value="10"/>
@@ -5245,7 +5245,7 @@
                     <Grid>
                         <TextBox x:Name="InputTextBox"
                                      Padding="8,10"
-                                     Background="#353535"
+                                     Background="{StaticResource DarkThemeInputBoxBackgroundColor}"
                                      BorderThickness="0"
                                      CaretBrush="{StaticResource Blue300Brush}"
                                      Focusable="True"

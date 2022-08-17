@@ -92,6 +92,11 @@ namespace DynamoCLI
                 model = Dynamo.Applications.StartupUtils.MakeModel(true, string.Empty, cmdLineArgs.AnalyticsInfo);
             }
 
+            if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
+            {
+                model.CERLocation = cmdLineArgs.CERLocation;
+            }
+
             model.ShutdownCompleted += (m) => { ShutDown(); };
 
             cmdLineArgs.ImportedPaths.ToList().ForEach(path =>

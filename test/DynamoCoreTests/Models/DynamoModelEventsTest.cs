@@ -7,6 +7,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.Wpf.Utilities;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -31,7 +32,7 @@ namespace Dynamo.Tests.ModelsTest
         private bool requestsRedraw = false;
         private bool requestNodeSelect = false;
         private bool runCompleted = false;
-        private bool requestsCrashPrompt = false;
+        private int requestsCrashPrompt = 0;
         private bool requestTaskDialog = false;
         private bool requestDownloadDynamo = false;
         private bool requestBugReport = false;
@@ -365,14 +366,20 @@ namespace Dynamo.Tests.ModelsTest
             CurrentDynamoModel.RequestsCrashPrompt += CurrentDynamoModel_RequestsCrashPrompt;
             var crashArgs = new Dynamo.Core.CrashPromptArgs("Crash Event", "Test Message");
 
+            var e = new Exception("Test");
+            var cerArgs = new Dynamo.Core.CrashErrorReportArgs(e);
+            var cArgs = new Dynamo.Core.CrashPromptArgs(e);
+
             //Act
+            CurrentDynamoModel.OnRequestsCrashPrompt(null, cerArgs);
+            CurrentDynamoModel.OnRequestsCrashPrompt(null, cArgs);
             CurrentDynamoModel.OnRequestsCrashPrompt(this, crashArgs);
 
             //Assert
             //Unsubcribe from event
             CurrentDynamoModel.RequestsCrashPrompt -= CurrentDynamoModel_RequestsCrashPrompt;
             //This will validate that the local handler was executed and set the flag in true
-            Assert.IsTrue(requestsCrashPrompt);
+            Assert.AreEqual(3, requestsCrashPrompt);
         }
 
      
@@ -488,7 +495,7 @@ namespace Dynamo.Tests.ModelsTest
 
         private void CurrentDynamoModel_RequestsCrashPrompt(object sender, Dynamo.Core.CrashPromptArgs e)
         {
-            requestsCrashPrompt = true;
+            requestsCrashPrompt ++;
         }
 
         private void CurrentDynamoModel_RunCompleted(object sender, bool success)
