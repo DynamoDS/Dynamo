@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -71,6 +70,8 @@ namespace Dynamo.Notifications
 
             if (notificationUIPopup.webView.CoreWebView2 != null)
             {
+                // Context menu disabled
+                notificationUIPopup.webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
                 notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
                 RefreshNotifications();
             }

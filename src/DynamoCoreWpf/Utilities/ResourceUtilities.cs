@@ -337,6 +337,8 @@ namespace Dynamo.Utilities
             bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage.Resources, resourcesPath);
             bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", fontStylePath);
             await webBrowserComponent.EnsureCoreWebView2Async();
+            // Context menu disabled
+            webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             webBrowserComponent.NavigateToString(bodyHtmlPage);
         }
 
