@@ -1454,6 +1454,10 @@
                       "inclusive": false
                     },
                     {
+                      "path": "GeometryColor.Autodesk.DesignScript.Geometry.GeometryImportHelpers",
+                      "inclusive": false
+                    },
+                    {
                       "path": "Geometry.Geometry.ExportToSAT"
                     }
                   ],
