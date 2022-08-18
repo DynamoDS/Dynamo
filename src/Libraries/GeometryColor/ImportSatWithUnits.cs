@@ -7,12 +7,15 @@ using Autodesk.DesignScript.Runtime;
 
 //TODO at a major host release verion - 2024 for example, rename this assembly to something like
 //ZeroTouchGeometryNodes and use type forward attribute to retain API compat.
-namespace Autodesk.DesignScript.Geometry
+
+//This namespace and class name are a bit confusing - but this is done so that the Nodes show up in the UI as Geometry.NodeName.
+namespace Autodesk.DesignScript.Geometry.ImportHelpers
 {
     /// <summary>
     /// Geometry Import nodes that have dependencies we don't want to introduce into Protogeometry.
     /// </summary>
-    public static class GeometryImportHelpers
+
+    public static class Geometry
     {
         /// <summary>
         /// Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are 
@@ -21,7 +24,8 @@ namespace Autodesk.DesignScript.Geometry
         /// <param name="filePath">string file path to a .SAT file.</param>
         /// <param name="dynamoUnit">a forge unit length, if left null, sat file will be imported as unitless</param>
         /// <returns></returns>
-        public static IEnumerable<Geometry> ImportFromSatByUnits(string filePath, [DefaultArgument("null")] DynamoUnits.Unit dynamoUnit)
+        [AllowRankReduction]
+        public static IEnumerable<DesignScript.Geometry.Geometry> ImportFromSATByUnits(string filePath, [DefaultArgument("null")] DynamoUnits.Unit dynamoUnit)
         {
             double mm_per_unit = -1;
             if (dynamoUnit != null )
@@ -32,9 +36,9 @@ namespace Autodesk.DesignScript.Geometry
                 if (!dynamoUnit.ConvertibleUnits.Contains(mm)){
                     throw new Exception($"{dynamoUnit.Name} was not convertible to mm");
                 }
-                mm_per_unit = Utilities.ConvertByUnits(1, dynamoUnit, mm);
+                mm_per_unit = DynamoUnits.Utilities.ConvertByUnits(1, dynamoUnit, mm);
             }
-            return Geometry.ImportFromSAT(filePath, mm_per_unit);
+            return DesignScript.Geometry.Geometry.ImportFromSAT(filePath, mm_per_unit);
         }
 
         /// <summary>
@@ -44,7 +48,8 @@ namespace Autodesk.DesignScript.Geometry
         /// <param name="file">file object pointing to a .SAT file.</param>
         /// <param name="dynamoUnit">a forge unit length, if left null, sat file will be imported as unitless</param>
         /// <returns></returns>
-        public static IEnumerable<Geometry> ImportFromSatByUnits(FileInfo file, [DefaultArgument("null")] DynamoUnits.Unit dynamoUnit)
+        [AllowRankReduction]
+        public static IEnumerable<DesignScript.Geometry.Geometry> ImportFromSATByUnits(FileInfo file, [DefaultArgument("null")] DynamoUnits.Unit dynamoUnit)
         {
             double mm_per_unit = -1;
             if (dynamoUnit != null)
@@ -55,9 +60,9 @@ namespace Autodesk.DesignScript.Geometry
                 if (!dynamoUnit.ConvertibleUnits.Contains(mm)){
                     throw new Exception($"{dynamoUnit.Name} was not convertible to mm");
                 }
-                mm_per_unit = Utilities.ConvertByUnits(1, dynamoUnit, mm);
+                mm_per_unit = DynamoUnits.Utilities.ConvertByUnits(1, dynamoUnit, mm);
             }
-            return Geometry.ImportFromSAT(file, mm_per_unit);
+            return DesignScript.Geometry.Geometry.ImportFromSAT(file, mm_per_unit);
         }
     }
 }

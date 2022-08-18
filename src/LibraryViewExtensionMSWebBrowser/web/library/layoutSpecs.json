@@ -1454,7 +1454,7 @@
                       "inclusive": false
                     },
                     {
-                      "path": "GeometryColor.Autodesk.DesignScript.Geometry.GeometryImportHelpers",
+                      "path": "GeometryColor.Autodesk.DesignScript.Geometry.ImportHelpers.Geometry",
                       "inclusive": false
                     },
                     {
