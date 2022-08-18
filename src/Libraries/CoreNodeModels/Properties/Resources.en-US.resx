@@ -629,4 +629,7 @@ Default value: {0}</value>
   <data name="IntegerSliderInfoMessage" xml:space="preserve">
     <value>The value entered is not in the int64 range.</value>
   </data>
+  <data name="CustomSelectionOutputDescription" xml:space="preserve">
+    <value>Selected value</value>
+  </data>
 </root>
