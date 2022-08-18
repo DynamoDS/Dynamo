@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using CoreNodeModels.Input;
 using DesignScript.Builtin;
@@ -258,7 +258,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void TestDropdownNodeUpdate()
+        public void TestCustomSelectionNodeUpdate()
         {
             var model = GetModel();
             var cdn = new CustomSelection();

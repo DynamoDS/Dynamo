@@ -16,9 +16,9 @@ using ProtoCore.AST.AssociativeAST;
 namespace CoreNodeModels.Input
 {
     /// <summary>
-    /// This node allows the user to create a dropdown menu with an arbitrary number of custom items.
+    /// This node allows the user to create a dropdown selection list with an arbitrary number of custom items.
     /// </summary>
-    [NodeName("Custom Dropdown Menu")]
+    [NodeName("Custom Selection")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("CustomSelectionNodeDescription", typeof(Properties.Resources))]
     [NodeSearchTags("CustomSelectionSearchTags", typeof(Properties.Resources))]
