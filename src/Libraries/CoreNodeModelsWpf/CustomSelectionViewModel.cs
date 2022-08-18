@@ -6,15 +6,21 @@ using Dynamo.UI.Commands;
 
 namespace CoreNodeModelsWpf
 {
+    /// <summary>
+    /// View model for <see cref="Controls.CustomSelectionControl"/>.
+    /// </summary>
     public class CustomSelectionViewModel : NotificationObject
     {
         public CustomSelection Model { get; }
 
         /// <summary>
-        /// This command is bound to the Add button in the GUI
+        /// Add an item to the list. This command is bound to the + button in the GUI.
         /// </summary>
         public DelegateCommand AddCommand { get; }
 
+        /// <summary>
+        /// Remove an item from the list. This command is bound to the - button in the GUI.
+        /// </summary>
         public DelegateCommand RemoveCommand { get; }
 
         private void AddItem(object obj)
@@ -33,10 +39,17 @@ namespace CoreNodeModelsWpf
 
         }
 
+        /// <summary>
+        /// Create a new <see cref="CustomSelectionViewModel"/>. Used by the view in design-time.
+        /// </summary>
         public CustomSelectionViewModel()
         {
         }
 
+        /// <summary>
+        /// Create a new <see cref="CustomSelectionViewModel"/> with an existing model.
+        /// </summary>
+        /// <param name="model">The model data.</param>
         public CustomSelectionViewModel(CustomSelection model)
         {
             Model = model;

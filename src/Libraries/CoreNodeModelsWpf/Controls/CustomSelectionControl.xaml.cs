@@ -10,7 +10,7 @@ using Dynamo.Utilities;
 namespace CoreNodeModelsWpf.Controls
 {
     /// <summary>
-    /// Interaction logic for DropDownControl.xaml
+    /// Interaction logic for CustomSelectionControl.xaml
     /// </summary>
     public partial class CustomSelectionControl : UserControl
     {
@@ -27,6 +27,9 @@ namespace CoreNodeModelsWpf.Controls
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Dropdown menu to select an item. Created by <see cref="Nodes.DropDownNodeViewCustomization"/>.
+        /// </summary>
         public ComboBox BaseComboBox { get; set; }
 
         private void EnumItemsListbox_PreviewKeyDown(object sender, KeyEventArgs e)

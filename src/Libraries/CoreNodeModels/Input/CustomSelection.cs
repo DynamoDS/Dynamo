@@ -30,7 +30,11 @@ namespace CoreNodeModels.Input
     {
         private List<DynamoDropDownItem> serializedItems;
 
-        public List<DynamoDropDownItem> SerializedItems
+        /// <summary>
+        /// Copy of <see cref="DSDropDownBase.Items"/> to be serialized./>
+        /// </summary>
+        [JsonProperty]
+        protected List<DynamoDropDownItem> SerializedItems
         {
             get => serializedItems;
             set
@@ -38,7 +42,7 @@ namespace CoreNodeModels.Input
                 serializedItems = value;
 
                 Items.Clear();
-                
+
                 foreach (DynamoDropDownItem item in serializedItems)
                 {
                     Items.Add(item);

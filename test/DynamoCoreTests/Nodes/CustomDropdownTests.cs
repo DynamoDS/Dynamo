@@ -14,6 +14,9 @@ using SystemTestServices;
 
 namespace Dynamo.Tests.Nodes
 {
+    /// <summary>
+    /// Test the creation of a custom selection node.
+    /// </summary>
     [TestFixture]
     public class CustomDropDownTests : DynamoModelTestBase
     {
