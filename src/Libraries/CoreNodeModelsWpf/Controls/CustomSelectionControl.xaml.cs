@@ -43,7 +43,6 @@ namespace CoreNodeModelsWpf.Controls
             {
                 int offset = ( e.KeyboardDevice.Modifiers == System.Windows.Input.ModifierKeys.Shift ) ?
                     0 : 1;
-
                 var textBoxes = listBox.ChildrenOfType<TextBox>().ToList();
 
                 for (int i = 0; i < textBoxes.Count; i++)

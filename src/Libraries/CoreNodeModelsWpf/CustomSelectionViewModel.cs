@@ -33,10 +33,8 @@ namespace CoreNodeModelsWpf
             if (parameter is DynamoDropDownItem item)
             {
                 Model.Items.Remove(item);
-
                 Model.OnNodeModified();
             }
-
         }
 
         /// <summary>
