@@ -8,7 +8,7 @@ using Dynamo.Wpf;
 namespace CoreNodeModelsWpf.Nodes
 {
     /// <summary>
-    /// View customizer for DropDown node model.
+    /// View customizer for Custom Selection node model.
     /// </summary>
     public class CustomSelectionNodeViewCustomization : DropDownNodeViewCustomization, INodeViewCustomization<CustomSelection>
     {
