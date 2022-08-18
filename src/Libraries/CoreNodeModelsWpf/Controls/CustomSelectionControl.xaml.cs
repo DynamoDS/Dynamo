@@ -30,7 +30,7 @@ namespace CoreNodeModelsWpf.Controls
         /// <summary>
         /// Dropdown menu to select an item. Created by <see cref="Nodes.DropDownNodeViewCustomization"/>.
         /// </summary>
-        public ComboBox BaseComboBox { get; set; }
+        internal ComboBox BaseComboBox { get; set; }
 
         private void EnumItemsListbox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
