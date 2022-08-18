@@ -7,7 +7,7 @@ using Dynamo.UI.Commands;
 namespace CoreNodeModelsWpf
 {
     /// <summary>
-    /// View model for <see cref="Controls.CustomSelectionControl"/>.
+    /// View model for <see cref="Controls.CustomSelectionControl"/>, for the Custom Selection node.
     /// </summary>
     public class CustomSelectionViewModel : NotificationObject
     {
