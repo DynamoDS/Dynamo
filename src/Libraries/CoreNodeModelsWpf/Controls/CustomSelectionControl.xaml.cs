@@ -41,7 +41,8 @@ namespace CoreNodeModelsWpf.Controls
 
             if (e.Key == Key.Tab)
             {
-                int offset = e.KeyboardDevice.Modifiers == System.Windows.Input.ModifierKeys.Shift ? 0 : 1;
+                int offset = ( e.KeyboardDevice.Modifiers == System.Windows.Input.ModifierKeys.Shift ) ?
+                    0 : 1;
 
                 var textBoxes = listBox.ChildrenOfType<TextBox>().ToList();
 
