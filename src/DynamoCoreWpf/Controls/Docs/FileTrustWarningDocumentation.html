@@ -1,0 +1,196 @@
+﻿<!--
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.
+
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="UTF-8" />
+</head>
+
+<style>
+    body {
+        color: white;
+        font-size: 14px;
+        font-family: "Artifakt Element";
+        src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
+        padding: 1%;
+    }
+
+    a {
+        color: lightgray;
+        cursor: pointer;
+        background-color: transparent;
+    }
+
+    table {
+        border-collapse: collapse;
+        border: 1px solid white;
+    }
+
+    th,
+    td {
+        border: 1px solid white;
+        padding-right: 10px;
+        padding-left: 10px;
+        padding-bottom: 10px;
+        padding-top: 10px;
+    }
+
+    samp {
+        margin-top: 10px;
+        display: block;
+        color: lightgrey;
+    }
+
+    thead {
+        text-align: center;
+    }
+
+    .hidden-lg {
+        display: none;
+    }
+
+    .button {
+        background-color: transparent;
+        border-color: #3c3c3c;
+        color: #bbbbbb;
+    }
+
+    .button:hover {
+        border-color: #656565;
+        background-color: #373737;
+        opacity: 1.0;
+    }
+    .questionmark:after {
+        content: '?';
+        display: inline-block;
+        font-family: sans-serif;
+        font-weight: bold;
+        text-align: center;
+        font-size: 0.8em;
+        line-height: 0.8em;
+        border-radius: 50%;
+        margin-left: 6px;
+        padding: 0.13em 0.2em 0.09em 0.2em;
+        color: inherit;
+        border: 1px solid;
+        text-decoration: none;
+    }
+    @media screen and (max-width: 600px) {
+        table {
+            width: 100%;
+        }
+
+        table,
+        th,
+        td {
+            border: none;
+        }
+
+        tr {
+            border: 1px solid white;
+            display: block;
+        }
+
+        td,
+        th {
+            display: block;
+        }
+
+        .hidden-lg {
+            display: block;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid white;
+        }
+
+        .hidden-sm {
+            display: none;
+        }
+
+        .spaced-sm {
+            margin-top: 20px;
+        }
+
+        tbody tr:first-of-type {
+            border-bottom: none;
+        }
+    }
+</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h2>Graph Security and Trusted Locations</h2>
+    <p>
+        A graph must be designated by you as <b>trusted</b> before it can run in Dynamo. In this documentation, a “trusted” graph means that its folder location has been added to the Trusted Locations list, or you have granted it one-time trust.
+        <br /><br />
+        To minimize risk to your system security, it’s important to only run graphs from sources that you know and trust. You can configure security settings in Dynamo to allow graphs to run from the file locations you choose or remove folders from the Trusted Locations list.
+    </p>
+    <h3>To grant trust</h3>
+    <p>
+        Dynamo will not run an untrusted graph. When a graph from an untrusted location is opened, Dynamo will show a warning, and the run will be blocked. You can choose to grant trust to a graph either on a per-session basis or long-term by selecting different options in the warning dialog (Figure 1 below):<br />
+        <ul>
+            <li>To grant temporary trust to the graph, select Yes. This will grant trust until you close the graph. The warning will be shown again the next time you open the graph after closing it.</li>
+            <li>To grant long-term trust to the graph, select the “Trust this file’s location in the future” checkbox and then click Yes. This will add the graph’s folder to your list of trusted locations and allow you to run the graph. When opening graphs from a folder in your trusted locations, the graph will open normally and the security warning will no longer be displayed, until the folder is removed from trusted locations.
+                <ul>
+                    <li>If you select the checkbox and then click “No, close file,” the file location will NOT be added to trusted locations.</li>
+                    <img src="data:image/gif;base64" />
+                    <p style="text-align:center">Figure 1 – Warning Dialog for Dynamo</p>
+                </ul>
+                Once trust is granted, the graph is no longer blocked, and you’ll be able to run it normally.
+            </li>
+        </ul>
+        <br />
+    </p>
+    <h3>To access security settings</h3>
+    <p>
+        You can access security settings in the following ways:
+        <ul>
+            <li>When opening an untrusted graph, click Settings in the warning that displays, or</li>
+            <li>Go to Dynamo > Preferences > Security.</li>
+        </ul>
+        In the security settings, you can enable or disable the trust warning and manage your trusted locations.
+    </p>
+    <h3>Warning settings for Dynamo</h3>
+    <p>
+        When a graph from an untrusted location is opened, Dynamo will show a warning dialog (see Figure 1 above), and the run will be blocked. In the Warning section of the Security settings, you have the option to enable or disable the warning dialog. By default, the warning dialog will display when opening untrusted graphs. <br /><br />
+        We recommend keeping the warning dialog enabled to ensure you are notified when opening a graph from an untrusted location.<br /><br />
+        Enabling or disabling the warning dialog in Dynamo’s Security Settings will only impact the trust warning dialog in Dynamo, not Dynamo Player, Steel Connections for Dynamo, or Generative Design in Revit.
+    </p>
+    <h3>Trusted file location settings</h3>
+    <p>
+        You can configure trusted locations in the Trusted File Locations section of the Security settings. You can manually add paths to the Trusted Locations list by clicking Add Path. Current trusted locations are listed below the Add Path button. For each path, you can edit it or remove it from trusted locations.<br /><br />
+        When a folder is removed from the list, a security warning will display when attempting to run a graph from that folder, and the run will be blocked.
+    </p>
+    <br />
+    <h3>Trusted locations in Dynamo Player, Steel Connections for Dynamo, and Generative Design in Revit</h3>
+    <p>
+        Similarly, Dynamo Player, Steel Connections for Dynamo, and Generative Design in Revit will only open a graph or study type that is in a trusted location. When opening an untrusted graph or study type, the applications will also display a warning dialog (see Figure 2 below), and the run will be blocked until you grant trust to the folder.<br /><br />
+        <img src="data:image/gif;base64" />
+        <p style="text-align:center">Figure 2 – Warning Dialog for Dynamo Player, Steel Connections for Dynamo, and Generative Design in Revit</p>
+        In Dynamo Player, Steel Connections for Dynamo, and Generative Design in Revit, individual graphs and study types cannot be granted trust for a one-time run. Instead, to enable graphs or study types, their folder location must be added to trusted locations.<br /><br />
+        You can add a folder to trusted locations in three ways:
+        <ul>
+            <li>Select “Yes, I trust it” in the trust warning.</li>
+            <li>Manage folders in Dynamo Player, Steel Connections for Dynamo, or Generative Design in Revit by clicking the Manage Folders icon at the top of the application. Folders added to the list will also be added to trusted locations in Dynamo.</li>
+            <li>Add the folder to trusted locations in Dynamo (see Trusted File Location Settings, above).</li>
+        </ul>
+        Once trust is granted to a folder, graphs or study types stored in that folder will no longer be blocked, and you’ll be able to run them normally.<br /><br />
+        If a folder is removed from the Manage Folders list in Dynamo Player, Steel Connections for Dynamo, or Generative Design in Revit, the warning will once again display, and the run will be blocked when opening graphs or study types from that folder.
+        <br /><br />
+        <b>Please note that adding a folder to your Trusted Locations is not a guarantee by Autodesk that graphs stored in those locations are safe or trustworthy, either now or in the future. You are responsible for the security of your systems and any content that you use with Dynamo, Dynamo Player, Steel Connections for Dynamo, and Generative Design in Revit.</b>
+        Autodesk recommends that you only add graph-storing folders to the Trusted Locations list, or grant one-time trust to a graph, if you can verify their source and are confident that they pose no security risks.
+    </p>
+</body>

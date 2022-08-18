@@ -287,7 +287,18 @@ namespace Dynamo.Wpf.Views
 
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
         {
-            dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+            if (sender is Label lable)
+            {
+                if (lable.Name == "Titleinfo")
+                {
+                    dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+                }
+                else if (lable.Name == "TrustWarningInfoLabel")
+                {
+                    dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.FileTrustWarningDocumentationUriString, UriKind.Relative)));
+
+                }
+            }
         }
 
         private void ReloadCPython_Click(object sender, RoutedEventArgs e)
