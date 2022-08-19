@@ -298,6 +298,7 @@
     <Compile Include="ViewModels\Core\InPortViewModel.cs" />
     <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
+    <Compile Include="ViewModels\Core\ShortcutToolbarViewModel.cs" />
     <Compile Include="ViewModels\FileTrust\FileTrustWarningViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\ExitGuideWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
