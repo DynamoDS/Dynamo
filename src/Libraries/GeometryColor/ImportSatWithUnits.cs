@@ -58,8 +58,7 @@ namespace Autodesk.DesignScript.Geometry
         public static IEnumerable<Geometry> DeserializeFromSABAndUnits(byte[] buffer, [DefaultArgument("null")] DynamoUnits.Unit dynamoUnit)
         {
             var mm_per_unit = CalculateMillimeterPerUnit(dynamoUnit);
-            //TODO update LibG ref return Geometry.DeserializeFromSAB(buffer, mm_per_unit);
-            return Geometry.DeserializeFromSAB(buffer);
+            return Geometry.DeserializeFromSAB(buffer, mm_per_unit);
         }
 
         private static double CalculateMillimeterPerUnit(Unit dynamoUnit)
