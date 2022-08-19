@@ -443,6 +443,9 @@
                 },
                 {
                   "path": "Core.Input.Output"
+                },
+                {
+                  "path": "Core.Input.Custom Selection"
                 }
               ],
               "childElements": []

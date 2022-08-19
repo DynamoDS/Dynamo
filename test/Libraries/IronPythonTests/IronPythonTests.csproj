@@ -14,7 +14,7 @@
   <ItemGroup>
 	  <PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
 	  <PackageReference Include="NUnit" Version="2.6.3" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.9046" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2285" />
     <PackageReference Include="DynamicLanguageRuntime" Version="1.2.2" />
 	  <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
 	  <PackageReference Include="IronPython" Version="2.7.9" />
