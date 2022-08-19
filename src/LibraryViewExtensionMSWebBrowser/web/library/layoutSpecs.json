@@ -1454,11 +1454,14 @@
                       "inclusive": false
                     },
                     {
-                      "path": "GeometryColor.Autodesk.DesignScript.Geometry.ImportHelpers.Geometry",
-                      "inclusive": false
+                      "path": "Geometry.Geometry.ExportToSAT"
                     },
                     {
-                      "path": "Geometry.Geometry.ExportToSAT"
+                      "path": "Geometry.Geometry.Geometry.ImportFromSatAndUnits"
+                    },
+
+                    {
+                      "path": "Geometry.Geometry.Geometry.DeserializeFromSABAndUnits"
                     }
                   ],
                   "childElements": []

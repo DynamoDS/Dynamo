@@ -1,11 +1,11 @@
-﻿using DynamoUnits;
+﻿using Autodesk.DesignScript.Geometry;
+using DynamoUnits;
 using NUnit.Framework;
 using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using TestServices;
-using Autodesk.DesignScript.Geometry.ImportHelpers;
 
 namespace GeometryTests
 {
@@ -27,7 +27,7 @@ namespace GeometryTests
         public void SATImportWithNullImportsAsUnitless()
         {
             var satpath = Path.Combine(TestDirectory, "core\\WorkflowTestFiles\\GeometryDefects\\SweepAsSolid", "profile.sat");
-            var surface = Geometry.ImportFromSATByUnits(satpath, null).FirstOrDefault() as Autodesk.DesignScript.Geometry.Surface;
+            var surface = ImportHelpers.ImportFromSATByUnits(satpath, null).FirstOrDefault() as Autodesk.DesignScript.Geometry.Surface;
             Assert.NotNull(surface);
             ShouldBeApproximate(surface.Area, 1.938695, .000001);
         }
@@ -37,7 +37,7 @@ namespace GeometryTests
             var satpath = Path.Combine(TestDirectory, "core\\WorkflowTestFiles\\GeometryDefects\\SweepAsSolid", "profile.sat");
             const string ft = "autodesk.unit.unit:feet";
             var ftunit = Unit.ByTypeID($"{ft}-1.0.1");
-            var surface = Geometry.ImportFromSATByUnits(satpath, ftunit).FirstOrDefault() as Autodesk.DesignScript.Geometry.Surface;
+            var surface = ImportHelpers.ImportFromSATByUnits(satpath, ftunit).FirstOrDefault() as Autodesk.DesignScript.Geometry.Surface;
             Assert.NotNull(surface);
             ShouldBeApproximate(surface.Area, 1.938695, .000001);
         }
@@ -47,7 +47,7 @@ namespace GeometryTests
             var satpath = Path.Combine(TestDirectory, "core\\WorkflowTestFiles\\GeometryDefects\\SweepAsSolid", "profile.sat");
             const string inch = "autodesk.unit.unit:inches";
             var inunit = Unit.ByTypeID($"{inch}-1.0.0");
-            var surface = Geometry.ImportFromSATByUnits(satpath, inunit).FirstOrDefault() as Autodesk.DesignScript.Geometry.Surface;
+            var surface = ImportHelpers.ImportFromSATByUnits(satpath, inunit).FirstOrDefault() as Autodesk.DesignScript.Geometry.Surface;
             Assert.NotNull(surface);
             //feet in the sat file are converted to inches, which means the resulting object is much larger.
             ShouldBeApproximate(surface.Area, 279.172131, .000001);
@@ -59,7 +59,7 @@ namespace GeometryTests
             const string lb = "autodesk.unit.unit:poundsMass";
             var lbunit = Unit.ByTypeID($"{lb}-1.0.0");
             Assert.Throws<Exception>((TestDelegate)(()=>{
-                var surface = Geometry.ImportFromSATByUnits(satpath, lbunit) as Autodesk.DesignScript.Geometry.Surface;
+                var surface = ImportHelpers.ImportFromSATByUnits(satpath, lbunit) as Autodesk.DesignScript.Geometry.Surface;
             }));
         }
 

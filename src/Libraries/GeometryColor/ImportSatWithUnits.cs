@@ -8,14 +8,15 @@ using Autodesk.DesignScript.Runtime;
 //TODO at a major host release verion - 2024 for example, rename this assembly to something like
 //ZeroTouchGeometryNodes and use type forward attribute to retain API compat.
 
-//This namespace and class name are a bit confusing - but this is done so that the Nodes show up in the UI as Geometry.NodeName.
-namespace Autodesk.DesignScript.Geometry.ImportHelpers
+namespace Autodesk.DesignScript.Geometry
 {
     /// <summary>
     /// Geometry Import nodes that have dependencies we don't want to introduce into Protogeometry.
+    /// These methods are further wrapped up by NodeModel nodes so we can get the naming and library location 
+    /// exactly right.
     /// </summary>
-
-    public static class Geometry
+    [IsVisibleInDynamoLibrary(false)]
+    public static class ImportHelpers
     {
         /// <summary>
         /// Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are 
@@ -25,20 +26,10 @@ namespace Autodesk.DesignScript.Geometry.ImportHelpers
         /// <param name="dynamoUnit">a forge unit length, if left null, sat file will be imported as unitless</param>
         /// <returns></returns>
         [AllowRankReduction]
-        public static IEnumerable<DesignScript.Geometry.Geometry> ImportFromSATByUnits(string filePath, [DefaultArgument("null")] DynamoUnits.Unit dynamoUnit)
+        public static IEnumerable<Geometry> ImportFromSATByUnits(string filePath, [DefaultArgument("null")] DynamoUnits.Unit dynamoUnit)
         {
-            double mm_per_unit = -1;
-            if (dynamoUnit != null )
-            {
-                const string milimeters = "autodesk.unit.unit:millimeters";
-                var mm = Unit.ByTypeID($"{milimeters}-1.0.1");
-
-                if (!dynamoUnit.ConvertibleUnits.Contains(mm)){
-                    throw new Exception($"{dynamoUnit.Name} was not convertible to mm");
-                }
-                mm_per_unit = DynamoUnits.Utilities.ConvertByUnits(1, dynamoUnit, mm);
-            }
-            return DesignScript.Geometry.Geometry.ImportFromSAT(filePath, mm_per_unit);
+            var mm_per_unit = CalculateMillimeterPerUnit(dynamoUnit);
+            return Geometry.ImportFromSAT(filePath, mm_per_unit);
         }
 
         /// <summary>
@@ -49,20 +40,43 @@ namespace Autodesk.DesignScript.Geometry.ImportHelpers
         /// <param name="dynamoUnit">a forge unit length, if left null, sat file will be imported as unitless</param>
         /// <returns></returns>
         [AllowRankReduction]
-        public static IEnumerable<DesignScript.Geometry.Geometry> ImportFromSATByUnits(FileInfo file, [DefaultArgument("null")] DynamoUnits.Unit dynamoUnit)
+        public static IEnumerable<Geometry> ImportFromSATByUnits(FileInfo file, [DefaultArgument("null")] DynamoUnits.Unit dynamoUnit)
         {
-            double mm_per_unit = -1;
+            var mm_per_unit = CalculateMillimeterPerUnit(dynamoUnit);
+            return Geometry.ImportFromSAT(file, mm_per_unit);
+        }
+
+
+        /// <summary>
+        /// Imports geometry from SAB filepath. Set the dynamoUnit input to match how you are 
+        /// interperting the other numbers in your Dynamo file.
+        /// </summary>
+        /// <param name="buffer">SAB byte array</param>
+        /// <param name="dynamoUnit">a forge unit length, if left null, sat file will be imported as unitless</param>
+        /// <returns></returns>
+        [AllowRankReduction]
+        public static IEnumerable<Geometry> DeserializeFromSABAndUnits(byte[] buffer, [DefaultArgument("null")] DynamoUnits.Unit dynamoUnit)
+        {
+            var mm_per_unit = CalculateMillimeterPerUnit(dynamoUnit);
+            //TODO update LibG ref return Geometry.DeserializeFromSAB(buffer, mm_per_unit);
+            return Geometry.DeserializeFromSAB(buffer);
+        }
+
+        private static double CalculateMillimeterPerUnit(Unit dynamoUnit)
+        {
             if (dynamoUnit != null)
             {
-                const string milimeters = "autodesk.unit.unit:millimeters";
-                var mm = Unit.ByTypeID($"{milimeters}-1.0.1");
+                const string millimeters = "autodesk.unit.unit:millimeters";
+                var mm = Unit.ByTypeID($"{millimeters}-1.0.1");
 
-                if (!dynamoUnit.ConvertibleUnits.Contains(mm)){
+                if (!dynamoUnit.ConvertibleUnits.Contains(mm))
+                {
                     throw new Exception($"{dynamoUnit.Name} was not convertible to mm");
                 }
-                mm_per_unit = DynamoUnits.Utilities.ConvertByUnits(1, dynamoUnit, mm);
+                return Utilities.ConvertByUnits(1, dynamoUnit, mm);
             }
-            return DesignScript.Geometry.Geometry.ImportFromSAT(file, mm_per_unit);
+            return -1;
         }
+
     }
 }
