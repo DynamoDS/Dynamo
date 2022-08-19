@@ -924,17 +924,23 @@
                                                     Margin="10,0,0,0"
                                                     VerticalAlignment="Center"
                                                     Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            <Label HorizontalAlignment="Left" 
-                                               Name="TrustWarningInfoLabel" 
-                                               VerticalAlignment="Center" 
-                                               Height="26" 
-                                               Width="53" 
-                                               Margin="0 3 0 0" >
+                                            <Label HorizontalAlignment="Left"
+                                                   Name="TrustWarningInfoLabel"
+                                                   VerticalAlignment="Center" 
+                                                   Height="26" 
+                                                   Width="53"
+                                                   Margin="0 3 0 0"
+                                                   MouseLeftButtonDown="OnMoreInfoClicked">
                                                 <Label.ToolTip>
                                                     <ToolTip Content="{x:Static p:Resources.PreferencesViewTrustWarningTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
                                                 </Label.ToolTip>
                                                 <Label.Content>
-                                                    <fa:ImageAwesome Width="15" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Left" Icon="QuestionCircleOutline" Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                    <fa:ImageAwesome Width="15" 
+                                                                     Height="15" 
+                                                                     VerticalAlignment="Bottom" 
+                                                                     HorizontalAlignment="Left" 
+                                                                     Icon="QuestionCircleOutline" 
+                                                                     Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                                 </Label.Content>
                                             </Label>
                                         </StackPanel>
