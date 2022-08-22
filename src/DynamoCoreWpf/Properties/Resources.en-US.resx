@@ -2407,6 +2407,9 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
   <data name="NodeAutocompleteDocumentationUriString" xml:space="preserve">
     <value>DynamoCoreWpf;NodeAutocompleteDocumentation.html</value>
   </data>
+  <data name="FileTrustWarningDocumentationUriString" xml:space="preserve">
+    <value>DynamoCoreWpf;FileTrustWarningDocumentation.html</value>
+  </data>
   <data name="PreferencesViewEnableNodeAutoCompleteTooltipText" xml:space="preserve">
     <value>Learn more about Node Autocomplete feature.</value>
   </data>

@@ -132,4 +132,10 @@
   <data name="DateTimeInputToolTip" xml:space="preserve">
     <value>Enter time and date in the format 'MMMM dd, yyyy h:mm tt'</value>
   </data>
+  <data name="LblDisplay" xml:space="preserve">
+    <value>Display</value>
+  </data>
+  <data name="LblValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
 </root>

@@ -50,7 +50,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.9046" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2285" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

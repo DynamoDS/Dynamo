@@ -333,7 +333,9 @@
             }
             var containerCatDiv = found_div.parentNode.parentNode;
             var itemBodyContainer = containerCatDiv.getElementsByClassName(libraryClassName)[0];
-            itemBodyContainer.click();
+            if (!itemBodyContainer.parentElement.parentElement.className.includes('expanded')) {
+                itemBodyContainer.click();
+            }
         }
 
         //This will call the NextStep() function located in the LibraryViewController

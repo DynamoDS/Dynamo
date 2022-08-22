@@ -30,7 +30,6 @@ namespace Dynamo.Nodes
 
         public DynamoNodeButton()
         {
-            Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SNodeTextButton"];
         }
 
         public DynamoNodeButton(ModelBase model, string eventName)

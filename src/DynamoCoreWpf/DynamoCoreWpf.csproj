@@ -54,7 +54,7 @@
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.9046" />
+  <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2285" />
   <PackageReference Include="Greg" Version="2.3.0.1646" />
   <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
@@ -1543,6 +1543,7 @@
     <Resource Include="UI\Images\up-hover-16px.png" />
     <Resource Include="UI\Images\link-16px.png" />
     <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\FileTrustWarningDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -2696,6 +2696,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DynamoCoreWpf;FileTrustWarningDocumentation.html.
+        /// </summary>
+        public static string FileTrustWarningDocumentationUriString {
+            get {
+                return ResourceManager.GetString("FileTrustWarningDocumentationUriString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No, close file.
         /// </summary>
         public static string FileTrustWarningPopupNoCloseFile {

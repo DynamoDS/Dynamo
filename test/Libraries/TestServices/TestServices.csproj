@@ -11,7 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
 	  <PackageReference Include="NUnit" Version="2.6.3" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.9046" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2285" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
