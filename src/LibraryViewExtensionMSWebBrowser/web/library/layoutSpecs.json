@@ -1457,11 +1457,11 @@
                       "path": "Geometry.Geometry.ExportToSAT"
                     },
                     {
-                      "path": "Geometry.Geometry.Geometry.ImportFromSatAndUnits"
+                      "path": "Geometry.Geometry.Geometry.ImportFromSATWithUnits"
                     },
 
                     {
-                      "path": "Geometry.Geometry.Geometry.DeserializeFromSABAndUnits"
+                      "path": "Geometry.Geometry.Geometry.DeserializeFromSABWithUnits"
                     }
                   ],
                   "childElements": []
