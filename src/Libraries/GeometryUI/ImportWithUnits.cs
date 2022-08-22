@@ -6,8 +6,6 @@ using System.Linq;
 
 namespace GeometryUI
 {
-    //TODO finish the descriptions etc with resx.
-
     [NodeCategory(BuiltinNodeCategories.GEOMETRY)]
     [NodeName("Geometry.ImportFromSATWithUnits")]
     [InPortTypes(new string[] { "var", "DynamoUnits.Unit" })]
