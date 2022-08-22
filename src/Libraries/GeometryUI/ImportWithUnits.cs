@@ -2,90 +2,138 @@
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GeometryUI
 {
     //TODO finish the descriptions etc with resx.
 
     [NodeCategory(BuiltinNodeCategories.GEOMETRY)]
-    [NodeName("Geometry.ImportFromSatWithUnits")]
+    [NodeName("Geometry.ImportFromSATWithUnits")]
     [InPortTypes(new string[] { "var", "DynamoUnits.Unit" })]
-    //[NodeDescription("ExportToSATDescripiton", typeof(GeometryUI.Properties.Resources))]
-    //[NodeSearchTags("ExportWithUnitsSearchTags", typeof(GeometryUI.Properties.Resources))]
+    [InPortNames(new[] { "file|filePath","dynamoUnit" })]
+    [InPortDescriptions(typeof(Properties.Resources),new[] { "ImportSATFilePathDesc", "ImportSATDynamoUnitDesc"})]
+    [NodeDescription("ImportToSATUnitsDesc", typeof(Properties.Resources))]
     [OutPortTypes("Geometry[]")]
+    [OutPortNames("geometry")]
+    [OutPortDescriptions(typeof(Properties.Resources), "SABSATGeoDesc")]
     [IsDesignScriptCompatible]
-    public class ImportFromSATAndUnits : NodeModel
+    public class ImportFromSATWithUnits : NodeModel
     {
         [JsonConstructor]
-        private ImportFromSATAndUnits(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
+        private ImportFromSATWithUnits(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
     base(inPorts, outPorts)
         {
             ShouldDisplayPreviewCore = true;
+            inPorts.ElementAt(1).DefaultValue = new NullNode();
         }
 
-        public ImportFromSATAndUnits()
+        public ImportFromSATWithUnits()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("file|filePath", "TODO")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("dynamoUnit", "TODO", new NullNode())));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("geometry", "TODO")));
-
             ShouldDisplayPreviewCore = true;
+            ArgumentLacing = LacingStrategy.Auto;
             RegisterAllPorts();
+            //setting port data via attributes don't currently support default vals
+            InPorts.ElementAt(1).DefaultValue = new NullNode();
+            InPorts.ElementAt(1).UsingDefaultValue = true;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(
           List<AssociativeNode> inputAstNodes)
         {
-            if (!InPorts[0].IsConnected || (!InPorts[1].IsConnected && !InPorts[1].UsingDefaultValue))
+            var funcNode = AstFactory.BuildFunctionCall("ImportHelpers", "ImportFromSATWithUnits",
+                        new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1] }) as IdentifierListNode;
+
+            if (IsPartiallyApplied)
             {
-                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+                return new[]
+                {
+                    
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                        AstFactory.BuildFunctionObject(
+                            new IdentifierListNode(){LeftNode = funcNode?.LeftNode,
+                            RightNode = (funcNode.RightNode as FunctionCallNode)?.Function },
+                            InPorts.Count,
+                            Enumerable.Range(0, InPorts.Count).Where(index=>InPorts[index].IsConnected),
+                            inputAstNodes))
+                };
             }
+            else
+            {
+                UseLevelAndReplicationGuide(inputAstNodes);
 
-            var funcNode = AstFactory.BuildFunctionCall("ImportHelpers", "ImportFromSATAndUnits",
-                        new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1] });
-
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), funcNode) };
+                return new[]
+                {
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),funcNode)
+                };
+            }
         }
     }
 
     [NodeCategory(BuiltinNodeCategories.GEOMETRY)]
     [NodeName("Geometry.DeserializeFromSABWithUnits")]
     [InPortTypes(new string[] { "byte[]", "DynamoUnits.Unit" })]
-    //[NodeDescription("ExportToSATDescripiton", typeof(GeometryUI.Properties.Resources))]
-    //[NodeSearchTags("ExportWithUnitsSearchTags", typeof(GeometryUI.Properties.Resources))]
+    [InPortNames(new[] { "file|filePath", "dynamoUnit" })]
+    [InPortDescriptions(typeof(Properties.Resources), new[] { "ImportSABByteArrayDesc", "ImportSATDynamoUnitDesc" })]
+    [NodeDescription("ImportToSABUnitsDesc", typeof(Properties.Resources))]
     [OutPortTypes("Geometry[]")]
+    [OutPortNames("geometry")]
+    [OutPortDescriptions(typeof(Properties.Resources), "SABSATGeoDesc")]
     [IsDesignScriptCompatible]
-    public class ImportSABByUnits : NodeModel
+    public class DeserializeFromSABWithUnits : NodeModel
     {
         [JsonConstructor]
-        private ImportSABByUnits(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
+        private DeserializeFromSABWithUnits(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
     base(inPorts, outPorts)
         {
             ShouldDisplayPreviewCore = true;
+            inPorts.ElementAt(1).DefaultValue = new NullNode();
         }
 
-        public ImportSABByUnits()
+        public DeserializeFromSABWithUnits()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("bytes", "TODO")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("dynamoUnit", "TODO", new NullNode())));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("geometry", "TODO")));
-
             ShouldDisplayPreviewCore = true;
+            ArgumentLacing = LacingStrategy.Auto;
             RegisterAllPorts();
+            //setting port data via attributes don't currently support default vals
+            InPorts.ElementAt(1).DefaultValue = new NullNode();
+            InPorts.ElementAt(1).UsingDefaultValue = true;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(
           List<AssociativeNode> inputAstNodes)
         {
-            if (!InPorts[0].IsConnected || (!InPorts[1].IsConnected && !InPorts[1].UsingDefaultValue))
+        
+            var funcNode = AstFactory.BuildFunctionCall("ImportHelpers", "DeserializeFromSABWithUnits",
+                          new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1] }) as IdentifierListNode;
+
+            if (IsPartiallyApplied)
             {
-                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+                return new[]
+                {
+
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                        AstFactory.BuildFunctionObject(
+                            new IdentifierListNode(){LeftNode = funcNode?.LeftNode,
+                            RightNode = (funcNode.RightNode as FunctionCallNode)?.Function },
+                            InPorts.Count,
+                            Enumerable.Range(0, InPorts.Count).Where(index=>InPorts[index].IsConnected),
+                            inputAstNodes))
+                };
             }
+            else
+            {
+                UseLevelAndReplicationGuide(inputAstNodes);
 
-            var funcNode = AstFactory.BuildFunctionCall("ImportHelpers", "DeserializeFromSABAndUnits",
-                        new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1] });
-
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), funcNode) };
+                return new[]
+                {
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),funcNode)
+                };
+            }
         }
     }
 }

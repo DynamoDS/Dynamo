@@ -1,7 +1,9 @@
 ﻿using Autodesk.DesignScript.Geometry;
+using Dynamo;
 using DynamoUnits;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +11,35 @@ using TestServices;
 
 namespace GeometryTests
 {
+
+
+    [TestFixture]
+    internal class GeometryImportNodeTests : DynamoModelTestBase
+    {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("FunctionObject.ds");
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("BuiltIn.ds");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DynamoConversions.dll");
+            libraries.Add("DynamoUnits.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("GeometryColor.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        [Test]
+        public void SATAndSABUnitImportNodeModelNodesWork_PartialApplication_Replication()
+        {
+            OpenModel(Path.Combine("core", "GeometryTestFiles", "sat_import_with_units.dyn"));
+            RunCurrentModel();
+            var output = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name == "Math.Sum").FirstOrDefault();
+            AssertPreviewValue(output.GUID.ToString(), 217.133880);
+        }
+    }
+
     [TestFixture]
     internal class GeometryImportHelperTests:GeometricTestBase
     {
@@ -27,7 +58,7 @@ namespace GeometryTests
         public void SATImportWithNullImportsAsUnitless()
         {
             var satpath = Path.Combine(TestDirectory, "core\\WorkflowTestFiles\\GeometryDefects\\SweepAsSolid", "profile.sat");
-            var surface = ImportHelpers.ImportFromSATByUnits(satpath, null).FirstOrDefault() as Autodesk.DesignScript.Geometry.Surface;
+            var surface = ImportHelpers.ImportFromSATWithUnits(satpath, null).FirstOrDefault() as Autodesk.DesignScript.Geometry.Surface;
             Assert.NotNull(surface);
             ShouldBeApproximate(surface.Area, 1.938695, .000001);
         }
@@ -37,7 +68,7 @@ namespace GeometryTests
             var satpath = Path.Combine(TestDirectory, "core\\WorkflowTestFiles\\GeometryDefects\\SweepAsSolid", "profile.sat");
             const string ft = "autodesk.unit.unit:feet";
             var ftunit = Unit.ByTypeID($"{ft}-1.0.1");
-            var surface = ImportHelpers.ImportFromSATByUnits(satpath, ftunit).FirstOrDefault() as Autodesk.DesignScript.Geometry.Surface;
+            var surface = ImportHelpers.ImportFromSATWithUnits(satpath, ftunit).FirstOrDefault() as Autodesk.DesignScript.Geometry.Surface;
             Assert.NotNull(surface);
             ShouldBeApproximate(surface.Area, 1.938695, .000001);
         }
@@ -47,7 +78,7 @@ namespace GeometryTests
             var satpath = Path.Combine(TestDirectory, "core\\WorkflowTestFiles\\GeometryDefects\\SweepAsSolid", "profile.sat");
             const string inch = "autodesk.unit.unit:inches";
             var inunit = Unit.ByTypeID($"{inch}-1.0.0");
-            var surface = ImportHelpers.ImportFromSATByUnits(satpath, inunit).FirstOrDefault() as Autodesk.DesignScript.Geometry.Surface;
+            var surface = ImportHelpers.ImportFromSATWithUnits(satpath, inunit).FirstOrDefault() as Autodesk.DesignScript.Geometry.Surface;
             Assert.NotNull(surface);
             //feet in the sat file are converted to inches, which means the resulting object is much larger.
             ShouldBeApproximate(surface.Area, 279.172131, .000001);
@@ -59,7 +90,52 @@ namespace GeometryTests
             const string lb = "autodesk.unit.unit:poundsMass";
             var lbunit = Unit.ByTypeID($"{lb}-1.0.0");
             Assert.Throws<Exception>((TestDelegate)(()=>{
-                var surface = ImportHelpers.ImportFromSATByUnits(satpath, lbunit) as Autodesk.DesignScript.Geometry.Surface;
+                var surface = ImportHelpers.ImportFromSATWithUnits(satpath, lbunit) as Autodesk.DesignScript.Geometry.Surface;
+            }));
+        }
+        [Test]
+        public void SABImportWithNullImportsAsUnitless()
+        {
+            var cube = Cuboid.ByLengths(3, 4, 5);
+         
+            //current implementation serializes as meters
+            var sab = Geometry.SerializeAsSAB(new Geometry[] { cube });
+            var cube2 = ImportHelpers.DeserializeFromSABWithUnits(sab, null).FirstOrDefault();
+            ShouldBeApproximate((cube2 as Solid).Volume, 60, .000001);
+        }
+        [Test]
+        public void SABImportWithSameUnits_ImportsAtSameSize()
+        {
+            var cube = Cuboid.ByLengths(3, 4, 5);
+            const string meters = "autodesk.unit.unit:meters";
+            var metersUnit = Unit.ByTypeID($"{meters}-1.0.1");
+            //current implementation serializes as meters
+            var sab = Geometry.SerializeAsSAB(new Geometry[] { cube });
+            var cube2 = ImportHelpers.DeserializeFromSABWithUnits(sab, metersUnit).FirstOrDefault();
+            ShouldBeApproximate((cube2 as Solid).Volume, 60,.000001);
+        }
+
+        [Test]
+        public void SABImportWithSmallerUnits_ImportsAsLargerSize()
+        {
+            var cube = Cuboid.ByLengths(3, 4, 5);
+            const string millimeters = "autodesk.unit.unit:millimeters";
+            var milliUnit = Unit.ByTypeID($"{millimeters}-1.0.1");
+            //current implementation serializes as meters
+            var sab = Geometry.SerializeAsSAB(new Geometry[] { cube });
+            var cube2 = ImportHelpers.DeserializeFromSABWithUnits(sab, milliUnit).FirstOrDefault();
+            ShouldBeApproximate((cube2 as Solid).Volume, 60.0*1000*1000*1000, .000001);
+        }
+        [Test]
+        public void SABImportWithWrongUnitType_Throws()
+        {
+            var cube = Cuboid.ByLengths(3, 4, 5);
+            const string lb = "autodesk.unit.unit:poundsMass";
+            var lbunit = Unit.ByTypeID($"{lb}-1.0.0");
+            //current implementation serializes as meters
+            var sab = Geometry.SerializeAsSAB(new Geometry[] { cube });
+            Assert.Throws<Exception>((TestDelegate)(() => {
+                var cube2 = ImportHelpers.DeserializeFromSABWithUnits(sab, lbunit).FirstOrDefault();
             }));
         }
 
