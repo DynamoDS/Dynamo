@@ -89,9 +89,9 @@ namespace GeometryTests
             var satpath = Path.Combine(TestDirectory, "core\\WorkflowTestFiles\\GeometryDefects\\SweepAsSolid", "profile.sat");
             const string lb = "autodesk.unit.unit:poundsMass";
             var lbunit = Unit.ByTypeID($"{lb}-1.0.0");
-            Assert.Throws<Exception>((TestDelegate)(()=>{
+            Assert.Throws<Exception>(()=>{
                 var surface = ImportHelpers.ImportFromSATWithUnits(satpath, lbunit) as Autodesk.DesignScript.Geometry.Surface;
-            }));
+            });
         }
         [Test]
         public void SABImportWithNullImportsAsUnitless()
@@ -134,9 +134,9 @@ namespace GeometryTests
             var lbunit = Unit.ByTypeID($"{lb}-1.0.0");
             //current implementation serializes as meters
             var sab = Geometry.SerializeAsSAB(new Geometry[] { cube });
-            Assert.Throws<Exception>((TestDelegate)(() => {
+            Assert.Throws<Exception>(() => {
                 var cube2 = ImportHelpers.DeserializeFromSABWithUnits(sab, lbunit).FirstOrDefault();
-            }));
+            });
         }
 
     }
