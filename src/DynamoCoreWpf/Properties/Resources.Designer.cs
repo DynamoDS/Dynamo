@@ -3336,6 +3336,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This is an infected package. Please upload a clean version..
+        /// </summary>
+        public static string InfectedPackageMessageString {
+            get {
+                return ResourceManager.GetString("InfectedPackageMessageString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Read more....
         /// </summary>
         public static string InfoBubbleDocumentationLinkText {
