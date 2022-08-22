@@ -59,6 +59,10 @@ launchSettings.json
 ###############
 *_ReSharper*
 
+# IDE #
+###############
+.idea
+
 #documentation files
 doc/html/
 Dynamo.sln.DotSettings
