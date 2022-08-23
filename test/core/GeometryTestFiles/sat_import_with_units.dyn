@@ -10,27 +10,6 @@
   "Outputs": [],
   "Nodes": [
     {
-      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Users\\kirschm\\source\\repos\\mjkkirschner\\Dynamo\\test\\core\\WorkflowTestFiles\\GeometryDefects\\SweepAsSolid\\profile.sat",
-      "InputValue": "C:\\Users\\kirschm\\source\\repos\\mjkkirschner\\Dynamo\\test\\core\\WorkflowTestFiles\\GeometryDefects\\SweepAsSolid\\profile.sat",
-      "NodeType": "ExtensionNode",
-      "Id": "89fa43ff54c44d5c8b29d02af35f6a6e",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "17b0e3b2f8ae47a9b26076e0caeca7ca",
-          "Name": "",
-          "Description": "File Path",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Allows you to select a file on the system to get its file path."
-    },
-    {
       "ConcreteType": "GeometryUI.ImportFromSATWithUnits, GeometryUI",
       "NodeType": "ExtensionNode",
       "Id": "8a767c7046fa436d81441910d224a6a9",
@@ -728,37 +707,33 @@
       ],
       "Replication": "Auto",
       "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"..\\\\..\\\\..\\\\..\\\\Dynamo\\\\test\\\\core\\\\WorkflowTestFiles\\\\GeometryDefects\\\\SweepAsSolid\\\\profile.sat\";",
+      "Id": "2db6fc8c76464478a598be0c33e50927",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cf3a15124dbf4d368ee79c47a36fd8ca",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
     }
   ],
   "Connectors": [
     {
-      "Start": "17b0e3b2f8ae47a9b26076e0caeca7ca",
-      "End": "eb68bd9d872e4d7e84acf01498a149ee",
-      "Id": "1042dca386e4459b832117b959e68691",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "17b0e3b2f8ae47a9b26076e0caeca7ca",
-      "End": "5d3ac8a700e7424eb9677f47e1ec528c",
-      "Id": "1e0adc037e34445cb77c6d7a4c829d3b",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "17b0e3b2f8ae47a9b26076e0caeca7ca",
-      "End": "4ccd09758b434f10ae680744c8d5e5e6",
-      "Id": "7e8bcee0d5ec4fa2aa98ab599f77ddb1",
-      "IsHidden": "False"
-    },
-    {
       "Start": "486f41c7d7ae4c71b8139e8f26e228d2",
       "End": "e36be68eeaa347b58e301e867dde8e02",
       "Id": "617e7b58cd034aebb1040f98af1f8131",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "b5ae41e7a1c5448b960eb65548ac9b4c",
-      "End": "2a4f723a74cc4c84a13101973d7d8814",
-      "Id": "9b35b3ed49a9447aa31fcc50744372df",
       "IsHidden": "False"
     },
     {
@@ -868,6 +843,30 @@
       "End": "8d261c6a37fb4e669791f64569c0a638",
       "Id": "4393ecfaed21437fb5a35af11b898d70",
       "IsHidden": "False"
+    },
+    {
+      "Start": "cf3a15124dbf4d368ee79c47a36fd8ca",
+      "End": "eb68bd9d872e4d7e84acf01498a149ee",
+      "Id": "9dcc70cc8c094ba2924db052e3b09f2e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cf3a15124dbf4d368ee79c47a36fd8ca",
+      "End": "2a4f723a74cc4c84a13101973d7d8814",
+      "Id": "481df07ecf3144ad8851cc46b24b58a7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cf3a15124dbf4d368ee79c47a36fd8ca",
+      "End": "4ccd09758b434f10ae680744c8d5e5e6",
+      "Id": "ce292acf1a22452c873d57a2086be235",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cf3a15124dbf4d368ee79c47a36fd8ca",
+      "End": "5d3ac8a700e7424eb9677f47e1ec528c",
+      "Id": "87deaeea8eba47cc849c7b1f9b2ae8c5",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
@@ -876,7 +875,7 @@
       "Name": "profile.sat",
       "ReferenceType": "External",
       "Nodes": [
-        "89fa43ff54c44d5c8b29d02af35f6a6e"
+        "2db6fc8c76464478a598be0c33e50927"
       ]
     }
   ],
@@ -903,7 +902,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.16.0.2337",
+      "Version": "2.16.0.2345",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -921,16 +920,6 @@
     },
     "ConnectorPins": [],
     "NodeViews": [
-      {
-        "Name": "File Path",
-        "ShowGeometry": true,
-        "Id": "89fa43ff54c44d5c8b29d02af35f6a6e",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -45.0,
-        "Y": 39.0
-      },
       {
         "Name": "Geometry.ImportFromSATWithUnits",
         "ShowGeometry": true,
@@ -1130,11 +1119,21 @@
         "Excluded": false,
         "X": 3010.1360611620871,
         "Y": 950.53744635740463
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "2db6fc8c76464478a598be0c33e50927",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -400.45023747642256,
+        "Y": -130.06633569476455
       }
     ],
     "Annotations": [],
-    "X": -2659.1908605619433,
-    "Y": -600.90130717132649,
-    "Zoom": 0.96112279517207733
+    "X": 379.98748583168043,
+    "Y": 117.71004774899916,
+    "Zoom": 0.76727274727297878
   }
 }
