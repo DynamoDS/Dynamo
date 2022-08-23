@@ -162,8 +162,8 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
             //assert count is correct.
-            //TODO this should be 680 - but 2 tsplines nodes have such long signatures the paths are too long for windows.
-            Assert.AreEqual(682, generatedFileNames.Count());
+            //TODO this should be greater but 2 tsplines nodes have such long signatures the paths are too long for windows.
+            Assert.AreEqual(683, generatedFileNames.Count());
         }
         [Test]
         public void ProducesCorrectOutputFromCoreDirectory_dsFiles()
