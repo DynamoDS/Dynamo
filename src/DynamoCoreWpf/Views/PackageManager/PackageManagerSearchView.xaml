@@ -1090,7 +1090,7 @@
                                     FontFamily="{StaticResource ArtifaktElementRegular}"
                                     FontSize="10"
                                     Foreground="#F5F5F5"
-                                    Text="Upload Error" />
+                                    Text="{x:Static p:Resources.InfectedPackageErrorString}" />
 
                                 <!--  Version  -->
                                 <TextBlock

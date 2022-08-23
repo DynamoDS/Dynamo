@@ -200,6 +200,7 @@ namespace Dynamo.ViewModels
 
         #region Properties/Fields
 
+        private readonly string QUARANTINED = "quarantined";
         public PackageManagerSearchView Owner { get; set; }
 
         ObservableCollection<PackageUploadHandle> _uploads = new ObservableCollection<PackageUploadHandle>();
@@ -484,7 +485,7 @@ namespace Dynamo.ViewModels
             {
                 foreach (var infectedVer in latestPkgs.maintains)
                 {
-                    if (infectedVer.scan_status == "quarantined")
+                    if (infectedVer.scan_status == QUARANTINED)
                     {
                         var ele = new PackageManagerSearchElement(infectedVer);
                         InfectedPackageList.Add(ele);

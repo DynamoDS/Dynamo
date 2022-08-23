@@ -3274,4 +3274,7 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="InfectedPackageMessageString" xml:space="preserve">
     <value>This is an infected package. Please upload a clean version.</value>
   </data>
+  <data name="InfectedPackageErrorString" xml:space="preserve">
+    <value>Upload Error</value>
+  </data>
 </root>

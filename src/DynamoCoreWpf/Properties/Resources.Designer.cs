@@ -3345,6 +3345,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Upload Error.
+        /// </summary>
+        public static string InfectedPackageErrorString {
+            get {
+                return ResourceManager.GetString("InfectedPackageErrorString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This is an infected package. Please upload a clean version..
         /// </summary>
         public static string InfectedPackageMessageString {
