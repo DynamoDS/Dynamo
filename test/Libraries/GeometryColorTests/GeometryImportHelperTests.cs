@@ -35,6 +35,8 @@ namespace GeometryTests
         {
             OpenModel(Path.Combine("core", "GeometryTestFiles", "sat_import_with_units.dyn"));
             RunCurrentModel();
+            AssertNoDummyNodes();
+            Assert.AreEqual(21, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             var output = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name == "Math.Sum").FirstOrDefault();
             AssertPreviewValue(output.GUID.ToString(), 217.133880);
         }
