@@ -620,7 +620,16 @@ Default value: {0}</value>
   <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
     <value>is obsolete, please use the new Convert Units node.</value>
   </data>
+  <data name="CustomSelectionNodeDescription" xml:space="preserve">
+    <value>A dropdown menu with customizable values.</value>
+  </data>
+  <data name="CustomSelectionSearchTags" xml:space="preserve">
+    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
+  </data>
   <data name="IntegerSliderInfoMessage" xml:space="preserve">
     <value>The value entered is not in the int64 range.</value>
+  </data>
+  <data name="CustomSelectionOutputDescription" xml:space="preserve">
+    <value>Selected value</value>
   </data>
 </root>

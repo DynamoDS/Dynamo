@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -26,7 +26,7 @@ namespace Dynamo.Notifications
         private static readonly string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.bundle.js";
         private static readonly string NotificationCenterButtonName = "notificationsButton";
 
-        private DynamoLogger logger;
+        private readonly DynamoLogger logger;
 
         internal NotificationCenterController(DynamoView view, DynamoLogger dynLogger)
         {
@@ -51,6 +51,13 @@ namespace Dynamo.Notifications
             logger = dynLogger;
         }
 
+        // Handler for new Webview2 tab window request
+        private void WebView_NewWindowRequested(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs e)
+        {
+            Process.Start(e.Uri);
+            e.Handled = true;
+        }
+
         private void WebView_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -71,6 +78,11 @@ namespace Dynamo.Notifications
 
             if (notificationUIPopup.webView.CoreWebView2 != null)
             {
+                // More initialization options
+                // Context menu disabled
+                notificationUIPopup.webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                // Opening hyper-links using default system browser instead of WebView2 tab window
+                notificationUIPopup.webView.CoreWebView2.NewWindowRequested += WebView_NewWindowRequested;
                 notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
                 RefreshNotifications();
             }
@@ -79,6 +91,10 @@ namespace Dynamo.Notifications
         internal void Dispose()
         {
             notificationUIPopup.webView.CoreWebView2InitializationCompleted -= WebView_CoreWebView2InitializationCompleted;
+            if (notificationUIPopup.webView.CoreWebView2 != null)
+            {
+                notificationUIPopup.webView.CoreWebView2.NewWindowRequested -= WebView_NewWindowRequested;
+            }
             dynamoView.SizeChanged -= DynamoView_SizeChanged;
             dynamoView.LocationChanged -= DynamoView_LocationChanged;
             notificationsButton.Click -= NotificationsButton_Click;
