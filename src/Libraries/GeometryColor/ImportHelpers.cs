@@ -26,7 +26,7 @@ namespace Autodesk.DesignScript.Geometry
         /// <param name="dynamoUnit">a forge unit length, if left null, sat file will be imported as unitless</param>
         /// <returns></returns>
         [AllowRankReduction]
-        public static IEnumerable<Geometry> ImportFromSATWithUnits(string filePath, DynamoUnits.Unit dynamoUnit)
+        public static IEnumerable<Geometry> ImportFromSATWithUnits(string filePath, [DefaultArgument("null")] DynamoUnits.Unit dynamoUnit)
         {
             var mm_per_unit = CalculateMillimeterPerUnit(dynamoUnit);
             return Geometry.ImportFromSAT(filePath, mm_per_unit);
@@ -40,7 +40,7 @@ namespace Autodesk.DesignScript.Geometry
         /// <param name="dynamoUnit">a forge unit length, if left null, sat file will be imported as unitless</param>
         /// <returns></returns>
         [AllowRankReduction]
-        public static IEnumerable<Geometry> ImportFromSATWithUnits(FileInfo file, DynamoUnits.Unit dynamoUnit)
+        public static IEnumerable<Geometry> ImportFromSATWithUnits(FileInfo file, [DefaultArgument("null")] DynamoUnits.Unit dynamoUnit)
         {
             var mm_per_unit = CalculateMillimeterPerUnit(dynamoUnit);
             return Geometry.ImportFromSAT(file, mm_per_unit);
@@ -55,7 +55,7 @@ namespace Autodesk.DesignScript.Geometry
         /// <param name="dynamoUnit">a forge unit length, if left null, sat file will be imported as unitless</param>
         /// <returns></returns>
         [AllowRankReduction]
-        public static IEnumerable<Geometry> DeserializeFromSABWithUnits(byte[] buffer, DynamoUnits.Unit dynamoUnit)
+        public static IEnumerable<Geometry> DeserializeFromSABWithUnits(byte[] buffer, [DefaultArgument("null")] DynamoUnits.Unit dynamoUnit)
         {
             var mm_per_unit = CalculateMillimeterPerUnit(dynamoUnit);
             return Geometry.DeserializeFromSAB(buffer, mm_per_unit);
