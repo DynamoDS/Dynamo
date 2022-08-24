@@ -596,6 +596,8 @@ namespace Dynamo.Configuration
             get { return IronPythonResolveVersion.ToString(); }
             set { IronPythonResolveVersion = Version.TryParse(value, out Version newVal) ? newVal : IronPythonResolveVersion; }
         }
+
+        public List<int> ReadNotificationIds { get; set; }
         #endregion
 
         /// <summary>
@@ -636,7 +638,7 @@ namespace Dynamo.Configuration
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
-
+                        
             CustomPackageFolders = new List<string>();
 
             PythonTemplateFilePath = "";
@@ -647,6 +649,7 @@ namespace Dynamo.Configuration
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
+            ReadNotificationIds = new List<int>();
         }
 
         /// <summary>

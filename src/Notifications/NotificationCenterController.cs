@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Notifications.View;
@@ -12,6 +16,24 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.Notifications
 {
+    [ClassInterface(ClassInterfaceType.AutoDual)]
+    [ComVisible(true)]
+    public class scriptObject
+    {
+        PreferenceSettings preferenceSettings;
+
+        public scriptObject(PreferenceSettings preferenceSettings)
+        {
+            this.preferenceSettings = preferenceSettings;            
+        }
+
+        public void SetNoficationsAsRead(object[] ids)
+        {
+            int[] notificationIds = ids.Select(x=>(int)x).ToArray();
+            preferenceSettings.ReadNotificationIds.AddRange(notificationIds);
+        }
+    }
+
     public class NotificationCenterController
     {
         private readonly NotificationUI notificationUIPopup;
@@ -36,7 +58,7 @@ namespace Dynamo.Notifications
 
             dynamoView.SizeChanged += DynamoView_SizeChanged;
             dynamoView.LocationChanged += DynamoView_LocationChanged;
-            notificationsButton.Click += NotificationsButton_Click;
+            notificationsButton.Click += NotificationsButton_Click;            
 
             notificationUIPopup = new NotificationUI
             {
@@ -46,6 +68,8 @@ namespace Dynamo.Notifications
                 HorizontalOffset = notificationPopupHorizontalOffset,
                 VerticalOffset = notificationPopupVerticalOffset
             };
+
+            //notificationUIPopup.webView.Source = new Uri("http://localhost:8080");
             notificationUIPopup.webView.EnsureCoreWebView2Async();
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
             logger = dynLogger;
@@ -80,11 +104,12 @@ namespace Dynamo.Notifications
             {
                 // More initialization options
                 // Context menu disabled
-                notificationUIPopup.webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                //notificationUIPopup.webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
                 // Opening hyper-links using default system browser instead of WebView2 tab window
                 notificationUIPopup.webView.CoreWebView2.NewWindowRequested += WebView_NewWindowRequested;
                 notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
-                RefreshNotifications();
+                //RefreshNotifications();
+                notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", new scriptObject(dynamoViewModel.Model.PreferenceSettings));
             }
         }
 
