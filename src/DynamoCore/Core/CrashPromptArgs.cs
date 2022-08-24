@@ -125,12 +125,12 @@ namespace Dynamo.Core
         /// <summary>
         /// Allow Dynamo to send the log file to the CER system.
         /// </summary>
-        public bool SendLogFile { get; set; } = true;
+        internal bool SendLogFile { get; set; } = false;
 
         /// <summary>
         /// Allow Dynamo to send the settings file to the CER system.
         /// </summary>
-        public bool SendSettingsFile { get; set; } = true;
+        internal bool SendSettingsFile { get; set; } = false;
 
         /// <summary>
         /// Allow Dynamo to send the recorded commands file to the CER system.
