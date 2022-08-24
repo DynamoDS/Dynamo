@@ -2,13 +2,16 @@
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
-    public class ShortcutToolbarViewModel : ViewModelBase
+    internal class ShortcutToolbarViewModel : ViewModelBase
     {
         public ShortcutToolbarViewModel()
         {
             NotificationsNumber = 0;
         }
 
+        /// <summary>
+        /// This property represents the number of new notifications 
+        /// </summary>
         public int NotificationsNumber { get; set; }
     }
 }
