@@ -163,11 +163,6 @@ namespace Dynamo.Wpf.Utilities
         /// <returns>True if the CER tool process was successfully started. False otherwise</returns>
         internal static bool ShowCrashErrorReportWindow(DynamoViewModel viewModel, CrashErrorReportArgs args)
         {
-            if (DynamoModel.FeatureFlags?.CheckFeatureFlag("CER", false) == false)
-            {
-                return false;
-            }
-
             DynamoModel model = viewModel?.Model;
 
             string cerToolDir = !string.IsNullOrEmpty(model.CERLocation) ?
