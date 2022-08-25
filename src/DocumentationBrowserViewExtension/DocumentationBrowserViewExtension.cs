@@ -24,7 +24,6 @@ namespace Dynamo.DocumentationBrowser
         private const string FALLBACK_DOC_DIRECTORY_NAME = "fallback_docs";
         //these fields should only be directly set by tests.
         internal DirectoryInfo fallbackDocPath;
-        //these fields should only be directly set by tests.
         internal DirectoryInfo webBrowserUserDataFolder;
 
         internal DocumentationBrowserView BrowserView { get; private set; }
