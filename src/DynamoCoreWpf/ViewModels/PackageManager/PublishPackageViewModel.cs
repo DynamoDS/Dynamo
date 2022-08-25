@@ -1477,7 +1477,7 @@ namespace Dynamo.PackageManager
         /// Delegate used to submit the publish online request</summary>
         private void Submit()
         {
-            MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(Resources.PrePackagePublishMessage, Resources.PrePackagePublishTitle, MessageBoxButton.OKCancel, MessageBoxImage.Information);
+            MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(Owner, Resources.PrePackagePublishMessage, Resources.PrePackagePublishTitle, MessageBoxButton.OKCancel, MessageBoxImage.Information);
             if (response == MessageBoxResult.Cancel)
             {
                 return;
