@@ -849,9 +849,9 @@
       "keywords": "flip"
     },
     {
-      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Curve.Offset",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Curve.Offset.Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.Curve.Offset@double",
+      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Curve.OffsetMany",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Curve.OffsetMany.Small?path=ProtoGeometry.dll",
+      "contextData": "Autodesk.DesignScript.Geometry.Curve.OffsetMany@double",
       "parameters": null,
       "itemType": "action",
       "keywords": "thicken, lines"
@@ -2299,7 +2299,7 @@
     {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops",
       "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops.Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops@Autodesk.DesignScript.Geometry.PolyCurve[]",
+      "contextData": "Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops@Autodesk.DesignScript.Geometry.PolyCurve[],double",
       "parameters": null,
       "itemType": "action",
       "keywords": "trim multiple, removeloops, cutloops"
@@ -2491,7 +2491,7 @@
     {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves",
       "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves.Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves@Autodesk.DesignScript.Geometry.Curve[]",
+      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves@Autodesk.DesignScript.Geometry.Curve[],double,bool,double",
       "parameters": null,
       "itemType": "create",
       "keywords": "segments, joincurves"
@@ -2499,7 +2499,7 @@
     {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves",
       "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves.Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves@Autodesk.DesignScript.Geometry.Curve[]",
+      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves@Autodesk.DesignScript.Geometry.Curve[],double,bool,double",
       "parameters": null,
       "itemType": "create",
       "keywords": "segments, joincurves, group curves"
@@ -2585,9 +2585,9 @@
       "keywords": "lines"
     },
     {
-      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.Offset",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.Offset.Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.Offset@double,bool",
+      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany.Small?path=ProtoGeometry.dll",
+      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany@double,bool",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
@@ -3745,9 +3745,9 @@
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Polygon.Points",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Polygon.Points.Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.Polygon.Points",
+      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.Points",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.Points.Small?path=ProtoGeometry.dll",
+      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.Points",
       "parameters": null,
       "itemType": "query",
       "keywords": ""
