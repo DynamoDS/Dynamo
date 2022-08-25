@@ -5948,7 +5948,7 @@
         QmCC
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.NormalAtParameter.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.NormalAtParameter.double.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAU7SURBVHhe7Zw/bhNBGMVzhBwhR/ARTIlEkY429BTu
@@ -5977,7 +5977,7 @@
         AElFTkSuQmCC
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.NormalAtParameter.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.NormalAtParameter.double.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAF3SURBVFhH7Za7bYRAGIQpgRIo4Uo4h5YcUAKps8uc
@@ -5990,7 +5990,7 @@
         RK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.Offset.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.OffsetMany.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAeISURBVHhe7ZuxbiU1FIbzCHmEfYQ8QiiRKKJFWgmq
@@ -6028,7 +6028,7 @@
         p4QEjf7duiDIdThJKrqjo6Ojo6Ojo6Ojo6Ojo6Ojo6Njb3B09D9z3AK0a3g5pQAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.Offset.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.OffsetMany.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAIZSURBVFhH7ZY9TsNAEIVzhBwhR+AIoUSi8BGMaClc
@@ -13666,7 +13666,7 @@
         0M8wXSih/cz9sa0ZZ3Qki86bJGoPLQcMGNAhRqMfMnX2RoanZTgAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves.Curve1-double-bool-double.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAATzSURBVHhe7ZztTeUwEEUpgRIogRL4u9L+oARKoAQ6
@@ -13693,7 +13693,7 @@
         svxoQgH0O/nVK5CuP+94bqwQJF8IIYQQQgghhBBCCHEOLi7+A8QYI0McGsqTAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves.Curve1-double-bool-double.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGDSURBVFhH7ZbbbQIxEEUpgRIogRL4jZQPSqAESqCD
@@ -14068,7 +14068,7 @@
         ng/fQsusGs8AAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.PolyCurve.Offset.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAVnSURBVHhe7ZwxbhRNEIV9BB/BR/ARTGiEhBERmQMy
@@ -14097,7 +14097,7 @@
         NSn5jFx2rIFs/wOnYwLZ8Vtv/Oz133Ecx3EcZ2YcHPwDTgRE75doux4AAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.PolyCurve.Offset.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHRSURBVFhH7ZYxTsNAEEV9hBzBR/AVKJEoXCBRICFz
@@ -14313,7 +14313,7 @@
         icbtT8i4e0ukd3pVe/T47yiKHw0XsntAhANuAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Polygon.Points.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.PolyCurve.Points.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAARISURBVHhe7ZvRbdtAEERdgkuIU4FLSDpwCSkhJbgD
@@ -14338,7 +14338,7 @@
         TkSuQmCC
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Polygon.Points.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.PolyCurve.Points.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEjSURBVFhH7ZXbDYJAFEQpgRLACihBO7AESqAEOyCx
@@ -19016,7 +19016,7 @@
         I0wl0+HBxnEAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops.PolyCurve1-double.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAdRSURBVHhe7Zx7bFNVGMABNSLaAIoiUydimIKIYJGX
@@ -19054,7 +19054,7 @@
         QmCC
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops.PolyCurve1-double.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKxSURBVFhH7ZVPaNNgFMALwhChUL0I28DJoB5EjJ16
@@ -22939,7 +22939,7 @@
         RxRnOPEiIR1R3G3EoNuIQXdByy+MR/1pl5RhLgAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves.Curve1-double-bool-double.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
         EgAACxIB0t1+/AAAAeFJREFUWEfFls1xgzAQRl0CJbgESnA6YDKTu0twCS7BkwoogRI4pIBcc3MBngkd
@@ -22953,7 +22953,7 @@
         cSty1KbIBrckG9wOt/sBZDbzoeq1JLEAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves.Curve1-double-bool-double.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAJcEhZcwAAITcAACE3ATNYn3oAAAZDSURBVHhe7Zy7VRxBEEUJgRAIgRBQBhydI58QCIEQOIqA
