@@ -76,7 +76,9 @@ namespace Dynamo.PackageManager
                 IsSelected = false;
             }
         }
-        
+
+        public PublishPackageView Owner { get; set; }
+
         /// <summary>
         /// A event called when publishing was a success
         /// </summary>
