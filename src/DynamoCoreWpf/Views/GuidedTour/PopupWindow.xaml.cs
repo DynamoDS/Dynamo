@@ -31,6 +31,11 @@ namespace Dynamo.Wpf.Views.GuidedTour
         //Assembly path to the Resources folder
         private const string resourcesPath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources";
 
+        /// <summary>
+        /// This property will be hold the path of the WebView2 cache folder, the value will change based in if DynamoSandbox is executed or Dynamo from Revit is executed
+        /// </summary>
+        internal string WebBrowserUserDataFolder { get; set; }
+
         public PopupWindow(PopupWindowViewModel viewModel, HostControlInfo hInfo)
         {
             InitializeComponent();
@@ -116,7 +121,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             contentGrid.Children.Add(webBrowserComponent);
             Grid.SetRow(webBrowserComponent, 1);
 
-            ResourceUtilities.LoadWebBrowser(hostControlInfo.HtmlPage, webBrowserComponent, resourcesPath, mainFontStylePath, GetType().Assembly);
+            ResourceUtilities.LoadWebBrowser(hostControlInfo.HtmlPage, webBrowserComponent, resourcesPath, mainFontStylePath, GetType().Assembly, WebBrowserUserDataFolder);
         }
 
        

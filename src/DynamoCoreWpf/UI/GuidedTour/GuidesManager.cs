@@ -430,6 +430,24 @@ namespace Dynamo.Wpf.UI.GuidedTour
             var formattedText = Res.ResourceManager.GetString(jsonStepInfo.StepContent.FormattedText);
             var title = Res.ResourceManager.GetString(jsonStepInfo.StepContent.Title);
 
+            DirectoryInfo userDataFolder = null;
+            if (dynamoViewModel != null)
+            {
+                var pathManager = dynamoViewModel.Model.PathManager;
+
+                if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
+                {
+                    var docsDir = new DirectoryInfo(pathManager.DynamoCoreDirectory);
+                    userDataFolder = docsDir.Exists ? docsDir : null;
+                }
+
+                if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
+                {
+                    var docsDir = new DirectoryInfo(pathManager.UserDataDirectory);
+                    userDataFolder = docsDir.Exists ? docsDir : null;
+                }
+            }
+
             switch (jsonStepInfo.StepType)
             {
                 case Step.StepTypes.TOOLTIP:
@@ -446,6 +464,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                             Title = title
                         }
                     };
+                    var popupWindow = newStep.stepUIPopup as PopupWindow;
+                    if(popupWindow != null)
+                    {
+                        popupWindow.WebBrowserUserDataFolder = userDataFolder != null ? userDataFolder.FullName : string.Empty;
+                    }
                     break;
                 case Step.StepTypes.SURVEY:
                     newStep = new Survey(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height)
