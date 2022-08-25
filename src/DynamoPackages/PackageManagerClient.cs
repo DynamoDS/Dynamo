@@ -126,6 +126,22 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Gets last published version of all the packages published by the current user.
+        /// </summary>
+        /// <returns></returns>
+        internal UserPackages GetUsersLatestPackages()
+        {
+            var packages = FailFunc.TryExecute(() =>
+            {
+                var nv = new GetMyPackages();
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<UserPackages>(nv);
+                return pkgResponse.content;
+            }, null);
+
+            return packages;
+        }
+
+        /// <summary>
         /// Gets the metadata for a specific version of a package.
         /// </summary>
         /// <param name="packageInfo">Name and version of a package</param>

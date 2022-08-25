@@ -1458,6 +1458,13 @@
                     },
                     {
                       "path": "Geometry.Geometry.ExportToSAT"
+                    },
+                    {
+                      "path": "Geometry.Geometry.Geometry.ImportFromSATWithUnits"
+                    },
+
+                    {
+                      "path": "Geometry.Geometry.Geometry.DeserializeFromSABWithUnits"
                     }
                   ],
                   "childElements": []
