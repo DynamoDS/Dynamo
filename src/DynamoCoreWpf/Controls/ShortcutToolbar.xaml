@@ -208,13 +208,13 @@
                                             Width="14"
                                             VerticalAlignment="Center" 
                                             HorizontalAlignment="Center">
-                                        <!--TODO insert data bind for the notifications -->
                                         <TextBlock Name="NotificationCount"
                                                    FontFamily="{StaticResource ArtifaktElementRegular}"
                                                    Foreground="White" 
                                                    FontWeight="DemiBold"
                                                    TextAlignment="Center"
-                                                   FontSize="9">8
+                                                   Text="{Binding NotificationsNumber}"
+                                                   FontSize="9">
                                         </TextBlock>
                                     </Border>
                                 </DockPanel>
