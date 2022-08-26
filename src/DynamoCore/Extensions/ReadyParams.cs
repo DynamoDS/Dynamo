@@ -29,9 +29,7 @@ namespace Dynamo.Extensions
             dynamoModel.WorkspaceCleared += OnCurrentWorkspaceModelCleared;
             dynamoModel.WorkspaceRemoveStarted += OnCurrentWorkspaceRemoveStarted;
             dynamoM.Logger.NotificationLogged += OnNotificationRecieved;
-            startupParams = new StartupParams(dynamoModel.AuthenticationManager.AuthProvider,
-                dynamoModel.PathManager, new ExtensionLibraryLoader(dynamoModel), dynamoModel.CustomNodeManager,
-                new Version(dynamoModel.Version), dynamoModel.PreferenceSettings, dynamoModel.LinterManager);
+            startupParams = new StartupParams(dynamoModel);
         }
 
         /// <summary>

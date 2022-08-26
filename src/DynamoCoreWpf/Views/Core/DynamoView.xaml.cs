@@ -95,6 +95,8 @@ namespace Dynamo.Controls
 
         private FileTrustWarning fileTrustWarningPopup = null;
 
+        internal ShortcutToolbar ShortcutBar { get { return shortcutBar; } }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -1303,6 +1305,13 @@ namespace Dynamo.Controls
 
         private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
+            if (CrashReportTool.ShowCrashErrorReportWindow(dynamoViewModel,
+                (args is CrashErrorReportArgs cerArgs) ? cerArgs : 
+                new CrashErrorReportArgs(null)))
+            {
+                return;
+            }
+            // Backup crash reporting dialog (in case ADSK CER is not found)
             var prompt = new CrashPrompt(args, dynamoViewModel);
             prompt.ShowDialog();
         }
@@ -2505,14 +2514,8 @@ namespace Dynamo.Controls
         }
 
         private void DynamoView_Activated(object sender, EventArgs e)
-        {
-            if (dynamoViewModel.MainGuideManager != null && dynamoViewModel.MainGuideManager.currentGuide != null)
-            {
-                dynamoViewModel.MainGuideManager.ManagePopupActivation(true);
-            }
-
-
-            if (fileTrustWarningPopup != null)
+        {            
+            if (fileTrustWarningPopup != null && dynamoViewModel.ViewingHomespace)
             {
                 fileTrustWarningPopup.ManagePopupActivation(true);
             }
@@ -2520,9 +2523,6 @@ namespace Dynamo.Controls
 
         private void DynamoView_Deactivated(object sender, EventArgs e)
         {
-            if (dynamoViewModel.MainGuideManager != null && dynamoViewModel.MainGuideManager.currentGuide != null)
-                dynamoViewModel.MainGuideManager.ManagePopupActivation(false);
-
             if(fileTrustWarningPopup != null)
                 fileTrustWarningPopup.ManagePopupActivation(false);
         }

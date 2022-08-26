@@ -19,13 +19,7 @@ namespace Dynamo.Wpf.Extensions
         }
 
         internal ViewStartupParams(DynamoViewModel dynamoVM) :
-            base(dynamoVM.Model.AuthenticationManager.AuthProvider,
-                dynamoVM.Model.PathManager,
-                new ExtensionLibraryLoader(dynamoVM.Model), 
-				dynamoVM.Model.CustomNodeManager,
-                dynamoVM.Model.GetType().Assembly.GetName().Version,
-                dynamoVM.Model.PreferenceSettings,
-                dynamoVM.Model.LinterManager)
+            base(dynamoVM.Model)
         {
             dynamoViewModel = dynamoVM;
         }

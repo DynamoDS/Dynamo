@@ -617,10 +617,19 @@ Default value: {0}</value>
   <data name="IFNodeWarningMessage" xml:space="preserve">
     <value>This node has been updated and will be removed in a future version of Dynamo. Existing behavior is retained, but a new version now supports Empty Lists, Null values and inputs of varying length. Please replace this node if you wish to use this improved behavior.</value>
   </data>
+  <data name="CustomSelectionSearchTags" xml:space="preserve">
+    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
+  </data>
+  <data name="CustomSelectionNodeDescription" xml:space="preserve">
+    <value>A dropdown menu with customizable values.</value>
+  </data>
   <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
     <value>is obsolete, please use the new Convert Units node.</value>
   </data>
   <data name="IntegerSliderInfoMessage" xml:space="preserve">
     <value>The value entered is not in the int64 range.</value>
+  </data>
+  <data name="CustomSelectionOutputDescription" xml:space="preserve">
+    <value>Selected value</value>
   </data>
 </root>

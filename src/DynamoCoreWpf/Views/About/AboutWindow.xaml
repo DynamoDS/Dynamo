@@ -7,17 +7,23 @@
     xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
     x:Name="DynamoAboutWindow" 
     WindowStartupLocation="CenterOwner"
-    WindowStyle="SingleBorderWindow"
-    ResizeMode="NoResize"
+    WindowStyle="None"
+    ResizeMode="CanResizeWithGrip"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
     d:DataContext="{d:DesignInstance viewModels:DynamoViewModel, IsDesignTimeCreatable=False}"
     mc:Ignorable="d" 
-    Height="350" 
-    Width="540" 
-    Style="{DynamicResource DynamoWindowStyle}">
+    MinHeight="400" 
+    MinWidth="540"  
+    Height="400" 
+    Width="540"  
+    Style="{DynamicResource DynamoWindowStyle}"
+    AllowsTransparency="True">
 
+    <Window.Background>
+        <SolidColorBrush Opacity="0" />
+    </Window.Background>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -28,76 +34,143 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
-    <Grid x:Name="LayoutRoot">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        
-        <Grid Grid.Column="0" x:Name="ContentGrid" Margin="8">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="160"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="40"></RowDefinition>
-            </Grid.RowDefinitions>
+    <Window.CommandBindings>
+        <CommandBinding Command="Close" Executed="OnCloseExecuted" />
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Command="Close" Key="Esc"/>
+    </Window.InputBindings>
 
-            <Grid Grid.Row="1">
+    <Grid Background="Transparent" MouseDown="UIElement_OnMouseDown">
+        <Border Name="MainBorder" Style="{StaticResource NoStyleWindowBorderStyle}">
+
+            <Grid x:Name="LayoutRoot">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Name="DynamoCoreVersion"
-                           Grid.Row="0"
-                           HorizontalAlignment="Center"
-                           Background="Transparent" 
-                           Foreground="#898989"
-                           FontSize="14">
-                           <Run Text="Dynamo Core"/>
-                           <Run Foreground="{StaticResource DynamoStandardLabelTextBrush}" Text="{Binding Version, Mode=OneWay}"/>
-                </TextBlock>
+                <!--  Title Bar + Close Button  -->
+                <DockPanel Grid.Row="0"
+                           Grid.ColumnSpan="2"
+                           Margin="18 20 18 35"
+                           HorizontalAlignment="Stretch">
+                    <Image Name="MessageBoxImageIcon"
+                           Width="24"
+                           Height="24"
+                           Margin="0,0,5,0"
+                           Source="/DynamoCoreWpf;component/UI/Images/dynamonotext.png"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           DockPanel.Dock="Left">
+                    </Image>
 
-                <TextBlock Name="GenericHostVersion"
-                           Grid.Row="1"
-                           HorizontalAlignment="Center"
-                           Background="Transparent" 
-                           Foreground="#898989" 
-                           FontSize="14"
-                           Margin="0,-10,0,0"
-                           Visibility="{Binding HostVersion, Converter={StaticResource NullValueToCollapsedConverter}}">
-                           <Run Text="{Binding HostName, Mode=OneWay}"/>
-                           <Run Foreground="{StaticResource DynamoStandardLabelTextBrush}" Text= "{Binding HostVersion, Mode=OneWay}"/>
-                </TextBlock>
-                <TextBlock x:Name ="UpdateInfo"
-                           HorizontalAlignment="Center"
-                           FontSize="12" 
-                           Grid.Row="{Binding HostVersion, Converter={StaticResource NullValueToGridRow1Converter}}"
-                           FontFamily="{StaticResource OpenSansRegular}" 
-                           Foreground="#00bb00"
-                           Margin="0,-10,0,0"
-                           PreviewMouseDown="OnPreviewMouseDown">
-                        <Run Foreground="{Binding IsUpdateAvailable, Converter={StaticResource IsUpdateAvailableBrushConverter}}" 
-                             Text="{Binding Model.UpdateManager, Converter={StaticResource IsUpdateAvailableToTextConverter}, 
-                             ConverterParameter=DataContext, Mode=OneWay}"/>
-                </TextBlock>
+                    <Button Name="CloseButton"
+                            Click="CloseButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Margin="25 0 0 0"
+                            Style="{StaticResource CloseButtonStyle}" />
+
+                    <Button Name="MaximizeButton"
+                            Click="MaximizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource MaximizeButtonStyle}" />
+
+                    <Button Name="NormalizeButton"
+                            Click="MaximizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Visibility="Collapsed"
+                            Style="{StaticResource RestoreButtonStyle}" />
+
+                    <Button Name="MinimizeButton"
+                            Margin="0 0 25 0"
+                            Click="MinimizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource MinimizeButtonStyle}" />
+
+                    <TextBlock Name="TitleTextBlock"
+                               VerticalAlignment="Center"
+                               DockPanel.Dock="Left"
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               FontSize="20px"
+                               Foreground="#3C3C3C"
+                               TextWrapping="Wrap" />
+                </DockPanel>
+
+                <Rectangle Style="{StaticResource DividerRectangleStyle}" Grid.Row="0" Grid.ColumnSpan="2" />
+
+                <Grid Grid.Column="0" Grid.Row="1" x:Name="ContentGrid" Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="160"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="50"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="1" Orientation=" Vertical">
+                        <TextBlock Name="DynamoCoreVersion"
+                                   HorizontalAlignment="Center"
+                                   Background="Transparent" 
+                                   Foreground="{StaticResource DarkerGreyBrush}"
+                                   FontSize="14">
+                                   <Run Text="Dynamo Core"/>
+                                   <Run Foreground="{StaticResource DarkerGreyBrush}" Text="{Binding Version, Mode=OneWay}"/>
+                        </TextBlock>
+
+                        <TextBlock Name="GenericHostVersion"
+                                   HorizontalAlignment="Center"
+                                   Background="Transparent" 
+                                   Foreground="{StaticResource DarkerGreyBrush}"
+                                   FontSize="14"
+                                   Margin="0"
+                                   Visibility="{Binding HostVersion, Converter={StaticResource NullValueToCollapsedConverter}}">
+                                   <Run Text="{Binding HostName, Mode=OneWay}"/>
+                                   <Run Foreground="{StaticResource DarkerGreyBrush}" Text= "{Binding HostVersion, Mode=OneWay}"/>
+                        </TextBlock>
+                        <TextBlock x:Name ="UpdateInfo"
+                                   HorizontalAlignment="Center"
+                                   FontSize="12" 
+                                   FontFamily="{StaticResource OpenSansRegular}" 
+                                   Foreground="#168576"
+                                   Margin="0"
+                                   PreviewMouseDown="OnPreviewMouseDown">
+                                <Run Foreground="{Binding IsUpdateAvailable, Converter={StaticResource IsUpdateAvailableBrushConverter}}" 
+                                     Text="{Binding Model.UpdateManager, Converter={StaticResource IsUpdateAvailableToTextConverter}, 
+                                     ConverterParameter=DataContext, Mode=OneWay}"/>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <Button Name="DynamoWebsiteButton" Grid.Row="2" Click="OnClickLink" Style="{StaticResource CtaButtonStyle}"
+                            HorizontalAlignment="Center"
+                            Margin="3"
+                            MinHeight="40"
+                            MinWidth="180"
+                            Background="White"
+                            BorderBrush="#BFBFBF"
+                            Foreground="#3C3C3C"/>
+                    <Image Grid.Column="0"
+                           Grid.Row="0"
+                           Source="/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about_dark.png" Height="128" Width="128"/>
+                </Grid>
+
+                <Border Grid.Column="1" Grid.Row="1" Background="{StaticResource LightMidGreyOpacityBrush}"  Margin="0 -15 0 0">
+                    <ScrollViewer Padding="25" Margin="0 15 0 0">
+                        <views:RichTextFile File="{Binding LicenseFile, Mode=OneTime}" 
+                                            IsReadOnly="True" 
+                                            IsEnabled="True"
+                                            IsDocumentEnabled="True" 
+                                            FontSize="10" 
+                                            Foreground="#888888" 
+                                            Background="Transparent" 
+                                            OpenLinksInBrowser="True" 
+                                            BorderThickness="0"/>
+                    </ScrollViewer>
+                </Border>
+
             </Grid>
-            <Button Name="DynamoWebsiteButton" Grid.Row="2" Click="OnClickLink" Style="{StaticResource STextButton}"/>
-            <Image Grid.Column="0"
-                   Grid.Row="0"
-                   Source="/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png" Height="128" Width="128"/>
-        </Grid>
-        <ScrollViewer Grid.Column="1" Background="#363636" Padding="25">
-            <views:RichTextFile File="{Binding LicenseFile}" 
-                                IsReadOnly="True" 
-                                IsEnabled="True"
-                                IsDocumentEnabled="True" 
-                                FontSize="10" 
-                                Foreground="#888888" 
-                                Background="Transparent" 
-                                OpenLinksInBrowser="True" 
-                                BorderThickness="0"/>
-        </ScrollViewer>
+        </Border>
     </Grid>
 </Window>

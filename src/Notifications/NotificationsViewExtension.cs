@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
@@ -18,6 +18,7 @@ namespace Dynamo.Notifications
         private Action<Logging.NotificationMessage> notificationHandler;
         private ObservableCollection<Logging.NotificationMessage> notifications;
         private bool disposed;
+        private NotificationCenterController notificationCenterController;
         /// <summary>
         /// Notifications data collection. PropertyChanged event is raised to help dealing WPF bind dispose.
         /// </summary>
@@ -65,6 +66,7 @@ namespace Dynamo.Notifications
                 BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
                 notificationsMenuItem = null;
                 disposed = true;
+                notificationCenterController.Dispose();
             }
         }
 
@@ -98,6 +100,14 @@ namespace Dynamo.Notifications
             (notificationsMenuItem.MenuItem.Parent as ContentControl).Content = null;
             //place the menu into the DynamoMenu
             viewStartupParams.dynamoMenu.Items.Add(notificationsMenuItem.MenuItem);
+
+            LoadNotificationCenter();
+        }
+
+        private void LoadNotificationCenter()
+        {
+            var dynamoView = viewLoadedParams.DynamoWindow as DynamoView;
+            notificationCenterController = new NotificationCenterController(dynamoView, logger);
         }
 
         internal void AddNotifications()

@@ -504,7 +504,7 @@ namespace Dynamo.ViewModels
                     return PreviewState.None;
                 }
 
-                if (Nodevm.ShowExecutionPreview)
+                if (Nodevm.ShowExecutionPreview || NodeEnd.ShowExecutionPreview)
                 {
                     return PreviewState.ExecutionPreview;
                 }
@@ -798,7 +798,7 @@ namespace Dynamo.ViewModels
         /// Toggles wire viz on/off. This can be overwritten when a node is selected in hidden mode.
         /// </summary>
         /// <param name="parameter"></param>
-        private void HideConnectorCommandExecute(object parameter)
+        internal void HideConnectorCommandExecute(object parameter)
         {
             // Use the inverse of the current visibility state,
             // unless the command is coming from the port, in
@@ -843,7 +843,7 @@ namespace Dynamo.ViewModels
         private void PinConnectorCommandExecute(object parameters)
         {
             MousePosition = new Point(PanelX - ConnectorPinModel.StaticWidth, PanelY - ConnectorPinModel.StaticWidth);
-            ConnectorAnchorViewModel.CurrentPosition = MousePosition;
+            if (ConnectorAnchorViewModel != null) ConnectorAnchorViewModel.CurrentPosition = MousePosition;
             if (MousePosition == new Point(0, 0)) return;
             var connectorPinModel = new ConnectorPinModel(MousePosition.X, MousePosition.Y, Guid.NewGuid(), model.GUID);
             ConnectorModel.AddPin(connectorPinModel);

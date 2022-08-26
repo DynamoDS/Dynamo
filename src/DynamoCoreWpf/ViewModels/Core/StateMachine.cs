@@ -1085,7 +1085,7 @@ namespace Dynamo.ViewModels
                 if (this.currentState != State.None)
                     throw new InvalidOperationException();
 
-                // Before setting the drag state,
+                // Before setting the drag state on node or note,
                 // Alt + left click triggers removal of group node or note belongs to
                 if (Keyboard.IsKeyDown(Key.LeftAlt) && !DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any())
                 {
@@ -1097,6 +1097,27 @@ namespace Dynamo.ViewModels
                         if (parentGroup != null)
                         {
                             owningWorkspace.DynamoViewModel.UngroupModelCommand.Execute(null);
+                        }
+                    }
+                }
+
+                // Before setting the drag state on group
+                // Alt + left click triggers removal of group from parent group
+                if (Keyboard.IsKeyDown(Key.LeftAlt) && DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any())
+                {
+                    var model = DynamoSelection.Instance.Selection.OfType<AnnotationModel>().FirstOrDefault();
+                    {
+                        var parentGroup = owningWorkspace.Annotations
+                           .Where(x => x.AnnotationModel.ContainsModel(model))
+                           .FirstOrDefault();
+                        if (parentGroup != null)
+                        {
+                            // Only trigger when parent group exist
+                            owningWorkspace.Annotations.Where(x => x.AnnotationModel.GUID == model.GUID).FirstOrDefault().RemoveGroupFromGroupCommand.Execute(null);
+                        }
+                        else
+                        {
+                            owningWorkspace.DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.UngroupParentGroupWarning, true);
                         }
                     }
                 }

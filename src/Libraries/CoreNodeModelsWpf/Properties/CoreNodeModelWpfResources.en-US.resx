@@ -117,13 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
   <data name="ColorPaletteUIRecentColors" xml:space="preserve">
     <value>Recent Colors</value>
+  </data>
+  <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
+    <value>Standard</value>
   </data>
   <data name="ColorPaletteUIStandardColors" xml:space="preserve">
     <value>Standard Colors</value>
   </data>
   <data name="DateTimeInputToolTip" xml:space="preserve">
     <value>Enter time and date in the format 'MMMM dd, yyyy h:mm tt'</value>
+  </data>
+  <data name="LblDisplay" xml:space="preserve">
+    <value>Display</value>
+  </data>
+  <data name="LblValue" xml:space="preserve">
+    <value>Value</value>
   </data>
 </root>
