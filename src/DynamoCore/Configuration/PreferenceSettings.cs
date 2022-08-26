@@ -597,7 +597,7 @@ namespace Dynamo.Configuration
             set { IronPythonResolveVersion = Version.TryParse(value, out Version newVal) ? newVal : IronPythonResolveVersion; }
         }
 
-        public List<int> ReadNotificationIds { get; set; }
+        public List<string> ReadNotificationIds { get; set; }
         #endregion
 
         /// <summary>
@@ -649,7 +649,7 @@ namespace Dynamo.Configuration
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
-            ReadNotificationIds = new List<int>();
+            ReadNotificationIds = new List<string>();
         }
 
         /// <summary>

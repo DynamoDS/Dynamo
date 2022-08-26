@@ -25,17 +25,16 @@ namespace Dynamo.Notifications
     [ComVisible(true)]
     public class scriptObject
     {
-        PreferenceSettings preferenceSettings;
+        Action<object[]> onMarkAllAsRead;
 
-        public scriptObject(PreferenceSettings preferenceSettings)
+        internal scriptObject(Action<object []> onMarkAllAsRead)
         {
-            this.preferenceSettings = preferenceSettings;            
+            this.onMarkAllAsRead = onMarkAllAsRead;
         }
 
         public void SetNoficationsAsRead(object[] ids)
         {
-            int[] notificationIds = ids.Select(x=>(int)x).ToArray();
-            preferenceSettings.ReadNotificationIds.AddRange(notificationIds);
+            onMarkAllAsRead(ids);
         }
     }
 
@@ -54,8 +53,6 @@ namespace Dynamo.Notifications
         private static readonly string NotificationCenterButtonName = "notificationsButton";
 
         private DynamoLogger logger;
-        private static readonly DateTime notificationsCenterCreatedTime = DateTime.UtcNow;
-        private static System.Timers.Timer timer;
         private string jsonStringFile;
         private NotificationsModel notificationsModel;
 
@@ -77,6 +74,7 @@ namespace Dynamo.Notifications
                 HorizontalOffset = notificationPopupHorizontalOffset,
                 VerticalOffset = notificationPopupVerticalOffset
             };
+            notificationUIPopup.webView.Source = new Uri("http://localhost:8080");
             notificationUIPopup.webView.EnsureCoreWebView2Async();
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
             logger = dynLogger;
@@ -107,14 +105,37 @@ namespace Dynamo.Notifications
             {
                 jsonStringFile = reader.ReadToEnd();
                 notificationsModel = JsonConvert.DeserializeObject<NotificationsModel>(jsonStringFile);
-
-                var notificationsNumber = notificationsModel.Notifications.Count();
-
-                var shortcutToolbarViewModel = (ShortcutToolbarViewModel)dynamoView.ShortcutBar.DataContext;
-                shortcutToolbarViewModel.NotificationsNumber = notificationsNumber;
             }
 
+            CountUnreadNotifications();
             notificationUIPopup.webView.NavigationCompleted += WebView_NavigationCompleted;
+        }
+
+        private void CountUnreadNotifications()
+        {
+            var notificationsNumber = 0;
+            foreach (var notification in notificationsModel.Notifications)
+            {
+                if (!dynamoViewModel.Model.PreferenceSettings.ReadNotificationIds.Contains(notification.Id))
+                {
+                    notification.IsUnread = true;
+                    notificationsNumber++;
+                }
+            }
+
+            var shortcutToolbarViewModel = (ShortcutToolbarViewModel)dynamoView.ShortcutBar.DataContext;
+            shortcutToolbarViewModel.NotificationsNumber = notificationsNumber;
+        }
+
+        internal void OnMarkAllAsRead(object[] ids)
+        {
+            string[] notificationIds = ids.Select(x => x.ToString()).
+                Where(x => !dynamoViewModel.Model.PreferenceSettings.ReadNotificationIds.Contains(x.ToString())).ToArray();
+
+            dynamoViewModel.Model.PreferenceSettings.ReadNotificationIds.AddRange(notificationIds);
+
+            var shortcutToolbarViewModel = (ShortcutToolbarViewModel)dynamoView.ShortcutBar.DataContext;
+            shortcutToolbarViewModel.NotificationsNumber = 0;
         }
 
         // Handler for new Webview2 tab window request
@@ -146,12 +167,12 @@ namespace Dynamo.Notifications
             {
                 // More initialization options
                 // Context menu disabled
-                //notificationUIPopup.webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                notificationUIPopup.webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
                 // Opening hyper-links using default system browser instead of WebView2 tab window
                 notificationUIPopup.webView.CoreWebView2.NewWindowRequested += WebView_NewWindowRequested;
-                notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
-                //RefreshNotifications();
-                notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", new scriptObject(dynamoViewModel.Model.PreferenceSettings));
+                //notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
+                notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", 
+                    new scriptObject(OnMarkAllAsRead));
             }
         }
 
