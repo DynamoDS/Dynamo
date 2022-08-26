@@ -125,8 +125,7 @@ namespace Dynamo.DocumentationBrowser
             //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
             this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, FallbackDirectoryName, CoreWebView2HostResourceAccessKind.DenyCors);
 
-            //This will remove special characters in paths (like <img src="/path")
-            string htmlContent = HttpUtility.UrlDecode(this.viewModel.GetContent());
+            string htmlContent = this.viewModel.GetContent();
 
             Dispatcher.BeginInvoke(new Action(() =>
             {
