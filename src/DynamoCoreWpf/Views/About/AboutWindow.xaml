@@ -17,7 +17,7 @@
     mc:Ignorable="d" 
     MinHeight="400" 
     MinWidth="540"  
-    Height="600" 
+    Height="650" 
     Width="540"  
     Style="{DynamicResource DynamoWindowStyle}"
     AllowsTransparency="True">
