@@ -74,7 +74,6 @@ namespace Dynamo.Notifications
                 HorizontalOffset = notificationPopupHorizontalOffset,
                 VerticalOffset = notificationPopupVerticalOffset
             };
-            notificationUIPopup.webView.Source = new Uri("http://localhost:8080");
             notificationUIPopup.webView.EnsureCoreWebView2Async();
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
             logger = dynLogger;
@@ -170,7 +169,7 @@ namespace Dynamo.Notifications
                 notificationUIPopup.webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
                 // Opening hyper-links using default system browser instead of WebView2 tab window
                 notificationUIPopup.webView.CoreWebView2.NewWindowRequested += WebView_NewWindowRequested;
-                //notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
+                notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
                 notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", 
                     new scriptObject(OnMarkAllAsRead));
             }
