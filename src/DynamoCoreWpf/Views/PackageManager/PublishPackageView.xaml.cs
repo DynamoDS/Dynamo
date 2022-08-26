@@ -25,6 +25,7 @@ namespace Dynamo.PackageManager
             DataContext = publishPackageViewModel;
             PublishPackageViewModel = publishPackageViewModel;
             publishPackageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
+            publishPackageViewModel.Owner = this;
 
             InitializeComponent();
 
