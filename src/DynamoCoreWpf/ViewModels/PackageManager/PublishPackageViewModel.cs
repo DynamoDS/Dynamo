@@ -76,7 +76,9 @@ namespace Dynamo.PackageManager
                 IsSelected = false;
             }
         }
-        
+
+        public PublishPackageView Owner { get; set; }
+
         /// <summary>
         /// A event called when publishing was a success
         /// </summary>
@@ -1477,6 +1479,11 @@ namespace Dynamo.PackageManager
         /// Delegate used to submit the publish online request</summary>
         private void Submit()
         {
+            MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(Owner, Resources.PrePackagePublishMessage, Resources.PrePackagePublishTitle, MessageBoxButton.OKCancel, MessageBoxImage.Information);
+            if (response == MessageBoxResult.Cancel)
+            {
+                return;
+            }
             var files = BuildPackage();
             try
             {
