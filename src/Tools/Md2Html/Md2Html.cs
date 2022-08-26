@@ -81,7 +81,7 @@ namespace Md2Html
                     continue;
 
                 var imageName = Path.GetFileName(image.Url);
-                var absoluteImagePath = Path.Combine(VIRTUAL_FOLDER_MAPPING, imageName);
+                var absoluteImagePath = string.Join("/", VIRTUAL_FOLDER_MAPPING, imageName);
 
                 image.Url = $"{HTTP_IMAGE_PATH_PREFIX}{absoluteImagePath}";
             }
