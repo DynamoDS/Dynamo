@@ -435,17 +435,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 var pathManager = dynamoViewModel.Model.PathManager;
 
-                if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
-                {
-                    var docsDir = new DirectoryInfo(pathManager.DynamoCoreDirectory);
-                    userDataFolder = docsDir.Exists ? docsDir : null;
-                }
+                //When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+                var docsDir = new DirectoryInfo(pathManager.UserDataDirectory);
+                userDataFolder = docsDir.Exists ? docsDir : null;
 
-                if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
-                {
-                    var docsDir = new DirectoryInfo(pathManager.UserDataDirectory);
-                    userDataFolder = docsDir.Exists ? docsDir : null;
-                }
             }
 
             switch (jsonStepInfo.StepType)

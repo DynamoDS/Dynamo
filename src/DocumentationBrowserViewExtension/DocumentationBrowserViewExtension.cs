@@ -68,10 +68,6 @@ namespace Dynamo.DocumentationBrowser
             {
                 var docsDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, FALLBACK_DOC_DIRECTORY_NAME));
                 fallbackDocPath = docsDir.Exists ? docsDir : null;
-
-                //When executing DynamoSandbox the WebView2 cache folder will be located in the same directory than the executable
-                var userDataDir = new DirectoryInfo(pathManager.DynamoCoreDirectory);
-                webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
             }
 
             if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
@@ -81,11 +77,11 @@ namespace Dynamo.DocumentationBrowser
                 var hostAppDirectory = Directory.GetParent(pathManager.HostApplicationDirectory).FullName;
                 var docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, FALLBACK_DOC_DIRECTORY_NAME));
                 fallbackDocPath = docsDir.Exists ? docsDir : null;
-
-                //When executing Dynamo inside Revit the WebView2 cache folder will be located in the Revit AppData folder
-                var userDataDir = new DirectoryInfo(pathManager.UserDataDirectory);
-                webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
             }
+
+            //When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+            var userDataDir = new DirectoryInfo(pathManager.UserDataDirectory);
+            webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
 
             if (this.BrowserView == null) return;
 
