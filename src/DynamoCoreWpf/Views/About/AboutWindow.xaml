@@ -12,11 +12,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
+    xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     d:DataContext="{d:DesignInstance viewModels:DynamoViewModel, IsDesignTimeCreatable=False}"
     mc:Ignorable="d" 
     MinHeight="400" 
     MinWidth="540"  
-    Height="400" 
+    Height="600" 
     Width="540"  
     Style="{DynamicResource DynamoWindowStyle}"
     AllowsTransparency="True">
@@ -51,6 +52,7 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
@@ -169,7 +171,14 @@
                                             BorderThickness="0"/>
                     </ScrollViewer>
                 </Border>
-
+                <!-- not sure this is needed
+                <Border  Grid.Column="1" Grid.Row="2" Background="{StaticResource LightMidGreyOpacityBrush}"  Margin="0 -15 0 0">
+                    <TextBlock HorizontalAlignment="Center">Additional Component License Information</TextBlock>
+                </Border>
+                -->
+                <Border Name="browserparent"  Grid.Column="1" Grid.Row="2" Background="{StaticResource LightMidGreyOpacityBrush}"  Margin="0 -15 0 0">
+                    <wpf:WebView2></wpf:WebView2>
+                </Border>
             </Grid>
         </Border>
     </Grid>

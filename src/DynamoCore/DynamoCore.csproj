@@ -136,6 +136,7 @@
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
       <NodeHelpFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.*" />
       <OpenSourceLicenses Include="$(SolutionDir)..\doc\distrib\Open Source Licenses\**\*.*" />
+      <LicenseHtmlFiles Include="$(SolutionDir)..\doc\distrib\third_party_licenses_html\**\*.*" />
       <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
       <ExternAnalytics Include="$(SolutionDir)..\extern\Analytics.NET\*.*" />
       <LegacyBinariesToBinFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\*\*" />
@@ -144,6 +145,7 @@
     </ItemGroup>
     <Copy SourceFiles="$(SolutionDir)..\README.md" DestinationFiles="$(OutputPath)README.txt" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\License.rtf" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(LicenseHtmlFiles)" DestinationFolder="$(OutputPath)\third_party_licenses_html" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\TermsOfUse.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\GoogleAnalyticsConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\InstrumentationConsent.rtf" DestinationFolder="$(OutputPath)" />
