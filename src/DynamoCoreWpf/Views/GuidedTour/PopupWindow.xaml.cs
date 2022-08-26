@@ -32,7 +32,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         private const string resourcesPath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources";
 
         /// <summary>
-        /// This property will be hold the path of the WebView2 cache folder, the value will change based in if DynamoSandbox is executed or Dynamo from Revit is executed
+        /// This property will be hold the path of the WebView2 cache folder, the value will change based in if DynamoSandbox is executed or Dynamo is executed from a different host (like Revit, FormIt, Civil, etc).
         /// </summary>
         internal string WebBrowserUserDataFolder { get; set; }
 
