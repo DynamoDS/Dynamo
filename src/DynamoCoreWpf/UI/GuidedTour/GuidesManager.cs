@@ -458,7 +458,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         }
                     };
                     var popupWindow = newStep.stepUIPopup as PopupWindow;
-                    if(popupWindow != null)
+                    if(popupWindow != null && hostControlInfo.HtmlPage != null && !string.IsNullOrEmpty(hostControlInfo.HtmlPage.FileName))
                     {
                         popupWindow.WebBrowserUserDataFolder = userDataFolder != null ? userDataFolder.FullName : string.Empty;
                     }
