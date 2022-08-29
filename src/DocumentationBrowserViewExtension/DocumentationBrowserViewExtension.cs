@@ -72,8 +72,9 @@ namespace Dynamo.DocumentationBrowser
 
             if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
             {
-                //when running over Revit HostApplicationDirectory = C:\Program Files\Autodesk\Revit 2023\AddIns\DynamoForRevit\Revit
-                //Then we need to remove the Revit folder from the path so we can find the fallback_docs directory.
+                //when running over any host app like Revit, FormIt, Civil3D... the path to the fallback_docs can change.
+                //e.g. for Revit the variable HostApplicationDirectory = C:\Program Files\Autodesk\Revit 2023\AddIns\DynamoForRevit\Revit
+                //Then we need to remove the last folder from the path so we can find the fallback_docs directory.
                 var hostAppDirectory = Directory.GetParent(pathManager.HostApplicationDirectory).FullName;
                 var docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, FALLBACK_DOC_DIRECTORY_NAME));
                 fallbackDocPath = docsDir.Exists ? docsDir : null;
