@@ -24,6 +24,7 @@ namespace Dynamo.DocumentationBrowser
         private const string FALLBACK_DOC_DIRECTORY_NAME = "fallback_docs";
         //these fields should only be directly set by tests.
         internal DirectoryInfo fallbackDocPath;
+        internal DirectoryInfo webBrowserUserDataFolder;
 
         internal DocumentationBrowserView BrowserView { get; private set; }
         internal DocumentationBrowserViewModel ViewModel { get; private set; }
@@ -71,13 +72,28 @@ namespace Dynamo.DocumentationBrowser
 
             if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
             {
-                var docsDir = new DirectoryInfo(Path.Combine(pathManager.HostApplicationDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                //when running over any host app like Revit, FormIt, Civil3D... the path to the fallback_docs can change.
+                //e.g. for Revit the variable HostApplicationDirectory = C:\Program Files\Autodesk\Revit 2023\AddIns\DynamoForRevit\Revit
+                //Then we need to remove the last folder from the path so we can find the fallback_docs directory.
+                var hostAppDirectory = Directory.GetParent(pathManager.HostApplicationDirectory).FullName;
+                var docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, FALLBACK_DOC_DIRECTORY_NAME));
                 fallbackDocPath = docsDir.Exists ? docsDir : null;
             }
 
-            if(this.BrowserView != null)
+            //When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+            var userDataDir = new DirectoryInfo(pathManager.UserDataDirectory);
+            webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
+
+            if (this.BrowserView == null) return;
+
+            if(fallbackDocPath != null)
             {
                 this.BrowserView.FallbackDirectoryName = fallbackDocPath.FullName;
+            }
+
+            if(webBrowserUserDataFolder != null)
+            {
+                this.BrowserView.WebBrowserUserDataFolder = webBrowserUserDataFolder.FullName;
             }
         }
 

@@ -430,6 +430,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
             var formattedText = Res.ResourceManager.GetString(jsonStepInfo.StepContent.FormattedText);
             var title = Res.ResourceManager.GetString(jsonStepInfo.StepContent.Title);
 
+            DirectoryInfo userDataFolder = null;
+            if (dynamoViewModel != null)
+            {
+                var pathManager = dynamoViewModel.Model.PathManager;
+
+                //When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+                var docsDir = new DirectoryInfo(pathManager.UserDataDirectory);
+                userDataFolder = docsDir.Exists ? docsDir : null;
+
+            }
+
             switch (jsonStepInfo.StepType)
             {
                 case Step.StepTypes.TOOLTIP:
@@ -446,6 +457,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                             Title = title
                         }
                     };
+                    var popupWindow = newStep.stepUIPopup as PopupWindow;
+                    if(popupWindow != null && hostControlInfo.HtmlPage != null && !string.IsNullOrEmpty(hostControlInfo.HtmlPage.FileName))
+                    {
+                        popupWindow.WebBrowserUserDataFolder = userDataFolder != null ? userDataFolder.FullName : string.Empty;
+                    }
                     break;
                 case Step.StepTypes.SURVEY:
                     newStep = new Survey(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height)

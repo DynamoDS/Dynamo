@@ -23,6 +23,7 @@ namespace Dynamo.DocumentationBrowser
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
 
+        internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
 
         /// <summary>
@@ -116,6 +117,15 @@ namespace Dynamo.DocumentationBrowser
 
         async void InitializeAsync()
         {
+            if (!string.IsNullOrEmpty(WebBrowserUserDataFolder))
+            {
+                //This indicates in which location will be created the WebView2 cache folder
+                documentationBrowser.CreationProperties = new CoreWebView2CreationProperties()
+                {
+                    UserDataFolder = WebBrowserUserDataFolder
+                };
+            }
+
             //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
             await documentationBrowser.EnsureCoreWebView2Async();
 
