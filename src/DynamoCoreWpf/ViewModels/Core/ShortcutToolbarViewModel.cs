@@ -21,18 +21,19 @@ namespace Dynamo.Wpf.ViewModels.Core
             } 
             set {
                 notificationsNumber = value;
-                RaisePropertyChanged(nameof(NotificationsCounterVisibility));
+                RaisePropertyChanged(nameof(IsNotificationsCounterVisible));
             }
         }
 
-        public Visibility NotificationsCounterVisibility { 
+        public bool IsNotificationsCounterVisible
+        { 
             get 
             {
                 if (NotificationsNumber == 0)
                 {
-                    return Visibility.Hidden;
+                    return false;
                 }
-                return Visibility.Visible;
+                return true;
             }
         }
     }

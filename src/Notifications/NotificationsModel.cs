@@ -62,7 +62,7 @@ namespace Dynamo.Notifications
         [DataMember(Name = "isPinned")]
         internal bool IsPinned { get; set; }
 
-        [DataMember(Name = "isUnread")]
-        internal bool IsUnread { get; set; } = false;
+        [DataMember(Name = "isRead")]
+        internal bool IsRead { get; set; } = true;
     }
 }

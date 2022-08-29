@@ -117,7 +117,7 @@ namespace Dynamo.Notifications
             {
                 if (!dynamoViewModel.Model.PreferenceSettings.ReadNotificationIds.Contains(notification.Id))
                 {
-                    notification.IsUnread = true;
+                    notification.IsRead = false;
                     notificationsNumber++;
                 }
             }
@@ -170,6 +170,7 @@ namespace Dynamo.Notifications
                 // Opening hyper-links using default system browser instead of WebView2 tab window
                 notificationUIPopup.webView.CoreWebView2.NewWindowRequested += WebView_NewWindowRequested;
                 notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
+                // Hosts an object that will expose the properties and methods to be called from the javascript side
                 notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", 
                     new scriptObject(OnMarkAllAsRead));
             }

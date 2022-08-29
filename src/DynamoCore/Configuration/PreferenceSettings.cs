@@ -597,6 +597,9 @@ namespace Dynamo.Configuration
             set { IronPythonResolveVersion = Version.TryParse(value, out Version newVal) ? newVal : IronPythonResolveVersion; }
         }
 
+        /// <summary>
+        /// Stores the notification ids that was read by the user
+        /// </summary>
         public List<string> ReadNotificationIds { get; set; }
         #endregion
 
