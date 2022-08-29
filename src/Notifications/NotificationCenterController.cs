@@ -45,7 +45,7 @@ namespace Dynamo.Notifications
         private readonly DynamoViewModel dynamoViewModel;
         private readonly Button notificationsButton;
 
-        private static readonly int notificationPopupHorizontalOffset = -285;
+        private static readonly int notificationPopupHorizontalOffset = -295;
         private static readonly int notificationPopupVerticalOffset = 10;
 
         private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
