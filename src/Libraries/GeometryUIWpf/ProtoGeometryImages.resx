@@ -873,7 +873,7 @@
         xTgouO5cYQYUvqEJWV1yxqO6GHhtdvzLdeb/sLyR/078/P4B/G+CzVwIeOoAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem.Geometry-CoordinateSystem.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.BoundingBox.ByMinimumVolume.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAABDaSURBVHhe7Zx9kxTVFcb9CHwE/lJRXhZ5VQQW32JE
@@ -951,7 +951,7 @@
         dEnvWte61rWuda1rXeta17p2hdtVV/0PmviSyolzmBMAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem.Geometry-CoordinateSystem.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.BoundingBox.ByMinimumVolume.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAS2SURBVFhH7ZZrT5xFFMf5CHwEXtlyKSxQKKW3xdTQ
@@ -977,7 +977,7 @@
         XTBKVCBR/HjdDpFyjGKE3yqiArmt/2r/V8GwHz6TbZKysn8AxsmqmywYyYsAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem.Geometry1-CoordinateSystem.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Geometry.OrientedBoundingBox.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAABTwSURBVHhe7Zx5mxXVtcb9CHwE/lIxJrYyg0AzgwyS
@@ -1073,7 +1073,7 @@
         AABJRU5ErkJggg==
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem.Geometry1-CoordinateSystem.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Geometry.OrientedBoundingBox.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAUXSURBVFhH7VZtT1xFFOYn7E/gky3lbVkoXd4XqkBr
