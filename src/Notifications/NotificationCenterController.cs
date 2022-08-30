@@ -47,6 +47,7 @@ namespace Dynamo.Notifications
 
         private static readonly int notificationPopupHorizontalOffset = -295;
         private static readonly int notificationPopupVerticalOffset = 10;
+        private static readonly int limitOfMonthsFilterNotifications = 6;
 
         private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
         private static readonly string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.bundle.js";
@@ -104,6 +105,10 @@ namespace Dynamo.Notifications
             {
                 jsonStringFile = reader.ReadToEnd();
                 notificationsModel = JsonConvert.DeserializeObject<NotificationsModel>(jsonStringFile);
+
+                //We are adding a limit of months to grab the notifications
+                var limitDate = DateTime.Now.AddMonths(-limitOfMonthsFilterNotifications);
+                notificationsModel.Notifications = notificationsModel.Notifications.Where(x => x.Created >= limitDate).ToList();
             }
 
             CountUnreadNotifications();
