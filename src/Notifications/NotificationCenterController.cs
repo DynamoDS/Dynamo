@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Configuration;
@@ -6,9 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Notifications.View;
@@ -18,6 +21,23 @@ using Newtonsoft.Json;
 
 namespace Dynamo.Notifications
 {
+    [ClassInterface(ClassInterfaceType.AutoDual)]
+    [ComVisible(true)]
+    public class scriptObject
+    {
+        Action<object[]> onMarkAllAsRead;
+
+        internal scriptObject(Action<object []> onMarkAllAsRead)
+        {
+            this.onMarkAllAsRead = onMarkAllAsRead;
+        }
+
+        public void SetNoficationsAsRead(object[] ids)
+        {
+            onMarkAllAsRead(ids);
+        }
+    }
+
     public class NotificationCenterController
     {
         private readonly NotificationUI notificationUIPopup;
@@ -25,16 +45,15 @@ namespace Dynamo.Notifications
         private readonly DynamoViewModel dynamoViewModel;
         private readonly Button notificationsButton;
 
-        private static readonly int notificationPopupHorizontalOffset = -285;
+        private static readonly int notificationPopupHorizontalOffset = -295;
         private static readonly int notificationPopupVerticalOffset = 10;
+        private static readonly int limitOfMonthsFilterNotifications = 6;
 
         private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
         private static readonly string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.bundle.js";
         private static readonly string NotificationCenterButtonName = "notificationsButton";
 
         private DynamoLogger logger;
-        private static readonly DateTime notificationsCenterCreatedTime = DateTime.UtcNow;
-        private static System.Timers.Timer timer;
         private string jsonStringFile;
         private NotificationsModel notificationsModel;
 
@@ -46,7 +65,7 @@ namespace Dynamo.Notifications
 
             dynamoView.SizeChanged += DynamoView_SizeChanged;
             dynamoView.LocationChanged += DynamoView_LocationChanged;
-            notificationsButton.Click += NotificationsButton_Click;
+            notificationsButton.Click += NotificationsButton_Click;            
 
             notificationUIPopup = new NotificationUI
             {
@@ -56,7 +75,6 @@ namespace Dynamo.Notifications
                 HorizontalOffset = notificationPopupHorizontalOffset,
                 VerticalOffset = notificationPopupVerticalOffset
             };
-
             notificationUIPopup.webView.EnsureCoreWebView2Async();
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
             logger = dynLogger;
@@ -88,13 +106,40 @@ namespace Dynamo.Notifications
                 jsonStringFile = reader.ReadToEnd();
                 notificationsModel = JsonConvert.DeserializeObject<NotificationsModel>(jsonStringFile);
 
-                var notificationsNumber = notificationsModel.Notifications.Count();
-
-                var shortcutToolbarViewModel = (ShortcutToolbarViewModel)dynamoView.ShortcutBar.DataContext;
-                shortcutToolbarViewModel.NotificationsNumber = notificationsNumber;
+                //We are adding a limit of months to grab the notifications
+                var limitDate = DateTime.Now.AddMonths(-limitOfMonthsFilterNotifications);
+                notificationsModel.Notifications = notificationsModel.Notifications.Where(x => x.Created >= limitDate).ToList();
             }
 
+            CountUnreadNotifications();
             notificationUIPopup.webView.NavigationCompleted += WebView_NavigationCompleted;
+        }
+
+        private void CountUnreadNotifications()
+        {
+            var notificationsNumber = 0;
+            foreach (var notification in notificationsModel.Notifications)
+            {
+                if (!dynamoViewModel.Model.PreferenceSettings.ReadNotificationIds.Contains(notification.Id))
+                {
+                    notification.IsRead = false;
+                    notificationsNumber++;
+                }
+            }
+
+            var shortcutToolbarViewModel = (ShortcutToolbarViewModel)dynamoView.ShortcutBar.DataContext;
+            shortcutToolbarViewModel.NotificationsNumber = notificationsNumber;
+        }
+
+        internal void OnMarkAllAsRead(object[] ids)
+        {
+            string[] notificationIds = ids.Select(x => x.ToString()).
+                Where(x => !dynamoViewModel.Model.PreferenceSettings.ReadNotificationIds.Contains(x.ToString())).ToArray();
+
+            dynamoViewModel.Model.PreferenceSettings.ReadNotificationIds.AddRange(notificationIds);
+
+            var shortcutToolbarViewModel = (ShortcutToolbarViewModel)dynamoView.ShortcutBar.DataContext;
+            shortcutToolbarViewModel.NotificationsNumber = 0;
         }
 
         // Handler for new Webview2 tab window request
@@ -130,6 +175,9 @@ namespace Dynamo.Notifications
                 // Opening hyper-links using default system browser instead of WebView2 tab window
                 notificationUIPopup.webView.CoreWebView2.NewWindowRequested += WebView_NewWindowRequested;
                 notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
+                // Hosts an object that will expose the properties and methods to be called from the javascript side
+                notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", 
+                    new scriptObject(OnMarkAllAsRead));
             }
         }
 
