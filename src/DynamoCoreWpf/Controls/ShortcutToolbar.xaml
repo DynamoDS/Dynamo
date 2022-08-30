@@ -139,11 +139,12 @@
 
                 <Menu HorizontalAlignment="Right"
                       Style="{StaticResource MainMenu}"
+                      Margin="0,0,10,0"
                       IsMainMenu="True">
                     <MenuItem Name="exportMenu"
                               Cursor="Hand"
                               Focusable="False"
-                              Margin="0,-3,0,0"
+                              Margin="0,-3,-10,0"
                               MouseEnter="exportMenu_MouseEnter"
                               MouseLeave="exportMenu_MouseLeave">
                         <MenuItem.Header>
@@ -203,6 +204,7 @@
                                     <Border DockPanel.Dock="Bottom" 
                                             Background="{StaticResource Blue400Brush}" 
                                             CornerRadius="2"
+                                            Visibility="{Binding IsNotificationsCounterVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" 
                                             Padding="2"
                                             Height="14"
                                             Width="14"
