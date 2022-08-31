@@ -6599,6 +6599,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your package will be scanned for viruses, and will be available for download once it successfully passes the scan..
+        /// </summary>
+        public static string PrePackagePublishMessage {
+            get {
+                return ResourceManager.GetString("PrePackagePublishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Upload Scan.
+        /// </summary>
+        public static string PrePackagePublishTitle {
+            get {
+                return ResourceManager.GetString("PrePackagePublishTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A preset by this name already exists, do you wish to overwrite?.
         /// </summary>
         public static string PresetOverwrite {
