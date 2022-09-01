@@ -1312,7 +1312,7 @@ namespace Dynamo.Controls
         {
             if (CrashReportTool.ShowCrashErrorReportWindow(dynamoViewModel,
                 (args is CrashErrorReportArgs cerArgs) ? cerArgs : 
-                new CrashErrorReportArgs(null)))
+                new CrashErrorReportArgs(args.Details)))
             {
                 return;
             }
