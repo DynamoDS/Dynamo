@@ -158,6 +158,7 @@ namespace Dynamo.Wpf.Utilities
         /// <summary>
         /// Calls external CER tool (with UI)
         /// </summary>
+        /// <param name="viewModel">The Dynamo view model</param>
         /// <param name="args"></param>
         /// <returns>True if the CER tool process was successfully started. False otherwise</returns>
         internal static bool ShowCrashErrorReportWindow(DynamoViewModel viewModel, CrashErrorReportArgs args)
@@ -220,12 +221,11 @@ namespace Dynamo.Wpf.Utilities
                         filesToSend.Add(settingsFile);
                     }
 
-                    if (args.SendDynFile && model != null)
+                    if (args.HasDetails())
                     {
-                        var dynFilePath = Path.Combine(cerDir.FullName, "DynamoModel.dyn");
-                        model.CurrentWorkspace.Save(dynFilePath);
-
-                        filesToSend.Add(dynFilePath);
+                        var stackTracePath = Path.Combine(cerDir.FullName, "StackTrace.log");
+                        File.WriteAllText(stackTracePath, args.Details);
+                        filesToSend.Add(stackTracePath);
                     }
 
                     if (args.SendRecordedCommands && viewModel != null)
@@ -245,10 +245,17 @@ namespace Dynamo.Wpf.Utilities
                         $@"session_start_count=\""0\"" session_clean_close_count=\""0\"" current_session_length=\""0\"" />";
                     }
 
+                    string dynConfig = string.Empty;
+                    string dynName = viewModel?.Model.CurrentWorkspace.Name;
+                    if (!string.IsNullOrEmpty(dynName))
+                    {
+                        dynConfig = $"/DWG {dynName}";
+                    }
+
                     var miniDumpFilePath = CreateMiniDumpFile(cerDir.FullName);
                     var upiConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "upiconfig.xml");
 
-                    var cerArgs = $"/UPITOKEN {upiConfigFilePath} /DMP {miniDumpFilePath} /APPXML \"{appConfig}\" {extras}";
+                    var cerArgs = $"/UPITOKEN {upiConfigFilePath} /DMP {miniDumpFilePath} /APPXML \"{appConfig}\" {dynConfig} {extras}";
                     
                     Process.Start(new ProcessStartInfo(cerToolPath, cerArgs)).WaitForExit();
                     return true;
