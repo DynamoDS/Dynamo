@@ -18,6 +18,7 @@ using Dynamo.Notifications.View;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
+using Microsoft.Web.WebView2.Wpf;
 
 namespace Dynamo.Notifications
 {
@@ -52,6 +53,7 @@ namespace Dynamo.Notifications
         private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
         private static readonly string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.bundle.js";
         private static readonly string NotificationCenterButtonName = "notificationsButton";
+        internal DirectoryInfo webBrowserUserDataFolder;
 
         private DynamoLogger logger;
         private string jsonStringFile;
@@ -61,6 +63,10 @@ namespace Dynamo.Notifications
         {
             dynamoView = view;
             dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
+            //When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+            var userDataDir = new DirectoryInfo(dynamoViewModel.Model.PathManager.UserDataDirectory);
+            webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
+
             notificationsButton = (Button)view.ShortcutBar.FindName(NotificationCenterButtonName);
 
             dynamoView.SizeChanged += DynamoView_SizeChanged;
@@ -75,11 +81,23 @@ namespace Dynamo.Notifications
                 HorizontalOffset = notificationPopupHorizontalOffset,
                 VerticalOffset = notificationPopupVerticalOffset
             };
-            notificationUIPopup.webView.EnsureCoreWebView2Async();
-            notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
             logger = dynLogger;
-
             RequestNotifications();
+            InitializeBrowserAsync();
+        }
+
+        async void InitializeBrowserAsync()
+        {
+            if (webBrowserUserDataFolder != null)
+            {
+                //This indicates in which location will be created the WebView2 cache folder
+                notificationUIPopup.webView.CreationProperties = new CoreWebView2CreationProperties()
+                {
+                    UserDataFolder = webBrowserUserDataFolder.FullName
+                };
+            }               
+            notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
+            await notificationUIPopup.webView.EnsureCoreWebView2Async();
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
