@@ -186,18 +186,37 @@
                         <MenuItem.Header>
                             <Button x:Name="notificationsButton"
                                     BorderBrush="Transparent"
+                                    Margin="10,0,10,0"
                                     BorderThickness="0"
-                                    Background="Transparent"
                                     Cursor="Hand">
                                 <Button.ToolTip>
                                     <ToolTip Content="{x:Static p:Resources.NotificationCenterButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
                                 </Button.ToolTip>
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Background" Value="{StaticResource DarkerGreyBrush}"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border Background="{TemplateBinding Background}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{StaticResource HighlightedBrush}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
                                 <DockPanel>
-                                    <fa:FontAwesome Margin="0,0,25,0"  
+                                    <fa:FontAwesome Margin="10,0,25,0"  
                                                     DockPanel.Dock="Top" 
                                                     Icon="{Binding Path=DataContext.PreferenceSettings.EnableNotificationCenter, RelativeSource={RelativeSource AncestorType={x:Type Window}}, 
                                                          Converter={StaticResource BoolToFAIconNameConverter}}"
-                                                    HorizontalAlignment="Left"
+                                                    HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
                                                     Foreground="{StaticResource PrimaryCharcoal300Brush}"
                                                     FontSize="18px"/>
@@ -206,6 +225,7 @@
                                             CornerRadius="2"
                                             Visibility="{Binding IsNotificationsCounterVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" 
                                             Padding="2"
+                                            Margin="10,0,0,0"
                                             Height="14"
                                             Width="14"
                                             VerticalAlignment="Center" 
