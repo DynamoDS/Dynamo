@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -11,7 +9,6 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Notifications.View;
@@ -24,11 +21,11 @@ namespace Dynamo.Notifications
 {
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComVisible(true)]
-    public class scriptObject
+    public class ScriptObject
     {
         Action<object[]> onMarkAllAsRead;
 
-        internal scriptObject(Action<object []> onMarkAllAsRead)
+        internal ScriptObject(Action<object []> onMarkAllAsRead)
         {
             this.onMarkAllAsRead = onMarkAllAsRead;
         }
@@ -55,7 +52,7 @@ namespace Dynamo.Notifications
         private static readonly string NotificationCenterButtonName = "notificationsButton";
         internal DirectoryInfo webBrowserUserDataFolder;
 
-        private DynamoLogger logger;
+        private readonly DynamoLogger logger;
         private string jsonStringFile;
         private NotificationsModel notificationsModel;
 
@@ -82,8 +79,13 @@ namespace Dynamo.Notifications
                 VerticalOffset = notificationPopupVerticalOffset
             };
             logger = dynLogger;
-            RequestNotifications();
-            InitializeBrowserAsync();
+            // If user turns on the feature, they will need to restart Dynamo to see the count
+            // This ensures no network traffic when Notification center feature is turned off
+            if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter) 
+            {
+                RequestNotifications();
+                InitializeBrowserAsync();
+            }
         }
 
         async void InitializeBrowserAsync()
@@ -195,7 +197,7 @@ namespace Dynamo.Notifications
                 notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
                 // Hosts an object that will expose the properties and methods to be called from the javascript side
                 notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", 
-                    new scriptObject(OnMarkAllAsRead));
+                    new ScriptObject(OnMarkAllAsRead));
             }
         }
 
