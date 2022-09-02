@@ -20,7 +20,7 @@ namespace Dynamo.Notifications
 {
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComVisible(true)]
-    internal class ScriptObject
+    public class ScriptObject
     {
         Action<object[]> onMarkAllAsRead;
 
