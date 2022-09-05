@@ -71,7 +71,8 @@ namespace Dynamo.Notifications
 
             dynamoView.SizeChanged += DynamoView_SizeChanged;
             dynamoView.LocationChanged += DynamoView_LocationChanged;
-            notificationsButton.Click += NotificationsButton_Click;            
+            notificationsButton.Click += NotificationsButton_Click;
+            dynamoView.Closing += View_Closing;
 
             notificationUIPopup = new NotificationUI
             {
@@ -84,6 +85,32 @@ namespace Dynamo.Notifications
             logger = dynLogger;
             RequestNotifications();
             InitializeBrowserAsync();
+        }
+
+        private void View_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            dynamoView.Closing -= View_Closing;
+            SuspendCoreWebviewAsync();
+        }
+
+        async void SuspendCoreWebviewAsync()
+        {
+            notificationUIPopup.IsOpen = false;
+            notificationUIPopup.webView.Visibility = Visibility.Hidden;
+
+            if (notificationUIPopup.webView.CoreWebView2 != null)
+            {
+                await notificationUIPopup.webView.CoreWebView2.TrySuspendAsync();
+
+                notificationUIPopup.webView.CoreWebView2.Stop();
+                notificationUIPopup.webView.CoreWebView2InitializationCompleted -= WebView_CoreWebView2InitializationCompleted;
+                notificationUIPopup.webView.CoreWebView2.NewWindowRequested -= WebView_NewWindowRequested;
+
+                dynamoView.SizeChanged -= DynamoView_SizeChanged;
+                dynamoView.LocationChanged -= DynamoView_LocationChanged;
+                notificationsButton.Click -= NotificationsButton_Click;
+                notificationUIPopup.webView.NavigationCompleted -= WebView_NavigationCompleted;
+            }
         }
 
         async void InitializeBrowserAsync()
@@ -130,7 +157,7 @@ namespace Dynamo.Notifications
             }
 
             CountUnreadNotifications();
-            notificationUIPopup.webView.NavigationCompleted += WebView_NavigationCompleted;
+            notificationUIPopup.webView.NavigationCompleted += WebView_NavigationCompleted;        
         }
 
         private void CountUnreadNotifications()
@@ -197,19 +224,6 @@ namespace Dynamo.Notifications
                 notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", 
                     new scriptObject(OnMarkAllAsRead));
             }
-        }
-
-        internal void Dispose()
-        {
-            notificationUIPopup.webView.CoreWebView2InitializationCompleted -= WebView_CoreWebView2InitializationCompleted;
-            if (notificationUIPopup.webView.CoreWebView2 != null)
-            {
-                notificationUIPopup.webView.CoreWebView2.NewWindowRequested -= WebView_NewWindowRequested;
-            }
-            dynamoView.SizeChanged -= DynamoView_SizeChanged;
-            dynamoView.LocationChanged -= DynamoView_LocationChanged;
-            notificationsButton.Click -= NotificationsButton_Click;
-            notificationUIPopup.webView.NavigationCompleted -= WebView_NavigationCompleted;
         }
 
         private void DynamoView_LocationChanged(object sender, EventArgs e)
