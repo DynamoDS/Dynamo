@@ -126,7 +126,7 @@ namespace Dynamo.Notifications
                 };
             }               
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
-            await notificationUIPopup.webView.EnsureCoreWebView2Async();
+            notificationUIPopup.webView.EnsureCoreWebView2Async();
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
