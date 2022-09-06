@@ -83,13 +83,13 @@ namespace Dynamo.Notifications
             // If user turns on the feature, they will need to restart Dynamo to see the count
             // This ensures no network traffic when Notification center feature is turned off
             if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter) 
-            {
-                RequestNotifications();
+            {               
                 InitializeBrowserAsync();
+                RequestNotifications();
             }   
         }
 
-        async void InitializeBrowserAsync()
+        private void InitializeBrowserAsync()
         {
             if (webBrowserUserDataFolder != null)
             {
@@ -100,7 +100,7 @@ namespace Dynamo.Notifications
                 };
             }               
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
-            await notificationUIPopup.webView.EnsureCoreWebView2Async();
+            notificationUIPopup.webView.EnsureCoreWebView2Async();
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
