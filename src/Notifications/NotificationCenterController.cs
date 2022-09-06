@@ -103,8 +103,6 @@ namespace Dynamo.Notifications
 
             if (notificationUIPopup.webView.CoreWebView2 != null)
             {
-                await notificationUIPopup.webView.CoreWebView2.TrySuspendAsync();
-
                 notificationUIPopup.webView.CoreWebView2.Stop();
                 notificationUIPopup.webView.CoreWebView2InitializationCompleted -= WebView_CoreWebView2InitializationCompleted;
                 notificationUIPopup.webView.CoreWebView2.NewWindowRequested -= WebView_NewWindowRequested;
