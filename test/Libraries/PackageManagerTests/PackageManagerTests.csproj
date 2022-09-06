@@ -10,7 +10,10 @@
     <AssemblyName>PackageManagerTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Greg" Version="2.3.0.1646" />
+    <PackageReference Include="Greg" Version="2.3.0.2485">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Moq" Version="4.2.1507.0118" />
     <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
     <PackageReference Include="NUnit" Version="2.6.3" />
