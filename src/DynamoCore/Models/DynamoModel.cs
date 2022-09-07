@@ -3156,6 +3156,12 @@ namespace Dynamo.Models
             if (args.PropertyName == "EnablePresetOptions")
                 OnPropertyChanged("EnablePresetOptions");
         }
+
+        public PreferenceSettings ImportPreferences(string newSettingsPath)
+        {
+            return PreferenceSettings.Load(newSettingsPath);
+        }
+
         #endregion
     }
 }

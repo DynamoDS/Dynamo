@@ -171,6 +171,7 @@ namespace Dynamo.ViewModels
         internal void InitializeTrustedLocations()
         {
             TrustedLocations = new ObservableCollection<string>(settings?.TrustedLocations ?? new List<string>());
+            RaisePropertyChanged("");
         }
     }
 }

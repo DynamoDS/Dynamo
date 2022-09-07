@@ -1491,6 +1491,8 @@
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\DynamoPackages_1_1.png" />
     <Resource Include="UI\Images\default_info_16px.png" />
     <Resource Include="UI\Images\clock-icon.png" />
+	<Resource Include="UI\Images\question-default-16px.png" />
+	<Resource Include="UI\Images\question-hover-16px.png" />
     <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
     <Resource Include="UI\Images\info_2.png" />

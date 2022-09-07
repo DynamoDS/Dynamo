@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,7 +9,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Core;
+using Dynamo.Exceptions;
 using Dynamo.Logging;
+using Dynamo.UI;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -369,5 +373,62 @@ namespace Dynamo.Wpf.Views
             }
             e.Handled = true;
         }
+
+        private void importTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            string[] fileFilter = { string.Format(Res.FileDialogImportSettingsFiles, "*.xml") };
+            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            openFileDialog.Filter = String.Join("|", fileFilter);
+            openFileDialog.Title = Res.ImportSettingsDialogTitle;
+            openFileDialog.Multiselect = false;
+            openFileDialog.RestoreDirectory = true;
+
+            System.Windows.Forms.DialogResult result = openFileDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    viewModel.importSettings(openFileDialog.FileName);
+                    Wpf.Utilities.MessageBoxService.Show(
+                       Res.ImportSettingsSuccessMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (LibraryLoadFailedException ex)
+                {
+                    Wpf.Utilities.MessageBoxService.Show(
+                        ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }            
+        }
+
+        private void exportTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var dialog = new DynamoFolderBrowserDialog
+            {
+                Title = Res.ExportSettingsDialogTitle,
+                Owner = this
+            };
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string currentSettingsFile = Path.Combine(PathManager.GetAppDataFolder(), PathManager.PreferenceSettingsFileName);
+                string selectedPathFile = Path.Combine(dialog.SelectedPath, PathManager.PreferenceSettingsFileName);
+
+                try
+                {
+                    if (File.Exists(selectedPathFile))
+                    {
+                        selectedPathFile = Path.Combine(dialog.SelectedPath, PathManager.PreferenceSettingsFileName.Replace(".", "_" + ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString() + "."));
+                    }
+
+                    File.Copy(currentSettingsFile, selectedPathFile);
+                    string argument = "/select, \"" + selectedPathFile + "\"";
+                    System.Diagnostics.Process.Start("explorer.exe", argument);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }        
     }
 }

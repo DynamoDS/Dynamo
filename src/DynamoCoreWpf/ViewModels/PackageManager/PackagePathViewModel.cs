@@ -302,6 +302,7 @@ namespace Dynamo.ViewModels
             {
                 RootLocations[index] = Resources.PackagePathViewModel_BuiltInPackages;
             }
+            RaisePropertyChanged("");
         }
 
         private List<string> CommitRootLocations()

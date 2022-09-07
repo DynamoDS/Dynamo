@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
 using Dynamo.Core;
@@ -14,6 +15,30 @@ using DynamoUtilities;
 
 namespace Dynamo.Configuration
 {
+    static class ExtensionMethods
+    {
+        /// <summary>
+        /// Copy Properties from a PreferenceSettings instance to another
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        public static void CopyProperties(this PreferenceSettings source, PreferenceSettings destination)
+        {
+            // Iterate the Properties of the destination instance and populate them from their source counterparts  
+            PropertyInfo[] destinationProperties = destination.GetType().GetProperties();
+
+            foreach (PropertyInfo destinationPi in destinationProperties)
+            {
+                PropertyInfo sourcePi = source.GetType().GetProperty(destinationPi.Name);
+
+                if (destinationPi.GetCustomAttributes(typeof(System.ObsoleteAttribute), true).Length == 0 && destinationPi.CanWrite)
+                {
+                    destinationPi.SetValue(destination, sourcePi.GetValue(source, null), null);
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// PreferenceSettings is a class for GUI to persist certain settings.
     /// Upon running of the GUI, those settings that are persistent will be loaded
