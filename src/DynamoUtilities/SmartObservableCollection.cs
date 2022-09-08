@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 
 namespace DynamoUtilities
 {
     /// <summary>
     /// Wrapper over System.Collections.ObjectModel.ObservableCollection that fires minimal notifications.
     /// This class supports batch operations that should defer CollectionChaned notifications.
-    /// Thread safe for the follwing operations: Add, Remove, Contains, AddUnique, AddRange, RemoveRange, Count and iterations.
+    /// Not thread safe.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class SmartObservableCollection<T> : ObservableCollection<T>
@@ -28,14 +26,14 @@ namespace DynamoUtilities
         internal event NotifyCollectionChangedEventHandler CollectionChangedDuringDeferredReset;
 
         public SmartObservableCollection() : base()
-        { }
+        {}
 
         public SmartObservableCollection(List<T> list)
             : base(list)
-        { }
+        {}
 
         public SmartObservableCollection(IEnumerable<T> collection) : base(collection)
-        { }
+        {}
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs e)
         {

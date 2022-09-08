@@ -9,9 +9,9 @@ namespace DynamoUtilities
     {
         private readonly ReaderWriterLockSlim rwlock;
 
-        internal DynamoLock(bool allowRecursiveLock = false)
+        internal DynamoLock()
         {
-            rwlock = new ReaderWriterLockSlim(allowRecursiveLock ? LockRecursionPolicy.SupportsRecursion : LockRecursionPolicy.NoRecursion);
+            rwlock = new ReaderWriterLockSlim();
         }
 
         /// <summary>
