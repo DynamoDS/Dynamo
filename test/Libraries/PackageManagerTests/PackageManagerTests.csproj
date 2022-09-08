@@ -10,7 +10,7 @@
     <AssemblyName>PackageManagerTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Greg" Version="2.3.0.2485">
+    <PackageReference Include="Greg" Version="2.3.0.2505">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

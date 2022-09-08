@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
   <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2365" />
-  <PackageReference Include="Greg" Version="2.3.0.2485" />
+  <PackageReference Include="Greg" Version="2.3.0.2505" />
   <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
 	<PackageReference Include="RestSharp" Version="106.12.0" />

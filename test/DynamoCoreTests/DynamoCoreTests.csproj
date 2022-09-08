@@ -16,8 +16,11 @@
     <Compile Remove="Saving.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="2.14.0.2425" />
-    <PackageReference Include="Greg" Version="2.3.0.2485">
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.0.2506">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Greg" Version="2.3.0.2505">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
