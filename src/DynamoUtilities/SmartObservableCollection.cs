@@ -27,25 +27,15 @@ namespace DynamoUtilities
         /// </summary>
         internal event NotifyCollectionChangedEventHandler CollectionChangedDuringDeferredReset;
 
-        public SmartObservableCollection() : this(null)
-        {}
+        public SmartObservableCollection() : base()
+        { }
 
-        public SmartObservableCollection(List<T> list) : this(list as IEnumerable<T>)
-        {}
-  
-        public SmartObservableCollection(IEnumerable<T> collection) : base()
-        {
-            try
-            {
-                //Replace internal IList (from Collection<T>.items) with a thread safe IList(ThreadSafeList)
-                var itemsField = typeof(Collection<T>).GetField("items", BindingFlags.NonPublic | BindingFlags.Instance);
-                itemsField.SetValue(this, new ThreadSafeList<T>(items: collection));
-            }
-            catch
-            {
-                throw new Exception("SmartObservableCollection constructor cannot override the private field 'Collection<T>.items'.");
-            }
-        }
+        public SmartObservableCollection(List<T> list)
+            : base(list)
+        { }
+
+        public SmartObservableCollection(IEnumerable<T> collection) : base(collection)
+        { }
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs e)
         {
@@ -135,6 +125,19 @@ namespace DynamoUtilities
                     OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, changes as System.Collections.IList));
                 }
             });
+        }
+
+        internal new void Clear()
+        {
+            ClearItems();
+        }
+
+        protected override void ClearItems()
+        {
+            if (Items.Count > 0)
+            {
+                base.ClearItems();
+            }
         }
 
         /// <summary>
