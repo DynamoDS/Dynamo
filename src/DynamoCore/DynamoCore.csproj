@@ -129,6 +129,9 @@
       <OpenSourceLicenses Include="$(SolutionDir)..\doc\distrib\Open Source Licenses\**\*.*" />
       <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
       <LegacyBinariesToBinFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\*\*" />
+      <ExternAnalytics Include="$(SolutionDir)..\extern\Analytics.NET\*.*" />
+      <LegacyBinariesToBinFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\*" />
+      <LegacyBinariesToLibg227Folder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\libg_227_0_0\*" />
       <LegacyBinariesToEn-USFolder Include="$(SolutionDir)..\extern\legacy_remove_me\en-US\*" />
       <LegacyBinariesToNodesFolder Include="$(SolutionDir)..\extern\legacy_remove_me\nodes\*" />
     </ItemGroup>
@@ -154,7 +157,8 @@
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.Migrations.xml" DestinationFolder="$(OutputPath)" />
     <!--Remove these copy steps at the next launch of host products-->
-    <Copy SourceFiles="@(LegacyBinariesToBinFolder)" DestinationFolder="$(OutputPath)\%(RecursiveDir)\" />
+    <Copy SourceFiles="@(LegacyBinariesToBinFolder)" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(LegacyBinariesToLibg227Folder)" DestinationFolder="$(OutputPath)\libg_227_0_0\" />
     <Copy SourceFiles="@(LegacyBinariesToEn-USFolder)" DestinationFolder="$(OutputPath)\en-US\" />
     <Copy SourceFiles="@(LegacyBinariesToNodesFolder)" DestinationFolder="$(OutputPath)\nodes\" />
     <Copy SourceFiles="$(SolutionDir)Config\upiconfig.xml" DestinationFolder="$(OutputPath)" />
