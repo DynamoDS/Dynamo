@@ -284,20 +284,20 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public CompositeCollection WorkspaceElements { get; } = new CompositeCollection();
         [JsonIgnore]
-        public SmartObservableCollection<ConnectorViewModel> Connectors { get; } = new SmartObservableCollection<ConnectorViewModel>();
+        public ObservableCollection<ConnectorViewModel> Connectors { get; } = new ObservableCollection<ConnectorViewModel>();
 
         [JsonProperty("NodeViews")]
-        public SmartObservableCollection<NodeViewModel> Nodes { get; } = new SmartObservableCollection<NodeViewModel>();
+        public ObservableCollection<NodeViewModel> Nodes { get; } = new ObservableCollection<NodeViewModel>();
         // Do not serialize notes, they will be converted to annotations during serialization
         [JsonIgnore]
-        public SmartObservableCollection<NoteViewModel> Notes { get; } = new SmartObservableCollection<NoteViewModel>();
+        public ObservableCollection<NoteViewModel> Notes { get; } = new ObservableCollection<NoteViewModel>();
 
         [JsonIgnore]
-        public SmartObservableCollection<ConnectorPinViewModel> Pins { get; } = new SmartObservableCollection<ConnectorPinViewModel>();
+        public ObservableCollection<ConnectorPinViewModel> Pins { get; } = new ObservableCollection<ConnectorPinViewModel>();
 
         [JsonIgnore]
-        public SmartObservableCollection<InfoBubbleViewModel> Errors { get; } = new SmartObservableCollection<InfoBubbleViewModel>();
-        public SmartObservableCollection<AnnotationViewModel> Annotations { get; } = new SmartObservableCollection<AnnotationViewModel>();
+        public ObservableCollection<InfoBubbleViewModel> Errors { get; } = new ObservableCollection<InfoBubbleViewModel>();
+        public ObservableCollection<AnnotationViewModel> Annotations { get; } = new ObservableCollection<AnnotationViewModel>();
 
         [JsonIgnore]
         public string Name
