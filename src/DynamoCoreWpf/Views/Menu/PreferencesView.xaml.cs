@@ -410,7 +410,6 @@ namespace Dynamo.Wpf.Views
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                string currentSettingsFile = Path.Combine(PathManager.GetAppDataFolder(), PathManager.PreferenceSettingsFileName);
                 string selectedPathFile = Path.Combine(dialog.SelectedPath, PathManager.PreferenceSettingsFileName);
 
                 try
@@ -420,7 +419,7 @@ namespace Dynamo.Wpf.Views
                         selectedPathFile = Path.Combine(dialog.SelectedPath, PathManager.PreferenceSettingsFileName.Replace(".", "_" + ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString() + "."));
                     }
 
-                    File.Copy(currentSettingsFile, selectedPathFile);
+                    File.Copy(dynViewModel.Model.PathManager.PreferenceFilePath, selectedPathFile);
                     string argument = "/select, \"" + selectedPathFile + "\"";
                     System.Diagnostics.Process.Start("explorer.exe", argument);
                 }
