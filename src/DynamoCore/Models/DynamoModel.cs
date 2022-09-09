@@ -2867,6 +2867,11 @@ namespace Dynamo.Models
             OnWorkspaceCleared(CurrentWorkspace);
         }
 
+        internal PreferenceSettings ImportPreferences(string newSettingsPath)
+        {
+            return PreferenceSettings.Load(newSettingsPath);
+        }
+
         #endregion
 
         #region private methods
@@ -3155,12 +3160,7 @@ namespace Dynamo.Models
 
             if (args.PropertyName == "EnablePresetOptions")
                 OnPropertyChanged("EnablePresetOptions");
-        }
-
-        public PreferenceSettings ImportPreferences(string newSettingsPath)
-        {
-            return PreferenceSettings.Load(newSettingsPath);
-        }
+        }       
 
         #endregion
     }

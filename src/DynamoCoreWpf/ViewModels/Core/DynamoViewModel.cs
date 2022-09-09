@@ -3065,6 +3065,16 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Import Preferences
+        /// </summary>
+        /// <param name="path">Path from the xml settings file to be imported</param>
+        /// <returns>A PreferencesSettings instance from the selected path</returns>
+        public PreferenceSettings ImportPreferences(string path)
+        {
+            return model.ImportPreferences(path);
+        }
+
+        /// <summary>
         /// Ask the user if they want to save any unsaved changes.
         /// </summary>
         /// <param name="allowCancel">Whether to show cancel button to user. </param>
@@ -3095,17 +3105,7 @@ namespace Dynamo.ViewModels
                     return false;
             }
             return true;
-        }
-
-        /// <summary>
-        /// Import Preferences
-        /// </summary>
-        /// <param name="path">Path from the xml settings file to be imported</param>
-        /// <returns>A PreferencesSettings instance from the selected path</returns>
-        public PreferenceSettings ImportPreferences(string path)
-        {
-            return model.ImportPreferences(path);
-        }
+        }        
 
         #endregion
     }
