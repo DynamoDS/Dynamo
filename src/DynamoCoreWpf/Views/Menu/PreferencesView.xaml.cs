@@ -392,10 +392,10 @@ namespace Dynamo.Wpf.Views
                     Wpf.Utilities.MessageBoxService.Show(
                        Res.ImportSettingsSuccessMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                catch (LibraryLoadFailedException ex)
+                catch (Exception ex)
                 {
                     Wpf.Utilities.MessageBoxService.Show(
-                        ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                       ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }            
         }
@@ -423,9 +423,10 @@ namespace Dynamo.Wpf.Views
                     string argument = "/select, \"" + selectedPathFile + "\"";
                     System.Diagnostics.Process.Start("explorer.exe", argument);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    Wpf.Utilities.MessageBoxService.Show(
+                       ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
         }        
