@@ -33,7 +33,7 @@ namespace Dynamo.Utilities
         /// <returns>true if debug mode 'NotificationCounter' is turned on and if Harmony.dll was successfully loaded. Returns false otherwise</returns>
         internal static bool Initialize()
         {
-            if (!DebugModes.IsEnabled("NotificationCounter"))
+            if (!DebugModes.IsEnabled("BindingNotificationCounter"))
                 return false;
 
             string harmonyLocation = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "0Harmony.dll");
@@ -68,7 +68,7 @@ namespace Dynamo.Utilities
                 timer.Interval = timerInterval;
                 timer.Start();
                 
-                harmonyIntance = new Harmony("NotificationCounter");
+                harmonyIntance = new Harmony("BindingNotificationCounter");
 
                 AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => PatchFromAssmebly(args.LoadedAssembly));
 
@@ -161,7 +161,7 @@ namespace Dynamo.Utilities
 
         private static void Log(object sender, string property)
         {
-            if (!DebugModes.IsEnabled("NotificationCounter"))
+            if (!DebugModes.IsEnabled("BindingNotificationCounter"))
                 return;
 
             try
