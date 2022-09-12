@@ -88,7 +88,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (Up-to-date).
+        ///   Looks up a localized string similar to (Up to date).
         /// </summary>
         public static string AboutWindowUpToDate {
             get {
@@ -466,6 +466,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pin Wire.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderPinConnector {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderPinConnector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Connected.
         /// </summary>
         public static string ConnectorContextMenuHeaderSelectConnected {
@@ -538,7 +547,25 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy.
+        ///   Looks up a localized string similar to Hide All Wires.
+        /// </summary>
+        public static string ContextMenuConnectionsHideAll {
+            get {
+                return ResourceManager.GetString("ContextMenuConnectionsHideAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show All Wires.
+        /// </summary>
+        public static string ContextMenuConnectionsShowAll {
+            get {
+                return ResourceManager.GetString("ContextMenuConnectionsShowAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy Contents.
         /// </summary>
         public static string ContextMenuCopy {
             get {
@@ -678,6 +705,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextMenuLacingShortest {
             get {
                 return ResourceManager.GetString("ContextMenuLacingShortest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Connections.
+        /// </summary>
+        public static string ContextMenuNodeConnections {
+            get {
+                return ResourceManager.GetString("ContextMenuNodeConnections", resourceCulture);
             }
         }
         
@@ -880,9 +916,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uh oh... something went wrong and {0} has crashed, sorry about that.
+        ///   Looks up a localized string similar to Something went wrong and Dynamo has closed unexpectedly.
         ///
-        ///You will get a chance to save your work..
+        ///Don&apos;t worry, you&apos;ll have the option to save your work..
         /// </summary>
         public static string CrashPromptDialogCrashMessage {
             get {
@@ -909,7 +945,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Submit Bug To Github.
+        ///   Looks up a localized string similar to Submit bug to GitHub.
         /// </summary>
         public static string CrashPromptDialogSubmitBugButton {
             get {
@@ -918,7 +954,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} has crashed.
+        ///   Looks up a localized string similar to {0} has closed unexpectedly.
         /// </summary>
         public static string CrashPromptDialogTitle {
             get {
@@ -2660,6 +2696,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DynamoCoreWpf;FileTrustWarningDocumentation.html.
+        /// </summary>
+        public static string FileTrustWarningDocumentationUriString {
+            get {
+                return ResourceManager.GetString("FileTrustWarningDocumentationUriString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No, close file.
         /// </summary>
         public static string FileTrustWarningPopupNoCloseFile {
@@ -3300,6 +3345,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Upload Error.
+        /// </summary>
+        public static string InfectedPackageErrorString {
+            get {
+                return ResourceManager.GetString("InfectedPackageErrorString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is an infected package. Please upload a clean version..
+        /// </summary>
+        public static string InfectedPackageMessageString {
+            get {
+                return ResourceManager.GetString("InfectedPackageMessageString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Read more....
         /// </summary>
         public static string InfoBubbleDocumentationLinkText {
@@ -3512,6 +3575,15 @@ namespace Dynamo.Wpf.Properties {
         public static string InteractiveGuides {
             get {
                 return ResourceManager.GetString("InteractiveGuides", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing is being dragged. If you see this message, most likely your recent Dynamo interaction is not recommended..
+        /// </summary>
+        public static string InvalidDraggingOperationMessgae {
+            get {
+                return ResourceManager.GetString("InvalidDraggingOperationMessgae", resourceCulture);
             }
         }
         
@@ -4568,6 +4640,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click to view latest news from Dynamo Team..
+        /// </summary>
+        public static string NotificationCenterButtonTooltip {
+            get {
+                return ResourceManager.GetString("NotificationCenterButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to null.
         /// </summary>
         public static string NullString {
@@ -5178,7 +5259,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Node and Package Paths.
+        ///   Looks up a localized string similar to Node and Package File Locations.
         /// </summary>
         public static string PackagePathsExpanderName {
             get {
@@ -6212,6 +6293,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Receive notification.
+        /// </summary>
+        public static string PreferencesViewEnableNotificationCenter {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableNotificationCenter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable T-Spline nodes.
         /// </summary>
         public static string PreferencesViewEnableTSplineNodes {
@@ -6284,7 +6374,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New Package Download Directory.
+        ///   Looks up a localized string similar to Notification Center.
+        /// </summary>
+        public static string PreferencesViewNotificationCenter {
+            get {
+                return ResourceManager.GetString("PreferencesViewNotificationCenter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Package Download Path.
         /// </summary>
         public static string PreferencesViewPackageDownloadDirectory {
             get {
@@ -6496,6 +6595,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesWindowLanguages {
             get {
                 return ResourceManager.GetString("PreferencesWindowLanguages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your package will be scanned for viruses, and will be available for download once it successfully passes the scan..
+        /// </summary>
+        public static string PrePackagePublishMessage {
+            get {
+                return ResourceManager.GetString("PrePackagePublishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Upload Scan.
+        /// </summary>
+        public static string PrePackagePublishTitle {
+            get {
+                return ResourceManager.GetString("PrePackagePublishTitle", resourceCulture);
             }
         }
         
@@ -7864,7 +7981,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Trusted location.
+        ///   Looks up a localized string similar to Trusted File Locations.
         /// </summary>
         public static string TrustedPathsExpanderName {
             get {
@@ -7883,7 +8000,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No trusted location has been added..
+        ///   Looks up a localized string similar to File location was not added to trusted locations..
         /// </summary>
         public static string TrustLocationSkippedNotification {
             get {
@@ -7915,6 +8032,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UndeprecatingPackageMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UndeprecatingPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo cannot ungroup when there is no parent group..
+        /// </summary>
+        public static string UngroupParentGroupWarning {
+            get {
+                return ResourceManager.GetString("UngroupParentGroupWarning", resourceCulture);
             }
         }
         
@@ -8200,7 +8326,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Agreement to collect usability data on your use of {0}.
+        ///   Looks up a localized string similar to Agreement to Collect Usability Data.
         /// </summary>
         public static string UsageReportPromptDialogTitle {
             get {

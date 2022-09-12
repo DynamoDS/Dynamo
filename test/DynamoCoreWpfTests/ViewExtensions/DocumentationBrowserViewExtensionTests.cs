@@ -497,14 +497,13 @@ namespace DynamoCoreWpfTests
 
             var testDirectory = GetTestDirectory(this.ExecutingDirectory);
             var localImagePath = Path.Combine(testDirectory, @"core\docbrowser\pkgs\PackageWithNodeDocumentation\doc\icon.png");
-            var localImagePathHtml = localImagePath.Replace("\\", @"%5C");
-            
+
             var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
             var nodeName = "Package.Hello";
             var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
             var expectedNodeDocumentationNamespace = $"<p><i>Package.{nodeName}</i></p>";
             var expectedAddtionalNodeDocumentationHeader = @"<h1 id=""hello-dynamo"">Hello Dynamo!</h1>";
-            var expectedAddtionalNodeDocumentationImage = String.Format(@"<p><img src=""file:///{0}"" alt=""Dynamo Icon image"" /></p>",localImagePathHtml);
+            var expectedAddtionalNodeDocumentationImage = String.Format(@"<p><img src=""http://appassets/{0}"" alt=""Dynamo Icon image"" /></p>", Path.GetFileName(localImagePath));
 
             // Act
 
@@ -520,6 +519,7 @@ namespace DynamoCoreWpfTests
             docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
             var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
             var htmlContent = GetSidebarDocsBrowserContents();
+            htmlContent = htmlContent.Replace(@"%5C", "/");
 
             // Assert
             Assert.AreEqual(0, tabsBeforeExternalEventTrigger);

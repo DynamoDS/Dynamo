@@ -139,6 +139,11 @@ namespace Dynamo.PackageManager
         public List<PackageManagerSearchElement> LastSync { get; set; }
 
         /// <summary>
+        /// Stores a list of latest infected package versions published by the current user, if any.
+        /// </summary>
+        public ObservableCollection<PackageManagerSearchElement> InfectedPackages { get; set; }
+
+        /// <summary>
         ///     SortingKey property
         /// </summary>
         /// <value>
@@ -387,7 +392,7 @@ namespace Dynamo.PackageManager
         /// appears at the base of the window. This command fires when the user clicks to dismiss
         /// one of these toast notifications.
         /// </summary>
-        public DelegateCommand<object> ClearDownloadToastNotificationCommand { get; set; }
+        public DelegateCommand<object> ClearToastNotificationCommand { get; set; }
 
 
         /// <summary>
@@ -408,6 +413,7 @@ namespace Dynamo.PackageManager
         internal PackageManagerSearchViewModel()
         {
             SearchResults = new ObservableCollection<PackageManagerSearchElementViewModel>();
+            InfectedPackages = new ObservableCollection<PackageManagerSearchElement>();
             MaxNumSearchResults = 35;
             SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
@@ -416,7 +422,7 @@ namespace Dynamo.PackageManager
             SetSortingDirectionCommand = new DelegateCommand<object>(SetSortingDirection, CanSetSortingDirection);
             ViewPackageDetailsCommand = new DelegateCommand<object>(ViewPackageDetails);
             ClearSearchTextBoxCommand = new DelegateCommand<object>(ClearSearchTextBox);
-            ClearDownloadToastNotificationCommand = new DelegateCommand<object>(ClearDownloadToastNotification);
+            ClearToastNotificationCommand = new DelegateCommand<object>(ClearToastNotification);
             SearchText = string.Empty;
             SortingKey = PackageSortingKey.LastUpdate;
             SortingDirection = PackageSortingDirection.Descending;
@@ -543,17 +549,28 @@ namespace Dynamo.PackageManager
         /// one of these toast notifications.
         /// </summary>
         /// <param name="obj"></param>
-        public void ClearDownloadToastNotification(object obj)
+        public void ClearToastNotification(object obj)
         {
-            if (!(obj is PackageDownloadHandle packageDownloadHandle)) return;
+            if (obj is PackageDownloadHandle packageDownloadHandle)
+            {
 
-            PackageDownloadHandle packageDownloadHandleToRemove = PackageManagerClientViewModel.Downloads
-                .FirstOrDefault(x => x.Id == packageDownloadHandle.Id);
+                PackageDownloadHandle packageDownloadHandleToRemove = PackageManagerClientViewModel.Downloads
+                    .FirstOrDefault(x => x.Id == packageDownloadHandle.Id);
 
-            if (packageDownloadHandleToRemove == null) return;
+                if (packageDownloadHandleToRemove == null) return;
 
-            PackageManagerClientViewModel.Downloads.Remove(packageDownloadHandleToRemove);
-            RaisePropertyChanged(nameof(Downloads));
+                PackageManagerClientViewModel.Downloads.Remove(packageDownloadHandleToRemove);
+                RaisePropertyChanged(nameof(Downloads));
+            }
+            else if (obj is PackageManagerSearchElement packageSearchElement)
+            {
+                PackageManagerSearchElement packageInfectedToRemove = this.InfectedPackages
+                    .FirstOrDefault(x => x.InfectedPackageName == packageSearchElement.InfectedPackageName);
+
+                this.InfectedPackages.Remove(packageInfectedToRemove);
+                RaisePropertyChanged(nameof(InfectedPackages));
+            }
+            return;
         }
         
         /// <summary>
@@ -671,9 +688,26 @@ namespace Dynamo.PackageManager
                     }
                     this.SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
                 }
+                RefreshInfectedPackages();
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
-            
+        }
+
+        internal void RefreshInfectedPackages()
+        {
+            var infectedPkgs = PackageManagerClientViewModel.GetInfectedPackages();
+            infectedPkgs.Sort((e1, e2) => e1.InfectedPackageCreationDate.CompareTo(e2.InfectedPackageCreationDate));
+
+            this.InfectedPackages.Clear();
+            foreach (var pkg in infectedPkgs) {
+                this.InfectedPackages.Add(pkg);
+
+                // Limiting the infected packages list to 3. As the packages are resolved other unresolved packages will be displayed.
+                if (this.InfectedPackages.Count() == 3) 
+                { 
+                    break; 
+                }
+            }
         }
 
         internal void AddToSearchResults(PackageManagerSearchElementViewModel element)

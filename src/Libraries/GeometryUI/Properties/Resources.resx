@@ -133,4 +133,22 @@
     <value>Export;SAT</value>
     <comment>Search tags for ExportWithUnits node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
+  <data name="ImportSABByteArrayDesc" xml:space="preserve">
+    <value>SAB byte array.</value>
+  </data>
+  <data name="ImportSATDynamoUnitDesc" xml:space="preserve">
+    <value>A forge unit length, if left null, geometry will be imported as unitless.</value>
+  </data>
+  <data name="ImportSATFilePathDesc" xml:space="preserve">
+    <value>Filepath or File object to import .SAT from.</value>
+  </data>
+  <data name="ImportToSABUnitsDesc" xml:space="preserve">
+    <value>Imports geometry from SAB byte array. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file.</value>
+  </data>
+  <data name="ImportToSATUnitsDesc" xml:space="preserve">
+    <value>Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file.</value>
+  </data>
+  <data name="SABSATGeoDesc" xml:space="preserve">
+    <value>Loaded geometry</value>
+  </data>
 </root>

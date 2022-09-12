@@ -24,8 +24,6 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
-using PythonNodeModels;
-using SharpDX.DXGI;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -1292,6 +1290,24 @@ namespace Dynamo.Controls
             if (fullscreenWatchShowing)
                 return Visibility.Visible;
             return Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Converter for Notification Bell updates based on feature enabled or not
+    /// </summary>
+    public class BoolToFAIconNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+                return nameof(FontAwesome.WPF.FontAwesomeIcon.BellOutline);
+            return nameof(FontAwesome.WPF.FontAwesomeIcon.BellSlashOutline);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -3280,20 +3296,20 @@ namespace Dynamo.Controls
         {
             throw new NotImplementedException();
         }
-    }
+    }    
 
     /// <summary>
     /// Converts the object type to forground color for the object.
     /// </summary>
-    public class ObjectTypeConverter : IValueConverter
+    public class ObjectTypeConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
 
-            if (value != null)
+            if (values != null)
             {
-                switch (value)
+                switch (values[0])
                 {
                     case WatchViewModel.objectType:
                         return resourceDictionary["objectLabelBackground"] as SolidColorBrush;
@@ -3304,14 +3320,25 @@ namespace Dynamo.Controls
                     case WatchViewModel.stringType:
                         return resourceDictionary["stringLabelBackground"] as SolidColorBrush;
                     case WatchViewModel.boolType:
-                        return resourceDictionary["boolLabelBackground"] as SolidColorBrush;
+                        return resourceDictionary["boolLabelBackground"] as SolidColorBrush;                                                
                     default:
-                        return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+                        if (values[1].ToString() == "List")
+                        {
+                            return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+                        }
+                        else
+                        {
+                            return resourceDictionary["nullLabelBackground"] as SolidColorBrush;
+                        }
                 };
             }
-            return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+            else
+            {
+                return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+            }
         }
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

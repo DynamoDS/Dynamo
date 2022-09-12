@@ -27,6 +27,7 @@ namespace Dynamo.Configuration
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
         private bool disableTrustWarnings = false;
+        private bool isNotificationCenterEnabled;
         #region Constants
         /// <summary>
         /// Indicates the maximum number of files shown in Recent Files
@@ -440,6 +441,22 @@ namespace Dynamo.Configuration
         public bool EnableNodeAutoComplete { get; set; }
 
         /// <summary>
+        /// This defines if user wants to see the enabled Dynamo Notification Center.
+        /// </summary>
+        public bool EnableNotificationCenter
+        {
+            get
+            {
+                return isNotificationCenterEnabled;
+            }
+            set
+            {
+                isNotificationCenterEnabled = value;
+                RaisePropertyChanged(nameof(EnableNotificationCenter));
+            }
+        }
+
+        /// <summary>
         /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
         /// </summary>
         public string DefaultPythonEngine
@@ -579,6 +596,11 @@ namespace Dynamo.Configuration
             get { return IronPythonResolveVersion.ToString(); }
             set { IronPythonResolveVersion = Version.TryParse(value, out Version newVal) ? newVal : IronPythonResolveVersion; }
         }
+
+        /// <summary>
+        /// Stores the notification ids that was read by the user
+        /// </summary>
+        public List<string> ReadNotificationIds { get; set; }
         #endregion
 
         /// <summary>
@@ -619,16 +641,18 @@ namespace Dynamo.Configuration
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
-
+                        
             CustomPackageFolders = new List<string>();
 
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
+            EnableNotificationCenter = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
+            ReadNotificationIds = new List<string>();
         }
 
         /// <summary>

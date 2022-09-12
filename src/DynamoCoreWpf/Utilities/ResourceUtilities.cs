@@ -1,7 +1,10 @@
 ﻿using Dynamo.Logging;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI.GuidedTour;
+using Dynamo.Wpf.Utilities;
+using Microsoft.Web.WebView2.Wpf;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -263,8 +266,12 @@ namespace Dynamo.Utilities
             return textStream;
         }
 
-
-        internal static string ConvertToBase64(Stream stream)
+        /// <summary>
+        /// This method converts a stream to base64 string
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public static string ConvertToBase64(Stream stream)
         {
             byte[] bytes;
             using (var memoryStream = new MemoryStream())
@@ -314,6 +321,76 @@ namespace Dynamo.Utilities
                 }
             }
             return resultJSHTML;
+        }
+
+        /// <summary>
+        /// Loads HTML file from resource assembly and replace it's key values by base64 files
+        /// </summary>
+        /// <param name="htmlPage">Contains filename and resources to be loaded in page</param>
+        /// <param name="webBrowserComponent">WebView2 instance that will be initialized</param>
+        /// <param name="resourcesPath">Path of the resources that will be loaded into the HTML page</param>
+        /// <param name="fontStylePath">Path to the Font Style that will be used in some part of the HTML page</param>
+        /// <param name="localAssembly">Local Assembly in which the resource will be loaded</param>
+        /// <param name="userDataFolder">the folder that WebView2 will use for storing cache info</param>
+        internal static async void LoadWebBrowser(HtmlPage htmlPage, WebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string))
+        {
+            var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(htmlPage.FileName, localAssembly, false, false);
+
+            bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage.Resources, resourcesPath);
+            bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", fontStylePath);
+
+            if (!string.IsNullOrEmpty(userDataFolder))
+            {
+                //This indicates in which location will be created the WebView2 cache folder
+                webBrowserComponent.CreationProperties = new CoreWebView2CreationProperties()
+                {
+                    UserDataFolder = userDataFolder
+                };
+            }
+
+            await webBrowserComponent.EnsureCoreWebView2Async();
+            // Context menu disabled
+            webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            webBrowserComponent.NavigateToString(bodyHtmlPage);
+        }
+
+        /// <summary>
+        /// Loads resource from a dictionary and replaces its key by an embedded file
+        /// </summary>
+        /// <param name="bodyHtmlPage">Html page string</param>
+        /// <param name="resources">Resources to be loaded</param>
+        /// <param name="resourcesPath">Path to resources</param>
+        /// <returns></returns>
+        internal static string LoadResouces(string bodyHtmlPage, Dictionary<string, string> resources, string resourcesPath)
+        {
+            if (resources != null && resources.Any())
+            {
+                foreach (var resource in resources)
+                {
+                    bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, resource.Key, $"{resourcesPath}.{resource.Value}");
+                }
+            }
+            return bodyHtmlPage;
+        }
+
+        /// <summary>
+        /// Finds a key word inside the html page and replace by a resource file
+        /// </summary>
+        /// <param name="bodyHtmlPage">Current html page</param>
+        /// <param name="key">Key that is going to be replaced</param>
+        /// <param name="resourceFile">Resource file to be included in the page</param>
+        /// <returns></returns>
+        internal static string LoadResourceAndReplaceByKey(string bodyHtmlPage, string key, string resourceFile)
+        {
+            Stream resourceStream = ResourceUtilities.LoadResourceByUrl(resourceFile);
+
+            if (resourceStream != null)
+            {
+                var resourceBase64 = ResourceUtilities.ConvertToBase64(resourceStream);
+                bodyHtmlPage = bodyHtmlPage.Replace(key, resourceBase64);
+            }
+
+            return bodyHtmlPage;
         }
     }
 }

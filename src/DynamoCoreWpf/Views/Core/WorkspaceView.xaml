@@ -369,7 +369,7 @@
                AllowsTransparency="True"
                Opened="OnContextMenuOpened"
                Placement="MousePoint"
-               StaysOpen="False"
+               StaysOpen="True"
                Style="{StaticResource WorkspaceContextMenuStylePopup}">
             <Popup.Resources>
                 <Style TargetType="{x:Type MenuItem}">
@@ -695,6 +695,35 @@
                     <MenuItem Command="{Binding FindNodesFromSelectionCommand}"
                               Header="{x:Static p:Resources.ContextMenuNodesFromGeometry}"
                               Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+
+                    <!-- Node Connections Menu -->
+                    <controls:ParentMenuItem  x:Name="NodeConnectionsMenu" Header="{x:Static p:Resources.ContextMenuNodeConnections}" >
+
+                        <!--  Connections: Show All Wires  -->
+                        <MenuItem Command="{Binding Path=ShowAllWiresCommand}"
+                                  Header="{x:Static p:Resources.ContextMenuConnectionsShowAll}"
+                                  IsCheckable="True">
+                            <MenuItem.IsChecked>
+                                <Binding Converter="{StaticResource EnumToBoolConverter}"
+                                         ConverterParameter="Auto"
+                                         Mode="OneWay"
+                                         Path="SelectionArgumentLacing" />
+                            </MenuItem.IsChecked>
+                        </MenuItem>
+
+                        <!--  Connections: Hide All Wires  -->
+                        <MenuItem Command="{Binding Path=HideAllWiresCommand}"
+                                  Header="{x:Static p:Resources.ContextMenuConnectionsHideAll}"
+                                  IsCheckable="True">
+                            <MenuItem.IsChecked>
+                                <Binding Converter="{StaticResource EnumToBoolConverter}"
+                                         ConverterParameter="Shortest" 
+                                         Mode="OneWay"
+                                         Path="SelectionArgumentLacing" />
+                            </MenuItem.IsChecked>
+                        </MenuItem>
+
+                    </controls:ParentMenuItem>
 
                     <Separator Visibility="{Binding Path=CanCopyOrPaste, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 

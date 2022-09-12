@@ -1,50 +1,14 @@
-﻿using System;
+﻿using Dynamo.Graph.Nodes;
+using Dynamo.GraphNodeManager.Properties;
+using Dynamo.UI;
+using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using Dynamo.Graph.Nodes;
-using Dynamo.GraphNodeManager.Properties;
-using Dynamo.UI;
 
 namespace Dynamo.GraphNodeManager.Converters
 {
-    internal class BooleanToVisibilityConverter : IValueConverter
-    { 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if((bool)value)
-            {
-                return Visibility.Visible;
-            }
-
-            return Visibility.Hidden;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    internal class IntegerToVisibilityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if ((int)value != 0)
-            {
-                return Visibility.Visible;
-            }
-
-            return Visibility.Hidden;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     internal class StateToColorBrushConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -92,6 +56,7 @@ namespace Dynamo.GraphNodeManager.Converters
             throw new NotImplementedException();
         }
     }
+
     internal class StateToImageSourceConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -142,88 +107,6 @@ namespace Dynamo.GraphNodeManager.Converters
             throw new NotImplementedException();
         }
     }
-    
-
-    internal class BooleanToForegroundColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            SolidColorBrush brush;
-
-            brush = (bool)value
-                ? (SolidColorBrush)
-                SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal100Brush"]
-                : (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DefaultFontColorBrush"];
-
-            return brush;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    internal class BooleanToBackgroundColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            SolidColorBrush brush;
-
-            brush = (bool)value
-                ? (SolidColorBrush)
-                SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue400Brush"]
-                : (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkGreyBrush"];
-
-            return brush;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    internal class BooleanToBackgroundHoverColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            SolidColorBrush brush;
-
-            brush = (bool)value
-                ? (SolidColorBrush)
-                SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue300Brush"]
-                : (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MidGreyBrush"];
-
-            return brush;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
-    internal class BooleanToBackgroundPressedColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            SolidColorBrush brush;
-
-            brush = (bool)value
-                ? (SolidColorBrush)
-                SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue300Brush"]
-                : (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MidGreyBrush"];
-
-            return brush;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
 
     internal class IntToVisibilityConverter : IValueConverter
     {
@@ -241,5 +124,62 @@ namespace Dynamo.GraphNodeManager.Converters
         {
             throw new NotImplementedException();
         }
+    }
+    
+    internal class BooleanToToolTipTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return Resources.ToolTip_ExportToExcelFiltered;    
+            }
+
+            return Resources.ToolTip_ExportToExcel;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+    }
+
+    internal class BooleanToFontStyleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return System.Windows.FontStyles.Italic;
+            }
+
+            return System.Windows.FontStyles.Normal;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+    }
+
+    internal class BooleanToFontFamilyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return new FontFamily("Open Sans");
+            }
+
+            return SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

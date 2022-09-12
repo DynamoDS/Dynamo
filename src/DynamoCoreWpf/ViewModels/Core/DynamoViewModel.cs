@@ -218,8 +218,8 @@ namespace Dynamo.ViewModels
 
                     // Keep DynamoModel.CurrentWorkspace update-to-date
                     int modelIndex = model.Workspaces.IndexOf(currentWorkspaceViewModel.Model);
-                    ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));
-                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
+                    ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));                   
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
                 }
             }
         }
@@ -1104,12 +1104,22 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
                     //RaisePropertyChanged("RunEnabled");
+                    if (!DynamoModel.IsTestMode)
+                    {
+                        ExitGuidedTourIfOpened();
+                    }
                     break;
 
                 case "EnablePresetOptions":
                     RaisePropertyChanged("EnablePresetOptions");
                     break;
             }
+        }
+
+        private void ExitGuidedTourIfOpened()
+        {
+            if (GuideFlowEvents.IsAnyGuideActive)
+                MainGuideManager.ExitTour();
         }
 
         // TODO(Sriram): This method is currently not used, but it should really 
@@ -2362,7 +2372,7 @@ namespace Dynamo.ViewModels
 
         private bool CanCloseHomeWorkspace(object parameter)
         {
-            return HomeSpace.RunSettings.RunEnabled;
+            return HomeSpace.RunSettings.RunEnabled || RunSettings.ForceBlockRun;
         }
 
         /// <summary>

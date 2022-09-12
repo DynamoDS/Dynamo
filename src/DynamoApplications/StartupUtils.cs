@@ -108,6 +108,9 @@ namespace Dynamo.Applications
                 // Disables all analytics (Google and ADP)
                 bool disableAnalytics = false;
 
+                // CrashReport tool location
+                string cerLocation = string.Empty;
+
                 // Allow Dynamo launcher to identify Dynamo variation for log purpose like analytics, e.g. Dynamo Revit
                 var hostname = string.Empty;
 
@@ -132,7 +135,7 @@ namespace Dynamo.Applications
                 .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
                 .Add("da|DA|disableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
-                ;
+                .Add("cr=|CR=|cerLocation", "Specify the crash error report tool location on disk ", cr => cerLocation = cr);
                 optionsSet.Parse(args);
 
                 if (showHelp)
@@ -157,7 +160,8 @@ namespace Dynamo.Applications
                     ASMPath = asmPath,
                     KeepAlive = keepAlive,
                     DisableAnalytics = disableAnalytics,
-                    AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname,  ParentId = parentId, SessionId = sessionId }
+                    AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname, ParentId = parentId, SessionId = sessionId },
+                    CERLocation = cerLocation
                 };
             }
 
@@ -179,7 +183,9 @@ namespace Dynamo.Applications
             [Obsolete("This property will be removed in Dynamo 3.0 - please use AnalyticsInfo")]
             public string HostName { get; set; }
             public bool DisableAnalytics { get; set; }
-            public HostAnalyticsInfo AnalyticsInfo { get; set; } 
+            public HostAnalyticsInfo AnalyticsInfo { get; set; }
+
+            public string CERLocation { get; set; }
         }
 
         /// <summary>
@@ -194,8 +200,7 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
-                new Version(228,0,0),
-                new Version(227,0,0),
+                new Version(228,5,0),
             };
 
             var preloader = new Preloader(rootFolder, versions);

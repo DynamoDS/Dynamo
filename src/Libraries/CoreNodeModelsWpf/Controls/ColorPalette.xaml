@@ -17,7 +17,9 @@
             Width="80"  
             AvailableColorsHeader="{x:Static p:CoreNodeModelWpfResources.ColorPaletteUIStandardColors}" 
             ShowStandardColors="False" 
-            ShowRecentColors="True" 
+            ShowRecentColors="True"
+            StandardButtonHeader="{x:Static p:CoreNodeModelWpfResources.ColorPaletteUIStandardButtonHeader}"
+            AdvancedButtonHeader="{x:Static p:CoreNodeModelWpfResources.ColorPaletteUIAdvancedButtonHeader}"
             RecentColorsHeader="{x:Static p:CoreNodeModelWpfResources.ColorPaletteUIRecentColors}" />
     </Grid>
 </UserControl>

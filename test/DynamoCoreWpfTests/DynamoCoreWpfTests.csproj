@@ -11,11 +11,17 @@
     <RootNamespace>DynamoCoreWpfTests</RootNamespace>
     <AssemblyName>DynamoCoreWpfTests</AssemblyName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
   <ItemGroup>
 	  <PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
     <PackageReference Include="Moq" Version="4.2.1507.0118" />
 	  <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
-	  <PackageReference Include="Greg" Version="2.3.0.1646" />
+	  <PackageReference Include="Greg" Version="2.3.0.2505">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	  <PackageReference Include="HelixToolkit" Version="2.17.0" />
 	  <PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
 	  <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
@@ -149,6 +155,7 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Notifications\Notifications.csproj" />
     <ProjectReference Include="..\..\src\PackageDetailsViewExtension\PackageDetailsViewExtension.csproj">
       <Project>{12FB4DA4-7E9C-4C2E-91CD-1D0B523A9535}</Project>
       <Name>PackageDetailsViewExtension</Name>

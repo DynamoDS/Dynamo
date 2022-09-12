@@ -112,9 +112,20 @@ namespace Dynamo.ViewModels
                     var dragC = command as DynamoModel.DragSelectionCommand;
 
                     if (DynamoModel.DragSelectionCommand.Operation.BeginDrag == dragC.DragOperation)
-                        CurrentSpaceViewModel.BeginDragSelection(dragC.MouseCursor);
+                    {
+                        try
+                        {
+                            CurrentSpaceViewModel.BeginDragSelection(dragC.MouseCursor);
+                        }
+                        catch (Exception ex)
+                        {
+                            model.Logger.Log(ex.Message);
+                        }
+                    }
                     else
+                    {
                         CurrentSpaceViewModel.EndDragSelection(dragC.MouseCursor);
+                    }
                     break;
 
                 case "DeleteModelCommand":

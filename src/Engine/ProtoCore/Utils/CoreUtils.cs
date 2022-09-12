@@ -966,7 +966,8 @@ namespace ProtoCore.Utils
             if (node is IntNode
                 || node is DoubleNode
                 || node is BooleanNode
-                || node is StringNode)
+                || node is StringNode
+                || node is NullNode)
             {
                 return true;
             }
