@@ -128,7 +128,6 @@
       <NodeHelpFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.*" />
       <OpenSourceLicenses Include="$(SolutionDir)..\doc\distrib\Open Source Licenses\**\*.*" />
       <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
-      <LegacyBinariesToBinFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\*\*" />
       <ExternAnalytics Include="$(SolutionDir)..\extern\Analytics.NET\*.*" />
       <LegacyBinariesToBinFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\*" />
       <LegacyBinariesToLibg227Folder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\libg_227_0_0\*" />
