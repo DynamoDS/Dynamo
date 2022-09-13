@@ -87,7 +87,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\third_party\glfw\include;D:\Data\usd\include;D:\Data\usd\include\boost-1_70;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>third_party\glfw\include;D:\Data\usd\include;D:\Data\usd\include\boost-1_70;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>usd_usd.lib;glfw3.lib;tbb.lib;tbb_preview.lib;tbbproxy.lib;tbbmalloc_proxy.lib;tbbmalloc.lib;boost_atomic-vc142-mt-x64-1_70.lib;boost_chrono-vc142-mt-x64-1_70.lib;boost_date_time-vc142-mt-x64-1_70.lib;boost_filesystem-vc142-mt-x64-1_70.lib;boost_program_options-vc142-mt-x64-1_70.lib;boost_regex-vc142-mt-x64-1_70.lib;boost_system-vc142-mt-x64-1_70.lib;boost_thread-vc142-mt-x64-1_70.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -116,6 +117,7 @@
     <ClCompile Include="render-usd-cmake.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\Data\usd\include\pxr\pxr.h" />
     <ClInclude Include="render-usd-cmake.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

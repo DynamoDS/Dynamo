@@ -1,15 +1,8 @@
 // render-usd-cmake.cpp : Defines the entry point for the application.
 //
 
+
 #include "render-usd-cmake.h"
-
-#include "glfw3.h"
-
-#include <pxr/usd/usd/stage.h>
-#include <pxr/usd/usdGeom/sphere.h>
-#include <pxr/base/gf/camera.h>
-#include <pxr/usd/usd/common.h>
-#include <pxr/usdImaging/usdImagingGL/engine.h>
 
 
 using namespace std;

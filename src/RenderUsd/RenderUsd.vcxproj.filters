@@ -23,5 +23,8 @@
     <ClInclude Include="render-usd-cmake.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Data\usd\include\pxr\pxr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
