@@ -841,7 +841,7 @@ namespace Dynamo.ViewModels
                 }                
             }
 
-            RaisePropertyChanged("");
+            RaisePropertyChanged(string.Empty);
         }
 
         /// <summary>
