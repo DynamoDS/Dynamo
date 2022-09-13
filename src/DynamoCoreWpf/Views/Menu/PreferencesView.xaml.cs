@@ -417,7 +417,10 @@ namespace Dynamo.Wpf.Views
                 {
                     if (File.Exists(selectedPathFile))
                     {
-                        selectedPathFile = Path.Combine(dialog.SelectedPath, PathManager.PreferenceSettingsFileName.Replace(".", "_" + ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString() + "."));
+                        string uniqueId = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString();
+                        string suffixPlusDot = "_" + uniqueId + ".";
+                        string uniqueFileName = PathManager.PreferenceSettingsFileName.Replace(".", suffixPlusDot);
+                        selectedPathFile = Path.Combine(dialog.SelectedPath, uniqueFileName);
                     }
 
                     File.Copy(dynViewModel.Model.PathManager.PreferenceFilePath, selectedPathFile);
