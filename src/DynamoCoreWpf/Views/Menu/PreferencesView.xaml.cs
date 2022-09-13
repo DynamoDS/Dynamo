@@ -376,7 +376,8 @@ namespace Dynamo.Wpf.Views
 
         private void importTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            string[] fileFilter = { string.Format(Res.FileDialogImportSettingsFiles, "*.xml") };
+            string fileExtension = "*" + Path.GetExtension(PathManager.PreferenceSettingsFileName);
+            string[] fileFilter = { string.Format(Res.FileDialogImportSettingsFiles, fileExtension) };
             System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
             openFileDialog.Filter = String.Join("|", fileFilter);
             openFileDialog.Title = Res.ImportSettingsDialogTitle;
