@@ -48,5 +48,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoManipulation")]
 [assembly: InternalsVisibleTo("IronPythonTests")]
 [assembly: InternalsVisibleTo("DynamoPackagesWPF")]
+[assembly: InternalsVisibleTo("GraphNodeManagerViewExtension")]
+[assembly: InternalsVisibleTo("ExportSampleImagesViewExtension")]
 
 [assembly: TypeForwardedTo(typeof(Dynamo.Scheduler.Disposable))]

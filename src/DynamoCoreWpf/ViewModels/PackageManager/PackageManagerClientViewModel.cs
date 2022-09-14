@@ -200,6 +200,7 @@ namespace Dynamo.ViewModels
 
         #region Properties/Fields
 
+        private readonly string QUARANTINED = "quarantined";
         public PackageManagerSearchView Owner { get; set; }
 
         ObservableCollection<PackageUploadHandle> _uploads = new ObservableCollection<PackageUploadHandle>();
@@ -224,6 +225,7 @@ namespace Dynamo.ViewModels
         }
 
         public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
+        public List<PackageManagerSearchElement> InfectedPackageList { get; private set; }
 
         public readonly DynamoViewModel DynamoViewModel;
         public AuthenticationManager AuthenticationManager { get; set; }
@@ -469,6 +471,28 @@ namespace Dynamo.ViewModels
             }
 
             return CachedPackageList;
+        }
+
+        /// <summary>
+        /// Returns a dictionary of infected package(s) with name and version, if the last published version of package uploaded by the current user was flagged as infected.
+        /// </summary>
+        /// <returns></returns>
+        public List<PackageManagerSearchElement> GetInfectedPackages()
+        {
+            InfectedPackageList = new List<PackageManagerSearchElement>();
+            var latestPkgs = Model.GetUsersLatestPackages();
+            if (latestPkgs != null && latestPkgs.maintains.Count > 0)
+            {
+                foreach (var infectedVer in latestPkgs.maintains)
+                {
+                    if (infectedVer.scan_status == QUARANTINED)
+                    {
+                        var ele = new PackageManagerSearchElement(infectedVer);
+                        InfectedPackageList.Add(ele);
+                    }
+                }
+            }
+            return InfectedPackageList;
         }
 
         /// <summary>

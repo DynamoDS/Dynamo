@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Autodesk.DesignScript.Runtime;
 
 namespace FFITarget
 {
@@ -49,6 +51,12 @@ namespace FFITarget
         public string Test2()
         {
             return "this node is obsolete.";
+        }
+
+        [return: ArbitraryDimensionArrayImport]
+        public static IEnumerable<object> TestReturnAttribute()
+        {
+            return new object[] { 1.3, new double[] { 4.5, 7.8 } };
         }
     }
 }

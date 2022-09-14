@@ -48,6 +48,7 @@
                         <ResourceDictionary.MergedDictionaries>
                             <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                             <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                            <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                         </ResourceDictionary.MergedDictionaries>
                         <Style TargetType="{x:Type MenuItem}">
                             <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
@@ -340,7 +341,23 @@
                        IsHitTestVisible="False"
                        Style="{StaticResource SZoomFadeText}"
                        Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                       Visibility="Visible"
                        TextAlignment="Center" />
+            <TextBox Name="EditableNameBox"
+                     Margin="6,3,6,0"
+                     VerticalAlignment="Center"
+                     Background="{x:Null}"
+                     FontFamily="{StaticResource ArtifaktElementRegular}"
+                     FontSize="16px"
+                     FontWeight="Medium"
+                     Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                     SelectionBrush="{StaticResource NodeSelectionTextColor}" SelectionOpacity="0.2"
+                     IsHitTestVisible="True"
+                     BorderThickness="0"
+                     LostFocus="EditableNameBox_OnLostFocus"
+                     KeyDown="EditableNameBox_KeyDown"
+                     Visibility="Collapsed"
+                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
             <!--  Ellipse sits within Grid to increase size of MouseOver/ToolTip area  -->
             <Grid HorizontalAlignment="Right"
                   VerticalAlignment="Center"

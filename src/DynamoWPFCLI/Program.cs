@@ -4,6 +4,7 @@ using System.Threading;
 using Dynamo.Applications;
 using Dynamo.Models;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using static System.Windows.Threading.Dispatcher;
 
@@ -77,6 +78,11 @@ namespace DynamoWPFCLI
             else
             {
                 model = Dynamo.Applications.StartupUtils.MakeModel(true, string.Empty, cmdLineArgs.AnalyticsInfo);
+            }
+
+            if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
+            {
+                model.CERLocation = cmdLineArgs.CERLocation;
             }
 
             model.ShutdownCompleted += (m) => { ShutDown(); };

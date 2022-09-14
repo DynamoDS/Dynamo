@@ -18,7 +18,7 @@
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         mc:Ignorable="d" 
-        Height="474" 
+        Height="480" 
         Width="665"
         ResizeMode="NoResize">
 
@@ -39,8 +39,7 @@
 
             <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
             <DataTemplate x:Key="styleViewItemTemplate">
-                <Border Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}"     
-                        Margin="4"
+                <Border Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}"
                         BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -382,6 +381,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <!--This Grid row contains the Python section-->
@@ -450,12 +450,38 @@
                                 </StackPanel>
                             </Expander>
 
-                                <!--This Grid row contains the Experimental section-->
+                            <!--This Grid row contains the Notification Center section-->
+                            <Expander x:Name="NotificationCenterExpander" 
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=NotificationCenterExpander}"
+                                      Grid.Row="1"
+                                      Header="{x:Static p:Resources.PreferencesViewNotificationCenter}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
+                                        <ToggleButton Name="NotificationCenterToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=NotificationCenterIsChecked}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewEnableNotificationCenter}" 
+                                                   Margin="10,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+                            
+                            <!--This Grid row contains the Experimental section-->
                             <Expander x:Name="ExperimentalExpander" 
-                                          Style="{StaticResource MenuExpanderStyle}" 
-                                       IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExperimentalExpander}"
-                                          Grid.Row="1"
-                                          Header="{x:Static p:Resources.PreferencesViewExperimentalLabel}">
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExperimentalExpander}"
+                                      Grid.Row="2"
+                                      Header="{x:Static p:Resources.PreferencesViewExperimentalLabel}">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
@@ -535,8 +561,8 @@
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" 
                                               x:Name="GroupStyleScrollViewer"                                              
                                               PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
-                                              Height="220">
-                                    <Grid Margin="0,0,0,0">
+                                              MaxHeight="260">
+                                    <Grid Margin="0,0,0,-2">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
@@ -548,7 +574,7 @@
                                                 Grid.Row="0"
                                                 MinWidth="100"
                                                 MinHeight="25"
-                                                Margin="3,10,0,10"
+                                                Margin="0,5,0,5"
                                                 Click="AddStyleButton_Click"
                                                 IsEnabled="{Binding IsEnabledAddStyleButton}"
                                                 Content="{x:Static p:Resources.AddStyleButton}" />
@@ -557,7 +583,7 @@
                                                 CornerRadius="4" 
                                                 MinHeight="100"
                                                 MinWidth="335"
-                                                Margin="7,0,72,10"
+                                                Margin="3,0,72,5"
                                                 Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}"
                                                 Grid.Row="1">
                                             <Grid>
@@ -898,17 +924,23 @@
                                                     Margin="10,0,0,0"
                                                     VerticalAlignment="Center"
                                                     Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            <Label HorizontalAlignment="Left" 
-                                               Name="TrustWarningInfoLabel" 
-                                               VerticalAlignment="Center" 
-                                               Height="26" 
-                                               Width="53" 
-                                               Margin="0 3 0 0" >
+                                            <Label HorizontalAlignment="Left"
+                                                   Name="TrustWarningInfoLabel"
+                                                   VerticalAlignment="Center" 
+                                                   Height="26" 
+                                                   Width="53"
+                                                   Margin="0 3 0 0"
+                                                   MouseLeftButtonDown="OnMoreInfoClicked">
                                                 <Label.ToolTip>
                                                     <ToolTip Content="{x:Static p:Resources.PreferencesViewTrustWarningTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
                                                 </Label.ToolTip>
                                                 <Label.Content>
-                                                    <fa:ImageAwesome Width="15" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Left" Icon="QuestionCircleOutline" Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                    <fa:ImageAwesome Width="15" 
+                                                                     Height="15" 
+                                                                     VerticalAlignment="Bottom" 
+                                                                     HorizontalAlignment="Left" 
+                                                                     Icon="QuestionCircleOutline" 
+                                                                     Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                                 </Label.Content>
                                             </Label>
                                         </StackPanel>

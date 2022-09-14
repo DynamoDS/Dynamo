@@ -418,6 +418,7 @@ namespace Dynamo.Tests
 
             var relativePath = Graph.Nodes.Utilities.MakeRelativePath(basePath, testPath);
             Assert.AreEqual(relativePath, ".\\" + testFilename);
+            Assert.IsFalse(Graph.Nodes.Utilities.IsAbsolutePath(relativePath));
         }
 
         [Test]
@@ -477,6 +478,7 @@ namespace Dynamo.Tests
             });
 
             Assert.AreEqual(expected, result);
+            Assert.IsTrue(Graph.Nodes.Utilities.IsAbsolutePath(result));
         }
 
         [Test]

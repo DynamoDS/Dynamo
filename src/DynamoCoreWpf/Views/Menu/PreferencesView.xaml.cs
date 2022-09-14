@@ -285,9 +285,25 @@ namespace Dynamo.Wpf.Views
             Log(LogMessage.Info(message));
         }
 
+        /// <summary>
+        /// Unified handler for more info request from mouse left button click
+        /// </summary>
+        /// <param name="sender">sender control</param>
+        /// <param name="e"></param>
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
         {
-            dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+            if (sender is Label lable)
+            {
+                if (lable.Name == "Titleinfo")
+                {
+                    dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+                }
+                else if (lable.Name == "TrustWarningInfoLabel")
+                {
+                    dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.FileTrustWarningDocumentationUriString, UriKind.Relative)));
+
+                }
+            }
         }
 
         private void ReloadCPython_Click(object sender, RoutedEventArgs e)

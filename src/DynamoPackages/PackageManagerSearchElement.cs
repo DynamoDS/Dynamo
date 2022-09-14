@@ -118,6 +118,10 @@ namespace Dynamo.PackageManager
         public string SiteUrl { get { return Header.site_url; } }
         public string RepositoryUrl { get { return Header.repository_url; } }
 
+        public string InfectedPackageName { get; set; }
+        public string InfectedPackageVersion { get; set; }
+        public string InfectedPackageCreationDate { get; set; }
+
         #endregion
 
         /// <summary>
@@ -139,6 +143,13 @@ namespace Dynamo.PackageManager
                 this.Keywords = "";
             }
             this.Votes = header.votes;
+        }
+
+        public PackageManagerSearchElement(PackageVersion infectedVersion)
+        {
+            this.InfectedPackageName = infectedVersion.name;
+            this.InfectedPackageVersion = infectedVersion.version;
+            this.InfectedPackageCreationDate = infectedVersion.created;
         }
 
         public void Upvote()

@@ -136,7 +136,7 @@ namespace Dynamo.Models
         /// During sandbox initializing, Dynamo checks specifically if ASM loading was correct
         /// </summary>
         internal bool IsASMLoaded = true;
-    
+
         #endregion
 
         #region static properties
@@ -452,6 +452,11 @@ namespace Dynamo.Models
         /// </summary>
         public bool CLIMode { get; internal set; }
 
+        /// <summary>
+        /// The Autodesk CrashReport tool location on disk (directory that contains the "senddmp.exe")
+        /// </summary>
+        public string CERLocation { get; internal set; }
+
         protected virtual void PreShutdownCore(bool shutdownHost)
         {
         }
@@ -477,6 +482,7 @@ namespace Dynamo.Models
         {
         }
 
+        // TODO_Dynamo3.0: Replace the IStartConfiguration with a class or struct instance in order to avoid future breaking changes for every new option added.
         public interface IStartConfiguration
         {
             string Context { get; set; }
@@ -497,6 +503,29 @@ namespace Dynamo.Models
             /// No update checks or analytics collection should be done.
             /// </summary>
             bool IsHeadless { get; set; }
+        }
+
+        /// <summary>
+        /// Options used to customize the CER (crash error reporting) experience.
+        /// </summary>
+        public struct CrashReporterStartupOptions
+        {
+            /// <summary>
+            /// The Autodesk CrashReport tool location on disk (directory that contains the "senddmp.exe")
+            /// </summary>
+            public string CERLocation { get; set; }
+        }
+
+        // Remove this interface in Dynamo3.0 and merge it back into IStartConfiguration.
+        /// <summary>
+        /// Use this interface to set the CER (crash error reporting) tool path. 
+        /// </summary>
+        public interface IStartConfigCrashReporter
+        {
+            /// <summary>
+            /// CERLocation
+            /// </summary>
+            CrashReporterStartupOptions CRStartConfig { get; set; }
         }
 
         /// <summary>
@@ -582,6 +611,11 @@ namespace Dynamo.Models
                 // TODO: This fact should probably be revisited in 3.0.
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
                 CLIMode = defaultStartConfig.CLIMode;
+            }
+
+            if (config is IStartConfigCrashReporter cerConfig)
+            {
+                CERLocation = cerConfig.CRStartConfig.CERLocation;
             }
 
             ClipBoard = new ObservableCollection<ModelBase>();
@@ -867,9 +901,7 @@ namespace Dynamo.Models
 
             if (extensions.Any())
             {
-                var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, new ExtensionLibraryLoader(this), CustomNodeManager,
-                    GetType().Assembly.GetName().Version, PreferenceSettings, LinterManager);
+                var startupParams = new StartupParams(this);
 
                 foreach (var ext in extensions)
                 {
@@ -913,6 +945,10 @@ namespace Dynamo.Models
                 }
             }
 
+#if DEBUG
+            CurrentWorkspace.NodeAdded += CrashOnDemand.CurrentWorkspace_NodeAdded;
+#endif
+
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
 
             StartBackupFilesTimer();
@@ -926,23 +962,26 @@ namespace Dynamo.Models
 
         private void CheckFeatureFlagTest()
         {
-            if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
+            if (!DynamoModel.IsTestMode)
             {
-                this.Logger.Log("EasterEggIcon1 is true FROM MODEL");
+                if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
+                {
+                    this.Logger.Log("EasterEggIcon1 is true FROM MODEL");
 
-            }
-            else
-            {
-                this.Logger.Log("EasterEggIcon1 is false FROM MODEL");
-            }
+                }
+                else
+                {
+                    this.Logger.Log("EasterEggIcon1 is false FROM MODEL");
+                }
 
-            if (DynamoModel.FeatureFlags.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is var s && s != "NA")
-            {
-                this.Logger.Log("EasterEggMessage1 is enabled FROM MODEL");
-            }
-            else
-            {
-                this.Logger.Log("EasterEggMessage1 is disabled FROM MODEL");
+                if (DynamoModel.FeatureFlags.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is var s && s != "NA")
+                {
+                    this.Logger.Log("EasterEggMessage1 is enabled FROM MODEL");
+                }
+                else
+                {
+                    this.Logger.Log("EasterEggMessage1 is disabled FROM MODEL");
+                }
             }
         }
 
@@ -1263,6 +1302,10 @@ namespace Dynamo.Models
                 PreferenceSettings.RequestUserDataFolder -= pathManager.GetUserDataFolder;
                 PreferenceSettings.MessageLogged -= LogMessage;
             }
+
+#if DEBUG
+            CurrentWorkspace.NodeAdded -= CrashOnDemand.CurrentWorkspace_NodeAdded;
+#endif
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             foreach (var ws in _workspaces)

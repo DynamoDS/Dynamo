@@ -443,6 +443,9 @@
                 },
                 {
                   "path": "Core.Input.Output"
+                },
+                {
+                  "path": "Core.Input.Custom Selection"
                 }
               ],
               "childElements": []
@@ -1455,6 +1458,13 @@
                     },
                     {
                       "path": "Geometry.Geometry.ExportToSAT"
+                    },
+                    {
+                      "path": "Geometry.Geometry.Geometry.ImportFromSATWithUnits"
+                    },
+
+                    {
+                      "path": "Geometry.Geometry.Geometry.DeserializeFromSABWithUnits"
                     }
                   ],
                   "childElements": []
