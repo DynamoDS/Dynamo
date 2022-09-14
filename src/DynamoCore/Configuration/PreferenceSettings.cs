@@ -22,7 +22,7 @@ namespace Dynamo.Configuration
         /// </summary>
         /// <param name="source"></param>
         /// <param name="destination"></param>
-        public static void CopyProperties(this PreferenceSettings source, PreferenceSettings destination)
+        internal static void CopyProperties(this PreferenceSettings source, PreferenceSettings destination)
         {
             // Iterate the Properties of the destination instance and populate them from their source counterparts  
             PropertyInfo[] destinationProperties = destination.GetType().GetProperties();
