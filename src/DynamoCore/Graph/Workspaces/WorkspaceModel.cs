@@ -2537,10 +2537,7 @@ namespace Dynamo.Graph.Workspaces
             // If count is zero, this is a note, not an annotation
             if (annotationViewInfo.Nodes.Count() == 0) return;
 
-
             var text = annotationViewInfo.Title;
-
-            
 
             // Create a collection of nodes in the given annotation
             var nodes = new List<NodeModel>();
