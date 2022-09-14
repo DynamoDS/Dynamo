@@ -953,8 +953,14 @@ namespace Dynamo.ViewModels
             this.workspaceViewModel = workspace;
             model = connectorModel;
 
-            Nodevm = workspace.GetViewModelAs<NodeViewModel>(model.Start.Owner.GUID);
-            NodeEnd = workspace.GetViewModelAs<NodeViewModel>(model.End.Owner.GUID);
+            if (workspace.GetViewModel(model.Start.Owner.GUID, out NodeViewModel sNvm))
+            {
+                Nodevm = sNvm;
+            }
+            if (workspace.GetViewModel(model.End.Owner.GUID, out NodeViewModel eNvm))
+            {
+                NodeEnd = eNvm;
+            }
 
             IsHidden = model.IsHidden;
             MouseHoverOn = false;
