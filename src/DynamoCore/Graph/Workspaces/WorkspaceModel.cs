@@ -2369,8 +2369,10 @@ namespace Dynamo.Graph.Workspaces
                 this,
                 new PointEventArgs(new Point2D(X, Y)));
 
+            Dictionary<Guid, NodeModel> nodeMap = Nodes.ToDictionary(x => x.GUID);
+
             // This function loads standard nodes
-            LoadNodes(workspaceViewInfo.NodeViews);
+            LoadNodes(workspaceViewInfo.NodeViews, ref nodeMap);
 
             // This function loads notes from the Notes array in the JSON format
             // NOTE: This is here to support early JSON graphs
@@ -2389,7 +2391,7 @@ namespace Dynamo.Graph.Workspaces
 
             // This function loads annotations from the Annotations array in the JSON format
             // that have a non-empty nodes collection
-            LoadAnnotations(workspaceViewInfo.Annotations);
+            LoadAnnotations(workspaceViewInfo.Annotations, ref nodeMap);
 
             // TODO, QNTM-1099: These items are not in the extra view info
             // Name = info.Name;
@@ -2397,7 +2399,7 @@ namespace Dynamo.Graph.Workspaces
             // FileName = info.FileName;
         }
 
-        private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews)
+        private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews, ref Dictionary<Guid, NodeModel> nodeMap)
         {
             if (nodeViews == null)
                 return;
@@ -2405,8 +2407,7 @@ namespace Dynamo.Graph.Workspaces
             foreach (ExtraNodeViewInfo nodeViewInfo in nodeViews)
             {
                 var guidValue = IdToGuidConverter(nodeViewInfo.Id);
-                var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
-                if (nodeModel != null)
+                if (nodeMap.TryGetValue(guidValue, out NodeModel nodeModel) && nodeModel != null)
                 {
                     nodeModel.X = nodeViewInfo.X;
                     nodeModel.Y = nodeViewInfo.Y;
@@ -2503,7 +2504,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private void LoadAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
+        private void LoadAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews, ref Dictionary<Guid, NodeModel> nodeMap)
         {
             if (annotationViews == null) return;
 
@@ -2520,11 +2521,11 @@ namespace Dynamo.Graph.Workspaces
                     continue;
                 }
 
-                LoadAnnotation(annotationViewInfo);
+                LoadAnnotation(annotationViewInfo, ref nodeMap);
             }
         }
 
-        private void LoadAnnotation(ExtraAnnotationViewInfo annotationViewInfo)
+        private void LoadAnnotation(ExtraAnnotationViewInfo annotationViewInfo, ref Dictionary<Guid, NodeModel> nodeMap)
         {
             var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
 
@@ -2539,7 +2540,7 @@ namespace Dynamo.Graph.Workspaces
 
             var text = annotationViewInfo.Title;
 
-            Dictionary<Guid, NodeModel> nodeMap = Nodes.ToDictionary(x => x.GUID);
+            
 
             // Create a collection of nodes in the given annotation
             var nodes = new List<NodeModel>();
