@@ -43,7 +43,7 @@ namespace Dynamo.ViewModels
     public partial class WorkspaceViewModel : ViewModelBase
     {
         /// <summary>
-        /// A Dictionary that maps ModelBase's (by GUID) to their corresponding ViewModelBase's
+        /// A utility class that stores a dictionary of ModelBase.Guid to ViewModelBase (Guid to ViewModelBase).
         /// </summary>
         internal class ViewModelDictionary
         {
@@ -322,8 +322,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// A utility class that stores a dictionary of ModelBase.Guid to ViewModelBase (Guid to ViewModelBase).
-        /// The internal dictionary is automatically update everytime the corresponding ObservableCollection is changed.
+        /// A Dictionary that maps ModelBase's (by GUID) to their corresponding ViewModelBase's
         /// </summary>
         private readonly ViewModelDictionary viewModelCache = new ViewModelDictionary();
 
@@ -727,7 +726,10 @@ namespace Dynamo.ViewModels
         void Connectors_ConnectorAdded(ConnectorModel c)
         {
             var viewModel = new ConnectorViewModel(this, c);
-            Connectors.Add(viewModel);
+            if (!GetViewModel<ConnectorViewModel>(c.GUID, out _))
+            {
+                Connectors.Add(viewModel);
+            }
         }
 
         void Connectors_ConnectorDeleted(ConnectorModel c)
@@ -742,7 +744,10 @@ namespace Dynamo.ViewModels
         private void Model_NoteAdded(NoteModel note)
         {
             var noteViewModel = new NoteViewModel(this, note);
-            Notes.Add(noteViewModel);
+            if (!GetViewModel<NoteViewModel>(note.GUID, out _))
+            {
+                Notes.Add(noteViewModel);
+            }
         }
 
         private void Model_NoteRemoved(NoteModel note)
