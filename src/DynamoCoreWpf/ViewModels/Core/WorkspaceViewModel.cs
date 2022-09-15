@@ -84,9 +84,7 @@ namespace Dynamo.ViewModels
 
             internal void OnCollectionChanged(object _, NotifyCollectionChangedEventArgs e)
             {
-                if ((e.Action == NotifyCollectionChangedAction.Add || 
-                    e.Action == NotifyCollectionChangedAction.Reset) &&
-                    e.NewItems != null)
+                if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null)
                 {
                     foreach (var item in e.NewItems)
                     {
@@ -94,8 +92,7 @@ namespace Dynamo.ViewModels
                     }
                 }
 
-                if ((e.Action == NotifyCollectionChangedAction.Remove ||
-                    e.Action == NotifyCollectionChangedAction.Reset) &&
+                if (e.Action == NotifyCollectionChangedAction.Remove &&
                     e.OldItems != null && !ViewModelMap.IsEmpty)
                 {
                     foreach (var item in e.OldItems)
