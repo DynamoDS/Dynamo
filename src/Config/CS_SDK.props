@@ -50,6 +50,9 @@
       <Private>false</Private>
     </ProjectReference>
   </ItemDefinitionGroup>
+  <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
+    <TestDependenciesPath>\..\..\..\test\test_dependencies</TestDependenciesPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
     <ProjectReference>
       <PrivateAssets>all</PrivateAssets>
