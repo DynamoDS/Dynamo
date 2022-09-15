@@ -848,10 +848,10 @@ namespace Dynamo.ViewModels
 
                 viewModelCache.Clear(Nodes);
                 Nodes.Clear();
-                Errors.Clear();
-
-                PostNodeChangeActions();
             }
+
+            Errors.Clear();
+            PostNodeChangeActions();
         }
 
         private void subscribeNodeEvents(NodeViewModel nodeViewModel)
@@ -872,16 +872,15 @@ namespace Dynamo.ViewModels
             {
                 lock (Nodes)
                 {
-                    //unsub the events we attached below in NodeAdded.
-                    unsubscribeNodeEvents(nodeViewModel);
-
-                    Nodes.Remove(nodeViewModel);
                     Errors.Remove(nodeViewModel.ErrorBubble);
-
-                    nodeViewModel.Dispose();
-
-                    PostNodeChangeActions();
+                    Nodes.Remove(nodeViewModel);
                 }
+
+                //unsub the events we attached below in NodeAdded.
+                unsubscribeNodeEvents(nodeViewModel);
+                nodeViewModel.Dispose();
+
+                PostNodeChangeActions();
             }
         }
 
@@ -890,16 +889,16 @@ namespace Dynamo.ViewModels
             var nodeViewModel = new NodeViewModel(this, node);
             if (!GetViewModel<NodeViewModel>(node.GUID, out _))
             {
+                subscribeNodeEvents(nodeViewModel);
+
                 lock (Nodes)
                 {
-                    subscribeNodeEvents(nodeViewModel);
-
                     Nodes.Add(nodeViewModel);
-
-                    Errors.Add(nodeViewModel.ErrorBubble);
-
-                    PostNodeChangeActions();
                 }
+
+                Errors.Add(nodeViewModel.ErrorBubble);
+
+                PostNodeChangeActions();
             }
         }
 
