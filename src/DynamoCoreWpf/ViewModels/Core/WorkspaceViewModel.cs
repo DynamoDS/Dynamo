@@ -49,25 +49,58 @@ namespace Dynamo.ViewModels
         {
             private ConcurrentDictionary<Guid, ViewModelBase> ViewModelMap = new ConcurrentDictionary<Guid, ViewModelBase>();
 
-            internal void OnCollectionChanged<T>(object _, NotifyCollectionChangedEventArgs e, Func<T, Guid> id = null) where T : ViewModelBase
+            private Guid GetGuid(object vmb)
             {
-                if (e.Action == NotifyCollectionChangedAction.Add || 
-                    e.Action == NotifyCollectionChangedAction.Reset)
+                switch (vmb.GetType().Name)
                 {
-                    foreach (var i in e.NewItems)
+                    case nameof(NodeViewModel):
+                        return (vmb as NodeViewModel).Id;
+                    case nameof(NoteViewModel):
+                        return (vmb as NoteViewModel).Model.GUID;
+                    case nameof(ConnectorViewModel):
+                        return (vmb as ConnectorViewModel).ConnectorModel.GUID;
+                    case nameof(ConnectorPinViewModel):
+                        return (vmb as ConnectorPinViewModel).Model.GUID;
+                    case nameof(AnnotationViewModel):
+                        return (vmb as AnnotationViewModel).AnnotationModel.GUID;
+                    default:
+                        return Guid.Empty;
+                }
+            }
+
+            internal void Clear(IEnumerable<ViewModelBase> coll = null)
+            {
+                if (coll == null)
+                {
+                    ViewModelMap.Clear();
+                    return;
+                }
+
+                foreach (var item in coll)
+                {
+                    ViewModelMap.TryRemove(GetGuid(item), out _);
+                }
+            }
+
+            internal void OnCollectionChanged(object _, NotifyCollectionChangedEventArgs e)
+            {
+                if ((e.Action == NotifyCollectionChangedAction.Add || 
+                    e.Action == NotifyCollectionChangedAction.Reset) &&
+                    e.NewItems != null)
+                {
+                    foreach (var item in e.NewItems)
                     {
-                        var item = i as T;
-                        ViewModelMap.TryAdd(id(item), item);
+                        ViewModelMap.TryAdd(GetGuid(item), item as ViewModelBase);
                     }
                 }
 
-                if (e.Action == NotifyCollectionChangedAction.Remove ||
-                    e.Action == NotifyCollectionChangedAction.Reset)
+                if ((e.Action == NotifyCollectionChangedAction.Remove ||
+                    e.Action == NotifyCollectionChangedAction.Reset) &&
+                    e.OldItems != null && !ViewModelMap.IsEmpty)
                 {
-                    foreach (var i in e.OldItems)
+                    foreach (var item in e.OldItems)
                     {
-                        var item = i as T;
-                        ViewModelMap.TryRemove(id(item), out ViewModelBase _);
+                        ViewModelMap.TryRemove(GetGuid(item), out ViewModelBase _);
                     }
                 }
             }
@@ -330,20 +363,20 @@ namespace Dynamo.ViewModels
         public CompositeCollection WorkspaceElements { get; } = new CompositeCollection();
 
         [JsonIgnore]
-        public ObservableCollection<ConnectorViewModel> Connectors { get; } = new ObservableCollection<ConnectorViewModel>();
+        public SmartObservableCollection<ConnectorViewModel> Connectors { get; } = new SmartObservableCollection<ConnectorViewModel>();
 
         [JsonProperty("NodeViews")]
-        public ObservableCollection<NodeViewModel> Nodes { get; } = new ObservableCollection<NodeViewModel>();
+        public SmartObservableCollection<NodeViewModel> Nodes { get; } = new SmartObservableCollection<NodeViewModel>();
         // Do not serialize notes, they will be converted to annotations during serialization
         [JsonIgnore]
-        public ObservableCollection<NoteViewModel> Notes { get; } = new ObservableCollection<NoteViewModel>();
+        public SmartObservableCollection<NoteViewModel> Notes { get; } = new SmartObservableCollection<NoteViewModel>();
 
         [JsonIgnore]
-        public ObservableCollection<ConnectorPinViewModel> Pins { get; } = new ObservableCollection<ConnectorPinViewModel>();
+        public SmartObservableCollection<ConnectorPinViewModel> Pins { get; } = new SmartObservableCollection<ConnectorPinViewModel>();
 
         [JsonIgnore]
         public ObservableCollection<InfoBubbleViewModel> Errors { get; } = new ObservableCollection<InfoBubbleViewModel>();
-        public ObservableCollection<AnnotationViewModel> Annotations { get; } = new ObservableCollection<AnnotationViewModel>();
+        public SmartObservableCollection<AnnotationViewModel> Annotations { get; } = new SmartObservableCollection<AnnotationViewModel>();
 
         [JsonIgnore]
         public string Name
@@ -512,28 +545,26 @@ namespace Dynamo.ViewModels
             //currently, view models are added for notes and nodes
             //connector view models are added during connection
 
+            Nodes.CollectionChanged += viewModelCache.OnCollectionChanged;
+            Notes.CollectionChanged += viewModelCache.OnCollectionChanged;
+            Annotations.CollectionChanged += viewModelCache.OnCollectionChanged;
+            Connectors.CollectionChanged += viewModelCache.OnCollectionChanged;
+            Pins.CollectionChanged += viewModelCache.OnCollectionChanged;
+
             Model.NodeAdded += Model_NodeAdded;
             Model.NodeRemoved += Model_NodeRemoved;
             Model.NodesCleared += Model_NodesCleared;
-            Nodes.CollectionChanged += (object sender, NotifyCollectionChangedEventArgs e) =>
-                viewModelCache.OnCollectionChanged(sender, e, (NodeViewModel vmb) => vmb.Id);
 
             Model.NoteAdded += Model_NoteAdded;
             Model.NoteRemoved += Model_NoteRemoved;
             Model.NotesCleared += Model_NotesCleared;
-            Notes.CollectionChanged += (object sender, NotifyCollectionChangedEventArgs e) =>
-                viewModelCache.OnCollectionChanged(sender, e, (NoteViewModel vmb) => vmb.Model.GUID);
 
             Model.AnnotationAdded += Model_AnnotationAdded;
             Model.AnnotationRemoved += Model_AnnotationRemoved;
             Model.AnnotationsCleared += Model_AnnotationsCleared;
-            Annotations.CollectionChanged += (object sender, NotifyCollectionChangedEventArgs e) =>
-                viewModelCache.OnCollectionChanged(sender, e, (AnnotationViewModel vmb) => vmb.AnnotationModel.GUID);
 
             Model.ConnectorAdded += Connectors_ConnectorAdded;
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
-            Connectors.CollectionChanged += (object sender, NotifyCollectionChangedEventArgs e) =>
-                viewModelCache.OnCollectionChanged(sender, e, (ConnectorViewModel vmb) => vmb.ConnectorModel.GUID);
 
             Model.PropertyChanged += ModelPropertyChanged;
             Model.PopulateJSONWorkspace += Model_PopulateJSONWorkspace;
@@ -542,8 +573,6 @@ namespace Dynamo.ViewModels
 
             DynamoViewModel.CopyCommand.CanExecuteChanged += CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged += CopyPasteChanged;
-
-
 
             // InCanvasSearchViewModel needs to happen before the nodes are created
             // as we rely upon it to retrieve node icon images
@@ -577,6 +606,12 @@ namespace Dynamo.ViewModels
 
         public override void Dispose()
         {
+            Nodes.CollectionChanged -= viewModelCache.OnCollectionChanged;
+            Notes.CollectionChanged -= viewModelCache.OnCollectionChanged;
+            Annotations.CollectionChanged -= viewModelCache.OnCollectionChanged;
+            Connectors.CollectionChanged -= viewModelCache.OnCollectionChanged;
+            Pins.CollectionChanged -= viewModelCache.OnCollectionChanged;
+
             Model.NodeAdded -= Model_NodeAdded;
             Model.NodeRemoved -= Model_NodeRemoved;
             Model.NodesCleared -= Model_NodesCleared;
@@ -599,6 +634,7 @@ namespace Dynamo.ViewModels
             DynamoViewModel.CopyCommand.CanExecuteChanged -= CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged -= CopyPasteChanged;
 
+            
             var nodeViewModels = Nodes.ToList();
             nodeViewModels.ForEach(nodeViewModel => nodeViewModel.Dispose());
             nodeViewModels.ForEach(nodeViewModel => this.unsubscribeNodeEvents(nodeViewModel));
@@ -612,6 +648,7 @@ namespace Dynamo.ViewModels
             Connectors.Clear();
             Errors.Clear();
             Annotations.Clear();
+            viewModelCache.Clear();
             InCanvasSearchViewModel.Dispose();
             NodeAutoCompleteSearchViewModel.Dispose();
         }
@@ -765,13 +802,18 @@ namespace Dynamo.ViewModels
             {
                 noteViewModel.Dispose();
             }
+
+            viewModelCache.Clear(Notes);
             Notes.Clear();
         }
 
         private void Model_AnnotationAdded(AnnotationModel annotation)
         {
             var annotationViewModel = new AnnotationViewModel(this, annotation);
-            Annotations.Add(annotationViewModel);
+            if (!GetViewModel<AnnotationViewModel>(annotation.GUID, out _))
+            {
+                Annotations.Add(annotationViewModel);
+            }
         }
 
         private void Model_AnnotationRemoved(AnnotationModel annotation)
@@ -789,21 +831,27 @@ namespace Dynamo.ViewModels
             {
                 annotationViewModel.Dispose();
             }
+
+            viewModelCache.Clear(Annotations);
             Annotations.Clear();
         }
 
         void Model_NodesCleared()
         {
-            foreach (var nodeViewModel in Nodes)
+            lock (Nodes)
             {
-                unsubscribeNodeEvents(nodeViewModel);
-                nodeViewModel.Dispose();
+                foreach (var nodeViewModel in Nodes)
+                {
+                    unsubscribeNodeEvents(nodeViewModel);
+                    nodeViewModel.Dispose();
+                }
+
+                viewModelCache.Clear(Nodes);
+                Nodes.Clear();
+                Errors.Clear();
+
+                PostNodeChangeActions();
             }
-
-            Nodes.Clear();
-            Errors.Clear();
-
-            PostNodeChangeActions();
         }
 
         private void subscribeNodeEvents(NodeViewModel nodeViewModel)
@@ -822,27 +870,37 @@ namespace Dynamo.ViewModels
         {
             if (GetViewModel(node.GUID, out NodeViewModel nodeViewModel))
             {
-                //unsub the events we attached below in NodeAdded.
-                unsubscribeNodeEvents(nodeViewModel);
+                lock (Nodes)
+                {
+                    //unsub the events we attached below in NodeAdded.
+                    unsubscribeNodeEvents(nodeViewModel);
 
-                Nodes.Remove(nodeViewModel);
-                Errors.Remove(nodeViewModel.ErrorBubble);
+                    Nodes.Remove(nodeViewModel);
+                    Errors.Remove(nodeViewModel.ErrorBubble);
 
-                nodeViewModel.Dispose();
+                    nodeViewModel.Dispose();
 
-                PostNodeChangeActions();
+                    PostNodeChangeActions();
+                }
             }
         }
 
         void Model_NodeAdded(NodeModel node)
         {
             var nodeViewModel = new NodeViewModel(this, node);
-            subscribeNodeEvents(nodeViewModel);
+            if (!GetViewModel<NodeViewModel>(node.GUID, out _))
+            {
+                lock (Nodes)
+                {
+                    subscribeNodeEvents(nodeViewModel);
 
-            Nodes.Add(nodeViewModel);
-            Errors.Add(nodeViewModel.ErrorBubble);
+                    Nodes.Add(nodeViewModel);
 
-            PostNodeChangeActions();
+                    Errors.Add(nodeViewModel.ErrorBubble);
+
+                    PostNodeChangeActions();
+                }
+            }
         }
 
         void PostNodeChangeActions()
@@ -1693,7 +1751,7 @@ namespace Dynamo.ViewModels
 
             foreach (var modelGuid in modelGuids)
             {
-                if (GetViewModel(modelGuid, out NodeViewModel foundModel))
+                if (GetViewModel(modelGuid, out ViewModelBase foundModel))
                     foundModels.Add(foundModel);
             }
 
