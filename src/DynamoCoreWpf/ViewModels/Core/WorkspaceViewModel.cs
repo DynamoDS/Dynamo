@@ -542,6 +542,7 @@ namespace Dynamo.ViewModels
             //currently, view models are added for notes and nodes
             //connector view models are added during connection
 
+            // Auto syncronize collections with the ViewModelBase dictionary (viewModelCache)
             Nodes.CollectionChanged += viewModelCache.OnCollectionChanged;
             Notes.CollectionChanged += viewModelCache.OnCollectionChanged;
             Annotations.CollectionChanged += viewModelCache.OnCollectionChanged;
