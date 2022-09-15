@@ -763,7 +763,7 @@ namespace Dynamo.ViewModels
         void Connectors_ConnectorAdded(ConnectorModel c)
         {
             var viewModel = new ConnectorViewModel(this, c);
-            if (!GetViewModel<ConnectorViewModel>(c.GUID, out _))
+            if (GetViewModel(c.GUID) == null)
             {
                 Connectors.Add(viewModel);
             }
@@ -781,7 +781,7 @@ namespace Dynamo.ViewModels
         private void Model_NoteAdded(NoteModel note)
         {
             var noteViewModel = new NoteViewModel(this, note);
-            if (!GetViewModel<NoteViewModel>(note.GUID, out _))
+            if (GetViewModel(note.GUID) == null)
             {
                 Notes.Add(noteViewModel);
             }
@@ -810,7 +810,7 @@ namespace Dynamo.ViewModels
         private void Model_AnnotationAdded(AnnotationModel annotation)
         {
             var annotationViewModel = new AnnotationViewModel(this, annotation);
-            if (!GetViewModel<AnnotationViewModel>(annotation.GUID, out _))
+            if (GetViewModel(annotation.GUID) == null)
             {
                 Annotations.Add(annotationViewModel);
             }
@@ -887,7 +887,7 @@ namespace Dynamo.ViewModels
         void Model_NodeAdded(NodeModel node)
         {
             var nodeViewModel = new NodeViewModel(this, node);
-            if (!GetViewModel<NodeViewModel>(node.GUID, out _))
+            if (GetViewModel(node.GUID) == null)
             {
                 subscribeNodeEvents(nodeViewModel);
 
@@ -1736,8 +1736,14 @@ namespace Dynamo.ViewModels
 
         internal bool GetViewModel<T>(Guid modelGuid, out T vm) where T : ViewModelBase
         {
-            return viewModelCache.TryGetValueAs<T>(modelGuid, out vm);
+            return viewModelCache.TryGetValueAs(modelGuid, out vm);
         }
+
+        private ViewModelBase GetViewModel(Guid modelGuid)
+        {
+            return viewModelCache.TryGetValueAs(modelGuid, out ViewModelBase vm) ? vm : null;
+        }
+
 
         /// <summary>
         /// Gets viewModels by their GUIDs
@@ -1750,7 +1756,8 @@ namespace Dynamo.ViewModels
 
             foreach (var modelGuid in modelGuids)
             {
-                if (GetViewModel(modelGuid, out ViewModelBase foundModel))
+                ViewModelBase foundModel = GetViewModel(modelGuid);
+                if (foundModel != null)
                     foundModels.Add(foundModel);
             }
 
