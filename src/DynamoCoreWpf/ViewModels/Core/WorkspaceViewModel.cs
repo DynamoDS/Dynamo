@@ -855,13 +855,19 @@ namespace Dynamo.ViewModels
         private void subscribeNodeEvents(NodeViewModel nodeViewModel)
         {
             nodeViewModel.SnapInputEvent += nodeViewModel_SnapInputEvent;
-            nodeViewModel.NodeLogic.Modified += OnNodeModified;
+            if (nodeViewModel.NodeLogic != null) 
+            {
+                nodeViewModel.NodeLogic.Modified += OnNodeModified;
+            }
         }
 
         private void unsubscribeNodeEvents(NodeViewModel nodeViewModel)
         {
             nodeViewModel.SnapInputEvent -= nodeViewModel_SnapInputEvent;
-            nodeViewModel.NodeLogic.Modified -= OnNodeModified;
+            if (nodeViewModel.NodeLogic != null)
+            {
+                nodeViewModel.NodeLogic.Modified -= OnNodeModified;
+            }
         }
 
         void Model_NodeRemoved(NodeModel node)
