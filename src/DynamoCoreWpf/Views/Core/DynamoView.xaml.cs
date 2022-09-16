@@ -1348,8 +1348,10 @@ namespace Dynamo.Controls
                 dpiX = scale.PixelsPerInchX;
                 dpiY = scale.PixelsPerInchY;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log(ex.ToString());
+
                 dpiX = 96;
                 dpiY = 96;
             }

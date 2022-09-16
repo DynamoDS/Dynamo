@@ -411,21 +411,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
         
         /// <summary>
-        /// Identifies if the Graph yields any rendered geometry
+        /// Identifies if the Graph yields any rendered, visible or hidden, geometry
         /// Any graph would always render at least 3 elements:
         /// Headlight, Grid, and Axis
-        /// Anything more than the default elements is considered rendered geometry
+        /// Should be used after all Tasks have been processed by the Dispatcher
         /// </summary>
         public bool HasRenderedGeometry
         {
             get
             {
-                return Element3DDictionary.Count(g => 
-                    (g.Key != DefaultGridName && 
-                     g.Key != DefaultAxesName &&
-                     g.Key != DefaultLightName &&
-                     g.Key != HeadLightName
-                     )) > 0;
+                return Element3DDictionary.Count() > 3;
             }
         }
 
