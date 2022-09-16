@@ -384,7 +384,7 @@ namespace Dynamo.Wpf.Views
             openFileDialog.Multiselect = false;
             openFileDialog.RestoreDirectory = true;
 
-            System.Windows.Forms.DialogResult result = openFileDialog.ShowDialog();
+            var result = openFileDialog.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
                 try

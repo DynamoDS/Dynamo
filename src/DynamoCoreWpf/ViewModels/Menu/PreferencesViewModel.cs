@@ -813,7 +813,7 @@ namespace Dynamo.ViewModels
         /// <param name="filePath"></param>
         public void importSettings(string filePath)
         {
-            PreferenceSettings newPreferences = dynamoViewModel.ImportPreferences(filePath);
+            var newPreferences = dynamoViewModel.ImportPreferences(filePath);
             newPreferences.CopyProperties(preferenceSettings);
 
             // Explicit copy
