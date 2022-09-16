@@ -962,23 +962,26 @@ namespace Dynamo.Models
 
         private void CheckFeatureFlagTest()
         {
-            if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
+            if (!DynamoModel.IsTestMode)
             {
-                this.Logger.Log("EasterEggIcon1 is true FROM MODEL");
+                if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
+                {
+                    this.Logger.Log("EasterEggIcon1 is true FROM MODEL");
 
-            }
-            else
-            {
-                this.Logger.Log("EasterEggIcon1 is false FROM MODEL");
-            }
+                }
+                else
+                {
+                    this.Logger.Log("EasterEggIcon1 is false FROM MODEL");
+                }
 
-            if (DynamoModel.FeatureFlags.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is var s && s != "NA")
-            {
-                this.Logger.Log("EasterEggMessage1 is enabled FROM MODEL");
-            }
-            else
-            {
-                this.Logger.Log("EasterEggMessage1 is disabled FROM MODEL");
+                if (DynamoModel.FeatureFlags.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is var s && s != "NA")
+                {
+                    this.Logger.Log("EasterEggMessage1 is enabled FROM MODEL");
+                }
+                else
+                {
+                    this.Logger.Log("EasterEggMessage1 is disabled FROM MODEL");
+                }
             }
         }
 
