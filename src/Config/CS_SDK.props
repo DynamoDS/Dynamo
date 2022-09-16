@@ -50,6 +50,9 @@
       <Private>false</Private>
     </ProjectReference>
   </ItemDefinitionGroup>
+  <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
+    <TestDependenciesPath>$(OutputPath)\..\..\..\test\test_dependencies</TestDependenciesPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
     <ProjectReference>
       <PrivateAssets>all</PrivateAssets>
@@ -59,10 +62,6 @@
       <PrivateAssets>all</PrivateAssets>
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <ReferenceCopyLocalPaths>
-      <!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
-      <DestinationSubDirectory>/../../../test/test_dependencies/</DestinationSubDirectory>
-    </ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
   <Target Name="CleanIntermediaryFolder" Condition="Exists('$(ProjectDir)$(BaseIntermediateOutputPath)')" BeforeTargets="Clean" >
      <RemoveDir ContinueOnError="WarnAndContinue" Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> <!-- int -->
@@ -91,6 +90,5 @@
     <Copy SourceFiles="@(XMLContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)" Condition="Exists('%(FullPath)')" />
     <Copy SourceFiles="@(PDBContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)" Condition="Exists('%(FullPath)')" />
     <Copy SourceFiles="@(DLLContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)$(Local_CopyToSubdirectory)" Condition="Exists('%(FullPath)')" />
-    <Message Text="DllContent = @(DLLContent)" />
   </Target>
 </Project>
