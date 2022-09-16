@@ -3,4 +3,4 @@ The Custom Dropdown node allows a user to create a dropdown selection input with
 ___
 ## Example File
 
-![Number](./CoreNodeModels.Input.CustomSelection_img.jpg)
+![Number](./CoreNodeModels.Input.CustomSelection_img.png)
