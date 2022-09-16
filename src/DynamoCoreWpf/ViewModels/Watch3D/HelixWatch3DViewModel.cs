@@ -409,6 +409,25 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SetGridVisibility();
             }
         }
+        
+        /// <summary>
+        /// Identifies if the Graph yields any rendered geometry
+        /// Any graph would always render at least 3 elements:
+        /// Headlight, Grid, and Axis
+        /// Anything more than the default elements is considered rendered geometry
+        /// </summary>
+        public bool HasRenderedGeometry
+        {
+            get
+            {
+                return Element3DDictionary.Count(g => 
+                    (g.Key != DefaultGridName && 
+                     g.Key != DefaultAxesName &&
+                     g.Key != DefaultLightName &&
+                     g.Key != HeadLightName
+                     )) > 0;
+            }
+        }
 
         /// <summary>
         /// The LeftClickCommand is set according to the
