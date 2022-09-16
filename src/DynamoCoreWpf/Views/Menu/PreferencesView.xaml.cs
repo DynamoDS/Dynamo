@@ -418,7 +418,7 @@ namespace Dynamo.Wpf.Views
                     if (File.Exists(selectedPathFile))
                     {
                         string uniqueId = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString();
-                        string suffixPlusDot = "_" + uniqueId + ".";
+                        string suffixPlusDot = $"_{ uniqueId}.";
                         string uniqueFileName = PathManager.PreferenceSettingsFileName.Replace(".", suffixPlusDot);
                         selectedPathFile = Path.Combine(dialog.SelectedPath, uniqueFileName);
                     }

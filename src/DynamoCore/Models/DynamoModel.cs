@@ -2867,7 +2867,7 @@ namespace Dynamo.Models
             OnWorkspaceCleared(CurrentWorkspace);
         }
 
-        internal PreferenceSettings ImportPreferences(string newSettingsPath)
+        public PreferenceSettings ImportPreferences(string newSettingsPath)
         {
             return PreferenceSettings.Load(newSettingsPath);
         }

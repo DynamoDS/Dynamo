@@ -832,9 +832,9 @@ namespace Dynamo.ViewModels
 
             dynamoViewModel.IsShowingConnectors = preferenceSettings.ShowConnector;
             dynamoViewModel.IsShowingConnectorTooltip = preferenceSettings.ShowConnectorToolTip;
-            foreach (Wpf.ViewModels.Watch3D.DefaultWatch3DViewModel item in dynamoViewModel.Watch3DViewModels)
+            foreach (var item in dynamoViewModel.Watch3DViewModels)
             {
-                Interfaces.BackgroundPreviewActiveState preferenceItem = preferenceSettings.BackgroundPreviews.Where(i => i.Name == item.PreferenceWatchName).FirstOrDefault();
+                var preferenceItem = preferenceSettings.BackgroundPreviews.Where(i => i.Name == item.PreferenceWatchName).FirstOrDefault();
                 if (preferenceItem != null)
                 {
                     item.Active = preferenceItem.IsActive;

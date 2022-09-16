@@ -18,18 +18,17 @@ namespace Dynamo.Configuration
     static class ExtensionMethods
     {
         /// <summary>
-        /// Copy Properties from a PreferenceSettings instance to another
+        /// Copy Properties from a PreferenceSettings instance to another iterating the Properties of the destination instance and populate them from their source counterparts, excluding the properties that are obsolete and only read.  
         /// </summary>
         /// <param name="source"></param>
         /// <param name="destination"></param>
         internal static void CopyProperties(this PreferenceSettings source, PreferenceSettings destination)
         {
-            // Iterate the Properties of the destination instance and populate them from their source counterparts  
-            PropertyInfo[] destinationProperties = destination.GetType().GetProperties();
+            var destinationProperties = destination.GetType().GetProperties();
 
-            foreach (PropertyInfo destinationPi in destinationProperties)
+            foreach (var destinationPi in destinationProperties)
             {
-                PropertyInfo sourcePi = source.GetType().GetProperty(destinationPi.Name);
+                var sourcePi = source.GetType().GetProperty(destinationPi.Name);
 
                 if (destinationPi.GetCustomAttributes(typeof(System.ObsoleteAttribute), true).Length == 0 && destinationPi.CanWrite)
                 {
