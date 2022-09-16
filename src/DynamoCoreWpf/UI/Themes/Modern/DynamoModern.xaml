@@ -5245,7 +5245,7 @@
                     <Grid>
                         <TextBox x:Name="InputTextBox"
                                      Padding="8,10"
-                                     Background="{StaticResource DarkThemeInputBoxBackgroundColor}"
+                                     Background="{StaticResource DarkThemeInputBoxBackgroundBrush}"
                                      BorderThickness="0"
                                      CaretBrush="{StaticResource Blue300Brush}"
                                      Focusable="True"

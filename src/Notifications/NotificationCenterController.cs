@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -15,9 +15,27 @@ using Dynamo.Notifications.View;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
+using Microsoft.Web.WebView2.Wpf;
 
 namespace Dynamo.Notifications
 {
+    [ClassInterface(ClassInterfaceType.AutoDual)]
+    [ComVisible(true)]
+    public class ScriptObject
+    {
+        Action<object[]> onMarkAllAsRead;
+
+        internal ScriptObject(Action<object []> onMarkAllAsRead)
+        {
+            this.onMarkAllAsRead = onMarkAllAsRead;
+        }
+
+        public void SetNoficationsAsRead(object[] ids)
+        {
+            onMarkAllAsRead(ids);
+        }
+    }
+
     public class NotificationCenterController
     {
         private readonly NotificationUI notificationUIPopup;
@@ -25,16 +43,16 @@ namespace Dynamo.Notifications
         private readonly DynamoViewModel dynamoViewModel;
         private readonly Button notificationsButton;
 
-        private static readonly int notificationPopupHorizontalOffset = -285;
+        private static readonly int notificationPopupHorizontalOffset = -295;
         private static readonly int notificationPopupVerticalOffset = 10;
+        private static readonly int limitOfMonthsFilterNotifications = 6;
 
         private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
         private static readonly string jsEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.bundle.js";
         private static readonly string NotificationCenterButtonName = "notificationsButton";
+        internal DirectoryInfo webBrowserUserDataFolder;
 
-        private DynamoLogger logger;
-        private static readonly DateTime notificationsCenterCreatedTime = DateTime.UtcNow;
-        private static System.Timers.Timer timer;
+        private readonly DynamoLogger logger;
         private string jsonStringFile;
         private NotificationsModel notificationsModel;
 
@@ -42,11 +60,16 @@ namespace Dynamo.Notifications
         {
             dynamoView = view;
             dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
+            //When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+            var userDataDir = new DirectoryInfo(dynamoViewModel.Model.PathManager.UserDataDirectory);
+            webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
+
             notificationsButton = (Button)view.ShortcutBar.FindName(NotificationCenterButtonName);
 
             dynamoView.SizeChanged += DynamoView_SizeChanged;
             dynamoView.LocationChanged += DynamoView_LocationChanged;
             notificationsButton.Click += NotificationsButton_Click;
+            dynamoView.Closing += View_Closing;
 
             notificationUIPopup = new NotificationUI
             {
@@ -56,12 +79,53 @@ namespace Dynamo.Notifications
                 HorizontalOffset = notificationPopupHorizontalOffset,
                 VerticalOffset = notificationPopupVerticalOffset
             };
-
-            notificationUIPopup.webView.EnsureCoreWebView2Async();
-            notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
             logger = dynLogger;
+            
+            // If user turns on the feature, they will need to restart Dynamo to see the count
+            // This ensures no network traffic when Notification center feature is turned off
+            if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter) 
+            {               
+                InitializeBrowserAsync();
+                RequestNotifications();
+            }   
+        }
 
-            RequestNotifications();
+        private void View_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            dynamoView.Closing -= View_Closing;
+            SuspendCoreWebviewAsync();
+        }
+
+        async void SuspendCoreWebviewAsync()
+        {
+            notificationUIPopup.IsOpen = false;
+            notificationUIPopup.webView.Visibility = Visibility.Hidden;
+
+            if (notificationUIPopup.webView.CoreWebView2 != null)
+            {
+                notificationUIPopup.webView.CoreWebView2.Stop();
+                notificationUIPopup.webView.CoreWebView2InitializationCompleted -= WebView_CoreWebView2InitializationCompleted;
+                notificationUIPopup.webView.CoreWebView2.NewWindowRequested -= WebView_NewWindowRequested;
+
+                dynamoView.SizeChanged -= DynamoView_SizeChanged;
+                dynamoView.LocationChanged -= DynamoView_LocationChanged;
+                notificationsButton.Click -= NotificationsButton_Click;
+                notificationUIPopup.webView.NavigationCompleted -= WebView_NavigationCompleted;
+            }
+        }
+
+        private void InitializeBrowserAsync()
+        {
+            if (webBrowserUserDataFolder != null)
+            {
+                //This indicates in which location will be created the WebView2 cache folder
+                notificationUIPopup.webView.CreationProperties = new CoreWebView2CreationProperties()
+                {
+                    UserDataFolder = webBrowserUserDataFolder.FullName
+                };
+            }               
+            notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
+            notificationUIPopup.webView.EnsureCoreWebView2Async();
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
@@ -88,13 +152,40 @@ namespace Dynamo.Notifications
                 jsonStringFile = reader.ReadToEnd();
                 notificationsModel = JsonConvert.DeserializeObject<NotificationsModel>(jsonStringFile);
 
-                var notificationsNumber = notificationsModel.Notifications.Count();
-
-                var shortcutToolbarViewModel = (ShortcutToolbarViewModel)dynamoView.ShortcutBar.DataContext;
-                shortcutToolbarViewModel.NotificationsNumber = notificationsNumber;
+                //We are adding a limit of months to grab the notifications
+                var limitDate = DateTime.Now.AddMonths(-limitOfMonthsFilterNotifications);
+                notificationsModel.Notifications = notificationsModel.Notifications.Where(x => x.Created >= limitDate).ToList();
             }
 
-            notificationUIPopup.webView.NavigationCompleted += WebView_NavigationCompleted;
+            CountUnreadNotifications();
+            notificationUIPopup.webView.NavigationCompleted += WebView_NavigationCompleted;        
+        }
+
+        private void CountUnreadNotifications()
+        {
+            var notificationsNumber = 0;
+            foreach (var notification in notificationsModel.Notifications)
+            {
+                if (!dynamoViewModel.Model.PreferenceSettings.ReadNotificationIds.Contains(notification.Id))
+                {
+                    notification.IsRead = false;
+                    notificationsNumber++;
+                }
+            }
+
+            var shortcutToolbarViewModel = (ShortcutToolbarViewModel)dynamoView.ShortcutBar.DataContext;
+            shortcutToolbarViewModel.NotificationsNumber = notificationsNumber;
+        }
+
+        internal void OnMarkAllAsRead(object[] ids)
+        {
+            string[] notificationIds = ids.Select(x => x.ToString()).
+                Where(x => !dynamoViewModel.Model.PreferenceSettings.ReadNotificationIds.Contains(x.ToString())).ToArray();
+
+            dynamoViewModel.Model.PreferenceSettings.ReadNotificationIds.AddRange(notificationIds);
+
+            var shortcutToolbarViewModel = (ShortcutToolbarViewModel)dynamoView.ShortcutBar.DataContext;
+            shortcutToolbarViewModel.NotificationsNumber = 0;
         }
 
         // Handler for new Webview2 tab window request
@@ -130,20 +221,10 @@ namespace Dynamo.Notifications
                 // Opening hyper-links using default system browser instead of WebView2 tab window
                 notificationUIPopup.webView.CoreWebView2.NewWindowRequested += WebView_NewWindowRequested;
                 notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
+                // Hosts an object that will expose the properties and methods to be called from the javascript side
+                notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", 
+                    new ScriptObject(OnMarkAllAsRead));
             }
-        }
-
-        internal void Dispose()
-        {
-            notificationUIPopup.webView.CoreWebView2InitializationCompleted -= WebView_CoreWebView2InitializationCompleted;
-            if (notificationUIPopup.webView.CoreWebView2 != null)
-            {
-                notificationUIPopup.webView.CoreWebView2.NewWindowRequested -= WebView_NewWindowRequested;
-            }
-            dynamoView.SizeChanged -= DynamoView_SizeChanged;
-            dynamoView.LocationChanged -= DynamoView_LocationChanged;
-            notificationsButton.Click -= NotificationsButton_Click;
-            notificationUIPopup.webView.NavigationCompleted -= WebView_NavigationCompleted;
         }
 
         private void DynamoView_LocationChanged(object sender, EventArgs e)
