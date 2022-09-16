@@ -22,6 +22,7 @@ namespace DynamoSandbox
         private SettingsMigrationWindow migrationWindow;
         private DynamoViewModel viewModel = null;
         private readonly string commandFilePath;
+        private readonly string CERLocation;
         private readonly Stopwatch startupTimer = Stopwatch.StartNew();
         private readonly string ASMPath;
         private readonly HostAnalyticsInfo analyticsInfo;
@@ -42,6 +43,11 @@ namespace DynamoSandbox
                 Analytics.DisableAnalytics = true;
             }
 
+            if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
+            {
+                CERLocation = cmdLineArgs.CERLocation;
+            }
+
             commandFilePath = cmdLineArgs.CommandFilePath;
             ASMPath = cmdLineArgs.ASMPath;
             analyticsInfo = cmdLineArgs.AnalyticsInfo;
@@ -57,6 +63,8 @@ namespace DynamoSandbox
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
                 model = Dynamo.Applications.StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
                 model.DSExecutionEngine = dsExecutionEngine;
+
+                model.CERLocation = CERLocation;
 
                 viewModel = DynamoViewModel.Start(
                     new DynamoViewModel.StartConfiguration()
@@ -105,19 +113,10 @@ namespace DynamoSandbox
 
                     if (viewModel != null)
                     {
-
-
-                        if (CrashReportTool.IsCEREnabled())
-                        {
-                            CrashReportTool.OnCrashReportWindow(new CrashReportArgs(viewModel));
-                        }
-                        else
-                        {
-                            // Show the unhandled exception dialog so user can copy the 
-                            // crash details and report the crash if she chooses to.
-                            viewModel.Model.OnRequestsCrashPrompt(null,
-                                new CrashPromptArgs(e));
-                        }
+                        // Show the unhandled exception dialog so user can copy the 
+                        // crash details and report the crash if she chooses to.
+                        viewModel.Model.OnRequestsCrashPrompt(null,
+                            new CrashPromptArgs(e));
 
                         // Give user a chance to save (but does not allow cancellation)
                         viewModel.Exit(allowCancel: false);

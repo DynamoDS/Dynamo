@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using CoreNodeModels.Input;
 using DesignScript.Builtin;
@@ -6,6 +6,8 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
 using Dynamo.Tests;
+using CoreNodeModels;
+using CoreNodeModelsWpf;
 using NUnit.Framework;
 using ProtoCore.Namespace;
 
@@ -253,6 +255,30 @@ namespace DynamoCoreWpfTests
             // Assert that function "test" is not defined any longer
             // by asserting null for code block node invoking it.
             AssertPreviewValue(cbn.GUID.ToString(), null);
+        }
+
+        [Test]
+        public void TestCustomSelectionNodeUpdate()
+        {
+            var model = GetModel();
+            var cdn = new CustomSelection();
+
+            var command = new DynamoModel.CreateNodeCommand(cdn, 0, 0, true, false);
+            model.ExecuteCommand(command);
+
+            AssertPreviewValue(cdn.GUID.ToString(), 1);
+
+            cdn.SelectedIndex = -1;
+            var vm = new CustomSelectionViewModel(cdn);
+            var item = cdn.Items[0];
+            vm.RemoveCommand.Execute(item);
+
+            AssertPreviewValue(cdn.GUID.ToString(), null);
+            
+            cdn.SelectedIndex = 0;
+            cdn.OnNodeModified();
+
+            AssertPreviewValue(cdn.GUID.ToString(), 2);
         }
     }
 }

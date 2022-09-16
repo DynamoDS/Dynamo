@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
@@ -389,6 +390,36 @@ namespace DynamoUtilities
             string directoryPath = FormatDirectoryPath(directory);
             
             return subdirPath.StartsWith(directoryPath, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Returns the path configured for package manager to retrieve packages from 
+        /// as defined inside config file
+        /// </summary>
+        /// <param name="o">The "this" object from where the function is being called from.</param>
+        /// <param name="serviceKey">Service or feature for which the address is being requested. 
+        /// It should match the key specified in the config file.</param>
+        /// <returns>Path that will be used to fetch packages</returns>
+        public static string getServiceBackendAddress(object o, string serviceKey)
+        {
+            string url = null;
+            if (o != null)
+            {
+                var path = o.GetType().Assembly.Location;
+                var config = ConfigurationManager.OpenExeConfiguration(path);
+                var key = config.AppSettings.Settings[serviceKey];
+
+                if (key != null)
+                {
+                    url = key.Value;
+                }
+
+                if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                {
+                    throw new ArgumentException("Incorrectly formatted URL provided for the service.", "url");
+                }
+            }
+            return url;
         }
     }
 }

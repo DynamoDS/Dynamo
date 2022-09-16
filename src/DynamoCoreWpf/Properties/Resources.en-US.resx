@@ -2407,6 +2407,9 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
   <data name="NodeAutocompleteDocumentationUriString" xml:space="preserve">
     <value>DynamoCoreWpf;NodeAutocompleteDocumentation.html</value>
   </data>
+  <data name="FileTrustWarningDocumentationUriString" xml:space="preserve">
+    <value>DynamoCoreWpf;FileTrustWarningDocumentation.html</value>
+  </data>
   <data name="PreferencesViewEnableNodeAutoCompleteTooltipText" xml:space="preserve">
     <value>Learn more about Node Autocomplete feature.</value>
   </data>
@@ -3266,5 +3269,31 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="InvalidDraggingOperationMessgae" xml:space="preserve">
     <value>Nothing is being dragged. If you see this message, most likely your recent Dynamo interaction is not recommended.</value>
+  </data>
+  <data name="UngroupParentGroupWarning" xml:space="preserve">
+    <value>Dynamo cannot ungroup when there is no parent group.</value>
+  </data>
+  <data name="PreferencesViewEnableNotificationCenter" xml:space="preserve">
+    <value>Receive notification</value>
+    <comment>Preferences | Features | Notification Center | Receive notification</comment>
+  </data>
+  <data name="PreferencesViewNotificationCenter" xml:space="preserve">
+    <value>Notification Center</value>
+    <comment>Preferences | Features | Notification Center</comment>
+  </data>
+  <data name="NotificationCenterButtonTooltip" xml:space="preserve">
+    <value>Click to view latest news from Dynamo Team.</value>
+  </data>
+  <data name="InfectedPackageMessageString" xml:space="preserve">
+    <value>This is an infected package. Please upload a clean version.</value>
+  </data>
+  <data name="InfectedPackageErrorString" xml:space="preserve">
+    <value>Upload Error</value>
+  </data>
+  <data name="PrePackagePublishMessage" xml:space="preserve">
+    <value>Your package will be scanned for viruses, and will be available for download once it successfully passes the scan.</value>
+  </data>
+  <data name="PrePackagePublishTitle" xml:space="preserve">
+    <value>Package Upload Scan</value>
   </data>
 </root>

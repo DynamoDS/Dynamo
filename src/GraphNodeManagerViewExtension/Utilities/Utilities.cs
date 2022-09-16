@@ -13,8 +13,9 @@ namespace Dynamo.GraphNodeManager.Utilities
         /// <summary>
         /// Exports a collection of objects to CSV file
         /// </summary>
-        /// <param name="exportObject"></param>
-        public static void ExportToCSV(object exportObject)
+        /// <param name="exportObject">The array of nodes to be exported.</param>
+        /// <param name="promptName">The default name to be provided for saving the file.</param>
+        public static void ExportToCSV(object exportObject, string promptName)
         {
             var filePath = string.Empty;
 
@@ -22,11 +23,12 @@ namespace Dynamo.GraphNodeManager.Utilities
             {
                 Stream myStream;
                 
-                saveFileDialog.Filter = "csv files (*.csv)|*.json|All files (*.*)|*.*";
+                saveFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 2;
                 saveFileDialog.Title = "Save CSV file";
                 saveFileDialog.DefaultExt = "csv";
                 saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.FileName = promptName;
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -43,8 +45,9 @@ namespace Dynamo.GraphNodeManager.Utilities
         /// <summary>
         /// Export a collection of objects to JSON file
         /// </summary>
-        /// <param name="exportObject"></param>
-        public static void ExportToJson(object exportObject)
+        /// <param name="exportObject">The array of nodes to be exported.</param>
+        /// <param name="promptName">The default name to be provided for saving the file.</param>
+        public static void ExportToJson(object exportObject, string promptName)
         {
             var filePath = string.Empty;
 
@@ -57,6 +60,7 @@ namespace Dynamo.GraphNodeManager.Utilities
                 saveFileDialog.Title = "Save JSON file";
                 saveFileDialog.DefaultExt = "json";
                 saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.FileName = promptName;
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
