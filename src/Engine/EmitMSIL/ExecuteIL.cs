@@ -1,9 +1,5 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
 using System.Reflection;
 
 namespace EmitMSIL
@@ -11,16 +7,6 @@ namespace EmitMSIL
     // This class will be emitted from the AST/Dynamo graph
     class ExecuteIL
     {
-        //public Point PointWrapper(double x, double y, double z)
-        //{
-        //    return Point.XYZ(x, y, z);
-        //}
-
-        //public Circle CircleWrapper(Point pt, double rad)
-        //{
-        //    return Circle.ByPointRadius(pt, rad);
-        //}
-
         public static void Execute(IDictionary<string, IList> input, IDictionary<int, IEnumerable<MethodBase>> methodCache, 
             IDictionary<string, IList> output)
         {
