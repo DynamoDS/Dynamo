@@ -19,12 +19,11 @@ namespace EmitMSIL
         private ILGenerator ilGen;
         internal string className;
         internal string methodName;
-        // True for internal methods (for example operators and unary operators)
         private IDictionary<string, IList> input;
         private IDictionary<string, IList> output;
         /// <summary>
         /// counter for local variables, should only be used directly during GatherTypeInfo phase.
-        /// It will incorrect during other compiler phases.
+        /// It will be incorrect during other compiler phases.
         /// </summary>
         private int localVarIndex = -1;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
@@ -77,6 +76,7 @@ namespace EmitMSIL
             var mi = t.GetMethod("Execute");
             var output = new Dictionary<string, IList>();
 
+            // null can be replaced by an 'input' dictionary if available.
             var obj = mi.Invoke(null, new object[] { null, methodCache, output });
             timer.Stop();
             CompileAndExecutionTime.executionTime = timer.Elapsed;
