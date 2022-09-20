@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -188,10 +189,19 @@ namespace Dynamo.Tests
                         {
                             portvalues.AddRange(n.OutPorts.Select(p =>
                             {
-                                var objs = n.GetCLRValue(p.Index, controller).Cast<object>();
-                                var values = objs.Select(x => ProtoCore.Utils.CoreUtils.GetDataOfCLRValue(x)).ToList();
-                                if (values.Count == 1) { return values[0]; }
-                                return values;
+                                var obj = n.GetCLRValue(p.Index, controller);
+                                if (typeof(IEnumerable).IsAssignableFrom(obj.GetType()))
+                                {
+                                    var enumerator = (obj as IEnumerable).GetEnumerator();
+                                    List<object> values = new List<object>();
+                                    while(enumerator.MoveNext())
+                                    {
+                                        values.Add(ProtoCore.Utils.CoreUtils.GetDataOfCLRValue(enumerator.Current));
+                                    }
+                                    //if (values.Count == 1) { return values[0]; }
+                                    return values;
+                                }
+                                return obj;
                             }));
                         }
                     }
