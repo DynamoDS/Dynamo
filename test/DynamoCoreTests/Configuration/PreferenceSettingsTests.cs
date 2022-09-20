@@ -204,12 +204,19 @@ namespace Dynamo.Tests.Configuration
             Assert.IsTrue(settingsLoaded.IsTrustedLocation(Path.GetTempPath()));
         }
 
+        /// <summary>
+        /// List of Properties to be excluded due to their static access level
+        /// </summary>
+        /// <returns></returns>
         private List<string> PropertiesWithStaticValues()
         {
-            List<string> staticProperties = new List<string>() { "PythonTemplateFilePath","DefaultPythonEngine","NodeSearchTagSizeLimit","IronPythonResolveTargetVersion"};            
+            List<string> staticProperties = new List<string>() { "PythonTemplateFilePath","DefaultPythonEngine","NodeSearchTagSizeLimit","IronPythonResolveTargetVersion"};
             return staticProperties;
         }
 
+        /// <summary>
+        /// Struct to support the comparison between two PreferenceSettings instances
+        /// </summary>
         struct PreferencesComparison
         {
             public List<string> Properties { get; set; }
@@ -226,9 +233,9 @@ namespace Dynamo.Tests.Configuration
         PreferencesComparison comparePrefenceSettings(PreferenceSettings defaultSettings, PreferenceSettings newGeneralSettings)
         {
             var result = new PreferencesComparison();
-            List<string> propertiesWithSameValue = new List<string>();
-            List<string> propertiesWithDifferentValue = new List<string>();
-            List<string> evaluatedProperties = new List<string>();
+            var propertiesWithSameValue = new List<string>();
+            var propertiesWithDifferentValue = new List<string>();
+            var evaluatedProperties = new List<string>();
 
             var destinationProperties = defaultSettings.GetType().GetProperties();
 
@@ -244,8 +251,8 @@ namespace Dynamo.Tests.Configuration
 
                     if (destinationPi.PropertyType == typeof(List<string>))
                     {
-                        List<String> newList = (List<string>)sourcePi.GetValue(newGeneralSettings, null);
-                        List<String> oldList = (List<string>)destinationPi.GetValue(defaultSettings, null);
+                        var newList = (List<string>)sourcePi.GetValue(newGeneralSettings, null);
+                        var oldList = (List<string>)destinationPi.GetValue(defaultSettings, null);
                         if (newList.Except(oldList).ToList().Count == 0)
                         {
                             propertiesWithSameValue.Add(destinationPi.Name);
@@ -322,7 +329,7 @@ namespace Dynamo.Tests.Configuration
             var newSettings = PreferenceSettings.Load(settingsGeneralFilePath);
 
             // checking if the new Setting are completely different from the Default
-            var checkDifference = comparePrefenceSettings(defaultSettings, newSettings);            
+            var checkDifference = comparePrefenceSettings(defaultSettings, newSettings);
             Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.Properties.Count);
 
             newSettings.CopyProperties(defaultSettings);
