@@ -31,7 +31,7 @@ namespace EmitMSIL
             input.Add("y", new[] { new[] { 12.3 } });
             input.Add("z", new[] { 453 });
 
-            Dictionary<string, IList> output = new Dictionary<string, IList>();
+            Dictionary<string, object> output = new Dictionary<string, object>();
             var methodCache = new Dictionary<int, IEnumerable<MethodBase>>();
             ExecuteIL.Execute(input, methodCache, output);
         }

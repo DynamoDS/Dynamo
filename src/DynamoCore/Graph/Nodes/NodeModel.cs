@@ -1412,7 +1412,7 @@ namespace Dynamo.Graph.Nodes
             return engine.GetMirror(GetAstIdentifierForOutputIndex(outPortIndex).Value)?.GetData();
         }
 
-        internal IList GetCLRValue(int outPortIndex, EngineController engine)
+        internal object GetCLRValue(int outPortIndex, EngineController engine)
         {
             return engine.GetValue(GetAstIdentifierForOutputIndex(outPortIndex).Value);
         }

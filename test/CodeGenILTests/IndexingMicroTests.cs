@@ -21,7 +21,7 @@ b=[0,1,2,3,4,5][4];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(4, output.Values.ToList()[0][0]);
+            Assert.AreEqual(4, output.Values.ToList()[0]);
         }
         [Test]
         public void IndexIdentArrayWithConstant()
@@ -33,7 +33,7 @@ b=a[5];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(5, output.Values.ToList()[1][0]);
+            Assert.AreEqual(5, output.Values.ToList()[1]);
         }
         [Test]
         public void IndexIdentArrayWithIdent()
@@ -46,7 +46,7 @@ c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(5, output.Values.ToList()[2][0]);
+            Assert.AreEqual(5, output.Values.ToList()[2]);
         }
         [Test]
         public void IndexIdentArrayWithIdent_Doubles()
@@ -59,7 +59,7 @@ c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(5.0, output.Values.ToList()[2][0]);
+            Assert.AreEqual(5.0, output.Values.ToList()[2]);
         }
         [Test]
         public void IndexIdentArrayWithIdent_MixedElementTypeArray()
@@ -72,7 +72,7 @@ c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(1.1, output.Values.ToList()[2][0]);
+            Assert.AreEqual(1.1, output.Values.ToList()[2]);
         }
         [Test]
         [Category("Failure")]//fails because we need to emit multiple ldelem opcodes per index or fallback to replication.
@@ -85,7 +85,7 @@ c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            CollectionAssert.AreEqual(new long[] { 0, 5 }, output.Values.ToList()[1][0] as long[]);
+            CollectionAssert.AreEqual(new long[] { 0, 5 }, output.Values.ToList()[1] as long[]);
         }
         [Test]
         public void IndexNestedArray_WithIdent()
@@ -99,7 +99,7 @@ d=a[b][c];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(3, output.Values.ToList()[3][0]);
+            Assert.AreEqual(3, output.Values.ToList()[3]);
         }
 
         [Test]
@@ -114,7 +114,7 @@ d=a[b][c];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(5, output.Values.ToList()[3][0]);
+            Assert.AreEqual(5, output.Values.ToList()[3]);
         }
 
         [Test]
@@ -129,7 +129,7 @@ c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(8, output.Values.ToList()[2][0]);
+            Assert.AreEqual(8, output.Values.ToList()[2]);
         }
         [Test]
         public void IndexIntoArray_StringArray()
@@ -141,7 +141,7 @@ b=a[2];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual("C", output["b"][0]);
+            Assert.AreEqual("C", output["b"]);
         }
         [Test]
         public void Simple_StringOutputTests()
@@ -151,8 +151,8 @@ a = ""AAA"";";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual("AAA", output["a"][0]);
-            Assert.IsInstanceOf<string>(output["a"][0]);
+            Assert.AreEqual("AAA", output["a"]);
+            Assert.IsInstanceOf<string>(output["a"]);
         }
         [Test]
         public void IndexIntoArray_ObjectArray()
@@ -168,7 +168,7 @@ c=a[b];";
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
             //TODO unclear why this index result has an extra level of nesting in the output dictionary. Replication maybe?
-            Assert.AreEqual(2, (output.Values.ToList()[2][0] as dynamic)[0].X);
+            Assert.AreEqual(2, (output.Values.ToList()[2] as dynamic).X);
         }
         #endregion
         #region IList
@@ -183,7 +183,7 @@ c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(50, output["c"][0]);
+            Assert.AreEqual(50, output["c"]);
         }
         #endregion
         #region dictionary
@@ -200,7 +200,7 @@ c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual("val", output.Values.ToList()[2][0]);
+            Assert.AreEqual("val", output.Values.ToList()[2]);
         }
         [Test]
         public void IndexIntoDict_WithIdent2()
@@ -213,7 +213,7 @@ c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual("val", output["c"][0]);
+            Assert.AreEqual("val", output["c"]);
         }
         #endregion
     }

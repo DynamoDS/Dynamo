@@ -1198,7 +1198,7 @@ namespace ProtoScript.Runners
 
     public partial class LiveRunner : ILiveRunner, IDisposable
     {
-        private IDictionary<string, IList> graphOutput;
+        private IDictionary<string, object> graphOutput;
         internal bool DSExecutionEngine = true;
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
@@ -1257,9 +1257,9 @@ namespace ProtoScript.Runners
             CompileAndExecutionTime = codeGenIL.CompileAndExecutionTime;
         }
 
-        internal IList GetNodeValue(string variableName)
+        internal object GetNodeValue(string variableName)
         {
-            if (!graphOutput.TryGetValue(variableName, out IList output))
+            if (!graphOutput.TryGetValue(variableName, out object output))
             {
                 return null;
             }

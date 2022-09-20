@@ -211,7 +211,7 @@ namespace EmitMSIL
         /// <param name="args"></param>
         /// <param name="replicationAttrs"></param>
         /// <returns></returns>
-        public static IList ReplicationLogic(IEnumerable<MethodBase> mInfos, IList args, string[][] replicationAttrs)
+        public static object ReplicationLogic(IEnumerable<MethodBase> mInfos, IList args, string[][] replicationAttrs)
         {
             // Static instance of MSILRuntimeCore
             // TODO_MSIL: FIgure out how and when to set this runtimeCore (CodeGen should have it too)
@@ -251,9 +251,10 @@ namespace EmitMSIL
             {
                 result = ExecWithRISlowPath(finalFep, reducedArgs, replicationInstructions, runtimeCore);
             }
-            if (result is IList) return (IList)result;
+            //if (result is IList) return (IList)result;
 
-            return new[] { result };
+            //return new[] { result };
+            return result;
         }
 
         private static List<CLRStackValue> ReduceArgs(List<CLRStackValue> args)

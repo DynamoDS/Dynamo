@@ -85,7 +85,7 @@ namespace Dynamo.Engine
 
         }
 
-        internal IList GetValue(string variableName)
+        internal object GetValue(string variableName)
         {
             return (liveRunner as LiveRunner).GetNodeValue(variableName);
         }
