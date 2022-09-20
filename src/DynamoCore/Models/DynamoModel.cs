@@ -2867,11 +2867,6 @@ namespace Dynamo.Models
             OnWorkspaceCleared(CurrentWorkspace);
         }
 
-        public PreferenceSettings ImportPreferences(string newSettingsPath)
-        {
-            return PreferenceSettings.Load(newSettingsPath);
-        }
-
         #endregion
 
         #region private methods
