@@ -187,21 +187,20 @@ namespace Dynamo.Tests
                         }
                         else
                         {
-                            portvalues.AddRange(n.OutPorts.Select(p =>
+                            portvalues.AddRange(n.OutPorts.Select<PortModel, object>(p =>
                             {
                                 var obj = n.GetCLRValue(p.Index, controller);
                                 if (typeof(IEnumerable).IsAssignableFrom(obj.GetType()))
                                 {
                                     var enumerator = (obj as IEnumerable).GetEnumerator();
-                                    List<object> values = new List<object>();
+                                    var values = new List<object>();
                                     while(enumerator.MoveNext())
                                     {
                                         values.Add(ProtoCore.Utils.CoreUtils.GetDataOfCLRValue(enumerator.Current));
                                     }
-                                    //if (values.Count == 1) { return values[0]; }
                                     return values;
                                 }
-                                return obj;
+                                return ProtoCore.Utils.CoreUtils.GetDataOfCLRValue(obj);
                             }));
                         }
                     }

@@ -251,9 +251,6 @@ namespace EmitMSIL
             {
                 result = ExecWithRISlowPath(finalFep, reducedArgs, replicationInstructions, runtimeCore);
             }
-            //if (result is IList) return (IList)result;
-
-            //return new[] { result };
             return result;
         }
 

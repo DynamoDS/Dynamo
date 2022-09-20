@@ -896,22 +896,11 @@ namespace EmitMSIL
                 // Add variable to output dictionary: output.Add("varName", variable);
                 EmitOpCode(OpCodes.Ldarg_2);
                 EmitOpCode(OpCodes.Ldstr, lNode.Value);
-                // if t is a single value, wrap it in an array of the single value.
-                //if (!typeof(IEnumerable).IsAssignableFrom(t) || typeof(string).IsAssignableFrom(t))
-                //{
-                //    var localVarIndxes = new List<int>() { currentLocalVarIndex };
-                //    EmitArray(t, localVarIndxes, (int varIdx, int _) =>
-                //    {
-                //        EmitOpCode(OpCodes.Ldloc, varIdx);
-                //    });
-                //}
-                //else
+
+                EmitOpCode(OpCodes.Ldloc, currentLocalVarIndex);
+                if (t.IsValueType)
                 {
-                    EmitOpCode(OpCodes.Ldloc, currentLocalVarIndex);
-                    if(t.IsValueType)
-                    {
-                        EmitOpCode(OpCodes.Box, t);
-                    }
+                    EmitOpCode(OpCodes.Box, t);
                 }
                 var mInfo = typeof(IDictionary<string, object>).GetMethod(nameof(IDictionary<string, object>.Add));
                 EmitOpCode(OpCodes.Callvirt, mInfo);
