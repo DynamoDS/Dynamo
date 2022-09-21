@@ -7,6 +7,7 @@ using System.Linq;
 using System.Xml;
 using System;
 using Dynamo.Interfaces;
+using System.Reflection;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -202,17 +203,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(1, settingsLoaded.TrustedLocations.Count);
 
             Assert.IsTrue(settingsLoaded.IsTrustedLocation(Path.GetTempPath()));
-        }
-
-        /// <summary>
-        /// List of Properties to be excluded due to their static access level
-        /// </summary>
-        /// <returns></returns>
-        private List<string> PropertiesWithStaticValues()
-        {
-            List<string> staticProperties = new List<string>() { "PythonTemplateFilePath","DefaultPythonEngine","NodeSearchTagSizeLimit","IronPythonResolveTargetVersion"};
-            return staticProperties;
-        }
+        }        
 
         /// <summary>
         /// Struct to support the comparison between two PreferenceSettings instances
@@ -243,7 +234,7 @@ namespace Dynamo.Tests.Configuration
             {
                 var sourcePi = newGeneralSettings.GetType().GetProperty(destinationPi.Name);
 
-                if (destinationPi.GetCustomAttributes(typeof(System.ObsoleteAttribute), true).Length == 0 && !PropertiesWithStaticValues().Contains(destinationPi.Name))
+                if (destinationPi.GetCustomAttributes(typeof(System.ObsoleteAttribute), true).Length == 0 && !defaultSettings.StaticFields().ConvertAll(fieldName => fieldName.ToUpper()).Contains(destinationPi.Name.ToUpper()))
                 {
                     evaluatedProperties.Add(destinationPi.Name);
                     var newValue = sourcePi.GetValue(newGeneralSettings, null);
