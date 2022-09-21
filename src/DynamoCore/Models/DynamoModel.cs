@@ -926,6 +926,9 @@ namespace Dynamo.Models
 
         private void CheckFeatureFlagTest()
         {
+            if (DynamoModel.FeatureFlags == null)
+                return;
+
             if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
             {
                 this.Logger.Log("EasterEggIcon1 is true FROM MODEL");
