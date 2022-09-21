@@ -16,6 +16,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="SearchMemberStyle"
@@ -76,19 +77,15 @@
                                TextAlignment="Center"
                                FontSize="14">
                         </TextBlock>
-                        <Image Width="14" Height="14" MouseDown="OnMoreInfoClicked" Margin="40,5,10,5" HorizontalAlignment="Right" VerticalAlignment="Center">
-                            <Image.Style>
-                                <Style TargetType="{x:Type Image}">
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="False">
-                                            <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/default_info_16px.png" />
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Image.Style>
+                        <Image Name="NodeAutoCompleteInfoIcon" 
+                               Width="14" 
+                               Height="14" 
+                               MouseDown="OnMoreInfoClicked" 
+                               Margin="40,5,10,5" 
+                               HorizontalAlignment="Right" 
+                               VerticalAlignment="Center"
+                               Style="{StaticResource ToggleInfoStyle}">
+
                         </Image>
                         <Image Width="14" Height="14" Margin="0,5,10,5" MouseDown="CloseAutocompletionWindow" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Image.Style>
