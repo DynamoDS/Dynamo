@@ -346,8 +346,8 @@ namespace Dynamo.Search
                             tagAndWeight =>
                                 new
                                 {
-                                    Tag = tagAndWeight.Key.Substring(0, tagAndWeight.Key.Length > PreferenceSettings.NodeSearchTagSizeLimitValue ? 
-                                    PreferenceSettings.NodeSearchTagSizeLimitValue : tagAndWeight.Key.Length),
+                                    Tag = tagAndWeight.Key.Substring(0, tagAndWeight.Key.Length > PreferenceSettings.nodeSearchTagSizeLimit ? 
+                                    PreferenceSettings.nodeSearchTagSizeLimit : tagAndWeight.Key.Length),
                                     Weight = tagAndWeight.Value,
                                     Entry = entryAndTags.Key
                                 }))
