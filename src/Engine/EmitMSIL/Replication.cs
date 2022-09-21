@@ -220,8 +220,6 @@ namespace EmitMSIL
             // TODO_MSIL: Emit these CLRStackValue's from the CodeGen stage.
             var stackValues = MarshalFunctionArguments(args, runtimeCore);
 
-            //var reducedArgs = ReduceArgs(stackValues);
-
             // TODO_MSIL: Emit these CLRFunctionEndpoint's from the CodeGen stage.
             var feps = CreateFEPs(mInfos);
 
@@ -253,23 +251,6 @@ namespace EmitMSIL
             }
             return result;
         }
-
-        //private static List<CLRStackValue> ReduceArgs(List<CLRStackValue> args)
-        //{
-        //    var reducedArgs = new List<CLRStackValue>();
-        //    foreach (var arg in args)
-        //    {
-        //        if (arg.IsEnumerable && (arg.Value as IList).Count == 1)
-        //        {
-        //            reducedArgs.Add((arg.Value as IList<CLRStackValue>)[0]);
-        //        }
-        //        else
-        //        {
-        //            reducedArgs.Add(arg);
-        //        }
-        //    }
-        //    return reducedArgs;
-        //}
 
         private static List<List<ReplicationGuide>> ConstructRepGuides(string[][] replicationAttrs)
         {
