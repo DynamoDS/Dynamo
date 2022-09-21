@@ -20,7 +20,7 @@ namespace EmitMSIL
         internal string className;
         internal string methodName;
         private IDictionary<string, IList> input;
-        //private IDictionary<string, IList> output;
+
         /// <summary>
         /// counter for local variables, should only be used directly during GatherTypeInfo phase.
         /// It will be incorrect during other compiler phases.

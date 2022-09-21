@@ -456,10 +456,9 @@ namespace ProtoCore.Utils
             }
             else
             {
-                var enumerator = (sv.Value as IEnumerable).GetEnumerator();
-                while (enumerator.MoveNext())
+                foreach(var val in sv.Value as IEnumerable)
                 {
-                    if (enumerator.Current is double) return true;
+                    if (val is double) return true;
                 }
                 return false;
             }

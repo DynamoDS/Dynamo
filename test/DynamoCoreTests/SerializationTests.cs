@@ -192,11 +192,10 @@ namespace Dynamo.Tests
                                 var obj = n.GetCLRValue(p.Index, controller);
                                 if (typeof(IEnumerable).IsAssignableFrom(obj.GetType()))
                                 {
-                                    var enumerator = (obj as IEnumerable).GetEnumerator();
                                     var values = new List<object>();
-                                    while(enumerator.MoveNext())
+                                    foreach(var val in obj as IEnumerable)
                                     {
-                                        values.Add(ProtoCore.Utils.CoreUtils.GetDataOfCLRValue(enumerator.Current));
+                                        values.Add(ProtoCore.Utils.CoreUtils.GetDataOfCLRValue(val));
                                     }
                                     return values;
                                 }

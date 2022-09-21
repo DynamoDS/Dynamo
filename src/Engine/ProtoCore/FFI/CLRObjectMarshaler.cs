@@ -481,10 +481,9 @@ namespace ProtoFFI
             }
             else
             {
-                var enumerator = (dsObject.Value as IEnumerable).GetEnumerator();
-                while(enumerator.MoveNext())
+                foreach (var val in (dsObject.Value as IEnumerable))
                 {
-                    result.Add((T)enumerator.Current);
+                    result.Add((T)val);
                 }
             }
 
