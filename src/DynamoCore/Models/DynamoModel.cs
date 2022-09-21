@@ -936,7 +936,8 @@ namespace Dynamo.Models
                 this.Logger.Log("EasterEggIcon1 is false FROM MODEL");
             }
 
-            if (DynamoModel.FeatureFlags.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is var s && s != "NA")
+            string easterEgg = DynamoModel.FeatureFlags.CheckFeatureFlag("EasterEggMessage1", "NA");
+            if (easterEgg != null && easterEgg != "NA")
             {
                 this.Logger.Log("EasterEggMessage1 is enabled FROM MODEL");
             }
