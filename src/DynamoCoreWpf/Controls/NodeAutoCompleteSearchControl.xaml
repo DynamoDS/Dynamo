@@ -81,10 +81,10 @@
                                 <Style TargetType="{x:Type Image}">
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="False">
-                                            <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" />
+                                            <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/default_info_16px.png" />
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/info_2.png" />
+                                            <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" />
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -95,7 +95,7 @@
                                     <Style TargetType="{x:Type Image}">
                                         <Style.Triggers>
                                             <Trigger Property="IsMouseOver" Value="False">
-                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png" />
+                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-default-16px.png" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-hover-16px.png" />
