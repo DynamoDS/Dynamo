@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.DSASM;
@@ -449,7 +450,19 @@ namespace ProtoCore.Utils
                 return sv.IsDouble;
 
             var svArr = sv.Value as IList<CLRStackValue>;
-            return svArr.Any(v => ContainsDoubleElement(v));
+            if (svArr != null)
+            {
+                return svArr.Any(v => ContainsDoubleElement(v));
+            }
+            else
+            {
+                var enumerator = (sv.Value as IEnumerable).GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    if (enumerator.Current is double) return true;
+                }
+                return false;
+            }
         }
 
         /// <summary>

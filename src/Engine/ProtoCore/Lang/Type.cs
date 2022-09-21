@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -643,15 +644,21 @@ namespace ProtoCore
                         newTargetType.rank = Constants.kArbitraryRank;
                     }
                 }
-
-                List<CLRStackValue> coercedValues = new List<CLRStackValue>();
-                foreach (var item in sv.Value as IList<CLRStackValue>)
+                if (sv.Value is IList<CLRStackValue> svs)
                 {
-                    var coercedValue = Coerce(item, newTargetType, runtimeCore);
-                    coercedValues.Add(coercedValue);
-                }
+                    List<CLRStackValue> coercedValues = new List<CLRStackValue>();
+                    foreach (var item in svs)
+                    {
+                        var coercedValue = Coerce(item, newTargetType, runtimeCore);
+                        coercedValues.Add(coercedValue);
+                    }
 
-                return new CLRStackValue(coercedValues, (int)PrimitiveType.Array);
+                    return new CLRStackValue(coercedValues, (int)PrimitiveType.Array);
+                }
+                else
+                {
+                    return new CLRStackValue(sv.Value, (int)PrimitiveType.Array);
+                }
             }
 
             // Null can be converted to Boolean so we will allow it in the case of indexable types

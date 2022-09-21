@@ -433,8 +433,10 @@ namespace ProtoFFI
                 if (null == obj)
                 {
                     if (objType.IsValueType)
+                    {
                         throw new System.InvalidCastException(
                             string.Format(Resources.FailedToCastFromNull, objType.Name));
+                    }
 
                     result.Add(default(T));
                 }
@@ -456,20 +458,33 @@ namespace ProtoFFI
             var dsElements = dsObject.Value as IList<CLRStackValue>;
             Type objType = typeof(T);
 
-            foreach (var elem in dsElements)
+            if (dsElements != null)
             {
-                object obj = primitiveMarshaler.UnMarshal(elem, objType, runtimeCore);
-                if (null == obj)
+                foreach (var elem in dsElements)
                 {
-                    if (objType.IsValueType)
-                        throw new System.InvalidCastException(
-                            string.Format(Resources.FailedToCastFromNull, objType.Name));
+                    object obj = primitiveMarshaler.UnMarshal(elem, objType, runtimeCore);
+                    if (null == obj)
+                    {
+                        if (objType.IsValueType)
+                        {
+                            throw new System.InvalidCastException(
+                                string.Format(Resources.FailedToCastFromNull, objType.Name));
+                        }
 
-                    result.Add(default(T));
+                        result.Add(default(T));
+                    }
+                    else
+                    {
+                        result.Add((T)obj);
+                    }
                 }
-                else
+            }
+            else
+            {
+                var enumerator = (dsObject.Value as IEnumerable).GetEnumerator();
+                while(enumerator.MoveNext())
                 {
-                    result.Add((T)obj);
+                    result.Add((T)enumerator.Current);
                 }
             }
 
@@ -541,7 +556,7 @@ namespace ProtoFFI
             //  use arraylist instead of object[], this allows us to correctly capture 
             //  the type of objects being passed
             //
-            ArrayList arrList = new ArrayList();
+            var arrList = new ArrayList();
             var elementType = arrayType.GetElementType();
             if (elementType == null)
                 elementType = typeof(object);
@@ -624,7 +639,9 @@ namespace ProtoFFI
             {
                 var list = collection as ArrayList;
                 if (null != list)
+                {
                     return list.ToArray(elementType);
+                }
             }
 
             return collection;
