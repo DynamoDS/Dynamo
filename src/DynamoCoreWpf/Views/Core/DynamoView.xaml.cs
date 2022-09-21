@@ -1062,11 +1062,9 @@ namespace Dynamo.Controls
         /// </summary>
         private void CheckTestFlags()
         {
-            if (DynamoModel.FeatureFlags == null)
-                return;
 
             //feature flag test.
-            if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false) == true)
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("EasterEggIcon1", false) == true)
             {
                 dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true from view");
             }
