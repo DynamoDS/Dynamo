@@ -307,5 +307,26 @@ namespace DynamoCoreWpfTests
 
             AssertPreviewValue(tsn.GUID.ToString(), 0);
         }
+        [Test]
+        public void TestSelectionNodeUpdate2()
+        {
+            var model = GetModel();
+            var tsn = new TestSelectionNode2();
+
+            tsn.UpdateSelection(new List<int> { 1, 2, 3 });
+            var command = new DynamoModel.CreateNodeCommand(tsn, 0, 0, true, false);
+            model.ExecuteCommand(command);
+            AssertPreviewValue(tsn.GUID.ToString(), 3);
+
+            tsn.ClearSelections();
+            AssertPreviewValue(tsn.GUID.ToString(), 0);
+
+            tsn.UpdateSelection(new List<int> { 2, 4, 6,8 });
+            AssertPreviewValue(tsn.GUID.ToString(), 4);
+
+            tsn.ClearSelections();
+            AssertPreviewValue(tsn.GUID.ToString(), 0);
+
+        }
     }
 }
