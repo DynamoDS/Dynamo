@@ -167,7 +167,6 @@ c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            //TODO unclear why this index result has an extra level of nesting in the output dictionary. Replication maybe?
             Assert.AreEqual(2, (output.Values.ToList()[2] as dynamic).X);
         }
         #endregion
