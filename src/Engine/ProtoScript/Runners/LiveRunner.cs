@@ -1010,14 +1010,17 @@ namespace ProtoScript.Runners
                     // It can then be handled normally regardless of its ForceExecution state
                     subtree.ForceExecution = false;
 
+                    //search the cached subtree(node's asts) for a binary expression containing a matching LHS identifer node.
+                    //we can currently only apply input optimizations if the previous assignment was also from a primitive.
                     BinaryExpressionNode prevBNE = null;
                     var bne = node as BinaryExpressionNode;
                     if (bne != null){
-                        foreach (var astNode in st.AstNodes)
+                        foreach (var prevNode in st.AstNodes)
                         {
-                            if(astNode is BinaryExpressionNode curBNE && curBNE.LeftNode is IdentifierNode id && id.Name == bne.LeftNode.Name)
+                            if(prevNode is BinaryExpressionNode PrevNodeBNE && PrevNodeBNE.LeftNode is IdentifierNode prevId &&
+                                bne.LeftNode is IdentifierNode curId && prevId.Value == curId.Value)
                             {
-                                prevBNE = curBNE;
+                                prevBNE = PrevNodeBNE;
                             }
                         }
                     }
