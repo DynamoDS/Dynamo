@@ -1022,7 +1022,7 @@ namespace ProtoScript.Runners
 
                     //Check if the subtree (ie a node in graph) is an input and has primitive Right hand Node type
                     if (redefinitionAllowed && st.IsInput && node is BinaryExpressionNode bne  && CoreUtils.IsPrimitiveASTNode(bne.RightNode)
-                        && CoreUtils.IsPrimitiveASTNode(prevBNE.RightNode) || prevBNE == null)
+                        && (CoreUtils.IsPrimitiveASTNode(prevBNE.RightNode) || prevBNE == null))
                     {
                         // An input node is not re-compiled and executed
                         // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
