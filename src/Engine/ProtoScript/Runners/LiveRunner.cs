@@ -1011,17 +1011,20 @@ namespace ProtoScript.Runners
                     subtree.ForceExecution = false;
 
                     BinaryExpressionNode prevBNE = null;
-                    if (node is BinaryExpressionNode bne1){
-                        var prevNode = st.AstNodes.OfType<BinaryExpressionNode>().Where(x => (x.LeftNode as IdentifierNode).Name == bne1.LeftNode.Name);
-                        if(prevNode.Count() > 1)
+                    var bne = node as BinaryExpressionNode;
+                    if (bne != null){
+                        foreach (var astNode in st.AstNodes)
                         {
-                            throw new Exception("1 prevnode expected");
+                            if(astNode is BinaryExpressionNode curBNE && curBNE.LeftNode is IdentifierNode id && id.Name == bne.LeftNode.Name)
+                            {
+                                prevBNE = curBNE;
+                            }
                         }
-                        prevBNE = prevNode.FirstOrDefault();
                     }
 
-                    //Check if the subtree (ie a node in graph) is an input and has primitive Right hand Node type
-                    if (redefinitionAllowed && st.IsInput && node is BinaryExpressionNode bne  && CoreUtils.IsPrimitiveASTNode(bne.RightNode)
+                    //Check if the subtree (ie a node in graph) is an input and has primitive Right hand Node type, also
+                    //ensure that the previous RHS of this assignment was a primitive value, or we'll have generated incorrect instructions.
+                    if (redefinitionAllowed && st.IsInput && bne != null && CoreUtils.IsPrimitiveASTNode(bne.RightNode)
                         && (CoreUtils.IsPrimitiveASTNode(prevBNE.RightNode) || prevBNE == null))
                     {
                         // An input node is not re-compiled and executed
