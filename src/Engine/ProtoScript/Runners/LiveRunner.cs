@@ -1010,8 +1010,19 @@ namespace ProtoScript.Runners
                     // It can then be handled normally regardless of its ForceExecution state
                     subtree.ForceExecution = false;
 
+                    BinaryExpressionNode prevBNE = null;
+                    if (node is BinaryExpressionNode bne1){
+                        var prevNode = st.AstNodes.OfType<BinaryExpressionNode>().Where(x => (x.LeftNode as IdentifierNode).Name == bne1.LeftNode.Name);
+                        if(prevNode.Count() > 1)
+                        {
+                            throw new Exception("1 prevnode expected");
+                        }
+                        prevBNE = prevNode.FirstOrDefault();
+                    }
+
                     //Check if the subtree (ie a node in graph) is an input and has primitive Right hand Node type
-                    if (redefinitionAllowed && st.IsInput && node is BinaryExpressionNode bne  && CoreUtils.IsPrimitiveASTNode(bne.RightNode))
+                    if (redefinitionAllowed && st.IsInput && node is BinaryExpressionNode bne  && CoreUtils.IsPrimitiveASTNode(bne.RightNode)
+                        && CoreUtils.IsPrimitiveASTNode(prevBNE.RightNode) || prevBNE == null)
                     {
                         // An input node is not re-compiled and executed
                         // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
