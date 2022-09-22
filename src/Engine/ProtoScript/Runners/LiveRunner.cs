@@ -1021,6 +1021,7 @@ namespace ProtoScript.Runners
                                 bne.LeftNode is IdentifierNode curId && prevId.Value == curId.Value)
                             {
                                 prevBNE = PrevNodeBNE;
+                                break;
                             }
                         }
                     }
