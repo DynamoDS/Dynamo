@@ -314,14 +314,17 @@ namespace Dynamo.Tests.Configuration
         public void TestImportCopySettings()
         {
             string settingDirectory = Path.Combine(TestDirectory, "settings");
-            string settingsGeneralFilePath = Path.Combine(settingDirectory, "DynamoSettings-NewSettings.xml");
+            string newSettingslFilePath = Path.Combine(settingDirectory, "DynamoSettings-NewSettings.xml");
 
             var defaultSettings = new PreferenceSettings();
-            var newSettings = PreferenceSettings.Load(settingsGeneralFilePath);
+            var newSettings = PreferenceSettings.Load(newSettingslFilePath);
 
+            // checking file
+            bool newSettingsExist = File.Exists(newSettingslFilePath);
             // checking if the new Setting are completely different from the Default
             var checkDifference = comparePrefenceSettings(defaultSettings, newSettings);
-            Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.Properties.Count);
+            Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.Properties.Count,
+                $"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()}");
 
             newSettings.CopyProperties(defaultSettings);
             // Explicit copy
