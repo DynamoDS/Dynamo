@@ -206,7 +206,7 @@
     <p>
         <b>Add File:</b><br />
         Select and add all the files that are related to your package; generally the bin folder, binaries and dependencies are added.
-        <p>
+    <p>
         <b>Select Node Libraries:</b><br />
     <p>
         Specify which of the files you added to the package are the node libraries. Node libraries contain the types and methods that Dynamo will import as nodes. In general you should mark any assembly as a node library which contains types you wish to import into Dynamo. ZeroTouch, NodeModel, or NodeViewCustomization assemblies should be marked as node library.
@@ -222,5 +222,15 @@
         After filling in all the required details you can publish the package locally or online.
         When publishing locally the package will be published in the local root directory,
         whereas while publishing online the package will be uploaded to the package manager.
+    </p>
+    <hr />
+    <h3>Anti-virus Scans</h3>
+    <p>
+        To provide a secure environment to all Dynamo Package users, we have introduced anti-virus scans for new packages.
+        When a user uploads a package, it will be scanned for viruses and will only be available publicly once it has been flagged as safe.
+        The scan will happen during the package upload process and will not add to the usual duration of 10-15 minutes for the new package to be available online.
+        If your package is flagged as infected, the Package Manager search window will display a notification stating that the uploaded package has
+        been found to be infected and won't be published online. To make the package publicly available, check the files included with the package
+        and upload a new version through the Package Manager.
     </p>
 </body>

@@ -25,6 +25,7 @@ namespace Dynamo.PackageManager
             DataContext = publishPackageViewModel;
             PublishPackageViewModel = publishPackageViewModel;
             publishPackageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
+            publishPackageViewModel.Owner = this;
 
             InitializeComponent();
 
@@ -87,11 +88,6 @@ namespace Dynamo.PackageManager
             PublishPackageViewModel.SelectedHostsString = PublishPackageViewModel.SelectedHostsString.Trim().TrimEnd(',');
         }
 
-        private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
-        {
-            PublishPackageViewModel.DynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.PublishPackageMoreInfoFile, UriKind.Relative)));
-        }
-
         /// <summary>
         /// When the user clicks the close button on this window, closes the window.
         /// </summary>
@@ -135,6 +131,11 @@ namespace Dynamo.PackageManager
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
+        }
+
+        private void OnMoreInfoClicked(object sender, MouseButtonEventArgs e)
+        {
+            PublishPackageViewModel.DynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.PublishPackageMoreInfoFile, UriKind.Relative)));
         }
     }
 }

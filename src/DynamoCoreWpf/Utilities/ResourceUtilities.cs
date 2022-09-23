@@ -1,6 +1,7 @@
 ﻿using Dynamo.Logging;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI.GuidedTour;
+using Dynamo.Wpf.Utilities;
 using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Collections.Generic;
@@ -330,12 +331,23 @@ namespace Dynamo.Utilities
         /// <param name="resourcesPath">Path of the resources that will be loaded into the HTML page</param>
         /// <param name="fontStylePath">Path to the Font Style that will be used in some part of the HTML page</param>
         /// <param name="localAssembly">Local Assembly in which the resource will be loaded</param>
-        internal static async void LoadWebBrowser(HtmlPage htmlPage, WebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly)
+        /// <param name="userDataFolder">the folder that WebView2 will use for storing cache info</param>
+        internal static async void LoadWebBrowser(HtmlPage htmlPage, WebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string))
         {
             var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(htmlPage.FileName, localAssembly, false, false);
 
             bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage.Resources, resourcesPath);
             bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", fontStylePath);
+
+            if (!string.IsNullOrEmpty(userDataFolder))
+            {
+                //This indicates in which location will be created the WebView2 cache folder
+                webBrowserComponent.CreationProperties = new CoreWebView2CreationProperties()
+                {
+                    UserDataFolder = userDataFolder
+                };
+            }
+
             await webBrowserComponent.EnsureCoreWebView2Async();
             // Context menu disabled
             webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;

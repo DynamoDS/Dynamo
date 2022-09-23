@@ -21,20 +21,11 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2285" GeneratePathProperty="true" />
-    <PackageReference Include="Greg" Version="2.3.0.1646" />
-	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" CopyXML="true" />
-	<PackageReference Include="RestSharp" Version="106.12.0" CopyXML="true" />
-    <Reference Include="Analytics.Net.ADP, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\Analytics.NET\Analytics.Net.ADP.dll</HintPath>
-    </Reference>
-    <Reference Include="Analytics.NET.Core">
-      <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Analytics.NET.Google">
-      <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
-    </Reference>
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.0.2506" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2365" GeneratePathProperty="true" />
+    <PackageReference Include="Greg" Version="2.3.0.2505" />
+	  <PackageReference Include="Newtonsoft.Json" Version="8.0.3" CopyXML="true" />
+	  <PackageReference Include="RestSharp" Version="106.12.0" CopyXML="true" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
@@ -137,8 +128,8 @@
       <NodeHelpFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.*" />
       <OpenSourceLicenses Include="$(SolutionDir)..\doc\distrib\Open Source Licenses\**\*.*" />
       <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
-      <ExternAnalytics Include="$(SolutionDir)..\extern\Analytics.NET\*.*" />
-      <LegacyBinariesToBinFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\*\*" />
+      <LegacyBinariesToBinFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\*" />
+      <LegacyBinariesToLibg227Folder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\libg_227_0_0\*" />
       <LegacyBinariesToEn-USFolder Include="$(SolutionDir)..\extern\legacy_remove_me\en-US\*" />
       <LegacyBinariesToNodesFolder Include="$(SolutionDir)..\extern\legacy_remove_me\nodes\*" />
     </ItemGroup>
@@ -157,7 +148,6 @@
     <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path $(LibGProtoGeometryLibGLocale) -Destination $(OutputPath) -Recurse -Force" />
     <Copy SourceFiles="@(LibG228)" DestinationFolder="$(OutputPath)libg_228_0_0\" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
     <Copy SourceFiles="@(GalleryFiles)" DestinationFolder="$(OutputPath)gallery\%(RecursiveDir)" />
     <Copy SourceFiles="@(LocalizedResources)" DestinationFolder="$(OutputPath)%(RecursiveDir)" />
@@ -165,7 +155,8 @@
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.Migrations.xml" DestinationFolder="$(OutputPath)" />
     <!--Remove these copy steps at the next launch of host products-->
-    <Copy SourceFiles="@(LegacyBinariesToBinFolder)" DestinationFolder="$(OutputPath)\%(RecursiveDir)\" />
+    <Copy SourceFiles="@(LegacyBinariesToBinFolder)" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(LegacyBinariesToLibg227Folder)" DestinationFolder="$(OutputPath)\libg_227_0_0\" />
     <Copy SourceFiles="@(LegacyBinariesToEn-USFolder)" DestinationFolder="$(OutputPath)\en-US\" />
     <Copy SourceFiles="@(LegacyBinariesToNodesFolder)" DestinationFolder="$(OutputPath)\nodes\" />
     <Copy SourceFiles="$(SolutionDir)Config\upiconfig.xml" DestinationFolder="$(OutputPath)" />

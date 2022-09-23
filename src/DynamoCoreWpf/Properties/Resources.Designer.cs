@@ -3345,6 +3345,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Upload Error.
+        /// </summary>
+        public static string InfectedPackageErrorString {
+            get {
+                return ResourceManager.GetString("InfectedPackageErrorString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is an infected package. Please upload a clean version..
+        /// </summary>
+        public static string InfectedPackageMessageString {
+            get {
+                return ResourceManager.GetString("InfectedPackageMessageString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Read more....
         /// </summary>
         public static string InfoBubbleDocumentationLinkText {
@@ -6577,6 +6595,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesWindowLanguages {
             get {
                 return ResourceManager.GetString("PreferencesWindowLanguages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your package will be scanned for viruses, and will be available for download once it successfully passes the scan..
+        /// </summary>
+        public static string PrePackagePublishMessage {
+            get {
+                return ResourceManager.GetString("PrePackagePublishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Upload Scan.
+        /// </summary>
+        public static string PrePackagePublishTitle {
+            get {
+                return ResourceManager.GetString("PrePackagePublishTitle", resourceCulture);
             }
         }
         

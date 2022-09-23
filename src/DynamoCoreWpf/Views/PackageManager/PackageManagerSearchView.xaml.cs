@@ -189,16 +189,23 @@ namespace Dynamo.PackageManager.UI
         }
 
         /// <summary>
-        /// Fires when the user clicks the 'X' button to dismiss a package download toast notification.
+        /// Fires when the user clicks the 'X' button to dismiss a package toast notification.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CloseDownloadToastButton_OnClick(object sender, RoutedEventArgs e)
+        private void CloseToastButton_OnClick(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
-            
-            if (!(button.DataContext is PackageDownloadHandle packageDownloadHandle)) return;
-            ViewModel.ClearDownloadToastNotificationCommand.Execute(packageDownloadHandle);
+
+            if (button.DataContext is PackageDownloadHandle packageDownloadHandle)
+            {
+                ViewModel.ClearToastNotificationCommand.Execute(packageDownloadHandle);
+            }
+            else if(button.DataContext is PackageManagerSearchElement packageSearchElement)
+            {
+                ViewModel.ClearToastNotificationCommand.Execute(packageSearchElement);
+            }
+            return;
         }
     }
 }

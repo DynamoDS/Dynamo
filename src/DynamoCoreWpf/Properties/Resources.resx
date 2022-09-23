@@ -3271,4 +3271,16 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="NotificationCenterButtonTooltip" xml:space="preserve">
     <value>Click to view latest news from Dynamo Team.</value>
   </data>
+  <data name="InfectedPackageMessageString" xml:space="preserve">
+    <value>This is an infected package. Please upload a clean version.</value>
+  </data>
+  <data name="InfectedPackageErrorString" xml:space="preserve">
+    <value>Upload Error</value>
+  </data>
+  <data name="PrePackagePublishMessage" xml:space="preserve">
+    <value>Your package will be scanned for viruses, and will be available for download once it successfully passes the scan.</value>
+  </data>
+  <data name="PrePackagePublishTitle" xml:space="preserve">
+    <value>Package Upload Scan</value>
+  </data>
 </root>

@@ -11,34 +11,19 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
-
+        
     <DataTemplate DataType="{x:Type viewModels:OutPortViewModel}">
-
+        
         <!--  Grid that contains the entire port  -->
         <Grid Name="MainGrid"
               Background="Transparent"
               HorizontalAlignment="Right"
               IsHitTestVisible="True">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Name="PortNameColumn" Width="*" />
-                <ColumnDefinition Name="ValueMarkerColumn">
-                    <ColumnDefinition.Style>
-                        <Style TargetType="ColumnDefinition">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=PortDefaultValueMarkerVisible}" Value="True">
-                                    <Setter Property="Width" Value="5px" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=PortDefaultValueMarkerVisible}" Value="False">
-                                    <Setter Property="Width" Value="0px" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ColumnDefinition.Style>
-                 </ColumnDefinition>
-                
+                <ColumnDefinition Name="PortNameColumn" Width="*"/>
+                <ColumnDefinition Name="ValueMarkerColumn" Width="5px"/>
                 <ColumnDefinition Name="PortSnappingColumn" Width="25px" />
             </Grid.ColumnDefinitions>
-
             <interactivity:Interaction.Triggers>
                 <!--  Bind Connect command to left click  -->
                 <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
@@ -117,10 +102,22 @@
                        Grid.Column="1"
                        Height="27px"
                        VerticalAlignment="Center"
-                       Fill="#999999"
                        IsHitTestVisible="False"
                        Visibility="{Binding PortDefaultValueMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-                       SnapsToDevicePixels="True" />
+                       SnapsToDevicePixels="True" >
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=BorderHighlightOverlay, Path=IsMouseOver}" Value="True">
+                                <Setter Property="Fill" Value="Transparent" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=BorderHighlightOverlay, Path=IsMouseOver}" Value="False">
+                                <Setter Property="Fill" Value="#999999" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
        
             <!--  Grid containing the Port Name TextBox  -->
             <Grid Name="PortNameGrid"
@@ -160,10 +157,11 @@
                     </Style>
                 </Grid.Style>
             </Grid>
-
+            
             <!--  A semi-transparent border, which displays when the user's mouse moves over the port  -->
             <Border x:Name="BorderHighlightOverlay"
                     Grid.Column="0"
+                    Grid.ColumnSpan="2"
                     BorderBrush="Transparent"
                     Opacity="0.2"
                     SnapsToDevicePixels="True">
@@ -189,7 +187,6 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
-
                 <Border.ToolTip>
                     <dynui:DynamoToolTip AttachmentSide="Right" Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>
