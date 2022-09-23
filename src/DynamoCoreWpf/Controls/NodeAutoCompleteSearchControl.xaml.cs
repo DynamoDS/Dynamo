@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -36,31 +36,28 @@ namespace Dynamo.UI.Controls
             InitializeComponent();
             if (Application.Current != null)
             {
-                Application.Current.Deactivated += currentApplicationDeactivated;
+                Application.Current.Deactivated += CurrentApplicationDeactivated;
             }
-            Unloaded += NodeAutoCompleteSearchControl_Unloaded;
+            Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
             HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
         }
 
-        private void NodeAutoCompleteSearchControl_Unloaded(object sender, RoutedEventArgs e)
+        private void NodeAutoCompleteSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (Application.Current != null)
             {
-                Application.Current.Deactivated -= currentApplicationDeactivated;
+                Application.Current.Deactivated -= CurrentApplicationDeactivated;
             }
         }
 
-        private void currentApplicationDeactivated(object sender, EventArgs e)
+        private void CurrentApplicationDeactivated(object sender, EventArgs e)
         {
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
         }
 
         private void OnRequestShowNodeAutoCompleteSearch(ShowHideFlags flags)
         {
-            if (RequestShowNodeAutoCompleteSearch != null)
-            {
-                RequestShowNodeAutoCompleteSearch(flags);
-            }
+            RequestShowNodeAutoCompleteSearch?.Invoke(flags);
         }
 
         private void OnSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
@@ -81,8 +78,7 @@ namespace Dynamo.UI.Controls
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            var listBoxItem = sender as ListBoxItem;
-            if (listBoxItem == null || e.OriginalSource is Thumb) return;
+            if (!(sender is ListBoxItem listBoxItem) || e.OriginalSource is Thumb) return;
 
             ExecuteSearchElement(listBoxItem);
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
@@ -109,8 +105,7 @@ namespace Dynamo.UI.Controls
 
         private void OnMouseEnter(object sender, MouseEventArgs e)
         {
-            FrameworkElement fromSender = sender as FrameworkElement;
-            if (fromSender == null) return;
+            if (!(sender is FrameworkElement fromSender)) return;
 
             toolTipPopup.DataContext = fromSender.DataContext;
             toolTipPopup.IsOpen = true;

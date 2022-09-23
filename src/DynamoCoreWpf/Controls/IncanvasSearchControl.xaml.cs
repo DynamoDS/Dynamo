@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -33,37 +33,33 @@ namespace Dynamo.UI.Controls
             InitializeComponent();
             if (Application.Current != null)
             {
-                Application.Current.Deactivated += currentApplicationDeactivated;
+                Application.Current.Deactivated += CurrentApplicationDeactivated;
             }
-            Unloaded += InCanvasSearchControl_Unloaded;
+            Application.Current.MainWindow.Closing += InCanvasSearchControl_Unloaded;
 
         }
 
-        private void InCanvasSearchControl_Unloaded(object sender, RoutedEventArgs e)
+        private void InCanvasSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (Application.Current != null)
             {
-                Application.Current.Deactivated -= currentApplicationDeactivated;
+                Application.Current.Deactivated -= CurrentApplicationDeactivated;
             }
         }
 
-        private void currentApplicationDeactivated(object sender, EventArgs e)
+        private void CurrentApplicationDeactivated(object sender, EventArgs e)
         {
             OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
         }
 
         private void OnRequestShowInCanvasSearch(ShowHideFlags flags)
         {
-            if (RequestShowInCanvasSearch != null)
-            {
-                RequestShowInCanvasSearch(flags);
-            }
+            RequestShowInCanvasSearch?.Invoke(flags);
         }
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            var listBoxItem = sender as ListBoxItem;
-            if (listBoxItem == null || e.OriginalSource is Thumb) return;
+            if (!(sender is ListBoxItem listBoxItem) || e.OriginalSource is Thumb) return;
 
             ExecuteSearchElement(listBoxItem);
             OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
@@ -86,8 +82,7 @@ namespace Dynamo.UI.Controls
 
         private void OnMouseEnter(object sender, MouseEventArgs e)
         {
-            FrameworkElement fromSender = sender as FrameworkElement;
-            if (fromSender == null) return;
+            if (!(sender is FrameworkElement fromSender)) return;
 
             toolTipPopup.DataContext = fromSender.DataContext;
             toolTipPopup.IsOpen = true;
