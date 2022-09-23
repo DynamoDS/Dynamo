@@ -320,11 +320,11 @@ namespace Dynamo.Tests.Configuration
             var newSettings = PreferenceSettings.Load(newSettingslFilePath);
 
             // validation
-            bool newSettingsExist = File.Exists(newSettingslFilePath);                        
+            bool newSettingsExist = File.Exists(newSettingslFilePath);
             var checkDifference = comparePrefenceSettings(defaultSettings, newSettings);
             int diffProps = checkDifference.DifferentPropertyValues.Count;
             int totProps = checkDifference.Properties.Count;
-            string firstPropertyWithSameValue = checkDifference.Properties.Except(checkDifference.DifferentPropertyValues)?.ToList().First();
+            string firstPropertyWithSameValue = checkDifference.Properties.Except(checkDifference.DifferentPropertyValues).ToList().FirstOrDefault();
             string defSettNumberFormat = defaultSettings.NumberFormat;
             string newSettNumberFormat = newSettings.NumberFormat;
             string failMessage = $"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} | DiffProps: {diffProps.ToString()} | TotProps: {totProps.ToString()} | Default Sett NumberFormat: {defSettNumberFormat} | New Sett NumberFormat: {newSettNumberFormat} | First Property with the same value {firstPropertyWithSameValue}";

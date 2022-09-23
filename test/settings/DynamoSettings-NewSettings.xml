@@ -48,9 +48,8 @@
   </CustomPackageFolders>
   <DisableTrustWarnings>true</DisableTrustWarnings>
   <TrustedLocations>
-    <string>C:\ProgramData\Autodesk</string>
-    <string>C:\Program Files\Autodesk</string>
-    <string>C:\ACE</string>
+    <string>C:\</string>
+    <string>E:\</string>
   </TrustedLocations>
   <PackageDirectoriesToUninstall>
     <string>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\2.14\packages\Dynamo Samples</string>
