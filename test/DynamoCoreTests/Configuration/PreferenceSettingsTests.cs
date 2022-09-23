@@ -319,12 +319,17 @@ namespace Dynamo.Tests.Configuration
             var defaultSettings = new PreferenceSettings();
             var newSettings = PreferenceSettings.Load(newSettingslFilePath);
 
-            // checking file
-            bool newSettingsExist = File.Exists(newSettingslFilePath);
-            // checking if the new Setting are completely different from the Default
+            // validation
+            bool newSettingsExist = File.Exists(newSettingslFilePath);                        
             var checkDifference = comparePrefenceSettings(defaultSettings, newSettings);
-            Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.Properties.Count,
-                $"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()}");
+            int diffProps = checkDifference.DifferentPropertyValues.Count;
+            int totProps = checkDifference.Properties.Count;
+            string defSettNumberFormat = defaultSettings.NumberFormat;
+            string newSettNumberFormat = newSettings.NumberFormat;
+            string failMessage = $"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} | DiffProps: {diffProps.ToString()} | TotProps: {totProps.ToString()} | Default Sett NumberFormat: {defSettNumberFormat} | New Sett NumberFormat: {newSettNumberFormat}";
+
+            // checking if the new Setting are completely different from the Default
+            Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.Properties.Count, failMessage);
 
             newSettings.CopyProperties(defaultSettings);
             // Explicit copy
