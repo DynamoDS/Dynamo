@@ -3283,4 +3283,31 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="PrePackagePublishTitle" xml:space="preserve">
     <value>Package Upload Scan</value>
   </data>
+  <data name="ImportPreferencesInfo" xml:space="preserve">
+   <value>Your custom settings can be imported here. It will be applied once Dynamo and any host program restarts</value>
+   <comment>Import Preferences Info.</comment>
+  </data>
+  <data name="ImportPreferencesText" xml:space="preserve">
+   <value>Import</value>
+   <comment>Import Preferences Text.</comment>
+  </data>
+  <data name="ExportPreferencesText" xml:space="preserve">
+   <value>Export</value>
+   <comment>Export Preferences Text.</comment>
+  </data>
+  <data name="ExportSettingsDialogTitle" xml:space="preserve">
+   <value>Select Folder to Export</value>
+  </data>
+  <data name="FileDialogImportSettingsFiles" xml:space="preserve">
+   <value>Settings Files ({0})|{0}</value>
+  </data>
+  <data name="ImportSettingsDialogTitle" xml:space="preserve">
+   <value>Import Settings</value>
+  </data>
+  <data name="ImportSettingsSuccessMessage" xml:space="preserve">
+   <value>Import Success</value>
+  </data>
+  <data name="ImportSettingsFailedMessage" xml:space="preserve">
+   <value>Import Failed</value>
+  </data>
 </root>
