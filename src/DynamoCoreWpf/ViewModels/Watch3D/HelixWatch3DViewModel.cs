@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -183,7 +183,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private int currentFrameSkipCount;
 
         private const double EqualityTolerance = 0.000001;
-        private double nearPlaneDistanceFactor = 0.001;
+        private double nearPlaneDistanceFactor = 0.01;
         internal const double DefaultNearClipDistance = 0.1f;
         internal const double DefaultFarClipDistance = 100000;
 
