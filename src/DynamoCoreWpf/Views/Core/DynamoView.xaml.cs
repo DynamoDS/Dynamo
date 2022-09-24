@@ -1346,27 +1346,30 @@ namespace Dynamo.Controls
         /// </summary>
         private void CheckTestFlags()
         {
-            if (!DynamoModel.IsTestMode)
-            {
-                //feature flag test.
-                if (DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("EasterEggIcon1", false) == true)
-                {
-                    dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true from view");
-                }
-                else
-                {
-                    dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is false from view");
-                }
+           if (DynamoModel.IsTestMode)
+                return;
 
-                if (DynamoModel.FeatureFlags?.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is string ffs && ffs != "NA")
-                {
-                    dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is enabled from view");
-                    MessageBoxService.Show(this, ffs, "EasterEggMessage1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
-                }
-                else
-                {
-                    dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is disabled from view");
-                }
+            if (DynamoModel.FeatureFlags == null)
+                return;
+
+            //feature flag test.
+            if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false) == true)
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true from view");
+            }
+            else
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is false from view");
+            }
+
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is string ffs && ffs != "NA")
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is enabled from view");
+                MessageBoxService.Show(this, ffs, "EasterEggMessage1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+            }
+            else
+            {
+                dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is disabled from view");
             }
         }
 
