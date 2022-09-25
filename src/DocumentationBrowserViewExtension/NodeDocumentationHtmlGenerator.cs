@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Dynamo.DocumentationBrowser
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"<h1>{e.Type}</h1>");
             sb.AppendLine($"<p><i>{e.MinimumQualifiedName}</i></p>");
-            sb.Append("<hr>");
+            //sb.Append("<hr>");
 
             return sb.ToString();
         }
@@ -43,7 +43,15 @@ namespace Dynamo.DocumentationBrowser
         private static string CreateNodeInfo(OpenNodeAnnotationEventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"<h2>{Resources.NodeDocumentationNodeInfo}</h2>");
+            sb.AppendLine("<div>");
+            sb.AppendLine("<details open>");
+
+            sb.AppendLine("<summary>");
+            sb.AppendLine($"<strong>{Resources.NodeDocumentationNodeInfo}</strong>");
+            sb.AppendLine("<span class=\"icon\">");
+            sb.AppendLine(@"</span>");
+            sb.AppendLine(@"</summary>");
+
             sb.AppendLine("<table class=\"table--noborder\">");
             sb.AppendLine("<tr class=\"table--noborder\">");
             sb.AppendLine($"<td class=\"table--noborder\">{Resources.NodeDocumentationNodeType}</td>");
@@ -78,7 +86,10 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine(@"</td>");
             sb.AppendLine(@"</tr>");
             sb.AppendLine(@"</table>");
-            sb.Append(@"<hr>");
+            sb.AppendLine(@"</details>");
+            sb.Append(@"</div>");
+
+            //sb.Append(@"<hr>");
 
             return sb.ToString();
         }
