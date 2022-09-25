@@ -14,7 +14,7 @@ namespace Dynamo.DocumentationBrowser
     {
         /// <summary>
         /// Creates the Node information section which all nodes have
-        /// even if they dont have additional markdown documentation.
+        /// even if they don't have additional markdown documentation.
         /// </summary>
         /// <param name="e"></param>
         /// <returns></returns>
@@ -24,8 +24,13 @@ namespace Dynamo.DocumentationBrowser
                 throw new ArgumentNullException(nameof(e));
 
             StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("<body>");
+            sb.AppendLine("<div>");
             sb.AppendLine(CreateHeader(e));
-            sb.AppendLine(CreateNodeInfo(e));
+            sb.AppendLine(CreateBody(e));
+            sb.Append(@"</div>");
+            sb.Append(@"</body>");
 
             return sb.ToString();
         }
@@ -35,7 +40,61 @@ namespace Dynamo.DocumentationBrowser
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"<h1>{e.Type}</h1>");
             sb.AppendLine($"<p><i>{e.MinimumQualifiedName}</i></p>");
-            //sb.Append("<hr>");
+
+            return sb.ToString();
+        }
+
+        private static string CreateBody(OpenNodeAnnotationEventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(CreateInfo(e));
+            sb.AppendLine(CreateHelp(e));
+            sb.AppendLine(CreateInputs(e));
+
+            return sb.ToString();
+        }
+
+        private static string CreateInfo(OpenNodeAnnotationEventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<details open>");
+            sb.AppendLine(CreateExpanderTitle("Node Info"));
+            sb.AppendLine(CreateNodeInfo(e));
+            sb.AppendLine(@"</details>");
+
+
+            return sb.ToString();
+        }
+
+        private static string CreateHelp(OpenNodeAnnotationEventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<details open>");
+            sb.AppendLine(CreateExpanderTitle("Node Issue Help"));
+            sb.AppendLine(@"</details>");
+
+            return sb.ToString();
+        }
+
+        private static string CreateInputs(OpenNodeAnnotationEventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<details open>");
+            sb.AppendLine(CreateExpanderTitle("Inputs"));
+            sb.AppendLine(@"</details>");
+
+            return sb.ToString();
+        }
+        
+        private static string CreateExpanderTitle(string title)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<summary>");
+            sb.AppendLine($"<strong>{title}</strong>");
+            sb.AppendLine("<span class=\"icon\">");
+            sb.AppendLine(@"</span>");
+            sb.AppendLine(@"</summary>");
 
             return sb.ToString();
         }
@@ -43,14 +102,6 @@ namespace Dynamo.DocumentationBrowser
         private static string CreateNodeInfo(OpenNodeAnnotationEventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("<div>");
-            sb.AppendLine("<details open>");
-
-            sb.AppendLine("<summary>");
-            sb.AppendLine($"<strong>{Resources.NodeDocumentationNodeInfo}</strong>");
-            sb.AppendLine("<span class=\"icon\">");
-            sb.AppendLine(@"</span>");
-            sb.AppendLine(@"</summary>");
 
             sb.AppendLine("<table class=\"table--noborder\">");
             sb.AppendLine("<tr class=\"table--noborder\">");
@@ -86,11 +137,7 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine(@"</td>");
             sb.AppendLine(@"</tr>");
             sb.AppendLine(@"</table>");
-            sb.AppendLine(@"</details>");
-            sb.Append(@"</div>");
-
-            //sb.Append(@"<hr>");
-
+            
             return sb.ToString();
         }
     }
