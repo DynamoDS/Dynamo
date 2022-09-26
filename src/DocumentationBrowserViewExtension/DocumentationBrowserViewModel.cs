@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -247,17 +247,19 @@ namespace Dynamo.DocumentationBrowser
 
         private string CreateNodeAnnotationContent(OpenNodeAnnotationEventArgs e)
         {
+            //var lookup = packageManagerDoc.SpeckManager;
+
             var writer = new StringWriter();
             try
             {
                 writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
 
-                // Get the Node info section
-                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e);
-                writer.WriteLine(nodeDocumentation);
-
                 // Convert the markdown file to html
-                MarkdownHandlerInstance.ParseToHtml(ref writer, e.MinimumQualifiedName, e.PackageName);
+                var mkDown = MarkdownHandlerInstance.ParseToHtml(e.MinimumQualifiedName, e.PackageName);
+
+                // Get the Node info section
+                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e, mkDown);
+                writer.WriteLine(nodeDocumentation);
 
                 writer.Flush();
                 var output = writer.ToString();

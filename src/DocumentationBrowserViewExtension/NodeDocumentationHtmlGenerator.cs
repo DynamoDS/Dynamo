@@ -1,7 +1,9 @@
 using System;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Windows.Input;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.ViewModels;
 
@@ -18,17 +20,33 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="e"></param>
         /// <returns></returns>
-        internal static string FromAnnotationEventArgs(OpenNodeAnnotationEventArgs e)
+        internal static string FromAnnotationEventArgs(OpenNodeAnnotationEventArgs e, string mkDown)
         {
             if (e is null)
                 throw new ArgumentNullException(nameof(e));
 
             StringBuilder sb = new StringBuilder();
+            
+            sb.AppendLine(CreateHeader(e));
+            sb.AppendLine(CreateBody(e, mkDown));
+
+            return sb.ToString();
+        }
+
+        internal static string OpenDocument()
+        {
+            StringBuilder sb = new StringBuilder();
 
             sb.AppendLine("<body>");
             sb.AppendLine("<div>");
-            sb.AppendLine(CreateHeader(e));
-            sb.AppendLine(CreateBody(e));
+
+            return sb.ToString();
+        }
+
+        internal static string CloseDocument()
+        {
+            StringBuilder sb = new StringBuilder();
+
             sb.Append(@"</div>");
             sb.Append(@"</body>");
 
@@ -44,25 +62,25 @@ namespace Dynamo.DocumentationBrowser
             return sb.ToString();
         }
 
-        private static string CreateBody(OpenNodeAnnotationEventArgs e)
+        private static string CreateBody(OpenNodeAnnotationEventArgs e, string mkDown)
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendLine(CreateInfo(e));
-            sb.AppendLine(CreateHelp(e));
+            sb.AppendLine(CreateInfo(e, mkDown));
+            //sb.AppendLine(CreateHelp(e));
             sb.AppendLine(CreateInputs(e));
 
             return sb.ToString();
         }
 
-        private static string CreateInfo(OpenNodeAnnotationEventArgs e)
+        private static string CreateInfo(OpenNodeAnnotationEventArgs e, string mkDown)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<details open>");
-            sb.AppendLine(CreateExpanderTitle("Node Info"));
+            sb.AppendLine(CreateExpanderTitle("Node Information"));
             sb.AppendLine(CreateNodeInfo(e));
+            sb.AppendLine(mkDown);
             sb.AppendLine(@"</details>");
-
 
             return sb.ToString();
         }
@@ -102,16 +120,19 @@ namespace Dynamo.DocumentationBrowser
         private static string CreateNodeInfo(OpenNodeAnnotationEventArgs e)
         {
             StringBuilder sb = new StringBuilder();
+            
+            sb.AppendLine($"<h2>{Resources.NodeDocumentationNodeType}</h2>");
+            sb.AppendLine($"<p>{e.Type}</p>");
+            sb.AppendLine($"<h2>{Resources.NodeDocumentationDescription}</h2>");
+            sb.AppendLine($"<p>{Regex.Replace(e.Description, @"\r\n?|\n", "<br>")}</p>");
+            
+            return sb.ToString();
+        }
 
-            sb.AppendLine("<table class=\"table--noborder\">");
-            sb.AppendLine("<tr class=\"table--noborder\">");
-            sb.AppendLine($"<td class=\"table--noborder\">{Resources.NodeDocumentationNodeType}</td>");
-            sb.AppendLine($"<td class=\"table--noborder\">{e.Type}</td>");
-            sb.AppendLine(@"</tr>");
-            sb.AppendLine("<tr class=\"table--noborder\">");
-            sb.AppendLine($"<td class=\"table--noborder\">{Resources.NodeDocumentationDescription}</td>");
-            sb.AppendLine($"<td class=\"table--noborder\">{Regex.Replace(e.Description, @"\r\n?|\n", "<br>")}</td>");
-            sb.AppendLine(@"</tr>");
+         private static string CreateInputsAndOutputs(OpenNodeAnnotationEventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            
             sb.AppendLine("<tr class=\"table--noborder\">");
             sb.AppendLine($"<td class=\"table--noborder\">{Resources.NodeDocumentationCategory}</td>");
             sb.AppendLine($"<td class=\"table--noborder\">{e.Category}</td>");
@@ -137,7 +158,7 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine(@"</td>");
             sb.AppendLine(@"</tr>");
             sb.AppendLine(@"</table>");
-            
+
             return sb.ToString();
         }
     }
