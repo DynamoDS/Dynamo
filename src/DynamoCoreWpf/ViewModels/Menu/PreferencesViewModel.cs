@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -808,12 +808,17 @@ namespace Dynamo.ViewModels
         public TrustedPathViewModel TrustedPathsViewModel { get; set; }
 
         /// <summary>
-        /// Import Settings
+        /// Returns a boolean value indicating if the Settings importing was successful or not
         /// </summary>
         /// <param name="filePath"></param>
-        public void importSettings(string filePath)
+        /// <returns></returns>
+        public bool importSettings(string filePath)
         {
             var newPreferences = PreferenceSettings.Load(filePath);
+            if (!newPreferences.isValidInstance())
+            {
+                return false;
+            }
             newPreferences.CopyProperties(preferenceSettings);
 
             // Explicit copy
@@ -838,10 +843,11 @@ namespace Dynamo.ViewModels
                 if (preferenceItem != null)
                 {
                     item.Active = preferenceItem.IsActive;
-                }                
+                }
             }
 
             RaisePropertyChanged(string.Empty);
+            return true;
         }
 
         /// <summary>

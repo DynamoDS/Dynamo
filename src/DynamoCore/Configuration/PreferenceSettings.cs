@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -52,6 +52,8 @@ namespace Dynamo.Configuration
         private bool isBackgroundGridVisible;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
+        private bool isValid = true;
+
         #region Constants
         /// <summary>
         /// Indicates the maximum number of files shown in Recent Files
@@ -753,7 +755,7 @@ namespace Dynamo.Configuration
             {
                 if (settings == null)
                 {
-                    return new PreferenceSettings();
+                    return new PreferenceSettings() { isValid = false };
                 }
             }
 
@@ -946,6 +948,15 @@ namespace Dynamo.Configuration
         public List<string> StaticFields()
         {
             return typeof(PreferenceSettings).GetMembers(BindingFlags.Static | BindingFlags.NonPublic).OfType<FieldInfo>().Select(field => field.Name).ToList();
+        }
+
+        /// <summary>
+        /// Indicates when an instance has been created from a preferences file correctly or not
+        /// </summary>
+        /// <returns></returns>
+        public bool isValidInstance()
+        {
+            return this.isValid;
         }
     }
 }
