@@ -808,6 +808,43 @@ namespace Dynamo.ViewModels
         public TrustedPathViewModel TrustedPathsViewModel { get; set; }
 
         /// <summary>
+        /// Import Settings
+        /// </summary>
+        /// <param name="filePath"></param>
+        public void importSettings(string filePath)
+        {
+            var newPreferences = PreferenceSettings.Load(filePath);
+            newPreferences.CopyProperties(preferenceSettings);
+
+            // Explicit copy
+            preferenceSettings.SetTrustWarningsDisabled(newPreferences.DisableTrustWarnings);
+            preferenceSettings.SetTrustedLocations(newPreferences.TrustedLocations);
+            TrustedPathsViewModel?.InitializeTrustedLocations();
+
+            // Set the not explicit Binding
+            runSettingsIsChecked = preferenceSettings.DefaultRunType;
+            var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
+            SelectedPythonEngine = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
+            dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = preferenceSettings.RenderPrecision;
+            dynamoViewModel.RenderPackageFactoryViewModel.ShowEdges = preferenceSettings.ShowEdges;
+            PackagePathsForInstall = null;
+            PackagePathsViewModel?.InitializeRootLocations();
+
+            dynamoViewModel.IsShowingConnectors = preferenceSettings.ShowConnector;
+            dynamoViewModel.IsShowingConnectorTooltip = preferenceSettings.ShowConnectorToolTip;
+            foreach (var item in dynamoViewModel.Watch3DViewModels)
+            {
+                var preferenceItem = preferenceSettings.BackgroundPreviews.Where(i => i.Name == item.PreferenceWatchName).FirstOrDefault();
+                if (preferenceItem != null)
+                {
+                    item.Active = preferenceItem.IsActive;
+                }                
+            }
+
+            RaisePropertyChanged(string.Empty);
+        }
+
+        /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
         /// </summary>
         public PreferencesViewModel(DynamoViewModel dynamoViewModel)

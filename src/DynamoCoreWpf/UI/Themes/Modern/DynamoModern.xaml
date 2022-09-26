@@ -5444,4 +5444,23 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+    
+    <!-- TextBlock as a Link -->
+    <Style x:Key="TextBlockLink" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource TextBlockLinkForegroundColor}" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <!-- Common Question Icon -->
+    <Style x:Key="QuestionIcon" TargetType="{x:Type Image}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/info-default-16px.png" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/info-hover-16px.png" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>
