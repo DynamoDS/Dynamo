@@ -815,7 +815,7 @@ namespace Dynamo.ViewModels
         public bool importSettings(string filePath)
         {
             var newPreferences = PreferenceSettings.Load(filePath);
-            if (!newPreferences.isValidInstance())
+            if (!newPreferences.IsCreatedFromValidFile())
             {
                 return false;
             }

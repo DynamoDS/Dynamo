@@ -52,7 +52,7 @@ namespace Dynamo.Configuration
         private bool isBackgroundGridVisible;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
-        private bool isValid = true;
+        private bool isCreatedFromValidFile = true;
 
         #region Constants
         /// <summary>
@@ -755,7 +755,7 @@ namespace Dynamo.Configuration
             {
                 if (settings == null)
                 {
-                    return new PreferenceSettings() { isValid = false };
+                    return new PreferenceSettings() { isCreatedFromValidFile = false };
                 }
             }
 
@@ -954,9 +954,9 @@ namespace Dynamo.Configuration
         /// Indicates when an instance has been created from a preferences file correctly or not
         /// </summary>
         /// <returns></returns>
-        public bool isValidInstance()
+        public bool IsCreatedFromValidFile()
         {
-            return this.isValid;
+            return this.isCreatedFromValidFile;
         }
     }
 }
