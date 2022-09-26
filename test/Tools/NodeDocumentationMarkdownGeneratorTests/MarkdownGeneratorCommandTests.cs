@@ -512,7 +512,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
         protected static void SaveCoreLayoutSpecToPath(Assembly assembly, string savePath)
         {
-            var resource = "Dynamo.LibraryViewExtensionMSWebBrowser.web.library.layoutSpecs.json";
+            var resource = "Dynamo.LibraryViewExtensionWebView2.web.library.layoutSpecs.json";
             assembly = assembly == null ? Assembly.GetExecutingAssembly() : assembly;
             var stream = assembly.GetManifestResourceStream(resource);
             var fs = File.Create(savePath);
