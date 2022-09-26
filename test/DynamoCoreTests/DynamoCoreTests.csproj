@@ -34,6 +34,8 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.3" GeneratePathProperty="true" />
     <PackageReference Include="System.Memory" Version="4.5.4" GeneratePathProperty="true" />
     <PackageReference Include="System.Buffers" Version="4.5.1" GeneratePathProperty="true" />
+    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -146,11 +148,11 @@
     <Content Include="Crypto\AnImportantFile.txt" />
   </ItemGroup>
   <Target Name="CopyDisableADPTestDependencies" AfterTargets="Build">
-      <Copy SourceFiles="$(PkgMicrosoft_Diagnostics_Runtime)\lib\net461\Microsoft.Diagnostics.Runtime.dll" DestinationFolder="$(OutputPath)/../../../test/packages" />
-      <Copy SourceFiles="$(PkgSystem_Collections_Immutable)\lib\net461\System.Collections.Immutable.dll" DestinationFolder="$(OutputPath)/../../../test/packages" />
-      <Copy SourceFiles="$(PkgSystem_Reflection_Metadata)\lib\net461\System.Reflection.Metadata.dll" DestinationFolder="$(OutputPath)/../../../test/packages" />
-      <Copy SourceFiles="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\net461\System.Runtime.CompilerServices.Unsafe.dll" DestinationFolder="$(OutputPath)/../../../test/packages" />
-      <Copy SourceFiles="$(PkgSystem_Memory)\lib\net461\System.Memory.dll" DestinationFolder="$(OutputPath)/../../../test/packages" />
-      <Copy SourceFiles="$(PkgSystem_Buffers)\lib\net461\System.Buffers.dll" DestinationFolder="$(OutputPath)/../../../test/packages" />
+    <Copy SourceFiles="$(PkgMicrosoft_Diagnostics_Runtime)\lib\net461\Microsoft.Diagnostics.Runtime.dll" DestinationFolder="$(TestDependenciesPath)" />
+    <Copy SourceFiles="$(PkgSystem_Collections_Immutable)\lib\net461\System.Collections.Immutable.dll" DestinationFolder="$(TestDependenciesPath)" />
+    <Copy SourceFiles="$(PkgSystem_Reflection_Metadata)\lib\net461\System.Reflection.Metadata.dll" DestinationFolder="$(TestDependenciesPath)" />
+    <Copy SourceFiles="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\net461\System.Runtime.CompilerServices.Unsafe.dll" DestinationFolder="$(TestDependenciesPath)" />
+    <Copy SourceFiles="$(PkgSystem_Memory)\lib\net461\System.Memory.dll" DestinationFolder="$(TestDependenciesPath)" />
+    <Copy SourceFiles="$(PkgSystem_Buffers)\lib\net461\System.Buffers.dll" DestinationFolder="$(TestDependenciesPath)" />
   </Target>
 </Project>

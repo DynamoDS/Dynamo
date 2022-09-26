@@ -96,6 +96,8 @@ namespace Dynamo.Wpf.Views.FileTrust
             if (runSettingsViewModel.SelectedRunTypeItem.RunType == RunType.Manual)
             {
                 popupPlacementTarget = runSettingsControl.RunButton;
+                double marginRight = 13;
+                HorizontalOffset = -((runSettingsControl.RunButton.Width / 2) - marginRight);
             }
             else
             {
