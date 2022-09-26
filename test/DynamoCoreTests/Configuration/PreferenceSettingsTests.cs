@@ -343,5 +343,20 @@ namespace Dynamo.Tests.Configuration
             var checkEquality = comparePrefenceSettings(defaultSettings, newSettings);            
             Assert.IsTrue(checkEquality.SamePropertyValues.Count == checkEquality.Properties.Count);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestTaintedFile()
+        {
+            string settingDirectory = Path.Combine(TestDirectory, "settings");
+            string newSettingslFilePath = Path.Combine(settingDirectory, "DynamoSettings-TaintedSettings.xml");
+
+            var defaultSettings = new PreferenceSettings();
+            var newSettings = PreferenceSettings.Load(newSettingslFilePath);
+
+            // validation
+            Assert.IsFalse(newSettings.IsCreatedFromValidFile(), "The new settings file is valid");
+
+        }
     }
 }
