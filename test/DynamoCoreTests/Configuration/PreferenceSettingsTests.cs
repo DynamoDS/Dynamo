@@ -320,7 +320,7 @@ namespace Dynamo.Tests.Configuration
             var newSettings = PreferenceSettings.Load(newSettingslFilePath);
 
             // validation
-            Assert.IsTrue(newSettings.isValidInstance(), "The new settings file is invalid");
+            Assert.IsTrue(newSettings.IsCreatedFromValidFile(), "The new settings file is invalid");
 
             bool newSettingsExist = File.Exists(newSettingslFilePath);
             var checkDifference = comparePrefenceSettings(defaultSettings, newSettings);
