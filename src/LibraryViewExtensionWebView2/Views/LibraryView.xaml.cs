@@ -1,6 +1,5 @@
 ﻿
 using System.Windows.Controls;
-
 using Dynamo.LibraryViewExtensionWebView2.ViewModels;
 
 namespace Dynamo.LibraryViewExtensionWebView2.Views

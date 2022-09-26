@@ -14,7 +14,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
     public class MarkdownGeneratorCommandTests
     {
         private const string CORENODEMODELS_DLL_NAME = "CoreNodeModels.dll";
-        private const string LibraryViewExtension_DLL_NAME = "LibraryViewExtensionMSWebBrowser.dll";
+        private const string LibraryViewExtension_DLL_NAME = "LibraryViewExtensionWebView2.dll";
         private static readonly string DynamoCoreDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         private static readonly string DynamoCoreNodesDir = Path.Combine(DynamoCoreDir, "Nodes");
         private static string DynamoRepoRoot = new DirectoryInfo(DynamoCoreDir).Parent.Parent.Parent.FullName;
