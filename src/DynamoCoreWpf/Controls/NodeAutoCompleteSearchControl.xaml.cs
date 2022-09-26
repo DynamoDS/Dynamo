@@ -47,6 +47,7 @@ namespace Dynamo.UI.Controls
             if (Application.Current != null)
             {
                 Application.Current.Deactivated -= CurrentApplicationDeactivated;
+                Application.Current.MainWindow.Closing -= NodeAutoCompleteSearchControl_Unloaded;
             }
         }
 
