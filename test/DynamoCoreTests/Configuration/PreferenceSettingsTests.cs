@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using Dynamo.Configuration;
 using Dynamo.Models;
@@ -320,6 +320,8 @@ namespace Dynamo.Tests.Configuration
             var newSettings = PreferenceSettings.Load(newSettingslFilePath);
 
             // validation
+            Assert.IsTrue(newSettings.isValidInstance(), "The new settings file is invalid");
+
             bool newSettingsExist = File.Exists(newSettingslFilePath);
             var checkDifference = comparePrefenceSettings(defaultSettings, newSettings);
             int diffProps = checkDifference.DifferentPropertyValues.Count;
