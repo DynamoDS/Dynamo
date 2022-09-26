@@ -34,9 +34,8 @@ namespace Dynamo.UI.Controls
             if (Application.Current != null)
             {
                 Application.Current.Deactivated += CurrentApplicationDeactivated;
+                Application.Current.MainWindow.Closing += InCanvasSearchControl_Unloaded;
             }
-            Application.Current.MainWindow.Closing += InCanvasSearchControl_Unloaded;
-
         }
 
         private void InCanvasSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)

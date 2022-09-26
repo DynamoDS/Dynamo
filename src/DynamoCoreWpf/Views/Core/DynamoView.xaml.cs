@@ -233,7 +233,10 @@ namespace Dynamo.Controls
             {
                 fileTrustWarningPopup = new FileTrustWarning(this);
             }
-            Application.Current.MainWindow = this;
+            if (!DynamoModel.IsTestMode && Application.Current != null)
+            {
+                Application.Current.MainWindow = this;
+            }
         }
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
