@@ -27,19 +27,19 @@ g='a'+5;
             Assert.IsNotEmpty(output);
             var results = output.Values.ToList();
             Assert.AreEqual(7, results.Count);
-            Assert.IsInstanceOf<long>(results[0][0]);
-            Assert.AreEqual(3, results[0][0]);
-            Assert.IsInstanceOf<double>(results[1][0]);
-            Assert.AreEqual(3.5, results[1][0]);
-            Assert.IsInstanceOf<double>(results[2][0]);
-            Assert.AreEqual(3.5, results[2][0]);
-            Assert.IsInstanceOf<double>(results[3][0]);
-            Assert.AreEqual(3.8, results[3][0]);
-            Assert.IsInstanceOf<string>(results[4][0]);
-            Assert.AreEqual("abcdef", results[4][0]);
-            Assert.IsInstanceOf<string>(results[5][0]);
-            Assert.AreEqual("abc2.5", results[5][0]);
-            Assert.IsNull(results[6][0]);
+            Assert.IsInstanceOf<long>(results[0]);
+            Assert.AreEqual(3, results[0]);
+            Assert.IsInstanceOf<double>(results[1]);
+            Assert.AreEqual(3.5, results[1]);
+            Assert.IsInstanceOf<double>(results[2]);
+            Assert.AreEqual(3.5, results[2]);
+            Assert.IsInstanceOf<double>(results[3]);
+            Assert.AreEqual(3.8, results[3]);
+            Assert.IsInstanceOf<string>(results[4]);
+            Assert.AreEqual("abcdef", results[4]);
+            Assert.IsInstanceOf<string>(results[5]);
+            Assert.AreEqual("abc2.5", results[5]);
+            Assert.IsNull(results[6]);
         }
         [Test]
         public void Sub_Operator()
@@ -58,15 +58,15 @@ g='a'-5;
             Assert.IsNotEmpty(output);
             var results = output.Values.ToList();
             Assert.AreEqual(5, results.Count);
-            Assert.IsInstanceOf<long>(results[0][0]);
-            Assert.AreEqual(-1, results[0][0]);
-            Assert.IsInstanceOf<double>(results[1][0]);
-            Assert.AreEqual(-0.5, results[1][0]);
-            Assert.IsInstanceOf<double>(results[2][0]);
-            Assert.AreEqual(-1.5, results[2][0]);
-            Assert.IsInstanceOf<double>(results[3][0]);
-            Assert.AreEqual(-1.2, results[3][0]);
-            Assert.IsNull(results[4][0]);
+            Assert.IsInstanceOf<long>(results[0]);
+            Assert.AreEqual(-1, results[0]);
+            Assert.IsInstanceOf<double>(results[1]);
+            Assert.AreEqual(-0.5, results[1]);
+            Assert.IsInstanceOf<double>(results[2]);
+            Assert.AreEqual(-1.5, results[2]);
+            Assert.IsInstanceOf<double>(results[3]);
+            Assert.AreEqual(-1.2, results[3]);
+            Assert.IsNull(results[4]);
         }
         [Test]
         public void Mul_Operator()
@@ -85,15 +85,15 @@ e=1.5+'c';
             Assert.IsNotEmpty(output);
             var results = output.Values.ToList();
             Assert.AreEqual(5, results.Count);
-            Assert.IsInstanceOf<long>(results[0][0]);
-            Assert.AreEqual(2, results[0][0]);
-            Assert.IsInstanceOf<double>(results[1][0]);
-            Assert.AreEqual(3.0, results[1][0]);
-            Assert.IsInstanceOf<double>(results[2][0]);
-            Assert.AreEqual(2.5, results[2][0]);
-            Assert.IsInstanceOf<double>(results[3][0]);
-            Assert.AreEqual(3.25, results[3][0]);
-            Assert.IsNull(results[4][0]);
+            Assert.IsInstanceOf<long>(results[0]);
+            Assert.AreEqual(2, results[0]);
+            Assert.IsInstanceOf<double>(results[1]);
+            Assert.AreEqual(3.0, results[1]);
+            Assert.IsInstanceOf<double>(results[2]);
+            Assert.AreEqual(2.5, results[2]);
+            Assert.IsInstanceOf<double>(results[3]);
+            Assert.AreEqual(3.25, results[3]);
+            Assert.IsNull(results[4]);
         }
         [Test]
         public void Div_Operator()
@@ -112,15 +112,15 @@ e=1.3/'c';
             Assert.IsNotEmpty(output);
             var results = output.Values.ToList();
             Assert.AreEqual(5, results.Count);
-            Assert.IsInstanceOf<double>(results[0][0]);
-            Assert.AreEqual(0.5, results[0][0]);
-            Assert.IsInstanceOf<double>(results[1][0]);
-            Assert.AreEqual(0.75, results[1][0]);
-            Assert.IsInstanceOf<double>(results[2][0]);
-            Assert.AreEqual(0.4, results[2][0]);
-            Assert.IsInstanceOf<double>(results[3][0]);
-            Assert.AreEqual(0.52, results[3][0]);
-            Assert.IsNull(results[4][0]);
+            Assert.IsInstanceOf<double>(results[0]);
+            Assert.AreEqual(0.5, results[0]);
+            Assert.IsInstanceOf<double>(results[1]);
+            Assert.AreEqual(0.75, results[1]);
+            Assert.IsInstanceOf<double>(results[2]);
+            Assert.AreEqual(0.4, results[2]);
+            Assert.IsInstanceOf<double>(results[3]);
+            Assert.AreEqual(0.52, results[3]);
+            Assert.IsNull(results[4]);
         }
         [Test]
         public void Mod_Operator()
@@ -139,15 +139,15 @@ e=1.5%'a';
             Assert.IsNotEmpty(output);
             var results = output.Values.ToList();
             Assert.AreEqual(5, results.Count);
-            Assert.IsInstanceOf<long>(results[0][0]);
-            Assert.AreEqual(1, results[0][0]);
-            Assert.IsInstanceOf<double>(results[1][0]);
-            Assert.AreEqual(0.5, results[1][0]);
-            Assert.IsInstanceOf<double>(results[2][0]);
-            Assert.AreEqual(-1.5, results[2][0]);
-            Assert.IsInstanceOf<double>(results[3][0]);
-            Assert.AreEqual(1.3, results[3][0]);
-            Assert.IsNull(results[4][0]);
+            Assert.IsInstanceOf<long>(results[0]);
+            Assert.AreEqual(1, results[0]);
+            Assert.IsInstanceOf<double>(results[1]);
+            Assert.AreEqual(0.5, results[1]);
+            Assert.IsInstanceOf<double>(results[2]);
+            Assert.AreEqual(-1.5, results[2]);
+            Assert.IsInstanceOf<double>(results[3]);
+            Assert.AreEqual(1.3, results[3]);
+            Assert.IsNull(results[4]);
         }
         [Test]
         public void Neg_Operator()
@@ -164,10 +164,10 @@ d=-b;";
             Assert.IsNotEmpty(output);
             var results = output.Values.ToList();
             Assert.AreEqual(4, results.Count);
-            Assert.IsInstanceOf<long>(results[2][0]);
-            Assert.AreEqual(-1, results[2][0]);
-            Assert.IsInstanceOf<double>(results[3][0]);
-            Assert.AreEqual(1.0, results[3][0]);
+            Assert.IsInstanceOf<long>(results[2]);
+            Assert.AreEqual(-1, results[2]);
+            Assert.IsInstanceOf<double>(results[3]);
+            Assert.AreEqual(1.0, results[3]);
         }
         [Test]
         public void ToBooleanConversions()
@@ -188,20 +188,20 @@ g='t'==true;
             Assert.IsNotEmpty(output);
             var results = output.Values.ToList();
             Assert.AreEqual(7, results.Count);
-            Assert.IsInstanceOf<bool>(results[0][0]);
-            Assert.AreEqual(true, results[0][0]);
-            Assert.IsInstanceOf<bool>(results[1][0]);
-            Assert.AreEqual(true, results[1][0]);
-            Assert.IsInstanceOf<bool>(results[2][0]);
-            Assert.AreEqual(false, results[2][0]);
-            Assert.IsInstanceOf<bool>(results[3][0]);
-            Assert.AreEqual(true, results[3][0]);
-            Assert.IsInstanceOf<bool>(results[4][0]);
-            Assert.AreEqual(true, results[4][0]);
-            Assert.IsInstanceOf<bool>(results[5][0]);
-            Assert.AreEqual(false, results[5][0]);
-            Assert.IsInstanceOf<bool>(results[6][0]);
-            Assert.AreEqual(true, results[6][0]);
+            Assert.IsInstanceOf<bool>(results[0]);
+            Assert.AreEqual(true, results[0]);
+            Assert.IsInstanceOf<bool>(results[1]);
+            Assert.AreEqual(true, results[1]);
+            Assert.IsInstanceOf<bool>(results[2]);
+            Assert.AreEqual(false, results[2]);
+            Assert.IsInstanceOf<bool>(results[3]);
+            Assert.AreEqual(true, results[3]);
+            Assert.IsInstanceOf<bool>(results[4]);
+            Assert.AreEqual(true, results[4]);
+            Assert.IsInstanceOf<bool>(results[5]);
+            Assert.AreEqual(false, results[5]);
+            Assert.IsInstanceOf<bool>(results[6]);
+            Assert.AreEqual(true, results[6]);
         }
         [Test]
         public void Eq_Operator()
@@ -220,16 +220,16 @@ e=""abc""==""def"";
             Assert.IsNotEmpty(output);
             var results = output.Values.ToList();
             Assert.AreEqual(5, results.Count);
-            Assert.IsInstanceOf<bool>(results[0][0]);
-            Assert.AreEqual(false, results[0][0]);
-            Assert.IsInstanceOf<bool>(results[1][0]);
-            Assert.AreEqual(true, results[1][0]);
-            Assert.IsInstanceOf<bool>(results[2][0]);
-            Assert.AreEqual(true, results[2][0]);
-            Assert.IsInstanceOf<bool>(results[3][0]);
-            Assert.AreEqual(false, results[3][0]);
-            Assert.IsInstanceOf<bool>(results[4][0]);
-            Assert.AreEqual(false, results[4][0]);
+            Assert.IsInstanceOf<bool>(results[0]);
+            Assert.AreEqual(false, results[0]);
+            Assert.IsInstanceOf<bool>(results[1]);
+            Assert.AreEqual(true, results[1]);
+            Assert.IsInstanceOf<bool>(results[2]);
+            Assert.AreEqual(true, results[2]);
+            Assert.IsInstanceOf<bool>(results[3]);
+            Assert.AreEqual(false, results[3]);
+            Assert.IsInstanceOf<bool>(results[4]);
+            Assert.AreEqual(false, results[4]);
         }
         [Test]
         public void Nq_Operator()
@@ -248,16 +248,16 @@ e=""abc""!=""def"";
             Assert.IsNotEmpty(output);
             var results = output.Values.ToList();
             Assert.AreEqual(5, results.Count);
-            Assert.IsInstanceOf<bool>(results[0][0]);
-            Assert.AreEqual(true, results[0][0]);
-            Assert.IsInstanceOf<bool>(results[1][0]);
-            Assert.AreEqual(false, results[1][0]);
-            Assert.IsInstanceOf<bool>(results[2][0]);
-            Assert.AreEqual(false, results[2][0]);
-            Assert.IsInstanceOf<bool>(results[3][0]);
-            Assert.AreEqual(true, results[3][0]);
-            Assert.IsInstanceOf<bool>(results[4][0]);
-            Assert.AreEqual(true, results[4][0]);
+            Assert.IsInstanceOf<bool>(results[0]);
+            Assert.AreEqual(true, results[0]);
+            Assert.IsInstanceOf<bool>(results[1]);
+            Assert.AreEqual(false, results[1]);
+            Assert.IsInstanceOf<bool>(results[2]);
+            Assert.AreEqual(false, results[2]);
+            Assert.IsInstanceOf<bool>(results[3]);
+            Assert.AreEqual(true, results[3]);
+            Assert.IsInstanceOf<bool>(results[4]);
+            Assert.AreEqual(true, results[4]);
         }
         [Test]
         public void Gt_Operator()
@@ -274,12 +274,12 @@ c=1.0>2.0;
             Assert.IsNotEmpty(output);
             var results = output.Values.ToList();
             Assert.AreEqual(3, results.Count);
-            Assert.IsInstanceOf<bool>(results[0][0]);
-            Assert.AreEqual(false, results[0][0]);
-            Assert.IsInstanceOf<bool>(results[1][0]);
-            Assert.AreEqual(false, results[1][0]);
-            Assert.IsInstanceOf<bool>(results[2][0]);
-            Assert.AreEqual(false, results[2][0]);
+            Assert.IsInstanceOf<bool>(results[0]);
+            Assert.AreEqual(false, results[0]);
+            Assert.IsInstanceOf<bool>(results[1]);
+            Assert.AreEqual(false, results[1]);
+            Assert.IsInstanceOf<bool>(results[2]);
+            Assert.AreEqual(false, results[2]);
         }
         [Test]
         public void Lt_Operator()
@@ -296,12 +296,12 @@ c=1.0<2.0;
             Assert.IsNotEmpty(output);
             var results = output.Values.ToList();
             Assert.AreEqual(3, results.Count);
-            Assert.IsInstanceOf<bool>(results[0][0]);
-            Assert.AreEqual(true, results[0][0]);
-            Assert.IsInstanceOf<bool>(results[1][0]);
-            Assert.AreEqual(true, results[1][0]);
-            Assert.IsInstanceOf<bool>(results[2][0]);
-            Assert.AreEqual(true, results[2][0]);
+            Assert.IsInstanceOf<bool>(results[0]);
+            Assert.AreEqual(true, results[0]);
+            Assert.IsInstanceOf<bool>(results[1]);
+            Assert.AreEqual(true, results[1]);
+            Assert.IsInstanceOf<bool>(results[2]);
+            Assert.AreEqual(true, results[2]);
         }
         [Test]
         public void Ge_Operator()
@@ -318,12 +318,12 @@ c=1.0>=1.0;
             Assert.IsNotEmpty(output);
             var results = output.Values.ToList();
             Assert.AreEqual(3, results.Count);
-            Assert.IsInstanceOf<bool>(results[0][0]);
-            Assert.AreEqual(false, results[0][0]);
-            Assert.IsInstanceOf<bool>(results[1][0]);
-            Assert.AreEqual(false, results[1][0]);
-            Assert.IsInstanceOf<bool>(results[2][0]);
-            Assert.AreEqual(true, results[2][0]);
+            Assert.IsInstanceOf<bool>(results[0]);
+            Assert.AreEqual(false, results[0]);
+            Assert.IsInstanceOf<bool>(results[1]);
+            Assert.AreEqual(false, results[1]);
+            Assert.IsInstanceOf<bool>(results[2]);
+            Assert.AreEqual(true, results[2]);
         }
         [Test]
         public void Le_Operator()
@@ -340,12 +340,12 @@ c=1.0<=1.0;
             Assert.IsNotEmpty(output);
             var results = output.Values.ToList();
             Assert.AreEqual(3, results.Count);
-            Assert.IsInstanceOf<bool>(results[0][0]);
-            Assert.AreEqual(true, results[0][0]);
-            Assert.IsInstanceOf<bool>(results[1][0]);
-            Assert.AreEqual(true, results[1][0]);
-            Assert.IsInstanceOf<bool>(results[2][0]);
-            Assert.AreEqual(true, results[2][0]);
+            Assert.IsInstanceOf<bool>(results[0]);
+            Assert.AreEqual(true, results[0]);
+            Assert.IsInstanceOf<bool>(results[1]);
+            Assert.AreEqual(true, results[1]);
+            Assert.IsInstanceOf<bool>(results[2]);
+            Assert.AreEqual(true, results[2]);
         }
     }
 }
