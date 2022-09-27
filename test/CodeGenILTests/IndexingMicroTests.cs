@@ -187,8 +187,6 @@ c=a[b];";
         #endregion
         #region dictionary
         [Test]
-        [Category("Failure")]//this is failing because key and val are single items and dictionaries are initialized with lists of keys and vals.
-        //once that is resolved it will fail because we don't have enough type info (wrapped by function call logic IList)
         public void IndexIntoDict_WithIdent()
         {
             var dscode = @"

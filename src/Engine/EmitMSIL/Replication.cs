@@ -566,7 +566,7 @@ namespace EmitMSIL
 
             if (o.IsEnumerable)
             {
-                return o.Value as IList<CLRStackValue> ?? new List<CLRStackValue>() { o };
+                return o.Value as IList<CLRStackValue>;
             }
             else
             {
