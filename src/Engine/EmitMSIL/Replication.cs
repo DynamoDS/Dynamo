@@ -211,7 +211,7 @@ namespace EmitMSIL
         /// <param name="args"></param>
         /// <param name="replicationAttrs"></param>
         /// <returns></returns>
-        public static IList ReplicationLogic(IEnumerable<MethodBase> mInfos, IList args, string[][] replicationAttrs)
+        public static object ReplicationLogic(IEnumerable<MethodBase> mInfos, IList args, string[][] replicationAttrs)
         {
             // Static instance of MSILRuntimeCore
             // TODO_MSIL: FIgure out how and when to set this runtimeCore (CodeGen should have it too)
@@ -220,15 +220,13 @@ namespace EmitMSIL
             // TODO_MSIL: Emit these CLRStackValue's from the CodeGen stage.
             var stackValues = MarshalFunctionArguments(args, runtimeCore);
 
-            var reducedArgs = ReduceArgs(stackValues);
-
             // TODO_MSIL: Emit these CLRFunctionEndpoint's from the CodeGen stage.
             var feps = CreateFEPs(mInfos);
 
             // Construct replicationGuides from replicationAttrs
             var replicationGuides = ConstructRepGuides(replicationAttrs);
 
-            var partialReplicationGuides = PerformRepGuideDemotion(reducedArgs, replicationGuides);
+            var partialReplicationGuides = PerformRepGuideDemotion(stackValues, replicationGuides);
 
             //Replication Control is an ordered list of the elements that we have to replicate over
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
@@ -238,39 +236,20 @@ namespace EmitMSIL
 
             List<CLRFunctionEndPoint> resolvedFeps;
             List<ReplicationInstruction> replicationInstructions;
-            ComputeFeps(reducedArgs, feps, partialInstructions, runtimeCore, out resolvedFeps, out replicationInstructions);
+            ComputeFeps(stackValues, feps, partialInstructions, runtimeCore, out resolvedFeps, out replicationInstructions);
 
-            var finalFep = SelectFinalFep(resolvedFeps, reducedArgs, runtimeCore);
+            var finalFep = SelectFinalFep(resolvedFeps, stackValues, runtimeCore);
 
             object result;
             if (replicationInstructions.Count == 0)
             {
-                result = ExecWithZeroRI(finalFep, reducedArgs, runtimeCore);
+                result = ExecWithZeroRI(finalFep, stackValues, runtimeCore);
             }
             else //replicated call
             {
-                result = ExecWithRISlowPath(finalFep, reducedArgs, replicationInstructions, runtimeCore);
+                result = ExecWithRISlowPath(finalFep, stackValues, replicationInstructions, runtimeCore);
             }
-            if (result is IList) return (IList)result;
-
-            return new[] { result };
-        }
-
-        private static List<CLRStackValue> ReduceArgs(List<CLRStackValue> args)
-        {
-            var reducedArgs = new List<CLRStackValue>();
-            foreach (var arg in args)
-            {
-                if (arg.IsEnumerable && (arg.Value as IList).Count == 1)
-                {
-                    reducedArgs.Add((arg.Value as IList<CLRStackValue>)[0]);
-                }
-                else
-                {
-                    reducedArgs.Add(arg);
-                }
-            }
-            return reducedArgs;
+            return result;
         }
 
         private static List<List<ReplicationGuide>> ConstructRepGuides(string[][] replicationAttrs)

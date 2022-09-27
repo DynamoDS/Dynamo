@@ -20,7 +20,7 @@ namespace EmitMSIL
         internal string className;
         internal string methodName;
         private IDictionary<string, IList> input;
-        private IDictionary<string, IList> output;
+
         /// <summary>
         /// counter for local variables, should only be used directly during GatherTypeInfo phase.
         /// It will be incorrect during other compiler phases.
@@ -63,7 +63,7 @@ namespace EmitMSIL
             writer = new StreamWriter(filePath);
         }
 
-        public IDictionary<string, IList> Emit(List<AssociativeNode> astList)
+        public IDictionary<string, object> Emit(List<AssociativeNode> astList)
         {
             var timer = new Stopwatch();
             timer.Start();
@@ -74,7 +74,7 @@ namespace EmitMSIL
             timer.Restart();
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute");
-            var output = new Dictionary<string, IList>();
+            var output = new Dictionary<string, object>();
 
             // null can be replaced by an 'input' dictionary if available.
             var obj = mi.Invoke(null, new object[] { null, methodCache, output });
@@ -86,14 +86,14 @@ namespace EmitMSIL
             return output;
         }
 
-        internal Dictionary<string, IList> EmitAndExecute(List<AssociativeNode> astList)
+        internal Dictionary<string, object> EmitAndExecute(List<AssociativeNode> astList)
         {
             var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndCollect);
 
             // Invoke emitted method (ExecuteIL.Execute)
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute");
-            var output = new Dictionary<string, IList>();
+            var output = new Dictionary<string, object>();
             mi.Invoke(null, new object[] { null, methodCache, output });
             return output;
         }
@@ -115,7 +115,7 @@ namespace EmitMSIL
             // 4. Create method ("Execute"), get ILGenerator 
             var execMethod = BuilderHelper.CreateMethod(type, "Execute",
                 System.Reflection.MethodAttributes.Static, typeof(void), new[] { typeof(IDictionary<string, IList>),
-                typeof(IDictionary<int, IEnumerable<MethodBase>>), typeof(IDictionary<string, IList>)});
+                typeof(IDictionary<int, IEnumerable<MethodBase>>), typeof(IDictionary<string, object>)});
             ilGen = execMethod.GetILGenerator();
 
             compilePass = CompilePass.GatherTypeInfo;
@@ -465,11 +465,11 @@ namespace EmitMSIL
 
         private IEnumerable<MethodBase> FunctionLookup(IList args)
         {
-            IEnumerable<MethodBase> mi = null;
+            IEnumerable<MethodBase> mbs = null;
             var key = KeyGen(className, methodName, args.Count);
             if (methodCache.TryGetValue(key, out IEnumerable<MethodBase> mBase))
             {
-                mi = mBase;
+                mbs = mBase;
             }
             else
             {
@@ -485,18 +485,18 @@ namespace EmitMSIL
                         // There should be a way to get the exact method after matching parameter types for a node
                         // using its function descriptor. AST isn't sufficient for parameter type info.
                         // Fist check for static methods
-                        mi = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
+                        mbs = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
                             m => m.Name == methodName && m.GetParameters().Length == args.Count).ToList();
 
                         // Check for instance methods
-                        if (mi == null || !mi.Any())
+                        if (mbs == null || !mbs.Any())
                         {
-                            mi = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
+                            mbs = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
                                 m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).ToList();
                         }
 
                         // Check for property getters
-                        if (mi == null || !mi.Any())
+                        if (mbs == null || !mbs.Any())
                         {
                             var prop = type
                                 .GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).Where(
@@ -504,20 +504,20 @@ namespace EmitMSIL
 
                             if (prop != null)
                             {
-                                mi = prop.GetAccessors().ToList();
+                                mbs = prop.GetAccessors().ToList();
                             }
                         }
 
                         // Check for constructorinfo objects
-                        if(mi == null || !mi.Any())
+                        if(mbs == null || !mbs.Any())
                         {
-                            mi = type.GetConstructors().Where(
+                            mbs = type.GetConstructors().Where(
                                 m => m.DeclaringType.Name == methodName && m.GetParameters().Length == args.Count).ToList();
                         }
 
-                        if (mi != null && mi.Any())
+                        if (mbs != null && mbs.Any())
                         {
-                            methodCache.Add(key, mi);
+                            methodCache.Add(key, mbs);
                             break;
                         }
 
@@ -533,16 +533,16 @@ namespace EmitMSIL
                     var method = BuiltIn.GetInternalMethod(methodName);
                     if (method != null)
                     {
-                        mi = new List<MethodBase>() { method };
-                        methodCache.Add(key, mi);
+                        mbs = new List<MethodBase>() { method };
+                        methodCache.Add(key, mbs);
                     }
                 }
             }
-            if (mi == null || !mi.Any())
+            if (mbs == null || !mbs.Any())
             {
                 throw new MissingMethodException("No matching method found in loaded assemblies.");
             }
-            return mi;
+            return mbs;
         }
 
         private static HashSet<Type> GetTypeStatisticsForArray(ExprListNode array)
@@ -896,20 +896,13 @@ namespace EmitMSIL
                 // Add variable to output dictionary: output.Add("varName", variable);
                 EmitOpCode(OpCodes.Ldarg_2);
                 EmitOpCode(OpCodes.Ldstr, lNode.Value);
-                // if t is a single value, wrap it in an array of the single value.
-                if (!typeof(IEnumerable).IsAssignableFrom(t) || typeof(string).IsAssignableFrom(t))
+
+                EmitOpCode(OpCodes.Ldloc, currentLocalVarIndex);
+                if (t.IsValueType)
                 {
-                    var localVarIndxes = new List<int>() { currentLocalVarIndex };
-                    EmitArray(t, localVarIndxes, (int varIdx, int _) =>
-                    {
-                        EmitOpCode(OpCodes.Ldloc, varIdx);
-                    });
+                    EmitOpCode(OpCodes.Box, t);
                 }
-                else
-                {
-                    EmitOpCode(OpCodes.Ldloc, currentLocalVarIndex);
-                }
-                var mInfo = typeof(IDictionary<string, IList>).GetMethod(nameof(IDictionary<string, IList>.Add));
+                var mInfo = typeof(IDictionary<string, object>).GetMethod(nameof(IDictionary<string, object>.Add));
                 EmitOpCode(OpCodes.Callvirt, mInfo);
                 return t;
             }
@@ -1159,7 +1152,6 @@ namespace EmitMSIL
                 className = nameof(BuiltIn);
             }
 
-
             //if the method name is builtin.valueAtIndex then don't emit a function call yet.
             //instead try to emit direct indexing... to do so, we'll need to wait until ilemit phase
             //so variable dictionary has valid data.
@@ -1196,7 +1188,7 @@ namespace EmitMSIL
                 return null;
             }
 
-            // Emit methodCache
+            // Emit methodCache passed as arg to global Execute method.
             EmitOpCode(OpCodes.Ldarg_1);
 
             // Emit className for input to call to CodeGenIL.KeyGen
@@ -1236,7 +1228,7 @@ namespace EmitMSIL
             // number of args = number of parameters if static.
             // num args = num params + 1 if instance as first arg is this pointer.
             var isStatic = mBase.IsStatic;
-
+            
             // Emit args for input to call to ReplicationLogic
             EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
             {
@@ -1283,7 +1275,7 @@ namespace EmitMSIL
             keygen = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic));
             EmitOpCode(OpCodes.Call, keygen);
 
-            return typeof(IList);
+            return typeof(object);
         }
 
         private void EmitFunctionDefinitionNode(AssociativeNode node)

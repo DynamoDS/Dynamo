@@ -41,7 +41,7 @@ list = DSCore.Math.Sum([ 1, 2, 3 ]);
 
             Assert.IsTrue(output.ContainsKey("list"));
 
-            var result = (double)output["list"][0];
+            var result = (double)output["list"];
             Assert.AreEqual(6, result);
         }
 
@@ -194,8 +194,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                 },
                 output["test1"]));
 
-            Assert.IsTrue(AreEqual(
-                new Object[] { new FFITarget.ReplicationTestA() { X = 0, Y = 0, Z = 0 } },
+            Assert.IsTrue(AreEqual(new FFITarget.ReplicationTestA() { X = 0, Y = 0, Z = 0 },
                 output["test2"]));
 
             Assert.IsTrue(AreEqual(

@@ -47,6 +47,7 @@ import(""DesignScriptBuiltin.dll"");
             Assert.IsNotEmpty(output);
             CollectionAssert.AreEqual(new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10 }, output.Values.ToList().First() as long[]);
         }
+
         [Test]
         public void RangeTestIntStep_ints()
         {
@@ -198,7 +199,7 @@ y = DSCore.Math.Sum(x);";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(55, output.Values.ToList()[1][0]);
+            Assert.AreEqual(55, output.Values.ToList()[1]);
         }
 
         [Test]
@@ -213,7 +214,7 @@ y = DSCore.Math.Sum([1,2,3]);";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(6, output["y"][0]);
+            Assert.AreEqual(6, output["y"]);
         }
 
         [Test]
@@ -228,7 +229,7 @@ y = DSCore.Math.Sum(0..10);";
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            Assert.AreEqual(55, output["y"][0]);
+            Assert.AreEqual(55, output["y"]);
         }
 
         [Test]
