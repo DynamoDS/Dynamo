@@ -257,9 +257,11 @@ namespace Dynamo.DocumentationBrowser
                 // Convert the markdown file to html
                 var mkDown = MarkdownHandlerInstance.ParseToHtml(e.MinimumQualifiedName, e.PackageName);
 
+                writer.WriteLine(NodeDocumentationHtmlGenerator.OpenDocument());
                 // Get the Node info section
                 var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e, mkDown);
                 writer.WriteLine(nodeDocumentation);
+                writer.WriteLine(NodeDocumentationHtmlGenerator.CloseDocument());
 
                 writer.Flush();
                 var output = writer.ToString();

@@ -38,7 +38,7 @@ namespace Dynamo.DocumentationBrowser
             StringBuilder sb = new StringBuilder();
 
             sb.AppendLine("<body>");
-            sb.AppendLine("<div>");
+            sb.AppendLine("<div class=\"div--body\">");
 
             return sb.ToString();
         }
