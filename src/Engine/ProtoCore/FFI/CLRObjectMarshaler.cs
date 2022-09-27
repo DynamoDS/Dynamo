@@ -657,19 +657,11 @@ namespace ProtoFFI
                 }
                 try
                 {
-                    // Get Enumerable.Cast<elementType> method
-                    var cast = typeof(Enumerable).GetMethod(nameof(Enumerable.Cast),
-                                    BindingFlags.Public | BindingFlags.Static);
-                    cast = cast.MakeGenericMethod(elementType);
-                    var obj = cast.Invoke(null, new object[] { collection });
-
-                    // Get Enumerable.ToArray<elementType> method
-                    var toarr = typeof(Enumerable).GetMethod(nameof(Enumerable.ToArray),
-                        BindingFlags.Public | BindingFlags.Static);
-                    toarr = toarr.MakeGenericMethod(elementType);
-                    return toarr.Invoke(null, new[] { obj });
+                    Array arr = Array.CreateInstance(elementType, collection.Count);
+                    collection.CopyTo(arr, 0);
+                    return arr;
                 }
-                catch { (collection as List<object>).ToArray(); }
+                catch { return (collection as List<object>).ToArray(); }
             }
             return collection;
         }
