@@ -556,13 +556,11 @@ namespace ProtoFFI
             {
                 elementType = typeof(object);
             }
-
             foreach (var sv in dsArrayValues)
             {
                 object obj = primitiveMarshaler.UnMarshal(sv, elementType, runtimeCore);
                 list.Add(obj);
             }
-
             return list;
         }
 
@@ -626,7 +624,7 @@ namespace ProtoFFI
 
             if (expectedCLRType.IsGenericType && !expectedCLRType.IsInterface)
             {
-                if (!collection.GetType().IsArray)
+                if (!(collection is Array))
                 {
                     collection = (collection as List<object>).ToArray();
                 }
@@ -637,41 +635,43 @@ namespace ProtoFFI
             {
                 if (collection is Array) return collection;
 
-                if(elementType == typeof(int))
+                if (elementType == typeof(int))
                 {
-                    return ConvertToTypedArray<int>(collection);
+                    return collection.Cast<int>().ToArray();
                 }
                 if (elementType == typeof(long))
                 {
-                    return ConvertToTypedArray<long>(collection);
+                    return collection.Cast<long>().ToArray();
                 }
                 if (elementType == typeof(double))
                 {
-                    return ConvertToTypedArray<double>(collection);
+                    return collection.Cast<double>().ToArray();
                 }
                 if (elementType == typeof(bool))
                 {
-                    return ConvertToTypedArray<bool>(collection);
+                    return collection.Cast<bool>().ToArray();
                 }
                 if (elementType == typeof(string))
                 {
-                    return ConvertToTypedArray<string>(collection);
+                    return collection.Cast<string>().ToArray();
                 }
-                return (collection as List<object>).ToArray();
+                try
+                {
+                    // Get Enumerable.Cast<elementType> method
+                    var cast = typeof(Enumerable).GetMethod(nameof(Enumerable.Cast),
+                                    BindingFlags.Public | BindingFlags.Static);
+                    cast = cast.MakeGenericMethod(elementType);
+                    var obj = cast.Invoke(null, new object[] { collection });
+
+                    // Get Enumerable.ToArray<elementType> method
+                    var toarr = typeof(Enumerable).GetMethod(nameof(Enumerable.ToArray),
+                        BindingFlags.Public | BindingFlags.Static);
+                    toarr = toarr.MakeGenericMethod(elementType);
+                    return toarr.Invoke(null, new[] { obj });
+                }
+                catch { (collection as List<object>).ToArray(); }
             }
             return collection;
-        }
-
-        internal T[] ConvertToTypedArray<T>(ICollection collection)
-        {
-            var result = new T[collection.Count];
-            int i = 0;
-            foreach (var c in collection)
-            {
-                result[i] = (T)c;
-                i++;
-            }
-            return result;
         }
     }
 
