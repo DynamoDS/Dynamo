@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -492,8 +492,27 @@ namespace EmitMSIL
 
             var replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments);
 
-            //TODO_MSIL: implement case 2
             #region Case 2: Replication and replication guide with exact match
+            {
+                //Build the possible ways in which we might replicate
+                foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
+                {
+                    List<List<CLRStackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, replicationOption, runtimeCore);
+                    HashSet<CLRFunctionEndPoint> lookups;
+                    if (FunctionGroup.CanGetExactMatchStatics(reducedParams, funcGroup, runtimeCore, out lookups))
+                    {
+                        if (replicationInstructions == null || CallSite.IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
+                        {
+                            // We have a cluster of FEPs that can be used to dispatch the array
+                            resolvedFeps = new List<CLRFunctionEndPoint>(lookups);
+                            replicationInstructions = replicationOption;
+                            matchFound = true;
+                        }
+                    }
+                }
+                if (matchFound)
+                    return;
+            }
             #endregion
 
             #region Case 3: Replication with type conversion
