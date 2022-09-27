@@ -951,12 +951,12 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Indicates when an instance has been created from a preferences file correctly or not
+        /// Indicates when an instance has been created from a preferences file correctly, a support property
         /// </summary>
-        /// <returns></returns>
-        public bool IsCreatedFromValidFile()
+        [XmlIgnore]
+        public bool IsCreatedFromValidFile
         {
-            return this.isCreatedFromValidFile;
+            get { return isCreatedFromValidFile; }
         }
     }
 }

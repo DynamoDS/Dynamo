@@ -216,6 +216,28 @@ namespace Dynamo.Tests.Configuration
         }
 
         /// <summary>
+        /// Indicates if the Property has at least one custom attribute that is going to be excluded from the mapping
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        bool PropertyHasExcludedAttributes(PropertyInfo property)
+        {
+            return property.GetCustomAttributes(typeof(System.ObsoleteAttribute), true).Length > 0 ||
+                    property.GetCustomAttributes(typeof(System.Xml.Serialization.XmlIgnoreAttribute), true).Length > 0;
+        }
+
+        /// <summary>
+        /// Checks if a property has a static mapped field
+        /// </summary>
+        /// <param name="preferenceInstance"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        bool PropertyHasStaticField(PreferenceSettings preferenceInstance, PropertyInfo property)
+        {
+            return preferenceInstance.StaticFields().ConvertAll(fieldName => fieldName.ToUpper()).Contains(property.Name.ToUpper());
+        }
+
+        /// <summary>
         /// Compare the property values of two PreferenceSettings instances
         /// </summary>
         /// <param name="defaultSettings"></param>
@@ -227,14 +249,13 @@ namespace Dynamo.Tests.Configuration
             var propertiesWithSameValue = new List<string>();
             var propertiesWithDifferentValue = new List<string>();
             var evaluatedProperties = new List<string>();
-
             var destinationProperties = defaultSettings.GetType().GetProperties();
 
             foreach (var destinationPi in destinationProperties)
             {
                 var sourcePi = newGeneralSettings.GetType().GetProperty(destinationPi.Name);
 
-                if (destinationPi.GetCustomAttributes(typeof(System.ObsoleteAttribute), true).Length == 0 && !defaultSettings.StaticFields().ConvertAll(fieldName => fieldName.ToUpper()).Contains(destinationPi.Name.ToUpper()))
+                if (!PropertyHasExcludedAttributes(destinationPi) && !PropertyHasStaticField(defaultSettings, destinationPi))
                 {
                     evaluatedProperties.Add(destinationPi.Name);
                     var newValue = sourcePi.GetValue(newGeneralSettings, null);
@@ -320,7 +341,7 @@ namespace Dynamo.Tests.Configuration
             var newSettings = PreferenceSettings.Load(newSettingslFilePath);
 
             // validation
-            Assert.IsTrue(newSettings.IsCreatedFromValidFile(), "The new settings file is invalid");
+            Assert.IsTrue(newSettings.IsCreatedFromValidFile, "The new settings file is invalid");
 
             bool newSettingsExist = File.Exists(newSettingslFilePath);
             var checkDifference = comparePrefenceSettings(defaultSettings, newSettings);
@@ -351,12 +372,9 @@ namespace Dynamo.Tests.Configuration
             string settingDirectory = Path.Combine(TestDirectory, "settings");
             string newSettingslFilePath = Path.Combine(settingDirectory, "DynamoSettings-TaintedSettings.xml");
 
-            var defaultSettings = new PreferenceSettings();
             var newSettings = PreferenceSettings.Load(newSettingslFilePath);
 
-            // validation
-            Assert.IsFalse(newSettings.IsCreatedFromValidFile(), "The new settings file is valid");
-
+            Assert.IsFalse(newSettings.IsCreatedFromValidFile, "The new settings file is valid");
         }
     }
 }
