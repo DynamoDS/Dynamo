@@ -136,7 +136,8 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// This test will validate that setting the string to a localized value
+        /// This test will validate that setting the string in a , dec seperator culture does not
+        /// modify the value.
         /// </summary>
         [Test]
         public void SliderViewModel_ValueTest_Localized()
