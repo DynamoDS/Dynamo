@@ -45,9 +45,8 @@ list3 = DSCore.Math.Max(10, [ 5, 8, 3, 6 ]<1L>);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
-        //TODO this fails, it has different behavior than in dynamo master in a codeblock. 
+
         [Test]
-        [Category("Failure")]
         public void ZTLongestLacing_ShouldReturn4NestedResults()
         {
             string dscode = @"
@@ -65,9 +64,8 @@ list3 = DSCore.Math.Max([10], [ 5, 8, 3, 6 ]<1L>);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
-        //TODO this fails, it has different behavior than in dynamo master in a codeblock. 
+
         [Test]
-        [Category("Failure")]
         public void ZTShortestLacing_ShouldReturnSingleItem_AndBeDefault()
         {
             string dscode = @"
