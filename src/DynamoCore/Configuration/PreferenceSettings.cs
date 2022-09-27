@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
 using Dynamo.Core;
@@ -14,6 +15,29 @@ using DynamoUtilities;
 
 namespace Dynamo.Configuration
 {
+    static class ExtensionMethods
+    {
+        /// <summary>
+        /// Copy Properties from a PreferenceSettings instance to another iterating the Properties of the destination instance and populate them from their source counterparts, excluding the properties that are obsolete and only read.  
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        internal static void CopyProperties(this PreferenceSettings source, PreferenceSettings destination)
+        {
+            var destinationProperties = destination.GetType().GetProperties();
+
+            foreach (var destinationPi in destinationProperties)
+            {
+                var sourcePi = source.GetType().GetProperty(destinationPi.Name);
+
+                if (destinationPi.GetCustomAttributes(typeof(System.ObsoleteAttribute), true).Length == 0 && destinationPi.CanWrite)
+                {
+                    destinationPi.SetValue(destination, sourcePi.GetValue(source, null), null);
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// PreferenceSettings is a class for GUI to persist certain settings.
     /// Upon running of the GUI, those settings that are persistent will be loaded
@@ -52,7 +76,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Default time
         /// </summary>
-        public static readonly System.DateTime DynamoDefaultTime = new System.DateTime(1977, 4, 12, 12, 12, 0, 0);
+        public static readonly System.DateTime DynamoDefaultTime = new System.DateTime(1977, 4, 12, 12, 12, 0, 0);        
 
         #endregion
 
@@ -570,15 +594,15 @@ namespace Dynamo.Configuration
         /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value 
         /// if found at deserialize time.
         /// </summary>
-        internal static int NodeSearchTagSizeLimitValue = 300;
+        internal static int nodeSearchTagSizeLimit = 300;
 
         /// <summary>
         /// Limits the size of the tags used by the SearchDictionary
         /// </summary>
         public int NodeSearchTagSizeLimit
         {
-            get { return NodeSearchTagSizeLimitValue; }
-            set { NodeSearchTagSizeLimitValue = value; }
+            get { return nodeSearchTagSizeLimit; }
+            set { nodeSearchTagSizeLimit = value; }
         }
 
         /// <summary>
@@ -586,15 +610,15 @@ namespace Dynamo.Configuration
         /// This static property is not serialized and is assigned IronPythonResolveTargetVersion's value 
         /// if found at deserialize time.
         /// </summary>
-        internal static Version IronPythonResolveVersion = new Version(2, 4, 0);
+        internal static Version ironPythonResolveTargetVersion = new Version(2, 4, 0);
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
         /// </summary>
         public string IronPythonResolveTargetVersion
         {
-            get { return IronPythonResolveVersion.ToString(); }
-            set { IronPythonResolveVersion = Version.TryParse(value, out Version newVal) ? newVal : IronPythonResolveVersion; }
+            get { return ironPythonResolveTargetVersion.ToString(); }
+            set { ironPythonResolveTargetVersion = Version.TryParse(value, out Version newVal) ? newVal : ironPythonResolveTargetVersion; }
         }
 
         /// <summary>
@@ -914,5 +938,14 @@ namespace Dynamo.Configuration
             MessageLogged?.Invoke(msg);
         }
         #endregion
+
+        /// <summary>
+        /// List of static Fields to be excluded for evaluation due to their access level
+        /// </summary>
+        /// <returns></returns>
+        public List<string> StaticFields()
+        {
+            return typeof(PreferenceSettings).GetMembers(BindingFlags.Static | BindingFlags.NonPublic).OfType<FieldInfo>().Select(field => field.Name).ToList();
+        }
     }
 }

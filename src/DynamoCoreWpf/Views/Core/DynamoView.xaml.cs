@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -43,7 +42,6 @@ using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
-using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.FileTrust;
@@ -53,7 +51,6 @@ using HelixToolkit.Wpf.SharpDX;
 using Brush = System.Windows.Media.Brush;
 using Image = System.Windows.Controls.Image;
 using Point = System.Windows.Point;
-using Res = Dynamo.Wpf.Properties.Resources;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Size = System.Windows.Size;
 using String = System.String;
@@ -235,6 +232,10 @@ namespace Dynamo.Controls
             if (fileTrustWarningPopup == null)
             {
                 fileTrustWarningPopup = new FileTrustWarning(this);
+            }
+            if (!DynamoModel.IsTestMode && Application.Current != null)
+            {
+                Application.Current.MainWindow = this;
             }
         }
         private void OnWorkspaceOpened(WorkspaceModel workspace)
@@ -1563,7 +1564,7 @@ namespace Dynamo.Controls
             }
             else
             {
-                //Shutdown was cancelled
+                //Shutdown was canceled
                 return false;
             }
         }

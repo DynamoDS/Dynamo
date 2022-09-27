@@ -2513,6 +2513,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string ExportPreferencesText {
+            get {
+                return ResourceManager.GetString("ExportPreferencesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Folder to Export.
+        /// </summary>
+        public static string ExportSettingsDialogTitle {
+            get {
+                return ResourceManager.GetString("ExportSettingsDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extension tab added to the extensions side bar..
         /// </summary>
         public static string ExtensionAdded {
@@ -2617,6 +2635,15 @@ namespace Dynamo.Wpf.Properties {
         public static string FileDialogDynamoWorkspace {
             get {
                 return ResourceManager.GetString("FileDialogDynamoWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings Files ({0})|{0}.
+        /// </summary>
+        public static string FileDialogImportSettingsFiles {
+            get {
+                return ResourceManager.GetString("FileDialogImportSettingsFiles", resourceCulture);
             }
         }
         
@@ -3278,6 +3305,51 @@ namespace Dynamo.Wpf.Properties {
         public static string ImportLibraryDialogTitle {
             get {
                 return ResourceManager.GetString("ImportLibraryDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your custom settings can be imported here. It will be applied once Dynamo and any host program restarts.
+        /// </summary>
+        public static string ImportPreferencesInfo {
+            get {
+                return ResourceManager.GetString("ImportPreferencesInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        public static string ImportPreferencesText {
+            get {
+                return ResourceManager.GetString("ImportPreferencesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Settings.
+        /// </summary>
+        public static string ImportSettingsDialogTitle {
+            get {
+                return ResourceManager.GetString("ImportSettingsDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Failed.
+        /// </summary>
+        public static string ImportSettingsFailedMessage {
+            get {
+                return ResourceManager.GetString("ImportSettingsFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Success.
+        /// </summary>
+        public static string ImportSettingsSuccessMessage {
+            get {
+                return ResourceManager.GetString("ImportSettingsSuccessMessage", resourceCulture);
             }
         }
         

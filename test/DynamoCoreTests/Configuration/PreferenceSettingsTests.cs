@@ -3,6 +3,11 @@ using System.IO;
 using Dynamo.Configuration;
 using Dynamo.Models;
 using NUnit.Framework;
+using System.Linq;
+using System.Xml;
+using System;
+using Dynamo.Interfaces;
+using System.Reflection;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -198,6 +203,143 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(1, settingsLoaded.TrustedLocations.Count);
 
             Assert.IsTrue(settingsLoaded.IsTrustedLocation(Path.GetTempPath()));
+        }        
+
+        /// <summary>
+        /// Struct to support the comparison between two PreferenceSettings instances
+        /// </summary>
+        struct PreferencesComparison
+        {
+            public List<string> Properties { get; set; }
+            public List<String> SamePropertyValues { get; set; }
+            public List<String> DifferentPropertyValues { get; set; }          
+        }
+
+        /// <summary>
+        /// Compare the property values of two PreferenceSettings instances
+        /// </summary>
+        /// <param name="defaultSettings"></param>
+        /// <param name="newGeneralSettings"></param>
+        /// <returns>3 List of Properties, the properties that have been evaluated, the properties that have the same values and the properties that have different values</returns>
+        PreferencesComparison comparePrefenceSettings(PreferenceSettings defaultSettings, PreferenceSettings newGeneralSettings)
+        {
+            var result = new PreferencesComparison();
+            var propertiesWithSameValue = new List<string>();
+            var propertiesWithDifferentValue = new List<string>();
+            var evaluatedProperties = new List<string>();
+
+            var destinationProperties = defaultSettings.GetType().GetProperties();
+
+            foreach (var destinationPi in destinationProperties)
+            {
+                var sourcePi = newGeneralSettings.GetType().GetProperty(destinationPi.Name);
+
+                if (destinationPi.GetCustomAttributes(typeof(System.ObsoleteAttribute), true).Length == 0 && !defaultSettings.StaticFields().ConvertAll(fieldName => fieldName.ToUpper()).Contains(destinationPi.Name.ToUpper()))
+                {
+                    evaluatedProperties.Add(destinationPi.Name);
+                    var newValue = sourcePi.GetValue(newGeneralSettings, null);
+                    var oldValue = destinationPi.GetValue(defaultSettings, null);
+
+                    if (destinationPi.PropertyType == typeof(List<string>))
+                    {
+                        var newList = (List<string>)sourcePi.GetValue(newGeneralSettings, null);
+                        var oldList = (List<string>)destinationPi.GetValue(defaultSettings, null);
+                        if (newList.Except(oldList).ToList().Count == 0)
+                        {
+                            propertiesWithSameValue.Add(destinationPi.Name);
+                        }
+                        else
+                        {
+                            propertiesWithDifferentValue.Add(destinationPi.Name);
+                        }
+                    }
+                    else if (destinationPi.PropertyType == typeof(List<GroupStyleItem>))
+                    {
+                        if (((List<GroupStyleItem>)sourcePi.GetValue(newGeneralSettings, null)).Count ==
+                            ((List<GroupStyleItem>)destinationPi.GetValue(defaultSettings, null)).Count)
+                        {
+                            propertiesWithSameValue.Add(destinationPi.Name);
+                        }
+                        else
+                        {
+                            propertiesWithDifferentValue.Add(destinationPi.Name);
+                        }
+                    }
+                    else if (destinationPi.PropertyType == typeof(List<ViewExtensionSettings>))
+                    {
+                        if (((List<ViewExtensionSettings>)sourcePi.GetValue(newGeneralSettings, null)).Count ==
+                            ((List<ViewExtensionSettings>)destinationPi.GetValue(defaultSettings, null)).Count)
+                        {
+                            propertiesWithSameValue.Add(destinationPi.Name);
+                        }
+                        else
+                        {
+                            propertiesWithDifferentValue.Add(destinationPi.Name);
+                        }
+                    }
+                    else if (destinationPi.PropertyType == typeof(List<BackgroundPreviewActiveState>))
+                    {
+                        if (((List<BackgroundPreviewActiveState>)sourcePi.GetValue(newGeneralSettings, null)).Count ==
+                            ((List<BackgroundPreviewActiveState>)destinationPi.GetValue(defaultSettings, null)).Count)
+                        {
+                            propertiesWithSameValue.Add(destinationPi.Name);
+                        }
+                        else
+                        {
+                            propertiesWithDifferentValue.Add(destinationPi.Name);
+                        }
+                    }
+                    else
+                    {
+                        if (newValue?.ToString() == oldValue?.ToString())
+                        {
+                            propertiesWithSameValue.Add(destinationPi.Name);
+                        }
+                        else
+                        {
+                            propertiesWithDifferentValue.Add(destinationPi.Name);
+                        }
+                    }
+                }
+            }
+            
+            result.SamePropertyValues = propertiesWithSameValue;
+            result.DifferentPropertyValues = propertiesWithDifferentValue;
+            result.Properties = evaluatedProperties;
+            return result;
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestImportCopySettings()
+        {
+            string settingDirectory = Path.Combine(TestDirectory, "settings");
+            string newSettingslFilePath = Path.Combine(settingDirectory, "DynamoSettings-NewSettings.xml");
+
+            var defaultSettings = new PreferenceSettings();
+            var newSettings = PreferenceSettings.Load(newSettingslFilePath);
+
+            // validation
+            bool newSettingsExist = File.Exists(newSettingslFilePath);
+            var checkDifference = comparePrefenceSettings(defaultSettings, newSettings);
+            int diffProps = checkDifference.DifferentPropertyValues.Count;
+            int totProps = checkDifference.Properties.Count;
+            string firstPropertyWithSameValue = checkDifference.Properties.Except(checkDifference.DifferentPropertyValues).ToList().FirstOrDefault();
+            string defSettNumberFormat = defaultSettings.NumberFormat;
+            string newSettNumberFormat = newSettings.NumberFormat;
+            string failMessage = $"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} | DiffProps: {diffProps.ToString()} | TotProps: {totProps.ToString()} | Default Sett NumberFormat: {defSettNumberFormat} | New Sett NumberFormat: {newSettNumberFormat} | First Property with the same value {firstPropertyWithSameValue}";
+
+            // checking if the new Setting are completely different from the Default
+            Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.Properties.Count, failMessage);
+
+            newSettings.CopyProperties(defaultSettings);
+            // Explicit copy
+            defaultSettings.SetTrustWarningsDisabled(newSettings.DisableTrustWarnings);
+            defaultSettings.SetTrustedLocations(newSettings.TrustedLocations);
+
+            // checking if the default Setting instance has the same property values of the new one
+            var checkEquality = comparePrefenceSettings(defaultSettings, newSettings);            
+            Assert.IsTrue(checkEquality.SamePropertyValues.Count == checkEquality.Properties.Count);
         }
     }
 }

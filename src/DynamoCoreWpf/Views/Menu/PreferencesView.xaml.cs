@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,7 +9,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Core;
+using Dynamo.Exceptions;
 using Dynamo.Logging;
+using Dynamo.UI;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -369,5 +373,66 @@ namespace Dynamo.Wpf.Views
             }
             e.Handled = true;
         }
+
+        private void importTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            string fileExtension = "*" + Path.GetExtension(PathManager.PreferenceSettingsFileName);
+            string[] fileFilter = { string.Format(Res.FileDialogImportSettingsFiles, fileExtension) };
+            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            openFileDialog.Filter = String.Join("|", fileFilter);
+            openFileDialog.Title = Res.ImportSettingsDialogTitle;
+            openFileDialog.Multiselect = false;
+            openFileDialog.RestoreDirectory = true;
+
+            var result = openFileDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    viewModel.importSettings(openFileDialog.FileName);
+                    Wpf.Utilities.MessageBoxService.Show(
+                       Res.ImportSettingsSuccessMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    Wpf.Utilities.MessageBoxService.Show(
+                       ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }            
+        }
+
+        private void exportTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var dialog = new DynamoFolderBrowserDialog
+            {
+                Title = Res.ExportSettingsDialogTitle,
+                Owner = this
+            };
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string selectedPathFile = Path.Combine(dialog.SelectedPath, PathManager.PreferenceSettingsFileName);
+
+                try
+                {
+                    if (File.Exists(selectedPathFile))
+                    {
+                        string uniqueId = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString();
+                        string suffixPlusDot = $"_{ uniqueId}.";
+                        string uniqueFileName = PathManager.PreferenceSettingsFileName.Replace(".", suffixPlusDot);
+                        selectedPathFile = Path.Combine(dialog.SelectedPath, uniqueFileName);
+                    }
+
+                    File.Copy(dynViewModel.Model.PathManager.PreferenceFilePath, selectedPathFile);
+                    string argument = "/select, \"" + selectedPathFile + "\"";
+                    System.Diagnostics.Process.Start("explorer.exe", argument);
+                }
+                catch (Exception ex)
+                {
+                    Wpf.Utilities.MessageBoxService.Show(
+                       ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+        }        
     }
 }
