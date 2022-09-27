@@ -8,7 +8,7 @@ namespace EmitMSIL
     class ExecuteIL
     {
         public static void Execute(IDictionary<string, IList> input, IDictionary<int, IEnumerable<MethodBase>> methodCache, 
-            IDictionary<string, IList> output)
+            IDictionary<string, object> output)
         {
             // Sample script for which below code is emitted:
             // x = 12;
@@ -39,7 +39,7 @@ namespace EmitMSIL
             var key = CodeGenIL.KeyGen(className, methodName, args.Count);
             var mi = methodCache[key];
             // 6. Emit call to ReplicationLogic by passing input args from previous steps
-            IList c = Replication.ReplicationLogic(mi, args, guides);
+            var c = Replication.ReplicationLogic(mi, args, guides);
 
             // 7. read output identifier from lhs of AST and emit assignment
             output.Add("c", c);
@@ -60,7 +60,7 @@ namespace EmitMSIL
             key = CodeGenIL.KeyGen(className, methodName, args.Count);
             mi = methodCache[key];
             // 6. Emit call to ReplicationLogic by passing input args from previous steps
-            IList d = Replication.ReplicationLogic(mi, args, guides);
+            var d = Replication.ReplicationLogic(mi, args, guides);
             // 7. read output identifier from lhs of AST and emit assignment
             output.Add("d", d);
 

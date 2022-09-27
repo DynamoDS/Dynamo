@@ -289,7 +289,7 @@ namespace ProtoFFI
             return ToDSArray(collection, context, dsi, type);
         }
 
-        public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type expectedCLRType)
+        public override object UnMarshal(StackValue dsObject, Context context, Interpreter dsi, Type expectedCLRType)
         {
             // If expected type is an IDictionary, log warning and return
             if (expectedCLRType == typeof(IDictionary) ||
@@ -433,8 +433,10 @@ namespace ProtoFFI
                 if (null == obj)
                 {
                     if (objType.IsValueType)
+                    {
                         throw new System.InvalidCastException(
                             string.Format(Resources.FailedToCastFromNull, objType.Name));
+                    }
 
                     result.Add(default(T));
                 }
@@ -451,7 +453,9 @@ namespace ProtoFFI
         {
             var result = new List<T>();
             if (!dsObject.IsEnumerable)
+            {
                 return result.ToArray();
+            }
 
             var dsElements = dsObject.Value as IList<CLRStackValue>;
             Type objType = typeof(T);
@@ -462,9 +466,10 @@ namespace ProtoFFI
                 if (null == obj)
                 {
                     if (objType.IsValueType)
+                    {
                         throw new System.InvalidCastException(
                             string.Format(Resources.FailedToCastFromNull, objType.Name));
-
+                    }
                     result.Add(default(T));
                 }
                 else
@@ -472,7 +477,6 @@ namespace ProtoFFI
                     result.Add((T)obj);
                 }
             }
-
             return result.ToArray();
         }
 
@@ -515,7 +519,7 @@ namespace ProtoFFI
             return arrList;
         }
 
-        private ICollection ToICollection(CLRStackValue dsObject, System.Type arrayType, ProtoCore.MSILRuntimeCore runtimeCore)
+        private ICollection ToICollection(CLRStackValue dsObject, Type arrayType, ProtoCore.MSILRuntimeCore runtimeCore)
         {
             if (arrayType.IsArray)
             {
@@ -526,6 +530,10 @@ namespace ProtoFFI
                 {
                     return UnMarshal<int>(dsObject, runtimeCore);
                 }
+                if (arrayType.UnderlyingSystemType == typeof(long[]))
+                {
+                    return UnMarshal<long>(dsObject, runtimeCore);
+                }
                 else if(arrayType.UnderlyingSystemType == typeof(double[]))
                 {
                     return UnMarshal<double>(dsObject, runtimeCore);
@@ -534,24 +542,26 @@ namespace ProtoFFI
                 {
                     return UnMarshal<bool>(dsObject, runtimeCore);
                 }
+                else if (arrayType.UnderlyingSystemType == typeof(string[]))
+                {
+                    return UnMarshal<string>(dsObject, runtimeCore);
+                }
             }
 
             var dsArrayValues = dsObject.Value as IList<CLRStackValue>;
 
-            //  use arraylist instead of object[], this allows us to correctly capture 
-            //  the type of objects being passed
-            //
-            ArrayList arrList = new ArrayList();
+            var list = new List<object>();
             var elementType = arrayType.GetElementType();
             if (elementType == null)
+            {
                 elementType = typeof(object);
+            }
             foreach (var sv in dsArrayValues)
             {
                 object obj = primitiveMarshaler.UnMarshal(sv, elementType, runtimeCore);
-                arrList.Add(obj);
+                list.Add(obj);
             }
-
-            return arrList;
+            return list;
         }
 
         internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
@@ -575,7 +585,7 @@ namespace ProtoFFI
             return new CLRStackValue(svs, (int)ProtoCore.PrimitiveType.Array);
         }
 
-        internal override object UnMarshal(CLRStackValue dsObject, System.Type expectedCLRType, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal override object UnMarshal(CLRStackValue dsObject, Type expectedCLRType, ProtoCore.MSILRuntimeCore runtimeCore)
         {
             // If expected type is an IDictionary, log warning and return
             if (expectedCLRType == typeof(IDictionary) ||
@@ -600,33 +610,59 @@ namespace ProtoFFI
             ICollection collection = null;
             if (dsObject.IsEnumerable)
             {
+                // collection could be T[] or List<object>.
                 collection = ToICollection(dsObject, arrayType, runtimeCore);
             }
             else
             {
                 // If dsObject is non array pointer but the expectedCLRType is IEnumerable, promote the dsObject to a collection.
                 Validity.Assert(typeof(IEnumerable).IsAssignableFrom(expectedCLRType));
+                
                 var obj = primitiveMarshaler.UnMarshal(dsObject, elementType, runtimeCore);
-                collection = new ArrayList(new object[] { obj });
+                collection = new List<object> { obj };
             }
 
             if (expectedCLRType.IsGenericType && !expectedCLRType.IsInterface)
             {
-                if (!collection.GetType().IsArray)
+                if (!(collection is Array))
                 {
-                    Validity.Assert(collection is ArrayList);
-                    collection = (collection as ArrayList).ToArray(elementType);
+                    collection = (collection as List<object>).ToArray();
                 }
                 return Activator.CreateInstance(expectedCLRType, new[] { collection });
             }
 
             if (expectedCLRType.IsArray || expectedCLRType.IsGenericType)
             {
-                var list = collection as ArrayList;
-                if (null != list)
-                    return list.ToArray(elementType);
-            }
+                if (collection is Array) return collection;
 
+                if (elementType == typeof(int))
+                {
+                    return collection.Cast<int>().ToArray();
+                }
+                if (elementType == typeof(long))
+                {
+                    return collection.Cast<long>().ToArray();
+                }
+                if (elementType == typeof(double))
+                {
+                    return collection.Cast<double>().ToArray();
+                }
+                if (elementType == typeof(bool))
+                {
+                    return collection.Cast<bool>().ToArray();
+                }
+                if (elementType == typeof(string))
+                {
+                    return collection.Cast<string>().ToArray();
+                }
+                try
+                {
+                    Array arr = Array.CreateInstance(elementType, collection.Count);
+                    collection.CopyTo(arr, 0);
+                    return arr;
+                }
+                catch { return (collection as List<object>).ToArray(); }
+            }
             return collection;
         }
     }
