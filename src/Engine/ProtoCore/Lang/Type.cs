@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -644,12 +643,14 @@ namespace ProtoCore
                         newTargetType.rank = Constants.kArbitraryRank;
                     }
                 }
+
                 List<CLRStackValue> coercedValues = new List<CLRStackValue>();
                 foreach (var item in sv.Value as IList<CLRStackValue>)
                 {
                     var coercedValue = Coerce(item, newTargetType, runtimeCore);
                     coercedValues.Add(coercedValue);
                 }
+
                 return new CLRStackValue(coercedValues, (int)PrimitiveType.Array);
             }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.DSASM;
@@ -446,9 +445,11 @@ namespace ProtoCore.Utils
 
         internal static bool ContainsDoubleElement(CLRStackValue sv)
         {
-            if (!sv.IsEnumerable) return sv.IsDouble;
+            if (!sv.IsEnumerable)
+                return sv.IsDouble;
 
-            return (sv.Value as IList<CLRStackValue>).Any(v => ContainsDoubleElement(v));
+            var svArr = sv.Value as IList<CLRStackValue>;
+            return svArr.Any(v => ContainsDoubleElement(v));
         }
 
         /// <summary>
