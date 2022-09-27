@@ -644,21 +644,13 @@ namespace ProtoCore
                         newTargetType.rank = Constants.kArbitraryRank;
                     }
                 }
-                if (sv.Value is IList<CLRStackValue> svs)
+                List<CLRStackValue> coercedValues = new List<CLRStackValue>();
+                foreach (var item in sv.Value as IList<CLRStackValue>)
                 {
-                    List<CLRStackValue> coercedValues = new List<CLRStackValue>();
-                    foreach (var item in svs)
-                    {
-                        var coercedValue = Coerce(item, newTargetType, runtimeCore);
-                        coercedValues.Add(coercedValue);
-                    }
-
-                    return new CLRStackValue(coercedValues, (int)PrimitiveType.Array);
+                    var coercedValue = Coerce(item, newTargetType, runtimeCore);
+                    coercedValues.Add(coercedValue);
                 }
-                else
-                {
-                    return new CLRStackValue(sv.Value, (int)PrimitiveType.Array);
-                }
+                return new CLRStackValue(coercedValues, (int)PrimitiveType.Array);
             }
 
             // Null can be converted to Boolean so we will allow it in the case of indexable types

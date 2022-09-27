@@ -453,40 +453,30 @@ namespace ProtoFFI
         {
             var result = new List<T>();
             if (!dsObject.IsEnumerable)
+            {
                 return result.ToArray();
+            }
 
             var dsElements = dsObject.Value as IList<CLRStackValue>;
             Type objType = typeof(T);
 
-            if (dsElements != null)
+            foreach (var elem in dsElements)
             {
-                foreach (var elem in dsElements)
+                object obj = primitiveMarshaler.UnMarshal(elem, objType, runtimeCore);
+                if (null == obj)
                 {
-                    object obj = primitiveMarshaler.UnMarshal(elem, objType, runtimeCore);
-                    if (null == obj)
+                    if (objType.IsValueType)
                     {
-                        if (objType.IsValueType)
-                        {
-                            throw new System.InvalidCastException(
-                                string.Format(Resources.FailedToCastFromNull, objType.Name));
-                        }
-
-                        result.Add(default(T));
+                        throw new System.InvalidCastException(
+                            string.Format(Resources.FailedToCastFromNull, objType.Name));
                     }
-                    else
-                    {
-                        result.Add((T)obj);
-                    }
+                    result.Add(default(T));
+                }
+                else
+                {
+                    result.Add((T)obj);
                 }
             }
-            else
-            {
-                foreach (var val in (dsObject.Value as IEnumerable))
-                {
-                    result.Add((T)val);
-                }
-            }
-
             return result.ToArray();
         }
 
@@ -560,11 +550,7 @@ namespace ProtoFFI
 
             var dsArrayValues = dsObject.Value as IList<CLRStackValue>;
 
-            //  use arraylist instead of object[], this allows us to correctly capture 
-            //  the type of objects being passed
-            //
-            //var arrList = new ArrayList();
-            var arrList = new List<object>();
+            var list = new List<object>();
             var elementType = arrayType.GetElementType();
             if (elementType == null)
             {
@@ -574,10 +560,10 @@ namespace ProtoFFI
             foreach (var sv in dsArrayValues)
             {
                 object obj = primitiveMarshaler.UnMarshal(sv, elementType, runtimeCore);
-                arrList.Add(obj);
+                list.Add(obj);
             }
 
-            return arrList;
+            return list;
         }
 
         internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtimeCore)

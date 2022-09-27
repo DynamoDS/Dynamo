@@ -446,22 +446,9 @@ namespace ProtoCore.Utils
 
         internal static bool ContainsDoubleElement(CLRStackValue sv)
         {
-            if (!sv.IsEnumerable)
-                return sv.IsDouble;
+            if (!sv.IsEnumerable) return sv.IsDouble;
 
-            var svArr = sv.Value as IList<CLRStackValue>;
-            if (svArr != null)
-            {
-                return svArr.Any(v => ContainsDoubleElement(v));
-            }
-            else
-            {
-                foreach(var val in sv.Value as IEnumerable)
-                {
-                    if (val is double) return true;
-                }
-                return false;
-            }
+            return (sv.Value as IList<CLRStackValue>).Any(v => ContainsDoubleElement(v));
         }
 
         /// <summary>
