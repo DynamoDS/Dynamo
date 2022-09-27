@@ -134,7 +134,7 @@ namespace Dynamo.DocumentationBrowser
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendLine($"<h2>{"Inputs"}</h2>");
+            sb.AppendLine($"<h2>{Resources.NodeDocumentationInputs}</h2>");
             sb.AppendLine("<table class=\"table--border\">");
             sb.AppendLine("<tr class=\"table--border\">");
             sb.AppendLine($"<th class=\"table--border\">{"Name"}</th>");
@@ -143,18 +143,22 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine($"<th class=\"table--border\">{"Default value"}</th>");
             sb.AppendLine(@"</tr>");
 
-            sb.AppendLine("<tr class=\"table--border\">");
-            sb.AppendLine($"<td class=\"table--border\">{Resources.NodeDocumentationCategory}</td>");
-            sb.AppendLine($"<td class=\"table--border\">{e.Category}</td>");
-            sb.AppendLine(@"</tr>");
-            sb.AppendLine("<tr class=\"table--border\">");
-            sb.AppendLine($"<td class=\"table--border\">{Resources.NodeDocumentationInputs}</td>");
-            sb.AppendLine("<td class=\"table--border\">");
+            //sb.AppendLine("<tr class=\"table--border\">");
+            //sb.AppendLine($"<td class=\"table--border\">{Resources.NodeDocumentationCategory}</td>");
+            //sb.AppendLine($"<td class=\"table--border\">{e.Category}</td>");
+            //sb.AppendLine(@"</tr>");
+            //sb.AppendLine("<tr class=\"table--border\">");
+            //sb.AppendLine($"<td class=\"table--border\">{Resources.NodeDocumentationInputs}</td>");
+            //sb.AppendLine("<td class=\"table--border\">");
 
             for (int i = 0; i < e.InputNames.Count(); i++)
             {
-                sb.AppendLine(
-                    $"<li style=\"margin-bottom: 5px\"><b><u>{e.InputNames.ElementAt(i)}</u></b><br>{Regex.Replace(e.InputDescriptions.ElementAt(i), @"\r\n?|\n", "<br>")}</li>");
+                sb.AppendLine("<tr class=\"table--border\">");
+                sb.AppendLine($"<td class=\"table--border\">{e.InputNames.ElementAt(i)}</td>");
+                sb.AppendLine($"<td class=\"table--border\">{GetTypeFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
+                sb.AppendLine($"<td class=\"table--border\">{GetDescriptionFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
+                sb.AppendLine($"<td class=\"table--border\">{GetDefaultValueFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
+                sb.AppendLine(@"</tr>");
             }
 
             sb.AppendLine(@"</td>");
@@ -162,16 +166,20 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine(@"</table>");
 
 
-            sb.AppendLine($"<h2>{"Outputs"}</h2>");
+            sb.AppendLine($"<h2>{Resources.NodeDocumentationOutputs}</h2>");
             sb.AppendLine("<table class=\"table--border\">");
             sb.AppendLine("<tr class=\"table--border\">");
-            sb.AppendLine($"<td class=\"table--border\">{Resources.NodeDocumentationOutputs}</td>");
-            sb.AppendLine("<td class=\"table--border\">");
+            sb.AppendLine($"<th class=\"table--border\">{"Name"}</th>");
+            sb.AppendLine($"<th class=\"table--border\">{"Description"}</th>");
+            sb.AppendLine($"<th class=\"table--border\">{"Data type"}</th>");
+            sb.AppendLine(@"</tr>");
 
             for (int i = 0; i < e.OutputNames.Count(); i++)
             {
-                sb.AppendLine(
-                    $"<li style=\"margin-bottom: 5px\"><b><u>{e.OutputNames.ElementAt(i)}</u></b><br>{Regex.Replace(e.OutputDescriptions.ElementAt(i), @"\r\n?|\n", "<br>")}</li>");
+                sb.AppendLine("<tr class=\"table--border\">");
+                sb.AppendLine($"<td class=\"table--border\">{e.OutputNames.ElementAt(i)}</td>");
+                sb.AppendLine($"<td class=\"table--border\">{GetDescriptionFromDescription(e.OutputDescriptions.ElementAt(i))}</td>");
+                sb.AppendLine(@"</tr>");
             }
 
             sb.AppendLine(@"</td>");
@@ -180,5 +188,31 @@ namespace Dynamo.DocumentationBrowser
 
             return sb.ToString();
         }
+
+         private static string GetTypeFromDescription(string elementAt)
+         {
+             var stringArr = elementAt.Split(new string[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
+             if(stringArr.Length > 2) return stringArr[2];
+             return string.Empty;
+         }
+
+         private static string GetDefaultValueFromDescription(string elementAt)
+         {
+             var stringArr = elementAt.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+             foreach (var line in stringArr)
+             {
+                 if (line.ToLowerInvariant().Contains("default value"))
+                 {
+                     return line.Remove(0, 16);
+                 }
+             }
+             return string.Empty;
+         }
+
+        private static string GetDescriptionFromDescription(string elementAt)
+         {
+             var stringArr = elementAt.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+             return stringArr[0];
+         }
     }
 }
