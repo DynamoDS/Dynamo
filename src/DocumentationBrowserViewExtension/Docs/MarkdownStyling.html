@@ -1,335 +1,324 @@
 ﻿<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    /* PrismJS 1.21.0
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        /* PrismJS 1.21.0
         https://prismjs.com/download.html#themes=prism-tomorrow&languages=markup+css+clike+javascript+bash+c+csharp+cpp+ini+java+javadoc+javadoclike+javastacktrace+json+json5+jsonp+jsstacktrace+js-templates+markdown+powershell+python+sql+typescript+typoscript+xml-doc */
-    /**
+        /**
         * prism.js tomorrow night eighties for JavaScript, CoffeeScript, CSS and HTML
         * Based on https://github.com/chriskempson/tomorrow-theme
         * @author Rose Pritchard
         */
-    code[class*="language-"],
-    pre[class*="language-"] {
-      color: #ccc;
-      background: 0 0;
-      font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
-      font-size: 1em;
-      text-align: left;
-      white-space: pre;
-      word-spacing: normal;
-      word-break: normal;
-      word-wrap: normal;
-      line-height: 1.5;
-      -moz-tab-size: 4;
-      -o-tab-size: 4;
-      tab-size: 4;
-      -webkit-hyphens: none;
-      -moz-hyphens: none;
-      -ms-hyphens: none;
-      hyphens: none;
-    }
+        code[class*="language-"],
+        pre[class*="language-"] {
+            color: #ccc;
+            background: 0 0;
+            font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono",
+                monospace;
+            font-size: 1em;
+            text-align: left;
+            white-space: pre;
+            word-spacing: normal;
+            word-break: normal;
+            word-wrap: normal;
+            line-height: 1.5;
+            -moz-tab-size: 4;
+            -o-tab-size: 4;
+            tab-size: 4;
+            -webkit-hyphens: none;
+            -moz-hyphens: none;
+            -ms-hyphens: none;
+            hyphens: none;
+        }
 
-    pre[class*="language-"] {
-      padding: 1em;
-      margin: 0.5em 0;
-      overflow: auto;
-    }
+        pre[class*="language-"] {
+            padding: 1em;
+            margin: 0.5em 0;
+            overflow: auto;
+        }
 
-    :not(pre) > code[class*="language-"],
-    pre[class*="language-"] {
-      background: #1e1e1e;
-    }
+        :not(pre) > code[class*="language-"],
+        pre[class*="language-"] {
+            background: #1e1e1e;
+        }
 
-    :not(pre) > code[class*="language-"] {
-      padding: 0.1em;
-      border-radius: 0.3em;
-      white-space: normal;
-    }
+        :not(pre) > code[class*="language-"] {
+            padding: 0.1em;
+            border-radius: 0.3em;
+            white-space: normal;
+        }
 
-    .token.block-comment,
-    .token.cdata,
-    .token.comment,
-    .token.doctype,
-    .token.prolog {
-      color: #999;
-    }
+        .token.block-comment,
+        .token.cdata,
+        .token.comment,
+        .token.doctype,
+        .token.prolog {
+            color: #999;
+        }
 
-    .token.punctuation {
-      color: #ccc;
-    }
+        .token.punctuation {
+            color: #ccc;
+        }
 
-    .token.attr-name,
-    .token.deleted,
-    .token.namespace,
-    .token.tag {
-      color: #e2777a;
-    }
+        .token.attr-name,
+        .token.deleted,
+        .token.namespace,
+        .token.tag {
+            color: #e2777a;
+        }
 
-    .token.function-name {
-      color: #6196cc;
-    }
+        .token.function-name {
+            color: #6196cc;
+        }
 
-    .token.boolean,
-    .token.function,
-    .token.number {
-      color: #f08d49;
-    }
+        .token.boolean,
+        .token.function,
+        .token.number {
+            color: #f08d49;
+        }
 
-    .token.class-name,
-    .token.constant,
-    .token.property,
-    .token.symbol {
-      color: #f8c555;
-    }
+        .token.class-name,
+        .token.constant,
+        .token.property,
+        .token.symbol {
+            color: #f8c555;
+        }
 
-    .token.atrule,
-    .token.builtin,
-    .token.important,
-    .token.keyword,
-    .token.selector {
-      color: #cc99cd;
-    }
+        .token.atrule,
+        .token.builtin,
+        .token.important,
+        .token.keyword,
+        .token.selector {
+            color: #cc99cd;
+        }
 
-    .token.attr-value,
-    .token.char,
-    .token.regex,
-    .token.string,
-    .token.variable {
-      color: #7ec699;
-    }
+        .token.attr-value,
+        .token.char,
+        .token.regex,
+        .token.string,
+        .token.variable {
+            color: #7ec699;
+        }
 
-    .token.entity,
-    .token.operator,
-    .token.url {
-      color: #67cdcc;
-    }
+        .token.entity,
+        .token.operator,
+        .token.url {
+            color: #67cdcc;
+        }
 
-    .token.bold,
-    .token.important {
-      font-weight: 700;
-    }
+        .token.bold,
+        .token.important {
+            font-weight: 700;
+        }
 
-    .token.italic {
-      font-style: italic;
-    }
+        .token.italic {
+            font-style: italic;
+        }
 
-    .token.entity {
-      cursor: help;
-    }
+        .token.entity {
+            cursor: help;
+        }
 
-    .token.inserted {
-      color: green;
-    }
-  </style>
-  <style>
-    h1 {
-      margin-top: 0;
-    }
+        .token.inserted {
+            color: green;
+        }
+    </style>
+    <style>
+        h1 {
+            margin-top: 0;
+        }
 
-    html {
-        max-width: 100%;
-        overflow-x: hidden;
-        /* overflow-y: hidden; */
-      }
+        html {
+            max-width: 100%;
+            overflow-x: hidden;
+            /* overflow-y: hidden; */
+        }
 
-    body {
-      color: #f5f5f5;
-      font-size: 14px;
-      font-family: "Artifakt Element";
-      src: url(fonts/ArtifaktElement-Regular.woff) format("woff");
-      margin: 0%;
-      padding: 1%;
-      background-color: #2a2a2a;
-      font-family: "Artifakt Element", "Open Sans";
-      max-width: 100%;
-      overflow: hidden;
-    }
-    
-    a {
-      color: #d3d3d3;
-      cursor: pointer;
-      background-color: transparent;
-    }
+        body {
+            color: #f5f5f5;
+            font-size: 14px;
+            font-family: "Artifakt Element";
+            src: url(fonts/ArtifaktElement-Regular.woff) format("woff");
+            margin: 0%;
+            padding: 1%;
+            background-color: #2a2a2a;
+            font-family: "Artifakt Element", "Open Sans";
+            max-width: 100%;
+            overflow: hidden;
+        }
 
-    table {
-      border-collapse: collapse;
-      border: 1px solid #fff;
-    }
+        a {
+            color: #d3d3d3;
+            cursor: pointer;
+            background-color: transparent;
+        }
 
-    td,
-    th {
-      border: 1px solid #fff;
-      padding-right: 10px;
-      padding-left: 10px;
-      padding-bottom: 10px;
-      padding-top: 10px;
-    }
+        samp {
+            margin-top: 10px;
+            display: block;
+            color: #d3d3d3;
+        }
 
-    samp {
-      margin-top: 10px;
-      display: block;
-      color: #d3d3d3;
-    }
+        thead {
+            text-align: center;
+        }
 
-    thead {
-      text-align: center;
-    }
+        .hidden-lg {
+            display: none;
+        }
 
-    .hidden-lg {
-      display: none;
-    }
+        .table--border {
+            border-collapse: collapse;
+            border: 3px solid #535353;
+            margin-top: 10px;
+            margin-bottom: 30px;
+            min-width: 150px;
+            width: 100%;
+            table-layout: fixed;
+        }
 
-    .table--noborder {
-      border: none;
-    }
+        .table--border td,
+        .table--border tr,
+        .table--border th {
+            text-align: left;
+            border: 1px solid #535353;
+            padding-right: 10px;
+            padding-left: 10px;
+            padding-bottom: 10px;
+            padding-top: 10px;
+        }
 
-    .table--noborder td,
-    .table--noborder th {
-      border: none;
-    }
+        .table--border th {
+            border: none;
+            width: 25%;
+        }
 
-    img {
-      width: 100%;
-      height: auto;
-    }
+        img {
+            width: 100%;
+            height: auto;
+        }
 
-    code,
-    pre {
-      color: #ccc;
-      background: 0 0;
-      font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
-      font-size: 1em;
-      text-align: left;
-      white-space: pre;
-      word-spacing: normal;
-      word-break: normal;
-      word-wrap: normal;
-      line-height: 1.5;
-      -moz-tab-size: 4;
-      -o-tab-size: 4;
-      tab-size: 4;
-      -webkit-hyphens: none;
-      -moz-hyphens: none;
-      -ms-hyphens: none;
-      hyphens: none;
-      background: #1e1e1e !important;
-    }
+        code,
+        pre {
+            color: #ccc;
+            background: 0 0;
+            font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono",
+                monospace;
+            font-size: 1em;
+            text-align: left;
+            white-space: pre;
+            word-spacing: normal;
+            word-break: normal;
+            word-wrap: normal;
+            line-height: 1.5;
+            -moz-tab-size: 4;
+            -o-tab-size: 4;
+            tab-size: 4;
+            -webkit-hyphens: none;
+            -moz-hyphens: none;
+            -ms-hyphens: none;
+            hyphens: none;
+            background: #1e1e1e !important;
+        }
 
-    pre {
-      padding: 1em;
-      margin: 0.5em 0;
-      overflow: auto;
-    }
+        pre {
+            padding: 1em;
+            margin: 0.5em 0;
+            overflow: auto;
+        }
 
-    :not(pre) > code {
-      background: #1e1e1e;
-      padding: 0.1em;
-      border-radius: 0.3em;
-      white-space: normal;
-    }
+        :not(pre) > code {
+            background: #1e1e1e;
+            padding: 0.1em;
+            border-radius: 0.3em;
+            white-space: normal;
+        }
 
-    @media screen and (max-width: 600px) {
-      table {
-        width: 100%;
-      }
+        @media screen and (max-width: 600px) {
+            table {
+                width: 100%;
+            }
 
-      table,
-      td,
-      th {
-        border: none;
-      }
+            .hidden-lg {
+                display: block;
+                font-weight: 700;
+                text-align: center;
+                border-bottom: 1px solid #fff;
+            }
 
-      tr {
-        border: 1px solid #fff;
-        display: block;
-      }
+            .hidden-sm {
+                display: none;
+            }
 
-      td,
-      th {
-        display: block;
-      }
+            .spaced-sm {
+                margin-top: 20px;
+            }
 
-      .hidden-lg {
-        display: block;
-        font-weight: 700;
-        text-align: center;
-        border-bottom: 1px solid #fff;
-      }
+            tbody tr:first-of-type {
+                border-bottom: none;
+            }
 
-      .hidden-sm {
-        display: none;
-      }
+            .button {
+                background-color: transparent;
+                border-color: #3c3c3c;
+                color: #bbb;
+            }
 
-      .spaced-sm {
-        margin-top: 20px;
-      }
+            .button:hover {
+                border-color: #656565;
+                background-color: #373737;
+                opacity: 1;
+            }
+        }
+    </style>
+    <style>
+        h2 {
+            font-size: medium;
+        }
 
-      tbody tr:first-of-type {
-        border-bottom: none;
-      }
+        hr {
+            border: none;
+        }
 
-      .button {
-        background-color: transparent;
-        border-color: #3c3c3c;
-        color: #bbb;
-      }
+        details {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
 
-      .button:hover {
-        border-color: #656565;
-        background-color: #373737;
-        opacity: 1;
-      }
-    }
-  </style>  
-  <style>
-    h2 {
-      font-size: medium;
-    }
+        details > summary span.icon {
+            width: 24px;
+            height: 24px;
+            font-size: 20px;
+            margin-right: 0.5em;
+            margin-top: -0.1em;
+            transition: all 0.3s;
+            margin-left: auto;
+        }
 
-    hr{
-      border: none;
-    }
+        details[open] summary span.icon::after {
+            /* transform: rotate(180deg); */
+            content: "-";
+        }
 
-    details {
-      margin-top: 5px;
-      margin-bottom: 5px;
-    }
+        details summary span.icon::after {
+            /* transform: rotate(180deg); */
+            content: "+";
+        }
 
-    details > summary span.icon {
-      width: 24px;
-      height: 24px;
-      font-size: 20px;
-      margin-right: 0.5em;
-      margin-top: -0.1em;
-      transition: all 0.3s;
-      margin-left: auto;
-    }
+        summary {
+            display: flex;
+            cursor: pointer;
+            background-color: #535353;
+            font-size: medium;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 20px;
+            margin-left: -20px;
+            margin-right: -20px;
+        }
 
-    details[open] summary span.icon::after {
-      /* transform: rotate(180deg); */
-      content: "-";
-    }
-
-    details summary span.icon::after {
-      /* transform: rotate(180deg); */
-      content: "+";
-    }
-
-    summary {
-      display: flex;
-      cursor: pointer;
-      background-color: #535353;
-      font-size: medium;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      padding-left: 20px;
-      margin-left: -20px;
-      margin-right: -20px;
-    }
-
-    summary::-webkit-details-marker {
-      display: none;
-    }
-  </style>
+        summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
 </head>

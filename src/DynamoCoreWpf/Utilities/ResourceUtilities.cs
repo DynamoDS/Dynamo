@@ -1,4 +1,4 @@
-﻿using Dynamo.Logging;
+using Dynamo.Logging;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
@@ -44,7 +44,7 @@ namespace Dynamo.Utilities
             var dpiScale = getDPIScale();
             document.body.style.zoom = dpiScale;
 
-            var widthPercentage = ((100.0 / dpiScale)-5).toString() + '%';
+            var widthPercentage = ((100.0 / dpiScale)-2).toString() + '%';
             document.body.style.width = widthPercentage;
         }
         adaptDPI() 

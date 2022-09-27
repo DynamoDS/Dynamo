@@ -100,6 +100,7 @@ namespace Dynamo.DocumentationBrowser
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<details open>");
             sb.AppendLine(CreateExpanderTitle("Inputs"));
+            sb.AppendLine(CreateInputsAndOutputs(e));
             sb.AppendLine(@"</details>");
 
             return sb.ToString();
@@ -132,29 +133,47 @@ namespace Dynamo.DocumentationBrowser
          private static string CreateInputsAndOutputs(OpenNodeAnnotationEventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            
-            sb.AppendLine("<tr class=\"table--noborder\">");
-            sb.AppendLine($"<td class=\"table--noborder\">{Resources.NodeDocumentationCategory}</td>");
-            sb.AppendLine($"<td class=\"table--noborder\">{e.Category}</td>");
+
+            sb.AppendLine($"<h2>{"Inputs"}</h2>");
+            sb.AppendLine("<table class=\"table--border\">");
+            sb.AppendLine("<tr class=\"table--border\">");
+            sb.AppendLine($"<th class=\"table--border\">{"Name"}</th>");
+            sb.AppendLine($"<th class=\"table--border\">{"Type"}</th>");
+            sb.AppendLine($"<th class=\"table--border\">{"Description"}</th>");
+            sb.AppendLine($"<th class=\"table--border\">{"Default value"}</th>");
             sb.AppendLine(@"</tr>");
-            sb.AppendLine("<tr class=\"table--noborder\">");
-            sb.AppendLine($"<td class=\"table--noborder\">{Resources.NodeDocumentationInputs}</td>");
-            sb.AppendLine("<td class=\"table--noborder\">");
+
+            sb.AppendLine("<tr class=\"table--border\">");
+            sb.AppendLine($"<td class=\"table--border\">{Resources.NodeDocumentationCategory}</td>");
+            sb.AppendLine($"<td class=\"table--border\">{e.Category}</td>");
+            sb.AppendLine(@"</tr>");
+            sb.AppendLine("<tr class=\"table--border\">");
+            sb.AppendLine($"<td class=\"table--border\">{Resources.NodeDocumentationInputs}</td>");
+            sb.AppendLine("<td class=\"table--border\">");
+
             for (int i = 0; i < e.InputNames.Count(); i++)
             {
                 sb.AppendLine(
                     $"<li style=\"margin-bottom: 5px\"><b><u>{e.InputNames.ElementAt(i)}</u></b><br>{Regex.Replace(e.InputDescriptions.ElementAt(i), @"\r\n?|\n", "<br>")}</li>");
             }
+
             sb.AppendLine(@"</td>");
             sb.AppendLine(@"</tr>");
-            sb.AppendLine("<tr class=\"table--noborder\">");
-            sb.AppendLine($"<td class=\"table--noborder\">{Resources.NodeDocumentationOutputs}</td>");
-            sb.AppendLine("<td class=\"table--noborder\">");
+            sb.AppendLine(@"</table>");
+
+
+            sb.AppendLine($"<h2>{"Outputs"}</h2>");
+            sb.AppendLine("<table class=\"table--border\">");
+            sb.AppendLine("<tr class=\"table--border\">");
+            sb.AppendLine($"<td class=\"table--border\">{Resources.NodeDocumentationOutputs}</td>");
+            sb.AppendLine("<td class=\"table--border\">");
+
             for (int i = 0; i < e.OutputNames.Count(); i++)
             {
                 sb.AppendLine(
                     $"<li style=\"margin-bottom: 5px\"><b><u>{e.OutputNames.ElementAt(i)}</u></b><br>{Regex.Replace(e.OutputDescriptions.ElementAt(i), @"\r\n?|\n", "<br>")}</li>");
             }
+
             sb.AppendLine(@"</td>");
             sb.AppendLine(@"</tr>");
             sb.AppendLine(@"</table>");
