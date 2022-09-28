@@ -423,6 +423,46 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
         }
 
         [Test]
+        public void CrossProductReplication_ResultPassedAs2DArray()
+        {
+            string code =
+            @"
+                import(""ProtoGeometry.dll"");
+                import(""DesignScriptBuiltin.dll"");
+                import(""DSCoreNodes.dll"");
+                t1 = (1..3);
+                point1 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(t1<1>, t1<2>, 0);
+                nurbsCurve1 = Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(point1);
+            ";
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.AreEqual(new long[] { 1, 2, 3 }, output["t1"]);
+            var pointGrid = output["point1"] as object[];
+            Assert.NotNull(pointGrid);
+            Assert.AreEqual(3, pointGrid.Length);
+            foreach (var row in pointGrid)
+            {
+                var ptRow = row as object[];
+                Assert.NotNull(ptRow);
+
+                Assert.AreEqual(3, ptRow.Length);
+                Assert.True(ptRow[0] is Autodesk.DesignScript.Geometry.Point);
+                Assert.True(ptRow[1] is Autodesk.DesignScript.Geometry.Point);
+                Assert.True(ptRow[2] is Autodesk.DesignScript.Geometry.Point);
+            }
+            var nurbs = output["nurbsCurve1"] as object[];
+            Assert.NotNull(nurbs);
+
+            Assert.AreEqual(3, nurbs.Length);
+            foreach (var obj in nurbs)
+            {
+                Assert.True(obj is Autodesk.DesignScript.Geometry.NurbsCurve);
+            }
+        }
+
+        [Test]
         public void MSIL_FuncCall_Double_SomeGuides()
         {
             string code =

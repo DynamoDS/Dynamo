@@ -10,6 +10,7 @@
     <AssemblyName>CodeGenILTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2441" />
     <PackageReference Include="NUnit" Version="2.6.3" />
   </ItemGroup>
   <ItemGroup>
