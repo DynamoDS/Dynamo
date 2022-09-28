@@ -1,4 +1,6 @@
-﻿namespace FFITarget
+using System.Collections;
+
+namespace FFITarget
 {
     public class ReplicationTestA
     {
@@ -37,6 +39,10 @@
         public int gety(int x, int y, int z)
         {
             return y;
+        }
+        public static int ArbitraryRank(int x, IList y)
+        {
+            return y.Count + x;
         }
     }
 
