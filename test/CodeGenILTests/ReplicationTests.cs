@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ namespace CodeGenILTests
     class ReplicationTests : MicroTests
     {
         [Test]
-        public void MSIL_Arithmatic_List_And_List_Same_Length()
+        public void MSIL_Arithmetic_List_And_List_Same_Length()
         {
             string dscode = @"
 import(""DesignScriptBuiltin.dll"");
@@ -26,9 +26,305 @@ list3 = DSCore.Math.Max([ 1, 4, 7, 2], [ 5, 8, 3, 6 ]);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
+        #region longest
+        [Test]
+        public void ZTLongestLacing_ShouldReturn4Results()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max(10, [ 5, 8, 3, 6 ]<1L>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[] { 10,10,10,10};
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        [Test]
+        public void ZTLongestLacing_ShouldReturn4NestedResults_WithGuide()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max([10], [ 5, 8, 3, 6 ]<1L>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new object[] { new[] { 10 }, new[] { 10 }, new[] { 10 }, new[] { 10 } };
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        [Test]
+        public void ZTLongestLacing_ShouldReturn4NestedResults_WithHigherGuideOnListOfSingleItem1()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max([10]<2>, [ 5, 8, 3, 6 ]<1L>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new object[] { new[] { 10 }, new[] { 10 }, new[] { 10 }, new[] { 10 } };
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        [Test]
+        public void ZTLongestLacing_ShouldReturn4NestedResults_WithHigherGuideOnListOfSingleItem2()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max([10]<2>, [ 5, 8, 3, 6 ]<1>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new object[] { new[] { 10 }, new[] { 10 }, new[] { 10 }, new[] { 10 } };
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        [Test]
+        public void ZTLongestLacing_ShouldReturn4Results_WithoutGuide()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max(10, [ 5, 8, 3, 6 ]);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[] { 10, 10, 10, 10 };
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
 
         [Test]
-        public void MSIL_Arithmatic_No_Replication()
+        public void ZTLongestLacing_ShouldReturn4Results_WithHigherGuideOnList()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max([10]<1>, [ 5, 8, 3, 6 ]<2>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new object[] { new int[] { 10, 10, 10, 10 } };
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void ZTLongestLacing_ShouldReturn3Lists_2Guides()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max([10,3]<1L>, [[1,1],[2,2,2],[4,4,4,4]]<1>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[][] {
+                new[] { 10, 10 },
+                new int[] { 3, 3, 3 },
+                new int[] { 4, 4, 4, 4 } };
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void ZTLongestLacing_ShouldReturn3Lists_2Guides2()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max([10,3]<1>, [[1,1],[2,2,2],[4,4,4,4]]<1L>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[][] {
+                new[] { 10, 10 },
+                new int[] { 3, 3, 3 },
+                new int[] { 4, 4, 4, 4 } };
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        [Test]
+        public void ZTLongestLacing_ShouldReturn6Lists_2Guides()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max([10,3]<2>, [[1,1],[2,2,2],[4,4,4,4]]<1>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[][][] {
+                new []{new[] { 10, 10 },
+                new int[] { 3, 3 } },
+
+                 new []{new[] { 10, 10,10 },
+                new int[] { 3, 3, 3 } },
+
+                  new []{new[] { 10, 10,10,10 },
+                new int[] { 4, 4, 4,4 } } };
+
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        #endregion
+        #region shortest
+        [Test]
+        public void ZTShortestLacing_ShouldReturnSingleItem_AndBeDefault()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max([10], [ 5, 8, 3, 6 ]);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[] { 10 };
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        [Test]
+        public void ZTShortestLacing_ShouldReturnSingleItem_WithSameGuide()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max([10]<1>, [ 5, 8, 3, 6 ]<1>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[] { 10 };
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        [Test]
+        public void ZTShortestLacing_ShouldReturn2Results_NoGuides()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max([10,3], [ 1,1,1,1]);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[] { 10,3 };
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        [Test]
+        public void ZTShortestLacing_ShouldReturn2Lists_NoGuides()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.Math.Max([10,3], [[1,1],[2,2,2],[4,4,4,4]]);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[][] { new[] { 10,10 }, new int[] { 3, 3, 3 } };
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        [Test]
+        public void ZTShortestLacing_ArbitraryRank_ReplicateFirstArg()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+import(""FFITarget.dll"");
+list3 = FFITarget.ReplicationTestA.ArbitraryRank(0..3,0..2);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[] {3,4,5,6 };
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        [Test]
+        public void ZTShortestLacing_ArbitraryRank_ReplicateBothArgs()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+import(""FFITarget.dll"");
+list3 = FFITarget.ReplicationTestA.ArbitraryRank(0..3,(0..2)<1><2>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[][] {
+                new[] { 1,2,3,4 },
+                new[] { 1,2,3,4 },
+                new[] { 1,2,3,4 } };
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        #endregion
+        [Test]
+        public void MSIL_Arithmetic_No_Replication()
         {
             string dscode = @"
 import(""DesignScriptBuiltin.dll"");

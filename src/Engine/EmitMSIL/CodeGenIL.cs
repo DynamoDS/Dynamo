@@ -1,4 +1,4 @@
-﻿using ProtoCore.AST;
+using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Properties;
 using ProtoCore.Utils;
@@ -1259,9 +1259,7 @@ namespace EmitMSIL
                     EmitArray(typeof(string), argGuides, (AssociativeNode gn, int gidx) =>
                     {
                         var repGuideNode = gn as ReplicationGuideNode;
-                        var nodeGuide = repGuideNode.RepGuide as IdentifierNode;
-
-                        EmitOpCode(OpCodes.Ldstr, nodeGuide.Value);
+                        EmitOpCode(OpCodes.Ldstr, repGuideNode.ToString());
                     });
                 }
                 else
