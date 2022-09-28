@@ -103,6 +103,33 @@ namespace ProtoCore
             return true;
         }
 
+        internal static bool CanGetExactMatchStatics(
+            List<List<CLRStackValue>> reducedFormalParams,
+            List<CLRFunctionEndPoint> funcGroup,
+            MSILRuntimeCore runtimeCore,
+            out HashSet<CLRFunctionEndPoint> lookup)
+        {
+            lookup = new HashSet<CLRFunctionEndPoint>();
+
+            if (reducedFormalParams.Count == 0)
+                return false;
+
+            foreach (List<CLRStackValue> formalParamSet in reducedFormalParams)
+            {
+                List<CLRFunctionEndPoint> feps = GetExactTypeMatches(formalParamSet, funcGroup, new List<ReplicationInstruction>(), runtimeCore);
+                if (feps.Count == 0)
+                {
+                    return false;
+                }
+
+                foreach (CLRFunctionEndPoint fep in feps)
+                {
+                    lookup.Add(fep);
+                }
+            }
+
+            return true;
+        }
 
         /// <summary>
         /// Returns a list of all the function end points that are type compliant, there maybe more than one due to pattern matches
