@@ -139,7 +139,6 @@ list3 = DSCore.Math.Max([10]<1>, [ 5, 8, 3, 6 ]<2>);
         }
 
         [Test]
-        [Category("Failure")]
         public void ZTLongestLacing_ShouldReturn3Lists_2Guides()
         {
             string dscode = @"
@@ -162,7 +161,6 @@ list3 = DSCore.Math.Max([10,3]<1L>, [[1,1],[2,2,2],[4,4,4,4]]<1>);
         }
 
         [Test]
-        [Category("Failure")]
         public void ZTLongestLacing_ShouldReturn3Lists_2Guides2()
         {
             string dscode = @"
