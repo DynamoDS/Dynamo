@@ -117,8 +117,8 @@ list3 = DSCore.Math.Max(10, [ 5, 8, 3, 6 ]);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
+
         [Test]
-        [Category("Failure")]
         public void ZTLongestLacing_ShouldReturn4Results_WithHigherGuideOnList()
         {
             string dscode = @"
@@ -132,12 +132,12 @@ list3 = DSCore.Math.Max([10]<1>, [ 5, 8, 3, 6 ]<2>);
 
             Assert.IsTrue(output.ContainsKey("list3"));
 
-            var expectedResult = new int[] { 10, 10, 10, 10 };
+            var expectedResult = new object[] { new int[] { 10, 10, 10, 10 } };
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
+
         [Test]
-        [Category("Failure")]
         public void ZTLongestLacing_ShouldReturn3Lists_2Guides()
         {
             string dscode = @"
@@ -158,8 +158,8 @@ list3 = DSCore.Math.Max([10,3]<1L>, [[1,1],[2,2,2],[4,4,4,4]]<1>);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
+
         [Test]
-        [Category("Failure")]
         public void ZTLongestLacing_ShouldReturn3Lists_2Guides2()
         {
             string dscode = @"
