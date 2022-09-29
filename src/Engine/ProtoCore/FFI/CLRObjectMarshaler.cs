@@ -626,7 +626,9 @@ namespace ProtoFFI
             {
                 if (!(collection is Array))
                 {
-                    collection = (collection as List<object>).ToArray();
+                    var arr = Array.CreateInstance(elementType, collection.Count);
+                    collection.CopyTo(arr, 0);
+                    return Activator.CreateInstance(expectedCLRType, new[] { arr });
                 }
                 return Activator.CreateInstance(expectedCLRType, new[] { collection });
             }
