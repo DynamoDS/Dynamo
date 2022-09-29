@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +55,6 @@ namespace EmitMSIL
                     else
                     {
                         param = marshaller.UnMarshal(arg, paramType, runtimeCore);
-                        marshaller.OnDispose(arg);
                     }
 
                     /*TODO_MSIL: Figure out how to set/use these flags
@@ -556,7 +555,6 @@ namespace EmitMSIL
             }
 
             var returnVal = marshaller.UnMarshal(dsRetValue, finalFep.ReturnType, runtimeCore);
-            marshaller.OnDispose(dsRetValue);
 
             return returnVal;
         }
