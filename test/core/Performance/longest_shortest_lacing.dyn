@@ -20,6 +20,14 @@
       "Point": {
         "Key": "Autodesk.DesignScript.Geometry.Point",
         "Value": "ProtoGeometry.dll"
+      },
+      "DSCore.Data.List": {
+        "Key": "DSCore.Data",
+        "Value": "DSCoreNodes.dll"
+      },
+      "DSCore.Data": {
+        "Key": "DSCore.Data",
+        "Value": "DSCoreNodes.dll"
       }
     }
   },
@@ -522,11 +530,11 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "t2 = List.FirstItem(t1<1L>);\nt4 = List.FirstItem(t3<1>);\nt6 = List.FirstItem(t5<1>);",
+      "Code": "t2 = DSCore.List.FirstItem(t1<1L>);\nt4 = DSCore.List.FirstItem(t3<1>);\nt6 = DSCore.List.FirstItem(t5<1>);",
       "Id": "9c1ef05d4f2f406bb7dbbab6fe013ab3",
       "Inputs": [
         {
-          "Id": "8fac150d458d453196de71609088daa5",
+          "Id": "11e4111083f84e6986068e1404ec47d2",
           "Name": "t1",
           "Description": "t1",
           "UsingDefaultValue": false,
@@ -535,7 +543,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "c2847abdbbe24c54a6073bbefcd80366",
+          "Id": "d0e5c788542b4e7596316ef85b0b2430",
           "Name": "t3",
           "Description": "t3",
           "UsingDefaultValue": false,
@@ -544,7 +552,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "4eed6aa0cdf247b6a34573450b06cb15",
+          "Id": "9916880a118d4455bac7692acfe9f28b",
           "Name": "t5",
           "Description": "t5",
           "UsingDefaultValue": false,
@@ -555,7 +563,7 @@
       ],
       "Outputs": [
         {
-          "Id": "3e205683e4d544dbab206aa64fc9564b",
+          "Id": "a1e17b6004634ff1bf2ac20229c89c7b",
           "Name": "",
           "Description": "t2",
           "UsingDefaultValue": false,
@@ -564,7 +572,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "855a9d6c9be948078b73cf3a846cb678",
+          "Id": "23578f0f0f6240df872d19f8d077f63f",
           "Name": "",
           "Description": "t4",
           "UsingDefaultValue": false,
@@ -573,7 +581,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "f321148fd257472ebf4fd35480450b94",
+          "Id": "31bcc2c4a0eb46b5947772026a5d7ac1",
           "Name": "",
           "Description": "t6",
           "UsingDefaultValue": false,
@@ -673,8 +681,8 @@
     },
     {
       "Start": "d2bd963da90a49449bb5d844d17f47fb",
-      "End": "c2847abdbbe24c54a6073bbefcd80366",
-      "Id": "7c2b5c5f45674251a3eb8c66b1c0e45e",
+      "End": "d0e5c788542b4e7596316ef85b0b2430",
+      "Id": "4f9f554d156442eb9da8bd0c19975f91",
       "IsHidden": "False"
     },
     {
@@ -703,8 +711,8 @@
     },
     {
       "Start": "cbfe6e262f4849b281e251b9afb96f62",
-      "End": "8fac150d458d453196de71609088daa5",
-      "Id": "3f43ca67636e4f45bb3d5a174e0b8e3a",
+      "End": "11e4111083f84e6986068e1404ec47d2",
+      "Id": "5ace8c803b0f4c81a531828cfed821ff",
       "IsHidden": "False"
     },
     {
@@ -715,8 +723,8 @@
     },
     {
       "Start": "8cd208f9c80c4e6a996f30a09bd2d66d",
-      "End": "4eed6aa0cdf247b6a34573450b06cb15",
-      "Id": "952472cfed7840eeba50b4a54595f0f4",
+      "End": "9916880a118d4455bac7692acfe9f28b",
+      "Id": "d0efc01f4b004b21ad8d2660855ca506",
       "IsHidden": "False"
     }
   ],
@@ -746,7 +754,7 @@
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
       "Version": "2.17.0.2655",
-      "RunType": "Automatic",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
@@ -880,8 +888,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 719.61292031591324,
-        "Y": 561.28457498675516
+        "X": 513.88262656949837,
+        "Y": 309.68198601309911
       },
       {
         "Name": "List.FirstItem",
@@ -925,8 +933,8 @@
       }
     ],
     "Annotations": [],
-    "X": 752.29837607917784,
-    "Y": -70.0724317890029,
-    "Zoom": 0.719388463919787
+    "X": 244.11161921694134,
+    "Y": -147.6567365728028,
+    "Zoom": 0.47684701918825984
   }
 }

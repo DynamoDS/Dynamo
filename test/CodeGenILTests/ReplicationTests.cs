@@ -327,6 +327,26 @@ list3 = FFITarget.ReplicationTestA.ArbitraryRank(0..3,(0..2)<1><2>);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
+        [Test]
+        [Category("Failure")]
+        public void NoLacing_ReductionFromArrayToVar()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.List.FirstItem([0..10,11..20]);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[] { 0, 11 };
+
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
         #endregion
 
         [Test]

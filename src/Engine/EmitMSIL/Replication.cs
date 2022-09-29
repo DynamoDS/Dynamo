@@ -568,6 +568,8 @@ namespace EmitMSIL
             var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
             CLRStackValue dsRetValue = marshaller.Marshal(result, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(finalFep.ReturnType), runtimeCore);
 
+            //TODO this causes a test failure. (array reduction to var not allowed)
+            //this is always false, and the comment below does not make sense.
             if (!dsRetValue.IsExplicitCall)
             {
                 // An explicit call requires return coercion at the return instruction

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -190,7 +190,7 @@ namespace Dynamo.Tests
                             portvalues.AddRange(n.OutPorts.Select<PortModel, object>(p =>
                             {
                                 var obj = n.GetCLRValue(p.Index, controller);
-                                if (typeof(IEnumerable).IsAssignableFrom(obj.GetType()))
+                                if (typeof(IEnumerable).IsAssignableFrom(obj?.GetType()))
                                 {
                                     var values = new List<object>();
                                     foreach(var val in obj as IEnumerable)
