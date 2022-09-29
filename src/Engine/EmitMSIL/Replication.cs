@@ -243,7 +243,7 @@ namespace EmitMSIL
             object result;
             if (replicationInstructions.Count == 0)
             {
-                result = ExecWithZeroRI(finalFep, stackValues, runtimeCore);
+                result = ExecWithZeroRI(finalFep, stackValues, runtimeCore,true);
             }
             else //replicated call
             {
@@ -556,7 +556,7 @@ namespace EmitMSIL
             replicationInstructions = instructions;
         }
 
-        private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
+        private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore, bool isExplicitCall)
         {
             List<CLRStackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, runtimeCore);
 
@@ -570,9 +570,10 @@ namespace EmitMSIL
 
             //TODO this causes a test failure. (array reduction to var not allowed)
             //this is always false, and the comment below does not make sense.
-            if (!dsRetValue.IsExplicitCall)
+
+            // An explicit call requires return coercion at the return instruction
+            if (!isExplicitCall)
             {
-                // An explicit call requires return coercion at the return instruction
                 dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep, dsRetValue, runtimeCore);
             }
 
@@ -601,7 +602,7 @@ namespace EmitMSIL
             //Recursion base case
             if (replicationInstructions.Count == 0)
             {
-                return ExecWithZeroRI(finalFep, formalParameters, runtimeCore);
+                return ExecWithZeroRI(finalFep, formalParameters, runtimeCore,false);
             }
 
             //Get the replication instruction that this call will deal with
