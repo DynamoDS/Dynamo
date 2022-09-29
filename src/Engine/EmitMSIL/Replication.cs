@@ -243,7 +243,7 @@ namespace EmitMSIL
             object result;
             if (replicationInstructions.Count == 0)
             {
-                result = ExecWithZeroRI(finalFep, stackValues, runtimeCore,true);
+                result = ExecWithZeroRI(finalFep, stackValues, runtimeCore);
             }
             else //replicated call
             {
@@ -556,7 +556,7 @@ namespace EmitMSIL
             replicationInstructions = instructions;
         }
 
-        private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore, bool isExplicitCall)
+        private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
         {
             List<CLRStackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, runtimeCore);
 
@@ -572,7 +572,7 @@ namespace EmitMSIL
             //this is always false, and the comment below does not make sense.
 
             // An explicit call requires return coercion at the return instruction
-            if (!isExplicitCall)
+            if (!dsRetValue.IsExplicitCall)
             {
                 dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep, dsRetValue, runtimeCore);
             }
@@ -602,7 +602,7 @@ namespace EmitMSIL
             //Recursion base case
             if (replicationInstructions.Count == 0)
             {
-                return ExecWithZeroRI(finalFep, formalParameters, runtimeCore,false);
+                return ExecWithZeroRI(finalFep, formalParameters, runtimeCore);
             }
 
             //Get the replication instruction that this call will deal with

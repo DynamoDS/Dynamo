@@ -327,13 +327,17 @@ list3 = FFITarget.ReplicationTestA.ArbitraryRank(0..3,(0..2)<1><2>);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
+
+        #endregion
+
+        #region Var[]..[] arg and return type replication
         [Test]
-        public void NoLacing_ReductionFromArrayToVar()
+        [Category("Failure")]//TODO fails because FirstItem FEP has wrong return type. (var instead of var[]..[])
+        public void NoRepGuide_NoReplication()
         {
             string dscode = @"
 import(""DesignScriptBuiltin.dll"");
 import(""DSCoreNodes.dll"");
-//def FirstItem(var[]..[]):var
 list3 = DSCore.List.FirstItem([0..10,11..20]);
 ";
             var ast = ParserUtils.Parse(dscode).Body;
@@ -342,12 +346,91 @@ list3 = DSCore.List.FirstItem([0..10,11..20]);
 
             Assert.IsTrue(output.ContainsKey("list3"));
 
-            var expectedResult = new int[] { 0,1,2,3,4,5,6,7,8,9,10 };
+            var expectedResult = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
-        #endregion
+        [Test]
+        public void RepGuide_Replication()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.List.FirstItem([0..10,11..20]<1>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[] { 0, 11 };
+
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        [Test]
+        public void RepGuideL_Replication()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.List.FirstItem([0..10,11..20]<1L>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[] { 0, 11 };
+
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        [Test]
+        [Category("Failure")]//TODO fails because FirstItem FEP has wrong return type. (var instead of var[]..[])
+        public void RepGuide_Replication_Level1()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.List.FirstItem([[0..10,11..20]]<1>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new object[] { new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } };
+
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+        [Test]
+        [Category("Failure")] //TODO this test WILL fail when List.FirstItem is imported correctly with an extra level of nesting.
+        //preemptively marking as failure.
+        public void RepGuide_Replication_Jagged()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+list3 = DSCore.List.FirstItem([[0,1,3,4,5],[2,3,4,5],[6,7,8]]<1L>);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("list3"));
+
+            var expectedResult = new int[] { 0, 2, 6 };
+
+            var result = output["list3"];
+            Assert.AreEqual(expectedResult, result);
+        }
+#endregion
 
         [Test]
         public void MSIL_Arithmetic_No_Replication()
