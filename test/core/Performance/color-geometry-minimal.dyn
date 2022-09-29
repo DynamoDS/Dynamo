@@ -1,0 +1,298 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "lotsofcoloredstuff-minimal",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "8190039b694b4ef2ad33c48f5d964519",
+      "Inputs": [
+        {
+          "Id": "b56de8c9476c4b02a47a69796c65a6ce",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3ecfde3b0e1c45de906567ec39756cc9",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b36af3447e1b433390d01367ec56488b",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f9030fc05e314fcd9dc963daa740c40a",
+          "Name": "Point",
+          "Description": "Point created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Color.ByARGB@int,int,int,int",
+      "Id": "02aac675c7b647ac89a9aa35c1c22d33",
+      "Inputs": [
+        {
+          "Id": "43c3cd46768243d09563fe0710d185f7",
+          "Name": "alpha",
+          "Description": "Alpha value (between 0 and 255 inclusive)\n\nint\nDefault value : 255",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c3b21c5bae8849b6a44715d8c7f4e99e",
+          "Name": "red",
+          "Description": "Red value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "20213be1fe0549ea9f74cb4a961db279",
+          "Name": "green",
+          "Description": "Green value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f478d46653564fbf85acffe320b02fbd",
+          "Name": "blue",
+          "Description": "Blue value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9e9a45305b444385b683aad73e28f76a",
+          "Name": "color",
+          "Description": "Color created from ARGB",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Construct a color by alpha, red, green, and blue components.\n\nColor.ByARGB (alpha: int = 255, red: int = 0, green: int = 0, blue: int = 0): Color"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Modifiers.GeometryColor.ByGeometryColor@Autodesk.DesignScript.Geometry.Geometry,DSCore.Color",
+      "Id": "45e01769bf3b4a68811a83d799533c8e",
+      "Inputs": [
+        {
+          "Id": "5254f3f6281a47e4a79fdf56b6337bc3",
+          "Name": "geometry",
+          "Description": "The geometry to which you would like to apply color.\n\nGeometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e7d3bc46f21c45ffaea5fc420b664193",
+          "Name": "color",
+          "Description": "The color.\n\nColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fcdd31a3764d46688cf0fa6df8df6c25",
+          "Name": "GeometryColor",
+          "Description": "A Display object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Display geometry using a color.\n\nGeometryColor.ByGeometryColor (geometry: Geometry, color: Color): GeometryColor"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1..2;",
+      "Id": "38936bde85aa4788ba1f690ab73c65df",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "048f5048104545a7b612653fa44c6539",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f9030fc05e314fcd9dc963daa740c40a",
+      "End": "5254f3f6281a47e4a79fdf56b6337bc3",
+      "Id": "0242069e152e47dc8413903b0429e6bc",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9e9a45305b444385b683aad73e28f76a",
+      "End": "e7d3bc46f21c45ffaea5fc420b664193",
+      "Id": "8f63d1ccab864190981c61a4160c2d43",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "048f5048104545a7b612653fa44c6539",
+      "End": "b56de8c9476c4b02a47a69796c65a6ce",
+      "Id": "6899c412a81644a3a4ef45ba705579ff",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "048f5048104545a7b612653fa44c6539",
+      "End": "3ecfde3b0e1c45de906567ec39756cc9",
+      "Id": "342e6624146249a88b9b9bbef08c6f8c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "048f5048104545a7b612653fa44c6539",
+      "End": "b36af3447e1b433390d01367ec56488b",
+      "Id": "7e41a76ba2f44cfe9ce4d31a4e6f9218",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.15",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.2705",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 66.010910034179688,
+      "EyeY": 58.547088623046875,
+      "EyeZ": 30.807262420654297,
+      "LookX": -41.010414123535156,
+      "LookY": -33.897079467773438,
+      "LookZ": -55.807258605957031,
+      "UpX": -0.14024661481380463,
+      "UpY": 0.97154915332794189,
+      "UpZ": -0.19084835052490234
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Point.ByCoordinates",
+        "ShowGeometry": true,
+        "Id": "8190039b694b4ef2ad33c48f5d964519",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1362.9459712817,
+        "Y": 379.201169296295
+      },
+      {
+        "Name": "Color.ByARGB",
+        "ShowGeometry": true,
+        "Id": "02aac675c7b647ac89a9aa35c1c22d33",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1378.7183083929533,
+        "Y": 578.37445982793611
+      },
+      {
+        "Name": "GeometryColor.ByGeometryColor",
+        "ShowGeometry": true,
+        "Id": "45e01769bf3b4a68811a83d799533c8e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1696.58637396502,
+        "Y": 430.93145789566285
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "38936bde85aa4788ba1f690ab73c65df",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1028.718601414517,
+        "Y": 400.47782483890114
+      }
+    ],
+    "Annotations": [],
+    "X": -907.1013487385552,
+    "Y": -325.13477376821561,
+    "Zoom": 1.0880146566354068
+  }
+}
