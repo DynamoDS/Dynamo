@@ -630,7 +630,7 @@ namespace ProtoFFI
                     collection.CopyTo(arr, 0);
                     return Activator.CreateInstance(expectedCLRType, new[] { arr });
                 }
-                return Activator.CreateInstance(expectedCLRType, collection );
+                return Activator.CreateInstance(expectedCLRType, new[] { collection });
             }
 
             if (expectedCLRType.IsArray || expectedCLRType.IsGenericType)
