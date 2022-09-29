@@ -49,6 +49,7 @@ using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using Brush = System.Windows.Media.Brush;
+using Exception = System.Exception;
 using Image = System.Windows.Controls.Image;
 using Point = System.Windows.Point;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
@@ -1338,11 +1339,24 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestSave3DImage(object sender, ImageSaveEventArgs e)
         {
-            // dpi aware, otherwise incorrect images are created
-            var scale = VisualTreeHelper.GetDpi(this);
-            var dpiX = scale.PixelsPerInchX;
-            var dpiY = scale.PixelsPerInchY;
+            var dpiX = 0.0;
+            var dpiY = 0.0;
 
+            // dpi aware, otherwise incorrect images are created
+            try
+            {
+                var scale = VisualTreeHelper.GetDpi(this);
+                dpiX = scale.PixelsPerInchX;
+                dpiY = scale.PixelsPerInchY;
+            }
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
+
+                dpiX = 96;
+                dpiY = 96;
+            }
+            
             var bitmapSource = BackgroundPreview.View.RenderBitmap();
             // this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
             var rtBitmap = new RenderTargetBitmap(bitmapSource.PixelWidth, bitmapSource.PixelHeight, dpiX, dpiY, PixelFormats.Pbgra32);
