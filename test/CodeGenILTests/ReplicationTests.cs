@@ -571,5 +571,31 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                 },
                 output["test4"]));
         }
+
+        [Test]
+        [Category("Failure")] // A DSCore.Color object fails with a "Unable to locate managed object for given dsObject." exception
+        public void Range_Finds_All_Color_Objects()
+        {
+            string code =
+            @"
+            import(""ProtoGeometry.dll"");
+            import (""DesignScriptBuiltin.dll"");
+            import (""DSCoreNodes.dll"");
+            import (""GeometryColor.dll"");
+
+            a=1..2;
+            p = Autodesk.DesignScript.Geometry.Point.ByCoordinates(a,a,a);
+            c = DSCore.Color.ByARGB(255,0,0,0);
+            g = Modifiers.GeometryColor.ByGeometryColor(p, c);
+            ";
+
+            var ast = ParserUtils.Parse(code).Body;
+            var output = new Dictionary<string, object>();
+            Assert.DoesNotThrow(() =>
+            {
+                output = codeGen.EmitAndExecute(ast);
+            });
+            Assert.IsNotEmpty(output);
+        }
     }
 }
