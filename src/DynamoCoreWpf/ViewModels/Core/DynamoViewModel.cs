@@ -3095,7 +3095,23 @@ namespace Dynamo.ViewModels
                     return false;
             }
             return true;
-        }        
+        }
+       
+        /// <summary>
+        /// Check if the current file is located in a Trusted Location
+        /// </summary>
+        public void CheckCurrentFileInTrustedLocation()
+        {
+            bool isCurrentFileInPathLocation = CurrentSpaceViewModel.FileName.Length > 0 ? PreferenceSettings.IsTrustedLocation(Path.GetDirectoryName(CurrentSpaceViewModel.FileName)) : false;
+
+            if ((currentWorkspaceViewModel?.IsHomeSpace ?? false) &&
+                !ShowStartPage &&
+                !model.PreferenceSettings.DisableTrustWarnings &&
+                !isCurrentFileInPathLocation) {
+
+                FileTrustViewModel.AllowOneTimeTrust = false;
+            }
+        }
 
         #endregion
     }
