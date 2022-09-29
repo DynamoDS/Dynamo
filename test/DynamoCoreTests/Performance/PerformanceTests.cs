@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,10 +30,8 @@ namespace Dynamo.Tests
             var failingTests = new string[] { 
                 "aniform.dyn",
                 "lotsofcoloredstuff.dyn",
-                //TODO this fails because replicaton adds another level of nesting to Point.ByCoordinates()
-                "index_mixed_type_nested_array.dyn",
-                //TODO this fails for two reasons. we convert string to IEnum of char in getCLRData - but something is also wrong with list structure.
-                "list_array_coercion.dyn"};
+                //TODO_MSIL fails because var[]..[] return type is imported as var - maybe multiple reasons.
+                "longest_shortest_lacing.dyn"};
 
             // Ignore aniform and lotsofcoloredstuff for now
             return fis.Where(fi =>!failingTests.Contains(fi.Name)).Select(fi => fi.FullName).ToArray();
