@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -1040,6 +1040,14 @@ namespace FFITarget
 
             public Point Center { get; set; }
             public double Radius { get; set; }
+        }
+
+        public class NurbsCurve
+        {
+            public static NurbsCurve ByPoints(IEnumerable<Point> points)
+            {
+                return new NurbsCurve();
+            }
         }
     }
 }

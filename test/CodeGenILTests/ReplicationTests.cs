@@ -494,12 +494,12 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
         {
             string code =
             @"
-                import(""ProtoGeometry.dll"");
                 import(""DesignScriptBuiltin.dll"");
                 import(""DSCoreNodes.dll"");
+                import(""FFITarget.dll"");
                 t1 = (1..3);
-                point1 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(t1<1>, t1<2>, 0);
-                nurbsCurve1 = Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(point1);
+                point1 = FFITarget.Dynamo.Point.XYZ(t1<1>, t1<2>, 0);
+                nurbsCurve1 = FFITarget.Dynamo.NurbsCurve.ByPoints(point1);
             ";
             var ast = ParserUtils.Parse(code).Body;
             var output = codeGen.EmitAndExecute(ast);
@@ -515,9 +515,9 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                 Assert.NotNull(ptRow);
 
                 Assert.AreEqual(3, ptRow.Length);
-                Assert.True(ptRow[0] is Autodesk.DesignScript.Geometry.Point);
-                Assert.True(ptRow[1] is Autodesk.DesignScript.Geometry.Point);
-                Assert.True(ptRow[2] is Autodesk.DesignScript.Geometry.Point);
+                Assert.True(ptRow[0] is FFITarget.Dynamo.Point);
+                Assert.True(ptRow[1] is FFITarget.Dynamo.Point);
+                Assert.True(ptRow[2] is FFITarget.Dynamo.Point);
             }
             var nurbs = output["nurbsCurve1"] as object[];
             Assert.NotNull(nurbs);
@@ -525,7 +525,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.AreEqual(3, nurbs.Length);
             foreach (var obj in nurbs)
             {
-                Assert.True(obj is Autodesk.DesignScript.Geometry.NurbsCurve);
+                Assert.True(obj is FFITarget.Dynamo.NurbsCurve);
             }
         }
 
