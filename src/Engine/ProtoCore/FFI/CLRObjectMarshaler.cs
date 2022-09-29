@@ -628,9 +628,7 @@ namespace ProtoFFI
                 {
                     var arr = Array.CreateInstance(elementType, collection.Count);
                     collection.CopyTo(arr, 0);
-                    return Activator.CreateInstance(expectedCLRType, new[] {arr } );
-
-
+                    return Activator.CreateInstance(expectedCLRType, new[] { arr });
                 }
                 return Activator.CreateInstance(expectedCLRType, collection );
             }
