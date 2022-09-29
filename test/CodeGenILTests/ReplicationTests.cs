@@ -26,9 +26,7 @@ list3 = DSCore.Math.Max([ 1, 4, 7, 2], [ 5, 8, 3, 6 ]);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
-
         #region longest
-
         [Test]
         public void ZTLongestLacing_ShouldReturn4Results()
         {
@@ -43,11 +41,10 @@ list3 = DSCore.Math.Max(10, [ 5, 8, 3, 6 ]<1L>);
 
             Assert.IsTrue(output.ContainsKey("list3"));
 
-            var expectedResult = new int[] { 10, 10, 10, 10 };
+            var expectedResult = new int[] { 10,10,10,10};
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
-
         [Test]
         public void ZTLongestLacing_ShouldReturn4NestedResults_WithGuide()
         {
@@ -66,7 +63,6 @@ list3 = DSCore.Math.Max([10], [ 5, 8, 3, 6 ]<1L>);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
-
         [Test]
         public void ZTLongestLacing_ShouldReturn4NestedResults_WithHigherGuideOnListOfSingleItem1()
         {
@@ -85,7 +81,6 @@ list3 = DSCore.Math.Max([10]<2>, [ 5, 8, 3, 6 ]<1L>);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
-
         [Test]
         public void ZTLongestLacing_ShouldReturn4NestedResults_WithHigherGuideOnListOfSingleItem2()
         {
@@ -104,7 +99,6 @@ list3 = DSCore.Math.Max([10]<2>, [ 5, 8, 3, 6 ]<1>);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
-
         [Test]
         public void ZTLongestLacing_ShouldReturn4Results_WithoutGuide()
         {
@@ -157,12 +151,10 @@ list3 = DSCore.Math.Max([10,3]<1L>, [[1,1],[2,2,2],[4,4,4,4]]<1>);
 
             Assert.IsTrue(output.ContainsKey("list3"));
 
-            var expectedResult = new int[][]
-            {
+            var expectedResult = new int[][] {
                 new[] { 10, 10 },
                 new int[] { 3, 3, 3 },
-                new int[] { 4, 4, 4, 4 }
-            };
+                new int[] { 4, 4, 4, 4 } };
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
@@ -181,12 +173,10 @@ list3 = DSCore.Math.Max([10,3]<1>, [[1,1],[2,2,2],[4,4,4,4]]<1L>);
 
             Assert.IsTrue(output.ContainsKey("list3"));
 
-            var expectedResult = new int[][]
-            {
+            var expectedResult = new int[][] {
                 new[] { 10, 10 },
                 new int[] { 3, 3, 3 },
-                new int[] { 4, 4, 4, 4 }
-            };
+                new int[] { 4, 4, 4, 4 } };
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
@@ -205,35 +195,21 @@ list3 = DSCore.Math.Max([10,3]<2>, [[1,1],[2,2,2],[4,4,4,4]]<1>);
 
             Assert.IsTrue(output.ContainsKey("list3"));
 
-            var expectedResult = new int[][][]
-            {
-                new[]
-                {
-                    new[] { 10, 10 },
-                    new int[] { 3, 3 }
-                },
+            var expectedResult = new int[][][] {
+                new []{new[] { 10, 10 },
+                new int[] { 3, 3 } },
 
-                new[]
-                {
-                    new[] { 10, 10, 10 },
-                    new int[] { 3, 3, 3 }
-                },
+                 new []{new[] { 10, 10,10 },
+                new int[] { 3, 3, 3 } },
 
-                new[]
-                {
-                    new[] { 10, 10, 10, 10 },
-                    new int[] { 4, 4, 4, 4 }
-                }
-            };
+                  new []{new[] { 10, 10,10,10 },
+                new int[] { 4, 4, 4,4 } } };
 
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
-
         #endregion
-
         #region shortest
-
         [Test]
         public void ZTShortestLacing_ShouldReturnSingleItem_AndBeDefault()
         {
@@ -286,7 +262,7 @@ list3 = DSCore.Math.Max([10,3], [ 1,1,1,1]);
 
             Assert.IsTrue(output.ContainsKey("list3"));
 
-            var expectedResult = new int[] { 10, 3 };
+            var expectedResult = new int[] { 10,3 };
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
@@ -305,7 +281,7 @@ list3 = DSCore.Math.Max([10,3], [[1,1],[2,2,2],[4,4,4,4]]);
 
             Assert.IsTrue(output.ContainsKey("list3"));
 
-            var expectedResult = new int[][] { new[] { 10, 10 }, new int[] { 3, 3, 3 } };
+            var expectedResult = new int[][] { new[] { 10,10 }, new int[] { 3, 3, 3 } };
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
@@ -325,11 +301,10 @@ list3 = FFITarget.ReplicationTestA.ArbitraryRank(0..3,0..2);
 
             Assert.IsTrue(output.ContainsKey("list3"));
 
-            var expectedResult = new int[] { 3, 4, 5, 6 };
+            var expectedResult = new int[] {3,4,5,6 };
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
-
         [Test]
         public void ZTShortestLacing_ArbitraryRank_ReplicateBothArgs()
         {
@@ -345,16 +320,13 @@ list3 = FFITarget.ReplicationTestA.ArbitraryRank(0..3,(0..2)<1><2>);
 
             Assert.IsTrue(output.ContainsKey("list3"));
 
-            var expectedResult = new int[][]
-            {
-                new[] { 1, 2, 3, 4 },
-                new[] { 1, 2, 3, 4 },
-                new[] { 1, 2, 3, 4 }
-            };
+            var expectedResult = new int[][] {
+                new[] { 1,2,3,4 },
+                new[] { 1,2,3,4 },
+                new[] { 1,2,3,4 } };
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
-
         #endregion
 
         [Test]
@@ -397,7 +369,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
         public void MSIL_Replication_BuiltinMethods()
         {
             string code =
-                @" 
+            @" 
                 import(""DesignScriptBuiltin.dll"");
                 import(""DSCoreNodes.dll"");
                 x = [0,1,2,3];
@@ -423,7 +395,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
         public void MSIL_ReplicationGuides_BuiltinMethods()
         {
             string code =
-                @" 
+            @" 
                 import(""DesignScriptBuiltin.dll"");
                 import(""DSCoreNodes.dll"");
                 x = [[0,1],[2,3]];
@@ -440,27 +412,11 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
 
-            Assert.AreEqual(output["test1"],
-                new Object[] { new Object[] { true, true }, new Object[] { false, false } });
+            Assert.AreEqual(output["test1"], new Object[] { new Object[] { true, true }, new Object[] { false, false } });
             Assert.AreEqual(output["test2"], new Object[] { new Object[] { 0, 1 }, new Object[] { -1, -1 } });
-            Assert.AreEqual(output["test3"],
-                new Object[]
-                {
-                    new Object[] { new Object[] { 1 }, new Object[] { 0 } },
-                    new Object[] { new Object[] { 3 }, new Object[] { 2 } }
-                });
-            Assert.AreEqual(output["test4"],
-                new Object[]
-                {
-                    new Object[] { new Object[] { 0, 0, 1 }, new Object[] { 0, 1, 1 } },
-                    new Object[] { new Object[] { 0, 2, 3 }, new Object[] { 2, 1, 3 } }
-                });
-            Assert.AreEqual(output["test5"],
-                new Object[]
-                {
-                    new Object[] { new Object[] { 0, 1 }, new Object[] { 0, 1 } },
-                    new Object[] { new Object[] { 2, 3 }, new Object[] { 2, 3 } }
-                });
+            Assert.AreEqual(output["test3"], new Object[] { new Object[] { new Object[] { 1 }, new Object[] { 0 } }, new Object[] { new Object[] { 3 }, new Object[] { 2 } } });
+            Assert.AreEqual(output["test4"], new Object[] { new Object[] { new Object[] { 0, 0, 1 }, new Object[] { 0, 1, 1 } }, new Object[] { new Object[] { 0, 2, 3 }, new Object[] { 2, 1, 3 } } });
+            Assert.AreEqual(output["test5"], new Object[] { new Object[] { new Object[] { 0, 1 }, new Object[] { 0, 1 } }, new Object[] { new Object[] { 2, 3 }, new Object[] { 2, 3 } } });
         }
 
 
@@ -482,12 +438,12 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                 var aIEnum = (a as IEnumerable<object>).ToList();
                 var bIEnum = (b as IEnumerable<object>).ToList();
 
-                if (aIEnum.Count() != bIEnum.Count())
-                {
-                    return false;
+                if (aIEnum.Count() != bIEnum.Count()) 
+                { 
+                    return false; 
                 }
 
-                for (int ii = 0; ii < aIEnum.Count(); ii++)
+                for (int ii=0; ii < aIEnum.Count(); ii++)
                 {
                     if (!AreEqual(aIEnum[ii], bIEnum[ii]))
                     {
@@ -510,7 +466,6 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                        aR.Y == bR.Y &&
                        aR.Z == bR.Z;
             }
-
             return false;
         }
 
@@ -518,7 +473,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
         public void CrossProductReplication_ResultPassedAs2DArray()
         {
             string code =
-                @"
+            @"
                 import(""DesignScriptBuiltin.dll"");
                 import(""DSCoreNodes.dll"");
                 import(""FFITarget.dll"");
@@ -544,7 +499,6 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                 Assert.True(ptRow[1] is FFITarget.Dynamo.Point);
                 Assert.True(ptRow[2] is FFITarget.Dynamo.Point);
             }
-
             var nurbs = output["nurbsCurve1"] as object[];
             Assert.NotNull(nurbs);
 
@@ -559,7 +513,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
         public void MSIL_FuncCall_Double_SomeGuides()
         {
             string code =
-                @"
+            @"
             import(""DesignScriptBuiltin.dll"");
             import (""FFITarget.dll"");
             x = [0.0,1.0];
@@ -576,8 +530,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.IsNotEmpty(output);
 
             Assert.IsTrue(AreEqual(
-                new Object[]
-                {
+                new Object[] {
                     new FFITarget.ReplicationTestA() { X = 0, Y = 2, Z = 4 },
                     new FFITarget.ReplicationTestA() { X = 1, Y = 3, Z = 5 }
                 },
@@ -587,30 +540,23 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                 output["test2"]));
 
             Assert.IsTrue(AreEqual(
-                new Object[]
-                {
-                    new Object[]
-                    {
-                        new Object[]
-                        {
+                new Object[] {
+                    new Object[] {
+                        new Object[] {
                             new FFITarget.ReplicationTestA() { X = 0, Y = 2, Z = 4 },
                             new FFITarget.ReplicationTestA() { X = 0, Y = 2, Z = 5 }
                         },
-                        new Object[]
-                        {
+                        new Object[] {
                             new FFITarget.ReplicationTestA() { X = 0, Y = 3, Z = 4 },
                             new FFITarget.ReplicationTestA() { X = 0, Y = 3, Z = 5 }
                         }
                     },
-                    new Object[]
-                    {
-                        new Object[]
-                        {
+                    new Object[] {
+                        new Object[] {
                             new FFITarget.ReplicationTestA() { X = 1, Y = 2, Z = 4 },
                             new FFITarget.ReplicationTestA() { X = 1, Y = 2, Z = 5 }
                         },
-                        new Object[]
-                        {
+                        new Object[] {
                             new FFITarget.ReplicationTestA() { X = 1, Y = 3, Z = 4 },
                             new FFITarget.ReplicationTestA() { X = 1, Y = 3, Z = 5 }
                         }
@@ -619,8 +565,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                 output["test3"]));
 
             Assert.IsTrue(AreEqual(
-                new Object[]
-                {
+                new Object[] {
                     new Object[] { 6, 8 },
                     new Object[] { 7, 9 }
                 },
