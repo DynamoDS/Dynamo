@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using NUnit.Framework;
@@ -33,7 +34,13 @@ namespace ProtoTestFx.TD
         private static string mErrorMessage = "";
         bool testImport;
         bool testDebug;
-        bool dumpDS=false;
+        //control which VM is used to run tests.
+        //TODO move to prototestbase?
+        //TODO can we reuse the bool that controls execution?
+        bool testMSILExecution = true;
+        Dictionary<string, object> MSILMirror;
+
+        bool dumpDS =false;
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
         bool executeInDebugMode = true;
@@ -397,6 +404,17 @@ namespace ProtoTestFx.TD
         {
             sourceCode = sourceCode.Insert(0, "import(\"DesignScriptBuiltin.dll\");");
 
+            if (testMSILExecution)
+            {
+                var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+                var outputpath = Path.Combine(assemblyPath, "MSILTestOutput");
+                System.IO.Directory.CreateDirectory(outputpath);
+                var inputs = new Dictionary<string, IList>();
+                var codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(outputpath, $"OpCodesTEST{NUnit.Framework.TestContext.CurrentContext.Test.Name}.txt"));
+                MSILMirror = runner.CompileAndGenerateMSIL(sourceCode, codeGen);
+                return null;
+            }
+
             if (testImport)
             {
                 Guid g;
@@ -740,9 +758,17 @@ namespace ProtoTestFx.TD
 
         public void Verify(string dsVariable, object expectedValue, int startBlock = 0)
         {
+            //TODO create a MSILRuntime mirror and interface for mirrors?
+            if (testMSILExecution)
+            {
+                var result = MSILMirror[dsVariable];
+                Assert.AreEqual(result, expectedValue);
+                return;
+            }
             RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, GetTestRuntimeCore());
             AssertValue(mirror.GetData(), expectedValue);
-            //Verify(testMirror, dsVariable, expectedValue, startBlock);
+
+
         }
 
         public static void VerifyBuildWarning(ProtoCore.BuildData.WarningID id)
