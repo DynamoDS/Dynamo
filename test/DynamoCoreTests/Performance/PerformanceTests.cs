@@ -29,9 +29,7 @@ namespace Dynamo.Tests
             var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
             var failingTests = new string[] { 
                 "aniform.dyn",
-                "lotsofcoloredstuff.dyn",
-                //TODO_MSIL fails because var[]..[] return type is imported as var - maybe multiple reasons.
-                "longest_shortest_lacing.dyn"};
+                "lotsofcoloredstuff.dyn"};
 
             // Ignore aniform and lotsofcoloredstuff for now
             return fis.Where(fi =>!failingTests.Contains(fi.Name)).Select(fi => fi.FullName).ToArray();
