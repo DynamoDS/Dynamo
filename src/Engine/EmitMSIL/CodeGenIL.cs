@@ -475,55 +475,70 @@ namespace EmitMSIL
             {
                 return mBase;
             }
-        
+
+            int cid = runtimeCore.ClassTable.GetClassId(className);
             if (!CoreUtils.IsInternalMethod(methodName))
             {
-                int cid = runtimeCore.ClassTable.GetClassId(className);
                 Validity.Assert(cid != DSASM.Constants.kInvalidIndex);
+            }
 
-                // Can this be used at compile time ? or does this need to be at runtime ? 
-                var fg = runtimeCore.GetFuncGroup(methodName, className);
+            // Can this be used at compile time ? or does this need to be at runtime ? 
+            var fg = runtimeCore.GetFuncGroup(methodName, className);
 
-                // This checks if there is a static property like Point.X(arg) 
-                // and if so renames it to Point.get_X(arg) so that it can be 
-                // found as a static getter in the class declaration.
-                if (args.Count == 1)
+            // This checks if there is a static property like Point.X(arg) 
+            // and if so renames it to Point.get_X(arg) so that it can be 
+            // found as a static getter in the class declaration.
+            if (args.Count == 1)
+            {
+                // Try to find a getter
+                if (fg == null)
                 {
-                    // Try to find a getter
-                    if (fg == null)
-                    {
-                        methodName = ProtoCore.DSASM.Constants.kGetterPrefix + methodName;
-                        fg = runtimeCore.GetFuncGroup(methodName, className);
-                    }
-
-                    // Try to find a setter
-                    if (fg == null)
-                    {
-                        methodName = ProtoCore.DSASM.Constants.kSetterPrefix + methodName;
-                        fg = runtimeCore.GetFuncGroup(methodName, className);
-                    }
+                    methodName = ProtoCore.DSASM.Constants.kGetterPrefix + methodName;
+                    fg = runtimeCore.GetFuncGroup(methodName, className);
                 }
 
-                Validity.Assert(fg != null, "Did not find a function group");
-
-                var ffiFuncs = fg.FunctionEndPoints.Cast<FFIFunctionEndPoint>().Where(x => x != null);
-                foreach (var ffiFunc in ffiFuncs)
+                // Try to find a setter
+                if (fg == null)
                 {
-                    var procNode = ffiFunc.procedureNode;
-                    Validity.Assert(procNode != null, "Expected to have a valid procedureNode");
+                    methodName = ProtoCore.DSASM.Constants.kSetterPrefix + methodName;
+                    fg = runtimeCore.GetFuncGroup(methodName, className);
+                }
+            }
 
-                    bool matchingArgCount = (procNode.IsStatic || procNode.IsConstructor) ?
-                        procNode.ArgumentTypes.Count == args.Count :
-                        (procNode.ArgumentTypes.Count + 1) == args.Count;
+            Validity.Assert(fg != null, "Did not find a function group");
 
-                    if (!matchingArgCount) {
-                        continue;
-                    }
+            foreach (var funcEnd in fg.FunctionEndPoints)
+            {
+                var procNode = funcEnd.procedureNode;
+                Validity.Assert(procNode != null, "Expected to have a valid procedureNode");
 
-                    FFIHandler handler = FFIFunctionEndPoint.FFIHandlers[ffiFunc.activation.ModuleType];
+                bool isStaticOrConstructorOrInternal = procNode.IsStatic || procNode.IsConstructor || CoreUtils.IsInternalMethod(methodName);
+
+                bool matchingArgCount = isStaticOrConstructorOrInternal ?
+                    procNode.ArgumentTypes.Count == args.Count :
+                    (procNode.ArgumentTypes.Count + 1) == args.Count;
+
+                if (!matchingArgCount) {
+                    continue;
+                }
+
+                FFIMemberInfo fFIMemberInfo = null;
+                System.Type declaringType = null;
+                ParameterInfo[] parameterInfos = null;
+
+                if (CoreUtils.IsInternalMethod(methodName))//equivalent to if (funcEnd is JILFunctionEndPoint)
+                {
+                    var mInfo = BuiltIn.GetInternalMethod(methodName);
+                    parameterInfos = mInfo.GetParameters();
+                    declaringType = mInfo.DeclaringType;
+                    fFIMemberInfo = new FFIMethodInfo(mInfo);
+                }
+                else if (funcEnd is FFIFunctionEndPoint ffiFep)
+                {
+                    FFIHandler handler = FFIFunctionEndPoint.FFIHandlers[ffiFep.activation.ModuleType];
                     FFIFunctionPointer functionPointer = handler.GetFunctionPointer(
-                        ffiFunc.activation.ModuleName, className, ffiFunc.activation.FunctionName,
-                        ffiFunc.activation.ParameterTypes, ffiFunc.activation.ReturnType);
+                        ffiFep.activation.ModuleName, className, ffiFep.activation.FunctionName,
+                        ffiFep.activation.ParameterTypes, ffiFep.activation.ReturnType);
                     if (functionPointer == null)
                     {
                         continue;
@@ -532,58 +547,39 @@ namespace EmitMSIL
                     var clrFFI = functionPointer as CLRFFIFunctionPointer;
                     Validity.Assert(clrFFI != null, "Only CLRFFIFunctionPointer is supported for now");
 
-                    List<ProtoCore.CLRFunctionEndPoint.ParamInfo> formalParams = new List<ProtoCore.CLRFunctionEndPoint.ParamInfo>();
-
-                    if (!procNode.IsStatic && !procNode.IsConstructor)
-                    {
-                        // First argument is the this pointer
-                        // So we need to add an extra parameter to match the arguments
-                        var thisPtrType = clrFFI.ReflectionInfo.DeclaringType;
-                        var dsType = runtimeCore.GetProtoCoreType(thisPtrType);
-                        formalParams.Add(new ProtoCore.CLRFunctionEndPoint.ParamInfo() { CLRType = thisPtrType, ProtoInfo = dsType });
-                    }
-
-                    int i = 0;
-                    FFIParameterInfo[] paraminfos = clrFFI.ReflectionInfo.GetParameters();
-                    foreach (var paramInfo in paraminfos)
-                    {
-                        var protoType = procNode.ArgumentTypes[i];
-                        formalParams.Add(new ProtoCore.CLRFunctionEndPoint.ParamInfo() { CLRType = paramInfo.Info.ParameterType, ProtoInfo = protoType });
-                        i++;
-                    }
-
-                    ProtoCore.CLRFunctionEndPoint fep = new ProtoCore.CLRFunctionEndPoint(clrFFI.ReflectionInfo, formalParams, procNode.ReturnType);
-                    mbs.Add(fep);
+                    parameterInfos = clrFFI.ReflectionInfo.GetParameters().Select(x => x.Info).ToArray();
+                    declaringType = clrFFI.ReflectionInfo.DeclaringType;
+                    fFIMemberInfo = clrFFI.ReflectionInfo;
                 }
-                if (mbs.Any())
+                else
                 {
-                    methodCache.Add(key, mbs);
+                    throw new NotImplementedException("Unkown FunctionEndpoint type. Not implemented yet");
                 }
-            }
-            else
-            {
-                var mInfo = BuiltIn.GetInternalMethod(methodName);
 
                 List<ProtoCore.CLRFunctionEndPoint.ParamInfo> formalParams = new List<ProtoCore.CLRFunctionEndPoint.ParamInfo>();
-                if (!mInfo.IsStatic && !mInfo.IsConstructor)
+                if (!isStaticOrConstructorOrInternal)
                 {
                     // First argument is the this pointer
                     // So we need to add an extra parameter to match the arguments
-                    var thisPtrType = mInfo.DeclaringType;
-                    var dsType = runtimeCore.GetProtoCoreType(thisPtrType);
-                    formalParams.Add(new ProtoCore.CLRFunctionEndPoint.ParamInfo() { CLRType = thisPtrType, ProtoInfo = dsType });
+                    var dsType = runtimeCore.GetProtoCoreType(declaringType);
+                    formalParams.Add(new ProtoCore.CLRFunctionEndPoint.ParamInfo() { CLRType = declaringType, ProtoInfo = dsType });
                 }
 
-                foreach (var param in mInfo.GetParameters())
+                Validity.Assert(parameterInfos.Length == procNode.ArgumentTypes.Count, "Expected argument counts to match");
+                int i = 0;
+                foreach (var paramInfo in parameterInfos)
                 {
-                    var dsType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(param.ParameterType);
-                    formalParams.Add(new ProtoCore.CLRFunctionEndPoint.ParamInfo() { CLRType = param.ParameterType, ProtoInfo = dsType });
+                    var protoType = procNode.ArgumentTypes[i];
+                    formalParams.Add(new ProtoCore.CLRFunctionEndPoint.ParamInfo() { CLRType = paramInfo.ParameterType, ProtoInfo = protoType });
+                    i++;
                 }
 
-                var fep = new ProtoCore.CLRFunctionEndPoint(new ProtoFFI.FFIMethodInfo(mInfo), formalParams,
-                    ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(mInfo.ReturnType));
-
+                ProtoCore.CLRFunctionEndPoint fep = new ProtoCore.CLRFunctionEndPoint(fFIMemberInfo, formalParams, procNode.ReturnType);
                 mbs.Add(fep);
+            }
+
+            if (mbs.Any())
+            {
                 methodCache.Add(key, mbs);
             }
 
