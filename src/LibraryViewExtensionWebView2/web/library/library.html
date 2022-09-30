@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -298,7 +298,7 @@
 
         //This will subscribe a handler to the div.click event, so when is clicked we will be moved to the next Step
         function subscribePackageClickedEvent(packageName, enable) {
-            var found_div = findPackageDiv(packageName);
+            var found_div = findPackageDiv(packageName, "LibraryItemText");
             if (found_div == null) {
                 return;
             }
@@ -378,7 +378,7 @@
 
         //get information about the current position of a specific div element, if the WebBrowser is resized the values will change
         function getDocumentClientRect(divElement) {
-            var targetDiv = findPackageDiv(divElement);
+            var targetDiv = findPackageDiv(divElement, "LibraryItemText");
             if (targetDiv == null) return;
             var rect = targetDiv.parentNode.getBoundingClientRect();
             var clientRectDiv = {
@@ -400,7 +400,7 @@
 
         //scroll down until the bottom of the page so the AddOns always be visible
         function scrollToBottom() {
-            window.scrollTo(0, document.body.scrollHeight);
+            document.getElementsByClassName("LibraryItemContainer")[0].scroll(0, document.body.scrollHeight)
         }
 
         //This method will be executed when the WebBrowser change its size, so we can update the Popup vertical location that is over the library
