@@ -406,6 +406,7 @@ namespace ProtoTestFx.TD
 
             if (testMSILExecution)
             {
+                Console.WriteLine($"!!!!test {NUnit.Framework.TestContext.CurrentContext.Test.Name} being run with MSIL compiler!!!!");
                 var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
                 var outputpath = Path.Combine(assemblyPath, "MSILTestOutput");
                 System.IO.Directory.CreateDirectory(outputpath);
