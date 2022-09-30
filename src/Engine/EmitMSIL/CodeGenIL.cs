@@ -545,15 +545,16 @@ namespace EmitMSIL
             return mbs;
         }
 
-        private static HashSet<Type> GetTypeStatisticsForArray(ExprListNode array)
+        private HashSet<Type> GetTypeStatisticsForArray(ExprListNode array, ref int rank)
         {
+            rank += 1;
             var arrayTypes = new HashSet<Type>();
 
             foreach (var exp in array.Exprs)
             {
                 if (exp is ExprListNode eln)
                 {
-                    var subArray = GetTypeStatisticsForArray(eln);
+                    var subArray = GetTypeStatisticsForArray(eln, ref rank);
                     var t = GetOverallTypeForArray(subArray);
 
                     if (t != typeof(object))
@@ -583,7 +584,11 @@ namespace EmitMSIL
                             t = typeof(string);
                             break;
                         case AstKind.Identifier:
-                            t = typeof(object);
+                            if(variables.TryGetValue((exp as IdentifierNode).Value, out Tuple<int, Type> tuple))
+                            {
+                                t = tuple.Item2;
+                            }
+                            else t = typeof(object);
                             break;
                         default:
                             t = typeof(object);
@@ -793,8 +798,7 @@ namespace EmitMSIL
             }
             else
             {
-                var cInfo = mBase as ConstructorInfo;
-                if (cInfo != null) ilGen.Emit(opCode, cInfo);
+                ilGen.Emit(opCode, mBase as ConstructorInfo);
             }
             writer.WriteLine($"{opCode} {mBase}");
         }
@@ -870,7 +874,7 @@ namespace EmitMSIL
             var bNode = node as BinaryExpressionNode;
             if (bNode == null) throw new ArgumentException("AST node must be a Binary Expression");
 
-            if (bNode.Optr == ProtoCore.DSASM.Operator.assign)
+            if (bNode.Optr == DSASM.Operator.assign)
             {
                 var t = DfsTraverse(bNode.RightNode);
 
@@ -936,7 +940,8 @@ namespace EmitMSIL
             {
                 throw new ArgumentException("AST node must be an Expression List.");
             }
-            var arrayTypes = GetTypeStatisticsForArray(eln);
+            int rank = 0;
+            var arrayTypes = GetTypeStatisticsForArray(eln, ref rank);
             var ot = GetOverallTypeForArray(arrayTypes);
 
             EmitArray(ot, eln.Exprs, (AssociativeNode el, int idx) =>
@@ -1228,52 +1233,228 @@ namespace EmitMSIL
             // number of args = number of parameters if static.
             // num args = num params + 1 if instance as first arg is this pointer.
             var isStatic = mBase.IsStatic;
-            
-            // Emit args for input to call to ReplicationLogic
-            EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
+
+            var isRepCall = WillCallReplicate(parameters, isStatic, args);
+
+            if (isRepCall)
             {
-                Type t = DfsTraverse(n);
-                if (isStatic)
+                // Emit args for input to call to ReplicationLogic
+                EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
                 {
-                    t = EmitCoercionCode(n, t, parameters[index]);
-                }
-                else if (index > 0)
-                {
-                    t = EmitCoercionCode(n, t, parameters[index - 1]);
-                }
-
-                if (t == null) return;
-
-                if (t.IsValueType)
-                {
-                    EmitOpCode(OpCodes.Box, t);
-                }
-            });
-
-            // Emit guides
-            EmitArray(typeof(string[]), args, (AssociativeNode n, int idx) =>
-            {
-                if (n is ArrayNameNode argIdent)
-                {
-                    var argGuides = argIdent.ReplicationGuides;
-                    EmitArray(typeof(string), argGuides, (AssociativeNode gn, int gidx) =>
+                    Type t = DfsTraverse(n);
+                    if (isStatic)
                     {
-                        var repGuideNode = gn as ReplicationGuideNode;
-                        EmitOpCode(OpCodes.Ldstr, repGuideNode.ToString());
-                    });
-                }
-                else
+                        t = EmitCoercionCode(n, t, parameters[index]);
+                    }
+                    else if (index > 0)
+                    {
+                        t = EmitCoercionCode(n, t, parameters[index - 1]);
+                    }
+
+                    if (t == null) return;
+
+                    if (t.IsValueType)
+                    {
+                        EmitOpCode(OpCodes.Box, t);
+                    }
+                });
+
+                // Emit guides
+                EmitArray(typeof(string[]), args, (AssociativeNode n, int idx) =>
                 {
+                    if (n is ArrayNameNode argIdent)
+                    {
+                        var argGuides = argIdent.ReplicationGuides;
+                        EmitArray(typeof(string), argGuides, (AssociativeNode gn, int gidx) =>
+                        {
+                            var repGuideNode = gn as ReplicationGuideNode;
+                            EmitOpCode(OpCodes.Ldstr, repGuideNode.ToString());
+                        });
+                    }
+                    else
+                    {
                     // Emit an empty string array.
                     EmitArray<string>(arrType: typeof(string), items: null, itemEmitter: null);
+                    }
+                });
+
+                // Emit call to ReplicationLogic
+                var repLogic = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic));
+                EmitOpCode(OpCodes.Call, repLogic);
+
+                return typeof(object);
+            }
+            else
+            {
+                int index = 0;
+                // non-replicating call
+                foreach(var arg in args)
+                {
+                    Type t = DfsTraverse(arg);
+                    if (isStatic)
+                    {
+                        t = EmitCoercionCode(arg, t, parameters[index]);
+                    }
+                    else if (index > 0)
+                    {
+                        t = EmitCoercionCode(arg, t, parameters[index - 1]);
+                    }
+                    index++;
                 }
-            });
+                EmitOpCode(OpCodes.Call, mBase);
+                if (mBase is MethodInfo mi) return mi.ReturnType;
+                else
+                {
+                    var ci = mBase as ConstructorInfo;
+                    return ci.DeclaringType;
+                }
+            }
+        }
 
-            // Emit call to ReplicationLogic
-            keygen = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic));
-            EmitOpCode(OpCodes.Call, keygen);
+        private bool DoesParamArgRankMatch(ParameterInfo[] parameters, List<AssociativeNode> args, int argIndex)
+        {
+            foreach (var p in parameters)
+            {
+                if (CoreUtils.IsPrimitiveASTNode(args[argIndex]) || args[argIndex] is CharNode)
+                {
+                    // arg is a single value (primitive type), but param is not (array promotion case).
+                    if (ArrayUtils.IsEnumerable(p.ParameterType) && p.ParameterType != typeof(string))
+                    {
+                        return false;
+                    }
 
-            return typeof(object);
+                    switch (args[argIndex].Kind)
+                    {
+                        //case AstKind.Integer:
+                        //    // Coercion exists between numeric types.
+                        //    if (p.ParameterType != typeof(long) && p.ParameterType != typeof(int)
+                        //        && p.ParameterType != typeof(double))
+                        //        return false;
+                        //    break;
+                        //case AstKind.Double:
+                        //    // Coercion exists between numeric types.
+                        //    if (p.ParameterType != typeof(double) && p.ParameterType != typeof(long)
+                        //        && p.ParameterType != typeof(int))
+                        //        return false;
+                        //    break;
+                        case AstKind.String:
+                            var strNode = args[argIndex] as StringNode;
+                            if (p.ParameterType == typeof(char))
+                            {
+                                if (strNode.Value.Length != 1) return false;
+                            }
+                            break;
+                        case AstKind.Char:
+                            if (p.ParameterType == typeof(string)) return false;
+                            break;
+                        //case AstKind.Boolean:
+                        //    // All other single values can be coerced to bool except for collections.
+                        //    if (p.ParameterType.IsArray || ArrayUtils.IsEnumerable(p.ParameterType))
+                        //        return false;
+                        //    break;
+                    }
+                }
+                else if(args[argIndex] is ExprListNode exp)
+                {
+                    if (!ArrayUtils.IsEnumerable(p.ParameterType) || p.ParameterType == typeof(string))
+                    {
+                        // arg is an enumerable type, param is not.
+                        return false;
+                    }
+                    //var argRank = 0;
+                    //var arrayTypes = GetTypeStatisticsForArray(exp, ref argRank);
+                    var argRank = GetReductionDepth(exp as AssociativeNode, (x) => x is ExprListNode ? (x as ExprListNode).Exprs : null);
+                    if(argRank == -1)
+                    {
+                        // non-rectangular array
+                        return false;
+                    }
+                    if (argRank != GetRank(p.ParameterType)) return false;
+                }
+                else if (args[argIndex] is IdentifierNode idn)
+                {
+                    if (idn.ReplicationGuides.Count > 0) return false;
+
+                    var t = variables[idn.Value].Item2;
+                    if (!p.ParameterType.Equals(t))
+                    {
+                        // TODO: check if rank of t matches with that of p.
+                        var argRank = GetRank(t);
+                        var paramRank = GetRank(p.ParameterType);
+                        if (argRank != paramRank) return false;
+
+                        // If both have rank 0, it could also be because their type info is ambiguous.
+                        if (argRank == 0 && paramRank == 0) return false;
+                    }
+                }
+                argIndex++;
+            }
+            return true;
+        }
+
+        private static int GetRank(Type type)
+        {
+            return type.IsArray ? GetArrayRank(type) : GetEnumerableRank(type);
+        }
+
+        private static int GetArrayRank(Type type)
+        {
+            if (!type.IsArray) return 0;
+
+            return 1 + GetArrayRank(type.GetElementType());
+        }
+
+        private static int GetEnumerableRank(Type type)
+        {
+            var genericArgs = type.GetGenericArguments();
+            if (genericArgs.Length == 0) return 0;
+
+            return 1 + GetEnumerableRank(genericArgs.FirstOrDefault());
+        }
+
+        private static int GetReductionDepth<T>(T val, Func<T, IEnumerable> asArr)
+        {
+            IEnumerable arr = asArr(val);
+            if (arr == null)
+            {
+                return 0;
+            }
+            int firstRank = 0;
+            int i = 0;
+            //De-ref the val
+            foreach (T subVal in arr)
+            {
+                int rank = GetReductionDepth(subVal, asArr);
+                if (i == 0) firstRank = rank;
+
+                if (rank != firstRank) return -1;
+                i++;
+            }
+            return 1 + firstRank;
+        }
+
+        private bool WillCallReplicate(ParameterInfo[] parameters, bool isStatic, List<AssociativeNode> args)
+        {
+            // number of args = number of parameters if static.
+            // num args = num params + 1 if instance as first arg is this pointer.
+            if (isStatic)
+            {
+                return !DoesParamArgRankMatch(parameters, args, argIndex: 0);
+            }
+            else
+            {
+                // args[0] is assigned to the instance object in case of an instance method.
+                if(args[0] is IdentifierNode idn)
+                {
+                    var t = variables[idn.Value].Item2;
+
+                    if(t.IsArray || ArrayUtils.IsEnumerable(t))
+                    {
+                        return true;
+                    }
+                }
+                return !DoesParamArgRankMatch(parameters, args, argIndex: 1);
+            }
         }
 
         private void EmitFunctionDefinitionNode(AssociativeNode node)
