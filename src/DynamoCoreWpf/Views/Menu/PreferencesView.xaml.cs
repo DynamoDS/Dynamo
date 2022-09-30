@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -61,6 +62,8 @@ namespace Dynamo.Wpf.Views
             //We need to store the ScaleFactor value in a temporary variable always when the Preferences dialog is created.
             scaleValue = dynViewModel.ScaleFactorLog;
             ResetGroupStyleForm();
+
+            viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
         }
 
         /// <summary>
@@ -433,6 +436,34 @@ namespace Dynamo.Wpf.Views
                        ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
-        }        
+        }
+
+        // Show File path dialog
+        private void OnRequestShowFileDialog(object sender, EventArgs e)
+        {
+            var args = e as PythonTemplatePathEventArgs;
+            args.Cancel = true;
+
+            var dialog = new System.Windows.Forms.OpenFileDialog
+            {
+                // Navigate to initial folder.
+                FileName = args.Path
+            };
+
+            dialog.Filter = "All Files (*.*)|*.*";
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                args.Cancel = false;
+                args.Path = dialog.FileName;
+            }
+        }
+
+        // Number input textbox validation
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
     }
 }

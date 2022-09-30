@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -3322,5 +3322,29 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="ImportSettingsFailedMessage" xml:space="preserve">
    <value>Import Failed</value>
+  </data>
+  <data name="PreferencesSettingHardwareAcceleration" xml:space="preserve">
+    <value>Use Hardware Acceleration</value>
+  </data>
+  <data name="PreferencesSettingCustomPythomTemplate" xml:space="preserve">
+    <value>Custom Python Template File Path</value>
+    <comment>Preferences | Features | Python | Python Template File</comment>
+  </data>
+  <data name="PreferencesSettingBackupInterval" xml:space="preserve">
+    <value>Auto-Backup Interval</value>
+    <comment>Setting menu | Auto-Backup Interval</comment>
+  </data>
+    <data name="PreferencesSettingMaxRecentFiles" xml:space="preserve">
+    <value>Maximum Number of Recent Files</value>
+    <comment>Setting menu | Maximum Number of Recent Files</comment>
+  </data>
+  <data name="BackupInternalUnit" xml:space="preserve">
+    <value>Minute(s) between backups</value>
+  </data>
+  <data name="PythonTemplateAddPathTooltip" xml:space="preserve">
+    <value>Add a file path for Python Node Template</value>
+  </data>
+  <data name="AddFilePathButtonName" xml:space="preserve">
+    <value>Add File Path</value>
   </data>
 </root>
