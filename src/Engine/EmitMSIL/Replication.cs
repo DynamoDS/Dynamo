@@ -9,6 +9,7 @@ using ProtoCore.Exceptions;
 using ProtoCore.Properties;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
+using ProtoFFI;
 
 namespace EmitMSIL
 {
@@ -86,42 +87,12 @@ namespace EmitMSIL
                 }
                 catch (InvalidOperationException)
                 {
-                    string message = String.Format(Resources.kFFIFailedToObtainObject, paramType.Name, formalParams[i].CLRInfo.Member.DeclaringType.Name, formalParams[i].CLRInfo.Member.Name);
+                    string message = String.Format(Resources.kFFIFailedToObtainObject, paramType.Name, formalParams[i].CLRType.DeclaringType.Name, formalParams[i].CLRType.Name);
                     runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
                     return null;
                 }
             }
             return values;
-        }
-
-        internal static List<CLRFunctionEndPoint> CreateFEPs(IEnumerable<MethodBase> methods)
-        {
-            List<CLRFunctionEndPoint> feps = new List<CLRFunctionEndPoint>();
-            foreach (var mInfo in methods)
-            {
-                List<CLRFunctionEndPoint.ParamInfo> formalParams = new List<CLRFunctionEndPoint.ParamInfo>();
-
-                if (!mInfo.IsStatic && !mInfo.IsConstructor)
-                {
-                    // First argument is the this pointer
-                    // So we need to add an extra parameter to match the arguments
-                    var thisPtrType = mInfo.DeclaringType;
-                    var dsType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(thisPtrType);
-                    formalParams.Add(new CLRFunctionEndPoint.ParamInfo() { ThisPtrType = thisPtrType, ProtoInfo = dsType });
-                }
-                
-                foreach (var param in mInfo.GetParameters())
-                {
-                    var dsType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(param.ParameterType);
-                    formalParams.Add(new CLRFunctionEndPoint.ParamInfo() { CLRInfo = param, ProtoInfo = dsType });
-                }
-
-                CLRFunctionEndPoint fep = new CLRFunctionEndPoint(mInfo, formalParams);
-                
-                feps.Add(fep);
-            }
-
-            return feps;
         }
 
         private static CLRFunctionEndPoint SelectFinalFep(List<CLRFunctionEndPoint> functionEndPoint,
@@ -210,17 +181,10 @@ namespace EmitMSIL
         /// <param name="args"></param>
         /// <param name="replicationAttrs"></param>
         /// <returns></returns>
-        public static object ReplicationLogic(IEnumerable<MethodBase> mInfos, IList args, string[][] replicationAttrs)
+        public static object ReplicationLogic(List<CLRFunctionEndPoint> feps, IList args, string[][] replicationAttrs, MSILRuntimeCore runtimeCore)
         {
-            // Static instance of MSILRuntimeCore
-            // TODO_MSIL: FIgure out how and when to set this runtimeCore (CodeGen should have it too)
-            MSILRuntimeCore runtimeCore = new MSILRuntimeCore();
-
             // TODO_MSIL: Emit these CLRStackValue's from the CodeGen stage.
             var stackValues = MarshalFunctionArguments(args, runtimeCore);
-
-            // TODO_MSIL: Emit these CLRFunctionEndpoint's from the CodeGen stage.
-            var feps = CreateFEPs(mInfos);
 
             // Construct replicationGuides from replicationAttrs
             var replicationGuides = ConstructRepGuides(replicationAttrs);
@@ -236,8 +200,10 @@ namespace EmitMSIL
             List<CLRFunctionEndPoint> resolvedFeps;
             List<ReplicationInstruction> replicationInstructions;
             ComputeFeps(stackValues, feps, partialInstructions, runtimeCore, out resolvedFeps, out replicationInstructions);
+            Validity.Assert(resolvedFeps.Count > 0, "Expected to resolve at least a function endpoint");
 
             var finalFep = SelectFinalFep(resolvedFeps, stackValues, runtimeCore);
+            Validity.Assert(finalFep != null, "Expected to find a function endpoint");
 
             object result;
             if (replicationInstructions.Count == 0)
@@ -565,7 +531,7 @@ namespace EmitMSIL
             object result = finalFep.Invoke(args);
             
             var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
-            CLRStackValue dsRetValue = marshaller.Marshal(result, ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(finalFep.ReturnType), runtimeCore);
+            CLRStackValue dsRetValue = marshaller.Marshal(result, finalFep.ProtoCoreReturnType, runtimeCore);
 
             //TODO this causes a test failure. (array reduction to var not allowed)
             //this is always false, and the comment below does not make sense.
@@ -573,10 +539,10 @@ namespace EmitMSIL
             // An explicit call requires return coercion at the return instruction
             if (!dsRetValue.IsExplicitCall)
             {
-                dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep, dsRetValue, runtimeCore);
+                dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep.ProtoCoreReturnType, dsRetValue, runtimeCore);
             }
 
-            var returnVal = marshaller.UnMarshal(dsRetValue, finalFep.ReturnType, runtimeCore);
+            var returnVal = marshaller.UnMarshal(dsRetValue, finalFep.CLRReturnType, runtimeCore);
 
             return returnVal;
         }

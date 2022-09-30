@@ -8,6 +8,14 @@ namespace CodeGenILTests
 {
     class ReplicationTests : MicroTests
     {
+        protected override void GetLibrariesToPreload(ref List<string> libraries)
+        {
+            base.GetLibrariesToPreload(ref libraries);
+            libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FFITarget.dll");
+        }
+
         [Test]
         public void MSIL_Arithmetic_List_And_List_Same_Length()
         {
@@ -332,7 +340,6 @@ list3 = FFITarget.ReplicationTestA.ArbitraryRank(0..3,(0..2)<1><2>);
 
         #region Var[]..[] arg and return type replication
         [Test]
-        [Category("Failure")]//TODO fails because FirstItem FEP has wrong return type. (var instead of var[]..[])
         public void NoRepGuide_NoReplication()
         {
             string dscode = @"
@@ -389,8 +396,8 @@ list3 = DSCore.List.FirstItem([0..10,11..20]<1L>);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
+
         [Test]
-        [Category("Failure")]//TODO fails because FirstItem FEP has wrong return type. (var instead of var[]..[])
         public void RepGuide_Replication_Level1()
         {
             string dscode = @"
@@ -409,9 +416,8 @@ list3 = DSCore.List.FirstItem([[0..10,11..20]]<1>);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
+
         [Test]
-        [Category("Failure")] //TODO this test WILL fail when List.FirstItem is imported correctly with an extra level of nesting.
-        //preemptively marking as failure.
         public void RepGuide_Replication_Jagged()
         {
             string dscode = @"
@@ -488,7 +494,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
 
-            Assert.AreEqual(output["test1"], new Object[] { true, true });
+            Assert.AreEqual(output["test1"], false);
             Assert.AreEqual(output["test2"], new Object[] { 0, 1 });
             Assert.AreEqual(output["test3"], new Object[] { 2, 3 });
             Assert.AreEqual(output["test4"], new Object[] { new Object[] { 0, 1, 2, 3 }, new Object[] { 0, 1, 2, 3 } });

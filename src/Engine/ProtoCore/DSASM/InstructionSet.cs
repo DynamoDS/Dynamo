@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.Exceptions;
@@ -113,7 +113,7 @@ namespace ProtoCore.DSASM
     /// <summary>
     /// Wrapper over all values handled by the MSIL/CLR engine.
     /// </summary>
-    internal struct CLRStackValue
+    public struct CLRStackValue
     {
         // TODO_MSIL: Figure out if we need to use an AddressType, like StackValue
         public bool IsEnumerable => Type != typeof(string) && ArrayUtils.IsEnumerable(Type);

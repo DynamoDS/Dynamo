@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -39,7 +39,7 @@ namespace EmitMSIL
             var key = CodeGenIL.KeyGen(className, methodName, args.Count);
             var mi = methodCache[key];
             // 6. Emit call to ReplicationLogic by passing input args from previous steps
-            var c = Replication.ReplicationLogic(mi, args, guides);
+            var c = Replication.ReplicationLogic(null, args, guides, null);
 
             // 7. read output identifier from lhs of AST and emit assignment
             output.Add("c", c);
@@ -60,7 +60,7 @@ namespace EmitMSIL
             key = CodeGenIL.KeyGen(className, methodName, args.Count);
             mi = methodCache[key];
             // 6. Emit call to ReplicationLogic by passing input args from previous steps
-            var d = Replication.ReplicationLogic(mi, args, guides);
+            var d = Replication.ReplicationLogic(null, args, guides, null);
             // 7. read output identifier from lhs of AST and emit assignment
             output.Add("d", d);
 

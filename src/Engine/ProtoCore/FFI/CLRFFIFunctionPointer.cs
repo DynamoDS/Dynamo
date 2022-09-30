@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -55,7 +55,7 @@ namespace ProtoFFI
 
     abstract class FFIMemberInfo
     {
-        protected MemberInfo Info { get; private set; }
+        internal MemberInfo Info { get; private set; }
         private AllowRankReductionAttribute mRankReducer;
         private bool? mAllowRankReduction;
 
@@ -209,6 +209,8 @@ namespace ProtoFFI
             }
         }
 
+        internal System.Type ReturnType => mMethod.ReturnType;
+
         public override FFIParameterInfo[] GetParameters()
         {
             if (mParameterInfos == null)
@@ -266,6 +268,9 @@ namespace ProtoFFI
             get;
             private set;
         }
+
+        internal ProtoCore.Type[] ArgumementTypes => mArgTypes;
+        internal ProtoCore.Type ReturnType => mReturnType;
 
         readonly ProtoCore.Type[] mArgTypes;
         readonly ProtoCore.Type mReturnType;
