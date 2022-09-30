@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -924,7 +924,7 @@ namespace ProtoCore.Utils
             {
                 return ve.Cast<object>().Select(x => GetDataOfCLRValue(x)).ToList();
             }
-            return value.ToString();
+            return value?.ToString();
         }
 
         public static bool IsNonStaticPropertyLookupOnClass(ProcedureNode procCallNode, string className)

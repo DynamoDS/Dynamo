@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -190,7 +190,7 @@ namespace Dynamo.Tests
                             portvalues.AddRange(n.OutPorts.Select<PortModel, object>(p =>
                             {
                                 var obj = n.GetCLRValue(p.Index, controller);
-                                if (typeof(IEnumerable).IsAssignableFrom(obj.GetType()))
+                                if (typeof(IEnumerable).IsAssignableFrom(obj?.GetType()))
                                 {
                                     var values = new List<object>();
                                     foreach(var val in obj as IEnumerable)
@@ -323,8 +323,7 @@ namespace Dynamo.Tests
                     // of the string representation for forming this message
                     // fails.
                     Assert.AreEqual(valueA, valueB,
-                    string.Format("Node Type:{0} value, {1} is not equal to {2}",
-                    a.NodeTypeMap[kvp.Key], valueA, valueB));
+                    $"Node {kvp.Key} Type:{a.NodeTypeMap[kvp.Key]} value, {valueA} is not equal to {valueB}");
                 }
                 catch
                 {
