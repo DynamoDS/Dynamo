@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -165,12 +165,6 @@ namespace ProtoCore.Mirror
             {
                 return null;
             }
-        }
-
-        internal static void ClearMarshaller()
-        {
-            interpreter = null;
-            marshaler = null;
         }
     }
 
