@@ -450,7 +450,8 @@ namespace Dynamo.Wpf.Views
                 FileName = args.Path
             };
 
-            dialog.Filter = "All Files (*.*)|*.*";
+            //Filter python files.
+            dialog.Filter = "Python File|*.py";
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {

@@ -342,6 +342,7 @@
                                                      BorderThickness="0,0,0,2"
                                                      PreviewTextInput="NumberValidationTextBox"/>
                                             <Label Grid.Column="1"
+                                                   FontWeight="Regular"
                                                    Content="{x:Static p:Resources.BackupInternalUnit}"
                                                    Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                         </Grid>
