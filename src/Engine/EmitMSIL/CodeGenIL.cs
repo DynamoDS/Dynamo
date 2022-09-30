@@ -1325,18 +1325,6 @@ namespace EmitMSIL
 
                     switch (args[argIndex].Kind)
                     {
-                        //case AstKind.Integer:
-                        //    // Coercion exists between numeric types.
-                        //    if (p.ParameterType != typeof(long) && p.ParameterType != typeof(int)
-                        //        && p.ParameterType != typeof(double))
-                        //        return false;
-                        //    break;
-                        //case AstKind.Double:
-                        //    // Coercion exists between numeric types.
-                        //    if (p.ParameterType != typeof(double) && p.ParameterType != typeof(long)
-                        //        && p.ParameterType != typeof(int))
-                        //        return false;
-                        //    break;
                         case AstKind.String:
                             var strNode = args[argIndex] as StringNode;
                             if (p.ParameterType == typeof(char))
@@ -1347,14 +1335,9 @@ namespace EmitMSIL
                         case AstKind.Char:
                             if (p.ParameterType == typeof(string)) return false;
                             break;
-                        //case AstKind.Boolean:
-                        //    // All other single values can be coerced to bool except for collections.
-                        //    if (p.ParameterType.IsArray || ArrayUtils.IsEnumerable(p.ParameterType))
-                        //        return false;
-                        //    break;
                     }
                 }
-                else if(args[argIndex] is ExprListNode exp)
+                else if (args[argIndex] is ExprListNode exp)
                 {
                     if (!ArrayUtils.IsEnumerable(p.ParameterType) || p.ParameterType == typeof(string))
                     {
@@ -1364,9 +1347,9 @@ namespace EmitMSIL
                     //var argRank = 0;
                     //var arrayTypes = GetTypeStatisticsForArray(exp, ref argRank);
                     var argRank = GetReductionDepth(exp as AssociativeNode, (x) => x is ExprListNode ? (x as ExprListNode).Exprs : null);
-                    if(argRank == -1)
+                    if (argRank == -1)
                     {
-                        // non-rectangular array
+                        // non-rectangular (jagged) array best handled by replication
                         return false;
                     }
                     if (argRank != GetRank(p.ParameterType)) return false;
@@ -1387,6 +1370,7 @@ namespace EmitMSIL
                         if (argRank == 0 && paramRank == 0) return false;
                     }
                 }
+                else return false;
                 argIndex++;
             }
             return true;
