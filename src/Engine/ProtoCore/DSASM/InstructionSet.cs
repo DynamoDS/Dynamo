@@ -140,7 +140,7 @@ namespace ProtoCore.DSASM
         public object Value { get; set; }
 
 
-        public CLRStackValue(object value, int protoType)
+        internal CLRStackValue(object value, int protoType)
         {
             this.Value = value;
             this.TypeUID = protoType;

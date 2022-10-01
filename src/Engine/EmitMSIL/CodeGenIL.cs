@@ -22,7 +22,7 @@ namespace EmitMSIL
         internal string className;
         internal string methodName;
         private IDictionary<string, IList> input;
-        public ProtoCore.MSILRuntimeCore runtimeCore;
+        internal ProtoCore.MSILRuntimeCore runtimeCore;
         
         /// <summary>
         /// counter for local variables, should only be used directly during GatherTypeInfo phase.
@@ -60,14 +60,14 @@ namespace EmitMSIL
             }
         }
 
-        public CodeGenIL(IDictionary<string, IList> input, string filePath, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal CodeGenIL(IDictionary<string, IList> input, string filePath, ProtoCore.MSILRuntimeCore runtimeCore)
         {
             this.input = input;
             writer = new StreamWriter(filePath);
             this.runtimeCore = runtimeCore;
         }
 
-        public IDictionary<string, object> Emit(List<AssociativeNode> astList, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal IDictionary<string, object> Emit(List<AssociativeNode> astList)
         {
             var timer = new Stopwatch();
             timer.Start();
@@ -77,7 +77,7 @@ namespace EmitMSIL
             // Invoke emitted method (ExecuteIL.Execute)
             timer.Restart();
             var t = compileResult.tbuilder.CreateType();
-            var mi = t.GetMethod("Execute");
+            var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
             var output = new Dictionary<string, object>();
 
             // null can be replaced by an 'input' dictionary if available.
@@ -96,7 +96,7 @@ namespace EmitMSIL
 
             // Invoke emitted method (ExecuteIL.Execute)
             var t = compileResult.tbuilder.CreateType();
-            var mi = t.GetMethod("Execute");
+            var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
             var output = new Dictionary<string, object>();
             mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
             return output;
@@ -118,7 +118,7 @@ namespace EmitMSIL
             var type = BuilderHelper.CreateType(mod, "ExecuteIL");
             // 4. Create method ("Execute"), get ILGenerator 
             var execMethod = BuilderHelper.CreateMethod(type, "Execute",
-                System.Reflection.MethodAttributes.Static, typeof(void), new[] { typeof(IDictionary<string, IList>),
+                System.Reflection.MethodAttributes.Static | System.Reflection.MethodAttributes.Private, typeof(void), new[] { typeof(IDictionary<string, IList>),
                 typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>), typeof(IDictionary<string, object>), typeof(ProtoCore.MSILRuntimeCore)});
             ilGen = execMethod.GetILGenerator();
 
@@ -469,16 +469,16 @@ namespace EmitMSIL
 
         private IEnumerable<ProtoCore.CLRFunctionEndPoint> FunctionLookup(IList args)
         {
-            List<ProtoCore.CLRFunctionEndPoint> mbs = new List<ProtoCore.CLRFunctionEndPoint>();
+            var mbs = new List<ProtoCore.CLRFunctionEndPoint>();
             var key = KeyGen(className, methodName, args.Count);
             if (methodCache.TryGetValue(key, out IEnumerable<ProtoCore.CLRFunctionEndPoint> mBase))
             {
                 return mBase;
             }
-
-            int cid = runtimeCore.ClassTable.GetClassId(className);
+            
             if (!CoreUtils.IsInternalMethod(methodName))
             {
+                int cid = runtimeCore.ClassTable.GetClassId(className);
                 Validity.Assert(cid != DSASM.Constants.kInvalidIndex);
             }
 
@@ -488,21 +488,11 @@ namespace EmitMSIL
             // This checks if there is a static property like Point.X(arg) 
             // and if so renames it to Point.get_X(arg) so that it can be 
             // found as a static getter in the class declaration.
-            if (args.Count == 1)
+            if (fg == null && args.Count == 1)
             {
                 // Try to find a getter
-                if (fg == null)
-                {
-                    methodName = ProtoCore.DSASM.Constants.kGetterPrefix + methodName;
-                    fg = runtimeCore.GetFuncGroup(methodName, className);
-                }
-
-                // Try to find a setter
-                if (fg == null)
-                {
-                    methodName = ProtoCore.DSASM.Constants.kSetterPrefix + methodName;
-                    fg = runtimeCore.GetFuncGroup(methodName, className);
-                }
+                methodName = ProtoCore.DSASM.Constants.kGetterPrefix + methodName;
+                fg = runtimeCore.GetFuncGroup(methodName, className);
             }
 
             Validity.Assert(fg != null, "Did not find a function group");
@@ -556,7 +546,7 @@ namespace EmitMSIL
                     throw new NotImplementedException("Unkown FunctionEndpoint type. Not implemented yet");
                 }
 
-                List<ProtoCore.CLRFunctionEndPoint.ParamInfo> formalParams = new List<ProtoCore.CLRFunctionEndPoint.ParamInfo>();
+                var formalParams = new List<ProtoCore.CLRFunctionEndPoint.ParamInfo>();
                 if (!isStaticOrConstructorOrInternal)
                 {
                     // First argument is the this pointer
@@ -1248,14 +1238,14 @@ namespace EmitMSIL
             var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
             EmitOpCode(OpCodes.Call, keygen);
 
-            var local = DeclareLocal(typeof(IEnumerable<ProtoCore.CLRFunctionEndPoint>), "cached MethodBase objects");
+            var local = DeclareLocal(typeof(IEnumerable<ProtoCore.CLRFunctionEndPoint>), "cached CLR function endpoints");
             //local could be null if we are not emitting currently.
             if(local != null)
             {
                 EmitOpCode(OpCodes.Ldloca, local);
             }
 
-            // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<MethodBase> mInfos)
+            // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<ProtoCore.CLRFunctionEndPoint> mInfos)
             var dictLookup = typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>).GetMethod(
                 nameof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>.TryGetValue));
             EmitOpCode(OpCodes.Callvirt, dictLookup);
@@ -1316,10 +1306,11 @@ namespace EmitMSIL
                 }
             });
 
+            // Emit call to load the runtimeCore argument
             EmitOpCode(OpCodes.Ldarg_3);
 
             // Emit call to ReplicationLogic
-            keygen = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic));
+            keygen = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic), BindingFlags.Public | BindingFlags.Static);
             EmitOpCode(OpCodes.Call, keygen);
 
             return typeof(object);

@@ -15,7 +15,7 @@ namespace ProtoCore
     /// </summary>
     public sealed class CLRFunctionEndPoint
     {
-        public struct ParamInfo
+        internal struct ParamInfo
         {
             public ProtoCore.Type ProtoInfo;
             public System.Type CLRType;
@@ -32,7 +32,7 @@ namespace ProtoCore
 
         internal ProtoCore.Type ProtoCoreReturnType;
 
-        public List<ParamInfo> FormalParams
+        internal List<ParamInfo> FormalParams
         {
             get;
             set;

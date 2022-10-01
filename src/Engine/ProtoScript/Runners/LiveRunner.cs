@@ -1271,10 +1271,12 @@ namespace ProtoScript.Runners
             Dictionary<string, IList> input = new Dictionary<string, IList>();
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
+            //TODO_MSIL: remove the dependency on the old VM by implementing
+            //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
             msilRuntimeCore = msilRuntimeCore ?? new MSILRuntimeCore(runtimeCore);
             var codeGenIL = new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"), msilRuntimeCore);
             
-            graphOutput = codeGenIL.Emit(finalDeltaAstList, msilRuntimeCore);
+            graphOutput = codeGenIL.Emit(finalDeltaAstList);
             CompileAndExecutionTime = codeGenIL.CompileAndExecutionTime;
         }
 

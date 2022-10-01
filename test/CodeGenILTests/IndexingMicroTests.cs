@@ -14,8 +14,6 @@ namespace CodeGenILTests
         protected override void GetLibrariesToPreload(ref List<string> libraries)
         {
             base.GetLibrariesToPreload(ref libraries);
-            libraries.Add("DesignScriptBuiltin.dll");
-            libraries.Add("DSCoreNodes.dll");
             libraries.Add("FFITarget.dll");
         }
 

@@ -440,6 +440,9 @@ namespace ProtoCore
         internal FunctionGroup GetFuncGroup(string methodName, string className)
         {
             int classScope = ClassTable.IndexOf(className);
+            // TODO_MSIL: figure out how to resolve polymorphism at runtime
+            // (Some part of method resolution will need to be done at runtime,
+            // hopefully based on the partial result found at compile time)
             // try to use dynamic classScope
             /*if (arguments.Count > 0)
             {
