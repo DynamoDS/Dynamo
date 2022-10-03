@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -119,9 +119,10 @@ namespace Dynamo.ViewModels
                 return;
             }
             
-            TrustedLocations.Insert(TrustedLocations.Count, args.Path);
+            TrustedLocations.Insert(TrustedLocations.Count, args.Path);            
             CommitChanges(null);
             RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(TrustedPathViewModel.Action.Insert));
         }
 
         private void ShowFileDialog(TrustedPathEventArgs e)
@@ -154,6 +155,7 @@ namespace Dynamo.ViewModels
 
             TrustedLocations[index] = args.Path;
             CommitChanges(null);
+            RaisePropertyChanged(nameof(TrustedPathViewModel.Action.Update));
         }
 
         private void RemovePathAt(int index)
@@ -161,6 +163,7 @@ namespace Dynamo.ViewModels
             TrustedLocations.RemoveAt(index);
             CommitChanges(null);
             RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(TrustedPathViewModel.Action.Remove));
         }
 
         private void CommitChanges(object param)
@@ -173,5 +176,23 @@ namespace Dynamo.ViewModels
             TrustedLocations = new ObservableCollection<string>(settings?.TrustedLocations ?? new List<string>());
             RaisePropertyChanged(string.Empty);
         }
+        /// <summary>
+        /// Actions the user can do to the model since it's a List
+        /// </summary>
+        public struct Action
+        {
+            /// <summary>
+            /// Insert a new item
+            /// </summary>
+            public string Insert;
+            /// <summary>
+            /// Update an existing Item
+            /// </summary>
+            public string Update;
+            /// <summary>
+            /// Remove an Item
+            /// </summary>
+            public string Remove;
+        }        
     }
 }
