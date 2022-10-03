@@ -181,13 +181,12 @@ namespace EmitMSIL
         /// <param name="args"></param>
         /// <param name="replicationAttrs"></param>
         /// <returns></returns>
-        public static object ReplicationLogic(List<CLRFunctionEndPoint> feps, IList args, string[][] replicationAttrs, MSILRuntimeCore runtimeCore)
+        public static CLRStackValue ReplicationLogic(List<CLRFunctionEndPoint> feps, IList<object> args, string[][] replicationAttrs, MSILRuntimeCore runtimeCore)
         {
-            // TODO_MSIL: Emit these CLRStackValue's from the CodeGen stage.
-            var stackValues = MarshalFunctionArguments(args, runtimeCore);
-
             // Construct replicationGuides from replicationAttrs
             var replicationGuides = ConstructRepGuides(replicationAttrs);
+
+            var stackValues = args.Select(x => (CLRStackValue)x).ToList();
 
             var partialReplicationGuides = PerformRepGuideDemotion(stackValues, replicationGuides);
 
@@ -205,7 +204,7 @@ namespace EmitMSIL
             var finalFep = SelectFinalFep(resolvedFeps, stackValues, runtimeCore);
             Validity.Assert(finalFep != null, "Expected to find a function endpoint");
 
-            object result;
+            CLRStackValue result;
             if (replicationInstructions.Count == 0)
             {
                 result = ExecWithZeroRI(finalFep, stackValues, runtimeCore);
@@ -521,7 +520,7 @@ namespace EmitMSIL
             replicationInstructions = instructions;
         }
 
-        private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
+        private static CLRStackValue ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
         {
             List<CLRStackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, runtimeCore);
 
@@ -541,10 +540,7 @@ namespace EmitMSIL
             {
                 dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep.ProtoCoreReturnType, dsRetValue, runtimeCore);
             }
-
-            var returnVal = marshaller.UnMarshal(dsRetValue, finalFep.CLRReturnType, runtimeCore);
-
-            return returnVal;
+            return dsRetValue;
         }
 
         private static IList<CLRStackValue> getSubParameters(CLRStackValue o)
@@ -560,7 +556,7 @@ namespace EmitMSIL
             }
         }
 
-        private static object ExecWithRISlowPath(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters,
+        private static CLRStackValue ExecWithRISlowPath(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters,
             List<ReplicationInstruction> replicationInstructions, MSILRuntimeCore runtimeCore)
         {
             //Recursion base case
@@ -626,7 +622,7 @@ namespace EmitMSIL
                 if (hasEmptyArg)
                     retSize = 0;
 
-                object[] retSVs = new object[retSize];
+                CLRStackValue[] retSVs = new CLRStackValue[retSize];
                 for (int i = 0; i < retSize; i++)
                 {
                     //Build the call
@@ -659,7 +655,7 @@ namespace EmitMSIL
                     retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs, runtimeCore);
                 }
 
-                return retSVs;
+                return new CLRStackValue(retSVs.ToList(), (int)ProtoCore.PrimitiveType.Array);
             }
             else
             {
@@ -685,7 +681,7 @@ namespace EmitMSIL
                     suppressArray = true;
                 }
 
-                object[] retSVs = new object[retSize];
+                CLRStackValue[] retSVs = new CLRStackValue[retSize];
 
                 //Build the call
                 List<CLRStackValue> newFormalParams = formalParameters.ToList();
@@ -705,7 +701,7 @@ namespace EmitMSIL
                     retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs, runtimeCore);
                 }
 
-                return retSVs;
+                return new CLRStackValue(retSVs.ToList(), (int)ProtoCore.PrimitiveType.Array);
             }
         }
     }

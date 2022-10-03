@@ -1285,6 +1285,15 @@ namespace EmitMSIL
                 {
                     EmitOpCode(OpCodes.Box, t);
                 }
+
+                EmitOpCode(OpCodes.Ldc_I4, 3);
+
+                // Emit opcodes to create a new CLRStackValue structure
+                // with value and proto core type set in the constructor
+                var constr = typeof(DSASM.CLRStackValue).GetConstructor(new Type[] { typeof(object), typeof(int) });
+                EmitOpCode(OpCodes.Newobj, constr);
+
+                EmitOpCode(OpCodes.Box, typeof(DSASM.CLRStackValue));
             });
 
             // Emit guides
@@ -1313,7 +1322,7 @@ namespace EmitMSIL
             keygen = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic), BindingFlags.Public | BindingFlags.Static);
             EmitOpCode(OpCodes.Call, keygen);
 
-            return typeof(object);
+            return typeof(DSASM.CLRStackValue);
         }
 
         private void EmitFunctionDefinitionNode(AssociativeNode node)
