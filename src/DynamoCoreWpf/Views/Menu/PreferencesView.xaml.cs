@@ -116,6 +116,7 @@ namespace Dynamo.Wpf.Views
             viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
             TrustedPathView.Dispose();
+            Dispose();
 
             RunGraphWhenScaleFactorUpdated();
 
@@ -465,6 +466,11 @@ namespace Dynamo.Wpf.Views
         {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
+        }
+
+        internal void Dispose()
+        {
+            viewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
         }
     }
 }
