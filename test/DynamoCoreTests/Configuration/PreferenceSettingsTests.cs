@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using Dynamo.Configuration;
 using Dynamo.Models;
@@ -340,6 +340,29 @@ namespace Dynamo.Tests.Configuration
             // checking if the default Setting instance has the same property values of the new one
             var checkEquality = comparePrefenceSettings(defaultSettings, newSettings);            
             Assert.IsTrue(checkEquality.SamePropertyValues.Count == checkEquality.Properties.Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestAskForTrustedLocation()
+        {
+            //Settings
+            bool isOpenedFile = true;
+            bool isHomeSpace = true;
+            bool isShowStartPage = false;
+            bool isFileInTrustedLocation = false;            
+            bool isDisableTrustWarnings = false;
+
+            // getting result
+            PreferenceSettings.AskForTrustedLocationResult result = PreferenceSettings.AskForTrustedLocation(
+                isOpenedFile,
+                isFileInTrustedLocation,
+                isHomeSpace,
+                isShowStartPage,
+                isDisableTrustWarnings);
+
+            // checking the result            
+            Assert.IsTrue(result == PreferenceSettings.AskForTrustedLocationResult.Ask, $"Conditions info: is opened file : {isOpenedFile} | is file in trusted location : {isFileInTrustedLocation} | is home space : {isHomeSpace} | is show Start page : {isShowStartPage} | is disable trust warnings : {isDisableTrustWarnings}");
         }
     }
 }
