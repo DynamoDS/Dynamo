@@ -482,7 +482,8 @@ namespace EmitMSIL
                 Validity.Assert(cid != DSASM.Constants.kInvalidIndex);
             }
 
-            // Can this be used at compile time ? or does this need to be at runtime ? 
+            // TODO_MSIL: Figure out polymorfism when calling functions
+            // That should be done at runtime (when we know the exact runtime type of the caller type)
             var fg = runtimeCore.GetFuncGroup(methodName, className);
 
             // This checks if there is a static property like Point.X(arg) 
