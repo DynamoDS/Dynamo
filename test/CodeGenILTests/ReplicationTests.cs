@@ -290,6 +290,47 @@ list3 = DSCore.Math.Max([10,3]<2>, [[1,1],[2,2,2],[4,4,4,4]]<1>);
             var result = output["list3"];
             Assert.AreEqual(expectedResult, result);
         }
+
+        [Test]
+        public void CrossProductReplication_ResultPassedAs2DArray()
+        {
+            string code =
+            @"
+                import(""DesignScriptBuiltin.dll"");
+                import(""DSCoreNodes.dll"");
+                import(""FFITarget.dll"");
+                t1 = (1..3);
+                point1 = FFITarget.Dynamo.Point.XYZ(t1<1>, t1<2>, 0);
+                nurbsCurve1 = FFITarget.Dynamo.NurbsCurve.ByPoints(point1);
+            ";
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.AreEqual(new long[] { 1, 2, 3 }, output["t1"]);
+            var pointGrid = output["point1"] as object[];
+            Assert.NotNull(pointGrid);
+            Assert.AreEqual(3, pointGrid.Length);
+            foreach (var row in pointGrid)
+            {
+                var ptRow = row as object[];
+                Assert.NotNull(ptRow);
+
+                Assert.AreEqual(3, ptRow.Length);
+                Assert.True(ptRow[0] is FFITarget.Dynamo.Point);
+                Assert.True(ptRow[1] is FFITarget.Dynamo.Point);
+                Assert.True(ptRow[2] is FFITarget.Dynamo.Point);
+            }
+            var nurbs = output["nurbsCurve1"] as object[];
+            Assert.NotNull(nurbs);
+
+            Assert.AreEqual(3, nurbs.Length);
+            foreach (var obj in nurbs)
+            {
+                Assert.True(obj is FFITarget.Dynamo.NurbsCurve);
+            }
+        }
+
         #endregion
 
         #region Var[]..[] arg and return type replication
@@ -573,46 +614,6 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                        aR.Z == bR.Z;
             }
             return false;
-        }
-
-        [Test]
-        public void CrossProductReplication_ResultPassedAs2DArray()
-        {
-            string code =
-            @"
-                import(""DesignScriptBuiltin.dll"");
-                import(""DSCoreNodes.dll"");
-                import(""FFITarget.dll"");
-                t1 = (1..3);
-                point1 = FFITarget.Dynamo.Point.XYZ(t1<1>, t1<2>, 0);
-                nurbsCurve1 = FFITarget.Dynamo.NurbsCurve.ByPoints(point1);
-            ";
-            var ast = ParserUtils.Parse(code).Body;
-            var output = codeGen.EmitAndExecute(ast);
-            Assert.IsNotEmpty(output);
-
-            Assert.AreEqual(new long[] { 1, 2, 3 }, output["t1"]);
-            var pointGrid = output["point1"] as object[];
-            Assert.NotNull(pointGrid);
-            Assert.AreEqual(3, pointGrid.Length);
-            foreach (var row in pointGrid)
-            {
-                var ptRow = row as object[];
-                Assert.NotNull(ptRow);
-
-                Assert.AreEqual(3, ptRow.Length);
-                Assert.True(ptRow[0] is FFITarget.Dynamo.Point);
-                Assert.True(ptRow[1] is FFITarget.Dynamo.Point);
-                Assert.True(ptRow[2] is FFITarget.Dynamo.Point);
-            }
-            var nurbs = output["nurbsCurve1"] as object[];
-            Assert.NotNull(nurbs);
-
-            Assert.AreEqual(3, nurbs.Length);
-            foreach (var obj in nurbs)
-            {
-                Assert.True(obj is FFITarget.Dynamo.NurbsCurve);
-            }
         }
 
         [Test]
