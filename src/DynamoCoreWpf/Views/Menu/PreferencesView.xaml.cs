@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -80,6 +81,23 @@ namespace Dynamo.Wpf.Views
 
             // Init all package filters 
             dynamoViewModel.PreferencesViewModel.InitPackageListFilters();
+
+            dynamoViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged += TrustedPathsViewModel_PropertyChanged;
+        }
+
+        /// <summary>
+        /// Evaluates if the user interacts over the Trusted Locations
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TrustedPathsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            List<string> actions = typeof(TrustedPathViewModel.Action).GetFields().Select(a => a.Name).ToList();
+
+            if (actions.Contains(e.PropertyName))
+            {
+                dynViewModel.CheckCurrentFileInTrustedLocation();
+            }
         }
 
         /// <summary>
@@ -115,6 +133,8 @@ namespace Dynamo.Wpf.Views
             TrustedPathView.Dispose();
 
             RunGraphWhenScaleFactorUpdated();
+
+            dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
 
             Close();
         }
