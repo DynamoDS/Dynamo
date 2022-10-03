@@ -269,11 +269,8 @@ namespace ProtoFFI
             private set;
         }
 
-        internal ProtoCore.Type[] ArgumementTypes => mArgTypes;
-        internal ProtoCore.Type ReturnType => mReturnType;
-
-        readonly ProtoCore.Type[] mArgTypes;
-        readonly ProtoCore.Type mReturnType;
+        readonly ProtoCore.Type[] ArgTypes;
+        readonly ProtoCore.Type ReturnType;
 
         public CLRFFIFunctionPointer(CLRDLLModule module, string name, MemberInfo info, List<ProtoCore.Type> argTypes, ProtoCore.Type returnType)
         {
@@ -281,9 +278,9 @@ namespace ProtoFFI
             Name = name;
             ReflectionInfo = FFIMemberInfo.CreateFrom(info);
 
-            mArgTypes = argTypes == null ? GetArgumentTypes() : argTypes.ToArray();
+            ArgTypes = argTypes == null ? GetArgumentTypes() : argTypes.ToArray();
 
-            mReturnType = returnType;
+            ReturnType = returnType;
         }
 
         private ProtoCore.Type[] GetArgumentTypes()
@@ -301,13 +298,13 @@ namespace ProtoFFI
         {
             if (name != Name)
                 return false;
-            if (!SameTypes(mReturnType, returnType))
+            if (!SameTypes(ReturnType, returnType))
                 return false;
-            if (argTypes.Length != mArgTypes.Length)
+            if (argTypes.Length != ArgTypes.Length)
                 return false;
             for (int i = 0; i < argTypes.Length; ++i)
             {
-                if (!SameTypes(argTypes[i], mArgTypes[i]))
+                if (!SameTypes(argTypes[i], ArgTypes[i]))
                     return false;
             }
             return true;
@@ -333,7 +330,7 @@ namespace ProtoFFI
             if (fp == null)
                 return false;
 
-            return Contains(fp.Name, fp.mArgTypes, fp.mReturnType);
+            return Contains(fp.Name, fp.ArgTypes, fp.ReturnType);
         }
 
         // TODO: Remove redundant method in 3.0
@@ -352,7 +349,7 @@ namespace ProtoFFI
                 ret = ReflectionInfo.ReduceReturnedCollectionToSingleton(ret);
 
                 FFIObjectMarshaler marshaller = Module.GetMarshaler(dsi.runtime.RuntimeCore);
-                dsRetValue = marshaller.Marshal(ret, c, dsi, mReturnType);
+                dsRetValue = marshaller.Marshal(ret, c, dsi, ReturnType);
             }
             catch (DllNotFoundException ex)
             {
@@ -532,7 +529,7 @@ namespace ProtoFFI
             FFIParameterInfo[] paraminfos = ReflectionInfo.GetParameters();
             List<StackValue> referencedParameters = new List<StackValue>();
 
-            for (int i = 0; i < mArgTypes.Length; ++i)
+            for (int i = 0; i < ArgTypes.Length; ++i)
             {
                 // Comment Jun: FFI function stack frames do not contain locals
                 int locals = 0;
@@ -652,7 +649,7 @@ namespace ProtoFFI
             FFIParameterInfo[] paraminfos = ReflectionInfo.GetParameters();
             List<StackValue> referencedParameters = new List<StackValue>();
 
-            for (int i = 0; i < mArgTypes.Length; ++i)
+            for (int i = 0; i < ArgTypes.Length; ++i)
             {
                 var opArg = s[i];
                 try
