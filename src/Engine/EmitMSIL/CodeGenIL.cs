@@ -20,6 +20,7 @@ namespace EmitMSIL
         internal string className;
         internal string methodName;
         private IDictionary<string, IList> input;
+        //private Dictionary<int, bool> isRepCall = new Dictionary<int, bool>();
 
         /// <summary>
         /// counter for local variables, should only be used directly during GatherTypeInfo phase.
@@ -894,7 +895,7 @@ namespace EmitMSIL
                     }
                     variables.Add(lNode.Value, new Tuple<int, Type>(++localVarIndex, t));
                 }
-                DeclareLocal(t,lNode.Value);
+                DeclareLocal(t, lNode.Value);
                 var currentLocalVarIndex = variables[lNode.Value].Item1;
                 EmitOpCode(OpCodes.Stloc, currentLocalVarIndex);
                 // Add variable to output dictionary: output.Add("varName", variable);
@@ -1192,38 +1193,6 @@ namespace EmitMSIL
                 FunctionLookup(args);
                 return null;
             }
-
-            // Emit methodCache passed as arg to global Execute method.
-            EmitOpCode(OpCodes.Ldarg_1);
-
-            // Emit className for input to call to CodeGenIL.KeyGen
-            EmitOpCode(OpCodes.Ldstr, className);
-
-            // Emit methodName for input to call to CodeGenIL.KeyGen
-            EmitOpCode(OpCodes.Ldstr, methodName);
-            EmitOpCode(OpCodes.Ldc_I4, numArgs);
-
-            var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
-            EmitOpCode(OpCodes.Call, keygen);
-
-            var local = DeclareLocal(typeof(IEnumerable<MethodBase>), "cached MethodBase objects");
-            //local could be null if we are not emitting currently.
-            if(local != null)
-            {
-                EmitOpCode(OpCodes.Ldloca, local);
-            }
-
-            // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<MethodBase> mInfos)
-            var dictLookup = typeof(IDictionary<int, IEnumerable<MethodBase>>).GetMethod(
-                nameof(IDictionary<int, IEnumerable<MethodBase>>.TryGetValue));
-            EmitOpCode(OpCodes.Callvirt, dictLookup);
-
-            EmitOpCode(OpCodes.Pop);
-            if (local != null)
-            {
-                EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
-            }
-
             // Retrieve previously cached functions
             // TODO: Decide whether to process overloaded methods at compile time or leave it for runtime.
             // For now, we assume no overloads.
@@ -1232,17 +1201,61 @@ namespace EmitMSIL
 
             // number of args = number of parameters if static.
             // num args = num params + 1 if instance as first arg is this pointer.
-            var isStatic = mBase.IsStatic;
+            var isStaticOrCtor = mBase.IsStatic || mBase.IsConstructor;
 
-            var isRepCall = WillCallReplicate(parameters, isStatic, args);
+            var doesReplicate = WillCallReplicate(parameters, isStaticOrCtor, args);
+            //if (compilePass == CompilePass.GatherTypeInfo)
+            //{
+            //    if(isRepCall.ContainsKey(node.ID))
+            //    {
+            //        throw new Exception($"ast {node.ID}:{node.Kind} already exists in replicated call map.");
+            //    }
+            //    isRepCall.Add(node.ID, WillCallReplicate(parameters, isStatic, args));
+            //}
 
-            if (isRepCall)
+            //bool doesReplicate = false;
+            //if(!isRepCall.TryGetValue(node.ID, out doesReplicate))
+            //{
+            //    throw new Exception($"ast { node.ID }:{ node.Kind} does not exist in replicated call map.");
+            //}
+            if (doesReplicate)
             {
+                // Emit methodCache passed as arg to global Execute method.
+                EmitOpCode(OpCodes.Ldarg_1);
+
+                // Emit className for input to call to CodeGenIL.KeyGen
+                EmitOpCode(OpCodes.Ldstr, className);
+
+                // Emit methodName for input to call to CodeGenIL.KeyGen
+                EmitOpCode(OpCodes.Ldstr, methodName);
+                EmitOpCode(OpCodes.Ldc_I4, numArgs);
+
+                var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
+                EmitOpCode(OpCodes.Call, keygen);
+
+                var local = DeclareLocal(typeof(IEnumerable<MethodBase>), "cached MethodBase objects");
+                //local could be null if we are not emitting currently.
+                if(local != null)
+                {
+                    EmitOpCode(OpCodes.Ldloca, local);
+                }
+
+                // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<MethodBase> mInfos)
+                var dictLookup = typeof(IDictionary<int, IEnumerable<MethodBase>>).GetMethod(
+                    nameof(IDictionary<int, IEnumerable<MethodBase>>.TryGetValue));
+                EmitOpCode(OpCodes.Callvirt, dictLookup);
+
+                EmitOpCode(OpCodes.Pop);
+                if (local != null)
+                {
+                    EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
+                }
+
                 // Emit args for input to call to ReplicationLogic
                 EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
                 {
                     Type t = DfsTraverse(n);
-                    if (isStatic)
+                    if (isStaticOrCtor)
                     {
                         t = EmitCoercionCode(n, t, parameters[index]);
                     }
@@ -1286,12 +1299,12 @@ namespace EmitMSIL
             }
             else
             {
-                int index = 0;
                 // non-replicating call
+                int index = 0;
                 foreach(var arg in args)
                 {
                     Type t = DfsTraverse(arg);
-                    if (isStatic)
+                    if (isStaticOrCtor)
                     {
                         t = EmitCoercionCode(arg, t, parameters[index]);
                     }
@@ -1417,11 +1430,11 @@ namespace EmitMSIL
             return 1 + firstRank;
         }
 
-        private bool WillCallReplicate(ParameterInfo[] parameters, bool isStatic, List<AssociativeNode> args)
+        private bool WillCallReplicate(ParameterInfo[] parameters, bool isStaticOrCtor, List<AssociativeNode> args)
         {
             // number of args = number of parameters if static.
             // num args = num params + 1 if instance as first arg is this pointer.
-            if (isStatic)
+            if (isStaticOrCtor)
             {
                 return !DoesParamArgRankMatch(parameters, args, argIndex: 0);
             }
@@ -1713,7 +1726,7 @@ namespace EmitMSIL
                 // local variables on rhs of expression should have already been defined.
                 if (!variables.TryGetValue(idNode.Value, out Tuple<int, Type> tup))
                 {
-                    throw new Exception("Variable is undefined!");
+                    throw new Exception($"Variable {idNode.Value} is undefined!");
                 }
                 EmitOpCode(OpCodes.Ldloc, tup.Item1);
                 return tup.Item2;
