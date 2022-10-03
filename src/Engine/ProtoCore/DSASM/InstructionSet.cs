@@ -113,6 +113,7 @@ namespace ProtoCore.DSASM
     /// <summary>
     /// Wrapper over all values handled by the MSIL/CLR engine.
     /// </summary>
+    [Obsolete("This is an internal class, do not use it.")]
     public struct CLRStackValue
     {
         // TODO_MSIL: Figure out if we need to use an AddressType, like StackValue

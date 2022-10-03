@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,6 +14,7 @@ namespace ProtoCore
     /// <summary>
     /// Wrapper over MethodBase.
     /// </summary>
+    [Obsolete("This is an internal class, do not use it.")]
     public sealed class CLRFunctionEndPoint
     {
         internal struct ParamInfo

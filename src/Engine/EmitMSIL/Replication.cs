@@ -13,6 +13,7 @@ using ProtoFFI;
 
 namespace EmitMSIL
 {
+    [Obsolete("This is an internal class, do not use it.")]
     public class Replication
     {
         internal static List<CLRStackValue> MarshalFunctionArguments(IList args, MSILRuntimeCore runtimeCore)
@@ -181,6 +182,7 @@ namespace EmitMSIL
         /// <param name="args"></param>
         /// <param name="replicationAttrs"></param>
         /// <returns></returns>
+        [Obsolete("This is an internal function, do not use it.")]
         public static object ReplicationLogic(List<CLRFunctionEndPoint> feps, IList args, string[][] replicationAttrs, MSILRuntimeCore runtimeCore)
         {
             // TODO_MSIL: Emit these CLRStackValue's from the CodeGen stage.
