@@ -3102,42 +3102,17 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void CheckCurrentFileInTrustedLocation()
         {
-            TrustedPathViewModel.AskForTrustedLocationResult askToTheUser =
-                AskForTrustedLocation(CurrentSpaceViewModel.FileName.Length > 0,
+            PreferenceSettings.AskForTrustedLocationResult askToTheUser =
+                PreferenceSettings.AskForTrustedLocation(CurrentSpaceViewModel.FileName.Length > 0,
                 CurrentSpaceViewModel.FileName.Length > 0 ? PreferenceSettings.IsTrustedLocation(Path.GetDirectoryName(CurrentSpaceViewModel.FileName)) : false,
                 (currentWorkspaceViewModel?.IsHomeSpace ?? false),
                 ShowStartPage,
                 model.PreferenceSettings.DisableTrustWarnings);
 
-            if (askToTheUser == TrustedPathViewModel.AskForTrustedLocationResult.Ask) {
+            if (askToTheUser == PreferenceSettings.AskForTrustedLocationResult.Ask) {
 
                 FileTrustViewModel.AllowOneTimeTrust = false;
             }
-        }
-
-        /// <summary>
-        /// AskForTrustedLocation function
-        /// </summary>
-        /// <param name="isOpenedFile"></param>
-        /// <param name="isHomeSpace"></param>
-        /// <param name="isShowStartPage"></param>
-        /// <param name="isDisableTrustWarnings"></param>
-        /// <param name="isFileInTrustedLocation"></param>
-        /// <returns></returns>
-        public TrustedPathViewModel.AskForTrustedLocationResult AskForTrustedLocation(bool isOpenedFile, bool isFileInTrustedLocation, bool isHomeSpace, bool isShowStartPage, bool isDisableTrustWarnings )
-        {
-            TrustedPathViewModel.AskForTrustedLocationResult result = TrustedPathViewModel.AskForTrustedLocationResult.UnableToAsk;
-            if (isOpenedFile)
-            {
-                if (isHomeSpace && !isShowStartPage && !isDisableTrustWarnings && !isFileInTrustedLocation)
-                {
-                    result = TrustedPathViewModel.AskForTrustedLocationResult.Ask;
-                } else
-                {
-                    result = TrustedPathViewModel.AskForTrustedLocationResult.DontAsk;
-                }
-            }
-            return result;
         }
 
         #endregion
