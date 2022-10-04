@@ -8,6 +8,7 @@ using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -247,8 +248,6 @@ namespace Dynamo.DocumentationBrowser
 
         private string CreateNodeAnnotationContent(OpenNodeAnnotationEventArgs e)
         {
-            //var lookup = packageManagerDoc.SpeckManager;
-
             var writer = new StringWriter();
             try
             {
@@ -272,7 +271,10 @@ namespace Dynamo.DocumentationBrowser
                     LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
                 }
 
+                MarkdownHandlerInstance.DesanitizeHtml(ref output);
+
                 // inject the syntax highlighting script at the bottom at the document.
+                output += DocumentationBrowserUtils.GetImageNavigationScript();
                 output += DocumentationBrowserUtils.GetDPIScript();
                 output += DocumentationBrowserUtils.GetSyntaxHighlighting();
 

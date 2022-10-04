@@ -3,8 +3,10 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Input;
 using Dynamo.DocumentationBrowser.Properties;
+using Dynamo.Logging;
 using Dynamo.ViewModels;
 
 namespace Dynamo.DocumentationBrowser
@@ -14,6 +16,12 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     internal static class NodeDocumentationHtmlGenerator
     {
+        #region Constants
+
+        private const string RESOURCE_PREFIX = "Dynamo.DocumentationBrowser.Docs.";
+
+        #endregion
+
         /// <summary>
         /// Creates the Node information section which all nodes have
         /// even if they don't have additional markdown documentation.
@@ -67,7 +75,10 @@ namespace Dynamo.DocumentationBrowser
             StringBuilder sb = new StringBuilder();
 
             sb.AppendLine(CreateInfo(e, mkDown));
-            //sb.AppendLine(CreateHelp(e));
+            if (e.NodeInfos.Any())
+            {
+                sb.AppendLine(CreateHelp(e));
+            }
             sb.AppendLine(CreateInputs(e));
 
             return sb.ToString();
@@ -79,8 +90,36 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine("<details open>");
             sb.AppendLine(CreateExpanderTitle("Node Information"));
             sb.AppendLine(CreateNodeInfo(e));
-            sb.AppendLine(mkDown);
+            sb.AppendLine(InjectImageNavigation(mkDown));
+            sb.AppendLine("<br>");
             sb.AppendLine(@"</details>");
+
+            return sb.ToString();
+        }
+
+        private static string InjectImageNavigation(string mkDown)
+        {
+            if (string.IsNullOrEmpty(mkDown)) return string.Empty;
+
+            StringBuilder sb = new StringBuilder();
+
+            var mkArray = mkDown.Split(new string[] {"\r\n", "\r", "\n"}, StringSplitOptions.None).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+            var imageRow = mkArray.Last();
+            imageRow = imageRow.Replace("<p>", "").Replace("</p>", "");
+            imageRow = imageRow.Insert(4, @" id='drag--img' class='resizable--img' ");
+
+            sb.AppendLine(string.Join(Environment.NewLine, mkArray.Take(mkArray.Count() - 1).ToArray()));
+            sb.AppendLine("<div class=\"container\" id=\"img--container\">");
+            sb.AppendLine(imageRow);
+            sb.AppendLine("<div class=\"btn--container\">");
+            sb.AppendLine(
+                "<button type=\"button\"  id=\"zoomin\" class=\"button\" title=\"Zoom in\" >zoom in</button>\r\n");
+            sb.AppendLine(
+                "<button type=\"button\" id=\"zoomout\" class=\"button\" title=\"Zoom out\" >zoom out</button>\r\n");
+            sb.AppendLine(
+                "<button type=\"button\"  id=\"zoomfit\" class=\"button\"  title=\"Zoom to fit\" >fit</button>");
+            sb.AppendLine(@"</div>");
+            sb.AppendLine(@"</div>");
 
             return sb.ToString();
         }
@@ -90,6 +129,28 @@ namespace Dynamo.DocumentationBrowser
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<details open>");
             sb.AppendLine(CreateExpanderTitle("Node Issue Help"));
+            for (int i = 0; i < e.NodeInfos.Count(); i++)
+            {
+                try
+                {
+                    sb.AppendLine("<br>");
+                    sb.AppendLine($"<strong>{"State"}</strong>");
+                    sb.AppendLine($"<p>{e.NodeInfos.ElementAt(i).State}</p>");
+                    sb.AppendLine($"<strong>{"Message"}</strong>");
+                    sb.AppendLine($"<p>{GetNthRowFromStringSplit(e.NodeInfos.ElementAt(i).Message, 0)}</p>");
+
+                    var help = e.NodeInfos.ElementAt(i).Message.Split(new string[] {". "}, StringSplitOptions.None);
+                    var html = help[1].Split(new string[] {"href="}, StringSplitOptions.None)[1];
+                    var helpHtml =
+                        DocumentationBrowserUtils.GetContentFromEmbeddedResource($"{RESOURCE_PREFIX + html}");
+
+                    sb.AppendLine(helpHtml);
+                }
+                catch (Exception ex)
+                {
+                    LogWarning(ex.Message, WarningLevel.Mild);
+                }
+            }
             sb.AppendLine(@"</details>");
 
             return sb.ToString();
@@ -156,7 +217,7 @@ namespace Dynamo.DocumentationBrowser
                 sb.AppendLine("<tr class=\"table--border\">");
                 sb.AppendLine($"<td class=\"table--border\">{e.InputNames.ElementAt(i)}</td>");
                 sb.AppendLine($"<td class=\"table--border\">{GetTypeFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
-                sb.AppendLine($"<td class=\"table--border\">{GetDescriptionFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
+                sb.AppendLine($"<td class=\"table--border\">{GetNthRowFromStringSplit(e.InputDescriptions.ElementAt(i), 0)}</td>");
                 sb.AppendLine($"<td class=\"table--border\">{GetDefaultValueFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
                 sb.AppendLine(@"</tr>");
             }
@@ -178,7 +239,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 sb.AppendLine("<tr class=\"table--border\">");
                 sb.AppendLine($"<td class=\"table--border\">{e.OutputNames.ElementAt(i)}</td>");
-                sb.AppendLine($"<td class=\"table--border\">{GetDescriptionFromDescription(e.OutputDescriptions.ElementAt(i))}</td>");
+                sb.AppendLine($"<td class=\"table--border\">{GetNthRowFromStringSplit(e.OutputDescriptions.ElementAt(i), 0)}</td>");
                 sb.AppendLine(@"</tr>");
             }
 
@@ -189,16 +250,16 @@ namespace Dynamo.DocumentationBrowser
             return sb.ToString();
         }
 
-         private static string GetTypeFromDescription(string elementAt)
+         private static string GetTypeFromDescription(string element)
          {
-             var stringArr = elementAt.Split(new string[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
+             var stringArr = element.Split(new string[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
              if(stringArr.Length > 2) return stringArr[2];
              return string.Empty;
          }
 
-         private static string GetDefaultValueFromDescription(string elementAt)
+         private static string GetDefaultValueFromDescription(string element)
          {
-             var stringArr = elementAt.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+             var stringArr = element.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
              foreach (var line in stringArr)
              {
                  if (line.ToLowerInvariant().Contains("default value"))
@@ -209,10 +270,14 @@ namespace Dynamo.DocumentationBrowser
              return string.Empty;
          }
 
-        private static string GetDescriptionFromDescription(string elementAt)
+        private static string GetNthRowFromStringSplit(string element, int row)
          {
-             var stringArr = elementAt.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-             return stringArr[0];
+             var stringArr = element.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+             return stringArr[row];
          }
+
+        internal static Action<ILogMessage> MessageLogged;
+        private static void LogWarning(string msg, WarningLevel level) => MessageLogged?.Invoke(LogMessage.Warning(msg, level));
+
     }
 }

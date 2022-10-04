@@ -50,6 +50,154 @@ namespace Dynamo.Utilities
         adaptDPI() 
         </script>";
 
+        public const string IMGNAVIGATIONSCRIPT = @"
+            <!-- Set image div container width and height -->
+            <script type='text/javascript'>
+                maintainContainerRatio();
+
+                function maintainContainerRatio()
+                {
+                    var container_ele = document.getElementById('img--container');
+
+                    var img_width = document.getElementById('drag--img').naturalWidth;
+                    var img_height = document.getElementById('drag--img').naturalHeight;
+
+                    var ratio = img_width / img_height;
+                    var calculated_width = document.getElementById('drag--img').width;
+
+                    var calculated_height = calculated_width / ratio;
+                    container_ele.style.height = calculated_height + 'px';
+                }
+
+                window.onresize = maintainContainerRatio;
+        </script>
+
+        <!-- Adds zoom to image container -->
+        <script type = 'text/javascript' >
+
+            var img_ele = null;
+            var scale = 1.0;
+            var increment = 0.1;
+
+            const initial = { x: 0, y: 0 };
+            const offset = { x: 0, y: 0 };
+
+            function reset_pan()
+            {
+                initial.x = initial.y = 0;
+                offset.x = offset.y = 0;
+            }
+
+            function zoom(zoomtype)
+            {
+                img_ele = document.getElementById('drag--img');
+
+                if (zoomtype === 'out')
+                {
+                    if (scale <= 1.0) return;
+                    scale -= increment;
+                }
+                else
+                {
+                    scale += increment;
+                }
+
+                img_ele.style.transform = `scale(${ scale}, ${ scale})`;
+
+                reset_pan();
+            }
+
+            function fit(){
+                if(scale === 1.0 || !img_ele) return;
+                scale = 1.0;
+                img_ele.style.transform = `scale(${scale}, ${scale})`;
+            }
+
+            // check against the future frame so you don't get stuck
+            function check_edges(el, x, y)
+            {
+                const container_rect = el.getBoundingClientRect();
+                const image_rect = el.firstElementChild.getBoundingClientRect();
+
+                if (image_rect.top > container_rect.top - y)
+                {
+                    y = 0;
+                }
+                if (image_rect.left > container_rect.left - x)
+                {
+                    x = 0;
+                }
+                if (image_rect.right < container_rect.right - x)
+                {
+                    x = 0;
+                }
+                if (image_rect.bottom < container_rect.bottom - y)
+                {
+                    y = 0;
+                }
+
+                return { delta_x: x, delta_y: y};
+            }
+
+            const pannable = (el) => {
+                const img_canvas = el.firstElementChild; // the image
+
+                let is_pan = false;
+
+                // get the click location relative to the div and current image scale
+                const getXY = ({ clientX, clientY}) => {
+                    const { left, top} = el.getBoundingClientRect(); // the left/top of the container div
+                    return { x: (clientX - left), y: (clientY - top) }
+                }
+
+                const pan_start = (ev) => {
+                    if (scale === 1) return; // do not start panning if not zoomed in
+                    ev.preventDefault();
+                    is_pan = true;
+                    const { x, y} = getXY(ev);
+                    initial.x = x - offset.x;
+                    initial.y = y - offset.y;
+                }
+            
+                const pan_move = (ev) => {
+                    if (!is_pan) return;
+
+                    const { x, y} = getXY(ev);
+
+                    var d_x = (x - initial.x);
+                    var d_y = (y - initial.y);
+
+                    const { delta_x, delta_y} = check_edges(el, d_x - offset.x, d_y - offset.y);
+
+                    img_canvas.style.transform = `translate(${ offset.x + delta_x}px, ${ offset.y + delta_y}px) scale(${ scale}, ${ scale})`;
+
+                    offset.x += (delta_x);
+                    offset.y += (delta_y);
+                }
+
+                const pan_end = (ev) => {
+                    is_pan = false;
+                };
+
+                el.addEventListener('mousedown', pan_start);
+                document.addEventListener('mousemove', pan_move);
+                document.addEventListener('mouseup', pan_end);
+            }
+
+            document.getElementById('zoomout').addEventListener('click', function() {
+                zoom('out');
+            });
+            document.getElementById('zoomin').addEventListener('click', function() {
+                zoom('in');
+            });
+            document.getElementById('zoomfit').addEventListener('click', function() {
+              fit();
+            });
+
+            document.querySelectorAll('.container').forEach(pannable);
+        </script>
+        ";
+
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
 

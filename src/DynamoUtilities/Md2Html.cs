@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using DynamoUtilities.Properties;
 
 namespace Dynamo.Utilities
@@ -260,6 +261,38 @@ namespace Dynamo.Utilities
             var output = GetData();
 
            return output;
+        }
+
+        internal string DesanitizeHtml(string content)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var contentArray = content.Split(new string[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
+
+            foreach (var line in contentArray)
+            {
+                if (line.StartsWith(".container .btn--container "))
+                {
+                    var desanitizedLine = line.Insert(line.Length - 10, "; position: absolute;");
+                    sb.AppendLine(desanitizedLine);
+                    continue; ;
+                }
+                if (line.StartsWith(".container"))
+                {
+                    var desanitizedLine = line.Insert(line.Length - 2, "; position: relative;");
+                    sb.AppendLine(desanitizedLine);
+                    continue; ;
+                }
+                if (line.StartsWith(".resizable--img"))
+                {
+                    var desanitizedLine = line.Insert(line.Length - 2, "; position: relative;");
+                    sb.AppendLine(desanitizedLine);
+                    continue;;
+                }
+                sb.AppendLine(line);
+            }
+
+            return sb.ToString();
         }
 
         /// <summary>
