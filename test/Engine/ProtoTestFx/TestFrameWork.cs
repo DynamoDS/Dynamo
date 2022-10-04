@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using NUnit.Framework;
@@ -37,7 +38,11 @@ namespace ProtoTestFx.TD
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
         bool executeInDebugMode = true;
- 
+        //hold results from using MSIL compiler / execution.
+        private Dictionary<string, object> MSILMirror;
+        //control which engine to use for tests run with this test framework.
+        private bool testMSILExecution = false;
+
         public TestFrameWork()
         {
             runner = new ProtoScriptRunner();
