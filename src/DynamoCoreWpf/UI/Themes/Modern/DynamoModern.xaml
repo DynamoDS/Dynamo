@@ -3197,8 +3197,8 @@
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="4"/>
                         <Border x:Name="border"
-                                Margin="4"
-                                Height="36px"
+                                Margin="0,4,4,4"
+                                Height="30px"
                                 Padding="8,0,8,0"
                                 BorderThickness="1"
                                 BorderBrush="{TemplateBinding BorderBrush}"
