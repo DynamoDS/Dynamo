@@ -413,9 +413,16 @@ namespace Dynamo.Wpf.Views
             {
                 try
                 {
-                    viewModel.importSettings(openFileDialog.FileName);
-                    Wpf.Utilities.MessageBoxService.Show(
+                    if (viewModel.importSettings(openFileDialog.FileName))
+                    {
+                        Wpf.Utilities.MessageBoxService.Show(
                        Res.ImportSettingsSuccessMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        Wpf.Utilities.MessageBoxService.Show(
+                       Res.ImportSettingsFailedMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }                    
                 }
                 catch (Exception ex)
                 {
