@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -6,47 +7,49 @@ using ProtoCore.DSASM;
 using ProtoCore.Lang.Replication;
 using ProtoCore.Properties;
 using ProtoCore.Utils;
+using ProtoFFI;
 
 namespace ProtoCore
 {
     /// <summary>
     /// Wrapper over MethodBase.
     /// </summary>
-    internal sealed class CLRFunctionEndPoint
+    [Obsolete("This is an internal class, do not use it.")]
+    public sealed class CLRFunctionEndPoint
     {
         internal struct ParamInfo
         {
             public ProtoCore.Type ProtoInfo;
-            public ParameterInfo CLRInfo;
-            internal System.Type ThisPtrType;
+            public System.Type CLRType;
 
             public bool IsIndexable => ProtoInfo.IsIndexable;
 
             public int Rank => ProtoInfo.rank;
             public int UID => ProtoInfo.UID;
-
-            public System.Type CLRType => CLRInfo?.ParameterType ?? ThisPtrType;
         }
 
-        private MethodBase method;
+        private FFIMemberInfo method;
 
         internal CLRStackValue ThisPtr;
-        
-        public List<ParamInfo> FormalParams
+
+        internal ProtoCore.Type ProtoCoreReturnType;
+
+        internal List<ParamInfo> FormalParams
         {
             get;
             set;
         }
 
-        public System.Type ReturnType
+        public bool IsStatic => method.IsStatic;
+
+        public System.Type CLRReturnType
         {
-            get
-            {
-                if (method is MethodInfo mInfo)
+            get {
+                if (method is FFIMethodInfo mInfo)
                 {
                     return mInfo.ReturnType;
                 }
-                else if (method is ConstructorInfo cInfo)
+                else if (method is FFIConstructorInfo cInfo)
                 {
                     return cInfo.DeclaringType;
                 }
@@ -54,10 +57,11 @@ namespace ProtoCore
             }
         }
 
-        internal CLRFunctionEndPoint(MethodBase method, List<ParamInfo> formalParams)
+        internal CLRFunctionEndPoint(FFIMemberInfo method, List<ParamInfo> formalParams, ProtoCore.Type retType)
         {
             this.method = method;
             this.FormalParams = formalParams;
+            this.ProtoCoreReturnType = retType;
         }
 
         public static Dictionary<string, ProtoFFI.FFIHandler> FFIHandlers = new Dictionary<string, ProtoFFI.FFIHandler>();
@@ -65,13 +69,9 @@ namespace ProtoCore
         internal object Invoke(IList<object> args)
         {
             object result;
-            if (method.IsStatic)
+            if (method.IsStatic || method is FFIConstructorInfo)
             {
                 result = method.Invoke(null, args.ToArray());
-            }
-            else if (method.IsConstructor)
-            {
-                result = (method as ConstructorInfo).Invoke(args.ToArray());
             }
             else
             {
