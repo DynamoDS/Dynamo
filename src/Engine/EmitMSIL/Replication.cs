@@ -200,6 +200,7 @@ namespace EmitMSIL
             //Turn the replication guides into a guide -> List args data structure
             var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
+            // TODO_MSIL: Figure it the best way to interpret/pass around the this pointer.
             CLRStackValue thisPtr = CLRStackValue.Null;
             bool staticFuncCall = feps.All(x => x.IsStatic);
             if (!staticFuncCall)
@@ -208,7 +209,7 @@ namespace EmitMSIL
             }
             else
             {
-                Validity.Assert(feps.All(x => x.procedureNode.ClassID == feps[0].procedureNode.ClassID),
+                Validity.Assert(feps.All(x => x.procedureNode != null && (x.procedureNode.ClassID == feps[0].procedureNode.ClassID)),
                     "Expected all function endpoints to have the same class ID");
             }
 
@@ -296,16 +297,16 @@ namespace EmitMSIL
         private static List<CLRFunctionEndPoint> GetCandidateFunctions(
             CLRStackValue thisPtr, Dictionary<CLRFunctionEndPoint, int> candidatesWithDistances)
         {
-            return candidatesWithDistances.Keys.ToList();
- 
             var candidateFunctions = new List<CLRFunctionEndPoint>();
             foreach (var fep in candidatesWithDistances.Keys)
             {
-                if ((thisPtr.IsPointer
-                     /*&& stackFrame.ThisPtr.Pointer == Constants.kInvalidIndex*/ && fep.procedureNode != null
-                     && !fep.procedureNode.IsConstructor) && !fep.procedureNode.IsStatic
-                    && (fep.procedureNode.ClassID != Constants.kInvalidIndex))
+                bool isClassInstanceMethod = fep.procedureNode != null &&
+                  fep.procedureNode.ClassID != Constants.kInvalidIndex &&//valid class
+                  !fep.procedureNode.IsConstructor && !fep.procedureNode.IsStatic;//not static and not constructor  
+
+                if (thisPtr.IsGlobal && isClassInstanceMethod)
                 {
+                    // Filter out class instance methods when dealing with global function scope
                     continue;
                 }
 
