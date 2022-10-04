@@ -1295,6 +1295,7 @@ namespace ProtoCore
                      && !fep.procedureNode.IsConstructor) && !fep.procedureNode.IsStatic
                     && (fep.procedureNode.ClassID != -1))
                 {
+                    throw new Exception("weirdcondition");
                     continue;
                 }
 

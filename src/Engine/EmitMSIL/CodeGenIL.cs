@@ -565,7 +565,7 @@ namespace EmitMSIL
                     i++;
                 }
 
-                ProtoCore.CLRFunctionEndPoint fep = new ProtoCore.CLRFunctionEndPoint(fFIMemberInfo, formalParams, procNode.ReturnType);
+                ProtoCore.CLRFunctionEndPoint fep = new ProtoCore.CLRFunctionEndPoint(fFIMemberInfo, formalParams, procNode);
                 mbs.Add(fep);
             }
 

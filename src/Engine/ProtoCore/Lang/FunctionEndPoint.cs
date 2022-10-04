@@ -28,11 +28,11 @@ namespace ProtoCore
             public int UID => ProtoInfo.UID;
         }
 
+        internal ProcedureNode procedureNode;
+
         private FFIMemberInfo method;
 
-        internal CLRStackValue ThisPtr;
-
-        internal ProtoCore.Type ProtoCoreReturnType;
+        internal ProtoCore.Type ProtoCoreReturnType => procedureNode.ReturnType;
 
         internal List<ParamInfo> FormalParams
         {
@@ -57,11 +57,11 @@ namespace ProtoCore
             }
         }
 
-        internal CLRFunctionEndPoint(FFIMemberInfo method, List<ParamInfo> formalParams, ProtoCore.Type retType)
+        internal CLRFunctionEndPoint(FFIMemberInfo method, List<ParamInfo> formalParams, ProcedureNode procedureNode)
         {
             this.method = method;
             this.FormalParams = formalParams;
-            this.ProtoCoreReturnType = retType;
+            this.procedureNode = procedureNode;
         }
 
         public static Dictionary<string, ProtoFFI.FFIHandler> FFIHandlers = new Dictionary<string, ProtoFFI.FFIHandler>();
@@ -108,8 +108,7 @@ namespace ProtoCore
             int dist = ComputeTypeDistance(reducedParamSVs, runtimeCore, allowArrayPromotion);
             if (dist >= 0 && dist != (int)ProcedureDistance.MaxDistance) //Is it possible to convert to this type?
             {
-                // TODO_MSIL: implement CheckInvalidArrayCoersion
-                //if (!FunctionGroup.CheckInvalidArrayCoersion(fep, reducedParamSVs, allowArrayPromotion))
+                if (!FunctionGroup.CheckInvalidArrayCoersion(this, reducedParamSVs, runtimeCore, allowArrayPromotion))
                 return dist;
             }
 

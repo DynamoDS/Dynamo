@@ -251,6 +251,32 @@ namespace ProtoCore
             return ret;
         }
 
+        internal static Dictionary<CLRFunctionEndPoint, int> GetLooseConversionDistances(
+            List<CLRFunctionEndPoint> functionEndPoints,
+            List<CLRStackValue> formalParams,
+            List<ReplicationInstruction> replicationInstructions,
+            ClassTable classTable,
+            MSILRuntimeCore runtimeCore)
+        {
+            var ret = new Dictionary<CLRFunctionEndPoint, int>();
+            var reducedParams = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore, false);
+
+            foreach (var fep in functionEndPoints)
+            {
+                foreach (var reducedParam in reducedParams)
+                {
+                    int distance = fep.GetConversionDistance(reducedParam, runtimeCore, true);
+                    if (distance != (int)ProcedureDistance.InvalidDistance)
+                    {
+                        ret.Add(fep, distance);
+                        break;
+                    }
+                }
+            }
+
+            return ret;
+        }
+
         internal static Dictionary<CLRFunctionEndPoint, int> GetConversionDistances(List<CLRFunctionEndPoint> functionEndPoints,
             List<CLRStackValue> formalParams, List<ReplicationInstruction> replicationInstructions,
             MSILRuntimeCore runtimeCore, bool allowArrayPromotion = false)
@@ -305,6 +331,86 @@ namespace ProtoCore
             }
 
             return ret;
+        }
+
+        internal static bool CheckInvalidArrayCoersion(CLRFunctionEndPoint fep, List<CLRStackValue> reducedSVs, MSILRuntimeCore runtimeCore, bool allowArrayPromotion)
+        {
+            ClassTable classTable = runtimeCore.ClassTable;
+
+            for (int i = 0; i < reducedSVs.Count; i++)
+            {
+                Type typ = fep.FormalParams[i].ProtoInfo;
+                if (typ.UID == (int)ProtoCore.PrimitiveType.InvalidType)
+                    return true;
+
+                if (!typ.IsIndexable)
+                    continue; //It wasn't an array param, skip
+
+                //Compute the type of target param
+                if (!allowArrayPromotion)
+                    Validity.Assert(reducedSVs[i].IsEnumerable, "This should be an array otherwise this shouldn't have passed previous tests");
+
+                if (!allowArrayPromotion)
+                {
+                    if (typ.rank != ArrayUtils.GetMaxRankForArray(reducedSVs[i]) &&
+                        typ.rank != DSASM.Constants.kArbitraryRank)
+                        return true; //Invalid co-ercsion
+                }
+                else
+                {
+                    if (typ.rank < ArrayUtils.GetMaxRankForArray(reducedSVs[i]) &&
+                        typ.rank != DSASM.Constants.kArbitraryRank)
+                        return true; //Invalid co-ercsion
+
+                }
+
+                Dictionary<ClassNode, int> arrayTypes = ArrayUtils.GetTypeStatisticsForArray(reducedSVs[i], runtimeCore);
+
+                ClassNode cn = null;
+
+                if (arrayTypes.Count == 0)
+                {
+                    //This was an empty array
+                    Validity.Assert(cn == null, "If it was an empty array, there shouldn't be a type node");
+                    cn = runtimeCore.ClassTable.ClassNodes[(int)PrimitiveType.Null];
+                }
+                else if (arrayTypes.Count == 1)
+                {
+                    //UGLY, get the key out of the array types, of which there is only one
+                    foreach (ClassNode key in arrayTypes.Keys)
+                        cn = key;
+                }
+                else if (arrayTypes.Count > 1)
+                {
+                    ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(arrayTypes, runtimeCore.ClassTable);
+
+                    if (commonBaseType == null)
+                        throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported(
+                            string.Format(Resources.ArrayWithNotSupported, "{0C644179-14F5-4172-8EF8-A2F3739901B2}"));
+
+                    cn = commonBaseType; //From now on perform tests on the commmon base type
+                }
+
+                ClassNode argTypeNode = classTable.ClassNodes[typ.UID];
+
+                //cn now represents the class node of the argument
+                //argTypeNode represents the class node of the argument
+
+                bool isNotExactTypeMatch = cn != argTypeNode;
+                bool argumentsNotNull = cn != runtimeCore.ClassTable.ClassNodes[(int)PrimitiveType.Null];
+                bool recievingTypeNotAVar = argTypeNode != runtimeCore.ClassTable.ClassNodes[(int)PrimitiveType.Var];
+                bool isNotConvertible = !cn.ConvertibleTo(typ.UID);
+
+                //bool isCalleeVar = cn == core.classTable.list[(int) PrimitiveType.kTypeVar];
+
+
+                //Is it an invalid conversion?
+                if (isNotExactTypeMatch && argumentsNotNull && recievingTypeNotAVar && isNotConvertible)// && !isCalleeVar)
+                {
+                    return true; //It's an invalid coersion
+                }
+            }
+            return false;
         }
 
         public static bool CheckInvalidArrayCoersion(FunctionEndPoint fep, List<StackValue> reducedSVs, ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion)
