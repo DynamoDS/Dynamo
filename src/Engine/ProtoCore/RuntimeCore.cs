@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using DesignScript.Builtin;
 using ProtoCore.AssociativeGraph;
 using ProtoCore.DSASM;
 using ProtoCore.Lang;
@@ -377,25 +379,25 @@ namespace ProtoCore
         }
     }
 
-    internal class MSILRuntimeCore
+    [Obsolete("This is an internal class, do not use it.")]
+    public class MSILRuntimeCore
     {
         // The global class table and function tables
         internal ClassTable ClassTable { get; set; }
-        private ProcedureTable ProcTable { get; set; }
-        private ProcedureNode ProcNode { get; set; }
+        private ProcedureTable[] ProcedureTable { get; set; }
         private TypeSystem TypeSystem { get; set; }
-        private InternalAttributes internalAttributes { get; set; }
+        internal FunctionTable FuncTable { get; set; }
 
-        internal MSILRuntimeCore()
+
+        private static MSILRuntimeCore instance;
+        internal static MSILRuntimeCore Instance;
+
+        public MSILRuntimeCore(RuntimeCore oldVmRuntimeCore)
         {
-            ClassTable = new ClassTable();
-            TypeSystem = new TypeSystem();
-            TypeSystem.SetClassTable(ClassTable);
-            ProcNode = null;
-            ProcTable = new ProcedureTable(Constants.kGlobalScope);
-
-            // Initialize internal attributes
-            internalAttributes = new InternalAttributes(ClassTable);
+            ClassTable = oldVmRuntimeCore.DSExecutable.classTable;
+            TypeSystem = oldVmRuntimeCore.DSExecutable.TypeSystem;
+            ProcedureTable = oldVmRuntimeCore.DSExecutable.procedureTable;
+            FuncTable = oldVmRuntimeCore.DSExecutable.FunctionTable;
         }
 
         internal bool ConvertibleTo(CLRStackValue from, Type to)
@@ -406,6 +408,17 @@ namespace ProtoCore
         internal void LogWarning(Runtime.WarningID ID, string message)
         {
             System.Console.WriteLine($"{ID}{message}");
+        }
+
+        internal ProtoCore.Type GetProtoCoreType(System.Type type, int rank = 0)
+        {
+            int typeUID = ClassTable.IndexOf(CLRObjectMarshaler.GetTypeName(type));
+            if (typeUID == ProtoCore.DSASM.Constants.kInvalidIndex)
+            {
+                return CLRModuleType.GetProtoCoreType(type, null);
+            }
+            var clNode = ClassTable.GetClassNodeAtIndex(typeUID);
+            return TypeSystem.BuildTypeObject(typeUID, rank);
         }
 
         internal int GetProtoCoreTypeID(System.Type type)
@@ -421,6 +434,40 @@ namespace ProtoCore
         internal int GetCoercionScore(int srcType, int targetType)
         {
             return ClassTable?.ClassNodes[srcType]?.GetCoercionScore(targetType) ?? (int)ProcedureDistance.NotMatchScore;
+        }
+
+        internal FunctionGroup GetFuncGroup(string methodName, string className)
+        {
+            int classScope = ClassTable.IndexOf(className);
+            // TODO_MSIL: figure out how to resolve polymorphism at runtime
+            // (Some part of method resolution will need to be done at runtime,
+            // hopefully based on the partial result found at compile time)
+            // try to use dynamic classScope
+            /*if (arguments.Count > 0)
+            {
+                var firstArg = arguments.First();
+
+                var firstNonArray = firstArg;
+                if (firstArg.IsArray && ArrayUtils.GetFirstNonArrayStackValue(firstArg, ref firstNonArray, runtimeCore))
+                {
+                    firstArg = firstNonArray;
+                }
+
+                if (firstArg.IsPointer && firstArg.metaData.type != classScope)
+                {
+                    if (Inherits(classTable.ClassNodes, classScope, firstArg.metaData.type))
+                    {
+                        var fg = FirstFunctionGroupInInheritanceChain(methodName, firstArg.metaData.type, classTable, globalFunctionTable);
+                        if (fg != null)
+                        {
+                            return fg;
+                        }
+                    }
+                }
+            }*/
+
+            // use static classScope
+            return CallSite.FirstFunctionGroupInInheritanceChain(methodName, classScope, ClassTable, FuncTable);
         }
     }
 }
