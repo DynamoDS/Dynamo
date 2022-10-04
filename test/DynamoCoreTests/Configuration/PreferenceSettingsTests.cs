@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using Dynamo.Configuration;
 using Dynamo.Models;
@@ -67,6 +67,8 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.EnableNotificationCenter, true);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
+            Assert.AreEqual(settings.BackupInterval, PreferenceSettings.DefaultBackupInterval);
+            Assert.AreEqual(settings.UseHardwareAcceleration, true);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
 
@@ -83,6 +85,8 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.EnableNotificationCenter, true);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
+            Assert.AreEqual(settings.BackupInterval, PreferenceSettings.DefaultBackupInterval);
+            Assert.AreEqual(settings.UseHardwareAcceleration, true);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
 
@@ -93,6 +97,8 @@ namespace Dynamo.Tests.Configuration
             settings.ShowTabsAndSpacesInScriptEditor = true;
             settings.DefaultPythonEngine = "CP3";
             settings.MaxNumRecentFiles = 24;
+            settings.BackupInterval = 120000; //change to 2 minutes(120000 ms)
+            settings.UseHardwareAcceleration = false;
             settings.EnableNodeAutoComplete = false;
             settings.EnableNotificationCenter = false;
             settings.DefaultRunType = RunType.Manual;
@@ -127,6 +133,8 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, true);
             Assert.AreEqual(settings.DefaultPythonEngine, "CP3");
             Assert.AreEqual(settings.MaxNumRecentFiles, 24);
+            Assert.AreEqual(settings.BackupInterval, 120000);
+            Assert.AreEqual(settings.UseHardwareAcceleration, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, false);
             Assert.AreEqual(settings.EnableNotificationCenter, false);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 1);
