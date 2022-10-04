@@ -35,7 +35,7 @@ namespace ProtoTestFx.TD
         bool testImport;
         bool testDebug;
         //control which VM is used to run tests.
-        bool testMSILExecution = true;
+        bool testMSILExecution = false;
         Dictionary<string, object> MSILMirror;
 
         bool dumpDS =false;
