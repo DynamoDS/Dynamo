@@ -26,7 +26,7 @@ namespace EmitMSIL
         /// counter for local variables, should only be used directly during GatherTypeInfo phase.
         /// It will be incorrect during other compiler phases.
         /// </summary>
-        private int localVarIndex = -1;
+        //private int localVarIndex = -1;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
         /// <summary>
         /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
@@ -150,6 +150,14 @@ namespace EmitMSIL
 
         private Type EmitCoercionCode(AssociativeNode arg, Type argType, ParameterInfo param)
         {
+            if (argType == null) return argType;
+
+            if(param.ParameterType == typeof(object) && argType.IsValueType)
+            {
+                EmitOpCode(OpCodes.Box, argType);
+                return typeof(object);
+            }
+
             if (param.ParameterType.IsAssignableFrom(argType)) return argType;
 
             if(argType == typeof(double) && param.ParameterType == typeof(long))
@@ -172,6 +180,11 @@ namespace EmitMSIL
             {
                 EmitOpCode(OpCodes.Conv_I4);
                 return typeof(int);
+            }
+            if (argType == typeof(long) && param.ParameterType == typeof(double))
+            {
+                EmitOpCode(OpCodes.Conv_R8);
+                return typeof(double);
             }
 
             if (argType == typeof(double[]) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
@@ -224,7 +237,7 @@ namespace EmitMSIL
 
             LocalBuilder localBuilder;
             // Load array to be coerced.
-            int currentVarIndex = localVarIndex;
+            int currentVarIndex = -1;
             if (arg is IdentifierNode ident)
             {
                 currentVarIndex = variables[ident.Value].Item1;
@@ -265,7 +278,9 @@ namespace EmitMSIL
             // Emit for loop to loop over array and convert.
 
             // i = 0;
-            var counterIndex = newArrIndex + 1;
+            //var counterIndex = newArrIndex + 1;
+            localBuilder = DeclareLocal(typeof(int), "for loop counter");
+            var counterIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Ldc_I4_0);
             EmitOpCode(OpCodes.Stloc, counterIndex);
 
@@ -345,7 +360,7 @@ namespace EmitMSIL
             }
             LocalBuilder localBuilder;
             // Load array to be coerced.
-            int currentVarIndex = localVarIndex;
+            int currentVarIndex = -1;
             if (arg is IdentifierNode ident)
             {
                 currentVarIndex = variables[ident.Value].Item1;
@@ -374,7 +389,9 @@ namespace EmitMSIL
             // Emit for loop to loop over array and convert.
 
             // i = 0;
-            var counterIndex = newArrIndex + 1;
+            //var counterIndex = newArrIndex + 1;
+            localBuilder = DeclareLocal(typeof(int), "for loop counter");
+            var counterIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Ldc_I4_0);
             EmitOpCode(OpCodes.Stloc, counterIndex);
 
@@ -893,10 +910,16 @@ namespace EmitMSIL
                         // variable being assigned already exists in dictionary.
                         throw new Exception("Variable redefinition is not allowed.");
                     }
-                    variables.Add(lNode.Value, new Tuple<int, Type>(++localVarIndex, t));
+                    variables.Add(lNode.Value, new Tuple<int, Type>(-1, t));
                 }
-                DeclareLocal(t, lNode.Value);
-                var currentLocalVarIndex = variables[lNode.Value].Item1;
+                var localBuilder = DeclareLocal(t, lNode.Value);
+                //var currentLocalVarIndex = variables[lNode.Value].Item1;
+                int currentLocalVarIndex = -1;
+                if (localBuilder != null)
+                {
+                    currentLocalVarIndex = localBuilder.LocalIndex;
+                    variables[lNode.Value] = new Tuple<int, Type>(currentLocalVarIndex, variables[lNode.Value].Item2);
+                }
                 EmitOpCode(OpCodes.Stloc, currentLocalVarIndex);
                 // Add variable to output dictionary: output.Add("varName", variable);
                 EmitOpCode(OpCodes.Ldarg_2);
@@ -1314,11 +1337,16 @@ namespace EmitMSIL
                     }
                     index++;
                 }
-                EmitOpCode(OpCodes.Call, mBase);
-                if (mBase is MethodInfo mi) return mi.ReturnType;
+
+                if (mBase is MethodInfo mi)
+                {
+                    EmitOpCode(OpCodes.Call, mBase);
+                    return mi.ReturnType;
+                }
                 else
                 {
                     var ci = mBase as ConstructorInfo;
+                    EmitOpCode(OpCodes.Newobj, ci);
                     return ci.DeclaringType;
                 }
             }
