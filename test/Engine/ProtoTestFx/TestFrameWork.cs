@@ -405,12 +405,26 @@ namespace ProtoTestFx.TD
             if (testMSILExecution)
             {
                 Console.WriteLine($"!!!!test {NUnit.Framework.TestContext.CurrentContext.Test.Name} being run with MSIL compiler!!!!");
-                var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-                var outputpath = Path.Combine(assemblyPath, "MSILTestOutput");
-                System.IO.Directory.CreateDirectory(outputpath);
-                var inputs = new Dictionary<string, IList>();
-                var codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(outputpath, $"OpCodesTEST{NUnit.Framework.TestContext.CurrentContext.Test.Name}.txt"));
-                MSILMirror = runner.CompileAndGenerateMSIL(sourceCode, codeGen);
+                //TODO_MSIL: remove the dependency on the old VM by implementing
+                //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
+                //MSIL_TODO add list of libraries to load here for tests.
+                //It seems we have to load SOME library successfully or DSExecutable is null.
+                using (var liveRunner = new ProtoScript.Runners.LiveRunner())
+                {
+                    liveRunner.ResetVMAndResyncGraph(new string[] { "DesignScriptBuiltin.dll" });
+
+                    var runtimeCore = new ProtoCore.MSILRuntimeCore(liveRunner.RuntimeCore);
+                    var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+                    var outputpath = Path.Combine(assemblyPath, "MSILTestOutput");
+                    System.IO.Directory.CreateDirectory(outputpath);
+                    var inputs = new Dictionary<string, IList>();
+                    using (var codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(outputpath, $"OpCodesTEST{NUnit.Framework.TestContext.CurrentContext.Test.Name}.txt"), runtimeCore))
+                    {
+                        MSILMirror = runner.CompileAndGenerateMSIL(sourceCode, codeGen);
+
+                    }
+                }
+               
                 return null;
             }
 
