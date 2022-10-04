@@ -345,13 +345,19 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
-        /// <summary>
-        /// The public method to compile DS AST and stores the executable in core
-        /// </summary>
-        /// <param name="astList"></param>
-        /// <param name="compileCore"></param>
-        /// <returns></returns>
-        public bool CompileAndGenerateExe(
+        public Dictionary<string, object> CompileAndGenerateMSIL(string souce, EmitMSIL.CodeGenIL codegen)
+        {
+            var ast = ParserUtils.Parse(souce).Body;
+            return codegen.EmitAndExecute(ast);
+        }
+
+    /// <summary>
+    /// The public method to compile DS AST and stores the executable in core
+    /// </summary>
+    /// <param name="astList"></param>
+    /// <param name="compileCore"></param>
+    /// <returns></returns>
+    public bool CompileAndGenerateExe(
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, 
             ProtoCore.Core compileCore,
             ProtoCore.CompileTime.Context context)
