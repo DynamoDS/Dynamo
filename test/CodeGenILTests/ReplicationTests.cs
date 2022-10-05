@@ -699,7 +699,9 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
 
         }
         [Test]
-        [Category("Failure")] // Fails because we use the wrong type for a
+        // Fails because of a bug that causes the result from the constant declaration to be stored using the return type
+        // of the latest function call (object). The end result is that the value of the constant is wrong. 
+        [Category("Failure")] 
         public void Value_Are_Correct_Reversed()
         {
             string code =
