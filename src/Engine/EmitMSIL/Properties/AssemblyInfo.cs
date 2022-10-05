@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -12,3 +12,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("2e7be1fb-7038-4277-9dae-fd0faabf5768")]
 [assembly: InternalsVisibleTo("CodeGenILTests")]
 [assembly: InternalsVisibleTo("ProtoScript")]
+[assembly: InternalsVisibleTo("ProtoTestFx")]
