@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using NUnit.Framework;
@@ -37,7 +38,11 @@ namespace ProtoTestFx.TD
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
         bool executeInDebugMode = true;
- 
+        //hold results from using MSIL compiler / execution.
+        private Dictionary<string, object> MSILMirror;
+        //control which engine to use for tests run with this test framework.
+        private bool testMSILExecution = false;
+
         public TestFrameWork()
         {
             runner = new ProtoScriptRunner();
@@ -396,6 +401,32 @@ namespace ProtoTestFx.TD
         public virtual ExecutionMirror RunScriptSource(string sourceCode, string errorstring = "", string includePath = "")
         {
             sourceCode = sourceCode.Insert(0, "import(\"DesignScriptBuiltin.dll\");");
+
+            if (testMSILExecution)
+            {
+                Console.WriteLine($"!!!!test {NUnit.Framework.TestContext.CurrentContext.Test.Name} being run with MSIL compiler!!!!");
+                //TODO_MSIL: remove the dependency on the old VM by implementing
+                //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
+                //MSIL_TODO add list of libraries to load here for tests.
+                //It seems we have to load SOME library successfully or DSExecutable is null.
+                using (var liveRunner = new ProtoScript.Runners.LiveRunner())
+                {
+                    liveRunner.ResetVMAndResyncGraph(new string[] { "DesignScriptBuiltin.dll" });
+
+                    var runtimeCore = new ProtoCore.MSILRuntimeCore(liveRunner.RuntimeCore);
+                    var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+                    var outputpath = Path.Combine(assemblyPath, "MSILTestOutput");
+                    System.IO.Directory.CreateDirectory(outputpath);
+                    var inputs = new Dictionary<string, IList>();
+                    using (var codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(outputpath, $"OpCodesTEST{NUnit.Framework.TestContext.CurrentContext.Test.Name}.txt"), runtimeCore))
+                    {
+                        MSILMirror = runner.CompileAndGenerateMSIL(sourceCode, codeGen);
+
+                    }
+                }
+               
+                return null;
+            }
 
             if (testImport)
             {
