@@ -1293,7 +1293,7 @@ namespace ProtoCore
             foreach (FunctionEndPoint fep in candidatesWithDistances.Keys)
             {
                 bool isClassInstanceMethod = fep.procedureNode != null &&
-                    fep.procedureNode.ClassID != Constants.kInvalidIndex &&//valid class
+                    fep.procedureNode.ClassID != Constants.kGlobalScope  &&//valid class
                     !fep.procedureNode.IsConstructor && !fep.procedureNode.IsStatic;//not static and not constructor  
 
                 if (isGlobalFuncScope && isClassInstanceMethod)

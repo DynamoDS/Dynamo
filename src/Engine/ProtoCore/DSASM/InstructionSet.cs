@@ -140,7 +140,6 @@ namespace ProtoCore.DSASM
         // TODO_MSIL figure out global functions
         internal bool IsGlobal;// is global function
 
-        // TODO_MSIL: Figure out how bad boxing/unboxing is for performance
         internal object Value { get; set; }
 
 

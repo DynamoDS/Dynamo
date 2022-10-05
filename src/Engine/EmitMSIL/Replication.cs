@@ -301,7 +301,7 @@ namespace EmitMSIL
             foreach (var fep in candidatesWithDistances.Keys)
             {
                 bool isClassInstanceMethod = fep.procedureNode != null &&
-                  fep.procedureNode.ClassID != Constants.kInvalidIndex &&//valid class
+                  fep.procedureNode.ClassID != Constants.kGlobalScope &&//valid class
                   !fep.procedureNode.IsConstructor && !fep.procedureNode.IsStatic;//not static and not constructor  
 
                 if (thisPtr.IsGlobal && isClassInstanceMethod)
@@ -465,7 +465,7 @@ namespace EmitMSIL
             MSILRuntimeCore runtimeCore)
         {
             //Exact match
-            var exactTypeMatchingCandindates = FunctionGroup.GetExactTypeMatches(arguments, funcGroup, replicationInstructions, runtimeCore);
+            var exactTypeMatchingCandindates = FunctionGroup.GetExactTypeMatches(thisPtr, arguments, funcGroup, replicationInstructions, runtimeCore);
 
             if (exactTypeMatchingCandindates.Count == 0)
             {
@@ -514,16 +514,10 @@ namespace EmitMSIL
             conversionCosts.Sort();
 
             List<CLRFunctionEndPoint> fepsToSplit = new List<CLRFunctionEndPoint>();
-
-            // TODO_MSIL: refactor this logic (it has redundant operations)
             foreach (int cost in conversionCosts)
             {
-                foreach (CLRFunctionEndPoint funcFep in conversionCostList[cost])
-                {
-                    compliantTarget = funcFep;
-                    fepsToSplit.Add(funcFep);
-                }
-
+                fepsToSplit = conversionCostList[cost];
+                compliantTarget = fepsToSplit.FirstOrDefault(x => x != null);
                 if (compliantTarget != null)
                     break;
             }
@@ -626,7 +620,7 @@ namespace EmitMSIL
                 {
                     List<List<CLRStackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, replicationOption, runtimeCore);
                     HashSet<CLRFunctionEndPoint> lookups;
-                    if (FunctionGroup.CanGetExactMatchStatics(reducedParams, funcGroup, runtimeCore, out lookups))
+                    if (FunctionGroup.CanGetExactMatchStatics(thisPtr,  reducedParams, funcGroup, runtimeCore, out lookups))
                     {
                         if (replicationInstructions == null || CallSite.IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
                         {
