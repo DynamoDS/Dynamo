@@ -77,6 +77,9 @@ namespace EmitMSIL
             // Invoke emitted method (ExecuteIL.Execute)
             timer.Restart();
             var t = compileResult.tbuilder.CreateType();
+
+            compileResult.asmbuilder.Save("DynamicAssembly.dll");
+
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
             var output = new Dictionary<string, object>();
 
@@ -84,8 +87,6 @@ namespace EmitMSIL
             var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
             timer.Stop();
             CompileAndExecutionTime.executionTime = timer.Elapsed;
-
-            compileResult.asmbuilder.Save("DynamicAssembly.dll");
 
             return output;
         }
@@ -138,6 +139,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Ret);
 
             writer.Close();
+
             return (asm, type);
         }
 
@@ -1291,7 +1293,7 @@ namespace EmitMSIL
                 // Emit opcodes to create a new CLRStackValue structure
                 // with value and proto core type set in the constructor
                 var constr = typeof(DSASM.CLRStackValue).GetConstructor(new Type[] { typeof(object), typeof(int) });
-                EmitOpCode(OpCodes.Newobj, constr);
+                EmitOpCode(OpCodes.Newobj, constr); 
 
                 EmitOpCode(OpCodes.Box, typeof(DSASM.CLRStackValue));
             });
