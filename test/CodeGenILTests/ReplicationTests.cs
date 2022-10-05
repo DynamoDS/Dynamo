@@ -682,5 +682,47 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                 },
                 output["test4"]));
         }
+
+        [Test]
+        public void Value_Are_Correct()
+        {
+            string code =
+            @"
+            import(""DesignScriptBuiltin.dll"");
+            import(""DSCoreNodes.dll"");
+
+            a = 0.5;
+            b = DSCore.Math.Sum([0.0, 10.0]);
+            ";
+
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(0.5, output["a"]);
+            Assert.AreEqual(10.0, output["b"]);
+
+        }
+        [Test]
+        // Fails because of a bug that causes the result from the constant declaration to be stored using the return type
+        // of the latest function call (object). The end result is that the value of the constant is wrong. 
+        [Category("Failure")] 
+        public void Value_Are_Correct_Reversed()
+        {
+            string code =
+                @"
+            import(""DesignScriptBuiltin.dll"");
+            import(""DesignScriptBuiltin.dll"");
+            import(""DSCoreNodes.dll"");
+
+            b = DSCore.Math.Sum([0.0, 10.0]);
+            a = 0.5;
+            ";
+
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(0.5, output["a"]);
+            Assert.AreEqual(10.0, output["b"]);
+        }
     }
 }
