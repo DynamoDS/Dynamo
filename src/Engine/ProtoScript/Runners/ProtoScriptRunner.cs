@@ -345,9 +345,9 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
-        public Dictionary<string, object> CompileAndGenerateMSIL(string souce, EmitMSIL.CodeGenIL codegen)
+        public Dictionary<string, object> CompileAndGenerateMSIL(string source, EmitMSIL.CodeGenIL codegen)
         {
-            var ast = ParserUtils.Parse(souce).Body;
+            var ast = ParserUtils.Parse(source).Body;
             return codegen.EmitAndExecute(ast);
         }
 
