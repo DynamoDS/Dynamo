@@ -3183,14 +3183,13 @@
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border x:Name="mouseOverBorder"
-                                Margin="2"
                                 BorderThickness="2"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 Background="{TemplateBinding Background}"
+                                Margin="0,4,4,4"
                                 Visibility="Hidden"
                                 CornerRadius="2"/>
                         <Border x:Name="mousePressedBorder"
-                                Margin="0"
                                 BorderThickness="4"
                                 Visibility="Hidden"
                                 BorderBrush="{TemplateBinding BorderBrush}"
@@ -3240,14 +3239,13 @@
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border x:Name="mouseOverBorder"
-                                Margin="2"
+                                Margin="4"
                                 BorderThickness="2"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 Background="{TemplateBinding Background}"
                                 Visibility="Hidden"
                                 CornerRadius="2"/>
                         <Border x:Name="mousePressedBorder"
-                                Margin="0"
                                 BorderThickness="4"
                                 Visibility="Hidden"
                                 BorderBrush="{TemplateBinding BorderBrush}"
