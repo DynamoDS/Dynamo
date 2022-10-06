@@ -182,6 +182,7 @@ namespace EmitMSIL
         /// <param name="args"></param>
         /// <param name="replicationAttrs"></param>
         /// <returns></returns>
+        [Obsolete("This is an internal function, do not use it.")]
         public static CLRStackValue ReplicationLogic(List<CLRFunctionEndPoint> feps, IList<object> args, string[][] replicationAttrs, MSILRuntimeCore runtimeCore)
         {
             // Construct replicationGuides from replicationAttrs
