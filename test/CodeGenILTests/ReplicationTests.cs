@@ -571,5 +571,40 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                 },
                 output["test4"]));
         }
+
+        [Test]
+        public void IEnumerable_IntDouble_Coercion()
+        {
+            string code =
+            @"
+            import(""DesignScriptBuiltin.dll"");
+            import(""DSCoreNodes.dll"");
+            import (""FFITarget.dll"");
+            x = [1, 2, 3.7, 4];
+            test1 = FFITarget.DummyCollection.ReturnIEnumerableOfInt(x);  
+            test2 = DSCore.Math.Sum(test1);    
+            ";
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(11, output["test2"]);
+        }
+
+        [Test]
+        public void IList_T_IEnumerable_Coerce()
+        {
+            string code =
+            @"
+            import(""DesignScriptBuiltin.dll"");
+            import(""DSCoreNodes.dll"");
+            import (""FFITarget.dll"");
+            x = FFITarget.ArrayMember.ArrayMember();
+            num1 = FFITarget.ArrayMember.foo(x);
+            num2 = DSCore.Math.Sum(num1);  
+            ";
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+        }
     }
 }

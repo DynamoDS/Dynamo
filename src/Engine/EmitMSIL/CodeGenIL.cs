@@ -211,136 +211,173 @@ namespace EmitMSIL
             {
                 return EmitArrayCoercion<int, long>(arg, param.ParameterType);
             }
-            if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
+
+            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitIListCoercion<double>(arg);
+                return EmitIEnumerableCoercion<int, double>(arg);
             }
-            if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
+            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitIListCoercion<int>(arg);
+                return EmitIEnumerableCoercion<int, long>(arg);
             }
-            if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
+            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
             {
-                return EmitIListCoercion<long>(arg);
+                return EmitIEnumerableCoercion<long, double>(arg);
+            }
+            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
+            {
+                return EmitIEnumerableCoercion<long, int>(arg);
+            }
+            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
+            {
+                return EmitIEnumerableCoercion<double, int>(arg);
+            }
+            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
+            {
+                return EmitIEnumerableCoercion<double, long>(arg);
             }
             // TODO: Add more coercion cases here.
 
             return argType;
         }
 
-        private Type EmitIListCoercion<T>(AssociativeNode arg)
+        private Type EmitIEnumerableCoercion<Source, Target>(AssociativeNode arg)
         {
             if (compilePass == CompilePass.GatherTypeInfo)
             {
-                return typeof(T[]);
+                return typeof(Target[]);
             }
 
-            LocalBuilder localBuilder;
             // Load array to be coerced.
-            int currentVarIndex = -1;
+            LocalBuilder localBuilder;
+            int sourceArrayIndex = -1;
             if (arg is IdentifierNode ident)
             {
-                currentVarIndex = variables[ident.Value].Item1;
+                sourceArrayIndex = variables[ident.Value].Item1;
             }
             else
             {
-                localBuilder = DeclareLocal(typeof(IList), "IList to coerce");
-                currentVarIndex = localBuilder.LocalIndex;
+                localBuilder = DeclareLocal(typeof(IEnumerable<Source>), "IEnumerable to coerce");
+                sourceArrayIndex = localBuilder.LocalIndex;
 
-                EmitOpCode(OpCodes.Stloc, currentVarIndex);
-                EmitOpCode(OpCodes.Ldloc, currentVarIndex);
+                EmitOpCode(OpCodes.Stloc, sourceArrayIndex);
+                EmitOpCode(OpCodes.Ldloc, sourceArrayIndex);
             }
 
-            // Find length for IList to be coerced (already on top of eval stack), len
-            var prop = typeof(ICollection).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
-                                p => p.Name == nameof(ICollection.Count)).FirstOrDefault();
+            var mInfo = typeof(Enumerable).GetMethods().Single(
+                m => m.Name == nameof(Enumerable.Count) && m.IsStatic && m.GetParameters().Length == 1);
+            var genericMInfo = mInfo.MakeGenericMethod(typeof(Source));
 
-            // mInfo is get_Count() method on ICollection.
-            var mInfo = prop.GetAccessors().FirstOrDefault();
-
-            EmitOpCode(OpCodes.Callvirt, mInfo);
-
-            // len = source.Count;
-            localBuilder = DeclareLocal(typeof(int), "length of IList to coerce");
+            // len = source.Count();
+            EmitOpCode(OpCodes.Call, genericMInfo);
+            localBuilder = DeclareLocal(typeof(int), "length of IEnumerable to coerce");
             var sourceArrayLengthIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, sourceArrayLengthIndex);
 
             // Load length of source array, var newarr = new Target[len];
             EmitOpCode(OpCodes.Ldloc, sourceArrayLengthIndex);
-            EmitOpCode(OpCodes.Newarr, typeof(T));
+            EmitOpCode(OpCodes.Newarr, typeof(Target));
 
             // Declare new array to store coerced values
-            var t = typeof(T[]);
-            localBuilder = DeclareLocal(t, "coerced array");
+            var t = typeof(Target[]);
+            localBuilder = DeclareLocal(t, "coerced target array");
             var newArrIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, newArrIndex);
 
             // Emit for loop to loop over array and convert.
 
             // i = 0;
-            //var counterIndex = newArrIndex + 1;
+            EmitOpCode(OpCodes.Ldc_I4_0);
             localBuilder = DeclareLocal(typeof(int), "for loop counter");
             var counterIndex = localBuilder.LocalIndex;
-            EmitOpCode(OpCodes.Ldc_I4_0);
             EmitOpCode(OpCodes.Stloc, counterIndex);
+
+            // Load array to be coerced.
+            EmitOpCode(OpCodes.Ldloc, sourceArrayIndex);
+            mInfo = typeof(IEnumerable<Source>).GetMethod(nameof(IEnumerable<Source>.GetEnumerator));
+            EmitOpCode(OpCodes.Callvirt, mInfo);
+
+            localBuilder = DeclareLocal(typeof(IEnumerator<Source>), "enumerator");
+            var enumeratorIndex = localBuilder.LocalIndex;
+            EmitOpCode(OpCodes.Stloc, enumeratorIndex);
 
             var loopBodyLabel = DefineLabel();
             var loopCondLabel = DefineLabel();
 
             EmitOpCode(OpCodes.Br_S, loopCondLabel.Value);
 
-            // newarr[i] = (Target)arr[i];
             MarkLabel(loopBodyLabel.Value, "label:body");
+            EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
 
-            EmitOpCode(OpCodes.Ldloc, newArrIndex);
-            EmitOpCode(OpCodes.Ldloc, counterIndex);
-
-            // Load array to be coerced.
-            EmitOpCode(OpCodes.Ldloc, currentVarIndex);
-            EmitOpCode(OpCodes.Ldloc, counterIndex);
-
-            prop = typeof(IList).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
-                                    p => p.Name == "Item").FirstOrDefault();
+            var prop = typeof(IEnumerator<Source>).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
+                                    p => p.Name == nameof(IEnumerator<Source>.Current)).FirstOrDefault();
             mInfo = prop.GetAccessors().FirstOrDefault();
-
             EmitOpCode(OpCodes.Callvirt, mInfo);
 
-            // unboxing
-            if (typeof(T) == typeof(double))
+            localBuilder = DeclareLocal(typeof(Source), "element in source array");
+            var sourceArrayElementIndex = localBuilder.LocalIndex;
+            EmitOpCode(OpCodes.Stloc, sourceArrayElementIndex);
+
+            // target[i] = source_element;
+            EmitOpCode(OpCodes.Ldloc, newArrIndex);
+            EmitOpCode(OpCodes.Ldloc, counterIndex);
+            EmitOpCode(OpCodes.Ldloc, sourceArrayElementIndex);
+            if (typeof(Target) == typeof(double))
             {
-                EmitOpCode(OpCodes.Call, typeof(Convert).GetMethod(nameof(Convert.ToDouble), new Type[] { typeof(object) }));
+                EmitOpCode(OpCodes.Conv_R8);
                 EmitOpCode(OpCodes.Stelem_R8);
             }
-            else if (typeof(T) == typeof(int))
+            else if (typeof(Target) == typeof(int))
             {
-                EmitOpCode(OpCodes.Call, typeof(Convert).GetMethod(nameof(Convert.ToInt32), new Type[] { typeof(object) }));
+                EmitOpCode(OpCodes.Conv_I4);
                 EmitOpCode(OpCodes.Stelem_I4);
             }
-            else if (typeof(T) == typeof(long))
+            else if (typeof(Target) == typeof(long))
             {
-                EmitOpCode(OpCodes.Call, typeof(Convert).GetMethod(nameof(Convert.ToInt64), new Type[] { typeof(object) }));
+                EmitOpCode(OpCodes.Conv_I8);
                 EmitOpCode(OpCodes.Stelem_I8);
             }
             // i++;
             EmitOpCode(OpCodes.Ldloc, counterIndex);
             EmitOpCode(OpCodes.Ldc_I4_1);
-
             EmitOpCode(OpCodes.Add);
-
             EmitOpCode(OpCodes.Stloc, counterIndex);
 
-            // i < len;
-            MarkLabel(loopCondLabel.Value,"label:cond");
+            MarkLabel(loopCondLabel.Value, "label:loop condition");
+            EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
 
-            EmitOpCode(OpCodes.Ldloc, counterIndex);
+            mInfo = typeof(IEnumerator).GetMethod(nameof(IEnumerator.MoveNext));
+            EmitOpCode(OpCodes.Callvirt, mInfo);
 
-            EmitOpCode(OpCodes.Ldloc, sourceArrayLengthIndex);
-
-            EmitOpCode(OpCodes.Clt);
-
+            var leaveLabel = DefineLabel();
             EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel.Value);
+            EmitOpCode(OpCodes.Leave_S, leaveLabel.Value);
 
+            EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
+
+            var finallyLabel = DefineLabel();
+            EmitOpCode(OpCodes.Brfalse_S, finallyLabel.Value);
+
+            EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
+
+            mInfo = typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
+            EmitOpCode(OpCodes.Callvirt, mInfo);
+
+            MarkLabel(finallyLabel.Value, "label: finally label");
+            EmitOpCode(OpCodes.Endfinally);
+
+            MarkLabel(leaveLabel.Value, "label: exit label");
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
+
+            localBuilder = DeclareLocal(t, "target array");
+            var targetArrayIndex = localBuilder.LocalIndex;
+            EmitOpCode(OpCodes.Stloc, targetArrayIndex);
+
+            var endLabel = DefineLabel();
+            EmitOpCode(OpCodes.Br_S, endLabel.Value);
+
+            MarkLabel(endLabel.Value, "label: end label");
+            EmitOpCode(OpCodes.Ldloc, targetArrayIndex);
 
             return t;
         }
@@ -355,7 +392,6 @@ namespace EmitMSIL
                 {
                     returnType = typeof(List<Target>);
                 }
-
                 return returnType;
             }
             LocalBuilder localBuilder;
@@ -1400,6 +1436,8 @@ namespace EmitMSIL
                     if (idn.ReplicationGuides.Count > 0) return false;
 
                     var t = variables[idn.Value].Item2;
+                    if (t == typeof(object)) return false;
+
                     if (!p.ParameterType.Equals(t))
                     {
                         // TODO: check if rank of t matches with that of p.
