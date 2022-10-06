@@ -1483,7 +1483,10 @@
     <Resource Include="UI\Images\Folder.png" />
     <Resource Include="UI\Images\caret_down_grey_48px.png" />
     <Resource Include="UI\Images\caret_up_grey_48px.png" />
+    <Resource Include="UI\Images\caret_down_hover_48px.png" />
+    <Resource Include="UI\Images\caret_up_hover_48px.png" />
     <Resource Include="UI\Images\menu_grey_48px.png" />
+    <Resource Include="UI\Images\menu_hover_48px.png" />
     <Resource Include="UI\Images\NodeIcon_placeholder.png" />
     <Resource Include="UI\Images\custom-node.png" />
     <Resource Include="UI\Images\image-icon-default.png" />

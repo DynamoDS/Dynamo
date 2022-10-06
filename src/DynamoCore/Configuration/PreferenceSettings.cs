@@ -52,11 +52,18 @@ namespace Dynamo.Configuration
         private bool isBackgroundGridVisible;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
+        private bool isCreatedFromValidFile = true;
+
         #region Constants
         /// <summary>
         /// Indicates the maximum number of files shown in Recent Files
         /// </summary>
         internal const int DefaultMaxNumRecentFiles = 10;
+
+        /// <summary>
+        /// The default time interval between backup files. 1 minute.
+        /// </summary>
+        internal const int DefaultBackupInterval = 60000;
 
         /// <summary>
         /// Indicates the default render precision, i.e. the maximum number of tessellation divisions
@@ -668,7 +675,7 @@ namespace Dynamo.Configuration
             DefaultRunType = RunType.Automatic;
             DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
 
-            BackupInterval = 60000; // 1 minute
+            BackupInterval = DefaultBackupInterval;
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
                         
@@ -759,7 +766,7 @@ namespace Dynamo.Configuration
             {
                 if (settings == null)
                 {
-                    return new PreferenceSettings();
+                    return new PreferenceSettings() { isCreatedFromValidFile = false };
                 }
             }
 
@@ -998,6 +1005,15 @@ namespace Dynamo.Configuration
         public List<string> StaticFields()
         {
             return typeof(PreferenceSettings).GetMembers(BindingFlags.Static | BindingFlags.NonPublic).OfType<FieldInfo>().Select(field => field.Name).ToList();
+        }
+
+        /// <summary>
+        /// Indicates when an instance has been created from a preferences file correctly, a support property
+        /// </summary>
+        [XmlIgnore]
+        public bool IsCreatedFromValidFile
+        {
+            get { return isCreatedFromValidFile; }
         }
     }
 }
