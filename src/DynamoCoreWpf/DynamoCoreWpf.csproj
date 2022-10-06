@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -1524,6 +1524,7 @@
     <Resource Include="UI\Images\Profile.png" />
     <Resource Include="UI\Images\Requirements.png" />
     <Resource Include="UI\Images\Sort.png" />
+    <Resource Include="UI\Images\sort-hover-16px.png" />
     <Resource Include="UI\Images\View details.png" />
     <Resource Include="UI\Images\more-vertical_selected_16px.png" />
     <Resource Include="UI\Images\pin_default_48_48.png" />

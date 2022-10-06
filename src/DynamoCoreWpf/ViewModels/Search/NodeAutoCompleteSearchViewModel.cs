@@ -1,5 +1,5 @@
-﻿using System;
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Dynamo.Engine;
@@ -299,6 +299,24 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// For checking the ML Context menu item
+        /// </summary>
+        public bool IsML
+        {
+            get { return dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion == Models.NodeAutocompleteSuggestion.MLRecommendation; }
+            set { }
+        }
+
+        /// <summary>
+        /// For checking the Object Type Context menu item
+        /// </summary>
+        public bool IsObjectType
+        {
+            get { return !IsML; }
+            set { }
+        }
+
+        /// <summary>
         /// Compares NodeSearchElements based on their typeDistance from a given type 'typeNameToCompareTo'
         /// </summary>
         internal class NodeSearchElementComparer : IComparer<NodeSearchElement>
@@ -453,6 +471,5 @@ namespace Dynamo.ViewModels
             }
 
         }
-
     }
 }

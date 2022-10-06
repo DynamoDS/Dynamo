@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -54,6 +54,7 @@ namespace Dynamo.ViewModels
         private ObservableCollection<string> pythonEngineList;
 
         private RunType runSettingsIsChecked;
+        private NodeAutocompleteSuggestion nodeAutocompleteObjectTypeIsChecked;
         private Dictionary<string, TabSettings> preferencesTabs;
 
         private readonly PreferenceSettings preferenceSettings;
@@ -219,6 +220,31 @@ namespace Dynamo.ViewModels
                     runSettingsIsChecked = RunType.Automatic;
                 }
                 RaisePropertyChanged(nameof(RunSettingsIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the Node autocomplete method Object type IsChecked property in the Features ObjectType radio button
+        /// </summary>
+        public bool NodeAutocompleteObjectTypeIsChecked
+        {
+            get
+            {
+                return preferenceSettings.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.ObjectType;                
+            }
+            set
+            {
+                if (value)
+                {
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                    nodeAutocompleteObjectTypeIsChecked = NodeAutocompleteSuggestion.ObjectType;
+                }
+                else
+                {
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                    nodeAutocompleteObjectTypeIsChecked = NodeAutocompleteSuggestion.ObjectType;
+                }
+                RaisePropertyChanged(nameof(nodeAutocompleteObjectTypeIsChecked));
             }
         }
 

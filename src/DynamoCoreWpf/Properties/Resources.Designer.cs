@@ -3795,6 +3795,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Machine Learning.
+        /// </summary>
+        public static string MachineLearning {
+            get {
+                return ResourceManager.GetString("MachineLearning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must provide a Major version as a non-negative integer..
         /// </summary>
         public static string MajorVersionNonNegative {
@@ -4424,6 +4433,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sort results by.
+        /// </summary>
+        public static string NodeAutocomplete {
+            get {
+                return ResourceManager.GetString("NodeAutocomplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DynamoCoreWpf;NodeAutocompleteDocumentation.html.
         /// </summary>
         public static string NodeAutocompleteDocumentationUriString {
@@ -4726,6 +4744,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NullString {
             get {
                 return ResourceManager.GetString("NullString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object type.
+        /// </summary>
+        public static string ObjectType {
+            get {
+                return ResourceManager.GetString("ObjectType", resourceCulture);
             }
         }
         
@@ -6271,6 +6298,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PortViewContextMenuUserDefaultValue {
             get {
                 return ResourceManager.GetString("PortViewContextMenuUserDefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default method.
+        /// </summary>
+        public static string PreferencesNodeAutocompleteMethod {
+            get {
+                return ResourceManager.GetString("PreferencesNodeAutocompleteMethod", resourceCulture);
             }
         }
         

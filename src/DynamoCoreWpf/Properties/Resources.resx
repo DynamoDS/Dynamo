@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -719,6 +719,10 @@
   <data name="ContextMenu" xml:space="preserve">
     <value>Node Options</value>
     <comment>Node context menu</comment>
+  </data>
+  <data name="NodeAutocomplete" xml:space="preserve">
+    <value>Sort results by</value>
+    <comment>Node context tooltip</comment>
   </data>
   <data name="ContextMenuLacing" xml:space="preserve">
     <value>Lacing</value>
@@ -2534,6 +2538,18 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewRunSettingsLabel" xml:space="preserve">
     <value>Default Run Settings</value>
     <comment>Label used in the general tab</comment>
+  </data>
+  <data name="PreferencesNodeAutocompleteMethod" xml:space="preserve">
+    <value>Default method</value>
+    <comment>Label used in the features tab</comment>
+  </data>
+  <data name="ObjectType" xml:space="preserve">
+    <value>Object type</value>
+    <comment>Label used in the features tab</comment>
+  </data>
+  <data name="MachineLearning" xml:space="preserve">
+    <value>Machine Learning</value>
+    <comment>Label used in the features tab</comment>
   </data>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
     <value>E_xtensions</value>

@@ -579,6 +579,11 @@ namespace Dynamo.Configuration
         public RunType DefaultRunType { get; set; }
 
         /// <summary>
+        /// Defines the default method of the Node Autocomplete
+        /// </summary>
+        public NodeAutocompleteSuggestion DefaultNodeAutocompleteSuggestion { get; set; }
+
+        /// <summary>
         /// Show Run Preview flag.
         /// </summary>
         public bool ShowRunPreview { get; set; }
@@ -661,6 +666,7 @@ namespace Dynamo.Configuration
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
             DefaultRunType = RunType.Automatic;
+            DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
