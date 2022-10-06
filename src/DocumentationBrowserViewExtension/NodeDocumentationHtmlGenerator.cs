@@ -28,14 +28,14 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="e"></param>
         /// <returns></returns>
-        internal static string FromAnnotationEventArgs(OpenNodeAnnotationEventArgs e, string mkDown)
+        internal static string FromAnnotationEventArgs(OpenNodeAnnotationEventArgs e, string breadCrumbs, string mkDown)
         {
             if (e is null)
                 throw new ArgumentNullException(nameof(e));
 
             StringBuilder sb = new StringBuilder();
             
-            sb.AppendLine(CreateHeader(e));
+            sb.AppendLine(CreateHeader(e, breadCrumbs));
             sb.AppendLine(CreateBody(e, mkDown));
 
             return sb.ToString();
@@ -61,11 +61,12 @@ namespace Dynamo.DocumentationBrowser
             return sb.ToString();
         }
 
-        private static string CreateHeader(OpenNodeAnnotationEventArgs e)
+        private static string CreateHeader(OpenNodeAnnotationEventArgs e, string breadCrumbs)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"<h1>{e.Type}</h1>");
             sb.AppendLine($"<p><i>{e.MinimumQualifiedName}</i></p>");
+            if(!string.IsNullOrEmpty(breadCrumbs)) sb.AppendLine($"<p>{breadCrumbs}</p>");
 
             return sb.ToString();
         }
@@ -105,6 +106,11 @@ namespace Dynamo.DocumentationBrowser
 
             var mkArray = mkDown.Split(new string[] {"\r\n", "\r", "\n"}, StringSplitOptions.None).Where(s => !string.IsNullOrEmpty(s)).ToArray();
             var imageRow = mkArray.Last();
+            if (!imageRow.Contains("img"))
+            {
+                return sb.ToString();   // terminate early if no image
+            }
+
             imageRow = imageRow.Replace("<p>", "").Replace("</p>", "");
             imageRow = imageRow.Insert(4, @" id='drag--img' class='resizable--img' ");
 
@@ -113,9 +119,9 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine(imageRow);
             sb.AppendLine("<div class=\"btn--container\">");
             sb.AppendLine(
-                "<button type=\"button\"  id=\"zoomin\" class=\"button\" title=\"Zoom in\" >zoom in</button>\r\n");
+                "<button type=\"button\"  id=\"zoomin\" class=\"button\" title=\"Zoom in\" >+</button>\r\n");
             sb.AppendLine(
-                "<button type=\"button\" id=\"zoomout\" class=\"button\" title=\"Zoom out\" >zoom out</button>\r\n");
+                "<button type=\"button\" id=\"zoomout\" class=\"button\" title=\"Zoom out\" >-</button>\r\n");
             sb.AppendLine(
                 "<button type=\"button\"  id=\"zoomfit\" class=\"button\"  title=\"Zoom to fit\" >fit</button>");
             sb.AppendLine(@"</div>");
@@ -218,7 +224,7 @@ namespace Dynamo.DocumentationBrowser
                 sb.AppendLine($"<td class=\"table--border\">{e.InputNames.ElementAt(i)}</td>");
                 sb.AppendLine($"<td class=\"table--border\">{GetTypeFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
                 sb.AppendLine($"<td class=\"table--border\">{GetNthRowFromStringSplit(e.InputDescriptions.ElementAt(i), 0)}</td>");
-                sb.AppendLine($"<td class=\"table--border\">{GetDefaultValueFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
+                sb.AppendLine($"<td class=\"table--border broken\">{GetDefaultValueFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
                 sb.AppendLine(@"</tr>");
             }
 

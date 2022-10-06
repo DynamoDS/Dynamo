@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -30,6 +31,8 @@ namespace Dynamo.DocumentationBrowser
         private readonly PackageDocumentationManager packageManagerDoc;
         private MarkdownHandler markdownHandler;
         private FileSystemWatcher markdownFileWatcher;
+
+        internal Dictionary<string, string> BreadCrumbsDictionary { get; set; }
 
         /// <summary>
         /// The link to the documentation website or file to display.
@@ -96,7 +99,7 @@ namespace Dynamo.DocumentationBrowser
                 }
             }
         }
-
+        
         internal Action<ILogMessage> MessageLogged;
         private OpenDocumentationLinkEventArgs openDocumentationLinkEventArgs;
 
@@ -255,10 +258,23 @@ namespace Dynamo.DocumentationBrowser
 
                 // Convert the markdown file to html
                 var mkDown = MarkdownHandlerInstance.ParseToHtml(e.MinimumQualifiedName, e.PackageName);
+                string breadCrumbs = string.Empty;
+
+                if(!BreadCrumbsDictionary.TryGetValue(e.Type, out breadCrumbs))
+                {
+                    foreach (var pair in BreadCrumbsDictionary)
+                    {
+                        if (pair.Key.Contains(e.Type))
+                        {
+                            breadCrumbs = pair.Value;
+                            break;
+                        }
+                    }
+                }
 
                 writer.WriteLine(NodeDocumentationHtmlGenerator.OpenDocument());
                 // Get the Node info section
-                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e, mkDown);
+                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e, breadCrumbs, mkDown);
                 writer.WriteLine(nodeDocumentation);
                 writer.WriteLine(NodeDocumentationHtmlGenerator.CloseDocument());
 
@@ -271,7 +287,7 @@ namespace Dynamo.DocumentationBrowser
                     LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
                 }
 
-                MarkdownHandlerInstance.DesanitizeHtml(ref output);
+                //MarkdownHandlerInstance.DesanitizeHtml(ref output);
 
                 // inject the syntax highlighting script at the bottom at the document.
                 output += DocumentationBrowserUtils.GetImageNavigationScript();

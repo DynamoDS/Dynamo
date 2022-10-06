@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -281,6 +281,19 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 reader.Dispose();
                 reader2.Dispose();
             }));
+        }
+
+
+        internal string BreadcrumbsLibraryLocationFromNodeName(string node)
+        {
+            string ext = string.Empty;
+
+            var reader = new StreamReader(layoutProvider.GetResource(null, out ext));
+            var layoutSpec = reader.ReadToEnd();
+
+            string result = string.Empty;
+
+            return result;
         }
 
         #endregion
@@ -588,7 +601,8 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         {
             GuideFlowEvents.OnUpdatePopupLocation();
         }
-
+        
+        #region Loggers and Dispose
         /// <summary>
         /// Convenience method for logging to Dynamo Console.
         /// </summary>
@@ -624,5 +638,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 browser = null;
             }
         }
+        #endregion
     }
 }

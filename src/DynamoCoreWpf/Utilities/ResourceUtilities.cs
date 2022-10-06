@@ -113,6 +113,12 @@ namespace Dynamo.Utilities
                 img_ele.style.transform = `scale(${scale}, ${scale})`;
             }
 
+            function scroll(ev){
+                ev.preventDefault();
+                if(ev.deltaY < 0) zoom('in');
+                else zoom('out');
+            }
+
             // check against the future frame so you don't get stuck
             function check_edges(el, x, y)
             {
@@ -194,6 +200,7 @@ namespace Dynamo.Utilities
               fit();
             });
 
+            document.getElementById('img--container').addEventListener('wheel', scroll);
             document.querySelectorAll('.container').forEach(pannable);
         </script>
         ";

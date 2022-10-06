@@ -1,14 +1,19 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Web.UI.WebControls;
 using System.Windows;
-using System.Windows.Controls;
+using DesignScript.Builtin;
 using Dynamo.DocumentationBrowser.Properties;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Interfaces;
+using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -16,8 +21,9 @@ namespace Dynamo.DocumentationBrowser
     /// The DocumentationBrowser view extension displays web or local html files on the Dynamo right panel.
     /// It reacts to documentation display request events in Dynamo to know what and when to display documentation.
     /// </summary>
-    public class DocumentationBrowserViewExtension : ViewExtensionBase, IViewExtension, ILogSource
+    public class DocumentationBrowserViewExtension : ViewExtensionBase, IViewExtension, ILogSource, ILayoutSpecSource
     {
+        private ViewStartupParams viewStartupParamsReference;
         private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem documentationBrowserMenuItem;
         private PackageManagerExtension pmExtension;
@@ -25,6 +31,8 @@ namespace Dynamo.DocumentationBrowser
         //these fields should only be directly set by tests.
         internal DirectoryInfo fallbackDocPath;
         internal DirectoryInfo webBrowserUserDataFolder;
+
+        internal Dictionary<string, string> BreadCrumbsDict { get; set; }
 
         internal DocumentationBrowserView BrowserView { get; private set; }
         internal DocumentationBrowserViewModel ViewModel { get; private set; }
@@ -58,8 +66,20 @@ namespace Dynamo.DocumentationBrowser
 
         #region IViewExtension lifecycle
 
+        private Func<LayoutSpecification> layouthandler;
+
+        public event Action<string> RequestApplyLayoutSpec;
+
+        public event Func<LayoutSpecification> RequestLayoutSpec
+        {
+            add { layouthandler += value; }
+            remove { layouthandler -= value; }
+        }
+
         public override void Startup(ViewStartupParams viewStartupParams)
         {
+            this.viewStartupParamsReference = viewStartupParams;
+
             pmExtension = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             PackageDocumentationManager.Instance.AddDynamoPaths(viewStartupParams.PathManager);
 
@@ -95,16 +115,17 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.BrowserView.WebBrowserUserDataFolder = webBrowserUserDataFolder.FullName;
             }
+            
         }
 
         public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
+            this.viewLoadedParamsReference = viewLoadedParams; 
 
             this.ViewModel.MessageLogged += OnViewModelMessageLogged;
             PackageDocumentationManager.Instance.MessageLogged += OnMessageLogged;
 
-            this.viewLoadedParamsReference = viewLoadedParams; 
 
             // Add a button to Dynamo View menu to manually show the window
             this.documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
@@ -131,7 +152,61 @@ namespace Dynamo.DocumentationBrowser
             {
                 OnPackageLoaded(pkg);
             }
+            
         }
+
+        private void RequestLoadLayoutSpecs()
+        {
+            if (BreadCrumbsDict != null) return;
+
+            var output = layouthandler?.Invoke();
+            if (output == null) return;
+
+            PopulateBreadCrumbsDictionary(output);
+        }
+
+        private void PopulateBreadCrumbsDictionary(LayoutSpecification layoutSpec)
+        {
+            var section = layoutSpec.sections.First();
+            var breadCrumb = string.Empty;
+
+            BreadCrumbsDict = new Dictionary<string, string>();
+
+            if (section.childElements.Count == 0) return;
+
+            foreach (var child in section.childElements)
+            {
+                breadCrumb = child.text + " / ";
+
+                RecursiveIncludeSearch(child, breadCrumb);
+            }
+
+            this.ViewModel.BreadCrumbsDictionary = BreadCrumbsDict;
+        }
+        
+        private void RecursiveIncludeSearch(LayoutElement child, string breadCrumb)
+        {
+            string crumb = breadCrumb;
+
+            if (child.childElements.Any())
+            {
+                foreach (var grandchild in child.childElements)
+                {
+                    crumb = breadCrumb + grandchild.text + " / ";
+
+                    RecursiveIncludeSearch(grandchild, crumb);
+                }
+            }
+
+            foreach (var info in child.include)
+            {
+                var typeArray = info.path.Split('.');
+                var type = typeArray[typeArray.Length - 2] + "." + typeArray[typeArray.Length - 1];
+
+                BreadCrumbsDict[type] = crumb.Remove(crumb.Length-3);
+            }
+        }
+
 
         private void OnPackageLoaded(Package pkg)
         {
@@ -146,6 +221,7 @@ namespace Dynamo.DocumentationBrowser
 
         private void MenuItemCheckHandler(object sender, RoutedEventArgs e)
         {
+
             AddToSidebar(true);
         }
 
@@ -208,6 +284,9 @@ namespace Dynamo.DocumentationBrowser
             if (args.IsRemoteResource)
                 return;
 
+            // make sure the breadcrumbs dictionary has been loaded
+            RequestLoadLayoutSpecs();
+
             // make sure the view is added to the Sidebar
             // this also forces the Sidebar to open
             AddToSidebar(false);
@@ -262,5 +341,6 @@ namespace Dynamo.DocumentationBrowser
                 this.documentationBrowserMenuItem.IsChecked = false;
             }
         }
+
     }
 }
