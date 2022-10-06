@@ -381,6 +381,7 @@ namespace ProtoCore
         }
     }
 
+    [Obsolete("This is an internal class, do not use it.")]
     public class MSILRuntimeCore
     {
         // The global class table and function tables

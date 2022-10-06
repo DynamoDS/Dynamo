@@ -13,6 +13,7 @@ using ProtoFFI;
 
 namespace EmitMSIL
 {
+    [Obsolete("This is an internal class, do not use it.")]
     public class Replication
     {
         internal static List<CLRStackValue> MarshalFunctionArguments(IList args, MSILRuntimeCore runtimeCore)
