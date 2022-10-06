@@ -22,11 +22,6 @@ namespace EmitMSIL
         private IDictionary<string, IList> input;
         //private Dictionary<int, bool> isRepCall = new Dictionary<int, bool>();
 
-        /// <summary>
-        /// counter for local variables, should only be used directly during GatherTypeInfo phase.
-        /// It will be incorrect during other compiler phases.
-        /// </summary>
-        //private int localVarIndex = -1;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
         /// <summary>
         /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
@@ -949,7 +944,6 @@ namespace EmitMSIL
                     variables.Add(lNode.Value, new Tuple<int, Type>(-1, t));
                 }
                 var localBuilder = DeclareLocal(t, lNode.Value);
-                //var currentLocalVarIndex = variables[lNode.Value].Item1;
                 int currentLocalVarIndex = -1;
                 if (localBuilder != null)
                 {
@@ -1263,6 +1257,11 @@ namespace EmitMSIL
             var isStaticOrCtor = mBase.IsStatic || mBase.IsConstructor;
 
             var doesReplicate = WillCallReplicate(parameters, isStaticOrCtor, args);
+
+            // TODO: Figure out a way to avoid calling WillCallReplicate twice -
+            // once in the GatherTypeInfo phase and again in the emitIL phase.
+            // We should be able to cache the result in the GatherTypeInfo compile pass
+            // and reuse it in the emitIL pass.
             //if (compilePass == CompilePass.GatherTypeInfo)
             //{
             //    if(isRepCall.ContainsKey(node.ID))
