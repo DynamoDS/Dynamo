@@ -56,7 +56,7 @@ namespace Dynamo.ViewModels
         private ObservableCollection<string> pythonEngineList;
 
         private RunType runSettingsIsChecked;
-        private NodeAutocompleteSuggestion nodeAutocompleteObjectTypeIsChecked;
+        private NodeAutocompleteSuggestion nodeAutocompleteSuggestion;
         private Dictionary<string, TabSettings> preferencesTabs;
 
         private readonly PreferenceSettings preferenceSettings;
@@ -272,14 +272,14 @@ namespace Dynamo.ViewModels
                 if (value)
                 {
                     preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
-                    nodeAutocompleteObjectTypeIsChecked = NodeAutocompleteSuggestion.ObjectType;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
                 }
                 else
                 {
                     preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
-                    nodeAutocompleteObjectTypeIsChecked = NodeAutocompleteSuggestion.ObjectType;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
                 }
-                RaisePropertyChanged(nameof(nodeAutocompleteObjectTypeIsChecked));
+                RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
             }
         }
 

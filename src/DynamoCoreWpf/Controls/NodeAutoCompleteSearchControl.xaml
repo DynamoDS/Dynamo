@@ -161,28 +161,28 @@
                                 Grid.ColumnSpan="2"
                                 Width="Auto"
                                 Orientation="Horizontal">
-                        <Image x:Name="SearchIcon"
+                            <Image x:Name="SearchIcon"
                                Width="18"
                                Height="14"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left">
-                            <Image.Style>
-                                <Style TargetType="{x:Type Image}">
-                                    <Setter Property="Source"
+                                <Image.Style>
+                                    <Style TargetType="{x:Type Image}">
+                                        <Setter Property="Source"
                                             Value="/DynamoCoreWpf;component/UI/Images/search_normal.png" />
-        
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"
-                                                 Value="True">
-                                            <Setter Property="Source"
-                                                Value="/DynamoCoreWpf;component/UI/Images/search_hover.png" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Image.Style>
-                        </Image>
-        
-                        <TextBlock Name="SearchTextBlock"
+
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"
+                                                    Value="True">
+                                                <Setter Property="Source"
+                                                    Value="/DynamoCoreWpf;component/UI/Images/search_hover.png" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+
+                            <TextBlock Name="SearchTextBlock"
                                    FontSize="12"
                                    IsHitTestVisible="False"
                                    TextTrimming="CharacterEllipsis"
@@ -196,7 +196,7 @@
                                    Text="{x:Static resx:Resources.AutocompleteSearchTextBlockText}" />
         
                     </StackPanel>
-        
+
                     <TextBox Name="SearchTextBox"
                              Foreground="{StaticResource AutocompletionWindowFontColor}"
                              Background="Transparent"
