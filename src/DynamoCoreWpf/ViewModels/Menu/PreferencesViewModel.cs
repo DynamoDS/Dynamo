@@ -259,25 +259,25 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the Node autocomplete method Object type IsChecked property in the Features ObjectType radio button
+        /// Controls if the the Node autocomplete Machine Learning option is checked for the radio buttons
         /// </summary>
-        public bool NodeAutocompleteObjectTypeIsChecked
+        public bool NodeAutocompleteMachineLearningIsChecked
         {
             get
             {
-                return preferenceSettings.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.ObjectType;                
+                return preferenceSettings.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;                
             }
             set
             {
                 if (value)
                 {
-                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
-                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
                 }
                 else
                 {
-                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
-                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
                 }
                 RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
             }

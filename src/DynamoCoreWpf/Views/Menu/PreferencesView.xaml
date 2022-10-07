@@ -662,20 +662,20 @@
                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                             <Grid Grid.Row="1">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition x:Name="colObjectType" Width="Auto"/>
+                                                    <ColumnDefinition x:Name="colMachineLearning" Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <RadioButton Grid.Column="0" 
                                                      MinWidth="90"
                                                      Margin="-3,0,20,0"
                                                      Style="{StaticResource RunSettingsRadioButtons}"
-                                                     IsChecked="{Binding Path=NodeAutocompleteObjectTypeIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
+                                                     IsChecked="{Binding Path=NodeAutocompleteMachineLearningIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"
                                                      Content="{x:Static p:Resources.ObjectType}"
                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
                                                 <RadioButton Grid.Column="1" 
                                                      MinWidth="90"
                                                      Style="{StaticResource RunSettingsRadioButtons}"
-                                                     IsChecked="{Binding Path=NodeAutocompleteObjectTypeIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"
+                                                     IsChecked="{Binding Path=NodeAutocompleteMachineLearningIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
                                                      Content="{x:Static p:Resources.MachineLearning}"
                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
                                             </Grid>
