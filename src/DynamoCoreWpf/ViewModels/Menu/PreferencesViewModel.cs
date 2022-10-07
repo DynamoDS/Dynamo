@@ -277,7 +277,7 @@ namespace Dynamo.ViewModels
                 else
                 {
                     preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
-                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
                 }
                 RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
             }
