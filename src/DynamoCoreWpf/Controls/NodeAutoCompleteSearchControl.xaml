@@ -145,8 +145,8 @@
         </Border>
 
         <Grid Name="SearchText"
-          Background="{StaticResource LibraryCommonBackground}"
-          Grid.Row="2">
+              Background="{StaticResource LibraryCommonBackground}"
+              Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition/>
@@ -158,18 +158,18 @@
                 Grid.Column="0">
                 <Grid>
                     <StackPanel Name="SearchIconAndTextBlockGrid"
-                            Grid.ColumnSpan="2"
-                            Width="Auto"
-                            Orientation="Horizontal">
+                                Grid.ColumnSpan="2"
+                                Width="Auto"
+                                Orientation="Horizontal">
                         <Image x:Name="SearchIcon"
-                           Width="18"
-                           Height="14"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left">
+                               Width="18"
+                               Height="14"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left">
                             <Image.Style>
                                 <Style TargetType="{x:Type Image}">
                                     <Setter Property="Source"
-                                        Value="/DynamoCoreWpf;component/UI/Images/search_normal.png" />
+                                            Value="/DynamoCoreWpf;component/UI/Images/search_normal.png" />
         
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"
@@ -183,33 +183,33 @@
                         </Image>
         
                         <TextBlock Name="SearchTextBlock"
-                               FontSize="12"
-                               IsHitTestVisible="False"
-                               TextTrimming="CharacterEllipsis"
-                               MaxWidth="250"
-                               Foreground="{StaticResource DefaultSearchTextBlockText}"
-                               VerticalAlignment="Center"
-                               Visibility="{Binding Path=SearchText, 
-                                                Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
-                               HorizontalAlignment="Left"
-                               Height="18"
-                               Text="{x:Static resx:Resources.AutocompleteSearchTextBlockText}" />
+                                   FontSize="12"
+                                   IsHitTestVisible="False"
+                                   TextTrimming="CharacterEllipsis"
+                                   MaxWidth="250"
+                                   Foreground="{StaticResource DefaultSearchTextBlockText}"
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding Path=SearchText, 
+                                                    Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
+                                   HorizontalAlignment="Left"
+                                   Height="18"
+                                   Text="{x:Static resx:Resources.AutocompleteSearchTextBlockText}" />
         
                     </StackPanel>
         
                     <TextBox Name="SearchTextBox"
-                         Foreground="{StaticResource AutocompletionWindowFontColor}"
-                         Background="Transparent"
-                         BorderThickness="0"
-                         FontSize="12"
-                         Height="18"
-                         IsEnabled="True"
-                         VerticalAlignment="Center"
-                         Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         MinWidth="200"
-                         CaretBrush="{StaticResource CommonSidebarTextColor}"
-                         Margin="15,0,0,0"
-                         TextChanged="OnSearchTextBoxTextChanged" />
+                             Foreground="{StaticResource AutocompletionWindowFontColor}"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             FontSize="12"
+                             Height="18"
+                             IsEnabled="True"
+                             VerticalAlignment="Center"
+                             Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             MinWidth="200"
+                             CaretBrush="{StaticResource CommonSidebarTextColor}"
+                             Margin="15,0,0,0"
+                             TextChanged="OnSearchTextBoxTextChanged" />
                 </Grid>
             </Border>
             <Button x:Name="btnSuggestions" Click="DisplaySuggestions" Grid.Column="1" Margin="0,0,7,0">
