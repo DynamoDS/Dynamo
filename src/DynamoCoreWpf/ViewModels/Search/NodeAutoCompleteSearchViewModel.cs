@@ -299,20 +299,11 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// For checking the ML Context menu item
+        /// For checking if the ML method is selected
         /// </summary>
-        public bool IsML
+        public bool IsDisplayingMLRecommendation
         {
             get { return dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion == Models.NodeAutocompleteSuggestion.MLRecommendation; }
-            set { }
-        }
-
-        /// <summary>
-        /// For checking the Object Type Context menu item
-        /// </summary>
-        public bool IsObjectType
-        {
-            get { return !IsML; }
             set { }
         }
 

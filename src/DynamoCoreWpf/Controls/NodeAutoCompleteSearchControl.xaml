@@ -162,10 +162,10 @@
                                 Width="Auto"
                                 Orientation="Horizontal">
                         <Image x:Name="SearchIcon"
-                           Width="18"
-                           Height="14"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left">
+                               Width="18"
+                               Height="14"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left">
                             <Image.Style>
                                 <Style TargetType="{x:Type Image}">
                                     <Setter Property="Source"
@@ -253,8 +253,16 @@
             </Button>
             <Grid.ContextMenu>
                 <ContextMenu Name="SuggestionsContextMenu" Style="{StaticResource ContextMenuStyle}">
-                    <MenuItem Header="{x:Static p:Resources.MachineLearning}" x:Name="miMLRecommendation" Click="onSuggestion_Click" IsCheckable="True" IsChecked="{Binding IsML}"/>
-                    <MenuItem Header="{x:Static p:Resources.ObjectType}" x:Name="miObjectType" Click="onSuggestion_Click" IsCheckable="True" IsChecked="{Binding IsObjectType}"/>
+                    <MenuItem Header="{x:Static p:Resources.MachineLearning}"
+                              x:Name="miMLRecommendation"
+                              Click="onSuggestion_Click"
+                              IsCheckable="True"
+                              IsChecked="{Binding Path=IsDisplayingMLRecommendation, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"/>
+                    <MenuItem Header="{x:Static p:Resources.ObjectType}"
+                              x:Name="miObjectType"
+                              Click="onSuggestion_Click"
+                              IsCheckable="True"
+                              IsChecked="{Binding Path=IsDisplayingMLRecommendation, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"/>
                 </ContextMenu>
             </Grid.ContextMenu>
         </Grid>
