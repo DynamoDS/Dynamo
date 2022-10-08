@@ -111,7 +111,7 @@ namespace Dynamo.Controls
             // The user's choice to enable hardware acceleration is now saved in
             // the Dynamo preferences. It is set to true by default. 
             // When the view is constructed, we enable or disable hardware acceleration based on that preference. 
-            //This preference is not exposed in the UI and can be used to debug hardware issues only
+            // This preference is not exposed in the UI and can be used to debug hardware issues only
             // by modifying the preferences xml.
             RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ?
                 RenderMode.Default : RenderMode.SoftwareOnly;
@@ -125,8 +125,8 @@ namespace Dynamo.Controls
 
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;
 
-            //Initialize the ViewExtensionManager with the CommonDataDirectory so that view extensions found here are checked first for dll's with signed certificates
-            viewExtensionManager = new ViewExtensionManager(dynamoViewModel.Model.ExtensionManager,new[] { dynamoViewModel.Model.PathManager.CommonDataDirectory });
+            ////Initialize the ViewExtensionManager with the CommonDataDirectory so that view extensions found here are checked first for dll's with signed certificates
+            viewExtensionManager = new ViewExtensionManager(dynamoViewModel.Model.ExtensionManager, new[] { dynamoViewModel.Model.PathManager.CommonDataDirectory });
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -167,6 +167,8 @@ namespace Dynamo.Controls
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
             }
 
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs("2.14", "Loading View Extensions...", 80, 1000));
+
             var viewExtensions = new List<IViewExtension>();
             foreach (var dir in dynamoViewModel.Model.PathManager.ViewExtensionsDirectories)
             {
@@ -186,7 +188,7 @@ namespace Dynamo.Controls
                         logSource.MessageLogged += Log;
                     }
 
-                    if(ext is INotificationSource notificationSource)
+                    if (ext is INotificationSource notificationSource)
                     {
                         notificationSource.NotificationLogged += LogNotification;
                     }
@@ -237,6 +239,7 @@ namespace Dynamo.Controls
                 fileTrustWarningPopup = new FileTrustWarning(this);
             }
         }
+
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
             if (!(workspace is HomeWorkspaceModel hws))
@@ -1010,24 +1013,25 @@ namespace Dynamo.Controls
             LoadNodeViewCustomizations();
             SubscribeNodeViewCustomizationEvents();
 
-            // Kick start the automation run, if possible.
+            //// Kick start the automation run, if possible.
             dynamoViewModel.BeginCommandPlayback(this);
 
             sharedViewExtensionLoadedParams = new ViewLoadedParams(this, dynamoViewModel);
             this.DynamoLoadedViewExtensionHandler(sharedViewExtensionLoadedParams, viewExtensionManager.ViewExtensions);
 
-            BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
-            background_grid.Children.Add(BackgroundPreview);
-            BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
-            BackgroundPreview.Margin = new System.Windows.Thickness(0, 20, 0, 0);
-            var vizBinding = new Binding
-            {
-                Source = dynamoViewModel.BackgroundPreviewViewModel,
-                Path = new PropertyPath("Active"),
-                Mode = BindingMode.TwoWay,
-                Converter = new BooleanToVisibilityConverter()
-            };
-            BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
+            //BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
+            //background_grid.Children.Add(BackgroundPreview);
+            //BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
+            //BackgroundPreview.Margin = new System.Windows.Thickness(0, 20, 0, 0);
+            //var vizBinding = new Binding
+            //{
+            //    Source = dynamoViewModel.BackgroundPreviewViewModel,
+            //    Path = new PropertyPath("Active"),
+            //    Mode = BindingMode.TwoWay,
+            //    Converter = new BooleanToVisibilityConverter()
+            //};
+            //BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
+
             TrackStartupAnalytics();
 
             // In native host scenario (e.g. Revit), the "Application.Current" will be "null". Therefore, the InCanvasSearchControl.OnRequestShowInCanvasSearch
@@ -1038,7 +1042,7 @@ namespace Dynamo.Controls
             }
             loaded = true;
 
-            
+
             //The following code illustrates use of FeatureFlagsManager.
             //safe to remove.
             if (DynamoModel.FeatureFlags != null)
@@ -1050,7 +1054,6 @@ namespace Dynamo.Controls
             {
                 DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckTestFlags;
             }
-           
         }
 
         private void GuideFlowEvents_GuidedTourStart(GuidedTourStateEventArgs args)

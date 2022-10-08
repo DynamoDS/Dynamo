@@ -318,4 +318,24 @@ namespace Dynamo.Models
 
     }
 
+    internal class SplashScreenEventArgs : EventArgs
+    {
+        public string DynamoVersion { get; set; }
+
+        public string LoadDescription { get; set; }
+        
+        public float BarSize { get; set; }
+
+        public int LoadingTime { get; set; }
+
+        public SplashScreenEventArgs(string dynamoVersion, string loadDescription, float barSize, int loadingTime)
+        {
+            DynamoVersion = dynamoVersion;
+            LoadDescription = loadDescription;
+            BarSize = barSize;
+            LoadingTime = loadingTime;
+        }
+
+    }
+
 }

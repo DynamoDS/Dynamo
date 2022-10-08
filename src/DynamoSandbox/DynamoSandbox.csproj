@@ -18,6 +18,14 @@
     <ApplicationIcon>logo_square_32x32.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="WebApp\index.bundle.js" />
+    <None Remove="WebApp\index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="WebApp\index.bundle.js" />
+    <EmbeddedResource Include="WebApp\index.html" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
@@ -85,6 +93,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.en-US.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
@@ -95,5 +108,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>

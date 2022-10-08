@@ -72,6 +72,13 @@ namespace Dynamo.Models
                 RequestMigrationStatusDialog(args);
         }
 
+        internal static event SplashScreenHandler RequestUpdateLoadBarStatus;
+        internal static void OnRequestUpdateLoadBarStatus(SplashScreenEventArgs args)
+        {
+            if (RequestUpdateLoadBarStatus != null)
+                RequestUpdateLoadBarStatus(args);
+        }
+
         /// <summary>
         /// Occurs when changes in data may affect UI and UI needs to be refreshed
         /// </summary>

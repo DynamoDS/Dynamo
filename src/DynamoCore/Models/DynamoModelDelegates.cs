@@ -42,4 +42,7 @@ namespace Dynamo.Models
     public delegate void NodeEventHandler(object sender, EventArgs e);
 
     internal delegate void SettingsMigrationHandler(SettingsMigrationEventArgs args);
+
+    internal delegate void SplashScreenHandler(SplashScreenEventArgs args);
+
 }
