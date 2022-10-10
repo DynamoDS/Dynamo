@@ -721,6 +721,25 @@ namespace WpfVisualizationTests
             Assert.AreEqual(Visibility.Visible, currentWorkspace.statusBarPanel.Visibility, "Navigation buttons did not appear");
         }
 
+
+        [Test]
+        public void HelixWatch3DViewModel_HasRenderedGeometryTest()
+        {
+            var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(bPreviewVm, "HelixWatch3D has not been loaded");
+            Assert.False(bPreviewVm.HasRenderedGeometry);
+
+            OpenVisualizationTest("ASM_points.dyn");
+
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            Assert.True(bPreviewVm.HasRenderedGeometry);
+        }
         #endregion
 
         #region dynamo view tests
@@ -1343,7 +1362,6 @@ X: 0.5 Y: 0.5 Z: -0.5
 X: 0.5 Y: -0.5 Z: -0.5".Replace(" ",string.Empty),
                 System.String.Join(Environment.NewLine, edgeVerts.Select(x=>x.ToString())).Replace(" ",string.Empty));
         }
-
 
 
     }

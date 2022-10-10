@@ -52,11 +52,18 @@ namespace Dynamo.Configuration
         private bool isBackgroundGridVisible;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
+        private bool isCreatedFromValidFile = true;
+
         #region Constants
         /// <summary>
         /// Indicates the maximum number of files shown in Recent Files
         /// </summary>
         internal const int DefaultMaxNumRecentFiles = 10;
+
+        /// <summary>
+        /// The default time interval between backup files. 1 minute.
+        /// </summary>
+        internal const int DefaultBackupInterval = 60000;
 
         /// <summary>
         /// Indicates the default render precision, i.e. the maximum number of tessellation divisions
@@ -662,7 +669,7 @@ namespace Dynamo.Configuration
             NamespacesToExcludeFromLibrary = new List<string>();
             DefaultRunType = RunType.Automatic;
 
-            BackupInterval = 60000; // 1 minute
+            BackupInterval = DefaultBackupInterval;
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
                         
@@ -753,7 +760,7 @@ namespace Dynamo.Configuration
             {
                 if (settings == null)
                 {
-                    return new PreferenceSettings();
+                    return new PreferenceSettings() { isCreatedFromValidFile = false };
                 }
             }
 
@@ -924,6 +931,52 @@ namespace Dynamo.Configuration
             }
             
         }
+
+        /// <summary>
+        /// Different ways to ask the user about display the Trusted location
+        /// </summary>
+        public enum AskForTrustedLocationResult
+        {
+            /// <summary>
+            /// Ask for the Trusted location
+            /// </summary>
+            Ask,
+            /// <summary>
+            /// Don't ask about the Trusted location
+            /// </summary>
+            DontAsk,
+            /// <summary>
+            /// Unable to ask about the Trusted location
+            /// </summary>
+            UnableToAsk
+        }
+
+        /// <summary>
+        /// AskForTrustedLocation function
+        /// </summary>
+        /// <param name="isOpenedFile"></param>
+        /// <param name="isHomeSpace"></param>
+        /// <param name="isShowStartPage"></param>
+        /// <param name="isDisableTrustWarnings"></param>
+        /// <param name="isFileInTrustedLocation"></param>
+        /// <returns></returns>
+        public static AskForTrustedLocationResult AskForTrustedLocation(bool isOpenedFile, bool isFileInTrustedLocation, bool isHomeSpace, bool isShowStartPage, bool isDisableTrustWarnings)
+        {
+            AskForTrustedLocationResult result = AskForTrustedLocationResult.UnableToAsk;
+            if (isOpenedFile)
+            {
+                if (isHomeSpace && !isShowStartPage && !isDisableTrustWarnings && !isFileInTrustedLocation)
+                {
+                    result = AskForTrustedLocationResult.Ask;
+                }
+                else
+                {
+                    result = AskForTrustedLocationResult.DontAsk;
+                }
+            }
+            return result;
+        }
+
         #endregion
 
         #region ILogSource
@@ -946,6 +999,15 @@ namespace Dynamo.Configuration
         public List<string> StaticFields()
         {
             return typeof(PreferenceSettings).GetMembers(BindingFlags.Static | BindingFlags.NonPublic).OfType<FieldInfo>().Select(field => field.Name).ToList();
+        }
+
+        /// <summary>
+        /// Indicates when an instance has been created from a preferences file correctly, a support property
+        /// </summary>
+        [XmlIgnore]
+        public bool IsCreatedFromValidFile
+        {
+            get { return isCreatedFromValidFile; }
         }
     }
 }
