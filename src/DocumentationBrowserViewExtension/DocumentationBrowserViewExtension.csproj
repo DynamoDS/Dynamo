@@ -98,9 +98,6 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Docs\IntegerOverflow.html" />
   </ItemGroup>
   <ItemGroup>

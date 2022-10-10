@@ -286,9 +286,7 @@ namespace Dynamo.DocumentationBrowser
                 {
                     LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
                 }
-
-                //MarkdownHandlerInstance.DesanitizeHtml(ref output);
-
+                
                 // inject the syntax highlighting script at the bottom at the document.
                 output += DocumentationBrowserUtils.GetImageNavigationScript();
                 output += DocumentationBrowserUtils.GetDPIScript();
@@ -302,6 +300,14 @@ namespace Dynamo.DocumentationBrowser
             }
         }
 
+        /// <summary>
+        /// Load the help graph associated with the node inside the current Dynamo workspace 
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        internal void InsertGraph()
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Navigation to built-in pages
@@ -369,5 +375,6 @@ namespace Dynamo.DocumentationBrowser
         }
 
         #endregion
+
     }
 }

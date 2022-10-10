@@ -1,4 +1,4 @@
-﻿using Dynamo.Logging;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
@@ -113,6 +113,7 @@ namespace Dynamo.DocumentationBrowser
                 this.documentationBrowser.Dispose();
             }
             this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
+            this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
         }
 
         async void InitializeAsync()
@@ -138,6 +139,18 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.documentationBrowser.NavigateToString(htmlContent);
             }));
+
+            this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
+        }
+
+        private void CoreWebView2OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
+        {
+            var message = e.TryGetWebMessageAsString();
+            if (string.Equals(message, "insert"))
+            {
+                // Insert the graph inside the current worskspace
+                this.viewModel.InsertGraph();
+            }
         }
 
         /// <summary>

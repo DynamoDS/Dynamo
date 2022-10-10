@@ -141,17 +141,5 @@ namespace Dynamo.DocumentationBrowser
             content = sanitizedContent;
             return true;
         }
-
-        internal void DesanitizeHtml(ref string content)
-        {
-            var desanitizedContent = converter.DesanitizeHtml(content);
-
-            if (string.IsNullOrEmpty(desanitizedContent))
-            {
-                return;
-            }
-
-            content = desanitizedContent;
-        }
     }
 }
