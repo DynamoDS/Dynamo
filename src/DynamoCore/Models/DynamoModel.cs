@@ -1831,6 +1831,44 @@ namespace Dynamo.Models
             }
         }
 
+        public void InsertFileFromPath(string filePath, bool forceManualExecutionMode = false)
+        {
+            XmlDocument xmlDoc;
+            Exception ex;
+            if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+            {
+                OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                return;
+            }
+            else
+            {
+                // These kind of exceptions indicate that file is not accessible 
+                if (ex is IOException || ex is UnauthorizedAccessException)
+                {
+                    throw ex;
+                }
+                if (ex is System.Xml.XmlException)
+                {
+                    // XML opening failure can indicate that this file is corrupted XML or Json
+                    string fileContents;
+
+                    if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
+                    {
+                        InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
+                        return;
+                    }
+                    else
+                    {
+                        // When Json opening also failed, either this file is corrupted or there
+                        // are other kind of failures related to Json de-serialization
+                        throw ex;
+                    }
+                }
+
+            }
+        }
+
+
         static private DynamoPreferencesData DynamoPreferencesDataFromJson(string json)
         {
             JsonReader reader = new JsonTextReader(new StringReader(json));
@@ -1883,6 +1921,37 @@ namespace Dynamo.Models
                             OnComputeModelDeserialized();
 
                             SetPeriodicEvaluation(ws);
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw e;
+            }
+        }
+
+        private bool InsertJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode)
+        {
+            try
+            {
+                DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
+                if (dynamoPreferences != null)
+                {
+                    // TODO, QNTM-1101: Figure out JSON migration strategy
+                    if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
+                    {
+                        WorkspaceModel ws;
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
+                        {
+                            InsertWorkspace(ws);
+                            //Raise an event to deserialize the view parameters before
+                            //setting the graph to run
+                            //OnComputeModelDeserialized();
+
+                            //SetPeriodicEvaluation(ws);
                         }
                     }
                 }
@@ -1964,6 +2033,40 @@ namespace Dynamo.Models
             CurrentWorkspace = ws;
             OnWorkspaceOpened(ws);
         }
+
+        private void InsertWorkspace(WorkspaceModel ws)
+        {
+            // TODO: #4258
+            // The logic to remove all other home workspaces from the model
+            // was moved from the ViewModel. When #4258 is implemented, we will need to
+            // remove this step.
+            var nodes = ws.Nodes;
+            var notes = ws.Notes;
+
+            foreach (var node in nodes)
+            {
+                node.CenterY = 200;
+                currentWorkspace.AddAndRegisterNode(node, false);
+            }
+
+            foreach (var note in notes)
+            {
+                currentWorkspace.AddNote(note, false);
+            }
+
+            foreach (var connectorModel in ws.Connectors)
+            {
+                var startNode = connectorModel.Start.Owner;
+                var endNode = connectorModel.End.Owner;
+                
+                ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
+            }
+            
+            currentWorkspace.HasUnsavedChanges = true;
+            //var group = new AnnotationModel(nodes, notes);
+            //currentWorkspace.AddAnnotation(group);
+        }
+
 
 
         private void SetPeriodicEvaluation(WorkspaceModel ws)

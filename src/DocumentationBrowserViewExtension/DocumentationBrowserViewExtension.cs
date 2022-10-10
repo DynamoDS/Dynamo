@@ -6,9 +6,11 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using System.Windows;
 using DesignScript.Builtin;
+using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
@@ -36,6 +38,7 @@ namespace Dynamo.DocumentationBrowser
 
         internal DocumentationBrowserView BrowserView { get; private set; }
         internal DocumentationBrowserViewModel ViewModel { get; private set; }
+        private DynamoViewModel DynamoViewModel { get; set; }
 
         /// <summary>
         /// Extension Name
@@ -115,7 +118,6 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.BrowserView.WebBrowserUserDataFolder = webBrowserUserDataFolder.FullName;
             }
-            
         }
 
         public override void Loaded(ViewLoadedParams viewLoadedParams)
@@ -124,6 +126,7 @@ namespace Dynamo.DocumentationBrowser
             this.viewLoadedParamsReference = viewLoadedParams; 
 
             this.ViewModel.MessageLogged += OnViewModelMessageLogged;
+            this.ViewModel.HandleInsertFile += OnInsertFile;
             PackageDocumentationManager.Instance.MessageLogged += OnMessageLogged;
 
 
@@ -152,7 +155,14 @@ namespace Dynamo.DocumentationBrowser
             {
                 OnPackageLoaded(pkg);
             }
-            
+
+            this.DynamoViewModel = (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel);
+        }
+        
+        private void OnInsertFile(object sender, MyEventArgs e)
+        {
+            this.DynamoViewModel.Model.InsertFileFromPath(e.Data);
+            this.DynamoViewModel.GraphAutoLayoutCommand.Execute(null);
         }
 
         private void RequestLoadLayoutSpecs()

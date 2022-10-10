@@ -13,6 +13,20 @@ using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.DocumentationBrowser
 {
+    public class MyEventArgs : EventArgs
+    {
+        private string m_Data;
+        public MyEventArgs(string _myData)
+        {
+            m_Data = _myData;
+        } 
+
+        public string Data
+        {
+            get { return m_Data; }
+        }
+    } 
+
     public class DocumentationBrowserViewModel : NotificationObject, IDisposable
     {
         #region Constants
@@ -32,6 +46,11 @@ namespace Dynamo.DocumentationBrowser
         private MarkdownHandler markdownHandler;
         private FileSystemWatcher markdownFileWatcher;
 
+        /// <summary>
+        /// Contains the resolvable node to library location breadcrumbs information
+        /// Key: Node Name
+        /// Value: Breadcrumbs " / " concatenated information
+        /// </summary>
         internal Dictionary<string, string> BreadCrumbsDictionary { get; set; }
 
         /// <summary>
@@ -306,8 +325,17 @@ namespace Dynamo.DocumentationBrowser
         /// <exception cref="NotImplementedException"></exception>
         internal void InsertGraph()
         {
-            throw new NotImplementedException();
+            var raiseInsertGraph = HandleInsertFile;
+
+            if (raiseInsertGraph != null)
+            {
+                raiseInsertGraph(this, new MyEventArgs(@"C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\EXAMPLES\Geometry\Abstract\BoundingBox\Action\dyn\Contains.dyn"));
+            }
         }
+
+        internal delegate void MyEventHandler(object sender, MyEventArgs e);
+        internal event MyEventHandler HandleInsertFile;
+
         #endregion
 
         #region Navigation to built-in pages
