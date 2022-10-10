@@ -3097,7 +3097,7 @@ namespace Dynamo.ViewModels
                     return false;
             }
             return true;
-        }
+        }        
 
         #endregion
     }

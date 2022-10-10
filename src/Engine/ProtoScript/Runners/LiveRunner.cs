@@ -1010,8 +1010,26 @@ namespace ProtoScript.Runners
                     // It can then be handled normally regardless of its ForceExecution state
                     subtree.ForceExecution = false;
 
-                    //Check if the subtree (ie a node in graph) is an input and has primitive Right hand Node type
-                    if (redefinitionAllowed && st.IsInput && node is BinaryExpressionNode bne  && CoreUtils.IsPrimitiveASTNode(bne.RightNode))
+                    //search the cached subtree(node's asts) for a binary expression containing a matching LHS identifer node.
+                    //we can currently only apply input optimizations if the previous assignment was also from a primitive.
+                    BinaryExpressionNode prevBNE = null;
+                    var bne = node as BinaryExpressionNode;
+                    if (bne != null){
+                        foreach (var prevNode in st.AstNodes)
+                        {
+                            if(prevNode is BinaryExpressionNode PrevNodeBNE && PrevNodeBNE.LeftNode is IdentifierNode prevId &&
+                                bne.LeftNode is IdentifierNode curId && prevId.Value == curId.Value)
+                            {
+                                prevBNE = PrevNodeBNE;
+                                break;
+                            }
+                        }
+                    }
+
+                    //Check if the subtree (ie a node in graph) is an input and has primitive Right hand Node type, also
+                    //ensure that the previous RHS of this assignment was a primitive value, or we'll have generated incorrect instructions.
+                    if (redefinitionAllowed && st.IsInput && bne != null && CoreUtils.IsPrimitiveASTNode(bne.RightNode)
+                        && (prevBNE == null || CoreUtils.IsPrimitiveASTNode(prevBNE.RightNode)))
                     {
                         // An input node is not re-compiled and executed
                         // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
