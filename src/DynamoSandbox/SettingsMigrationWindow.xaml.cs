@@ -60,12 +60,19 @@ namespace Dynamo.DynamoSandbox
             await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
         }
 
-        private async void SetImportStatus(ImportStatus importStatus, string importSettingsTitle, string errorDescription)
+        internal async void SetImportStatus(ImportStatus importStatus, string importSettingsTitle, string errorDescription)
         {
+            var teste = "window.setImportStatus({" +
+                $"importStatus: {(int)importStatus}," +
+                $"importSettingsTitle: {importSettingsTitle}," +
+                $"errorDescription: {errorDescription}" + "})";
+
+            await webView.CoreWebView2.ExecuteScriptAsync($"console.log('{teste}')");
+
             await webView.CoreWebView2.ExecuteScriptAsync("window.setImportStatus({" +
-                $"importStatus: {(int)importStatus}" +
-                $"importSettingsTitle: {importSettingsTitle}" +
-                $"errorDescription: {errorDescription}" + "'})");
+                $"status: {(int)importStatus}," +
+                $"importSettingsTitle: '{importSettingsTitle}'," +
+                $"errorDescription: '{errorDescription}'" + "})");
         }
     }
 

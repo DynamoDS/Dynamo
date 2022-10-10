@@ -147,7 +147,15 @@ namespace DynamoSandbox
                 fileName = fs.Name;
             }
 
-            viewModel.PreferencesViewModel.importSettings(fileName);
+            var importResult = viewModel.PreferencesViewModel.importSettings(fileName);
+            if (importResult)
+            {
+                migrationWindow.SetImportStatus(ImportStatus.success, "Settings imported", string.Empty);
+            }
+            else
+            {
+                migrationWindow.SetImportStatus(ImportStatus.error, "Failed to Import Settings", "Something went wrong when importing your custom setting file. Please try again or proceed with default settings.");
+            }
         }
 
         private void DynamoModel_RequestUpdateLoadBarStatus(SplashScreenEventArgs args)
