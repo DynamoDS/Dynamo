@@ -12,6 +12,8 @@ namespace Dynamo.DynamoSandbox
         private static readonly string htmlEmbeddedFile = "Dynamo.DynamoSandbox.WebApp.index.html";
         private static readonly string jsEmbeddedFile = "Dynamo.DynamoSandbox.WebApp.index.bundle.js";
 
+        internal Action RequestLaunchDynamo;
+
         public SettingsMigrationWindow()
         {
             InitializeComponent();
@@ -43,7 +45,7 @@ namespace Dynamo.DynamoSandbox
 
             webView.NavigateToString(htmlString);
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
-               new ScriptObject());
+               new ScriptObject(RequestLaunchDynamo));
 
         }
 
@@ -52,23 +54,44 @@ namespace Dynamo.DynamoSandbox
             await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', 'Loading time: {loadingTime}ms')");
         }
 
+        internal async void SetLoadingDone()
+        {
+            await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
+        }
+
+        private async void SetImportStatus(ImportStatus importStatus, string importSettingsTitle, string errorDescription)
+        {
+            await webView.CoreWebView2.ExecuteScriptAsync("window.setImportStatus({" +
+                $"importStatus: {(int)importStatus}" +
+                $"importSettingsTitle: {importSettingsTitle}" +
+                $"errorDescription: {errorDescription}" + "'})");
+        }
+    }
+
+    enum ImportStatus
+    {
+        none = 1,
+        error,
+        success
     }
 
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComVisible(true)]
     public class ScriptObject
     {
-        public ScriptObject()
-        {
+        Action RequestLaunchDynamo;
 
+        public ScriptObject(Action requestLaunchDynamo)
+        {
+            RequestLaunchDynamo = requestLaunchDynamo;
         }
 
         public void LaunchDynamo(bool showScreenAgain)
         {
-
+            RequestLaunchDynamo();
         }
 
-        public void ImportSettings(object file)
+        public void ImportSettings(string file)
         {
 
         }

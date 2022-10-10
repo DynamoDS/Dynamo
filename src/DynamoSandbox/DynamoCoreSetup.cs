@@ -63,12 +63,14 @@ namespace DynamoSandbox
 
                 migrationWindow = new SettingsMigrationWindow();
                 migrationWindow.webView.NavigationCompleted += WebView_NavigationCompleted;
+                migrationWindow.RequestLaunchDynamo = LaunchDynamo;
                 migrationWindow.Show();
 
                 app.Run();
 
                 DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
+                migrationWindow.webView.NavigationCompleted -= WebView_NavigationCompleted;
             }
             catch (DynamoServices.AssemblyBlockedException e)
             {
@@ -164,9 +166,14 @@ namespace DynamoSandbox
 
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs("2.14", "Launching dynamo...", 100, 1000));
 
-            dynamoView.Show();
+            migrationWindow.SetLoadingDone();
+        }
 
+        private void LaunchDynamo()
+        {
             migrationWindow.Close();
+            dynamoView.Show();
+            dynamoView.Focus();
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
