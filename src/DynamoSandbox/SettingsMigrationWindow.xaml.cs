@@ -1,4 +1,4 @@
-﻿using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Core;
 using System;
 using System.IO;
 using System.Reflection;
@@ -13,6 +13,7 @@ namespace Dynamo.DynamoSandbox
         private static readonly string jsEmbeddedFile = "Dynamo.DynamoSandbox.WebApp.index.bundle.js";
 
         internal Action RequestLaunchDynamo;
+        internal Action<string> RequestImportSettings;
 
         public SettingsMigrationWindow()
         {
@@ -45,7 +46,7 @@ namespace Dynamo.DynamoSandbox
 
             webView.NavigateToString(htmlString);
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
-               new ScriptObject(RequestLaunchDynamo));
+               new ScriptObject(RequestLaunchDynamo, RequestImportSettings));
 
         }
 
@@ -80,10 +81,12 @@ namespace Dynamo.DynamoSandbox
     public class ScriptObject
     {
         Action RequestLaunchDynamo;
+        Action<string> RequestImportSettings;
 
-        public ScriptObject(Action requestLaunchDynamo)
+        public ScriptObject(Action requestLaunchDynamo, Action<string> requestImportSettings)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
+            RequestImportSettings = requestImportSettings;
         }
 
         public void LaunchDynamo(bool showScreenAgain)
@@ -93,7 +96,7 @@ namespace Dynamo.DynamoSandbox
 
         public void ImportSettings(string file)
         {
-
+            RequestImportSettings(file);
         }
     }
 }

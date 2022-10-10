@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -16,6 +16,8 @@ using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Wpf.Utilities;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using System.Net;
+using System.Text;
 
 namespace DynamoSandbox
 {
@@ -64,6 +66,7 @@ namespace DynamoSandbox
                 migrationWindow = new SettingsMigrationWindow();
                 migrationWindow.webView.NavigationCompleted += WebView_NavigationCompleted;
                 migrationWindow.RequestLaunchDynamo = LaunchDynamo;
+                migrationWindow.RequestImportSettings = ImportSettings;
                 migrationWindow.Show();
 
                 app.Run();
@@ -130,6 +133,21 @@ namespace DynamoSandbox
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
             }
+        }
+
+        private async void ImportSettings(string fileContent)
+        {
+            var fileName = string.Empty;
+
+            using (FileStream fs = File.Create("preferenceSettings.xml"))
+            {
+                // Add some text to file    
+                Byte[] title = new UTF8Encoding(true).GetBytes(fileContent);
+                fs.Write(title, 0, title.Length);
+                fileName = fs.Name;
+            }
+
+            viewModel.PreferencesViewModel.importSettings(fileName);
         }
 
         private void DynamoModel_RequestUpdateLoadBarStatus(SplashScreenEventArgs args)
