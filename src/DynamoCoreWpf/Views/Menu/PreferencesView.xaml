@@ -618,6 +618,7 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
@@ -628,9 +629,9 @@
                                                       IsChecked="{Binding Path=NodeAutocompleteIsChecked}"
                                                       Style="{StaticResource EllipseToggleButton1}"/>
                                         <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoComplete}" 
-                                                   Margin="10,0,0,0"
-                                                   VerticalAlignment="Center"
-                                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                               Margin="10,0,0,0"
+                                               VerticalAlignment="Center"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                         <Label HorizontalAlignment="Left" 
                                                Name="Titleinfo" 
                                                VerticalAlignment="Center" 
@@ -646,24 +647,58 @@
                                             </Label.Content>
                                         </Label>
                                     </StackPanel>
+                                    
+                                    <StackPanel Orientation="Horizontal" Margin="0,-5,0,0" Grid.Row="1">
+                                        <!-- This Grid contains controls for selecting the Node autocomplete method -->
+                                        <Grid Margin="60,0,0,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <Label Grid.Row="0"
+                                                Margin="-8,0,10,0"
+                                                FontWeight="Normal"
+                                                Content="{x:Static p:Resources.PreferencesNodeAutocompleteMethod}" 
+                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            <Grid Grid.Row="1">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition x:Name="colObjectType" Width="Auto"/>
+                                                    <ColumnDefinition x:Name="colMachineLearning" Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <RadioButton Grid.Column="0" 
+                                                     MinWidth="90"
+                                                     Margin="-3,0,20,0"
+                                                     Style="{StaticResource RunSettingsRadioButtons}"
+                                                     IsChecked="{Binding Path=NodeAutocompleteMachineLearningIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"
+                                                     Content="{x:Static p:Resources.ObjectType}"
+                                                     IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
+                                                <RadioButton Grid.Column="1" 
+                                                     MinWidth="90"
+                                                     Style="{StaticResource RunSettingsRadioButtons}"
+                                                     IsChecked="{Binding Path=NodeAutocompleteMachineLearningIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
+                                                     Content="{x:Static p:Resources.MachineLearning}"
+                                                     IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
+                                            </Grid>
+                                        </Grid>
+                                    </StackPanel>
 
-                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="2">
                                         <ToggleButton Name="EnableTSplineToggle"
-                                                          Width="{StaticResource ToggleButtonWidth}"
-                                                          Height="{StaticResource ToggleButtonHeight}"
-                                                          VerticalAlignment="Center"
-                                                          IsChecked="{Binding Path=EnableTSplineIsChecked}"
-                                                          Style="{StaticResource EllipseToggleButton1}"/>
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=EnableTSplineIsChecked}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
                                         <StackPanel VerticalAlignment="Center">
                                             <Label Content="{x:Static p:Resources.PreferencesViewEnableTSplineNodes}"
-                                                       Padding="5,5,5,0"
-                                                       Margin="10,0,0,0"
-                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                   Padding="5,5,5,0"
+                                                   Margin="10,0,0,0"
+                                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                             <Label Content="{x:Static p:Resources.PreferencesViewRequiresRelaunchOfDynamo}" 
-                                                       FontSize="10"
-                                                       Margin="10,0,0,0"
-                                                       Padding="5,0,5,5"
-                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                   FontSize="10"
+                                                   Margin="10,0,0,0"
+                                                   Padding="5,0,5,5"
+                                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </Grid>

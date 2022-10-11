@@ -83,6 +83,7 @@
   <DisableBuiltinPackages>true</DisableBuiltinPackages>
   <DisableCustomPackageLocations>true</DisableCustomPackageLocations>
   <DefaultRunType>Manual</DefaultRunType>
+  <DefaultNodeAutocompleteSuggestion>ObjectType</DefaultNodeAutocompleteSuggestion>
   <ShowRunPreview>true</ShowRunPreview>
   <GroupStyleItemsList>
     <GroupStyleItem>

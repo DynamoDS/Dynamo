@@ -1,4 +1,4 @@
-﻿using Dynamo.Core;
+using Dynamo.Core;
 
 namespace Dynamo.Models
 {
@@ -8,6 +8,10 @@ namespace Dynamo.Models
     /// </summary>
     public enum RunType { Manual, Automatic, Periodic }
 
+    /// <summary>
+    /// Node Autocomplete suggestion values
+    /// </summary>
+    public enum NodeAutocompleteSuggestion { MLRecommendation, ObjectType }
     /// <summary>
     /// The RunSettings object contains properties which control
     /// how execution is carried out.

@@ -56,6 +56,7 @@ namespace Dynamo.ViewModels
         private ObservableCollection<string> pythonEngineList;
 
         private RunType runSettingsIsChecked;
+        private NodeAutocompleteSuggestion nodeAutocompleteSuggestion;
         private Dictionary<string, TabSettings> preferencesTabs;
 
         private readonly PreferenceSettings preferenceSettings;
@@ -254,6 +255,31 @@ namespace Dynamo.ViewModels
                     runSettingsIsChecked = RunType.Automatic;
                 }
                 RaisePropertyChanged(nameof(RunSettingsIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls if the the Node autocomplete Machine Learning option is checked for the radio buttons
+        /// </summary>
+        public bool NodeAutocompleteMachineLearningIsChecked
+        {
+            get
+            {
+                return preferenceSettings.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;                
+            }
+            set
+            {
+                if (value)
+                {
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                }
+                else
+                {
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                }
+                RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
             }
         }
 

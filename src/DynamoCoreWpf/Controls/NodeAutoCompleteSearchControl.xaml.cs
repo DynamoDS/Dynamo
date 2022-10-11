@@ -283,5 +283,27 @@ namespace Dynamo.UI.Controls
         {
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
         }
+
+        /// <summary>
+        /// A common method to handle the suggestions Button being clicked
+        /// </summary>
+        private void DisplaySuggestions(object sender, RoutedEventArgs e)
+        {
+            var cm = this.SuggestionsContextMenu;
+            cm.PlacementTarget = sender as Button;
+            cm.IsOpen = true;
+        }
+
+        private void onSuggestion_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem selectedSuggestion = sender as MenuItem;
+            if (selectedSuggestion.Name.Contains(nameof(Dynamo.Models.NodeAutocompleteSuggestion.MLRecommendation)))
+            {
+                ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.MLRecommendation;
+            } else
+            {
+                ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.ObjectType;
+            }
+        }
     }
 }
