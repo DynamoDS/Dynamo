@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Dynamo.Logging;
@@ -102,6 +102,7 @@ namespace Dynamo.Engine
                 Log("LRS.UpdateGraph: " + graphData);
 
             (liveRunner as LiveRunner).DSExecutionEngine = dsExecution;
+            (liveRunner as LiveRunner).IsTestMode = Models.DynamoModel.IsTestMode;
             liveRunner.UpdateGraph(graphData);
         }
 

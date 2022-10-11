@@ -1217,6 +1217,7 @@ namespace ProtoScript.Runners
     public partial class LiveRunner : ILiveRunner, IDisposable
     {
         private IDictionary<string, object> graphOutput;
+        internal bool IsTestMode = false;
         internal bool DSExecutionEngine = true;
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
@@ -1275,8 +1276,15 @@ namespace ProtoScript.Runners
             //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
             msilRuntimeCore = msilRuntimeCore ?? new MSILRuntimeCore(runtimeCore);
             var codeGenIL = new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"), msilRuntimeCore);
-            
-            graphOutput = codeGenIL.Emit(finalDeltaAstList);
+
+            if (IsTestMode)
+            {
+                graphOutput = codeGenIL.EmitAndExecute(finalDeltaAstList);
+            }
+            else
+            {
+                graphOutput = codeGenIL.Emit(finalDeltaAstList);
+            }
             CompileAndExecutionTime = codeGenIL.CompileAndExecutionTime;
         }
 
