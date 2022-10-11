@@ -19,6 +19,7 @@ using System.Windows.Threading;
 using System.Net;
 using System.Text;
 
+
 namespace DynamoSandbox
 {
     class DynamoCoreSetup
@@ -149,11 +150,11 @@ namespace DynamoSandbox
             var importResult = viewModel.PreferencesViewModel.importSettings(fileName);
             if (importResult)
             {
-                migrationWindow.SetImportStatus(ImportStatus.success, "Settings imported", string.Empty);
+                migrationWindow.SetImportStatus(ImportStatus.success, Resources.SplashScreenSettingsImported, string.Empty);
             }
             else
             {
-                migrationWindow.SetImportStatus(ImportStatus.error, "Failed to Import Settings", "Something went wrong when importing your custom setting file. Please try again or proceed with default settings.");
+                migrationWindow.SetImportStatus(ImportStatus.error, Resources.SplashScreenFailedImportSettings, Resources.SplashScreenImportSettingsFailDescription);
             }
         }
 
@@ -211,6 +212,7 @@ namespace DynamoSandbox
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
+            migrationWindow.SetLabels();
             LoadDynamoView();
             migrationWindow.webView.NavigationCompleted -= WebView_NavigationCompleted;
         }

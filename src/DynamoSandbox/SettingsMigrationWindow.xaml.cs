@@ -5,6 +5,8 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
+using Dynamo.DynamoSandbox.Properties;
+
 
 namespace Dynamo.DynamoSandbox
 {
@@ -64,14 +66,13 @@ namespace Dynamo.DynamoSandbox
             webView.NavigateToString(htmlString);
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
                new ScriptObject(RequestLaunchDynamo, RequestImportSettings));
-
         }
 
         internal async void SetBarProperties(string version, string loadingDescription, float barSize)
         {
             var elapsedTime = loadingTimer.ElapsedMilliseconds;
             loadingTimer = Stopwatch.StartNew();
-            await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', 'Loading time: {elapsedTime}ms')");
+            await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', '{Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms')");
         }
 
         internal async void SetLoadingDone()
@@ -87,6 +88,15 @@ namespace Dynamo.DynamoSandbox
                 $"status: {(int)importStatus}," +
                 $"importSettingsTitle: '{importSettingsTitle}'," +
                 $"errorDescription: '{errorDescription}'" + "})");
+        }
+
+        internal async void SetLabels()
+        {
+            await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
+               $"welcomeToDynamoTitle: '{Properties.Resources.SplashScreenWelcomeToDynamo} teste'," +
+               $"signInTitle: '{Properties.Resources.SplashScreenSignIn}'," +
+               $"launchTitle: '{Properties.Resources.SplashScreenLaunchTitle}'," +
+               $"showScreenAgainLabel: '{Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
         }
     }
 
