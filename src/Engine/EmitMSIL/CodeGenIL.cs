@@ -1109,8 +1109,6 @@ namespace EmitMSIL
         //tries to emit opcodes for indexing an array or dictioanry
         private (bool success, Type type) TryEmitIndexing(FunctionCallNode fcn)
         {
-          
-
             //to emit the correct msil we need to know the type of collection we are indexing.
             var array = fcn.FormalArguments.FirstOrDefault();
 
@@ -1134,7 +1132,19 @@ namespace EmitMSIL
                     return (false, null);
                 }
             }
-          
+            if (array is IdentifierNode idNode)
+            {
+                // local variables on rhs of expression should have already been defined.
+                if (!variables.TryGetValue(idNode.Value, out Tuple<int, Type> tup))
+                {
+                    throw new Exception($"Variable {idNode.Value} is undefined!");
+                }
+                //builtin DS dict is a wrapper
+                if (typeof(DesignScript.Builtin.Dictionary).IsAssignableFrom(tup.Item2))
+                {
+                    return (false, null);
+                }
+            }
             //emit load array to stack.
             var t = DfsTraverse(array);
 
@@ -1155,13 +1165,6 @@ namespace EmitMSIL
                     return (true, typeof(object));
                 }
             }
-            //builtin DS dict is a wrapper
-            else if (typeof(DesignScript.Builtin.Dictionary).IsAssignableFrom(t))
-            {
-                //TODO
-                //emit function call for ValueAtKey or fallback to replication.
-            }
-
             else if (t.IsArray)
             {
                 EmitIndexingForArray(fcn.FormalArguments[0], fcn.FormalArguments[1], t.GetElementType());
@@ -1821,7 +1824,6 @@ namespace EmitMSIL
 
         private Type EmitIdentifierNode(AssociativeNode node)
         {
-
             if (compilePass == CompilePass.MethodLookup) return null;
 
             // only handle identifiers on rhs of assignment expression for now.
