@@ -1,4 +1,9 @@
-﻿namespace Dynamo.ViewModels
+using System;
+using System.Globalization;
+using Dynamo.Configuration;
+using Dynamo.Wpf.Properties;
+
+namespace Dynamo.ViewModels
 {
     /// <summary>
     /// Class containing data to display in compact preview bubble
@@ -6,8 +11,14 @@
     public class CompactBubbleViewModel : ViewModelBase
     {
         #region Properties
-
+        internal const string doubleType = "double";
+        internal const string boolType = "bool";
+        internal const string intType = "int";
+        internal const string objectType = "object";
+        internal const string stringType = "string";
         private string nodeLabel;
+        private string valueType;
+
         /// <summary>
         /// Represents type of node output
         /// </summary>
@@ -19,6 +30,12 @@
                 nodeLabel = value;
                 RaisePropertyChanged("NodeLabel");
             }
+        }
+
+        public string ValueType
+        {
+            get { return valueType; }
+            set { valueType = value; RaisePropertyChanged(nameof(ValueType)); }
         }
 
         private int numberOfItems;
@@ -72,6 +89,38 @@
             NumberOfItems = items;
         }
 
+        public void SetObjectType(object obj)
+        {
+            if (obj != null)
+            {
+                ValueType = GetDisplayType(obj);
+            }
+        }
+
+        private string GetDisplayType(object obj)
+        {
+            TypeCode typeCode = Type.GetTypeCode(obj.GetType());
+
+            switch (typeCode)
+            {
+                case TypeCode.Boolean:
+                    return boolType;
+                case TypeCode.Double:
+                    return doubleType;
+                case TypeCode.Int64:
+                    return intType;
+                case TypeCode.Int32:
+                    return intType;
+                case TypeCode.Object:
+                    return objectType;
+                case TypeCode.String:
+                    return stringType;
+                case TypeCode.Empty:
+                    return String.Empty;
+                default:
+                    return String.Empty;
+            }
+        }
         #endregion
     }
 }
