@@ -93,7 +93,7 @@ namespace Dynamo.DynamoSandbox
         internal async void SetLabels()
         {
             await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
-               $"welcomeToDynamoTitle: '{Properties.Resources.SplashScreenWelcomeToDynamo} teste'," +
+               $"welcomeToDynamoTitle: '{Properties.Resources.SplashScreenWelcomeToDynamo}'," +
                $"signInTitle: '{Properties.Resources.SplashScreenSignIn}'," +
                $"launchTitle: '{Properties.Resources.SplashScreenLaunchTitle}'," +
                $"showScreenAgainLabel: '{Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
