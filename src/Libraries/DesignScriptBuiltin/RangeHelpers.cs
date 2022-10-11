@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Autodesk.DesignScript.Runtime;
 using Builtin.Properties;
 using ProtoCore.DSASM;
@@ -31,7 +31,7 @@ namespace ProtoCore.DSASM
 namespace Builtin
 {
     //TODO for now suppress import into DS VM.
-    [SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     public class RangeHelpers
     {
         //TODO op is specified as a long - even though it is an int.

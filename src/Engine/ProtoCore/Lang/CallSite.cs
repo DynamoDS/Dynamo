@@ -15,6 +15,7 @@ using ProtoCore.Lang.Replication;
 using ProtoCore.Properties;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
+using ProtoFFI;
 using StackFrame = ProtoCore.DSASM.StackFrame;
 using Validity = ProtoCore.Utils.Validity;
 using WarningID = ProtoCore.Runtime.WarningID;
@@ -1026,7 +1027,7 @@ namespace ProtoCore
         }
 
 
-        private bool Inherits(ReadOnlyCollection<ClassNode> classNodes, int parentIndex, int childIndex)
+        private static bool Inherits(ReadOnlyCollection<ClassNode> classNodes, int parentIndex, int childIndex)
         {
             if (parentIndex < 0 || parentIndex >= classNodes.Count || childIndex < 0 || childIndex >= classNodes.Count)
             {
@@ -1036,7 +1037,7 @@ namespace ProtoCore
             return Inherits(classNodes, classNodes[parentIndex], classNodes[childIndex]);
         }
 
-        private bool Inherits(ReadOnlyCollection<ClassNode> classNodes, ClassNode parent, ClassNode child)
+        private static bool Inherits(ReadOnlyCollection<ClassNode> classNodes, ClassNode parent, ClassNode child)
         {
             if (child == parent)
             {
@@ -1069,6 +1070,7 @@ namespace ProtoCore
         /// </summary>
         private FunctionGroup GetFuncGroup(RuntimeCore runtimeCore, List<StackValue> arguments)
         {
+            var classTable = runtimeCore.DSExecutable.classTable;
             // try to use dynamic classScope
             if (arguments.Count > 0)
             {
@@ -1082,9 +1084,9 @@ namespace ProtoCore
 
                 if (firstArg.IsPointer && firstArg.metaData.type != classScope)
                 {
-                    if (Inherits(runtimeCore.DSExecutable.classTable.ClassNodes, classScope, firstArg.metaData.type))
+                    if (Inherits(classTable.ClassNodes, classScope, firstArg.metaData.type))
                     {
-                        var fg = FirstFunctionGroupInInheritanceChain(runtimeCore, firstArg.metaData.type);
+                        var fg = FirstFunctionGroupInInheritanceChain(methodName, firstArg.metaData.type, classTable, globalFunctionTable);
                         if (fg != null)
                         {
                             return fg;
@@ -1094,14 +1096,14 @@ namespace ProtoCore
             }
 
             // use static classScope
-            return FirstFunctionGroupInInheritanceChain(runtimeCore, classScope);
+            return FirstFunctionGroupInInheritanceChain(methodName, classScope, classTable, globalFunctionTable);
         }
 
-        private FunctionGroup FirstFunctionGroupInInheritanceChain(RuntimeCore runtimeCore, int cidx)
+        internal static FunctionGroup FirstFunctionGroupInInheritanceChain(string methodName, int cidx, ClassTable classTable, FunctionTable globalFnTable)
         {
             FunctionGroup funcGroup = null;
-            var classNodes = runtimeCore.DSExecutable.classTable.ClassNodes;
-            var globalFuncTable = globalFunctionTable.GlobalFuncTable;
+            var classNodes = classTable.ClassNodes;
+            var globalFuncTable = globalFnTable.GlobalFuncTable;
 
             do
             {
@@ -1538,7 +1540,7 @@ namespace ProtoCore
             //Cache finalFep for CallSite.  Note there is always only one dispose endpoint returned.
             if (finalFep == null)
             {
-                var funcGroup = FirstFunctionGroupInInheritanceChain(runtimeCore, classScope);
+                var funcGroup = FirstFunctionGroupInInheritanceChain(methodName, classScope, runtimeCore.DSExecutable.classTable, globalFunctionTable);
                 finalFep = funcGroup.FunctionEndPoints[0];
             }
             
@@ -2032,13 +2034,8 @@ namespace ProtoCore
             }
         }
 
-        internal static CLRStackValue PerformReturnTypeCoerce(CLRFunctionEndPoint procNode, CLRStackValue ret, MSILRuntimeCore runtimeCore)
+        internal static CLRStackValue PerformReturnTypeCoerce(Type retType, CLRStackValue ret, MSILRuntimeCore runtimeCore)
         {
-            Validity.Assert(procNode != null, "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
-
-            System.Type returnType = procNode.ReturnType;
-            Type retType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(returnType);
-
             if (retType.UID == (int)PrimitiveType.Var)
             {
                 if (retType.rank < 0)

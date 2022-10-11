@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
@@ -11,6 +11,12 @@ namespace CodeGenILTests
     [TestFixture]
     public class IndexingMicroTests : MicroTests
     {
+        protected override void GetLibrariesToPreload(ref List<string> libraries)
+        {
+            base.GetLibrariesToPreload(ref libraries);
+            libraries.Add("FFITarget.dll");
+        }
+
         #region array indexing
         [Test]
         public void IndexArrayAllConstants()
@@ -74,6 +80,7 @@ c=a[b];";
             Assert.IsNotEmpty(output);
             Assert.AreEqual(1.1, output.Values.ToList()[2]);
         }
+
         [Test]
         [Category("Failure")]//fails because we need to emit multiple ldelem opcodes per index or fallback to replication.
         public void IndexArrayWithArrayConstants()
@@ -87,6 +94,7 @@ c=a[b];";
             Assert.IsNotEmpty(output);
             CollectionAssert.AreEqual(new long[] { 0, 5 }, output.Values.ToList()[1] as long[]);
         }
+
         [Test]
         public void IndexNestedArray_WithIdent()
         {
@@ -131,6 +139,7 @@ c=a[b];";
             Assert.IsNotEmpty(output);
             Assert.AreEqual(8, output.Values.ToList()[2]);
         }
+
         [Test]
         public void IndexIntoArray_StringArray()
         {

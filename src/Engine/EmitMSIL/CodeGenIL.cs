@@ -1,7 +1,9 @@
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Lang;
 using ProtoCore.Properties;
 using ProtoCore.Utils;
+using ProtoFFI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,13 +24,14 @@ namespace EmitMSIL
         private IDictionary<string, IList> input;
         //private Dictionary<int, bool> isRepCall = new Dictionary<int, bool>();
 
+        internal ProtoCore.MSILRuntimeCore runtimeCore;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
         /// <summary>
         /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
         /// </summary>
         private Dictionary<int, Type> astTypeInfoMap = new Dictionary<int, Type>();
         private StreamWriter writer;
-        private Dictionary<int, IEnumerable<MethodBase>> methodCache = new Dictionary<int, IEnumerable<MethodBase>>();
+        private Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>> methodCache = new Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>();
         private CompilePass compilePass;
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
@@ -53,13 +56,14 @@ namespace EmitMSIL
             }
         }
 
-        public CodeGenIL(IDictionary<string, IList> input, string filePath)
+        internal CodeGenIL(IDictionary<string, IList> input, string filePath, ProtoCore.MSILRuntimeCore runtimeCore)
         {
             this.input = input;
             writer = new StreamWriter(filePath);
+            this.runtimeCore = runtimeCore;
         }
 
-        public IDictionary<string, object> Emit(List<AssociativeNode> astList)
+        internal IDictionary<string, object> Emit(List<AssociativeNode> astList)
         {
             var timer = new Stopwatch();
             timer.Start();
@@ -69,11 +73,11 @@ namespace EmitMSIL
             // Invoke emitted method (ExecuteIL.Execute)
             timer.Restart();
             var t = compileResult.tbuilder.CreateType();
-            var mi = t.GetMethod("Execute");
+            var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
             var output = new Dictionary<string, object>();
 
             // null can be replaced by an 'input' dictionary if available.
-            var obj = mi.Invoke(null, new object[] { null, methodCache, output });
+            var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
             timer.Stop();
             CompileAndExecutionTime.executionTime = timer.Elapsed;
 
@@ -88,9 +92,9 @@ namespace EmitMSIL
 
             // Invoke emitted method (ExecuteIL.Execute)
             var t = compileResult.tbuilder.CreateType();
-            var mi = t.GetMethod("Execute");
+            var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
             var output = new Dictionary<string, object>();
-            mi.Invoke(null, new object[] { null, methodCache, output });
+            mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
             return output;
         }
 
@@ -110,8 +114,8 @@ namespace EmitMSIL
             var type = BuilderHelper.CreateType(mod, "ExecuteIL");
             // 4. Create method ("Execute"), get ILGenerator 
             var execMethod = BuilderHelper.CreateMethod(type, "Execute",
-                System.Reflection.MethodAttributes.Static, typeof(void), new[] { typeof(IDictionary<string, IList>),
-                typeof(IDictionary<int, IEnumerable<MethodBase>>), typeof(IDictionary<string, object>)});
+                System.Reflection.MethodAttributes.Static | System.Reflection.MethodAttributes.Private, typeof(void), new[] { typeof(IDictionary<string, IList>),
+                typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>), typeof(IDictionary<string, object>), typeof(ProtoCore.MSILRuntimeCore)});
             ilGen = execMethod.GetILGenerator();
 
             compilePass = CompilePass.GatherTypeInfo;
@@ -143,19 +147,19 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Call, roundMethod);
         }
 
-        private Type EmitCoercionCode(AssociativeNode arg, Type argType, ParameterInfo param)
+        private Type EmitCoercionCode(AssociativeNode arg, Type argType, Type param)
         {
             if (argType == null) return argType;
 
-            if(param.ParameterType == typeof(object) && argType.IsValueType)
+            if(param == typeof(object) && argType.IsValueType)
             {
                 EmitOpCode(OpCodes.Box, argType);
                 return typeof(object);
             }
 
-            if (param.ParameterType.IsAssignableFrom(argType)) return argType;
+            if (param.IsAssignableFrom(argType)) return argType;
 
-            if(argType == typeof(double) && param.ParameterType == typeof(long))
+            if(argType == typeof(double) && param == typeof(long))
             {
                 // Call Math.Round(arg, 0, MidpointRounding.AwayFromZero);
                 EmitMathRound();
@@ -163,7 +167,7 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Conv_I8);
                 return typeof(long);
             }
-            if (argType == typeof(double) && param.ParameterType == typeof(int))
+            if (argType == typeof(double) && param == typeof(int))
             {
                 // Call Math.Round(arg, 0, MidpointRounding.AwayFromZero);
                 EmitMathRound();
@@ -171,63 +175,63 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Conv_I4);
                 return typeof(int);
             }
-            if (argType == typeof(long) && param.ParameterType == typeof(int))
+            if (argType == typeof(long) && param == typeof(int))
             {
                 EmitOpCode(OpCodes.Conv_I4);
                 return typeof(int);
             }
-            if (argType == typeof(long) && param.ParameterType == typeof(double))
+            if (argType == typeof(long) && param == typeof(double))
             {
                 EmitOpCode(OpCodes.Conv_R8);
                 return typeof(double);
             }
 
-            if (argType == typeof(double[]) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
+            if (argType == typeof(double[]) && typeof(IEnumerable<int>).IsAssignableFrom(param))
             {
-                return EmitArrayCoercion<double, int>(arg, param.ParameterType);
+                return EmitArrayCoercion<double, int>(arg, param);
             }
-            if (argType == typeof(int[]) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
+            if (argType == typeof(int[]) && typeof(IEnumerable<double>).IsAssignableFrom(param))
             {
-                return EmitArrayCoercion<int, double>(arg, param.ParameterType);
+                return EmitArrayCoercion<int, double>(arg, param);
             }
-            if (argType == typeof(double[]) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
+            if (argType == typeof(double[]) && typeof(IEnumerable<long>).IsAssignableFrom(param))
             {
-                return EmitArrayCoercion<double, long>(arg, param.ParameterType);
+                return EmitArrayCoercion<double, long>(arg, param);
             }
-            if (argType == typeof(long[]) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
+            if (argType == typeof(long[]) && typeof(IEnumerable<double>).IsAssignableFrom(param))
             {
-                return EmitArrayCoercion<long, double>(arg, param.ParameterType);
+                return EmitArrayCoercion<long, double>(arg, param);
             }
-            if (argType == typeof(long[]) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
+            if (argType == typeof(long[]) && typeof(IEnumerable<int>).IsAssignableFrom(param))
             {
-                return EmitArrayCoercion<long, int>(arg, param.ParameterType);
+                return EmitArrayCoercion<long, int>(arg, param);
             }
-            if (argType == typeof(int[]) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
+            if (argType == typeof(int[]) && typeof(IEnumerable<long>).IsAssignableFrom(param))
             {
-                return EmitArrayCoercion<int, long>(arg, param.ParameterType);
+                return EmitArrayCoercion<int, long>(arg, param);
             }
 
-            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
+            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param))
             {
                 return EmitIEnumerableCoercion<int, double>(arg);
             }
-            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
+            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param))
             {
                 return EmitIEnumerableCoercion<int, long>(arg);
             }
-            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param.ParameterType))
+            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param))
             {
                 return EmitIEnumerableCoercion<long, double>(arg);
             }
-            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
+            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param))
             {
                 return EmitIEnumerableCoercion<long, int>(arg);
             }
-            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param.ParameterType))
+            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param))
             {
                 return EmitIEnumerableCoercion<double, int>(arg);
             }
-            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param.ParameterType))
+            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param))
             {
                 return EmitIEnumerableCoercion<double, long>(arg);
             }
@@ -512,85 +516,118 @@ namespace EmitMSIL
             return t;
         }
 
-        private IEnumerable<MethodBase> FunctionLookup(IList args)
+        private IEnumerable<ProtoCore.CLRFunctionEndPoint> FunctionLookup(IList args)
         {
-            IEnumerable<MethodBase> mbs = null;
+            var mbs = new List<ProtoCore.CLRFunctionEndPoint>();
             var key = KeyGen(className, methodName, args.Count);
-            if (methodCache.TryGetValue(key, out IEnumerable<MethodBase> mBase))
+            if (methodCache.TryGetValue(key, out IEnumerable<ProtoCore.CLRFunctionEndPoint> mBase))
             {
-                mbs = mBase;
+                return mBase;
             }
-            else
+            
+            if (!CoreUtils.IsInternalMethod(methodName))
             {
-                if (!CoreUtils.IsInternalMethod(methodName))
+                int cid = runtimeCore.ClassTable.GetClassId(className);
+                Validity.Assert(cid != DSASM.Constants.kInvalidIndex);
+            }
+
+            // TODO_MSIL: Figure out polymorfism when calling functions
+            // That should be done at runtime (when we know the exact runtime type of the caller type)
+            var fg = runtimeCore.GetFuncGroup(methodName, className);
+
+            // This checks if there is a static property like Point.X(arg) 
+            // and if so renames it to Point.get_X(arg) so that it can be 
+            // found as a static getter in the class declaration.
+            if (fg == null && args.Count == 1)
+            {
+                // Try to find a getter
+                methodName = DSASM.Constants.kGetterPrefix + methodName;
+                fg = runtimeCore.GetFuncGroup(methodName, className);
+            }
+
+            Validity.Assert(fg != null, "Did not find a function group");
+
+            foreach (var funcEnd in fg.FunctionEndPoints)
+            {
+                var procNode = funcEnd.procedureNode;
+                Validity.Assert(procNode != null, "Expected to have a valid procedureNode");
+
+                bool isStaticOrConstructorOrInternal = procNode.IsStatic || procNode.IsConstructor || CoreUtils.IsInternalMethod(methodName);
+
+                bool matchingArgCount = isStaticOrConstructorOrInternal ?
+                    procNode.ArgumentTypes.Count == args.Count :
+                    (procNode.ArgumentTypes.Count + 1) == args.Count;
+
+                if (!matchingArgCount) {
+                    continue;
+                }
+
+                FFIMemberInfo fFIMemberInfo = null;
+                System.Type declaringType = null;
+                ParameterInfo[] parameterInfos = null;
+
+                if (CoreUtils.IsInternalMethod(methodName))//equivalent to if (funcEnd is JILFunctionEndPoint)
                 {
-                    var modules = ProtoFFI.DLLFFIHandler.Modules.Values.OfType<ProtoFFI.CLRDLLModule>();
-                    var assemblies = modules.Select(m => m.Assembly ?? (m.Module?.Assembly)).Where(m => m != null);
-                    foreach (var asm in assemblies)
+                    var mInfo = BuiltIn.GetInternalMethod(methodName);
+                    parameterInfos = mInfo.GetParameters();
+                    declaringType = mInfo.DeclaringType;
+                    fFIMemberInfo = new FFIMethodInfo(mInfo);
+                }
+                else if (funcEnd is FFIFunctionEndPoint ffiFep)
+                {
+                    FFIHandler handler = FFIFunctionEndPoint.FFIHandlers[ffiFep.activation.ModuleType];
+                    FFIFunctionPointer functionPointer = handler.GetFunctionPointer(
+                        ffiFep.activation.ModuleName, className, ffiFep.activation.FunctionName,
+                        ffiFep.activation.ParameterTypes, ffiFep.activation.ReturnType);
+                    if (functionPointer == null)
                     {
-                        var type = asm.GetType(className);
-                        if (type == null) continue;
-
-                        // There should be a way to get the exact method after matching parameter types for a node
-                        // using its function descriptor. AST isn't sufficient for parameter type info.
-                        // Fist check for static methods
-                        mbs = type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(
-                            m => m.Name == methodName && m.GetParameters().Length == args.Count).ToList();
-
-                        // Check for instance methods
-                        if (mbs == null || !mbs.Any())
-                        {
-                            mbs = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(
-                                m => m.Name == methodName && m.GetParameters().Length + 1 == args.Count).ToList();
-                        }
-
-                        // Check for property getters
-                        if (mbs == null || !mbs.Any())
-                        {
-                            var prop = type
-                                .GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).Where(
-                                    p => p.Name == methodName).FirstOrDefault();
-
-                            if (prop != null)
-                            {
-                                mbs = prop.GetAccessors().ToList();
-                            }
-                        }
-
-                        // Check for constructorinfo objects
-                        if(mbs == null || !mbs.Any())
-                        {
-                            mbs = type.GetConstructors().Where(
-                                m => m.DeclaringType.Name == methodName && m.GetParameters().Length == args.Count).ToList();
-                        }
-
-                        if (mbs != null && mbs.Any())
-                        {
-                            methodCache.Add(key, mbs);
-                            break;
-                        }
-
-                        //if (method != null)
-                        //{
-                        //    argTypes = method.GetParameters().Select(p => p.ParameterType).ToList();
-                        //    return method.ReturnType;
-                        //}
+                        continue;
                     }
+
+                    var clrFFI = functionPointer as CLRFFIFunctionPointer;
+                    Validity.Assert(clrFFI != null, "Only CLRFFIFunctionPointer is supported for now");
+
+                    parameterInfos = clrFFI.ReflectionInfo.GetParameters().Select(x => x.Info).ToArray();
+                    declaringType = clrFFI.ReflectionInfo.DeclaringType;
+                    fFIMemberInfo = clrFFI.ReflectionInfo;
                 }
                 else
                 {
-                    var method = BuiltIn.GetInternalMethod(methodName);
-                    if (method != null)
-                    {
-                        mbs = new List<MethodBase>() { method };
-                        methodCache.Add(key, mbs);
-                    }
+                    throw new NotImplementedException("Unkown FunctionEndpoint type. Not implemented yet");
                 }
+
+                var formalParams = new List<ProtoCore.CLRFunctionEndPoint.ParamInfo>();
+                if (!isStaticOrConstructorOrInternal)
+                {
+                    // First argument is the this pointer
+                    // So we need to add an extra parameter to match the arguments
+                    var dsType = runtimeCore.GetProtoCoreType(declaringType);
+                    formalParams.Add(new ProtoCore.CLRFunctionEndPoint.ParamInfo() { CLRType = declaringType, ProtoInfo = dsType });
+                }
+
+                Validity.Assert(parameterInfos.Length == procNode.ArgumentTypes.Count, "Expected argument counts to match");
+                int i = 0;
+                foreach (var paramInfo in parameterInfos)
+                {
+                    var protoType = procNode.ArgumentTypes[i];
+                    formalParams.Add(new ProtoCore.CLRFunctionEndPoint.ParamInfo() { CLRType = paramInfo.ParameterType, ProtoInfo = protoType });
+                    i++;
+                }
+
+                ProtoCore.CLRFunctionEndPoint fep = new ProtoCore.CLRFunctionEndPoint(fFIMemberInfo, formalParams, procNode.ReturnType);
+                mbs.Add(fep);
             }
-            if (mbs == null || !mbs.Any())
+
+            if (mbs.Any())
+            {
+                methodCache.Add(key, mbs);
+            }
+
+            if (!mbs.Any())
             {
                 throw new MissingMethodException("No matching method found in loaded assemblies.");
             }
+
             return mbs;
         }
 
@@ -865,6 +902,7 @@ namespace EmitMSIL
             ilGen.Emit(opCode, val);
             writer.WriteLine($"{opCode} {val}");
         }
+
         private void EmitILComment(string comment)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
@@ -1250,10 +1288,8 @@ namespace EmitMSIL
             // TODO: Decide whether to process overloaded methods at compile time or leave it for runtime.
             // For now, we assume no overloads.
             var mBase = FunctionLookup(args).FirstOrDefault();
-            var parameters = mBase.GetParameters();
+            var parameters = mBase.FormalParams.Select(x => x.CLRType).ToList();
 
-            // number of args = number of parameters if static.
-            // num args = num params + 1 if instance as first arg is this pointer.
             var isStaticOrCtor = mBase.IsStatic || mBase.IsConstructor;
 
             var doesReplicate = WillCallReplicate(parameters, isStaticOrCtor, args);
@@ -1291,7 +1327,7 @@ namespace EmitMSIL
                 var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
                 EmitOpCode(OpCodes.Call, keygen);
 
-                var local = DeclareLocal(typeof(IEnumerable<MethodBase>), "cached MethodBase objects");
+                var local = DeclareLocal(typeof(IEnumerable<ProtoCore.CLRFunctionEndPoint>), "cached MethodBase objects");
                 //local could be null if we are not emitting currently.
                 if(local != null)
                 {
@@ -1299,8 +1335,8 @@ namespace EmitMSIL
                 }
 
                 // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<MethodBase> mInfos)
-                var dictLookup = typeof(IDictionary<int, IEnumerable<MethodBase>>).GetMethod(
-                    nameof(IDictionary<int, IEnumerable<MethodBase>>.TryGetValue));
+                var dictLookup = typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>).GetMethod(
+                    nameof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>.TryGetValue));
                 EmitOpCode(OpCodes.Callvirt, dictLookup);
 
                 EmitOpCode(OpCodes.Pop);
@@ -1349,8 +1385,11 @@ namespace EmitMSIL
                     }
                 });
 
+                // Emit call to load the runtimeCore argument
+                EmitOpCode(OpCodes.Ldarg_3);
+
                 // Emit call to ReplicationLogic
-                var repLogic = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic));
+                var repLogic = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic), BindingFlags.Public | BindingFlags.Static);
                 EmitOpCode(OpCodes.Call, repLogic);
 
                 return typeof(object);
@@ -1373,28 +1412,31 @@ namespace EmitMSIL
                     index++;
                 }
 
-                if (mBase is MethodInfo mi)
+                if (mBase.MemberInfo is MethodInfo mi)
                 {
-                    EmitOpCode(OpCodes.Call, mBase);
+                    EmitOpCode(OpCodes.Call, mi);
                     return mi.ReturnType;
                 }
                 else
                 {
-                    var ci = mBase as ConstructorInfo;
+                    Validity.Assert(mBase.IsConstructor);
+
+                    var ci = mBase.MemberInfo as ConstructorInfo;
                     EmitOpCode(OpCodes.Newobj, ci);
                     return ci.DeclaringType;
                 }
             }
         }
 
-        private bool DoesParamArgRankMatch(ParameterInfo[] parameters, List<AssociativeNode> args, int argIndex)
+        private bool DoesParamArgRankMatch(List<Type> parameterTypes, List<AssociativeNode> args)
         {
-            foreach (var p in parameters)
+            var argIndex = 0;
+            foreach (var p in parameterTypes)
             {
                 if (CoreUtils.IsPrimitiveASTNode(args[argIndex]) || args[argIndex] is CharNode)
                 {
                     // arg is a single value (primitive type), but param is not (array promotion case).
-                    if (ArrayUtils.IsEnumerable(p.ParameterType) && p.ParameterType != typeof(string))
+                    if (ArrayUtils.IsEnumerable(p) && p != typeof(string))
                     {
                         return false;
                     }
@@ -1403,19 +1445,19 @@ namespace EmitMSIL
                     {
                         case AstKind.String:
                             var strNode = args[argIndex] as StringNode;
-                            if (p.ParameterType == typeof(char))
+                            if (p == typeof(char))
                             {
                                 if (strNode.Value.Length != 1) return false;
                             }
                             break;
                         case AstKind.Char:
-                            if (p.ParameterType == typeof(string)) return false;
+                            if (p == typeof(string)) return false;
                             break;
                     }
                 }
                 else if (args[argIndex] is ExprListNode exp)
                 {
-                    if (!ArrayUtils.IsEnumerable(p.ParameterType) || p.ParameterType == typeof(string))
+                    if (!ArrayUtils.IsEnumerable(p) || p == typeof(string))
                     {
                         // arg is an enumerable type, param is not.
                         return false;
@@ -1428,7 +1470,7 @@ namespace EmitMSIL
                         // non-rectangular (jagged) array best handled by replication
                         return false;
                     }
-                    if (argRank != GetRank(p.ParameterType)) return false;
+                    if (argRank != GetRank(p)) return false;
                 }
                 else if (args[argIndex] is IdentifierNode idn)
                 {
@@ -1437,11 +1479,11 @@ namespace EmitMSIL
                     var t = variables[idn.Value].Item2;
                     if (t == typeof(object)) return false;
 
-                    if (!p.ParameterType.Equals(t))
+                    if (!p.Equals(t))
                     {
                         // TODO: check if rank of t matches with that of p.
                         var argRank = GetRank(t);
-                        var paramRank = GetRank(p.ParameterType);
+                        var paramRank = GetRank(p);
                         if (argRank != paramRank) return false;
 
                         // If both have rank 0, it could also be because their type info is ambiguous.
@@ -1495,13 +1537,11 @@ namespace EmitMSIL
             return 1 + firstRank;
         }
 
-        private bool WillCallReplicate(ParameterInfo[] parameters, bool isStaticOrCtor, List<AssociativeNode> args)
+        private bool WillCallReplicate(List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
         {
-            // number of args = number of parameters if static.
-            // num args = num params + 1 if instance as first arg is this pointer.
             if (isStaticOrCtor)
             {
-                return !DoesParamArgRankMatch(parameters, args, argIndex: 0);
+                return !DoesParamArgRankMatch(paramTypes, args);
             }
             else
             {
@@ -1515,7 +1555,7 @@ namespace EmitMSIL
                         return true;
                     }
                 }
-                return !DoesParamArgRankMatch(parameters, args, argIndex: 1);
+                return !DoesParamArgRankMatch(paramTypes, args);
             }
         }
 
