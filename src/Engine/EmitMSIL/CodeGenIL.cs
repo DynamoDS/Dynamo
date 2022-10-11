@@ -424,7 +424,6 @@ namespace EmitMSIL
             // Emit for loop to loop over array and convert.
 
             // i = 0;
-            //var counterIndex = newArrIndex + 1;
             localBuilder = DeclareLocal(typeof(int), "for loop counter");
             var counterIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Ldc_I4_0);
@@ -1287,10 +1286,10 @@ namespace EmitMSIL
             // Retrieve previously cached functions
             // TODO: Decide whether to process overloaded methods at compile time or leave it for runtime.
             // For now, we assume no overloads.
-            var mBase = FunctionLookup(args).FirstOrDefault();
-            var parameters = mBase.FormalParams.Select(x => x.CLRType).ToList();
+            var clrFep = FunctionLookup(args).FirstOrDefault();
+            var parameters = clrFep.FormalParams.Select(x => x.CLRType).ToList();
 
-            var isStaticOrCtor = mBase.IsStatic || mBase.IsConstructor;
+            var isStaticOrCtor = clrFep.IsStatic || clrFep.IsConstructor;
 
             var doesReplicate = WillCallReplicate(parameters, isStaticOrCtor, args);
 
@@ -1334,7 +1333,7 @@ namespace EmitMSIL
                     EmitOpCode(OpCodes.Ldloca, local);
                 }
 
-                // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<MethodBase> mInfos)
+                // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<CLRFunctionEndPoint> feps)
                 var dictLookup = typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>).GetMethod(
                     nameof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>.TryGetValue));
                 EmitOpCode(OpCodes.Callvirt, dictLookup);
@@ -1412,16 +1411,16 @@ namespace EmitMSIL
                     index++;
                 }
 
-                if (mBase.MemberInfo is MethodInfo mi)
+                if (clrFep.MemberInfo is MethodInfo mi)
                 {
                     EmitOpCode(OpCodes.Call, mi);
                     return mi.ReturnType;
                 }
                 else
                 {
-                    Validity.Assert(mBase.IsConstructor);
+                    Validity.Assert(clrFep.IsConstructor);
 
-                    var ci = mBase.MemberInfo as ConstructorInfo;
+                    var ci = clrFep.MemberInfo as ConstructorInfo;
                     EmitOpCode(OpCodes.Newobj, ci);
                     return ci.DeclaringType;
                 }
