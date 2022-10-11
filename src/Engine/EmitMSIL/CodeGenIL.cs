@@ -630,16 +630,15 @@ namespace EmitMSIL
             return mbs;
         }
 
-        private HashSet<Type> GetTypeStatisticsForArray(ExprListNode array, ref int rank)
+        private HashSet<Type> GetTypeStatisticsForArray(ExprListNode array)
         {
-            rank += 1;
             var arrayTypes = new HashSet<Type>();
 
             foreach (var exp in array.Exprs)
             {
                 if (exp is ExprListNode eln)
                 {
-                    var subArray = GetTypeStatisticsForArray(eln, ref rank);
+                    var subArray = GetTypeStatisticsForArray(eln);
                     var t = GetOverallTypeForArray(subArray);
 
                     if (t != typeof(object))
@@ -1031,8 +1030,7 @@ namespace EmitMSIL
             {
                 throw new ArgumentException("AST node must be an Expression List.");
             }
-            int rank = 0;
-            var arrayTypes = GetTypeStatisticsForArray(eln, ref rank);
+            var arrayTypes = GetTypeStatisticsForArray(eln);
             var ot = GetOverallTypeForArray(arrayTypes);
 
             EmitArray(ot, eln.Exprs, (AssociativeNode el, int idx) =>
@@ -1464,9 +1462,7 @@ namespace EmitMSIL
                         // arg is an enumerable type, param is not.
                         return false;
                     }
-                    //var argRank = 0;
-                    //var arrayTypes = GetTypeStatisticsForArray(exp, ref argRank);
-                    var argRank = GetReductionDepth(exp as AssociativeNode, (x) => x is ExprListNode ? (x as ExprListNode).Exprs : null);
+                    var argRank = GetArgumentRank(exp);
                     if (argRank == -1)
                     {
                         // non-rectangular (jagged) array best handled by replication
@@ -1483,7 +1479,6 @@ namespace EmitMSIL
 
                     if (!p.Equals(t))
                     {
-                        // TODO: check if rank of t matches with that of p.
                         var argRank = GetRank(t);
                         var paramRank = GetRank(p);
                         if (argRank != paramRank) return false;
@@ -1518,9 +1513,9 @@ namespace EmitMSIL
             return 1 + GetEnumerableRank(genericArgs.FirstOrDefault());
         }
 
-        private static int GetReductionDepth<T>(T val, Func<T, IEnumerable> asArr)
+        private static int GetArgumentRank(AssociativeNode val)
         {
-            IEnumerable arr = asArr(val);
+            var arr = val is ExprListNode ? (val as ExprListNode).Exprs : null;
             if (arr == null)
             {
                 return 0;
@@ -1528,9 +1523,9 @@ namespace EmitMSIL
             int firstRank = 0;
             int i = 0;
             //De-ref the val
-            foreach (T subVal in arr)
+            foreach (var subVal in arr)
             {
-                int rank = GetReductionDepth(subVal, asArr);
+                int rank = GetArgumentRank(subVal);
                 if (i == 0) firstRank = rank;
 
                 if (rank != firstRank) return -1;
