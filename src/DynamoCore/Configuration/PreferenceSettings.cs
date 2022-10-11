@@ -52,6 +52,7 @@ namespace Dynamo.Configuration
         private bool isBackgroundGridVisible;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
+        private bool isStaticSplashScreenEnabled;
         private bool isCreatedFromValidFile = true;
 
         #region Constants
@@ -487,6 +488,22 @@ namespace Dynamo.Configuration
             }
         }
 
+
+        /// <summary>
+        /// This defines if the user wants to see the static splash screen again
+        /// </summary>
+        public bool EnableStaticSplashScreen
+        {
+            get
+            {
+                return isStaticSplashScreenEnabled;
+            }
+            set
+            {
+                isStaticSplashScreenEnabled = value;
+            }
+        }
+
         /// <summary>
         /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
         /// </summary>
@@ -680,6 +697,7 @@ namespace Dynamo.Configuration
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
             EnableNotificationCenter = true;
+            isStaticSplashScreenEnabled = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();

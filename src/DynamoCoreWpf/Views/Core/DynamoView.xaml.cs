@@ -165,7 +165,7 @@ namespace Dynamo.Controls
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
             }
 
-            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs("2.14", "Loading View Extensions...", 80, 1000));
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs("Loading View Extensions...", 80));
 
             var viewExtensions = new List<IViewExtension>();
             foreach (var dir in dynamoViewModel.Model.PathManager.ViewExtensionsDirectories)
@@ -1021,18 +1021,18 @@ namespace Dynamo.Controls
             sharedViewExtensionLoadedParams = new ViewLoadedParams(this, dynamoViewModel);
             this.DynamoLoadedViewExtensionHandler(sharedViewExtensionLoadedParams, viewExtensionManager.ViewExtensions);
 
-            //BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
-            //background_grid.Children.Add(BackgroundPreview);
-            //BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
-            //BackgroundPreview.Margin = new System.Windows.Thickness(0, 20, 0, 0);
-            //var vizBinding = new Binding
-            //{
-            //    Source = dynamoViewModel.BackgroundPreviewViewModel,
-            //    Path = new PropertyPath("Active"),
-            //    Mode = BindingMode.TwoWay,
-            //    Converter = new BooleanToVisibilityConverter()
-            //};
-            //BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
+            BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
+            background_grid.Children.Add(BackgroundPreview);
+            BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
+            BackgroundPreview.Margin = new System.Windows.Thickness(0, 20, 0, 0);
+            var vizBinding = new Binding
+            {
+                Source = dynamoViewModel.BackgroundPreviewViewModel,
+                Path = new PropertyPath("Active"),
+                Mode = BindingMode.TwoWay,
+                Converter = new BooleanToVisibilityConverter()
+            };
+            BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
 
             TrackStartupAnalytics();
 

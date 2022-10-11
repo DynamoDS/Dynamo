@@ -1,5 +1,6 @@
 using Microsoft.Web.WebView2.Core;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -12,12 +13,17 @@ namespace Dynamo.DynamoSandbox
         private static readonly string htmlEmbeddedFile = "Dynamo.DynamoSandbox.WebApp.index.html";
         private static readonly string jsEmbeddedFile = "Dynamo.DynamoSandbox.WebApp.index.bundle.js";
 
-        internal Action RequestLaunchDynamo;
+        private Stopwatch loadingTimer;
+
+        internal Action<bool> RequestLaunchDynamo;
         internal Action<string> RequestImportSettings;
 
         public SettingsMigrationWindow()
         {
             InitializeComponent();
+
+            loadingTimer = new Stopwatch();
+            loadingTimer.Start();
         }
 
         protected override async void OnContentRendered(EventArgs e)
@@ -50,25 +56,22 @@ namespace Dynamo.DynamoSandbox
 
         }
 
-        internal async void SetBarProperties(string version, string loadingDescription, float barSize, int loadingTime)
+        internal async void SetBarProperties(string version, string loadingDescription, float barSize)
         {
-            await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', 'Loading time: {loadingTime}ms')");
+            var elapsedTime = loadingTimer.ElapsedMilliseconds;
+            loadingTimer = Stopwatch.StartNew();
+            await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', 'Loading time: {elapsedTime}ms')");
         }
 
         internal async void SetLoadingDone()
         {
+            loadingTimer.Stop();
+            loadingTimer = null;
             await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
         }
 
         internal async void SetImportStatus(ImportStatus importStatus, string importSettingsTitle, string errorDescription)
         {
-            var teste = "window.setImportStatus({" +
-                $"importStatus: {(int)importStatus}," +
-                $"importSettingsTitle: {importSettingsTitle}," +
-                $"errorDescription: {errorDescription}" + "})";
-
-            await webView.CoreWebView2.ExecuteScriptAsync($"console.log('{teste}')");
-
             await webView.CoreWebView2.ExecuteScriptAsync("window.setImportStatus({" +
                 $"status: {(int)importStatus}," +
                 $"importSettingsTitle: '{importSettingsTitle}'," +
@@ -87,10 +90,10 @@ namespace Dynamo.DynamoSandbox
     [ComVisible(true)]
     public class ScriptObject
     {
-        Action RequestLaunchDynamo;
+        Action<bool> RequestLaunchDynamo;
         Action<string> RequestImportSettings;
 
-        public ScriptObject(Action requestLaunchDynamo, Action<string> requestImportSettings)
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
             RequestImportSettings = requestImportSettings;
@@ -98,7 +101,7 @@ namespace Dynamo.DynamoSandbox
 
         public void LaunchDynamo(bool showScreenAgain)
         {
-            RequestLaunchDynamo();
+            RequestLaunchDynamo(showScreenAgain);
         }
 
         public void ImportSettings(string file)

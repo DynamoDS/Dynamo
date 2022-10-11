@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
@@ -320,20 +320,14 @@ namespace Dynamo.Models
 
     internal class SplashScreenEventArgs : EventArgs
     {
-        public string DynamoVersion { get; set; }
-
         public string LoadDescription { get; set; }
         
         public float BarSize { get; set; }
 
-        public int LoadingTime { get; set; }
-
-        public SplashScreenEventArgs(string dynamoVersion, string loadDescription, float barSize, int loadingTime)
+        public SplashScreenEventArgs(string loadDescription, float barSize)
         {
-            DynamoVersion = dynamoVersion;
             LoadDescription = loadDescription;
             BarSize = barSize;
-            LoadingTime = loadingTime;
         }
 
     }

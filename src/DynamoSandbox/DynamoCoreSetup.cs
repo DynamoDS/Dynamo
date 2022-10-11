@@ -141,7 +141,6 @@ namespace DynamoSandbox
 
             using (FileStream fs = File.Create("preferenceSettings.xml"))
             {
-                // Add some text to file    
                 Byte[] title = new UTF8Encoding(true).GetBytes(fileContent);
                 fs.Write(title, 0, title.Length);
                 fileName = fs.Name;
@@ -162,7 +161,8 @@ namespace DynamoSandbox
         {
             if(migrationWindow != null)
             {
-                migrationWindow.SetBarProperties(args.DynamoVersion, args.LoadDescription, args.BarSize, args.LoadingTime);
+                migrationWindow.SetBarProperties(Dynamo.Utilities.AssemblyHelper.GetDynamoVersion().ToString(),
+                    args.LoadDescription, args.BarSize);
             }
         }
 
@@ -190,16 +190,23 @@ namespace DynamoSandbox
 
             dynamoView = new DynamoView(viewModel);
 
-            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs("2.14", "Launching dynamo...", 100, 1000));
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs("Launching dynamo...", 100));
 
-            migrationWindow.SetLoadingDone();
+            if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
+            {
+                migrationWindow.SetLoadingDone();
+            }
+            else
+            {
+                LaunchDynamo(false);
+            }
         }
 
-        private void LaunchDynamo()
+        private void LaunchDynamo(bool showStaticSplashScreenAgain)
         {
+            viewModel.PreferenceSettings.EnableStaticSplashScreen = !showStaticSplashScreenAgain;
             migrationWindow.Close();
             dynamoView.Show();
-            dynamoView.Focus();
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
