@@ -12,6 +12,8 @@ namespace Dynamo.DynamoSandbox
     {
         private static readonly string htmlEmbeddedFile = "Dynamo.DynamoSandbox.WebApp.index.html";
         private static readonly string jsEmbeddedFile = "Dynamo.DynamoSandbox.WebApp.index.bundle.js";
+        private static readonly string backgroundImage = "Dynamo.DynamoSandbox.WebApp.splashScreenBackground.png";
+        private static readonly string imageFileExtension = "png";
 
         private Stopwatch loadingTimer;
 
@@ -31,6 +33,7 @@ namespace Dynamo.DynamoSandbox
             base.OnContentRendered(e);
 
             string htmlString = string.Empty;
+            string jsonString = string.Empty;
 
             var webView2Environment = await CoreWebView2Environment.CreateAsync();
             await webView.EnsureCoreWebView2Async(webView2Environment);
@@ -47,8 +50,16 @@ namespace Dynamo.DynamoSandbox
             using (StreamReader reader = new StreamReader(stream))
             {
                 var jsString = reader.ReadToEnd();
-                htmlString = htmlString.Replace("mainJs", jsString);
+                jsonString = jsString;
             }
+
+            using (Stream stream = assembly.GetManifestResourceStream(backgroundImage))
+            {
+                var resourceBase64 = Utilities.ResourceUtilities.ConvertToBase64(stream);
+                jsonString = jsonString.Replace("#base64BackgroundImage", $"data:image/{imageFileExtension};base64,{resourceBase64}");
+            }
+
+            htmlString = htmlString.Replace("mainJs", jsonString);
 
             webView.NavigateToString(htmlString);
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
