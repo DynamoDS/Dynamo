@@ -2,6 +2,7 @@ using NUnit.Framework;
 using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace CodeGenILTests
@@ -738,6 +739,9 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.IsNotEmpty(output);
             Assert.AreEqual(new int[] { 1, 2, 4, 4 }, output["test1"]);
             Assert.AreEqual(11, output["test2"]);
+
+            var isReplicationLogicFound = File.ReadLines(opCodeFilePath).SkipWhile(line => !line.Contains("ReplicationLogic"));
+            Assert.IsEmpty(isReplicationLogicFound);
         }
 
         [Test]
@@ -757,6 +761,9 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.IsNotEmpty(output);
             Assert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output["num1"]);
             Assert.AreEqual(55, output["num2"]);
+
+            var isReplicationLogicFound = File.ReadLines(opCodeFilePath).SkipWhile(line => !line.Contains("ReplicationLogic"));
+            Assert.IsEmpty(isReplicationLogicFound);
         }
     }
 }

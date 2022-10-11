@@ -89,7 +89,7 @@ namespace EmitMSIL
         internal Dictionary<string, object> EmitAndExecute(List<AssociativeNode> astList)
         {
             var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndCollect);
-
+            
             // Invoke emitted method (ExecuteIL.Execute)
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
@@ -101,11 +101,11 @@ namespace EmitMSIL
         private (AssemblyBuilder asmbuilder, TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
         {
             compilePass = CompilePass.MethodLookup;
+            // 0. Gather all loaded function endpoints and cache them.
             foreach (var ast in astList)
             {
                 DfsTraverse(ast);
             }
-
             // 1. Create assembly builder (dynamic assembly)
             var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
             // 2. Create module builder
@@ -246,6 +246,18 @@ namespace EmitMSIL
             {
                 return typeof(Target[]);
             }
+
+            /* This is emitting the following foreach loop for the conversion:
+             
+                var len = a.Count();    // where a is an IEnumerable<Source>
+                var res = new Target[len];
+                int c = 0;
+                foreach (var i in a)
+                {
+                    res[c] = i;
+                    c++;
+                }
+            */
 
             // Load array to be coerced.
             LocalBuilder localBuilder;
