@@ -3311,16 +3311,18 @@ namespace Dynamo.Controls
             {
                 switch (values[0])
                 {
-                    case WatchViewModel.objectType:
+                    case nameof(TypeCode.Object):
                         return resourceDictionary["objectLabelBackground"] as SolidColorBrush;
-                    case WatchViewModel.doubleType:
+                    case nameof(TypeCode.Double):
                         return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
-                    case WatchViewModel.intType:
+                    case nameof(TypeCode.Int32):
                         return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
-                    case WatchViewModel.stringType:
+                    case nameof(TypeCode.Int64):
+                        return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
+                    case nameof(TypeCode.String):
                         return resourceDictionary["stringLabelBackground"] as SolidColorBrush;
-                    case WatchViewModel.boolType:
-                        return resourceDictionary["boolLabelBackground"] as SolidColorBrush;                                                
+                    case nameof(TypeCode.Boolean):
+                        return resourceDictionary["boolLabelBackground"] as SolidColorBrush;                                        
                     default:
                         if (values[1].ToString() == "List")
                         {
