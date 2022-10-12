@@ -22,13 +22,9 @@ namespace EmitMSIL
         internal string className;
         internal string methodName;
         private IDictionary<string, IList> input;
+        //private Dictionary<int, bool> isRepCall = new Dictionary<int, bool>();
+
         internal ProtoCore.MSILRuntimeCore runtimeCore;
-        
-        /// <summary>
-        /// counter for local variables, should only be used directly during GatherTypeInfo phase.
-        /// It will be incorrect during other compiler phases.
-        /// </summary>
-        private int localVarIndex = -1;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
         /// <summary>
         /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
@@ -93,7 +89,7 @@ namespace EmitMSIL
         internal Dictionary<string, object> EmitAndExecute(List<AssociativeNode> astList)
         {
             var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndCollect);
-
+            
             // Invoke emitted method (ExecuteIL.Execute)
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
@@ -105,11 +101,11 @@ namespace EmitMSIL
         private (AssemblyBuilder asmbuilder, TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
         {
             compilePass = CompilePass.MethodLookup;
+            // 0. Gather all loaded function endpoints and cache them.
             foreach (var ast in astList)
             {
                 DfsTraverse(ast);
             }
-
             // 1. Create assembly builder (dynamic assembly)
             var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
             // 2. Create module builder
@@ -153,6 +149,14 @@ namespace EmitMSIL
 
         private Type EmitCoercionCode(AssociativeNode arg, Type argType, Type param)
         {
+            if (argType == null) return argType;
+
+            if(param == typeof(object) && argType.IsValueType)
+            {
+                EmitOpCode(OpCodes.Box, argType);
+                return typeof(object);
+            }
+
             if (param.IsAssignableFrom(argType)) return argType;
 
             if(argType == typeof(double) && param == typeof(long))
@@ -175,6 +179,11 @@ namespace EmitMSIL
             {
                 EmitOpCode(OpCodes.Conv_I4);
                 return typeof(int);
+            }
+            if (argType == typeof(long) && param == typeof(double))
+            {
+                EmitOpCode(OpCodes.Conv_R8);
+                return typeof(double);
             }
 
             if (argType == typeof(double[]) && typeof(IEnumerable<int>).IsAssignableFrom(param))
@@ -201,134 +210,185 @@ namespace EmitMSIL
             {
                 return EmitArrayCoercion<int, long>(arg, param);
             }
-            if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param))
+
+            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param))
             {
-                return EmitIListCoercion<double>(arg);
+                return EmitIEnumerableCoercion<int, double>(arg);
             }
-            if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param))
             {
-                return EmitIListCoercion<int>(arg);
+                return EmitIEnumerableCoercion<int, long>(arg);
             }
-            if (typeof(IList).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param))
             {
-                return EmitIListCoercion<long>(arg);
+                return EmitIEnumerableCoercion<long, double>(arg);
+            }
+            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param))
+            {
+                return EmitIEnumerableCoercion<long, int>(arg);
+            }
+            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param))
+            {
+                return EmitIEnumerableCoercion<double, int>(arg);
+            }
+            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param))
+            {
+                return EmitIEnumerableCoercion<double, long>(arg);
             }
             // TODO: Add more coercion cases here.
 
             return argType;
         }
 
-        private Type EmitIListCoercion<T>(AssociativeNode arg)
+        private Type EmitIEnumerableCoercion<Source, Target>(AssociativeNode arg)
         {
             if (compilePass == CompilePass.GatherTypeInfo)
             {
-                return typeof(T[]);
+                return typeof(Target[]);
             }
 
-            LocalBuilder localBuilder;
+            /* This is emitting the following foreach loop for the conversion:
+             
+                var len = a.Count();    // where a is an IEnumerable<Source>
+                var res = new Target[len];
+                int c = 0;
+                foreach (var i in a)
+                {
+                    res[c] = i;
+                    c++;
+                }
+            */
+
             // Load array to be coerced.
-            int currentVarIndex = localVarIndex;
+            LocalBuilder localBuilder;
+            int sourceArrayIndex = -1;
             if (arg is IdentifierNode ident)
             {
-                currentVarIndex = variables[ident.Value].Item1;
+                sourceArrayIndex = variables[ident.Value].Item1;
             }
             else
             {
-                localBuilder = DeclareLocal(typeof(IList), "IList to coerce");
-                currentVarIndex = localBuilder.LocalIndex;
+                localBuilder = DeclareLocal(typeof(IEnumerable<Source>), "IEnumerable to coerce");
+                sourceArrayIndex = localBuilder.LocalIndex;
 
-                EmitOpCode(OpCodes.Stloc, currentVarIndex);
-                EmitOpCode(OpCodes.Ldloc, currentVarIndex);
+                EmitOpCode(OpCodes.Stloc, sourceArrayIndex);
+                EmitOpCode(OpCodes.Ldloc, sourceArrayIndex);
             }
 
-            // Find length for IList to be coerced (already on top of eval stack), len
-            var prop = typeof(ICollection).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
-                                p => p.Name == nameof(ICollection.Count)).FirstOrDefault();
+            var mInfo = typeof(Enumerable).GetMethods().Single(
+                m => m.Name == nameof(Enumerable.Count) && m.IsStatic && m.GetParameters().Length == 1);
+            var genericMInfo = mInfo.MakeGenericMethod(typeof(Source));
 
-            // mInfo is get_Count() method on ICollection.
-            var mInfo = prop.GetAccessors().FirstOrDefault();
-
-            EmitOpCode(OpCodes.Callvirt, mInfo);
-
-            // len = source.Count;
-            localBuilder = DeclareLocal(typeof(int), "length of IList to coerce");
+            // len = source.Count();
+            EmitOpCode(OpCodes.Call, genericMInfo);
+            localBuilder = DeclareLocal(typeof(int), "length of IEnumerable to coerce");
             var sourceArrayLengthIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, sourceArrayLengthIndex);
 
             // Load length of source array, var newarr = new Target[len];
             EmitOpCode(OpCodes.Ldloc, sourceArrayLengthIndex);
-            EmitOpCode(OpCodes.Newarr, typeof(T));
+            EmitOpCode(OpCodes.Newarr, typeof(Target));
 
             // Declare new array to store coerced values
-            var t = typeof(T[]);
-            localBuilder = DeclareLocal(t, "coerced array");
+            var t = typeof(Target[]);
+            localBuilder = DeclareLocal(t, "coerced target array");
             var newArrIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, newArrIndex);
 
             // Emit for loop to loop over array and convert.
 
             // i = 0;
-            var counterIndex = newArrIndex + 1;
             EmitOpCode(OpCodes.Ldc_I4_0);
+            localBuilder = DeclareLocal(typeof(int), "for loop counter");
+            var counterIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, counterIndex);
+
+            // Load array to be coerced.
+            EmitOpCode(OpCodes.Ldloc, sourceArrayIndex);
+            mInfo = typeof(IEnumerable<Source>).GetMethod(nameof(IEnumerable<Source>.GetEnumerator));
+            EmitOpCode(OpCodes.Callvirt, mInfo);
+
+            localBuilder = DeclareLocal(typeof(IEnumerator<Source>), "enumerator");
+            var enumeratorIndex = localBuilder.LocalIndex;
+            EmitOpCode(OpCodes.Stloc, enumeratorIndex);
 
             var loopBodyLabel = DefineLabel();
             var loopCondLabel = DefineLabel();
 
             EmitOpCode(OpCodes.Br_S, loopCondLabel.Value);
 
-            // newarr[i] = (Target)arr[i];
             MarkLabel(loopBodyLabel.Value, "label:body");
+            EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
 
-            EmitOpCode(OpCodes.Ldloc, newArrIndex);
-            EmitOpCode(OpCodes.Ldloc, counterIndex);
-
-            // Load array to be coerced.
-            EmitOpCode(OpCodes.Ldloc, currentVarIndex);
-            EmitOpCode(OpCodes.Ldloc, counterIndex);
-
-            prop = typeof(IList).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
-                                    p => p.Name == "Item").FirstOrDefault();
+            var prop = typeof(IEnumerator<Source>).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
+                                    p => p.Name == nameof(IEnumerator<Source>.Current)).FirstOrDefault();
             mInfo = prop.GetAccessors().FirstOrDefault();
-
             EmitOpCode(OpCodes.Callvirt, mInfo);
 
-            // unboxing
-            if (typeof(T) == typeof(double))
+            localBuilder = DeclareLocal(typeof(Source), "element in source array");
+            var sourceArrayElementIndex = localBuilder.LocalIndex;
+            EmitOpCode(OpCodes.Stloc, sourceArrayElementIndex);
+
+            // target[i] = source_element;
+            EmitOpCode(OpCodes.Ldloc, newArrIndex);
+            EmitOpCode(OpCodes.Ldloc, counterIndex);
+            EmitOpCode(OpCodes.Ldloc, sourceArrayElementIndex);
+            if (typeof(Target) == typeof(double))
             {
-                EmitOpCode(OpCodes.Call, typeof(Convert).GetMethod(nameof(Convert.ToDouble), new Type[] { typeof(object) }));
+                EmitOpCode(OpCodes.Conv_R8);
                 EmitOpCode(OpCodes.Stelem_R8);
             }
-            else if (typeof(T) == typeof(int))
+            else if (typeof(Target) == typeof(int))
             {
-                EmitOpCode(OpCodes.Call, typeof(Convert).GetMethod(nameof(Convert.ToInt32), new Type[] { typeof(object) }));
+                EmitOpCode(OpCodes.Conv_I4);
                 EmitOpCode(OpCodes.Stelem_I4);
             }
-            else if (typeof(T) == typeof(long))
+            else if (typeof(Target) == typeof(long))
             {
-                EmitOpCode(OpCodes.Call, typeof(Convert).GetMethod(nameof(Convert.ToInt64), new Type[] { typeof(object) }));
+                EmitOpCode(OpCodes.Conv_I8);
                 EmitOpCode(OpCodes.Stelem_I8);
             }
             // i++;
             EmitOpCode(OpCodes.Ldloc, counterIndex);
             EmitOpCode(OpCodes.Ldc_I4_1);
-
             EmitOpCode(OpCodes.Add);
-
             EmitOpCode(OpCodes.Stloc, counterIndex);
 
-            // i < len;
-            MarkLabel(loopCondLabel.Value,"label:cond");
+            MarkLabel(loopCondLabel.Value, "label:loop condition");
+            EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
 
-            EmitOpCode(OpCodes.Ldloc, counterIndex);
+            mInfo = typeof(IEnumerator).GetMethod(nameof(IEnumerator.MoveNext));
+            EmitOpCode(OpCodes.Callvirt, mInfo);
 
-            EmitOpCode(OpCodes.Ldloc, sourceArrayLengthIndex);
-
-            EmitOpCode(OpCodes.Clt);
-
+            var leaveLabel = DefineLabel();
             EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel.Value);
+            EmitOpCode(OpCodes.Leave_S, leaveLabel.Value);
 
+            EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
+
+            var finallyLabel = DefineLabel();
+            EmitOpCode(OpCodes.Brfalse_S, finallyLabel.Value);
+
+            EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
+
+            mInfo = typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
+            EmitOpCode(OpCodes.Callvirt, mInfo);
+
+            MarkLabel(finallyLabel.Value, "label: finally label");
+            EmitOpCode(OpCodes.Endfinally);
+
+            MarkLabel(leaveLabel.Value, "label: exit label");
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
+
+            localBuilder = DeclareLocal(t, "target array");
+            var targetArrayIndex = localBuilder.LocalIndex;
+            EmitOpCode(OpCodes.Stloc, targetArrayIndex);
+
+            var endLabel = DefineLabel();
+            EmitOpCode(OpCodes.Br_S, endLabel.Value);
+
+            MarkLabel(endLabel.Value, "label: end label");
+            EmitOpCode(OpCodes.Ldloc, targetArrayIndex);
 
             return t;
         }
@@ -343,12 +403,11 @@ namespace EmitMSIL
                 {
                     returnType = typeof(List<Target>);
                 }
-
                 return returnType;
             }
             LocalBuilder localBuilder;
             // Load array to be coerced.
-            int currentVarIndex = localVarIndex;
+            int currentVarIndex = -1;
             if (arg is IdentifierNode ident)
             {
                 currentVarIndex = variables[ident.Value].Item1;
@@ -377,7 +436,8 @@ namespace EmitMSIL
             // Emit for loop to loop over array and convert.
 
             // i = 0;
-            var counterIndex = newArrIndex + 1;
+            localBuilder = DeclareLocal(typeof(int), "for loop counter");
+            var counterIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Ldc_I4_0);
             EmitOpCode(OpCodes.Stloc, counterIndex);
 
@@ -492,7 +552,7 @@ namespace EmitMSIL
             if (fg == null && args.Count == 1)
             {
                 // Try to find a getter
-                methodName = ProtoCore.DSASM.Constants.kGetterPrefix + methodName;
+                methodName = DSASM.Constants.kGetterPrefix + methodName;
                 fg = runtimeCore.GetFuncGroup(methodName, className);
             }
 
@@ -582,7 +642,7 @@ namespace EmitMSIL
             return mbs;
         }
 
-        private static HashSet<Type> GetTypeStatisticsForArray(ExprListNode array)
+        private HashSet<Type> GetTypeStatisticsForArray(ExprListNode array)
         {
             var arrayTypes = new HashSet<Type>();
 
@@ -620,7 +680,11 @@ namespace EmitMSIL
                             t = typeof(string);
                             break;
                         case AstKind.Identifier:
-                            t = typeof(object);
+                            if(variables.TryGetValue((exp as IdentifierNode).Value, out Tuple<int, Type> tuple))
+                            {
+                                t = tuple.Item2;
+                            }
+                            else t = typeof(object);
                             break;
                         default:
                             t = typeof(object);
@@ -830,8 +894,7 @@ namespace EmitMSIL
             }
             else
             {
-                var cInfo = mBase as ConstructorInfo;
-                if (cInfo != null) ilGen.Emit(opCode, cInfo);
+                ilGen.Emit(opCode, mBase as ConstructorInfo);
             }
             writer.WriteLine($"{opCode} {mBase}");
         }
@@ -908,7 +971,7 @@ namespace EmitMSIL
             var bNode = node as BinaryExpressionNode;
             if (bNode == null) throw new ArgumentException("AST node must be a Binary Expression");
 
-            if (bNode.Optr == ProtoCore.DSASM.Operator.assign)
+            if (bNode.Optr == DSASM.Operator.assign)
             {
                 var t = DfsTraverse(bNode.RightNode);
 
@@ -926,10 +989,15 @@ namespace EmitMSIL
                         // variable being assigned already exists in dictionary.
                         throw new Exception("Variable redefinition is not allowed.");
                     }
-                    variables.Add(lNode.Value, new Tuple<int, Type>(++localVarIndex, t));
+                    variables.Add(lNode.Value, new Tuple<int, Type>(-1, t));
                 }
-                DeclareLocal(t,lNode.Value);
-                var currentLocalVarIndex = variables[lNode.Value].Item1;
+                var localBuilder = DeclareLocal(t, lNode.Value);
+                int currentLocalVarIndex = -1;
+                if (localBuilder != null)
+                {
+                    currentLocalVarIndex = localBuilder.LocalIndex;
+                    variables[lNode.Value] = new Tuple<int, Type>(currentLocalVarIndex, variables[lNode.Value].Item2);
+                }
                 EmitOpCode(OpCodes.Stloc, currentLocalVarIndex);
                 // Add variable to output dictionary: output.Add("varName", variable);
                 EmitOpCode(OpCodes.Ldarg_2);
@@ -1051,8 +1119,6 @@ namespace EmitMSIL
         //tries to emit opcodes for indexing an array or dictioanry
         private (bool success, Type type) TryEmitIndexing(FunctionCallNode fcn)
         {
-          
-
             //to emit the correct msil we need to know the type of collection we are indexing.
             var array = fcn.FormalArguments.FirstOrDefault();
 
@@ -1076,7 +1142,19 @@ namespace EmitMSIL
                     return (false, null);
                 }
             }
-          
+            if (array is IdentifierNode idNode)
+            {
+                // local variables on rhs of expression should have already been defined.
+                if (!variables.TryGetValue(idNode.Value, out Tuple<int, Type> tup))
+                {
+                    throw new Exception($"Variable {idNode.Value} is undefined!");
+                }
+                //builtin DS dict is a wrapper
+                if (typeof(DesignScript.Builtin.Dictionary).IsAssignableFrom(tup.Item2))
+                {
+                    return (false, null);
+                }
+            }
             //emit load array to stack.
             var t = DfsTraverse(array);
 
@@ -1097,13 +1175,6 @@ namespace EmitMSIL
                     return (true, typeof(object));
                 }
             }
-            //builtin DS dict is a wrapper
-            else if (typeof(DesignScript.Builtin.Dictionary).IsAssignableFrom(t))
-            {
-                //TODO
-                //emit function call for ValueAtKey or fallback to replication.
-            }
-
             else if (t.IsArray)
             {
                 EmitIndexingForArray(fcn.FormalArguments[0], fcn.FormalArguments[1], t.GetElementType());
@@ -1225,96 +1296,276 @@ namespace EmitMSIL
                 FunctionLookup(args);
                 return null;
             }
-
-            // Emit methodCache passed as arg to global Execute method.
-            EmitOpCode(OpCodes.Ldarg_1);
-
-            // Emit className for input to call to CodeGenIL.KeyGen
-            EmitOpCode(OpCodes.Ldstr, className);
-
-            // Emit methodName for input to call to CodeGenIL.KeyGen
-            EmitOpCode(OpCodes.Ldstr, methodName);
-            EmitOpCode(OpCodes.Ldc_I4, numArgs);
-
-            var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
-            EmitOpCode(OpCodes.Call, keygen);
-
-            var local = DeclareLocal(typeof(IEnumerable<ProtoCore.CLRFunctionEndPoint>), "cached CLR function endpoints");
-            //local could be null if we are not emitting currently.
-            if(local != null)
-            {
-                EmitOpCode(OpCodes.Ldloca, local);
-            }
-
-            // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<ProtoCore.CLRFunctionEndPoint> mInfos)
-            var dictLookup = typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>).GetMethod(
-                nameof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>.TryGetValue));
-            EmitOpCode(OpCodes.Callvirt, dictLookup);
-
-            EmitOpCode(OpCodes.Pop);
-            if (local != null)
-            {
-                EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
-            }
-
             // Retrieve previously cached functions
             // TODO: Decide whether to process overloaded methods at compile time or leave it for runtime.
             // For now, we assume no overloads.
-            var mBase = FunctionLookup(args).FirstOrDefault();
-            var parameters = mBase.FormalParams.Select(x => x.CLRType).ToList();
+            var clrFep = FunctionLookup(args).FirstOrDefault();
+            var parameters = clrFep.FormalParams.Select(x => x.CLRType).ToList();
 
-            // number of args = number of parameters if static.
-            // num args = num params + 1 if instance as first arg is this pointer.
-            var isStatic = mBase.IsStatic;
-            
-            // Emit args for input to call to ReplicationLogic
-            EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
+            var isStaticOrCtor = clrFep.IsStatic || clrFep.IsConstructor;
+
+            var doesReplicate = WillCallReplicate(parameters, isStaticOrCtor, args);
+
+            // TODO: Figure out a way to avoid calling WillCallReplicate twice -
+            // once in the GatherTypeInfo phase and again in the emitIL phase.
+            // We should be able to cache the result in the GatherTypeInfo compile pass
+            // and reuse it in the emitIL pass.
+            //if (compilePass == CompilePass.GatherTypeInfo)
+            //{
+            //    if(isRepCall.ContainsKey(node.ID))
+            //    {
+            //        throw new Exception($"ast {node.ID}:{node.Kind} already exists in replicated call map.");
+            //    }
+            //    isRepCall.Add(node.ID, WillCallReplicate(parameters, isStatic, args));
+            //}
+
+            //bool doesReplicate = false;
+            //if(!isRepCall.TryGetValue(node.ID, out doesReplicate))
+            //{
+            //    throw new Exception($"ast { node.ID }:{ node.Kind} does not exist in replicated call map.");
+            //}
+            if (doesReplicate)
             {
-                Type t = DfsTraverse(n);
-                if (isStatic)
+                // Emit methodCache passed as arg to global Execute method.
+                EmitOpCode(OpCodes.Ldarg_1);
+
+                // Emit className for input to call to CodeGenIL.KeyGen
+                EmitOpCode(OpCodes.Ldstr, className);
+
+                // Emit methodName for input to call to CodeGenIL.KeyGen
+                EmitOpCode(OpCodes.Ldstr, methodName);
+                EmitOpCode(OpCodes.Ldc_I4, numArgs);
+
+                var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
+                EmitOpCode(OpCodes.Call, keygen);
+
+                var local = DeclareLocal(typeof(IEnumerable<ProtoCore.CLRFunctionEndPoint>), "cached MethodBase objects");
+                //local could be null if we are not emitting currently.
+                if(local != null)
                 {
-                    t = EmitCoercionCode(n, t, parameters[index]);
-                }
-                else if (index > 0)
-                {
-                    t = EmitCoercionCode(n, t, parameters[index - 1]);
+                    EmitOpCode(OpCodes.Ldloca, local);
                 }
 
-                if (t == null) return;
+                // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<CLRFunctionEndPoint> feps)
+                var dictLookup = typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>).GetMethod(
+                    nameof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>.TryGetValue));
+                EmitOpCode(OpCodes.Callvirt, dictLookup);
 
-                if (t.IsValueType)
+                EmitOpCode(OpCodes.Pop);
+                if (local != null)
                 {
-                    EmitOpCode(OpCodes.Box, t);
+                    EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
                 }
-            });
 
-            // Emit guides
-            EmitArray(typeof(string[]), args, (AssociativeNode n, int idx) =>
-            {
-                if (n is ArrayNameNode argIdent)
+                // Emit args for input to call to ReplicationLogic
+                EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
                 {
-                    var argGuides = argIdent.ReplicationGuides;
-                    EmitArray(typeof(string), argGuides, (AssociativeNode gn, int gidx) =>
+                    Type t = DfsTraverse(n);
+                    if (isStaticOrCtor)
                     {
-                        var repGuideNode = gn as ReplicationGuideNode;
-                        EmitOpCode(OpCodes.Ldstr, repGuideNode.ToString());
-                    });
+                        t = EmitCoercionCode(n, t, parameters[index]);
+                    }
+                    else if (index > 0)
+                    {
+                        t = EmitCoercionCode(n, t, parameters[index - 1]);
+                    }
+
+                    if (t == null) return;
+
+                    if (t.IsValueType)
+                    {
+                        EmitOpCode(OpCodes.Box, t);
+                    }
+                });
+
+                // Emit guides
+                EmitArray(typeof(string[]), args, (AssociativeNode n, int idx) =>
+                {
+                    if (n is ArrayNameNode argIdent)
+                    {
+                        var argGuides = argIdent.ReplicationGuides;
+                        EmitArray(typeof(string), argGuides, (AssociativeNode gn, int gidx) =>
+                        {
+                            var repGuideNode = gn as ReplicationGuideNode;
+                            EmitOpCode(OpCodes.Ldstr, repGuideNode.ToString());
+                        });
+                    }
+                    else
+                    {
+                    // Emit an empty string array.
+                    EmitArray<string>(arrType: typeof(string), items: null, itemEmitter: null);
+                    }
+                });
+
+                // Emit call to load the runtimeCore argument
+                EmitOpCode(OpCodes.Ldarg_3);
+
+                // Emit call to ReplicationLogic
+                var repLogic = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic), BindingFlags.Public | BindingFlags.Static);
+                EmitOpCode(OpCodes.Call, repLogic);
+
+                return typeof(object);
+            }
+            else
+            {
+                // non-replicating call
+                int index = 0;
+                foreach(var arg in args)
+                {
+                    Type t = DfsTraverse(arg);
+                    if (isStaticOrCtor)
+                    {
+                        t = EmitCoercionCode(arg, t, parameters[index]);
+                    }
+                    else if (index > 0)
+                    {
+                        t = EmitCoercionCode(arg, t, parameters[index - 1]);
+                    }
+                    index++;
+                }
+
+                if (clrFep.MemberInfo is MethodInfo mi)
+                {
+                    EmitOpCode(OpCodes.Call, mi);
+                    return mi.ReturnType;
                 }
                 else
                 {
-                    // Emit an empty string array.
-                    EmitArray<string>(arrType: typeof(string), items: null, itemEmitter: null);
+                    Validity.Assert(clrFep.IsConstructor);
+
+                    var ci = clrFep.MemberInfo as ConstructorInfo;
+                    EmitOpCode(OpCodes.Newobj, ci);
+                    return ci.DeclaringType;
                 }
-            });
+            }
+        }
 
-            // Emit call to load the runtimeCore argument
-            EmitOpCode(OpCodes.Ldarg_3);
+        private bool DoesParamArgRankMatch(List<Type> parameterTypes, List<AssociativeNode> args)
+        {
+            var argIndex = 0;
+            foreach (var p in parameterTypes)
+            {
+                if (CoreUtils.IsPrimitiveASTNode(args[argIndex]) || args[argIndex] is CharNode)
+                {
+                    // arg is a single value (primitive type), but param is not (array promotion case).
+                    if (ArrayUtils.IsEnumerable(p) && p != typeof(string))
+                    {
+                        return false;
+                    }
 
-            // Emit call to ReplicationLogic
-            keygen = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic), BindingFlags.Public | BindingFlags.Static);
-            EmitOpCode(OpCodes.Call, keygen);
+                    switch (args[argIndex].Kind)
+                    {
+                        case AstKind.String:
+                            var strNode = args[argIndex] as StringNode;
+                            if (p == typeof(char))
+                            {
+                                if (strNode.Value.Length != 1) return false;
+                            }
+                            break;
+                        case AstKind.Char:
+                            if (p == typeof(string)) return false;
+                            break;
+                    }
+                }
+                else if (args[argIndex] is ExprListNode exp)
+                {
+                    if (!ArrayUtils.IsEnumerable(p) || p == typeof(string))
+                    {
+                        // arg is an enumerable type, param is not.
+                        return false;
+                    }
+                    var argRank = GetArgumentRank(exp);
+                    if (argRank == -1)
+                    {
+                        // non-rectangular (jagged) array best handled by replication
+                        return false;
+                    }
+                    if (argRank != GetRank(p)) return false;
+                }
+                else if (args[argIndex] is IdentifierNode idn)
+                {
+                    if (idn.ReplicationGuides.Count > 0) return false;
 
-            return typeof(object);
+                    var t = variables[idn.Value].Item2;
+                    if (t == typeof(object)) return false;
+
+                    if (!p.Equals(t))
+                    {
+                        var argRank = GetRank(t);
+                        var paramRank = GetRank(p);
+                        if (argRank != paramRank) return false;
+
+                        // If both have rank 0, it could also be because their type info is ambiguous.
+                        if (argRank == 0 && paramRank == 0) return false;
+                    }
+                }
+                else return false;
+                argIndex++;
+            }
+            return true;
+        }
+
+        private static int GetRank(Type type)
+        {
+            return type.IsArray ? GetArrayRank(type) : GetEnumerableRank(type);
+        }
+
+        private static int GetArrayRank(Type type)
+        {
+            if (!type.IsArray) return 0;
+
+            return 1 + GetArrayRank(type.GetElementType());
+        }
+
+        private static int GetEnumerableRank(Type type)
+        {
+            var genericArgs = type.GetGenericArguments();
+            if (genericArgs.Length == 0) return 0;
+
+            return 1 + GetEnumerableRank(genericArgs.FirstOrDefault());
+        }
+
+        private static int GetArgumentRank(AssociativeNode val)
+        {
+            var arr = val is ExprListNode ? (val as ExprListNode).Exprs : null;
+            if (arr == null)
+            {
+                return 0;
+            }
+            int firstRank = 0;
+            int i = 0;
+            //De-ref the val
+            foreach (var subVal in arr)
+            {
+                int rank = GetArgumentRank(subVal);
+                if (i == 0) firstRank = rank;
+
+                if (rank != firstRank) return -1;
+                i++;
+            }
+            return 1 + firstRank;
+        }
+
+        private bool WillCallReplicate(List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
+        {
+            if (isStaticOrCtor)
+            {
+                return !DoesParamArgRankMatch(paramTypes, args);
+            }
+            else
+            {
+                // args[0] is assigned to the instance object in case of an instance method.
+                if(args[0] is IdentifierNode idn)
+                {
+                    var t = variables[idn.Value].Item2;
+
+                    if(t.IsArray || ArrayUtils.IsEnumerable(t))
+                    {
+                        return true;
+                    }
+                }
+                return !DoesParamArgRankMatch(paramTypes, args);
+            }
         }
 
         private void EmitFunctionDefinitionNode(AssociativeNode node)
@@ -1580,7 +1831,6 @@ namespace EmitMSIL
 
         private Type EmitIdentifierNode(AssociativeNode node)
         {
-
             if (compilePass == CompilePass.MethodLookup) return null;
 
             // only handle identifiers on rhs of assignment expression for now.
@@ -1589,7 +1839,7 @@ namespace EmitMSIL
                 // local variables on rhs of expression should have already been defined.
                 if (!variables.TryGetValue(idNode.Value, out Tuple<int, Type> tup))
                 {
-                    throw new Exception("Variable is undefined!");
+                    throw new Exception($"Variable {idNode.Value} is undefined!");
                 }
                 EmitOpCode(OpCodes.Ldloc, tup.Item1);
                 return tup.Item2;
