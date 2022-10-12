@@ -108,7 +108,7 @@ namespace ProtoCore
             int dist = ComputeTypeDistance(reducedParamSVs, runtimeCore, allowArrayPromotion);
             if (dist >= 0 && dist != (int)ProcedureDistance.MaxDistance) //Is it possible to convert to this type?
             {
-                if (!FunctionGroup.CheckInvalidArrayCoersion(this, reducedParamSVs, runtimeCore, allowArrayPromotion))
+                if (!FunctionGroup.CheckInvalidArrayCoercion(this, reducedParamSVs, runtimeCore, allowArrayPromotion))
                 return dist;
             }
 

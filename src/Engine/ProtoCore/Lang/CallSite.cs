@@ -1292,11 +1292,11 @@ namespace ProtoCore
             List<FunctionEndPoint> candidateFunctions = new List<FunctionEndPoint>();
             foreach (FunctionEndPoint fep in candidatesWithDistances.Keys)
             {
-                bool isClassInstanceMethod = fep.procedureNode != null &&
+                bool isInstanceMethod = fep.procedureNode != null &&
                     fep.procedureNode.ClassID != Constants.kGlobalScope  &&//valid class
                     !fep.procedureNode.IsConstructor && !fep.procedureNode.IsStatic;//not static and not constructor  
 
-                if (isGlobalFuncScope && isClassInstanceMethod)
+                if (isGlobalFuncScope && isInstanceMethod)
                 {
                     // Filter out class instance methods when dealing with global function scope
                     continue;
