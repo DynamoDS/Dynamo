@@ -167,7 +167,7 @@
     <value>Default Background Preview</value>
   </data>
   <data name="BackgroundPreviewName" xml:space="preserve">
-    <value>Background Preview</value>
+    <value>_Background Preview</value>
     <comment>The name of the 3D background preview.</comment>
   </data>
   <data name="BrowserNodeButtonLabel" xml:space="preserve">
@@ -914,7 +914,7 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>View menu | Show geometry in some context</comment>
   </data>
   <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
-    <value>Available Previews</value>
+    <value>_Available Previews</value>
   </data>
   <data name="DynamoViewViewMenuConnector" xml:space="preserve">
     <value>_Connectors</value>
@@ -957,7 +957,7 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>View menu | Pan up</comment>
   </data>
   <data name="DynamoViewViewMenuPreviewNavigate" xml:space="preserve">
-    <value>Navigate Background 3D Preview</value>
+    <value>_Navigate Background 3D Preview</value>
     <comment>View menu | Navigate background 3D preview</comment>
   </data>
   <data name="DynamoViewViewMenuShowBackground3DPreview" xml:space="preserve">
@@ -973,7 +973,7 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>View menu | Show console</comment>
   </data>
   <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
-    <value>Show Grid</value>
+    <value>_Show Grid</value>
     <comment>View menu | Show Grid</comment>
   </data>
   <data name="DynamoViewViewMenuZoom" xml:space="preserve">
