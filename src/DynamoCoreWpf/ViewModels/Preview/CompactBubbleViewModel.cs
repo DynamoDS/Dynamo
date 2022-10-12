@@ -11,11 +11,6 @@ namespace Dynamo.ViewModels
     public class CompactBubbleViewModel : ViewModelBase
     {
         #region Properties
-        internal const string doubleType = "double";
-        internal const string boolType = "bool";
-        internal const string intType = "int";
-        internal const string objectType = "object";
-        internal const string stringType = "string";
         private string nodeLabel;
         private string valueType;
 
@@ -104,21 +99,21 @@ namespace Dynamo.ViewModels
             switch (typeCode)
             {
                 case TypeCode.Boolean:
-                    return boolType;
+                    return nameof(TypeCode.Boolean);
                 case TypeCode.Double:
-                    return doubleType;
+                    return nameof(TypeCode.Double);
                 case TypeCode.Int64:
-                    return intType;
+                    return nameof(TypeCode.Int64);
                 case TypeCode.Int32:
-                    return intType;
+                    return nameof(TypeCode.Int32);
                 case TypeCode.Object:
-                    return objectType;
+                    return nameof(TypeCode.Object);
                 case TypeCode.String:
-                    return stringType;
+                    return nameof(TypeCode.String);
                 case TypeCode.Empty:
-                    return String.Empty;
+                    return string.Empty;
                 default:
-                    return String.Empty;
+                    return string.Empty;
             }
         }
         #endregion
