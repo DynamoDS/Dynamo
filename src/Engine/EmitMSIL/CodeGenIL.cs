@@ -65,21 +65,14 @@ namespace EmitMSIL
 
         internal IDictionary<string, object> Emit(List<AssociativeNode> astList)
         {
-            var timer = new Stopwatch();
-            timer.Start();
             var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndSave);
-            timer.Stop();
-            CompileAndExecutionTime.compileTime = timer.Elapsed;
             // Invoke emitted method (ExecuteIL.Execute)
-            timer.Restart();
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
             var output = new Dictionary<string, object>();
 
             // null can be replaced by an 'input' dictionary if available.
             var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
-            timer.Stop();
-            CompileAndExecutionTime.executionTime = timer.Elapsed;
 
             compileResult.asmbuilder.Save("DynamicAssembly.dll");
 
@@ -88,13 +81,21 @@ namespace EmitMSIL
 
         internal Dictionary<string, object> EmitAndExecute(List<AssociativeNode> astList)
         {
+            var timer = new Stopwatch();
+            timer.Start();
             var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndCollect);
-            
+            timer.Stop();
+            CompileAndExecutionTime.compileTime = timer.Elapsed;
+
             // Invoke emitted method (ExecuteIL.Execute)
+            timer.Restart();
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
             var output = new Dictionary<string, object>();
             mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
+            timer.Stop();
+            CompileAndExecutionTime.executionTime = timer.Elapsed;
+
             return output;
         }
 
