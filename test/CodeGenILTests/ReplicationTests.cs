@@ -2,6 +2,7 @@ using NUnit.Framework;
 using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace CodeGenILTests
@@ -690,7 +691,6 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             @"
             import(""DesignScriptBuiltin.dll"");
             import(""DSCoreNodes.dll"");
-
             a = 0.5;
             b = DSCore.Math.Sum([0.0, 10.0]);
             ";
@@ -703,9 +703,6 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
 
         }
         [Test]
-        // Fails because of a bug that causes the result from the constant declaration to be stored using the return type
-        // of the latest function call (object). The end result is that the value of the constant is wrong. 
-        [Category("Failure")] 
         public void Value_Are_Correct_Reversed()
         {
             string code =
@@ -723,6 +720,50 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.IsNotEmpty(output);
             Assert.AreEqual(0.5, output["a"]);
             Assert.AreEqual(10.0, output["b"]);
+        }
+
+        [Test]
+        public void IEnumerable_IntDouble_Coercion()
+        {
+            string code =
+            @"
+            import(""DesignScriptBuiltin.dll"");
+            import(""DSCoreNodes.dll"");
+            import (""FFITarget.dll"");
+            x = [1, 2, 3.7, 4];
+            test1 = FFITarget.DummyCollection.ReturnIEnumerableOfInt(x);  
+            test2 = DSCore.Math.Sum(test1);    
+            ";
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(new int[] { 1, 2, 4, 4 }, output["test1"]);
+            Assert.AreEqual(11, output["test2"]);
+
+            var isReplicationLogicFound = File.ReadLines(opCodeFilePath).SkipWhile(line => !line.Contains("ReplicationLogic"));
+            Assert.IsEmpty(isReplicationLogicFound);
+        }
+
+        [Test]
+        public void IList_T_IEnumerable_Coerce()
+        {
+            string code =
+            @"
+            import(""DesignScriptBuiltin.dll"");
+            import(""DSCoreNodes.dll"");
+            import (""FFITarget.dll"");
+            x = FFITarget.ArrayMember.ArrayMember();
+            num1 = FFITarget.ArrayMember.foo(x);
+            num2 = DSCore.Math.Sum(num1);  
+            ";
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output["num1"]);
+            Assert.AreEqual(55, output["num2"]);
+
+            var isReplicationLogicFound = File.ReadLines(opCodeFilePath).SkipWhile(line => !line.Contains("ReplicationLogic"));
+            Assert.IsEmpty(isReplicationLogicFound);
         }
     }
 }
