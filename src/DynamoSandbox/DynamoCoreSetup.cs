@@ -207,7 +207,9 @@ namespace DynamoSandbox
         {
             viewModel.PreferenceSettings.EnableStaticSplashScreen = !showStaticSplashScreenAgain;
             migrationWindow.Close();
+            Application.Current.MainWindow = dynamoView;
             dynamoView.Show();
+            dynamoView.Activate();
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
