@@ -14,17 +14,22 @@
     <!-- Specify runtimeIdentifier to get around error NETSDK1047: Assets file 'obj\project.assets.json' doesn't have a target for 'net48/win7-x64'-->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
+
+	<Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+		<Exec Command="npm install --prefix ./ @dynamods/splash-screen@latest" />
+    </Target>
+
   <PropertyGroup>
     <ApplicationIcon>logo_square_32x32.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="WebApp\index.bundle.js" />
-    <None Remove="WebApp\index.html" />
+    <None Remove="node_modules\%40dynamods\splash-screen\build\index.bundle.js" />
+    <None Remove="node_modules\%40dynamods\splash-screen\build\index.html" />
     <None Remove="WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="WebApp\index.bundle.js" />
-    <EmbeddedResource Include="WebApp\index.html" />
+    <EmbeddedResource Include="node_modules\@dynamods\splash-screen\build\index.bundle.js" />
+    <EmbeddedResource Include="node_modules\@dynamods\splash-screen\build\index.html" />
     <EmbeddedResource Include="WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>

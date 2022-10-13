@@ -12,8 +12,8 @@ namespace Dynamo.DynamoSandbox
 {
     public partial class SettingsMigrationWindow : Window
     {
-        private static readonly string htmlEmbeddedFile = "Dynamo.DynamoSandbox.WebApp.index.html";
-        private static readonly string jsEmbeddedFile = "Dynamo.DynamoSandbox.WebApp.index.bundle.js";
+        private static readonly string htmlEmbeddedFile = "Dynamo.DynamoSandbox.node_modules._dynamods.splash_screen.build.index.html";
+        private static readonly string jsEmbeddedFile = "Dynamo.DynamoSandbox.node_modules._dynamods.splash_screen.build.index.bundle.js";
         private static readonly string backgroundImage = "Dynamo.DynamoSandbox.WebApp.splashScreenBackground.png";
         private static readonly string imageFileExtension = "png";
 
@@ -97,6 +97,16 @@ namespace Dynamo.DynamoSandbox
                $"signInTitle: '{Properties.Resources.SplashScreenSignIn}'," +
                $"launchTitle: '{Properties.Resources.SplashScreenLaunchTitle}'," +
                $"showScreenAgainLabel: '{Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            webView.Dispose();
+            webView = null;
+
+            GC.SuppressFinalize(this);
         }
     }
 
