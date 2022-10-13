@@ -213,6 +213,10 @@ namespace EmitMSIL
             object result;
             if (replicationInstructions.Count == 0)
             {
+                // TODO: Ideally, we should not reach here as no-replication cases should ideally be all handled
+                // at compile-time. Uncomment the following Validity.Assert to debug these remaining cases.
+                //Validity.Assert(replicationInstructions.Count != 0,
+                //    "No-replication case, not expected to be handled inside ReplicationLogic function.");
                 result = ExecWithZeroRI(finalFep, stackValues, runtimeCore);
             }
             else //replicated call

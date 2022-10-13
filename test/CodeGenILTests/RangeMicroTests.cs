@@ -16,6 +16,7 @@ namespace CodeGenILTests
 
         protected EmitMSIL.CodeGenIL codeGen;
         protected Dictionary<string, IList> inputs = new Dictionary<string, IList>();
+        protected string opCodeFilePath;
 
         protected virtual void GetLibrariesToPreload(ref List<string> libraries)
         {
@@ -26,6 +27,8 @@ namespace CodeGenILTests
         [SetUp]
         public void Setup()
         {
+            //TODO_MSIL: remove the dependency on the old VM by implementing
+            //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
             liveRunner = new ProtoScript.Runners.LiveRunner();
 
             List<string> libraries = new List<string>();
@@ -37,7 +40,8 @@ namespace CodeGenILTests
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             var outputpath = Path.Combine(assemblyPath, "MSILTestOutput");
             System.IO.Directory.CreateDirectory(outputpath);
-            codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(outputpath, $"OpCodesTEST{NUnit.Framework.TestContext.CurrentContext.Test.Name}.txt"), runtimeCore);
+            opCodeFilePath = Path.Combine(outputpath, $"OpCodesTEST{NUnit.Framework.TestContext.CurrentContext.Test.Name}.txt");
+            codeGen = new EmitMSIL.CodeGenIL(inputs, opCodeFilePath, runtimeCore);
         }
 
         [TearDown]

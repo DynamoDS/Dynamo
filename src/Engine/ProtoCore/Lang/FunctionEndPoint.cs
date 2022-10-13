@@ -42,6 +42,10 @@ namespace ProtoCore
 
         public bool IsStatic => method.IsStatic;
 
+        public bool IsConstructor => method.Info is ConstructorInfo;
+
+        public MemberInfo MemberInfo => method.Info;
+
         public System.Type CLRReturnType
         {
             get {
