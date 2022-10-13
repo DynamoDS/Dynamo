@@ -214,7 +214,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Background Preview.
+        ///   Looks up a localized string similar to _Background Preview.
         /// </summary>
         public static string BackgroundPreviewName {
             get {
@@ -2288,7 +2288,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Available Previews.
+        ///   Looks up a localized string similar to _Available Previews.
         /// </summary>
         public static string DynamoViewViewMenuAvailablePreviews {
             get {
@@ -2396,7 +2396,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Navigate Background 3D Preview.
+        ///   Looks up a localized string similar to _Navigate Background 3D Preview.
         /// </summary>
         public static string DynamoViewViewMenuPreviewNavigate {
             get {
@@ -2432,7 +2432,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Grid.
+        ///   Looks up a localized string similar to _Show Grid.
         /// </summary>
         public static string DynamoViewViewMenuShowGrid {
             get {
