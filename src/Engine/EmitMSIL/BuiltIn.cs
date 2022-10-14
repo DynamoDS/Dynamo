@@ -39,6 +39,7 @@ namespace EmitMSIL
 
             private V Unmarshal(K key)
             {
+                //TODO consider scanning for nested wrappers we missed.
                 if (backingDict[key] is CLRStackValue clrwrapped)
                 {
                     return marshaler.UnMarshal(clrwrapped, clrwrapped.CLRFEPReturnType, runtimeCore) as V;
@@ -103,12 +104,14 @@ namespace EmitMSIL
 
             public bool TryGetValue(K key, out V value)
             {
-                //TODO call
-                V intermediatevalue;
-                var result = backingDict.TryGetValue(key, out intermediatevalue);
-                // unmarshal intermediate val.
-                value = intermediatevalue;
-                return result;
+                if (backingDict.TryGetValue(key, out _))
+                {
+                    value = Unmarshal(key);
+                    return true;
+                }
+
+                value = null;
+                return false;
             }
 
             IEnumerator IEnumerable.GetEnumerator()

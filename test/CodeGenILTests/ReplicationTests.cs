@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using ProtoCore.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -583,19 +584,19 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                 return (int)a == (int)b;
             }
 
-            bool isAIEnum = typeof(IEnumerable<object>).IsAssignableFrom(a.GetType());
-            bool isBIEnum = typeof(IEnumerable<object>).IsAssignableFrom(b.GetType());
-            if (isAIEnum && isBIEnum)
+            bool isAList = a is IList;
+            bool isBList = b is IList;
+            if (isAList && isBList)
             {
-                var aIEnum = (a as IEnumerable<object>).ToList();
-                var bIEnum = (b as IEnumerable<object>).ToList();
+                var aIEnum = a as IList;
+                var bIEnum = b as IList;
 
-                if (aIEnum.Count() != bIEnum.Count()) 
+                if (aIEnum.Count != bIEnum.Count) 
                 { 
                     return false; 
                 }
 
-                for (int ii=0; ii < aIEnum.Count(); ii++)
+                for (int ii=0; ii < aIEnum.Count; ii++)
                 {
                     if (!AreEqual(aIEnum[ii], bIEnum[ii]))
                     {
@@ -605,7 +606,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
 
                 return true;
             }
-            else if (isAIEnum || isBIEnum)
+            else if (isAList || isBList)
             {
                 return false;
             }
