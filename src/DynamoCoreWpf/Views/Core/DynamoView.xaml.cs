@@ -55,6 +55,7 @@ using Point = System.Windows.Point;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Size = System.Windows.Size;
 using String = System.String;
+using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Controls
 {
@@ -165,7 +166,7 @@ namespace Dynamo.Controls
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
             }
 
-            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs("Loading View Extensions...", 80));
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs(Res.SplashScreenViewExtensions, 80));
 
             var viewExtensions = new List<IViewExtension>();
             foreach (var dir in dynamoViewModel.Model.PathManager.ViewExtensionsDirectories)

@@ -115,6 +115,15 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Launching dynamo....
+        /// </summary>
+        internal static string SplashScreenLaunchingDynamo {
+            get {
+                return ResourceManager.GetString("SplashScreenLaunchingDynamo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Launch Dynamo.
         /// </summary>
         internal static string SplashScreenLaunchTitle {

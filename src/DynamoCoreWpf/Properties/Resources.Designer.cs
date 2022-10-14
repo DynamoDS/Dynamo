@@ -7809,6 +7809,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Initializing automation settings....
+        /// </summary>
+        public static string SplashScreenInitAutomationSettings {
+            get {
+                return ResourceManager.GetString("SplashScreenInitAutomationSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading View Extensions....
+        /// </summary>
+        public static string SplashScreenViewExtensions {
+            get {
+                return ResourceManager.GetString("SplashScreenViewExtensions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Advanced Tutorials.
         /// </summary>
         public static string StartPageAdvancedTutorials {

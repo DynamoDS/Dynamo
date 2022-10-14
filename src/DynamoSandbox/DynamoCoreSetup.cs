@@ -188,7 +188,7 @@ namespace DynamoSandbox
 
             dynamoView = new DynamoView(viewModel);
 
-            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs("Launching dynamo...", 100));
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs(Resources.SplashScreenLaunchingDynamo, 100));
 
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {

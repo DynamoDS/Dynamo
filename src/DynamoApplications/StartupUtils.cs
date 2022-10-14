@@ -246,7 +246,7 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {   
-            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs("Preloading ASM...", 10));
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
 
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
 

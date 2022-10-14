@@ -710,7 +710,7 @@ namespace Dynamo.ViewModels
             SubscribeModelBackupFileSaveEvent();
             SubscribeUpdateManagerHandlers();
 
-            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs("Initializing automation settings...", 70));
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs(Resources.SplashScreenInitAutomationSettings, 70));
 
             InitializeAutomationSettings(startConfiguration.CommandFilePath);
 
