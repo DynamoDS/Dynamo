@@ -888,6 +888,28 @@ namespace Dynamo.ViewModels
             }
             newPreferences.CopyProperties(preferenceSettings);
 
+            return setSettings(newPreferences);
+        }
+
+        /// <summary>
+        /// Returns a boolean value indicating if the Settings importing was successful or not by sending the content of the xml file
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public bool importSettingsContent(string content)
+        {
+            var newPreferences = PreferenceSettings.LoadContent(content);
+            if (!newPreferences.IsCreatedFromValidFile)
+            {
+                return false;
+            }
+            newPreferences.CopyProperties(preferenceSettings);
+
+            return setSettings(newPreferences);
+        }
+
+        private bool setSettings(PreferenceSettings newPreferences)
+        {
             // Explicit copy
             preferenceSettings.SetTrustWarningsDisabled(newPreferences.DisableTrustWarnings);
             preferenceSettings.SetTrustedLocations(newPreferences.TrustedLocations);

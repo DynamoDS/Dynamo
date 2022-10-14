@@ -406,6 +406,30 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// Manually deserialize some preferences from the PreferencesSettings file.
+        /// This is done so that we can avoid exposing these property setters to the public API.
+        /// </summary>
+        /// <param name="content">The content of the XML file</param>
+
+        private void DeserializeInternalPrefsContent(string content)
+        {
+            try
+            {
+                //manually load some xml we don't want to create public setters for.
+                var doc = new System.Xml.XmlDocument();
+                doc.LoadXml(content);
+                var prefs = doc.SelectSingleNode($@"//{nameof(PreferenceSettings)}");
+
+                var deserializedLocations = DeserializeTrustedLocations(prefs);
+                SetTrustedLocations(deserializedLocations.Distinct());
+                var trustWarningsDisabled = DeserializeDisableTrustWarnings(prefs);
+                SetTrustWarningsDisabled(trustWarningsDisabled);
+            }
+            catch
+            { }
+        }
+
+        /// <summary>
         /// Represents a copy of the list of trusted locations that the user added.
         /// Do not use this list to check if a new path is trusted or not.
         /// To check if a new path is trusted or not please use the IsTrustedLocation API (IsTrustedLocation supports locations)
@@ -787,6 +811,45 @@ namespace Dynamo.Configuration
             MigrateStdLibTokenToBuiltInToken(settings);
 
             settings.DeserializeInternalPrefs(filePath);
+
+            return settings;
+        }
+
+        /// <summary>
+        /// Loads PreferenceSettings from specified XML file if possible,
+        /// else initializes PreferenceSettings with default values.
+        /// </summary>
+        /// <param name="content">The content of the xml file</param>
+        /// <returns></returns>
+        public static PreferenceSettings LoadContent(string content)
+        {
+            // Constructor will be called anyway in either condition below so no need to initialize now.
+            PreferenceSettings settings = null;
+
+            if(string.IsNullOrEmpty(content))
+                return new PreferenceSettings();
+
+            try
+            {
+                var serializer = new XmlSerializer(typeof(PreferenceSettings));
+                using (TextReader reader = new StringReader(content))
+                {
+                    settings = serializer.Deserialize(reader) as PreferenceSettings;
+                }
+            }
+            catch
+            {
+                if (settings == null)
+                {
+                    return new PreferenceSettings() { isCreatedFromValidFile = false };
+                }
+            }
+
+            settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
+            settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
+            MigrateStdLibTokenToBuiltInToken(settings);
+
+            settings.DeserializeInternalPrefsContent(content);
 
             return settings;
         }

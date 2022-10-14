@@ -135,16 +135,9 @@ namespace DynamoSandbox
 
         private async void ImportSettings(string fileContent)
         {
-            var fileName = string.Empty;
+            var importResult = false;
 
-            using (FileStream fs = File.Create("preferenceSettings.xml"))
-            {
-                Byte[] title = new UTF8Encoding(true).GetBytes(fileContent);
-                fs.Write(title, 0, title.Length);
-                fileName = fs.Name;
-            }
-
-            var importResult = viewModel.PreferencesViewModel.importSettings(fileName);
+            importResult = viewModel.PreferencesViewModel.importSettingsContent(fileContent);
             if (importResult)
             {
                 migrationWindow.SetImportStatus(ImportStatus.success, Resources.SplashScreenSettingsImported, string.Empty);
