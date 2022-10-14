@@ -183,7 +183,7 @@ namespace EmitMSIL
         /// <param name="replicationAttrs"></param>
         /// <returns></returns>
         [Obsolete("This is an internal function, do not use it.")]
-        public static object ReplicationLogic(List<CLRFunctionEndPoint> feps, IList args, string[][] replicationAttrs, MSILRuntimeCore runtimeCore)
+        public static CLRStackValue ReplicationLogic(List<CLRFunctionEndPoint> feps, IList args, string[][] replicationAttrs, MSILRuntimeCore runtimeCore)
         {
             // TODO_MSIL: Emit these CLRStackValue's from the CodeGen stage.
             var stackValues = MarshalFunctionArguments(args, runtimeCore);
@@ -207,7 +207,7 @@ namespace EmitMSIL
             var finalFep = SelectFinalFep(resolvedFeps, stackValues, runtimeCore);
             Validity.Assert(finalFep != null, "Expected to find a function endpoint");
 
-            object result;
+            CLRStackValue result;
             if (replicationInstructions.Count == 0)
             {
                 // TODO: Ideally, we should not reach here as no-replication cases should ideally be all handled
@@ -527,7 +527,7 @@ namespace EmitMSIL
             replicationInstructions = instructions;
         }
 
-        private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
+        private static CLRStackValue ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
         {
             List<CLRStackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, runtimeCore);
 
@@ -539,18 +539,15 @@ namespace EmitMSIL
             var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
             CLRStackValue dsRetValue = marshaller.Marshal(result, finalFep.ProtoCoreReturnType, runtimeCore);
 
-            //TODO this causes a test failure. (array reduction to var not allowed)
-            //this is always false, and the comment below does not make sense.
-
+            //TODO_MSIL this is always false, and the comment below does not make sense.
             // An explicit call requires return coercion at the return instruction
             if (!dsRetValue.IsExplicitCall)
             {
                 dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep.ProtoCoreReturnType, dsRetValue, runtimeCore);
             }
 
-            var returnVal = marshaller.UnMarshal(dsRetValue, finalFep.CLRReturnType, runtimeCore);
-
-            return returnVal;
+            dsRetValue.CLRFEPReturnType = finalFep.CLRReturnType;
+            return dsRetValue;
         }
 
         private static IList<CLRStackValue> getSubParameters(CLRStackValue o)
@@ -566,7 +563,7 @@ namespace EmitMSIL
             }
         }
 
-        private static object ExecWithRISlowPath(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters,
+        private static CLRStackValue ExecWithRISlowPath(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters,
             List<ReplicationInstruction> replicationInstructions, MSILRuntimeCore runtimeCore)
         {
             //Recursion base case
@@ -632,7 +629,7 @@ namespace EmitMSIL
                 if (hasEmptyArg)
                     retSize = 0;
 
-                object[] retSVs = new object[retSize];
+                var retSVs = new CLRStackValue[retSize];
                 for (int i = 0; i < retSize; i++)
                 {
                     //Build the call
@@ -665,7 +662,10 @@ namespace EmitMSIL
                     retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs, runtimeCore);
                 }
 
-                return retSVs;
+                //TODO will this always be array?
+                //TODO can we avoid calling toList() - would be nice to avoid iterating and copying..
+                //span?
+                return new CLRStackValue(retSVs.ToList(), (int)ProtoCore.PrimitiveType.Array, retSVs[0].CLRFEPReturnType.MakeArrayType());
             }
             else
             {
@@ -691,7 +691,7 @@ namespace EmitMSIL
                     suppressArray = true;
                 }
 
-                object[] retSVs = new object[retSize];
+                CLRStackValue[] retSVs = new CLRStackValue[retSize];
 
                 //Build the call
                 List<CLRStackValue> newFormalParams = formalParameters.ToList();
@@ -711,7 +711,10 @@ namespace EmitMSIL
                     retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs, runtimeCore);
                 }
 
-                return retSVs;
+                //TODO will this always be array?
+                //TODO can we avoid calling toList() - would be nice to avoid iterating and copying..
+                //span?
+                return new CLRStackValue(retSVs.ToList(), (int)ProtoCore.PrimitiveType.Array, retSVs[0].CLRFEPReturnType.MakeArrayType());
             }
         }
     }

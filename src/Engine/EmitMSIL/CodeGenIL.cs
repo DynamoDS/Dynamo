@@ -69,7 +69,7 @@ namespace EmitMSIL
             // Invoke emitted method (ExecuteIL.Execute)
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
-            var output = new Dictionary<string, object>();
+            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
 
             // null can be replaced by an 'input' dictionary if available.
             var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
@@ -79,7 +79,7 @@ namespace EmitMSIL
             return output;
         }
 
-        internal Dictionary<string, object> EmitAndExecute(List<AssociativeNode> astList)
+        internal IDictionary<string, object> EmitAndExecute(List<AssociativeNode> astList)
         {
             var timer = new Stopwatch();
             timer.Start();
@@ -91,7 +91,7 @@ namespace EmitMSIL
             timer.Restart();
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
-            var output = new Dictionary<string, object>();
+            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
             mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
             timer.Stop();
             CompileAndExecutionTime.executionTime = timer.Elapsed;
@@ -110,7 +110,7 @@ namespace EmitMSIL
             // 1. Create assembly builder (dynamic assembly)
             var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
             // 2. Create module builder
-            var mod = BuilderHelper.CreateDLLModuleBuilder(asm, "DynamicModule");
+            var mod = BuilderHelper.CreateDLLModuleBuilder(asm, "DynamicAssembly");
             // 3. Create type builder (name it "ExecuteIL")
             var type = BuilderHelper.CreateType(mod, "ExecuteIL");
             // 4. Create method ("Execute"), get ILGenerator 
@@ -1327,6 +1327,7 @@ namespace EmitMSIL
             //}
             if (doesReplicate)
             {
+                EmitILComment("emit replicating call");
                 // Emit methodCache passed as arg to global Execute method.
                 EmitOpCode(OpCodes.Ldarg_1);
 
@@ -1359,6 +1360,7 @@ namespace EmitMSIL
                 }
 
                 // Emit args for input to call to ReplicationLogic
+                EmitILComment("emit args array start");
                 EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
                 {
                     Type t = DfsTraverse(n);
@@ -1378,7 +1380,7 @@ namespace EmitMSIL
                         EmitOpCode(OpCodes.Box, t);
                     }
                 });
-
+                EmitILComment("emit guides array start");
                 // Emit guides
                 EmitArray(typeof(string[]), args, (AssociativeNode n, int idx) =>
                 {
@@ -1405,10 +1407,11 @@ namespace EmitMSIL
                 var repLogic = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic), BindingFlags.Public | BindingFlags.Static);
                 EmitOpCode(OpCodes.Call, repLogic);
 
-                return typeof(object);
+                return typeof(DSASM.CLRStackValue);
             }
             else
             {
+                EmitILComment("emit non replicating call");
                 // non-replicating call
                 int index = 0;
                 foreach(var arg in args)

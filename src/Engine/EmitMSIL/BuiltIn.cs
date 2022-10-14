@@ -1,12 +1,121 @@
-﻿using ProtoCore.DSASM;
+using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using ProtoCore;
+using ProtoFFI;
+using Type = ProtoCore.Type;
 
 namespace EmitMSIL
 {
     public class BuiltIn
     {
+        /// <summary>
+        /// A Dictionary wrapper for MSIL engine outputs, any dynamic CLR stackvalues are unmarshaled before they are returned.
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <typeparam name="V"></typeparam>
+        internal class MSILOutputMap<K, V> : IDictionary<K, V> where V : class
+        {
+            private Dictionary<K, V> backingDict = new Dictionary<K, V>();
+            private MSILRuntimeCore runtimeCore;
+            private FFIObjectMarshaler marshaler;
+
+            public MSILOutputMap(MSILRuntimeCore runtimeCore)
+            {
+                this.runtimeCore = runtimeCore;
+                marshaler = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
+
+            }
+
+            public V this[K key]
+            {
+                get => Unmarshal(key);
+                set => backingDict[key] = value;
+            }
+
+            private V Unmarshal(K key)
+            {
+                if (backingDict[key] is CLRStackValue clrwrapped)
+                {
+                    return marshaler.UnMarshal(clrwrapped, clrwrapped.CLRFEPReturnType, runtimeCore) as V;
+                }
+
+                return backingDict[key];
+            }
+
+            public ICollection<K> Keys => backingDict.Keys;
+
+            public ICollection<V> Values => backingDict.Keys.Select(x => Unmarshal(x)).ToArray();
+
+
+            public int Count => backingDict.Count;
+
+            public bool IsReadOnly => (backingDict as ICollection<KeyValuePair<K, V>>).IsReadOnly;
+
+            public void Add(K key, V value)
+            {
+                backingDict.Add(key, value);
+            }
+
+            public void Add(KeyValuePair<K, V> item)
+            {
+                (backingDict as ICollection<KeyValuePair<K, V>>).Add(item);
+            }
+
+            public void Clear()
+            {
+                backingDict.Clear();
+            }
+
+            public bool Contains(KeyValuePair<K, V> item)
+            {
+                return (backingDict as ICollection<KeyValuePair<K, V>>).Contains(item);
+            }
+
+            public bool ContainsKey(K key)
+            {
+                return backingDict.ContainsKey(key);
+            }
+
+            public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
+            {
+                (backingDict as ICollection<KeyValuePair<K, V>>).CopyTo(array, arrayIndex);
+            }
+
+            public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
+            {
+                return backingDict.GetEnumerator();
+            }
+
+            public bool Remove(K key)
+            {
+                return backingDict.Remove(key);
+            }
+
+            public bool Remove(KeyValuePair<K, V> item)
+            {
+                return (backingDict as ICollection<KeyValuePair<K, V>>).Remove(item);
+            }
+
+            public bool TryGetValue(K key, out V value)
+            {
+                //TODO call
+                V intermediatevalue;
+                var result = backingDict.TryGetValue(key, out intermediatevalue);
+                // unmarshal intermediate val.
+                value = intermediatevalue;
+                return result;
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return backingDict.GetEnumerator();
+            }
+        }
         private static object ToBoolean(object a)
         {
             switch (a)
