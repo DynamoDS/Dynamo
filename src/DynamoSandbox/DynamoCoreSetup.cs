@@ -14,9 +14,6 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using System.Linq;
 using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Wpf.Utilities;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using System.Net;
 using System.Text;
 
 
