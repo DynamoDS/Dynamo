@@ -96,6 +96,15 @@ namespace EmitMSIL
             return values;
         }
 
+        /// <summary>
+        /// Returns a single function endpoint chosen from the input functionEndPoints.
+        /// Filtering is done based on coercion cost between the call arguments 'formalParameters' and each function's parameters.
+        /// </summary>
+        /// <param name="thisPtr"></param>
+        /// <param name="functionEndPoints"></param>
+        /// <param name="formalParameters"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns></returns>
         private static CLRFunctionEndPoint SelectFinalFep(
             CLRStackValue thisPtr,
             List<CLRFunctionEndPoint> functionEndPoints,
@@ -287,6 +296,12 @@ namespace EmitMSIL
             return new List<List<ReplicationGuide>>();
         }
 
+        /// <summary>
+        /// Filters out invalid scenarios (ex global function context and instance method candidates)
+        /// </summary>
+        /// <param name="thisPtr"></param>
+        /// <param name="candidatesWithDistances"></param>
+        /// <returns></returns>
         private static List<CLRFunctionEndPoint> GetCandidateFunctions(
             CLRStackValue thisPtr, Dictionary<CLRFunctionEndPoint, int> candidatesWithDistances)
         {
@@ -308,6 +323,17 @@ namespace EmitMSIL
             return candidateFunctions;
         }
 
+        /// <summary>
+        /// Returns a single FEP based on coercion cost between arguments and function parameters.
+        /// The function with the lowest coercion cost will be returned.
+        /// </summary>
+        /// <param name="thisPtr"></param>
+        /// <param name="arguments"></param>
+        /// <param name="funcGroup"></param>
+        /// <param name="replicationInstructions"></param>
+        /// <param name="runtimeCore"></param>
+        /// <param name="allowArrayPromotion"></param>
+        /// <returns></returns>
         private static CLRFunctionEndPoint GetCompliantFEP(
             CLRStackValue thisPtr,
             List<CLRStackValue> arguments,
@@ -343,6 +369,14 @@ namespace EmitMSIL
             return compliantTarget;
         }
 
+        /// <summary>
+        /// Filters FEPs based on rank and type matching.
+        /// </summary>
+        /// <param name="thisPtr"></param>
+        /// <param name="runtimeCore"></param>
+        /// <param name="feps"></param>
+        /// <param name="argumentsList"></param>
+        /// <returns></returns>
         private static CLRFunctionEndPoint SelectFEPFromMultiple(
             CLRStackValue thisPtr,
             MSILRuntimeCore runtimeCore,
