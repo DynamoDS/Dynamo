@@ -16,7 +16,7 @@ namespace EmitMSIL
     [Obsolete("This is an internal class, do not use it.")]
     public class Replication
     {
-        internal static List<CLRStackValue> MarshalFunctionArguments(IList args, MSILRuntimeCore runtimeCore)
+        public static List<CLRStackValue> MarshalFunctionArguments(IList args, MSILRuntimeCore runtimeCore)
         {
             var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
             List<CLRStackValue> stackValues = new List<CLRStackValue>();
@@ -25,8 +25,16 @@ namespace EmitMSIL
                 CLRStackValue dsObj;
                 if (arg != null)
                 {
-                    var protoType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(arg.GetType());
-                    dsObj = marshaller.Marshal(arg, protoType, runtimeCore);
+                    //if it's already a wrapper - just return, no need to find type or marshal.
+                    if (arg is CLRStackValue clrArg)
+                    {
+                        dsObj = clrArg;
+                    }
+                    else
+                    {
+                        var protoType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(arg.GetType());
+                        dsObj = marshaller.Marshal(arg, protoType, runtimeCore);
+                    }
                 }
                 else
                 {
@@ -38,7 +46,12 @@ namespace EmitMSIL
             return stackValues;
         }
 
-        internal static List<object> UnmarshalFunctionArguments(List<CLRFunctionEndPoint.ParamInfo> formalParams, List<CLRStackValue> args, MSILRuntimeCore runtimeCore)
+        public static IList<object> UnMarshalFunctionArguments2(IEnumerable<CLRFunctionEndPoint> feps, IEnumerable args, MSILRuntimeCore runtimeCore)
+        {
+            return UnmarshalFunctionArguments(feps.FirstOrDefault().FormalParams, (IList)args, runtimeCore).ToArray();
+        }
+
+        internal static List<object> UnmarshalFunctionArguments(List<CLRFunctionEndPoint.ParamInfo> formalParams, IList args, MSILRuntimeCore runtimeCore)
         {
             var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
             List<object> values = new List<object>();
@@ -47,51 +60,60 @@ namespace EmitMSIL
 
             for (int i = 0; i < args.Count; ++i)
             {
-                CLRStackValue arg = args[i];
-                System.Type paramType = formalParams[i].CLRType;
-                try
+                if (!(args[i] is CLRStackValue))
                 {
-                    object param = null;
-                    if (arg.IsDefaultArgument)
-                        param = System.Type.Missing;
-                    else
+                    values.Add(args[i]);
+                }
+                else
+                {
+                    CLRStackValue arg = (CLRStackValue)args[i];
+                    System.Type paramType = formalParams[i].CLRType;
+                    try
                     {
-                        param = marshaller.UnMarshal(arg, paramType, runtimeCore);
+                        object param = null;
+                        if (arg.IsDefaultArgument)
+                            param = System.Type.Missing;
+                        else
+                        {
+                            param = marshaller.UnMarshal(arg, paramType, runtimeCore);
+                        }
+
+                        /*TODO_MSIL: Figure out how to set/use these flags
+                        if (paraminfos[i].KeepReference && opArg.IsReferenceType)
+                        {
+                            referencedParameters.Add(opArg);
+                        }*/
+
+                        //null is passed for a value type, so we must return null 
+                        //rather than interpreting any value from null. fix defect 1462014 
+                        if (!paramType.IsGenericType && paramType.IsValueType && param == null)
+                        {
+                            //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
+
+                            runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation,
+                                string.Format(Resources.FailedToCastFromNull, paramType.Name));
+
+                            return null;
+                            //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+
+                        }
+
+                        values.Add(param);
                     }
-
-                    /*TODO_MSIL: Figure out how to set/use these flags
-                    if (paraminfos[i].KeepReference && opArg.IsReferenceType)
+                    catch (System.InvalidCastException ex)
                     {
-                        referencedParameters.Add(opArg);
-                    }*/
-
-                    //null is passed for a value type, so we must return null 
-                    //rather than interpreting any value from null. fix defect 1462014 
-                    if (!paramType.IsGenericType && paramType.IsValueType && param == null)
-                    {
-                        //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
-
-                        runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation,
-                            string.Format(Resources.FailedToCastFromNull, paramType.Name));
-
+                        runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
                         return null;
-                        //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
-
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        string message = String.Format(Resources.kFFIFailedToObtainObject, paramType.Name, formalParams[i].CLRType.DeclaringType.Name, formalParams[i].CLRType.Name);
+                        runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
+                        return null;
                     }
 
-                    values.Add(param);
                 }
-                catch (System.InvalidCastException ex)
-                {
-                    runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
-                    return null;
-                }
-                catch (InvalidOperationException)
-                {
-                    string message = String.Format(Resources.kFFIFailedToObtainObject, paramType.Name, formalParams[i].CLRType.DeclaringType.Name, formalParams[i].CLRType.Name);
-                    runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
-                    return null;
-                }
+
             }
             return values;
         }

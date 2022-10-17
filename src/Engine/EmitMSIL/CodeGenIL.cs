@@ -70,11 +70,11 @@ namespace EmitMSIL
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
             var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
+            compileResult.asmbuilder.Save("DynamicAssembly.dll");
 
             // null can be replaced by an 'input' dictionary if available.
             var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
 
-            compileResult.asmbuilder.Save("DynamicAssembly.dll");
 
             return output;
         }
@@ -1413,20 +1413,104 @@ namespace EmitMSIL
             {
                 EmitILComment("emit non replicating call");
                 // non-replicating call
-                int index = 0;
-                foreach(var arg in args)
+                //TODO if possible only marshal args that resulted from a replicated call.
+                //IF the arguments of this function call were returned from a replicated call -
+                //we need to unmarshal them from CLRStackValue wrappers to plain # objects -
+                // to do this, we need use the methodcache to get the methodinfo
+                // where we can then get the paraminfo we'll use for unmarshling.
+                //
+
+                
+                // Emit methodCache passed as arg to global Execute method.
+                EmitOpCode(OpCodes.Ldarg_1);
+                // Emit className for input to call to CodeGenIL.KeyGen
+                EmitOpCode(OpCodes.Ldstr, className);
+
+                // Emit methodName for input to call to CodeGenIL.KeyGen
+                EmitOpCode(OpCodes.Ldstr, methodName);
+                EmitOpCode(OpCodes.Ldc_I4, numArgs);
+                var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
+                EmitOpCode(OpCodes.Call, keygen);
+
+                var local = DeclareLocal(typeof(IEnumerable<ProtoCore.CLRFunctionEndPoint>), "cached MethodBase objects");
+                //local could be null if we are not emitting currently.
+                if (local != null)
                 {
-                    Type t = DfsTraverse(arg);
+                    EmitOpCode(OpCodes.Ldloca, local);
+                }
+
+                // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<CLRFunctionEndPoint> feps)
+                var dictLookup = typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>).GetMethod(
+                    nameof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>.TryGetValue));
+                EmitOpCode(OpCodes.Callvirt, dictLookup);
+
+                EmitOpCode(OpCodes.Pop);
+                if (local != null)
+                {
+                    EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
+                }
+
+                //emit an array of args to pass to unmarshal
+                EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
+                {
+                    Type t = DfsTraverse(n);
                     if (isStaticOrCtor)
                     {
-                        t = EmitCoercionCode(arg, t, parameters[index]);
+                        t = EmitCoercionCode(n, t, parameters[index]);
                     }
                     else if (index > 0)
                     {
-                        t = EmitCoercionCode(arg, t, parameters[index - 1]);
+                        t = EmitCoercionCode(n, t, parameters[index - 1]);
                     }
-                    index++;
+
+                    if (t == null) return;
+
+                    if (t.IsValueType)
+                    {
+                        EmitOpCode(OpCodes.Box, t);
+                    }
+                });
+
+                //TODO if possible only marshal args that resulted from a replicated call.
+                
+                //emit marshal for args
+
+                // Emit call to load the runtimeCore argument
+                EmitOpCode(OpCodes.Ldarg_3);
+                //TODO cache this at start.
+                //now call marshall to convert any clrstackvalues to plain c# objs. 
+                var marhshallMethod = typeof(Replication).GetMethod(nameof(Replication.UnMarshalFunctionArguments2), BindingFlags.Static | BindingFlags.Public);
+                EmitOpCode(OpCodes.Call, marhshallMethod);
+
+                var unMarshaledArgsArray = DeclareLocal(marhshallMethod.ReturnType, "unMarshaledArgsArray");
+                if (unMarshaledArgsArray != null)
+                {
+                    EmitOpCode(OpCodes.Stloc, unMarshaledArgsArray.LocalIndex);
                 }
+                //now on the stack we have a list of objects, we need to iterate through it and push each item to the stack.
+                //emit a for loop which pushes to stack.
+
+                //foreach item in args -
+                //increment index
+                //emit code to index into array
+                //ldelem ref.
+                // we know array.length because it must be the same length as args.len
+
+                if (unMarshaledArgsArray != null)
+                {
+                    for (int i = 0; i < args.Count; i++)
+                    {
+                        //load array
+                        EmitOpCode(OpCodes.Ldloc, unMarshaledArgsArray.LocalIndex);
+                        EmitOpCode(OpCodes.Ldc_I4, i);
+                        EmitOpCode(OpCodes.Ldelem_Ref);
+                        if (parameters[i].IsValueType)
+                        {
+                            EmitOpCode(OpCodes.Unbox_Any, parameters[i]);
+                        }
+                    }
+                }
+
 
                 if (clrFep.MemberInfo is MethodInfo mi)
                 {
