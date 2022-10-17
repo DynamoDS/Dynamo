@@ -78,7 +78,7 @@ namespace Dynamo.DocumentationBrowser
         }
 
         private Uri link;
-
+        private string graphPath;
         private string content;
 
         private MarkdownHandler MarkdownHandlerInstance => markdownHandler ?? (markdownHandler = new MarkdownHandler());
@@ -177,6 +177,7 @@ namespace Dynamo.DocumentationBrowser
             try
             {
                 string targetContent;
+                string graph;
                 Uri link;
                 switch (e)
                 {
@@ -186,17 +187,20 @@ namespace Dynamo.DocumentationBrowser
                             openNodeAnnotationEventArgs.PackageName);
 
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
+                        graph = GetGraphLinkFromMDLocation(link);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
                         break;
 
                     case OpenDocumentationLinkEventArgs openDocumentationLink:
                         link = openDocumentationLink.Link;
+                        graph = GetGraphLinkFromMDLocation(link);
                         targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly);
                         break;
 
                     default:
                         // Navigate to unsupported 
                         targetContent = null;
+                        graph = null;
                         link = null;
                         break;
                 }
@@ -209,6 +213,7 @@ namespace Dynamo.DocumentationBrowser
                 {
                     this.content = targetContent;
                     this.Link = link;
+                    this.graphPath = graph;
                 }
             }
             catch (FileNotFoundException)
@@ -227,6 +232,12 @@ namespace Dynamo.DocumentationBrowser
                 return;
             }
             this.shouldLoadDefaultContent = false;
+        }
+
+        private string GetGraphLinkFromMDLocation(Uri link)
+        {
+            string graphPath = link.AbsolutePath.Replace(".md", ".dyn");
+            return File.Exists(graphPath) ? graphPath : null;
         }
 
         private void WatchMdFile(string mdLink)
@@ -266,6 +277,7 @@ namespace Dynamo.DocumentationBrowser
             var nodeAnnotationArgs = openDocumentationLinkEventArgs as OpenNodeAnnotationEventArgs;
             this.content = CreateNodeAnnotationContent(nodeAnnotationArgs);
             this.Link = new Uri(e.FullPath);
+            this.graphPath = GetGraphLinkFromMDLocation(this.Link);
         }
 
         private string CreateNodeAnnotationContent(OpenNodeAnnotationEventArgs e)
@@ -329,8 +341,16 @@ namespace Dynamo.DocumentationBrowser
 
             if (raiseInsertGraph != null)
             {
-                // TODO: Remove test graph with appropriate resource
-                raiseInsertGraph(this, new MyEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\Example.dyn"));
+                if (graphPath != null)
+                {
+                    raiseInsertGraph(this, new MyEventArgs(graphPath));
+                }
+                else
+                {
+                    // TODO: Remove test graph with appropriate resource
+                    raiseInsertGraph(this, new MyEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\Example.dyn"));
+                    //raiseInsertGraph(this, new MyEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\NormalGalleryContents.xml")); // Test with xml file
+                }
             }
         }
 

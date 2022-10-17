@@ -251,6 +251,7 @@ namespace Dynamo.DocumentationBrowser
             if (this.ViewModel != null)
             {
                 this.ViewModel.MessageLogged -= OnViewModelMessageLogged;
+                this.ViewModel.HandleInsertFile -= OnInsertFile;
             }
 
             if (this.documentationBrowserMenuItem != null)
