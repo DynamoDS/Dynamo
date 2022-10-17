@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -105,7 +105,9 @@ namespace CoreNodeModels
                     selectedIndex = value;
                     selectedString = GetSelectedStringFromItem(Items.ElementAt(value));
                 }
+
                 RaisePropertyChanged("SelectedIndex");
+                RaisePropertyChanged("SelectedString");
             }
         }
 
@@ -120,15 +122,22 @@ namespace CoreNodeModels
             get => selectedString;
             set
             {
-                if (!string.IsNullOrEmpty(value) && value != selectedString)
+                if (value == selectedString)
+                {
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(value))
                 {
                     var item = Items.FirstOrDefault(i => GetSelectedStringFromItem(i).Equals(value));
                     // In the case that SelectedString deserialize after SelectedIndex
                     // With a valid item from search, get the index of item and replace the current one. 
                     // If no exact match found, fall back to use the default selectedIndex from deserialization.
-                    selectedIndex = item != null ?
-                        Items.IndexOf(item) :
-                        selectedIndex;
+                    if (item != null)
+                    {
+                        selectedIndex = Items.IndexOf(item);
+                        RaisePropertyChanged("SelectedIndex");
+                    }
                 }
 
                 selectedString = value;
@@ -182,22 +191,13 @@ namespace CoreNodeModels
 
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
-            string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            if (name == "Value" && value != null)
+            if (updateValueParams.PropertyName == "Value" && value != null)
             {
-                selectedIndex = ParseSelectedIndex(value, Items);
-                if (selectedIndex < 0)
-                {
-                    Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
-                    selectedString = String.Empty;
-                }
-                else
-                {
-                    selectedString = selectedIndex > Items.Count - 1 ? String.Empty : GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
-                }
-                return true; // UpdateValueCore handled.
+                SelectedIndex = ParseSelectedIndex(value, Items);
+
+                return true;
             }
 
             return base.UpdateValueCore(updateValueParams);
