@@ -36,7 +36,7 @@
                 <Setter Property="Template"
                         Value="{StaticResource LibraryScrollViewerControlTemplate}" />
             </Style>
-
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -55,21 +55,21 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
 
-        <Grid Name="Header"
+            <Grid Name="Header"
               Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
                 <Border Background="{StaticResource ExtensionBackgroundColor}"
                     Padding="0"
                     CornerRadius="8,8,0,0">
-                <Grid>
-                    <StackPanel Name="AutoCompletionHeader"
+                    <Grid>
+                        <StackPanel Name="AutoCompletionHeader"
                                 Grid.ColumnSpan="1"
                                 Width="Auto"
                                 HorizontalAlignment="Left"
                                 Orientation="Horizontal">
-                        <TextBlock Text="{x:Static resx:Resources.Autocomplete}"
+                            <TextBlock Text="{x:Static resx:Resources.Autocomplete}"
                                TextWrapping="Wrap"
                                Padding="4"
                                Margin="80,1.75,0,0"
@@ -77,8 +77,8 @@
                                Background="Transparent"
                                TextAlignment="Center"
                                FontSize="14">
-                        </TextBlock>
-                        <Image Name="NodeAutoCompleteInfoIcon" 
+                            </TextBlock>
+                            <Image Name="NodeAutoCompleteInfoIcon" 
                                Width="14" 
                                Height="14" 
                                MouseDown="OnMoreInfoClicked" 
@@ -87,8 +87,8 @@
                                VerticalAlignment="Center"
                                Style="{StaticResource ToggleInfoStyle}">
 
-                        </Image>
-                        <Image Width="14" Height="14" Margin="0,5,10,5" MouseDown="CloseAutocompletionWindow" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            </Image>
+                            <Image Width="14" Height="14" Margin="0,5,10,5" MouseDown="CloseAutocompletionWindow" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Image.Style>
                                     <Style TargetType="{x:Type Image}">
                                         <Style.Triggers>
@@ -101,18 +101,17 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Image.Style>
-                        </Image>
-                    </StackPanel>
-                </Grid>
-            </Border>
-        </Grid>
-        
-        <Border Opacity=".9"
+                            </Image>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+            <StackPanel Opacity=".9"
                 Background="{StaticResource LibraryCommonBackground}"
                 Grid.Row="1"
                 Name="AutoCompleteCandidates"
-                MaxHeight="250">
-            <ListBox Name="MembersListBox"
+                MaxHeight="300">
+                <ListBox Name="MembersListBox"
                      HorizontalAlignment="Left"
                      Background="Transparent"
                      BorderBrush="Transparent"
@@ -122,18 +121,53 @@
                      PreviewMouseWheel="OnMembersListBoxMouseWheel"
                      Margin="10,0,5,0"
                      Visibility="Visible">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
                             <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
                                       Style="{StaticResource InCanvasScrollViewerStyle}"
                                       CanContentScroll="True"
                                       Width="{Binding Source={x:Static resx:Resources.Autocomplete}, Converter={StaticResource NodeAutocompleteWidthConverter}}">
                                 <ContentPresenter ContentTemplate="{StaticResource MemberTemplate}" />
-                        </ScrollViewer>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Border>
+                            </ScrollViewer>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <StackPanel Visibility="{Binding Path=DisplayNoRecommendationsLowConfidence, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Image
+                        Name="DisablePackageInstallIcon"
+                        Width="205"
+                        Height="120"
+                        Margin="0,30,0,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top" Source="/DynamoCoreWpf;component/UI/Images/no-recommendations.png">
+                    </Image>
+                    <TextBlock Text="{x:Static resx:Resources.AutocompleteNoRecommendationsTitle}"
+                               Background="Transparent"
+                               Padding="5"
+                               Foreground="{StaticResource AutocompletionWindowFontColor}"
+                               TextAlignment="Center"
+                               FontSize="14">
+                    </TextBlock>
+                    <StackPanel Orientation="Vertical" MaxWidth="250" Margin="0,0,0,30">
+                        <TextBlock Height="auto" TextWrapping="Wrap">
+                            <Run Text="{x:Static resx:Resources.AutocompleteNoRecommendationsMessage}"
+                                   Foreground="{StaticResource AutocompletionWindowFontColor}"                                                                 
+                                   FontSize="11">
+                            </Run>
+                            <Run Text="{x:Static resx:Resources.AutocompleteSwitchToObjectTypeMessage}"
+                                   Foreground="{StaticResource Blue400Brush}"
+                                   FontSize="11" >
+                            </Run>
+                            <!--
+                            <Run Text="{x:Static resx:Resources.AutocompleteLowConfidenceMessageAditional}"
+                                   Foreground="{StaticResource AutocompletionWindowFontColor}"
+                                   FontSize="11">
+                            </Run>
+                            -->
+                        </TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
 
         <Border Margin="-4,2,-2,2" Grid.RowSpan="2">
             <Popup StaysOpen="True"
@@ -150,7 +184,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
+            </Grid.ColumnDefinitions> 
             <Border CornerRadius="8"
                 BorderThickness="1"
                 Padding="5"

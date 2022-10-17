@@ -52,6 +52,7 @@ namespace Dynamo.ViewModels
                 }
             }
             DefaultResults = candidates;
+            DisplayNoRecommendationsLowConfidence = false;
         }
         
         internal void PopulateAutoCompleteCandidates()
@@ -148,6 +149,9 @@ namespace Dynamo.ViewModels
                     FilteredResults = new List<NodeSearchElementViewModel>(foundNodes).OrderBy(x => x.Name).ThenBy(x => x.Description);
                 }        
             }
+
+            DisplayNoRecommendationsLowConfidence = !FilteredResults.Any() && dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion == Models.NodeAutocompleteSuggestion.MLRecommendation;
+            RaisePropertyChanged(nameof(DisplayNoRecommendationsLowConfidence));
         }
 
         /// <summary>
@@ -462,5 +466,10 @@ namespace Dynamo.ViewModels
             }
 
         }
+
+        /// <summary>
+        /// Indicates if display the No recommendations / Low confidence message (image and texts)
+        /// </summary>
+        public bool DisplayNoRecommendationsLowConfidence { get; set; }
     }
 }
