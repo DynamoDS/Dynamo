@@ -32,8 +32,7 @@ namespace CoreNodeModels
 
         public int CompareTo(object obj)
         {
-            var a = obj as DynamoDropDownItem;
-            if (a == null)
+            if (!(obj is DynamoDropDownItem a))
                 return 1;
 
             return Name.CompareTo(a);
@@ -56,7 +55,7 @@ namespace CoreNodeModels
         [JsonIgnore]
         public ObservableCollection<DynamoDropDownItem> Items
         {
-            get { return items; }
+            get => items;
             set
             {
                 items = value;
@@ -91,7 +90,7 @@ namespace CoreNodeModels
         /// </summary>
         public int SelectedIndex
         {
-            get { return selectedIndex; }
+            get => selectedIndex;
             set
             {
                 //do not allow selected index to
@@ -99,7 +98,7 @@ namespace CoreNodeModels
                 if (value > Items.Count - 1 || value < 0)
                 {
                     selectedIndex = -1;
-                    selectedString = String.Empty;
+                    selectedString = string.Empty;
                 }
                 else
                 {
@@ -110,7 +109,7 @@ namespace CoreNodeModels
             }
         }
 
-        private string selectedString = String.Empty;
+        private string selectedString = string.Empty;
 
         /// <summary>
         /// String form of current selected item, so derived class
@@ -118,7 +117,7 @@ namespace CoreNodeModels
         /// </summary>
         public string SelectedString
         {
-            get { return selectedString; }
+            get => selectedString;
             set
             {
                 if (!string.IsNullOrEmpty(value) && value != selectedString)
@@ -173,11 +172,11 @@ namespace CoreNodeModels
             if (selectedIndex < 0)
             {
                 Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
-                selectedString = String.Empty;
+                selectedString = string.Empty;
             }
             else
             {
-                selectedString = selectedIndex > Items.Count - 1 ? String.Empty : GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
+                selectedString = selectedIndex > Items.Count - 1 ? string.Empty : GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
             }
         }
 
@@ -295,7 +294,7 @@ namespace CoreNodeModels
             var selectionState = PopulateItemsCore(currentSelection);
 
             // Restore the selection when selectedIndex is valid
-            if (selectionState == SelectionState.Restore && !String.IsNullOrEmpty(currentSelection))
+            if (selectionState == SelectionState.Restore && !string.IsNullOrEmpty(currentSelection))
             {
                 SelectedIndex = -1;
                 for (int i = 0; i < items.Count; i++)
