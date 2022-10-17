@@ -43,6 +43,6 @@ namespace Dynamo.Models
 
     internal delegate void SettingsMigrationHandler(SettingsMigrationEventArgs args);
 
-    internal delegate void SplashScreenHandler(SplashScreenEventArgs args);
+    internal delegate void SplashScreenHandler(SplashScreenLoadEventArgs args);
 
 }

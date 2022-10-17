@@ -318,13 +318,21 @@ namespace Dynamo.Models
 
     }
 
-    internal class SplashScreenEventArgs : EventArgs
+    /// <summary>
+    /// Event arguments when creating a splash screen event
+    /// </summary>
+    internal class SplashScreenLoadEventArgs : EventArgs
     {
         public string LoadDescription { get; set; }
         
         public float BarSize { get; set; }
 
-        public SplashScreenEventArgs(string loadDescription, float barSize)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="loadDescription">Load message</param>
+        /// <param name="barSize">Load bar size</param>
+        public SplashScreenLoadEventArgs(string loadDescription, float barSize)
         {
             LoadDescription = loadDescription;
             BarSize = barSize;

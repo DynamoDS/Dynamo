@@ -245,11 +245,10 @@ namespace Dynamo.Applications
         /// <param name="info">Host analytics info</param>
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
-        {   
-            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
-
+        {
+            // Preload ASM and display corresponding message on splash screen
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-
             var model = StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, info);
             model.IsASMLoaded = isASMloaded;
             return model;

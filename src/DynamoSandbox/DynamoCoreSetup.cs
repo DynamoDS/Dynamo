@@ -148,7 +148,7 @@ namespace DynamoSandbox
             }
         }
 
-        private void DynamoModel_RequestUpdateLoadBarStatus(SplashScreenEventArgs args)
+        private void DynamoModel_RequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)
         {
             if(migrationWindow != null)
             {
@@ -181,7 +181,7 @@ namespace DynamoSandbox
 
             dynamoView = new DynamoView(viewModel);
 
-            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenEventArgs(Resources.SplashScreenLaunchingDynamo, 100));
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenLaunchingDynamo, 100));
 
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {

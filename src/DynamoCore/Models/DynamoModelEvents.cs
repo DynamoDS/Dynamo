@@ -73,7 +73,7 @@ namespace Dynamo.Models
         }
 
         internal static event SplashScreenHandler RequestUpdateLoadBarStatus;
-        internal static void OnRequestUpdateLoadBarStatus(SplashScreenEventArgs args)
+        internal static void OnRequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)
         {
             if (RequestUpdateLoadBarStatus != null)
                 RequestUpdateLoadBarStatus(args);
