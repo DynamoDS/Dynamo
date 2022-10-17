@@ -329,7 +329,8 @@ namespace Dynamo.DocumentationBrowser
 
             if (raiseInsertGraph != null)
             {
-                raiseInsertGraph(this, new MyEventArgs(@"C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\EXAMPLES\Geometry\Abstract\BoundingBox\Action\dyn\Contains.dyn"));
+                // TODO: Remove test graph with appropriate resource
+                raiseInsertGraph(this, new MyEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\Example.dyn"));
             }
         }
 

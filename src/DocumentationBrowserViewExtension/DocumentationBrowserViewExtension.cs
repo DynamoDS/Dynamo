@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Security.Permissions;
 using System.Web.UI.WebControls;
 using System.Windows;
+using System.Windows.Threading;
 using DesignScript.Builtin;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
@@ -158,11 +160,14 @@ namespace Dynamo.DocumentationBrowser
 
             this.DynamoViewModel = (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel);
         }
-        
+
         private void OnInsertFile(object sender, MyEventArgs e)
         {
             this.DynamoViewModel.Model.InsertFileFromPath(e.Data);
-            this.DynamoViewModel.GraphAutoLayoutCommand.Execute(null);
+            DoEvents();
+
+            this.DynamoViewModel.FitViewCommand.Execute(null);
+            DoEvents();
         }
 
         private void RequestLoadLayoutSpecs()
@@ -351,6 +356,33 @@ namespace Dynamo.DocumentationBrowser
                 this.documentationBrowserMenuItem.IsChecked = false;
             }
         }
+
+        #region helper methods
+
+        /// <summary>
+        ///     Force the Dispatcher to empty it's queue
+        /// </summary>
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        public static void DoEvents()
+        {
+            var frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background,
+                new DispatcherOperationCallback(ExitFrame), frame);
+            Dispatcher.PushFrame(frame);
+        }
+
+        /// <summary>
+        ///     Helper method for DispatcherUtil
+        /// </summary>
+        /// <param name="frame"></param>
+        /// <returns></returns>
+        private static object ExitFrame(object frame)
+        {
+            ((DispatcherFrame)frame).Continue = false;
+            return null;
+        }
+
+        #endregion
 
     }
 }

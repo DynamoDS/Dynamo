@@ -130,7 +130,6 @@ namespace Dynamo.Models
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
-
         /// <summary>
         /// Indicating if ASM is loaded correctly, defaulting to true because integrators most likely have code for ASM preloading
         /// During sandbox initializing, Dynamo checks specifically if ASM loading was correct
@@ -385,6 +384,12 @@ namespace Dynamo.Models
         internal static string DefaultPythonEngine { get; private set; }
 
         internal static DynamoUtilities.DynamoFeatureFlagsManager FeatureFlags { get; private set; }
+
+        #endregion
+
+        #region constants
+
+        private const int INSERT_VERTICAL_OFFSET_VALUE = 750;
 
         #endregion
 
@@ -1837,7 +1842,7 @@ namespace Dynamo.Models
             Exception ex;
             if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
             {
-                OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                InsertXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
                 return;
             }
             else
@@ -1943,13 +1948,17 @@ namespace Dynamo.Models
                     // TODO, QNTM-1101: Figure out JSON migration strategy
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
+                        
+                        //ExtraWorkspaceViewInfo viewInfo = Dynamo.View WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
                         WorkspaceModel ws;
                         if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
                         {
-                            InsertWorkspace(ws);
+                            ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfoFromJson(fileContents);
+
+                            InsertWorkspace(ws, viewInfo);
                             //Raise an event to deserialize the view parameters before
                             //setting the graph to run
-                            //OnComputeModelDeserialized();
+                            OnComputeModelDeserialized();
 
                             //SetPeriodicEvaluation(ws);
                         }
@@ -2009,6 +2018,40 @@ namespace Dynamo.Models
             }
         }
 
+        private bool InsertXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode)
+        {
+            try
+            {
+                //save the file before it is migrated to JSON.
+                //if in test mode, don't save the file in backup
+                if (!IsTestMode)
+                {
+                    if (!pathManager.BackupXMLFile(xmlDoc, filePath))
+                    {
+                        Logger.Log("File is not saved in the backup folder {0}: ", pathManager.BackupDirectory);
+                    }
+                }
+
+                WorkspaceInfo workspaceInfo;
+                if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
+                {
+                    if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
+                    {
+                        WorkspaceModel ws;
+                        if (OpenXmlFile(workspaceInfo, xmlDoc, out ws))
+                        {
+                            InsertWorkspace(ws);
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         private void OpenWorkspace(WorkspaceModel ws)
         {
             // TODO: #4258
@@ -2034,39 +2077,46 @@ namespace Dynamo.Models
             OnWorkspaceOpened(ws);
         }
 
-        private void InsertWorkspace(WorkspaceModel ws)
+        private void InsertWorkspace(WorkspaceModel ws, ExtraWorkspaceViewInfo viewInfo = null)
         {
-            // TODO: #4258
-            // The logic to remove all other home workspaces from the model
-            // was moved from the ViewModel. When #4258 is implemented, we will need to
-            // remove this step.
             var nodes = ws.Nodes;
-            var notes = ws.Notes;
+            var connectors = ws.Connectors;
+
+            if (nodes == null || !nodes.Any() || NodesAlreadyLoaded(nodes))
+            {
+                return;
+            }
+
+            // Get the offsets before we insert the nodes
+            GetInsertNodesOffset(currentWorkspace.Nodes, viewInfo.NodeViews, out var offsetX, out var offsetY);
+
+            InsertNodes(nodes);
+            InsertConnectors(connectors);
+
+            CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo);
 
             foreach (var node in nodes)
             {
-                node.CenterY = 200;
-                currentWorkspace.AddAndRegisterNode(node, false);
+                node.CenterX += offsetX;
+                node.CenterY += offsetY;
             }
 
-            foreach (var note in notes)
-            {
-                currentWorkspace.AddNote(note, false);
-            }
-
-            foreach (var connectorModel in ws.Connectors)
-            {
-                var startNode = connectorModel.Start.Owner;
-                var endNode = connectorModel.End.Owner;
-                
-                ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
-            }
+            InsertAnnotations(viewInfo.Annotations, offsetX, offsetY);
             
-            currentWorkspace.HasUnsavedChanges = true;
-            //var group = new AnnotationModel(nodes, notes);
-            //currentWorkspace.AddAnnotation(group);
-        }
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddRange(nodes);
 
+            //var annotation = currentWorkspace.AddAnnotation("Inserted Dynamo graph", Guid.NewGuid());
+
+            //annotation.AnnotationText = ws.Name;
+            //annotation.CenterX = minX;
+            //annotation.CenterY = maxY;
+
+            //DynamoSelection.Instance.ClearSelection();
+            //DynamoSelection.Instance.Selection.Add(annotation);
+
+            currentWorkspace.HasUnsavedChanges = true;
+        }
 
 
         private void SetPeriodicEvaluation(WorkspaceModel ws)
@@ -2156,6 +2206,34 @@ namespace Dynamo.Models
                 customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
 
             return true;
+        }
+
+        /// <summary>
+        /// Load the extra view information required to fully construct a WorkspaceModel object 
+        /// </summary>
+        /// <param name="json"></param>
+        static private ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
+        {
+            JsonReader reader = new JsonTextReader(new StringReader(json));
+            var obj = JObject.Load(reader);
+            var viewBlock = obj["View"];
+            if (viewBlock == null)
+                return null;
+
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture
+            };
+
+            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
 
         // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version. 
@@ -3261,7 +3339,123 @@ namespace Dynamo.Models
 
             if (args.PropertyName == "EnablePresetOptions")
                 OnPropertyChanged("EnablePresetOptions");
-        }       
+        }
+
+        #region insert private methods
+        private void InsertAnnotations(IEnumerable<ExtraAnnotationViewInfo> viewInfoAnnotations, double offsetX, double offsetY)
+        {
+            foreach (var annotation in viewInfoAnnotations)
+            {
+                if (annotation.Nodes.Any() || annotation.PinnedNode != null) continue;
+
+                var guidValue = WorkspaceModel.IdToGuidConverter(annotation.Id);
+                var matchingNote = CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == guidValue);
+
+                if (matchingNote != null)
+                {
+                    matchingNote.CenterX += offsetX;
+                    matchingNote.CenterY += offsetY; 
+                }
+            }
+        }
+
+        private void InsertNodes(IEnumerable<NodeModel> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                if (currentWorkspace.Nodes.Any(n => n.GUID == node.GUID))
+                {
+                    continue;  // prevent loading the same node twice
+                }
+
+                currentWorkspace.AddAndRegisterNode(node, false);
+            }
+        }
+
+        private void InsertConnectors(IEnumerable<ConnectorModel> connectors)
+        {
+            foreach (var connectorModel in connectors)
+            {
+                var startNode = connectorModel.Start.Owner;
+                var endNode = connectorModel.End.Owner;
+
+                var usedConnectors = currentWorkspace.Connectors.Where(n => n.GUID == connectorModel.GUID);
+
+                foreach (var connector in usedConnectors)
+                {
+                    connector.Delete();
+                }
+
+                ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
+            }
+        }
+
+        private void GetInsertNodesOffset(IEnumerable<NodeModel> currentWorkspaceNodes, IEnumerable<ExtraNodeViewInfo> insertedNodes, out double offsetX, out double offsetY)
+        {
+            double currentX, currentY, nodeX, nodeY;
+            GetRelativeInsertPoints(currentWorkspaceNodes, out currentX, out currentY);
+            GetRelativeInsertPoints(insertedNodes, out nodeX, out nodeY);
+            offsetX = currentX - nodeX;
+            offsetY = currentY - nodeY + INSERT_VERTICAL_OFFSET_VALUE;
+        }
+
+        private void GetRelativeInsertPoints(IEnumerable<NodeModel> nodes, out double x, out double y)
+        {
+            NodeModel nodeX = null;
+            foreach (var n in nodes)
+            {
+                if (nodeX == null)
+                {
+                    nodeX = n;
+                    continue;
+                }
+                if (n.CenterX < nodeX.CenterX)
+                {
+                    nodeX = n;
+                }
+            }
+
+            var minX = nodeX.CenterX;
+            var minXWidth = nodeX.Width;
+            x = minX - minXWidth * 0.5;
+            y = nodes.Max(n => n.CenterY);
+        }
+
+        private void GetRelativeInsertPoints(IEnumerable<ExtraNodeViewInfo> nodes, out double x, out double y)
+        {
+            ExtraNodeViewInfo nodeX = null;
+            foreach (var n in nodes)
+            {
+                if (nodeX == null)
+                {
+                    nodeX = n;
+                    continue;
+                }
+                if (n.X < nodeX.X)
+                {
+                    nodeX = n;
+                }
+            }
+
+            x = nodeX.X;
+            y = nodes.Min(n => n.Y);
+        }
+
+        private bool NodesAlreadyLoaded(IEnumerable<NodeModel> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                if (currentWorkspace.Nodes.Any(n => n.GUID == node.GUID))
+                {
+                    continue;
+                }
+                // If at least one node is not found inside the current graph, return false
+                return false;
+            }
+            // If all nodes are already loaded, return true
+            return true;
+        }
+        #endregion
 
         #endregion
     }

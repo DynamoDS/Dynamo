@@ -1,4 +1,5 @@
 ﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -2604,7 +2605,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private Guid IdToGuidConverter(string id)
+        internal static Guid IdToGuidConverter(string id)
         {
             Guid deterministicGuid;
             if (!Guid.TryParse(id, out deterministicGuid))
