@@ -1,16 +1,15 @@
-using Microsoft.Web.WebView2.Core;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
-using Dynamo.DynamoSandbox.Properties;
+using Microsoft.Web.WebView2.Core;
 
 
 namespace Dynamo.DynamoSandbox
 {
-    public partial class SettingsMigrationWindow : Window
+    public partial class SplashScreen : Window
     {
         private static readonly string htmlEmbeddedFile = "Dynamo.DynamoSandbox.node_modules._dynamods.splash_screen.build.index.html";
         private static readonly string jsEmbeddedFile = "Dynamo.DynamoSandbox.node_modules._dynamods.splash_screen.build.index.bundle.js";
@@ -22,7 +21,7 @@ namespace Dynamo.DynamoSandbox
         internal Action<bool> RequestLaunchDynamo;
         internal Action<string> RequestImportSettings;
 
-        public SettingsMigrationWindow()
+        public SplashScreen()
         {
             InitializeComponent();
 

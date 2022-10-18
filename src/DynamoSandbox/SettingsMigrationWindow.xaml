@@ -1,4 +1,4 @@
-﻿<Window x:Class="Dynamo.DynamoSandbox.SettingsMigrationWindow"
+﻿<Window x:Class="Dynamo.DynamoSandbox.SplashScreen"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
