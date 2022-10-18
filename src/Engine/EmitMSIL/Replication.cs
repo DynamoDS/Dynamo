@@ -370,7 +370,11 @@ namespace EmitMSIL
         }
 
         /// <summary>
-        /// Filters FEPs based on rank and type matching.
+        /// Filters FEPs based on class hiearchy and array ranking.
+        /// Ex.1 Overidden functions class B{ method; } class D : B { method; }
+        /// D d; d.method(); => D::method will be chosen because it is closes to the caller's type.
+        /// Ex.2 Functions that differ in array rank
+        /// method(var[][]), method(var[]..[]); method([1..2]); => method(var[][]) will be chosen because it has the lowest array rank.
         /// </summary>
         /// <param name="thisPtr"></param>
         /// <param name="runtimeCore"></param>
@@ -483,6 +487,15 @@ namespace EmitMSIL
             return feps[0];
         }
 
+        /// <summary>
+        /// Tries to find a FEP that exactly matches the type and rank of the input arguments.
+        /// </summary>
+        /// <param name="thisPtr"></param>
+        /// <param name="arguments"></param>
+        /// <param name="funcGroup"></param>
+        /// <param name="replicationInstructions"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns></returns>
         private static CLRFunctionEndPoint GetCompleteMatchFunctionEndPoint(
             CLRStackValue thisPtr,
             List<CLRStackValue> arguments,
@@ -514,6 +527,17 @@ namespace EmitMSIL
             return fep;
         }
 
+
+        /// <summary>
+        /// Returns the FEP that has the lowest cast distance.
+        /// </summary>
+        /// <param name="thisPtr"></param>
+        /// <param name="formalParams"></param>
+        /// <param name="runtimeCore"></param>
+        /// <param name="candidatesWithCastDistances"></param>
+        /// <param name="candidateFunctions"></param>
+        /// <param name="candidatesWithDistances"></param>
+        /// <returns></returns>
         private static CLRFunctionEndPoint GetCompliantTarget(
             CLRStackValue thisPtr,
             List<CLRStackValue> formalParams,
