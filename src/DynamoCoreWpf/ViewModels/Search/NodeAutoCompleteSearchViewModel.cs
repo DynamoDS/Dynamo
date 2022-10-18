@@ -54,23 +54,49 @@ namespace Dynamo.ViewModels
             DefaultResults = candidates;
             DisplayNoRecommendationsLowConfidence = false;
         }
-        
+
         internal void PopulateAutoCompleteCandidates()
         {
             if (PortViewModel == null) return;
 
             searchElementsCache = GetMatchingSearchElements().ToList();
 
-            // If node match searchElements found, use default suggestions. 
-            // These default suggestions will be populated based on the port type.
-            if (!searchElementsCache.Any())
+            if (dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion == Models.NodeAutocompleteSuggestion.MLRecommendation)
             {
-                PopulateDefaultAutoCompleteCandidates();
+                // Case 1: no results (0 items)
+                //FilteredResults = new List<NodeSearchElementViewModel>();
+
+                // Case 2: the result has at least one item assuming each node could be by a recommendation or by use
+                FilteredResults = DefaultResults.Where(e => e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
+
+                foreach (var item in FilteredResults)
+                {
+                    item.ViewConfidenceScoreRecentUse = true;
+                    item.IsByUse = true;
+                }
+
+                DisplayNoRecommendationsLowConfidence = !FilteredResults.Where(n => n.IsByRecommendation).Any();                
             }
             else
-            {
-                FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
+            {                
+                // If node match searchElements found, use default suggestions. 
+                // These default suggestions will be populated based on the port type.
+                if (!searchElementsCache.Any())
+                {
+                    PopulateDefaultAutoCompleteCandidates();
+                }
+                else
+                {
+                    FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
+                }
+
+                foreach (var item in FilteredResults)
+                {
+                    item.ViewConfidenceScoreRecentUse = false;
+                }
+                DisplayNoRecommendationsLowConfidence = false;
             }
+            RaisePropertyChanged(nameof(DisplayNoRecommendationsLowConfidence));
         }
 
         internal void PopulateDefaultAutoCompleteCandidates()
@@ -128,11 +154,11 @@ namespace Dynamo.ViewModels
             {
                 if (searchElementsCache.Any())
                 {
-                    FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache); 
+                    FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);                   
                 }
                 else
                 {
-                    PopulateDefaultAutoCompleteCandidates();
+                    PopulateDefaultAutoCompleteCandidates();                    
                 }
             }
             else 
@@ -148,10 +174,7 @@ namespace Dynamo.ViewModels
                     var foundNodes = Search(input, defaultSearchElementsCache);
                     FilteredResults = new List<NodeSearchElementViewModel>(foundNodes).OrderBy(x => x.Name).ThenBy(x => x.Description);
                 }        
-            }
-
-            DisplayNoRecommendationsLowConfidence = !FilteredResults.Any() && dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion == Models.NodeAutocompleteSuggestion.MLRecommendation;
-            RaisePropertyChanged(nameof(DisplayNoRecommendationsLowConfidence));
+            }            
         }
 
         /// <summary>

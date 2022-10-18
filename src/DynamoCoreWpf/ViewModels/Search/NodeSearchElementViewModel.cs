@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -236,6 +236,27 @@ namespace Dynamo.Wpf.ViewModels
 
                 return icon;
             }
+        }
+
+        /// <summary>
+        /// Indicates if the user can view the confidence score or the recent use icon
+        /// </summary>
+        public Boolean ViewConfidenceScoreRecentUse { get; set; }
+        /// <summary>
+        /// Rating of confidence
+        /// </summary>
+        public int ConfidenceScore { get; set; }
+        /// <summary>
+        /// Indicates if the Node is part of ML result per use
+        /// </summary>
+        public Boolean IsByUse { get; set; }
+        /// <summary>
+        /// Indicates if the Node is part of the ML result per recommendation
+        /// </summary>
+        public Boolean IsByRecommendation
+        {
+            get
+            { return !IsByUse; }
         }
 
         internal Point Position { get; set; }
