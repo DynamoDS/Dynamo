@@ -1623,8 +1623,8 @@ Next assemblies were loaded several times:
     <value>Most Recent Update</value>
     <comment>Sort package by the most recent update</comment>
   </data>
-  <data name="PackageSearchViewDeprecated" xml:space="preserve">
-    <value>DEPRECATED</value>
+  <data name="PackageManagerPackageDeprecated" xml:space="preserve">
+    <value>Deprecated</value>
     <comment>Indicate package has been deprecated</comment>
   </data>
   <data name="PackageSearchViewDeprecatedTooltip" xml:space="preserve">
@@ -3313,31 +3313,31 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Package Upload Scan</value>
   </data>
   <data name="ImportPreferencesInfo" xml:space="preserve">
-   <value>Your custom settings can be imported here. It will be applied once Dynamo and any host program restarts</value>
-   <comment>Import Preferences Info.</comment>
+    <value>Your custom settings can be imported here. It will be applied once Dynamo and any host program restarts</value>
+    <comment>Import Preferences Info.</comment>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
-   <value>Import</value>
-   <comment>Import Preferences Text.</comment>
+    <value>Import</value>
+    <comment>Import Preferences Text.</comment>
   </data>
   <data name="ExportPreferencesText" xml:space="preserve">
-   <value>Export</value>
-   <comment>Export Preferences Text.</comment>
+    <value>Export</value>
+    <comment>Export Preferences Text.</comment>
   </data>
   <data name="ExportSettingsDialogTitle" xml:space="preserve">
-   <value>Select Folder to Export</value>
+    <value>Select Folder to Export</value>
   </data>
   <data name="FileDialogImportSettingsFiles" xml:space="preserve">
-   <value>Settings Files ({0})|{0}</value>
+    <value>Settings Files ({0})|{0}</value>
   </data>
   <data name="ImportSettingsDialogTitle" xml:space="preserve">
-   <value>Import Settings</value>
+    <value>Import Settings</value>
   </data>
   <data name="ImportSettingsSuccessMessage" xml:space="preserve">
-   <value>Import Success</value>
+    <value>Import Success</value>
   </data>
   <data name="ImportSettingsFailedMessage" xml:space="preserve">
-   <value>Import Failed</value>
+    <value>Import Failed</value>
   </data>
   <data name="PreferencesSettingHardwareAcceleration" xml:space="preserve">
     <value>Use Hardware Acceleration</value>
@@ -3350,7 +3350,7 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Auto-Backup Interval</value>
     <comment>Setting menu | Auto-Backup Interval</comment>
   </data>
-    <data name="PreferencesSettingMaxRecentFiles" xml:space="preserve">
+  <data name="PreferencesSettingMaxRecentFiles" xml:space="preserve">
     <value>Maximum Number of Recent Files</value>
     <comment>Setting menu | Maximum Number of Recent Files</comment>
   </data>
