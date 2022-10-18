@@ -13,17 +13,23 @@ using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.DocumentationBrowser
 {
-    public class MyEventArgs : EventArgs
+    public class InsertDocumentationLinkEventArgs : EventArgs
     {
-        private string m_Data;
-        public MyEventArgs(string _myData)
+        private string data;
+        private string name;
+        public InsertDocumentationLinkEventArgs(string _Data, string _Name)
         {
-            m_Data = _myData;
+            data = _Data;
+            name = _Name;
         } 
 
         public string Data
         {
-            get { return m_Data; }
+            get { return data; }
+        }
+        public string Name
+        {
+            get { return name; }
         }
     } 
 
@@ -343,19 +349,20 @@ namespace Dynamo.DocumentationBrowser
             {
                 if (graphPath != null)
                 {
-                    raiseInsertGraph(this, new MyEventArgs(graphPath));
+                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(graphPath, Path.GetFileNameWithoutExtension(graphPath)));
                 }
                 else
                 {
                     // TODO: Remove test graph with appropriate resource
-                    raiseInsertGraph(this, new MyEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\Example.dyn"));
+                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\Example.dyn",
+                        Path.GetFileNameWithoutExtension(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\Example.dyn")));
                     //raiseInsertGraph(this, new MyEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\NormalGalleryContents.xml")); // Test with xml file
                 }
             }
         }
 
-        internal delegate void MyEventHandler(object sender, MyEventArgs e);
-        internal event MyEventHandler HandleInsertFile;
+        internal delegate void InsertDocumentationLinkEventHandler(object sender, InsertDocumentationLinkEventArgs e);
+        internal event InsertDocumentationLinkEventHandler HandleInsertFile;
 
         #endregion
 

@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 // General Information about an assembly is controlled through the following 
@@ -50,5 +50,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoPackagesWPF")]
 [assembly: InternalsVisibleTo("GraphNodeManagerViewExtension")]
 [assembly: InternalsVisibleTo("ExportSampleImagesViewExtension")]
+[assembly: InternalsVisibleTo("DocumentationBrowserViewExtension")]
 
 [assembly: TypeForwardedTo(typeof(Dynamo.Scheduler.Disposable))]

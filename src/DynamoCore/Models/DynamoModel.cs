@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Core;
@@ -2082,6 +2083,8 @@ namespace Dynamo.Models
             var nodes = ws.Nodes;
             var connectors = ws.Connectors;
 
+            DynamoSelection.Instance.ClearSelection();
+
             if (nodes == null || !nodes.Any() || NodesAlreadyLoaded(nodes))
             {
                 return;
@@ -2103,22 +2106,14 @@ namespace Dynamo.Models
 
             InsertAnnotations(viewInfo.Annotations, offsetX, offsetY);
             
-            DynamoSelection.Instance.ClearSelection();
+            List<NoteModel> notes = GetInsertedNotes(viewInfo.Annotations);
+
             DynamoSelection.Instance.Selection.AddRange(nodes);
-
-            //var annotation = currentWorkspace.AddAnnotation("Inserted Dynamo graph", Guid.NewGuid());
-
-            //annotation.AnnotationText = ws.Name;
-            //annotation.CenterX = minX;
-            //annotation.CenterY = maxY;
-
-            //DynamoSelection.Instance.ClearSelection();
-            //DynamoSelection.Instance.Selection.Add(annotation);
-
+            DynamoSelection.Instance.Selection.AddRange(notes);
+            
             currentWorkspace.HasUnsavedChanges = true;
         }
-
-
+        
         private void SetPeriodicEvaluation(WorkspaceModel ws)
         {
             // TODO: #4258
@@ -3388,6 +3383,26 @@ namespace Dynamo.Models
 
                 ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
             }
+        }
+
+        private List<NoteModel> GetInsertedNotes(IEnumerable<ExtraAnnotationViewInfo> viewInfoAnnotations)
+        {
+            List<NoteModel> result = new List<NoteModel>();
+
+            foreach (var annotation in viewInfoAnnotations)
+            {
+                if (annotation.Nodes.Any()) continue;
+
+                var guidValue = WorkspaceModel.IdToGuidConverter(annotation.Id);
+                var matchingNote = CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == guidValue);
+
+                if (matchingNote != null)
+                {
+                    result.Add(matchingNote);
+                }
+            }
+
+            return result;
         }
 
         private void GetInsertNodesOffset(IEnumerable<NodeModel> currentWorkspaceNodes, IEnumerable<ExtraNodeViewInfo> insertedNodes, out double offsetX, out double offsetY)

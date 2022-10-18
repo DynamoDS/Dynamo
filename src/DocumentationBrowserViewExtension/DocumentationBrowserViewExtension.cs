@@ -8,10 +8,13 @@ using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Threading;
 using DesignScript.Builtin;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
+using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using Dynamo.Selection;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.ViewModels;
@@ -161,13 +164,105 @@ namespace Dynamo.DocumentationBrowser
             this.DynamoViewModel = (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel);
         }
 
-        private void OnInsertFile(object sender, MyEventArgs e)
+        private void OnInsertFile(object sender, InsertDocumentationLinkEventArgs e)
         {
+            var existingGroups = GetExistingGroups();
+
+            // Insert the file and select all the elements that were inserted 
             this.DynamoViewModel.Model.InsertFileFromPath(e.Data);
+
+            if (!DynamoSelection.Instance.Selection.Any()) return;
+
+            DoEvents();
+
+            // We have selected all the nodes and notes from the inserted graph
+            // Now is the time to auto layout the inserted nodes
+            this.DynamoViewModel.GraphAutoLayoutCommand.Execute(null);
+            DoEvents();
+
+            GroupInsertedGraph(existingGroups, e.Name);
             DoEvents();
 
             this.DynamoViewModel.FitViewCommand.Execute(null);
             DoEvents();
+        }
+
+
+        private void GroupInsertedGraph(List<AnnotationViewModel> existingGroups, string graphName)
+        {
+            var selection = GetCurrentSelection();
+            var hostGroups = GetAllHostingGroups(existingGroups);
+
+            foreach (var group in hostGroups)
+            {
+                group.DissolveNestedGroupsCommand.Execute(null);
+            }
+
+           
+            foreach (var group in hostGroups)
+            {
+                selection.RemoveAll(x => group.AnnotationModel.ContainsModel(x as ModelBase));
+            }
+
+            DynamoSelection.Instance.Selection.AddRange(selection);
+            DynamoSelection.Instance.Selection.AddRange(hostGroups.Select(x => x.AnnotationModel));
+            DoEvents();
+
+            var annotation = this.DynamoViewModel.Model.CurrentWorkspace.AddAnnotation("Inserted Dynamo graph", Guid.NewGuid());
+            annotation.AnnotationText = graphName;
+            DoEvents();
+
+            var annotationViewModel = DynamoViewModel.CurrentSpaceViewModel.Annotations
+                    .First(x => x.AnnotationModel == annotation);
+
+            // Is that the correct way of getting a GroupStyleItem from StyleItem?
+            var styleItem = annotationViewModel.GroupStyleList.First(x => x.Name.Equals("Review"));
+            var groupStyleItem = new GroupStyleItem {Name = styleItem.Name, HexColorString = styleItem.HexColorString};
+            annotationViewModel.UpdateGroupStyle(groupStyleItem);
+
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddRange(annotation.Nodes);
+            DoEvents();
+        }
+
+        private List<AnnotationViewModel> GetAllHostingGroups(List<AnnotationViewModel> existingGroups)
+        {
+            List<AnnotationViewModel> hostGroups = new List<AnnotationViewModel>();
+
+            foreach (var group in this.DynamoViewModel.CurrentSpaceViewModel.Annotations)
+            {
+                if (existingGroups.Contains(group)) continue;
+
+                if (group.AnnotationModel.HasNestedGroups)
+                {
+                    hostGroups.Add(group);
+                }
+            }
+
+            return hostGroups;
+        }
+
+        private List<ISelectable> GetCurrentSelection()
+        {
+            List<ISelectable> selection = new List<ISelectable>();
+
+            foreach (var selected in DynamoSelection.Instance.Selection)
+            {
+                selection.Add(selected);
+            }
+
+            return selection;
+        }
+        private List<AnnotationViewModel> GetExistingGroups()
+        {
+            List<AnnotationViewModel> result = new List<AnnotationViewModel>();
+
+            foreach (var group in this.DynamoViewModel.CurrentSpaceViewModel.Annotations)
+            {
+                result.Add(group);
+            }
+
+            return result;
         }
 
         private void RequestLoadLayoutSpecs()
