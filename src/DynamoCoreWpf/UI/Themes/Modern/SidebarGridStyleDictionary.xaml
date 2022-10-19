@@ -252,7 +252,7 @@
             </StackPanel>
             <Image HorizontalAlignment="Left"
                    Height="36"
-                   Margin="3,0,16,0"                   
+                   Margin="3,0,16,0"
                    VerticalAlignment="Center"
                    Width="24"
                    Source="{Binding SmallIcon}" />

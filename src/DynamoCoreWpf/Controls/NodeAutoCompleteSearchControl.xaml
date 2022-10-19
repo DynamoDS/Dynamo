@@ -56,36 +56,36 @@
         </Grid.RowDefinitions>
 
         <Grid Name="Header"
-          Grid.Row="0">
+              Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Border Background="{StaticResource ExtensionBackgroundColor}"
-                Padding="0"
-                CornerRadius="8,8,0,0">
+                <Border Background="{StaticResource ExtensionBackgroundColor}"
+                    Padding="0"
+                    CornerRadius="8,8,0,0">
                 <Grid>
                     <StackPanel Name="AutoCompletionHeader"
-                            Grid.ColumnSpan="1"
-                            Width="Auto"
-                            HorizontalAlignment="Left"
-                            Orientation="Horizontal">
+                                Grid.ColumnSpan="1"
+                                Width="Auto"
+                                HorizontalAlignment="Left"
+                                Orientation="Horizontal">
                         <TextBlock Text="{x:Static resx:Resources.Autocomplete}"
-                           TextWrapping="Wrap"
-                           Padding="4"
-                           Margin="80,1.75,0,0"
-                           Foreground="{StaticResource AutocompletionWindowFontColor}"
-                           Background="Transparent"
-                           TextAlignment="Center"
-                           FontSize="14">
+                               TextWrapping="Wrap"
+                               Padding="4"
+                               Margin="80,1.75,0,0"
+                               Foreground="{StaticResource AutocompletionWindowFontColor}"
+                               Background="Transparent"
+                               TextAlignment="Center"
+                               FontSize="14">
                         </TextBlock>
                         <Image Name="NodeAutoCompleteInfoIcon" 
-                           Width="14" 
-                           Height="14" 
-                           MouseDown="OnMoreInfoClicked" 
-                           Margin="40,5,10,5" 
-                           HorizontalAlignment="Right" 
-                           VerticalAlignment="Center"
-                           Style="{StaticResource ToggleInfoStyle}">
+                               Width="14" 
+                               Height="14" 
+                               MouseDown="OnMoreInfoClicked" 
+                               Margin="40,5,10,5" 
+                               HorizontalAlignment="Right" 
+                               VerticalAlignment="Center"
+                               Style="{StaticResource ToggleInfoStyle}">
 
                         </Image>
                         <Image Width="14" Height="14" Margin="0,5,10,5" MouseDown="CloseAutocompletionWindow" HorizontalAlignment="Right" VerticalAlignment="Center">

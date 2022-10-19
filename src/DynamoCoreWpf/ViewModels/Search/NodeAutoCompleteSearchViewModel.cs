@@ -209,11 +209,11 @@ namespace Dynamo.ViewModels
             {
                 if (searchElementsCache.Any())
                 {
-                    FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);                   
+                    FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
                 }
                 else
                 {
-                    PopulateDefaultAutoCompleteCandidates();                    
+                    PopulateDefaultAutoCompleteCandidates();
                 }
             }
             else 
@@ -228,8 +228,8 @@ namespace Dynamo.ViewModels
                 {
                     var foundNodes = Search(input, defaultSearchElementsCache);
                     FilteredResults = new List<NodeSearchElementViewModel>(foundNodes).OrderBy(x => x.Name).ThenBy(x => x.Description);
-                }        
-            }            
+                }
+            }
         }
 
         /// <summary>
