@@ -27,6 +27,7 @@ namespace Dynamo.Tests
         {
             var di = new DirectoryInfo(Path.Combine(TestDirectory, "core", "performance"));
             var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
+
             var failingTests = new string[] { 
                 "aniform.dyn",
                 "lotsofcoloredstuff.dyn"};
@@ -48,11 +49,11 @@ namespace Dynamo.Tests
             executionData.ForEach(item =>
             {
                 var (graph, oldEngineCompileTime, oldEngineExecutionTime, newEngineCompileTime, newEngineExecutionTime) = item;
-                Console.WriteLine("{0,50}{1,9}{2,9}{3,11}{4,9}{5,9}{6,11}", graph,
-                    oldEngineCompileTime.Milliseconds, oldEngineExecutionTime.Milliseconds,
-                    oldEngineCompileTime.Milliseconds + oldEngineExecutionTime.Milliseconds,
-                    newEngineCompileTime.Milliseconds, newEngineExecutionTime.Milliseconds,
-                    newEngineCompileTime.Milliseconds + newEngineExecutionTime.Milliseconds);
+                Console.WriteLine("{0,50}{1,9:0}{2,9:0}{3,11:0}{4,9:0}{5,9:0}{6,11:0}", graph,
+                    oldEngineCompileTime.TotalMilliseconds, oldEngineExecutionTime.TotalMilliseconds,
+                    oldEngineCompileTime.TotalMilliseconds + oldEngineExecutionTime.TotalMilliseconds,
+                    newEngineCompileTime.TotalMilliseconds, newEngineExecutionTime.TotalMilliseconds,
+                    newEngineCompileTime.TotalMilliseconds + newEngineExecutionTime.TotalMilliseconds);
             });
             executionData.Clear();
         }
@@ -116,9 +117,9 @@ namespace Dynamo.Tests
 
             var newEngineCompileAndExecutionTime = model.EngineController.CompileAndExecutionTime;
 
-            Console.WriteLine("Compile and Execution time old Engine={0}+{1} ms, new Engine={2}+{3} ms",
-                oldEngineCompileAndExecutionTime.compileTime.Milliseconds, oldEngineCompileAndExecutionTime.executionTime.Milliseconds,
-                newEngineCompileAndExecutionTime.compileTime.Milliseconds, newEngineCompileAndExecutionTime.executionTime.Milliseconds);
+            Console.WriteLine("Compile and Execution time old Engine={0:0}+{1:0} ms, new Engine={2:0}+{3:0} ms",
+                oldEngineCompileAndExecutionTime.compileTime.TotalMilliseconds, oldEngineCompileAndExecutionTime.executionTime.TotalMilliseconds,
+                newEngineCompileAndExecutionTime.compileTime.TotalMilliseconds, newEngineCompileAndExecutionTime.executionTime.TotalMilliseconds);
             var execution = (Path.GetFileName(filePath),
                 oldEngineCompileAndExecutionTime.compileTime, oldEngineCompileAndExecutionTime.executionTime,
                 newEngineCompileAndExecutionTime.compileTime, newEngineCompileAndExecutionTime.executionTime);
