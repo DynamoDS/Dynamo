@@ -49,9 +49,9 @@ namespace Dynamo.Tests
             {
                 var (graph, oldEngineCompileAndExecutionTime, newEngineCompileTime, newEngineExecutionTime) = item;
                 Console.WriteLine("{0,50}{1,11}{2,9}{3,9}{4,11}", graph,
-                    oldEngineCompileAndExecutionTime.Milliseconds, newEngineCompileTime.Milliseconds,
-                    newEngineExecutionTime.Milliseconds,
-                    newEngineCompileTime.Milliseconds + newEngineExecutionTime.Milliseconds);
+                    oldEngineCompileAndExecutionTime.TotalMilliseconds, newEngineCompileTime.TotalMilliseconds,
+                    newEngineExecutionTime.TotalMilliseconds,
+                    newEngineCompileTime.TotalMilliseconds + newEngineExecutionTime.TotalMilliseconds);
             });
             executionData.Clear();
         }
