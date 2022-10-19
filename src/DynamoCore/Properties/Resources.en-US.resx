@@ -881,4 +881,7 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="AutocompleteLowConfidenceMessageAditional" xml:space="preserve">
     <value>to view more options</value>
   </data>
+  <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
+    <value>Low Confidence Tooltip</value>
+  </data>
 </root>

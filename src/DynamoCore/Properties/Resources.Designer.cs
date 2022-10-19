@@ -116,6 +116,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Low Confidence Tooltip.
+        /// </summary>
+        public static string AutocompleteLowConfidenceTooltip {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There’s no node that we can recommend to you, you may try.
         /// </summary>
         public static string AutocompleteNoRecommendationsMessage {

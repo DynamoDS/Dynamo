@@ -240,7 +240,7 @@
                     FontSize="10"
                     Margin="5,12,0,0"
                     Visibility="{Binding Path=IsByRecommendation, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Text="{Binding ConfidenceScore, StringFormat= {}% {0}, Mode=OneWay}" Foreground="{StaticResource DynamoStandardLabelTextBrush}">
+                    Text="{Binding ConfidenceScore, StringFormat= {}{0} %, Mode=OneWay}" Foreground="{StaticResource DynamoStandardLabelTextBrush}">
                 </TextBlock>
                 <Image HorizontalAlignment="Center"
                        Height="14"     
