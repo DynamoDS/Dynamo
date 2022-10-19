@@ -1565,12 +1565,16 @@ namespace ProtoScript.Runners
 
         private bool Compile(List<AssociativeNode> astList, Core targetCore)
         {
-            bool succeeded = runner.CompileAndGenerateExe(astList, targetCore, new ProtoCore.CompileTime.Context());
-            if (succeeded)
+            bool succeeded = false;
+            if (astList.Any())
             {
-                // Update the symbol tables
-                // TODO Jun: Expand to accomoadate the list of symbols
-                staticContext.symbolTable = targetCore.DSExecutable.runtimeSymbols[0];
+                succeeded = runner.CompileAndGenerateExe(astList, targetCore, new ProtoCore.CompileTime.Context());
+                if (succeeded)
+                {
+                    // Update the symbol tables
+                    // TODO Jun: Expand to accomoadate the list of symbols
+                    staticContext.symbolTable = targetCore.DSExecutable.runtimeSymbols[0];
+                }
             }
             return succeeded;
         }
@@ -1609,11 +1613,7 @@ namespace ProtoScript.Runners
 
         private bool CompileAndExecute(List<AssociativeNode> astList)
         {
-            bool succeeded = false;
-            if (astList.Any())
-            {
-                succeeded = Compile(astList, runnerCore);
-            }
+            var succeeded = Compile(astList, runnerCore);
 
             if (succeeded)
             {
@@ -1698,6 +1698,7 @@ namespace ProtoScript.Runners
         {
             var timer = new Stopwatch();
             timer.Start();
+
             // Make a copy of the ASTs to be executed
             // We dont want the compiler to modify the ASTs cached in the liverunner
             List<AssociativeNode> dispatchASTList = new List<AssociativeNode>();
@@ -1714,10 +1715,20 @@ namespace ProtoScript.Runners
             }
 
             ResetForDeltaExecution();
-            CompileAndExecute(dispatchASTList);
-            PostExecution();
+            var success = Compile(astList, runnerCore);
+
             timer.Stop();
-            CompileAndExecutionTime = (new TimeSpan(0), timer.Elapsed);
+            CompileAndExecutionTime.compileTime = timer.Elapsed;
+            timer.Restart();
+
+            if (success)
+            {
+                Execute(astList.Any());
+            }
+            PostExecution();
+
+            timer.Stop();
+            CompileAndExecutionTime.executionTime = timer.Elapsed;
         }
 
         private List<Guid> PreviewInternal(GraphSyncData syncData)
