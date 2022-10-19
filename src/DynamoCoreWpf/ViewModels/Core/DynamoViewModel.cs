@@ -839,6 +839,12 @@ namespace Dynamo.ViewModels
             {
                 model.PreferenceSettings.RecentFiles = this.RecentFiles.ToList();
             };
+
+            int maxNumRecentFiles = Model.PreferenceSettings.MaxNumRecentFiles;
+            if (RecentFiles.Count > maxNumRecentFiles)
+            {
+                RecentFiles.RemoveRange(maxNumRecentFiles, RecentFiles.Count - maxNumRecentFiles);
+            }
         }
 
         private void SubscribeLoggerHandlers()
