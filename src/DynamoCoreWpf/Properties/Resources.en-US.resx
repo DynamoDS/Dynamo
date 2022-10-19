@@ -3363,4 +3363,7 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="AddFilePathButtonName" xml:space="preserve">
     <value>Add File Path</value>
   </data>
+  <data name="PackageDeprecatedTooltip" xml:space="preserve">
+    <value>This package is outdated and cannot be installed.</value>
+  </data>
 </root>

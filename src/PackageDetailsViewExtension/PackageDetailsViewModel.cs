@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Core;
@@ -188,6 +188,7 @@ namespace Dynamo.PackageDetails
         {
             PackageLoader packageLoader = packageDetailsViewExtension.PackageManagerExtension.PackageLoader;
             packageManagerClientViewModel = packageDetailsViewExtension.PackageManagerClientViewModel;
+            IsPackageDeprecated = packageManagerSearchElement.IsDeprecated;
 
             // Reversing the versions, so they appear newest-first.
             PackageDetailItems = packageManagerSearchElement.Header.versions
@@ -197,7 +198,8 @@ namespace Dynamo.PackageDetails
                 (
                     packageManagerSearchElement.Name,
                     x,
-                    DetectWhetherCanInstall(packageLoader, x.version, packageManagerSearchElement.Name)
+                    DetectWhetherCanInstall(packageLoader, x.version, packageManagerSearchElement.Name),
+                    packageManagerSearchElement.IsDeprecated
                 )).ToList();
 
             PackageName = packageManagerSearchElement.Name;
@@ -206,7 +208,6 @@ namespace Dynamo.PackageDetails
             DatePublished = packageManagerSearchElement.LatestVersionCreated;
             NumberDownloads = packageManagerSearchElement.Downloads;
             NumberVotes = packageManagerSearchElement.Votes;
-            IsPackageDeprecated = packageManagerSearchElement.IsDeprecated;
             PackageDetailsViewExtension = packageDetailsViewExtension;
             License = packageManagerSearchElement.Header.license;
             PackageSiteURL = packageManagerSearchElement.SiteUrl;
@@ -242,7 +243,7 @@ namespace Dynamo.PackageDetails
             // In order for CanInstall to be false, both the name and installed package version must match
             // what is found in the PackageLoader.LocalPackages which are designated as 'Loaded'.
 
-            if (packageLoader == null) return false;
+            if (packageLoader == null || IsPackageDeprecated) return false;
 
             List<Package> sameNamePackages = packageLoader
                 .LocalPackages

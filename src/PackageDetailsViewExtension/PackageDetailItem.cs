@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.PackageManager;
@@ -23,6 +23,7 @@ namespace Dynamo.PackageDetails
         private string copyRightYear;
         private List<string> packages;
         private bool canInstall;
+        private bool isDeprecated;
         private string packageName;
         private PackageLoader PackageLoader { get; }
 
@@ -143,6 +144,18 @@ namespace Dynamo.PackageDetails
                 RaisePropertyChanged(nameof(CanInstall));
             }
         }
+        public bool IsDeprecated
+        {
+            get => isDeprecated;
+            set
+            {
+                if (value != isDeprecated)
+                {
+                    isDeprecated = value;
+                    RaisePropertyChanged(nameof(IsDeprecated));
+                }
+            }
+        }
 
         #endregion
 
@@ -152,7 +165,7 @@ namespace Dynamo.PackageDetails
         /// <param name="packageName"></param>
         /// <param name="packageVersion"></param>
         /// <param name="canInstall"></param>
-        public PackageDetailItem(string packageName, PackageVersion packageVersion, bool canInstall)
+        public PackageDetailItem(string packageName, PackageVersion packageVersion, bool canInstall, bool isDeprecated = false)
         {
             this.PackageName = packageName;
             this.PackageVersion = packageVersion;
@@ -160,7 +173,8 @@ namespace Dynamo.PackageDetails
             this.CopyRightHolder = PackageVersion.copyright_holder;
             this.CopyRightYear = PackageVersion.copyright_year;
             this.CanInstall = canInstall;
-            
+            this.IsDeprecated = isDeprecated;
+
             // To avoid displaying package self-dependencies.
             // For instance, avoiding Clockwork showing that it depends on Clockwork.
             this.Packages = PackageVersion.full_dependency_ids

@@ -28,7 +28,6 @@
     <Window.Resources>
         <ResourceDictionary>
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
-
             <controls:DateToVisibilityCollapsedConverter x:Key="DateToVisibilityCollapsedConverter" />
             <controls:DateToPackageLabelConverter x:Key="DateToPackageLabelCollapsedConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
@@ -502,6 +501,7 @@
                                     Command="{Binding DownloadLatestCommand}"
                                     Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
                                     DockPanel.Dock="Right"
+                                    ToolTipService.ShowOnDisabled="True"
                                     IsEnabled="{Binding IsEnabledForInstall}">
                                     <Button.Style>
                                         <Style TargetType="Button">
@@ -525,7 +525,6 @@
                                                                         DockPanel.Dock="Right"
                                                                         FontFamily="{StaticResource ArtifaktElementRegular}"
                                                                         FontSize="11"
-                                                                        Foreground="#84D7CE"
                                                                         Text="{TemplateBinding Content}" />
                                                                     <Rectangle
                                                                         Width="10"
@@ -536,6 +535,11 @@
                                                                             <Style TargetType="Rectangle">
                                                                                 <Style.Triggers>
                                                                                     <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="True">
+                                                                                        <Setter Property="Fill">
+                                                                                            <Setter.Value>
+                                                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
+                                                                                            </Setter.Value>
+                                                                                        </Setter>
                                                                                         <Setter Property="Opacity" Value="0.5" />
                                                                                     </DataTrigger>
                                                                                     <DataTrigger Binding="{Binding Path=IsEnabledForInstall}" Value="False">
@@ -578,8 +582,13 @@
                                                             <Trigger Property="IsPressed" Value="True">
                                                                 <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#5F5F5F" />
                                                             </Trigger>
+                                                            <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
+                                                                <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                            </DataTrigger>
                                                             <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="True">
                                                                 <Setter Property="TextBlock.Opacity" Value="0.5" />
+                                                                <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                                <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDeprecatedTooltip}" />
                                                             </DataTrigger>
                                                             <Trigger Property="IsEnabled" Value="False">
                                                                 <Setter Property="TextBlock.Foreground" Value="#999999" />
@@ -651,7 +660,17 @@
                                             FontFamily="{StaticResource ArtifaktElementRegular}"
                                             FontSize="11"
                                             Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                            Text="{Binding Path=Model, Converter={StaticResource DateToPackageLabelCollapsedConverter}}" />
+                                            Text="{Binding Path=Model, Converter={StaticResource DateToPackageLabelCollapsedConverter}}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="True">
+                                                            <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDeprecatedTooltip}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                     </Border>
                                 </Grid>
                             </DockPanel>

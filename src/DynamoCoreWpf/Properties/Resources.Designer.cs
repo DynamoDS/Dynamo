@@ -5042,6 +5042,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This package is outdated and cannot be installed..
+        /// </summary>
+        public static string PackageDeprecatedTooltip {
+            get {
+                return ResourceManager.GetString("PackageDeprecatedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copyright Holder.
         /// </summary>
         public static string PackageDetailsCopyRightHolder {
