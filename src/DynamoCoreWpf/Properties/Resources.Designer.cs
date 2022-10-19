@@ -7611,15 +7611,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirmation.
-        /// </summary>
-        public static string SaveConfirmationMessageBoxTitle {
-            get {
-                return ResourceManager.GetString("SaveConfirmationMessageBoxTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Save your model to STL..
         /// </summary>
         public static string SaveModelToSTLDialogTitle {
@@ -8482,6 +8473,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UnpinNodeTooltip {
             get {
                 return ResourceManager.GetString("UnpinNodeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsaved changes.
+        /// </summary>
+        public static string UnsavedChangesMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("UnsavedChangesMessageBoxTitle", resourceCulture);
             }
         }
         

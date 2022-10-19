@@ -1051,8 +1051,8 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
     <value>Package Warning</value>
     <comment>Message box title</comment>
   </data>
-  <data name="SaveConfirmationMessageBoxTitle" xml:space="preserve">
-    <value>Confirmation</value>
+  <data name="UnsavedChangesMessageBoxTitle" xml:space="preserve">
+    <value>Unsaved changes</value>
   </data>
   <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
     <value>Save your model to STL.</value>
