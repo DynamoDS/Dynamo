@@ -1283,7 +1283,7 @@ namespace Dynamo.Controls
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
             var result = MessageBoxService.Show(this, dialogText,
-                Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle,
+                Dynamo.Wpf.Properties.Resources.UnsavedChangesMessageBoxTitle,
                 buttons, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
