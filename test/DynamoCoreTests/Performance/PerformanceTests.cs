@@ -49,7 +49,7 @@ namespace Dynamo.Tests
             executionData.ForEach(item =>
             {
                 var (graph, oldEngineCompileTime, oldEngineExecutionTime, newEngineCompileTime, newEngineExecutionTime) = item;
-                Console.WriteLine("{0,50}{1,9:0}{2,9:0}{3,11:0}{4,9:0}{5,9:0}{6,11:0}", graph,
+                Console.WriteLine("{0,50}{1,9:0.0}{2,9:0.0}{3,11:0.0}{4,9:0.0}{5,9:0.0}{6,11:0.0}", graph,
                     oldEngineCompileTime.TotalMilliseconds, oldEngineExecutionTime.TotalMilliseconds,
                     oldEngineCompileTime.TotalMilliseconds + oldEngineExecutionTime.TotalMilliseconds,
                     newEngineCompileTime.TotalMilliseconds, newEngineExecutionTime.TotalMilliseconds,
@@ -117,7 +117,7 @@ namespace Dynamo.Tests
 
             var newEngineCompileAndExecutionTime = model.EngineController.CompileAndExecutionTime;
 
-            Console.WriteLine("Compile and Execution time old Engine={0:0}+{1:0} ms, new Engine={2:0}+{3:0} ms",
+            Console.WriteLine("Compile and Execution time old Engine={0:0.0}+{1:0.0} ms, new Engine={2:0.0}+{3:0.0} ms",
                 oldEngineCompileAndExecutionTime.compileTime.TotalMilliseconds, oldEngineCompileAndExecutionTime.executionTime.TotalMilliseconds,
                 newEngineCompileAndExecutionTime.compileTime.TotalMilliseconds, newEngineCompileAndExecutionTime.executionTime.TotalMilliseconds);
             var execution = (Path.GetFileName(filePath),
