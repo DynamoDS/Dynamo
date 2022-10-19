@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace FFITarget
 {
@@ -97,6 +97,16 @@ namespace FFITarget
         public static int StaticFunction()
         {
             return StaticProp;
+        }
+
+        public int Function()
+        {
+            return 9999;
+        }
+
+        public static int Function(ClassFunctionality cf)
+        {
+            return cf.Function() + 1;
         }
 
         public void Dispose()

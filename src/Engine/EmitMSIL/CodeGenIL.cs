@@ -148,6 +148,7 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Call, roundMethod);
         }
 
+        #region Coercion
         private Type EmitCoercionCode(AssociativeNode arg, Type argType, Type param)
         {
             if (argType == null) return argType;
@@ -527,14 +528,14 @@ namespace EmitMSIL
             }
             return t;
         }
+        #endregion Coercion
 
         private IEnumerable<ProtoCore.CLRFunctionEndPoint> FunctionLookup(IList args)
         {
-            var mbs = new List<ProtoCore.CLRFunctionEndPoint>();
             var key = KeyGen(className, methodName, args.Count);
-            if (methodCache.TryGetValue(key, out IEnumerable<ProtoCore.CLRFunctionEndPoint> mBase))
+            if (methodCache.TryGetValue(key, out IEnumerable<ProtoCore.CLRFunctionEndPoint> feps))
             {
-                return mBase;
+                return feps;
             }
             
             if (!CoreUtils.IsInternalMethod(methodName))
@@ -543,7 +544,7 @@ namespace EmitMSIL
                 Validity.Assert(cid != DSASM.Constants.kInvalidIndex);
             }
 
-            // TODO_MSIL: Figure out polymorfism when calling functions
+            // TODO_MSIL: Figure out polymorphism when calling functions
             // That should be done at runtime (when we know the exact runtime type of the caller type)
             var fg = runtimeCore.GetFuncGroup(methodName, className);
 
@@ -559,6 +560,7 @@ namespace EmitMSIL
 
             Validity.Assert(fg != null, "Did not find a function group");
 
+            var clrFeps = new List<ProtoCore.CLRFunctionEndPoint>();
             foreach (var funcEnd in fg.FunctionEndPoints)
             {
                 var procNode = funcEnd.procedureNode;
@@ -566,15 +568,44 @@ namespace EmitMSIL
 
                 bool isStaticOrConstructorOrInternal = procNode.IsStatic || procNode.IsConstructor || CoreUtils.IsInternalMethod(methodName);
 
-                bool matchingArgCount = isStaticOrConstructorOrInternal ?
-                    procNode.ArgumentTypes.Count == args.Count :
-                    (procNode.ArgumentTypes.Count + 1) == args.Count;
+                bool matchingArgCount = false;
+                if(isStaticOrConstructorOrInternal)
+                {
+                    if (args.Count < procNode.ArgumentTypes.Count)
+                    {
+                        var defaultArgs = procNode.ArgumentInfos.Where(ai => ai.IsDefault);
+                        if (defaultArgs.Count() == procNode.ArgumentTypes.Count)
+                        {
+                            matchingArgCount = true;
+                        }
+                    }
+                    else if (args.Count == procNode.ArgumentTypes.Count)
+                    {
+                        matchingArgCount = true;
+                    }
+                }
+                else
+                {
+                    if (procNode.ArgumentTypes.Count + 1 == args.Count)
+                    {
+                        matchingArgCount = true;
+                    }
+                    else if (args.Count < procNode.ArgumentTypes.Count + 1)
+                    {
+                        var defaultArgs = procNode.ArgumentInfos.Where(ai => ai.IsDefault);
+                        if (defaultArgs.Count() == procNode.ArgumentTypes.Count)
+                        {
+                            matchingArgCount = true;
+                        }
+                    }
+                }
 
-                if (!matchingArgCount) {
+                if (!matchingArgCount)
+                {
                     continue;
                 }
 
-                FFIMemberInfo fFIMemberInfo = null;
+                FFIMemberInfo ffiMemberInfo = null;
                 System.Type declaringType = null;
                 ParameterInfo[] parameterInfos = null;
 
@@ -583,7 +614,7 @@ namespace EmitMSIL
                     var mInfo = BuiltIn.GetInternalMethod(methodName);
                     parameterInfos = mInfo.GetParameters();
                     declaringType = mInfo.DeclaringType;
-                    fFIMemberInfo = new FFIMethodInfo(mInfo);
+                    ffiMemberInfo = new FFIMethodInfo(mInfo);
                 }
                 else if (funcEnd is FFIFunctionEndPoint ffiFep)
                 {
@@ -601,7 +632,7 @@ namespace EmitMSIL
 
                     parameterInfos = clrFFI.ReflectionInfo.GetParameters().Select(x => x.Info).ToArray();
                     declaringType = clrFFI.ReflectionInfo.DeclaringType;
-                    fFIMemberInfo = clrFFI.ReflectionInfo;
+                    ffiMemberInfo = clrFFI.ReflectionInfo;
                 }
                 else
                 {
@@ -626,21 +657,21 @@ namespace EmitMSIL
                     i++;
                 }
 
-                ProtoCore.CLRFunctionEndPoint fep = new ProtoCore.CLRFunctionEndPoint(fFIMemberInfo, formalParams, procNode.ReturnType);
-                mbs.Add(fep);
+                var fep = new ProtoCore.CLRFunctionEndPoint(ffiMemberInfo, formalParams, procNode.ReturnType);
+                clrFeps.Add(fep);
             }
 
-            if (mbs.Any())
+            if (clrFeps.Any())
             {
-                methodCache.Add(key, mbs);
+                methodCache.Add(key, clrFeps);
             }
 
-            if (!mbs.Any())
+            if (!clrFeps.Any())
             {
                 throw new MissingMethodException("No matching method found in loaded assemblies.");
             }
 
-            return mbs;
+            return clrFeps;
         }
 
         private HashSet<Type> GetTypeStatisticsForArray(ExprListNode array)
@@ -1300,12 +1331,19 @@ namespace EmitMSIL
             // Retrieve previously cached functions
             // TODO: Decide whether to process overloaded methods at compile time or leave it for runtime.
             // For now, we assume no overloads.
-            var clrFep = FunctionLookup(args).FirstOrDefault();
-            var parameters = clrFep.FormalParams.Select(x => x.CLRType).ToList();
+            var clrFeps = FunctionLookup(args);
+            var clrFep = SelectFep(clrFeps, args);
 
-            var isStaticOrCtor = clrFep.IsStatic || clrFep.IsConstructor;
+            bool doesReplicate = true;
+            bool isStaticOrCtor = true;
+            List<Type> parameters = null;
+            if (clrFep != null)
+            {
+                parameters = clrFep.FormalParams.Select(x => x.CLRType).ToList();
+                isStaticOrCtor = clrFep.IsStatic || clrFep.IsConstructor;
 
-            var doesReplicate = WillCallReplicate(parameters, isStaticOrCtor, args);
+                doesReplicate = WillCallReplicate(parameters, isStaticOrCtor, args);
+            }
 
             // TODO: Figure out a way to avoid calling WillCallReplicate twice -
             // once in the GatherTypeInfo phase and again in the emitIL phase.
@@ -1362,15 +1400,17 @@ namespace EmitMSIL
                 EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
                 {
                     Type t = DfsTraverse(n);
-                    if (isStaticOrCtor)
+                    if (clrFep != null)
                     {
-                        t = EmitCoercionCode(n, t, parameters[index]);
+                        if (isStaticOrCtor)
+                        {
+                            t = EmitCoercionCode(n, t, parameters[index]);
+                        }
+                        else if (index > 0)
+                        {
+                            t = EmitCoercionCode(n, t, parameters[index - 1]);
+                        }
                     }
-                    else if (index > 0)
-                    {
-                        t = EmitCoercionCode(n, t, parameters[index - 1]);
-                    }
-
                     if (t == null) return;
 
                     if (t.IsValueType)
@@ -1439,6 +1479,35 @@ namespace EmitMSIL
                     return ci.DeclaringType;
                 }
             }
+        }
+
+        private ProtoCore.CLRFunctionEndPoint SelectFep(IEnumerable<ProtoCore.CLRFunctionEndPoint> clrFeps, List<AssociativeNode> args)
+        {
+            if (clrFeps.Count() == 1) return clrFeps.FirstOrDefault();
+
+            ProtoCore.CLRFunctionEndPoint finalFep = null;
+            foreach(var fep in clrFeps)
+            {
+                if (args.Count != fep.FormalParams.Count) continue;
+
+                // Just like AST args, FormalParams has the first item equal to
+                // the class (this) object in the case of an instance method.
+                int index = 0;
+                foreach(var fp in fep.FormalParams)
+                {
+                    var paramType = fp.CLRType;
+                    Type argType = null;
+                    if(args[index] is IdentifierNode idn)
+                    {
+                        argType = variables[idn.Value].Item2;
+                    }
+                    if(!paramType.IsAssignableFrom(argType))
+                    {
+                        continue;
+                    }
+                }
+            }
+            return finalFep;
         }
 
         private bool DoesParamArgRankMatch(List<Type> parameterTypes, List<AssociativeNode> args)
@@ -1549,11 +1618,7 @@ namespace EmitMSIL
 
         private bool WillCallReplicate(List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
         {
-            if (isStaticOrCtor)
-            {
-                return !DoesParamArgRankMatch(paramTypes, args);
-            }
-            else
+            if(!isStaticOrCtor)
             {
                 // args[0] is assigned to the instance object in case of an instance method.
                 if(args[0] is IdentifierNode idn)
@@ -1565,8 +1630,8 @@ namespace EmitMSIL
                         return true;
                     }
                 }
-                return !DoesParamArgRankMatch(paramTypes, args);
             }
+            return !DoesParamArgRankMatch(paramTypes, args);
         }
 
         private void EmitFunctionDefinitionNode(AssociativeNode node)

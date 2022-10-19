@@ -765,5 +765,37 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             var isReplicationLogicFound = File.ReadLines(opCodeFilePath).SkipWhile(line => !line.Contains("ReplicationLogic"));
             Assert.IsEmpty(isReplicationLogicFound);
         }
+
+        [Test]
+        public void SelectFepTest1()
+        {
+            string code =
+            @"
+            import(""DesignScriptBuiltin.dll"");
+            import(""DSCoreNodes.dll"");
+            import (""FFITarget.dll"");
+            cf = FFITarget.ClassFunctionality.ClassFunctionality();
+            x = FFITarget.ClassFunctionality.Function(cf);
+            ";
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+        }
+
+        [Test]
+        public void SelectFepTest2()
+        {
+            string code =
+            @"
+            import(""DesignScriptBuiltin.dll"");
+            import(""DSCoreNodes.dll"");
+            import (""FFITarget.dll"");
+            p1 = FFITarget.DummyPoint.ByCoordinates();
+            //p2 = FFITarget.DummyPoint.ByCoordinates(10, 20);
+            ";
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+        }
     }
 }

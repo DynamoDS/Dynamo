@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
@@ -33,13 +33,25 @@ namespace FFITarget
         public double Y { get; set; }
         public double Z { get; set; }
 
-        public static DummyPoint ByCoordinates(double x, double y, double z)
+        public static DummyPoint ByCoordinates(double x = 0, double y = 0, double z = 0)
         {
             DummyPoint ret = new DummyPoint()
             {
                 X = x,
                 Y = y,
                 Z = z
+            };
+
+            return ret;
+        }
+
+        public static DummyPoint ByCoordinates(double x = 0, double y = 0)
+        {
+            DummyPoint ret = new DummyPoint()
+            {
+                X = x,
+                Y = y,
+                Z = 0
             };
 
             return ret;
