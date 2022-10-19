@@ -9,7 +9,7 @@
 	
 <ItemGroup>
     <ProjectToBuild Include="$(Solution)" >
-        <Properties>Configuration=Debug;Platform=Any CPU</Properties>
+        <Properties>Configuration=Release;Platform=Any CPU</Properties>
     </ProjectToBuild>
 </ItemGroup>
 
