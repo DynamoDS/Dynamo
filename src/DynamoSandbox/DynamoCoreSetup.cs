@@ -191,13 +191,13 @@ namespace DynamoSandbox
             }
             else
             {
-                LaunchDynamo(false);
+                LaunchDynamo(true);
             }
         }
 
-        private void LaunchDynamo(bool showStaticSplashScreenAgain)
+        private void LaunchDynamo(bool isCheckboxChecked)
         {
-            viewModel.PreferenceSettings.EnableStaticSplashScreen = showStaticSplashScreenAgain;
+            viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
             splashScreen.Close();
             Application.Current.MainWindow = dynamoView;
             dynamoView.Show();
