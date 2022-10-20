@@ -1666,6 +1666,89 @@ namespace Dynamo.ViewModels
             this.ShowStartPage = false; // Hide start page if there's one.
         }
 
+        /// <summary>
+        /// Open a definition or workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// For most cases, parameters variable refers to the file path to open
+        /// However, when this command is used in OpenFileDialog, the variable is
+        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// RunSetting of the workspace.
+        private void Insert(object parameters)
+        {
+            // try catch for exceptions thrown while opening files, say from a future version, 
+            // that can't be handled reliably
+            filePath = string.Empty;
+            fileContents = string.Empty;
+            bool forceManualMode = true;
+            try
+            {
+                if (parameters is Tuple<string, bool> packedParams)
+                {
+                    filePath = packedParams.Item1;
+                    forceManualMode = packedParams.Item2;
+                }
+                else
+                {
+                    filePath = parameters as string;
+                }
+
+                var directoryName = Path.GetDirectoryName(filePath);
+
+                // Display trust warning when file is not among trust location and warning feature is on
+                bool displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
+                    && !filePath.EndsWith("dyf")
+                    && !DynamoModel.IsTestMode
+                    && !PreferenceSettings.DisableTrustWarnings
+                    && FileTrustViewModel != null;
+                RunSettings.ForceBlockRun = displayTrustWarning;
+                // Execute graph open command
+                ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode));
+
+                //this.GraphAutoLayoutCommand.Execute(null); // ??
+                this.FitViewCommand.Execute(null); // ??
+
+                // Only show trust warning popup when current opened workspace is homeworkspace and not custom node workspace
+                if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
+                {
+                    // Skip these when opening dyf
+                    FileTrustViewModel.DynFileDirectoryName = directoryName;
+                    FileTrustViewModel.ShowWarningPopup = true;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
+                    FileTrustViewModel.AllowOneTimeTrust = false;
+                }
+            }
+            catch (Exception e)
+            {
+                if (!DynamoModel.IsTestMode)
+                {
+                    string commandString = String.Format(Resources.MessageErrorOpeningFileGeneral);
+                    string errorMsgString;
+                    // Catch all the IO exceptions and file access here. The message provided by .Net is clear enough to indicate the problem in this case.
+                    if (e is IOException || e is UnauthorizedAccessException)
+                    {
+                        errorMsgString = String.Format(e.Message, filePath);
+                    }
+                    else if (e is System.Xml.XmlException || e is Newtonsoft.Json.JsonReaderException)
+                    {
+                        errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, filePath);
+                    }
+                    else
+                    {
+                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
+                    }
+                    model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
+                    MessageBoxService.Show(errorMsgString, commandString, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    throw (e);
+                }
+                return;
+            }
+            this.ShowStartPage = false; // Hide start page if there's one.
+        }
+
         internal void OpenOnboardingGuideFile()
         {  
             var jsonDynFile = ResourceUtilities.LoadContentFromResources(GuidesManager.OnboardingGuideWorkspaceEmbeededResource, Assembly.GetExecutingAssembly(), false, false);
@@ -1768,6 +1851,71 @@ namespace Dynamo.ViewModels
 
         private bool CanShowOpenDialogAndOpenResultCommand(object parameter)
         {
+            return HomeSpace.RunSettings.RunEnabled;
+        }
+
+
+        /// <summary>
+        /// Present the open dialog and open the workspace that is selected.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void ShowInsertDialogAndInsertResult(object parameter)
+        {
+            if (HomeSpace.HasUnsavedChanges)
+            {
+                if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
+                    return;
+            }
+            
+
+            DynamoOpenFileDialog _fileDialog = new DynamoOpenFileDialog(this)
+            {
+                Filter = string.Format(Resources.FileDialogDynamoDefinitions,
+                         BrandingResourceProvider.ProductName, "*.dyn;*.dyf") + "|" +
+                         string.Format(Resources.FileDialogAllFiles, "*.*"),
+                Title = string.Format("Insert Title (Replace)", BrandingResourceProvider.ProductName)
+                //Title = string.Format(Resources.OpenDynamoDefinitionDialogTitle, BrandingResourceProvider.ProductName)
+            };
+
+            // if you've got the current space path, use it as the inital dir
+            if (!string.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
+            {
+                string path = Model.CurrentWorkspace.FileName;
+                if (File.Exists(path))
+                {
+                    var fi = new FileInfo(Model.CurrentWorkspace.FileName);
+                    _fileDialog.InitialDirectory = fi.DirectoryName;
+                }
+                else
+                {
+                    _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
+                }
+            }
+            else // use the samples directory, if it exists
+            {
+                Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
+                string location = Path.GetDirectoryName(dynamoAssembly.Location);
+                string UICulture = CultureInfo.CurrentUICulture.Name;
+                string path = Path.Combine(location, "samples", UICulture);
+
+                if (Directory.Exists(path))
+                    _fileDialog.InitialDirectory = path;
+            }
+
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (CanOpen(_fileDialog.FileName))
+                {
+                    Insert(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+                }
+            }
+
+            HomeSpace.RunSettings = new RunSettings(RunType.Manual, RunSettings.DefaultRunPeriod);
+        }
+
+        private bool CanShowInsertDialogAndInsertResultCommand(object parameter)
+        {
+            // TODO: Fix condition
             return HomeSpace.RunSettings.RunEnabled;
         }
 

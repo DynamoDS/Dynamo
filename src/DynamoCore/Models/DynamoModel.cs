@@ -1959,7 +1959,7 @@ namespace Dynamo.Models
                             InsertWorkspace(ws, viewInfo);
                             //Raise an event to deserialize the view parameters before
                             //setting the graph to run
-                            OnComputeModelDeserialized();
+                            //OnComputeModelDeserialized();
 
                             //SetPeriodicEvaluation(ws);
                         }
@@ -2080,6 +2080,9 @@ namespace Dynamo.Models
 
         private void InsertWorkspace(WorkspaceModel ws, ExtraWorkspaceViewInfo viewInfo = null)
         {
+            HomeWorkspaceModel homeWorkspace = CurrentWorkspace as HomeWorkspaceModel;
+            homeWorkspace.RunSettings.RunType = RunType.Manual;
+
             var nodes = ws.Nodes;
             var connectors = ws.Connectors;
 
@@ -2091,26 +2094,21 @@ namespace Dynamo.Models
             }
 
             // Get the offsets before we insert the nodes
-            GetInsertNodesOffset(currentWorkspace.Nodes, viewInfo.NodeViews, out var offsetX, out var offsetY);
+            GetInsertNodesOffset(currentWorkspace.Nodes, viewInfo.NodeViews, out var offsetX, out var offsetY, out var nodeX, out var nodeY);
 
-            InsertNodes(nodes);
+            InsertNodes(nodes, nodeX, nodeY);
             InsertConnectors(connectors);
 
-            CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo);
-
-            foreach (var node in nodes)
-            {
-                node.CenterX += offsetX;
-                node.CenterY += offsetY;
-            }
+            CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo, offsetX, offsetY);
 
             InsertAnnotations(viewInfo.Annotations, offsetX, offsetY);
-            
+            //ReverseNodesLocation(nodes, currentWorkspace.Nodes);
+
             List<NoteModel> notes = GetInsertedNotes(viewInfo.Annotations);
 
             DynamoSelection.Instance.Selection.AddRange(nodes);
             DynamoSelection.Instance.Selection.AddRange(notes);
-            
+
             currentWorkspace.HasUnsavedChanges = true;
         }
         
@@ -3346,15 +3344,15 @@ namespace Dynamo.Models
                 var guidValue = WorkspaceModel.IdToGuidConverter(annotation.Id);
                 var matchingNote = CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == guidValue);
 
-                if (matchingNote != null)
-                {
-                    matchingNote.CenterX += offsetX;
-                    matchingNote.CenterY += offsetY; 
-                }
+                //if (matchingNote != null)
+                //{
+                //    matchingNote.CenterX += offsetX;
+                //    matchingNote.CenterY += offsetY; 
+                //}
             }
         }
 
-        private void InsertNodes(IEnumerable<NodeModel> nodes)
+        private void InsertNodes(IEnumerable<NodeModel> nodes, double offsetX, double offsetY)
         {
             foreach (var node in nodes)
             {
@@ -3363,7 +3361,24 @@ namespace Dynamo.Models
                     continue;  // prevent loading the same node twice
                 }
 
+                //if (offsetX != 0 || offsetY != 0)
+                //{
+                //    node.CenterX += offsetX;
+                //    node.CenterY += offsetY;
+                //}
+
                 currentWorkspace.AddAndRegisterNode(node, false);
+            }
+        }
+
+        private void ReverseNodesLocation(IEnumerable<NodeModel> nodes, IEnumerable<NodeModel> originalNodes)
+        {
+            foreach (var node in nodes)
+            {
+                var original = originalNodes.First(x => x.GUID == node.GUID);
+                
+                node.CenterX += original.CenterX;
+                node.CenterY += original.CenterY;
             }
         }
 
@@ -3405,11 +3420,25 @@ namespace Dynamo.Models
             return result;
         }
 
-        private void GetInsertNodesOffset(IEnumerable<NodeModel> currentWorkspaceNodes, IEnumerable<ExtraNodeViewInfo> insertedNodes, out double offsetX, out double offsetY)
+        private void GetInsertNodesOffset(IEnumerable<NodeModel> currentWorkspaceNodes
+            , IEnumerable<ExtraNodeViewInfo> insertedNodes
+            , out double offsetX
+            , out double offsetY
+            , out double nodeOffsetX
+            , out double nodeOffsetY)
         {
+            if (!currentWorkspaceNodes.Any())
+            {
+                offsetX = offsetY = nodeOffsetX = nodeOffsetY = 0;
+                return;
+            }
+
             double currentX, currentY, nodeX, nodeY;
             GetRelativeInsertPoints(currentWorkspaceNodes, out currentX, out currentY);
             GetRelativeInsertPoints(insertedNodes, out nodeX, out nodeY);
+            nodeOffsetX = currentX;
+            nodeOffsetY = currentY + INSERT_VERTICAL_OFFSET_VALUE;
+
             offsetX = currentX - nodeX;
             offsetY = currentY - nodeY + INSERT_VERTICAL_OFFSET_VALUE;
         }
@@ -3462,13 +3491,12 @@ namespace Dynamo.Models
             {
                 if (currentWorkspace.Nodes.Any(n => n.GUID == node.GUID))
                 {
-                    continue;
+                    // if at least one node is inside the workspace, return true
+                    return true;
                 }
-                // If at least one node is not found inside the current graph, return false
-                return false;
             }
-            // If all nodes are already loaded, return true
-            return true;
+            // If no nodes exist with the same GUID, then we are good to go
+            return false;
         }
         #endregion
 
