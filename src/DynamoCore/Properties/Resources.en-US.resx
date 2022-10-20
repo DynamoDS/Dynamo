@@ -864,6 +864,6 @@ This package likely contains an assembly that is blocked. You will need to load 
     <value>Input Data</value>
   </data>
   <data name="SplashScreenInitPreferencesSettings" xml:space="preserve">
-    <value>Initializing preferences settings...</value>
+    <value>Initializing preferences...</value>
   </data>
 </root>

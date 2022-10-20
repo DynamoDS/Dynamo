@@ -102,8 +102,7 @@ namespace DynamoSandbox
                     {
                         // Show the unhandled exception dialog so user can copy the 
                         // crash details and report the crash if she chooses to.
-                        viewModel.Model.OnRequestsCrashPrompt(null,
-                            new CrashPromptArgs(e));
+                        viewModel.Model.OnRequestsCrashPrompt(new CrashErrorReportArgs(e));
 
                         // Give user a chance to save (but does not allow cancellation)
                         viewModel.Exit(allowCancel: false);

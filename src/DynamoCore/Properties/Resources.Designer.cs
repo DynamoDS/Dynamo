@@ -1808,7 +1808,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Initializing preferences settings....
+        ///   Looks up a localized string similar to Initializing preferences....
         /// </summary>
         public static string SplashScreenInitPreferencesSettings {
             get {
