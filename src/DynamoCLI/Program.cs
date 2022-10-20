@@ -8,6 +8,8 @@ namespace DynamoCLI
 {
     internal class Program
     {
+        private static EventWaitHandle suspendEvent = new AutoResetEvent(false);
+
         [STAThread]
         static internal void Main(string[] args)
         {
@@ -28,8 +30,12 @@ namespace DynamoCLI
                     thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
 
+#if DEBUG
                     Console.WriteLine("Starting DynamoCLI in keepalive mode");
                     Console.ReadLine();
+#else
+                    suspendEvent.WaitOne();
+#endif
 
                     ShutDown();
                 }
@@ -52,8 +58,10 @@ namespace DynamoCLI
                 {
                 }
 
+#if DEBUG
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
+#endif
             }
         }
 
@@ -63,9 +71,11 @@ namespace DynamoCLI
             {
                 StartupDynamo(cmdLineArgs);
 
+#if DEBUG
                 Console.WriteLine("-----------------------------------------");
                 Console.WriteLine("DynamoCLI is running in keepalive mode");
                 Console.WriteLine("Press Enter to shutdown...");
+#endif
 
                 System.Windows.Threading.Dispatcher.Run();
             }

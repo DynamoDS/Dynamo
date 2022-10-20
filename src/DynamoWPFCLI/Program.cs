@@ -12,6 +12,8 @@ namespace DynamoWPFCLI
 {
     internal class Program
     {
+        private static EventWaitHandle suspendEvent = new AutoResetEvent(false);
+
         [STAThread]
         internal static void Main(string[] args)
         {
@@ -34,9 +36,12 @@ namespace DynamoWPFCLI
                     thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
 
+#if DEBUG
                     Console.WriteLine("Starting DynamoWPFCLI in keepalive mode");
                     Console.ReadLine();
-
+#else
+                    suspendEvent.WaitOne();
+#endif
                     ShutDown();
                 }
                 else
@@ -58,8 +63,10 @@ namespace DynamoWPFCLI
                 {
                 }
 
+#if DEBUG
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
+#endif
             }
         }
 
@@ -112,9 +119,11 @@ namespace DynamoWPFCLI
             {
                 StartupDaynamo(cmdLineArgs);
 
+#if DEBUG
                 Console.WriteLine("-----------------------------------------");
                 Console.WriteLine("DynamoWPFCLI is running in keepalive mode");
                 Console.WriteLine("Press Enter to shutdown...");
+#endif
 
                 Run();
             }
