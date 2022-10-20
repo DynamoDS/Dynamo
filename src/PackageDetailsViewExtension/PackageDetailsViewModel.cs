@@ -21,6 +21,10 @@ namespace Dynamo.PackageDetails
         private readonly PackageManagerClientViewModel packageManagerClientViewModel;
         private List<PackageDetailItem> packageDetailItems;
         private string license;
+        private IPreferences Preferences
+        {
+            get { return packageManagerClientViewModel.DynamoViewModel.PreferenceSettings; }
+        }
 
         #endregion
 
@@ -97,14 +101,9 @@ namespace Dynamo.PackageDetails
         /// </summary>
         public string PackageRepositoryURL { get; }
 
-        public IPreferences Preferences
-        {
-            get { return packageManagerClientViewModel.DynamoViewModel.PreferenceSettings; }
-        }
-
         /// <summary>
-        /// True if package is enabled for download if custom package paths are not disabled,
-        /// False if custom package paths are disabled or package is deprecated.
+        /// Returns, true if custom package paths are not disabled,
+        /// False if custom package paths are disabled.
         /// </summary>
         public bool IsEnabledForInstall { get; private set; }
 

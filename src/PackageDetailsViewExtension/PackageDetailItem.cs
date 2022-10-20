@@ -144,6 +144,11 @@ namespace Dynamo.PackageDetails
                 RaisePropertyChanged(nameof(CanInstall));
             }
         }
+
+        /// <summary>
+        /// Returs true if package is enabled for download and custom package paths are not disabled,
+        /// False if custom package paths are disabled or package is deprecated, or package is already installed.
+        /// </summary>
         public bool IsEnabledForInstall
         {
             get => isEnabledForInstall;
