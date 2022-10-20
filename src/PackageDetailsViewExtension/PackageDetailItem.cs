@@ -23,7 +23,7 @@ namespace Dynamo.PackageDetails
         private string copyRightYear;
         private List<string> packages;
         private bool canInstall;
-        private bool isDeprecated;
+        private bool isEnabledForInstall;
         private string packageName;
         private PackageLoader PackageLoader { get; }
 
@@ -144,16 +144,13 @@ namespace Dynamo.PackageDetails
                 RaisePropertyChanged(nameof(CanInstall));
             }
         }
-        public bool IsDeprecated
+        public bool IsEnabledForInstall
         {
-            get => isDeprecated;
+            get => isEnabledForInstall;
             set
             {
-                if (value != isDeprecated)
-                {
-                    isDeprecated = value;
-                    RaisePropertyChanged(nameof(IsDeprecated));
-                }
+                isEnabledForInstall = value;
+                RaisePropertyChanged(nameof(IsEnabledForInstall));
             }
         }
 
@@ -165,7 +162,8 @@ namespace Dynamo.PackageDetails
         /// <param name="packageName"></param>
         /// <param name="packageVersion"></param>
         /// <param name="canInstall"></param>
-        public PackageDetailItem(string packageName, PackageVersion packageVersion, bool canInstall, bool isDeprecated = false)
+        /// <param name="isEnabledForInstall">True, if package is not already downloaded, is not deprecated, and package loading is allowed.</param>
+        public PackageDetailItem(string packageName, PackageVersion packageVersion, bool canInstall, bool isEnabledForInstall = true)
         {
             this.PackageName = packageName;
             this.PackageVersion = packageVersion;
@@ -173,7 +171,8 @@ namespace Dynamo.PackageDetails
             this.CopyRightHolder = PackageVersion.copyright_holder;
             this.CopyRightYear = PackageVersion.copyright_year;
             this.CanInstall = canInstall;
-            this.IsDeprecated = isDeprecated;
+            this.IsEnabledForInstall = isEnabledForInstall && canInstall;
+
 
             // To avoid displaying package self-dependencies.
             // For instance, avoiding Clockwork showing that it depends on Clockwork.

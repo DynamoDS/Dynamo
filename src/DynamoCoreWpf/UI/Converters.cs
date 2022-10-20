@@ -339,6 +339,31 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
+    /// Returns a logical AND operator result, when provided multiple bool values.
+    /// Any empty value will return null.
+    /// </summary>
+    public class BooleanANDConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            foreach (object value in values)
+            {
+                if (!(value is bool booleanValue)) return null;
+                if (booleanValue == false)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
     /// If the given string is empty, false is returned, otherwise true is returned.
     /// </summary>
     public class EmptyStringToFalseConverter : IValueConverter

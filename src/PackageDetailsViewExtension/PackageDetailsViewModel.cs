@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Interfaces;
 using Dynamo.PackageManager;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
@@ -13,6 +14,10 @@ namespace Dynamo.PackageDetails
     {
         #region Private Fields
 
+        /// <summary>
+        /// A reference to the ViewExtension.
+        /// </summary>
+        private PackageDetailsViewExtension PackageDetailsViewExtension { get; set; }
         private readonly PackageManagerClientViewModel packageManagerClientViewModel;
         private List<PackageDetailItem> packageDetailItems;
         private string license;
@@ -92,10 +97,16 @@ namespace Dynamo.PackageDetails
         /// </summary>
         public string PackageRepositoryURL { get; }
 
+        public IPreferences Preferences
+        {
+            get { return packageManagerClientViewModel.DynamoViewModel.PreferenceSettings; }
+        }
+
         /// <summary>
-        /// A reference to the ViewExtension.
+        /// True if package is enabled for download if custom package paths are not disabled,
+        /// False if custom package paths are disabled or package is deprecated.
         /// </summary>
-        private PackageDetailsViewExtension PackageDetailsViewExtension { get; set; }
+        public bool IsEnabledForInstall { get; private set; }
 
         #endregion
 
@@ -189,6 +200,7 @@ namespace Dynamo.PackageDetails
             PackageLoader packageLoader = packageDetailsViewExtension.PackageManagerExtension.PackageLoader;
             packageManagerClientViewModel = packageDetailsViewExtension.PackageManagerClientViewModel;
             IsPackageDeprecated = packageManagerSearchElement.IsDeprecated;
+            IsEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
 
             // Reversing the versions, so they appear newest-first.
             PackageDetailItems = packageManagerSearchElement.Header.versions
@@ -199,7 +211,7 @@ namespace Dynamo.PackageDetails
                     packageManagerSearchElement.Name,
                     x,
                     DetectWhetherCanInstall(packageLoader, x.version, packageManagerSearchElement.Name),
-                    packageManagerSearchElement.IsDeprecated
+                    IsEnabledForInstall && !IsPackageDeprecated
                 )).ToList();
 
             PackageName = packageManagerSearchElement.Name;
@@ -243,7 +255,7 @@ namespace Dynamo.PackageDetails
             // In order for CanInstall to be false, both the name and installed package version must match
             // what is found in the PackageLoader.LocalPackages which are designated as 'Loaded'.
 
-            if (packageLoader == null || IsPackageDeprecated) return false;
+            if (packageLoader == null) return false;
 
             List<Package> sameNamePackages = packageLoader
                 .LocalPackages
