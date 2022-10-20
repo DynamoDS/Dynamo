@@ -197,7 +197,7 @@ namespace DynamoSandbox
 
         private void LaunchDynamo(bool showStaticSplashScreenAgain)
         {
-            viewModel.PreferenceSettings.EnableStaticSplashScreen = !showStaticSplashScreenAgain;
+            viewModel.PreferenceSettings.EnableStaticSplashScreen = showStaticSplashScreenAgain;
             splashScreen.Close();
             Application.Current.MainWindow = dynamoView;
             dynamoView.Show();
