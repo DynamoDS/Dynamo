@@ -23,7 +23,10 @@ namespace Dynamo.PackageDetails
         private string license;
         private IPreferences Preferences
         {
-            get { return packageManagerClientViewModel.DynamoViewModel.PreferenceSettings; }
+            get {
+                if (packageManagerClientViewModel == null && Models.DynamoModel.IsTestMode) return null;
+                return packageManagerClientViewModel.DynamoViewModel.PreferenceSettings;
+            }
         }
 
         #endregion
@@ -199,7 +202,7 @@ namespace Dynamo.PackageDetails
             PackageLoader packageLoader = packageDetailsViewExtension.PackageManagerExtension.PackageLoader;
             packageManagerClientViewModel = packageDetailsViewExtension.PackageManagerClientViewModel;
             IsPackageDeprecated = packageManagerSearchElement.IsDeprecated;
-            IsEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
+            IsEnabledForInstall = Preferences == null || !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
 
             // Reversing the versions, so they appear newest-first.
             PackageDetailItems = packageManagerSearchElement.Header.versions
