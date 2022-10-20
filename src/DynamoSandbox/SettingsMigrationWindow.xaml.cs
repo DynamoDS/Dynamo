@@ -11,6 +11,7 @@ namespace Dynamo.DynamoSandbox
 {
     public partial class SplashScreen : Window
     {
+        // These are hardcoded string and should only change when npm package structure changed or image path changed
         private static readonly string htmlEmbeddedFile = "Dynamo.DynamoSandbox.node_modules._dynamods.splash_screen.build.index.html";
         private static readonly string jsEmbeddedFile = "Dynamo.DynamoSandbox.node_modules._dynamods.splash_screen.build.index.bundle.js";
         private static readonly string backgroundImage = "Dynamo.DynamoSandbox.WebApp.splashScreenBackground.png";
@@ -38,7 +39,8 @@ namespace Dynamo.DynamoSandbox
 
             var webView2Environment = await CoreWebView2Environment.CreateAsync();
             await webView.EnsureCoreWebView2Async(webView2Environment);
-
+            // Context menu disabled
+            webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             var assembly = Assembly.GetExecutingAssembly();
 
             using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))

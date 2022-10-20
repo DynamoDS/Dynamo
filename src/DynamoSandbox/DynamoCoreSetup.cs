@@ -135,12 +135,13 @@ namespace DynamoSandbox
             }
         }
 
+        /// <summary>
+        /// Import setting file from chosen path
+        /// </summary>
+        /// <param name="fileContent"></param>
         private async void ImportSettings(string fileContent)
         {
-            var importResult = false;
-
-            importResult = viewModel.PreferencesViewModel.importSettingsContent(fileContent);
-            if (importResult)
+            if (viewModel.PreferencesViewModel.importSettingsContent(fileContent))
             {
                 splashScreen.SetImportStatus(ImportStatus.success, Resources.SplashScreenSettingsImported, string.Empty);
             }
