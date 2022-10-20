@@ -139,7 +139,7 @@
     <value>Something went wrong when importing your custom setting file. Please try again or proceed with default settings.</value>
   </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
-    <value>Launching dynamo...</value>
+    <value>Launching dynamo view...</value>
   </data>
   <data name="SplashScreenLaunchTitle" xml:space="preserve">
     <value>Launch Dynamo</value>

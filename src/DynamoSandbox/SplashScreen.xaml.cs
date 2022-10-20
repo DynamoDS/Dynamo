@@ -91,6 +91,9 @@ namespace Dynamo.DynamoSandbox
                 $"errorDescription: '{errorDescription}'" + "})");
         }
 
+        /// <summary>
+        /// Setup the values for all lables on splash screen using resources
+        /// </summary>
         internal async void SetLabels()
         {
             await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
@@ -122,8 +125,8 @@ namespace Dynamo.DynamoSandbox
     [ComVisible(true)]
     public class ScriptObject
     {
-        Action<bool> RequestLaunchDynamo;
-        Action<string> RequestImportSettings;
+        readonly Action<bool> RequestLaunchDynamo;
+        readonly Action<string> RequestImportSettings;
 
         public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings)
         {

@@ -84,7 +84,7 @@
     <Resource Include="logo_square_32x32.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="SettingsMigrationWindow.xaml">
+    <Page Include="SplashScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -653,6 +653,7 @@ namespace Dynamo.Models
 
             geometryFactoryPath = config.GeometryFactoryPath;
 
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 70));
             IPreferences preferences = CreateOrLoadPreferences(config.Preferences);
             if (preferences is PreferenceSettings settings)
             {

@@ -3347,9 +3347,6 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="AddFilePathButtonName" xml:space="preserve">
     <value>Add File Path</value>
   </data>
-  <data name="SplashScreenInitAutomationSettings" xml:space="preserve">
-    <value>Initializing automation settings...</value>
-  </data>
   <data name="SplashScreenViewExtensions" xml:space="preserve">
     <value>Loading View Extensions...</value>
   </data>

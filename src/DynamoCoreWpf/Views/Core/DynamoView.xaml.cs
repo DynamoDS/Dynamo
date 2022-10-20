@@ -167,7 +167,6 @@ namespace Dynamo.Controls
             }
 
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Res.SplashScreenViewExtensions, 80));
-
             var viewExtensions = new List<IViewExtension>();
             foreach (var dir in dynamoViewModel.Model.PathManager.ViewExtensionsDirectories)
             {
