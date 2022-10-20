@@ -69,7 +69,11 @@ namespace DynamoSandbox
 
                 DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
-                splashScreen.webView.NavigationCompleted -= WebView_NavigationCompleted;
+                // WebView2 could be null at this moment to prevent crash
+                if (splashScreen.webView != null)
+                {
+                    splashScreen.webView.NavigationCompleted -= WebView_NavigationCompleted;
+                }
             }
             catch (DynamoServices.AssemblyBlockedException e)
             {
