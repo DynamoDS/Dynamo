@@ -898,6 +898,7 @@ namespace Dynamo.Models
             Logger.Log(string.Format("Dynamo -- Build {0}",
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenLoadNodeLibrary, 10));
             InitializeNodeLibrary();
 
             if (extensions.Any())
