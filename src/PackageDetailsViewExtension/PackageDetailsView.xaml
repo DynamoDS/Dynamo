@@ -186,7 +186,7 @@
                                Width="16px"
                                Height="16px">
                         <Rectangle.Fill>
-                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Profile.png" />
+                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Profile_48px.png" />
                         </Rectangle.Fill>
                     </Rectangle>
                     <TextBlock Name="PackageAuthorLabel"
