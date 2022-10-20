@@ -3350,4 +3350,10 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="SplashScreenViewExtensions" xml:space="preserve">
     <value>Loading View Extensions...</value>
   </data>
+  <data name="DynamoViewSettingShowStaticSplashScreen" xml:space="preserve">
+    <value>Show Static Splash Screen</value>
+  </data>
+  <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
+    <value>This setting controls whether user will be directed to an extra static splash screen after the intial launch.</value>
+  </data>
 </root>

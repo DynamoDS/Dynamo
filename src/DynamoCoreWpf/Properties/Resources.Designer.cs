@@ -2180,6 +2180,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Static Splash Screen.
+        /// </summary>
+        public static string DynamoViewSettingShowStaticSplashScreen {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingShowStaticSplashScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Geometry Scaling....
         /// </summary>
         public static string DynamoViewSettingsMenuChangeScaleFactor {
@@ -6595,6 +6604,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewShowRunPreviewTooltip {
             get {
                 return ResourceManager.GetString("PreferencesViewShowRunPreviewTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This setting controls whether user will be directed to an extra static splash screen after the intial launch..
+        /// </summary>
+        public static string PreferencesViewShowStaticSplashScreenTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowStaticSplashScreenTooltip", resourceCulture);
             }
         }
         

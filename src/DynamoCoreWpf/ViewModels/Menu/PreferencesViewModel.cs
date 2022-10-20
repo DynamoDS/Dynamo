@@ -6,11 +6,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Resources;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Events;
-using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
@@ -271,6 +269,22 @@ namespace Dynamo.ViewModels
                 preferenceSettings.ShowRunPreview = value;
                 dynamoViewModel.ShowRunPreview = value;
                 RaisePropertyChanged(nameof(RunPreviewIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the Show Static Splash Screen toogle button
+        /// </summary>
+        public bool StaticSplashScreenEnabled
+        {
+            get
+            {
+                return preferenceSettings.EnableStaticSplashScreen;
+            }
+            set
+            {
+                preferenceSettings.EnableStaticSplashScreen = value;
+                RaisePropertyChanged(nameof(StaticSplashScreenEnabled));
             }
         }
 
