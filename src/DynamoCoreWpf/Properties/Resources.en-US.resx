@@ -2814,7 +2814,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Add Directory And Its Files To Package</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Markdown Files Directory (optional)</value>
+    <value>Markdown Files Path (optional)</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
     <value>An optional location for documenting your package in the markdown format.</value>

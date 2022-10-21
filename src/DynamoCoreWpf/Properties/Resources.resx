@@ -1590,7 +1590,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Publish a {0} Package</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Markdown Files Directory (optional)</value>
+    <value>Markdown Files Path (optional)</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
     <value>An optional location for documenting your package in the markdown format.</value>
