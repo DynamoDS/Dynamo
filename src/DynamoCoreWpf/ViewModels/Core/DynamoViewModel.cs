@@ -1866,12 +1866,14 @@ namespace Dynamo.ViewModels
                 if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
                     return;
             }
-            
 
-            DynamoOpenFileDialog _fileDialog = new DynamoOpenFileDialog(this)
+            var currentWorkspaceModelType = Model.CurrentWorkspace.GetType();
+            var fileExtensions = currentWorkspaceModelType == typeof(CustomNodeWorkspaceModel) ? "*.dyf" : "*.dyn";
+
+            DynamoOpenFileDialog _fileDialog = new DynamoOpenFileDialog(this, false)
             {
                 Filter = string.Format(Resources.FileDialogDynamoDefinitions,
-                         BrandingResourceProvider.ProductName, "*.dyn;*.dyf") + "|" +
+                         BrandingResourceProvider.ProductName, fileExtensions) + "|" +
                          string.Format(Resources.FileDialogAllFiles, "*.*"),
                 Title = string.Format("Insert Title (Replace)", BrandingResourceProvider.ProductName)
                 //Title = string.Format(Resources.OpenDynamoDefinitionDialogTitle, BrandingResourceProvider.ProductName)

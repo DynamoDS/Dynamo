@@ -2080,8 +2080,11 @@ namespace Dynamo.Models
 
         private void InsertWorkspace(WorkspaceModel ws, ExtraWorkspaceViewInfo viewInfo = null)
         {
-            HomeWorkspaceModel homeWorkspace = CurrentWorkspace as HomeWorkspaceModel;
-            homeWorkspace.RunSettings.RunType = RunType.Manual;
+            if (CurrentWorkspace.GetType() == typeof(HomeWorkspaceModel))
+            {
+                var homeWorkspace = CurrentWorkspace as HomeWorkspaceModel;
+                homeWorkspace.RunSettings.RunType = RunType.Manual;
+            }
 
             var nodes = ws.Nodes;
             var connectors = ws.Connectors;
@@ -2093,8 +2096,16 @@ namespace Dynamo.Models
                 return;
             }
 
-            // Get the offsets before we insert the nodes
-            GetInsertNodesOffset(currentWorkspace.Nodes, viewInfo.NodeViews, out var offsetX, out var offsetY, out var nodeX, out var nodeY);
+            double offsetX = 0.0;
+            double offsetY = 0.0;
+            double nodeX = 0.0;
+            double nodeY = 0.0;
+
+            if (viewInfo != null)
+            {
+                // Get the offsets before we insert the nodes
+                GetInsertNodesOffset(currentWorkspace.Nodes, viewInfo.NodeViews, out offsetX, out offsetY, out nodeX, out nodeY);
+            }
 
             InsertNodes(nodes, nodeX, nodeY);
             InsertConnectors(connectors);
@@ -2102,7 +2113,6 @@ namespace Dynamo.Models
             CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo, offsetX, offsetY);
 
             InsertAnnotations(viewInfo.Annotations, offsetX, offsetY);
-            //ReverseNodesLocation(nodes, currentWorkspace.Nodes);
 
             List<NoteModel> notes = GetInsertedNotes(viewInfo.Annotations);
 
