@@ -135,6 +135,10 @@ namespace Dynamo.PackageDetails
             }
         }
 
+        /// <summary>
+        /// Returs true if package version is not already installed,
+        /// true if not installed
+        /// </summary>
         public bool CanInstall
         {
             get => canInstall;
