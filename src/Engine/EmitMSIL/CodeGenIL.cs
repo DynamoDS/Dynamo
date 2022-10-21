@@ -1036,22 +1036,29 @@ namespace EmitMSIL
 
             EmitArray(ot, eln.Exprs, (AssociativeNode el, int idx) =>
             {
-                Type t = DfsTraverse(el);
-                if (t == null) return;
 
+                Type t;
                 //if this element is a CLRStackValue, we need to unmarshal it.
-                if (t == typeof(DSASM.CLRStackValue))
+
+                if (astTypeInfoMap.TryGetValue(el.ID, out t) && t == typeof(DSASM.CLRStackValue))
                 {
-                    //reorganize stack.
-                    EmitOpCode(OpCodes.Pop);
                     EmitOpCode(OpCodes.Ldarg_2);
                     DfsTraverse(el);
-                    //TODO cache this.
+                    //TODO cache this
                     var unmarshalMethod = typeof(BuiltIn.MSILOutputMap<string, object>).GetMethod("Unmarshal",
                     BindingFlags.Instance | BindingFlags.Public);
                     EmitOpCode(OpCodes.Callvirt, unmarshalMethod);
                     t = unmarshalMethod.ReturnType;
                 }
+                else
+                {
+                    t = DfsTraverse(el);
+                }
+
+
+                if (t == null) return;
+
+
 
                 if (ot == typeof(object) && t.IsValueType)
                 {
@@ -1422,7 +1429,7 @@ namespace EmitMSIL
                 foreach (var arg in args)
                 {
 
-                    if (astTypeInfoMap.TryGetValue(arg.ID, out argT) && argT is DSASM.CLRStackValue)
+                    if (astTypeInfoMap.TryGetValue(arg.ID, out argT) && argT == typeof(DSASM.CLRStackValue))
                     {
                         // one of the args is from replicated call - unmarshal.
                         unmarshalFunctionArgs = true;
@@ -1431,7 +1438,7 @@ namespace EmitMSIL
                 }
                 if (unmarshalFunctionArgs)
                 {
-                    EmitILComment("found replication wrapper arg, unmarshaling ");
+                    EmitILComment("found replication wrapper arg, unmarshaling");
                     EmitUnmarshalFunctionArgs(args, parameters, isStaticOrCtor);
                 }
                 else
