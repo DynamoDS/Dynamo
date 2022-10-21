@@ -34,7 +34,12 @@ namespace EmitMSIL
 
             public V this[K key]
             {
-                get => Unmarshal(key);
+                get
+                {
+                    var obj = Unmarshal(key);
+                    backingDict[key] = obj;
+                    return obj;
+                }
                 set => backingDict[key] = value;
             }
             /// <summary>
@@ -61,7 +66,12 @@ namespace EmitMSIL
 
             public ICollection<K> Keys => backingDict.Keys;
 
-            public ICollection<V> Values => backingDict.Keys.Select(x => Unmarshal(x)).ToArray();
+            public ICollection<V> Values => backingDict.Keys.Select((x) =>
+            {
+                var obj = Unmarshal(x);
+                backingDict[x] = obj;
+                return obj;
+            }).ToArray();
 
 
             public int Count => backingDict.Count;
@@ -118,6 +128,7 @@ namespace EmitMSIL
                 if (backingDict.TryGetValue(key, out _))
                 {
                     value = Unmarshal(key);
+                    backingDict[key] = value;
                     return true;
                 }
 

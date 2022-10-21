@@ -16,7 +16,7 @@ namespace EmitMSIL
     [Obsolete("This is an internal class, do not use it.")]
     public class Replication
     {
-        public static List<CLRStackValue> MarshalFunctionArguments(IList args, MSILRuntimeCore runtimeCore)
+        internal static List<CLRStackValue> MarshalFunctionArguments(IList args, MSILRuntimeCore runtimeCore)
         {
             var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
             List<CLRStackValue> stackValues = new List<CLRStackValue>();
@@ -48,6 +48,7 @@ namespace EmitMSIL
 
         public static IList<object> UnMarshalFunctionArguments2(IEnumerable<CLRFunctionEndPoint> feps, IEnumerable args, MSILRuntimeCore runtimeCore)
         {
+            //TODO_MSIL figure out how to handle multiple feps here.
             return UnmarshalFunctionArguments(feps.FirstOrDefault().FormalParams, (IList)args, runtimeCore).ToArray();
         }
 

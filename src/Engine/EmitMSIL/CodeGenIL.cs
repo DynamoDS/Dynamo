@@ -1473,23 +1473,22 @@ namespace EmitMSIL
                     }
                 });
 
-                //TODO_MSIL if possible only marshal args that resulted from a replicated call.
-                //emit marshal for args
+                //TODO_MSIL if possible only unmarshal args that resulted from a replicated call.
+                //emit unmarshal for args
                 // Emit call to load the runtimeCore argument
                 EmitOpCode(OpCodes.Ldarg_3);
                 //TODO cache this at start.
-                //now call marshall to convert any clrstackvalues to plain c# objs. 
-                var marhshallMethod = typeof(Replication).GetMethod(nameof(Replication.UnMarshalFunctionArguments2), BindingFlags.Static | BindingFlags.Public);
-                EmitOpCode(OpCodes.Call, marhshallMethod);
-
-                var unMarshaledArgsArray = DeclareLocal(marhshallMethod.ReturnType, "unMarshaledArgsArray");
+                //now call unmarshall to convert any clrstackvalues to plain c# objs. 
+                var marshalMethod = typeof(Replication).GetMethod(nameof(Replication.UnMarshalFunctionArguments2),
+                    BindingFlags.Static | BindingFlags.Public);
+                EmitOpCode(OpCodes.Call, marshalMethod);
+                //TODO_MSIL can we just use unmarshal here instead of unmarshalfunctionargs?
+                var unMarshaledArgsArray = DeclareLocal(marshalMethod.ReturnType, "unMarshaledArgsArray");
                 if (unMarshaledArgsArray != null)
                 {
                     EmitOpCode(OpCodes.Stloc, unMarshaledArgsArray.LocalIndex);
                 }
-                //now on the stack we have a list of objects, we need to iterate through it and push each item to the stack.
-                //emit a for loop which pushes to stack.
-
+                
                 //foreach item in args -
                 //increment index
                 //emit code to index into array
