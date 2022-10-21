@@ -104,6 +104,7 @@ namespace Dynamo.Applications
                 // and issue commands until the extension calls model.Shutdown().
                 bool keepAlive = false;
                 bool showHelp = false;
+                bool noConsoleCli = false;
 
                 // Disables all analytics (Google and ADP)
                 bool disableAnalytics = false;
@@ -131,6 +132,7 @@ namespace Dynamo.Applications
                 " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i => importPaths.Add(i))
                 .Add("gp=|GP=|geometrypath=|GeometryPath=", "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.", gp => asmPath = gp)
                 .Add("k|K|keepalive", "Keepalive mode, leave the Dynamo process running until a loaded extension shuts it down.", k => keepAlive = k != null)
+                .Add("nc|NC|noconsolecli", "Don't rely on the console window to interact with CLI in Keepalive mode", nc => noConsoleCli = nc != null)
                 .Add("hn=|HN=|hostname", "Identify Dynamo variation associated with host", hn => hostname = hn)
                 .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
@@ -159,6 +161,7 @@ namespace Dynamo.Applications
                     ImportedPaths = importPaths,
                     ASMPath = asmPath,
                     KeepAlive = keepAlive,
+                    NoConsoleCli = noConsoleCli,
                     DisableAnalytics = disableAnalytics,
                     AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname, ParentId = parentId, SessionId = sessionId },
                     CERLocation = cerLocation
@@ -180,6 +183,7 @@ namespace Dynamo.Applications
             public IEnumerable<String> ImportedPaths { get; set; }
             public string ASMPath { get; set; }
             public bool KeepAlive { get; set; }
+            public bool NoConsoleCli { get; set; }
             [Obsolete("This property will be removed in Dynamo 3.0 - please use AnalyticsInfo")]
             public string HostName { get; set; }
             public bool DisableAnalytics { get; set; }

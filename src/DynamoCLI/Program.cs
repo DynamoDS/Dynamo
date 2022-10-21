@@ -13,9 +13,12 @@ namespace DynamoCLI
         [STAThread]
         static internal void Main(string[] args)
         {
+            bool useConsole = true;
+            
             try
             {
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
+                useConsole = !cmdLineArgs.NoConsoleCli;
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
                 if (cmdLineArgs.DisableAnalytics)
                 {
@@ -30,12 +33,15 @@ namespace DynamoCLI
                     thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
 
-#if DEBUG
-                    Console.WriteLine("Starting DynamoCLI in keepalive mode");
-                    Console.ReadLine();
-#else
-                    suspendEvent.WaitOne();
-#endif
+                    if (!useConsole)
+                    {
+                        suspendEvent.WaitOne();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Starting DynamoCLI in keepalive mode");
+                        Console.ReadLine();
+                    }
 
                     ShutDown();
                 }
@@ -58,10 +64,12 @@ namespace DynamoCLI
                 {
                 }
 
-#if DEBUG
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-#endif
+                if (useConsole)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
+                }
+
             }
         }
 
@@ -71,11 +79,12 @@ namespace DynamoCLI
             {
                 StartupDynamo(cmdLineArgs);
 
-#if DEBUG
-                Console.WriteLine("-----------------------------------------");
-                Console.WriteLine("DynamoCLI is running in keepalive mode");
-                Console.WriteLine("Press Enter to shutdown...");
-#endif
+                if (!cmdLineArgs.NoConsoleCli)
+                {
+                    Console.WriteLine("-----------------------------------------");
+                    Console.WriteLine("DynamoCLI is running in keepalive mode");
+                    Console.WriteLine("Press Enter to shutdown...");
+                }
 
                 System.Windows.Threading.Dispatcher.Run();
             }

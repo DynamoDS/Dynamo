@@ -17,10 +17,11 @@ namespace DynamoWPFCLI
         [STAThread]
         internal static void Main(string[] args)
         {
-
+            bool useConsole = true;
             try
             {
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
+                useConsole = !cmdLineArgs.NoConsoleCli;
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
 
                 if (cmdLineArgs.DisableAnalytics)
@@ -35,13 +36,16 @@ namespace DynamoWPFCLI
                     thread.Name = "DynamoModelKeepAlive";
                     thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
+                    if (!useConsole)
+                    {
+                        suspendEvent.WaitOne();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Starting DynamoWPFCLI in keepalive mode");
+                        Console.ReadLine();
+                    }
 
-#if DEBUG
-                    Console.WriteLine("Starting DynamoWPFCLI in keepalive mode");
-                    Console.ReadLine();
-#else
-                    suspendEvent.WaitOne();
-#endif
                     ShutDown();
                 }
                 else
@@ -63,10 +67,11 @@ namespace DynamoWPFCLI
                 {
                 }
 
-#if DEBUG
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-#endif
+                if (useConsole)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
+                }
             }
         }
 
@@ -119,11 +124,12 @@ namespace DynamoWPFCLI
             {
                 StartupDaynamo(cmdLineArgs);
 
-#if DEBUG
-                Console.WriteLine("-----------------------------------------");
-                Console.WriteLine("DynamoWPFCLI is running in keepalive mode");
-                Console.WriteLine("Press Enter to shutdown...");
-#endif
+                if (!cmdLineArgs.NoConsoleCli)
+                {
+                    Console.WriteLine("-----------------------------------------");
+                    Console.WriteLine("DynamoWPFCLI is running in keepalive mode");
+                    Console.WriteLine("Press Enter to shutdown...");
+                }
 
                 Run();
             }
