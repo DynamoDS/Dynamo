@@ -166,6 +166,16 @@ namespace Dynamo.DocumentationBrowser
 
         private void OnInsertFile(object sender, InsertDocumentationLinkEventArgs e)
         {
+            if (DynamoViewModel.Model.CurrentWorkspace.GetType() == typeof(HomeWorkspaceModel))
+            {
+                var homeWorkspace = DynamoViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+                if (homeWorkspace != null && homeWorkspace.RunSettings.RunType != RunType.Manual)
+                {
+                    DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow("Example file added to workspace. Run mode changed to Manual.", true);
+                    homeWorkspace.RunSettings.RunType = RunType.Manual;
+                }
+            }
+            
             var existingGroups = GetExistingGroups();
 
             // Insert the file and select all the elements that were inserted 

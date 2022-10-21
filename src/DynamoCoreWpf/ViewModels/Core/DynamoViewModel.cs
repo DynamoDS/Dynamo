@@ -1898,6 +1898,12 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = path;
             }
 
+            if (HomeSpace.RunSettings.RunType != RunType.Manual)
+            {
+                MainGuideManager.CreateRealTimeInfoWindow("Example file added to workspace. Run mode changed to Manual.", true);
+                HomeSpace.RunSettings.RunType = RunType.Manual;
+            }
+
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
@@ -1905,8 +1911,6 @@ namespace Dynamo.ViewModels
                     Insert(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
                 }
             }
-
-            HomeSpace.RunSettings = new RunSettings(RunType.Manual, RunSettings.DefaultRunPeriod);
         }
 
         private bool CanShowInsertDialogAndInsertResultCommand(object parameter)

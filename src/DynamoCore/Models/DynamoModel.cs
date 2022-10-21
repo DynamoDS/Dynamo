@@ -2080,12 +2080,6 @@ namespace Dynamo.Models
 
         private void InsertWorkspace(WorkspaceModel ws, ExtraWorkspaceViewInfo viewInfo = null)
         {
-            if (CurrentWorkspace.GetType() == typeof(HomeWorkspaceModel))
-            {
-                var homeWorkspace = CurrentWorkspace as HomeWorkspaceModel;
-                homeWorkspace.RunSettings.RunType = RunType.Manual;
-            }
-
             var nodes = ws.Nodes;
             var connectors = ws.Connectors;
 
@@ -2093,6 +2087,8 @@ namespace Dynamo.Models
 
             if (nodes == null || !nodes.Any() || NodesAlreadyLoaded(nodes))
             {
+                //this.dynamoviewmodel.MainGuideManager.CreateRealTimeInfoWindow("Example file added to workspace. Run mode changed to Manual.", true);
+                // TODO: Notify the user that the insert has failed somehow
                 return;
             }
 
