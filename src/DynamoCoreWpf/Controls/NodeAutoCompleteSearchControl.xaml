@@ -149,20 +149,16 @@
                             FontSize="14">
                     </TextBlock>
                     <StackPanel Orientation="Vertical" MaxWidth="250" Margin="0,0,0,30">
-                        <TextBlock Height="auto" TextWrapping="Wrap">
+                        <TextBlock Height="auto" TextWrapping="Wrap" FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#F5F5F5" FontSize="11">
                          <Run Text="{Binding Path=NoRecommendationsOrLowConfidenceMessage}"
-                                Foreground="{StaticResource AutocompletionWindowFontColor}"                                                                 
-                                FontSize="11">
+                                Foreground="{StaticResource AutocompletionWindowFontColor}">
                          </Run>
                          <Run Text="{x:Static resx:Resources.AutocompleteSwitchToObjectTypeMessage}"
-                                Foreground="{StaticResource Blue400Brush}"
-                                FontSize="11">
+                                Foreground="{StaticResource Blue400Brush}">
                          </Run>
                          <Run Text="{Binding Path=LowConfidenceMessageAdditional}"
-                                Foreground="{StaticResource AutocompletionWindowFontColor}"
-                                FontSize="11">
+                                Foreground="{StaticResource AutocompletionWindowFontColor}">
                          </Run>
-
                         </TextBlock>
                     </StackPanel>
              </StackPanel>
