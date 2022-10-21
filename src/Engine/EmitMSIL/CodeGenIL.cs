@@ -1432,7 +1432,7 @@ namespace EmitMSIL
                 if (unmarshalFunctionArgs)
                 {
                     EmitILComment("found replication wrapper arg, unmarshaling ");
-                    EmitUnmarshalFunctionArgs(args, numArgs, parameters, isStaticOrCtor);
+                    EmitUnmarshalFunctionArgs(args, parameters, isStaticOrCtor);
                 }
                 else
                 {
@@ -1470,7 +1470,7 @@ namespace EmitMSIL
             }
         }
 
-        private void EmitUnmarshalFunctionArgs(List<AssociativeNode> args, int numArgs, List<Type> parameters, bool isStaticOrCtor)
+        private void EmitUnmarshalFunctionArgs(List<AssociativeNode> args, List<Type> parameters, bool isStaticOrCtor)
         {
 
             // Emit methodCache passed as arg to global Execute method.
@@ -1480,7 +1480,7 @@ namespace EmitMSIL
 
             // Emit methodName for input to call to CodeGenIL.KeyGen
             EmitOpCode(OpCodes.Ldstr, methodName);
-            EmitOpCode(OpCodes.Ldc_I4, numArgs);
+            EmitOpCode(OpCodes.Ldc_I4, args.Count);
             var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
             EmitOpCode(OpCodes.Call, keygen);
 
@@ -1527,7 +1527,7 @@ namespace EmitMSIL
             //emit unmarshal for args
             // Emit call to load the runtimeCore argument
             EmitOpCode(OpCodes.Ldarg_3);
-            //TODO cache this at start.
+            //TODO_MSIL cache this and other method lookups at start to speedup compile.
             //now call unmarshall to convert any clrstackvalues to plain c# objs. 
             var marshalMethod = typeof(Replication).GetMethod(nameof(Replication.UnMarshalFunctionArguments2),
                 BindingFlags.Static | BindingFlags.Public);
