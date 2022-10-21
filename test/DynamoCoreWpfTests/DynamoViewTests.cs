@@ -24,7 +24,7 @@ using SharpDX.DXGI;
 
 
 namespace DynamoCoreWpfTests
-{        
+{
     public class DynamoViewTests : DynamoTestUIBase
     {
         // adapted from: NodeViewTests.cs
@@ -58,11 +58,11 @@ namespace DynamoCoreWpfTests
 
             var workspace = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             Debug.Assert(workspace != null, nameof(workspace) + " != null");
-            workspace.Run();            
+            workspace.Run();
 
             List<NodeModel> errorNodes = ViewModel.Model.CurrentWorkspace.Nodes.ToList().FindAll(n => n.State == ElementState.Error);
             List<NodeModel> warningNodes = ViewModel.Model.CurrentWorkspace.Nodes.ToList().FindAll(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
-            
+
             // We should have 3 nodes in Error state and 3 nodes in Warning state
             Assert.AreEqual(3, warningNodes.Count());
             Assert.AreEqual(3, errorNodes.Count());
@@ -92,7 +92,7 @@ namespace DynamoCoreWpfTests
 
             // Check if the run message indicates warning
             Assert.AreEqual(notificationsControl.runNotificationTextBlock.Text, "Run completed with warnings.");
-            
+
             // After deleting all Error nodes, the counter should get to 0 
             Assert.AreEqual((items[0] as FooterNotificationItem).NotificationCount, 0);
 
@@ -104,6 +104,24 @@ namespace DynamoCoreWpfTests
 
             // After deleting all Warning nodes, the counter should get to 0 
             Assert.AreEqual((items[1] as FooterNotificationItem).NotificationCount, 0);
+        }
+
+        [Test]
+        public void OpeningWorkspaceWithTrustWarning()
+        {
+            // Open workspace with test mode as false, to verify trust warning.
+            DynamoModel.IsTestMode = false;
+            Open(@"core\CustomNodes\TestAdd.dyn");
+
+            Assert.IsTrue(ViewModel.FileTrustViewModel.ShowWarningPopup);
+
+            // Close workspace
+            Assert.IsTrue(ViewModel.CloseHomeWorkspaceCommand.CanExecute(null));
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+
+            // Asert that the warning popup is closed, when the workspace is closed.
+            Assert.IsFalse(ViewModel.FileTrustViewModel.ShowWarningPopup);
+            DynamoModel.IsTestMode = true;
         }
     }
 }

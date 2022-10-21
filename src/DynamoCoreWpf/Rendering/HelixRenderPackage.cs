@@ -37,7 +37,7 @@ namespace Dynamo.Wpf.Rendering
     /// A Helix-specifc IRenderPackage implementation.
     /// </summary>
     [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
-    public class HelixRenderPackage : IRenderPackage, ITransformable, IRenderLabels, IRenderPackageSupplement, IInstancingRenderPackage
+    public class HelixRenderPackage : IRenderPackage, ITransformable, IRenderLabels, IRenderPackageSupplement, IInstancingRenderPackage, IRenderInstancedLabels
     {
         #region private members
 
@@ -48,7 +48,7 @@ namespace Dynamo.Wpf.Rendering
         private List<int> lineStripVertexCounts;
         private byte[] colors;
         private int colorStride;
-        private List< byte[]> colorsList = new List<byte[]>();
+        private List<byte[]> colorsList = new List<byte[]>();
         private List<int> colorStrideList = new List<int>();
         internal Dictionary<Guid, List<Matrix>> instanceTransforms = new Dictionary<Guid, List<Matrix>>();
 
@@ -101,7 +101,7 @@ namespace Dynamo.Wpf.Rendering
             this.Transform = csAsMat.ToArray();
         }
 
-        
+
         /// <summary>
         /// Set the transform that is applied to all geometry in the renderPackage
         /// by computing the matrix that transforms between from and to.
@@ -189,7 +189,7 @@ namespace Dynamo.Wpf.Rendering
             {
                 throw new LegacyRenderPackageMethodException();
             }
-            
+
             this.colors = colors;
         }
 
@@ -327,7 +327,7 @@ namespace Dynamo.Wpf.Rendering
             {
                 throw new LegacyRenderPackageMethodException();
             }
-            
+
             if (colors.Count()/4 != points.Positions.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
@@ -348,7 +348,7 @@ namespace Dynamo.Wpf.Rendering
             {
                 throw new LegacyRenderPackageMethodException();
             }
-            
+
             if (colors.Count() / 4 != lines.Positions.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
@@ -369,7 +369,7 @@ namespace Dynamo.Wpf.Rendering
             {
                 throw new LegacyRenderPackageMethodException();
             }
-            
+
             if (colors.Count() / 4 != mesh.Positions.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
@@ -416,7 +416,7 @@ namespace Dynamo.Wpf.Rendering
         {
             get
             {
-                var hasData = points.Positions.Count > 0 || 
+                var hasData = points.Positions.Count > 0 ||
                     lines.Positions.Count > 0 ||
                     mesh.Positions.Count > 0;
                 return hasData;
@@ -557,7 +557,7 @@ namespace Dynamo.Wpf.Rendering
                 {
                     list.Add(new Tuple<string, float[]>(tuple.Item1, tuple.Item2.ToArray()));
                 }
-                
+
                 return list;
             }
         }
@@ -574,8 +574,8 @@ namespace Dynamo.Wpf.Rendering
             switch (vertexType)
             {
                 case VertexType.Point:
-                    if (index > points.Positions.Count) {return;}
-                    position = points.Positions[index-1];
+                    if (index > points.Positions.Count) { return; }
+                    position = points.Positions[index - 1];
                     break;
                 case VertexType.Line:
                     if (index > lines.Positions.Count) { return; }
@@ -588,9 +588,46 @@ namespace Dynamo.Wpf.Rendering
                 default:
                     return;
             }
-            LabelPlaces.Add(new Tuple<string, Vector3>(label,position));
+            LabelPlaces.Add(new Tuple<string, Vector3>(label, position));
         }
 
+        /// <summary>
+        /// Adds a label to the render package, but first transforms the label by the transform matrix of the 
+        /// relevant graphicItem.
+        /// </summary>
+        /// <param name="label">label</param>
+        /// <param name="vertexType">type of vertex</param>
+        /// <param name="vertIndex">vertex index for base label position</param>
+        /// <param name="instanceIndex">index to use for transform matrix</param>
+        /// <param name="BaseTessellationId">baseTessellation Id of the item this label belongs to.
+        /// Aids in lookup of the correct transform matrix.</param>
+        void IRenderInstancedLabels.AddInstancedLabel(string label, VertexType vertexType, int vertIndex, int instanceIndex, Guid BaseTessellationId)
+        {
+            Vector3 position = new Vector3();
+            switch (vertexType)
+            {
+                case VertexType.MeshInstance:
+                    //
+                    if (vertIndex > mesh.Positions.Count) { return; }
+                    position = Mesh.Positions[vertIndex - 1];
+                    break;
+                case VertexType.LineInstance:
+                    //
+                    if (vertIndex > Lines.Positions.Count) { return; }
+                    position = Lines.Positions[vertIndex - 1];
+                    break;
+            }
+            if (instanceTransforms.ContainsKey(BaseTessellationId) && instanceIndex <= instanceTransforms[BaseTessellationId].Count)
+            {
+                var transform = instanceTransforms[BaseTessellationId]?[instanceIndex - 1];
+                var transformedLabelPos = transform?.ToMatrix3D().Transform(position.ToPoint3D()).ToVector3();
+                if (transformedLabelPos.HasValue)
+                {
+                    LabelPlaces.Add(new Tuple<string, Vector3>(label, transformedLabelPos.Value));
+                }
+            }
+
+        }
         /// <summary>
         /// Add a label position to the render package.
         /// </summary>
@@ -776,7 +813,7 @@ namespace Dynamo.Wpf.Rendering
             {
                 throw new Exception(message);
             }
-            
+
             foreach (var r in MeshVerticesRangesAssociatedWithTextureMaps)
             {
                 if (startIndex >= r.Item1 && startIndex <= r.Item2 || endIndex >= r.Item1 && endIndex <= r.Item2)
@@ -804,7 +841,7 @@ namespace Dynamo.Wpf.Rendering
         /// A list of mesh vertices ranges that have associated instance references
         /// </summary>
         internal Dictionary<Guid, (int start, int end)> MeshVertexRangesAssociatedWithInstancing { get; } = new Dictionary<Guid, (int start, int end)>();
-       
+
         /// <summary>
         /// Set an instance reference for a specific range of mesh vertices
         /// </summary>
@@ -909,7 +946,7 @@ namespace Dynamo.Wpf.Rendering
         /// the second row to the Y axis of the CS, the third row to the Z axis of the CS, and the last row to the CS origin, where W = 1. 
         /// </summary>
         /// <param name="matrix"></param>
-        public void AddInstanceMatrix(float[] matrix, Guid id) 
+        public void AddInstanceMatrix(float[] matrix, Guid id)
         {
             if (!ContainsTessellationId(id))
             {
@@ -959,6 +996,21 @@ namespace Dynamo.Wpf.Rendering
         }
 
         public List<Tuple<string, Vector3>> LabelPlaces { get; } = new List<Tuple<string, Vector3>>();
+
+        /// <summary>
+        /// Number of instances for a particular baseTessellation type(cuboid, sphere etc)
+        /// </summary>
+        /// <param name="baseTessellationID"></param>
+        /// <returns>returns -1 if id cannot be found in package.</returns>
+        int IRenderInstancedLabels.InstanceCount(Guid baseTessellationID) {
+            List<Matrix> res;
+            if (instanceTransforms.TryGetValue(baseTessellationID, out res))
+            {
+                return res.Count;
+            }
+            else
+                return -1;
+    }
 
         internal static LineGeometry3D InitLineGeometry()
         {

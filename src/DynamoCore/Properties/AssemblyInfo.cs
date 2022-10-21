@@ -35,6 +35,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("PythonNodeModels")]
 [assembly: InternalsVisibleTo("LibraryViewExtensionMSWebBrowser")]
+[assembly: InternalsVisibleTo("LibraryViewExtensionWebView2")]
 [assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
 [assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]
 [assembly: InternalsVisibleTo("LintingViewExtension")]
@@ -47,4 +48,8 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("SystemTestServices")]
 [assembly: InternalsVisibleTo("DynamoManipulation")]
 [assembly: InternalsVisibleTo("IronPythonTests")]
+[assembly: InternalsVisibleTo("DynamoPackagesWPF")]
+[assembly: InternalsVisibleTo("GraphNodeManagerViewExtension")]
+[assembly: InternalsVisibleTo("ExportSampleImagesViewExtension")]
+
 [assembly: TypeForwardedTo(typeof(Dynamo.Scheduler.Disposable))]

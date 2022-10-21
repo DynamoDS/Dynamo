@@ -32,6 +32,26 @@ namespace Dynamo.GraphNodeManager.Controls
 
             textBox.Focus();
         }
+
+        private void OnSearchClearButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            this.SearchTextBox.Clear();
+        }
+
+        private void SearchTextBox_OnKeyboardFocusWithinChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            if (string.IsNullOrEmpty(textBox.Text) && !textBox.IsKeyboardFocusWithin)
+            {
+                SearchTextBoxWatermark.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                SearchTextBoxWatermark.Visibility = Visibility.Collapsed;
+            }
+        }
     }
 
     /// <summary>

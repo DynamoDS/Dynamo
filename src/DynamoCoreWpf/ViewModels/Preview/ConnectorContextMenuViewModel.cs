@@ -85,19 +85,24 @@ namespace Dynamo.ViewModels
         public DelegateCommand HideConnectorSurrogateCommand { get; set; }
 
         /// <summary>
-        /// Alerts ConnectorViewModel select connnected nodes.
+        /// Alerts ConnectorViewModel select connected nodes.
         /// </summary>
         public DelegateCommand SelectConnectedSurrogateCommand { get; set; }
         /// <summary>
         /// Alerts ConnectorViewModel to break the current connection.
         /// </summary>
         public DelegateCommand BreakConnectionsSurrogateCommand { get; set; }
+        /// <summary>
+        /// Alerts ConnectorViewModel to pin the connector
+        /// </summary>
+        public DelegateCommand PinConnectedSurrogateCommand { get; set; }
 
         private void InitCommands()
         {
             HideConnectorSurrogateCommand = new DelegateCommand(HideConnectorSurrogateCommandExecute, x => true);
             SelectConnectedSurrogateCommand = new DelegateCommand(SelectConnectedSurrogateCommandExecute, x => true);
             BreakConnectionsSurrogateCommand = new DelegateCommand(BreakConnectionsSurrogateCommandExecute, x => true);
+            PinConnectedSurrogateCommand = new DelegateCommand(PinConnectedSurrogateCommandExecute, x => true);
         }
 
         /// <summary>
@@ -138,6 +143,17 @@ namespace Dynamo.ViewModels
                 Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, "Connector", 1);
             }
             ViewModel.ShowhideConnectorCommand.Execute(null);
+        }
+
+        /// <summary>
+        /// Request disposal of this viewmodel after command has run.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void PinConnectedSurrogateCommandExecute(object obj)
+        {
+            ViewModel.PinConnectorCommand.Execute(null);
+            // Track pin connected nodes event
+            Analytics.TrackEvent(Actions.Pin, Categories.ConnectorOperations, "PinWire");
         }
 
         #endregion

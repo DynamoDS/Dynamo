@@ -657,13 +657,15 @@ value : bool = false</value>
     <comment>The default name of home workspace</comment>
   </data>
   <data name="UnresolvedNodesWarningShortMessage" xml:space="preserve">
-    <value>This graph cannot be saved until unresolved nodes are removed or resolved.</value>
+    <value>The graph has unresolved nodes and cannot be saved.</value>
   </data>
   <data name="UnresolvedNodesWarningTitle" xml:space="preserve">
-    <value>Graph Contains Unresolved Nodes and Cannot Be Saved.</value>
+    <value>Unable to save graph</value>
   </data>
   <data name="UnresolvedNodesWarningMessage" xml:space="preserve">
-    <value>This graph currently contains some unresolved nodes, and cannot be saved until the nodes are resolved. If the graph is saved using SaveAs - the unresolved nodes will be removed from the file.</value>
+    <value>This may be caused by a missing package, incompatible package version, or missing host program. If you Save As, the unresolved nodes will be removed.
+
+Resolve or remove the unresolved nodes and try again.</value>
   </data>
   <data name="CodeBlockTempIdentifierOutputLabel" xml:space="preserve">
     <value>Value of expression at line {0}</value>
@@ -860,5 +862,11 @@ This package likely contains an assembly that is blocked. You will need to load 
   </data>
   <data name="ToolTipInputData" xml:space="preserve">
     <value>Input Data</value>
+  </data>
+  <data name="SplashScreenInitPreferencesSettings" xml:space="preserve">
+    <value>Initializing preferences...</value>
+  </data>
+  <data name="SplashScreenLoadNodeLibrary" xml:space="preserve">
+    <value>Loading Node Library...</value>
   </data>
 </root>

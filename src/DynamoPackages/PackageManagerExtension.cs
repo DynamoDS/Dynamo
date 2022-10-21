@@ -10,6 +10,7 @@ using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Greg;
+using Greg.Responses;
 
 namespace Dynamo.PackageManager
 {
@@ -49,6 +50,10 @@ namespace Dynamo.PackageManager
         {
             get { return "FCABC211-D56B-4109-AF18-F434DFE48139"; }
         }
+        internal HostAnalyticsInfo HostInfo { get; private set; }
+
+        // Current host, empty if sandbox, null when running tests
+        internal virtual string Host => HostInfo.HostName;
 
         /// <summary>
         ///     Manages loading of packages (property meant solely for tests)
@@ -60,7 +65,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Dynamo Package Manager Instance.
         /// </summary>
-        public PackageManagerClient PackageManagerClient { get; private set; }
+        public virtual PackageManagerClient PackageManagerClient { get; private set; }
 
 
         #endregion
@@ -115,21 +120,9 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void Startup(StartupParams startupParams)
         {
-            var path = this.GetType().Assembly.Location;
-            var config = ConfigurationManager.OpenExeConfiguration(path);
-            var key = config.AppSettings.Settings["packageManagerAddress"];
-            string url = null;
-            if (key != null)
-            {
-                url = key.Value;
-            }
+            string url = DynamoUtilities.PathHelper.getServiceBackendAddress(this, "packageManagerAddress");
 
             OnMessageLogged(LogMessage.Info("Dynamo will use the package manager server at : " + url));
-
-            if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
-            {
-                throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
-            }
 
             PackageLoader = new PackageLoader(startupParams.PathManager);
             PackageLoader.MessageLogged += OnMessageLogged;
@@ -183,6 +176,7 @@ namespace Dynamo.PackageManager
             (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodePackageFromID;
             (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingNodePackageDependencies += GetNodePackageFromAssemblyName;
             currentWorkspace = (sp.CurrentWorkspaceModel as WorkspaceModel);
+            HostInfo = ReadyParams.HostInfo;
         }
 
         public void Shutdown()
@@ -341,6 +335,36 @@ namespace Dynamo.PackageManager
         }
 
         #endregion
+        internal bool CheckIfPackagesTargetOtherHosts(IEnumerable<PackageVersion> newPackageHeaders)
+        {
+            // determine if any of the packages are targeting other hosts
+            var containsPackagesThatTargetOtherHosts = false;
+
+            // Known hosts
+            var knownHosts = PackageManagerClient.GetKnownHosts();
+
+            // Sandbox, special case: Warn if any package targets only one known host
+            if (String.IsNullOrEmpty(Host))
+            {
+                containsPackagesThatTargetOtherHosts =
+                    newPackageHeaders.Any(y => y.host_dependencies != null && y.host_dependencies.Intersect(knownHosts).Count() == 1);
+            }
+            else
+            {
+                // Warn if there are packages targeting other hosts but not our host
+                var otherHosts = knownHosts.Except(new List<string>() { Host });
+                containsPackagesThatTargetOtherHosts = newPackageHeaders.Any(x =>
+                {
+                    // Is our host in the list?
+                    // If not, is any other host in the list?
+                    return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && otherHosts.Any(y => x.host_dependencies.Contains(y));
+                });
+            }
+
+            return containsPackagesThatTargetOtherHosts;
+        }
+
+
     }
     
 

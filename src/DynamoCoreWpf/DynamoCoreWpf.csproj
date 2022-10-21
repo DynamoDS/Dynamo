@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -13,6 +13,7 @@
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="UI\Images\AboutWindow\logo_about_dark.png" />
     <None Remove="UI\Images\Alignment\align_bottom.png" />
     <None Remove="UI\Images\Alignment\align_left.png" />
     <None Remove="UI\Images\Alignment\align_right.png" />
@@ -21,20 +22,42 @@
     <None Remove="UI\Images\Alignment\align_x_distribute.png" />
     <None Remove="UI\Images\Alignment\align_y_average.png" />
     <None Remove="UI\Images\Alignment\align_y_distribute.png" />
+    <None Remove="UI\Images\dynamonotext.png" />
+    <None Remove="UI\Images\maximize_16px_blue.png" />
+    <None Remove="UI\Images\minimize_16px_blue.png" />
+    <None Remove="UI\Images\minus_16px_blue.png" />
     <None Remove="UI\Images\NodeStates\alert-64px.png" />
     <None Remove="UI\Images\NodeStates\error-64px.png" />
     <None Remove="UI\Images\NodeStates\frozen-64px.png" />
     <None Remove="UI\Images\NodeStates\hidden-64px.png" />
     <None Remove="UI\Images\NodeStates\info-64px.png" />
+    <None Remove="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\close-darktheme-hover-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\close-lighttheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\close-lighttheme-hover-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\max-darktheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\max-darktheme-hover-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\max-lighttheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\max-lighttheme-hover-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\min-darktheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\min-darktheme-hover-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\min-lighttheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\min-lighttheme-hover-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\restore-darktheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\restore-darktheme-hover-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\restore-lighttheme-default-16px.png" />
+    <None Remove="UI\Images\TitleBarButtons\restore-lighttheme-hover-16px.png" />
     <None Remove="UI\Images\warning_16px.png" />
+    <None Remove="Views\FileTrust\FileTrustWarning.xaml" />
     <None Remove="Views\GuidedTour\HtmlPages\nodePackage.html" />
     <None Remove="Views\Menu\TrustedPathView.xaml" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.7686" />
-	<PackageReference Include="Greg" Version="2.1.8122.28281" />
-	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+  <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2365" />
+  <PackageReference Include="Greg" Version="2.3.0.2505" />
+  <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	<PackageReference Include="RestSharp" Version="106.12.0" />
 	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" CopyXML="true" />
 	<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
@@ -263,6 +286,7 @@
       <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
+    <Compile Include="Utilities\PreferencesPanelUtilities.cs" />
     <Compile Include="ViewModels\Core\AnnotationExtension.cs" />
     <Compile Include="ViewModels\Core\AnnotationViewModel.cs" />
     <Compile Include="Utilities\ResourceUtilities.cs" />
@@ -274,6 +298,8 @@
     <Compile Include="ViewModels\Core\InPortViewModel.cs" />
     <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
+    <Compile Include="ViewModels\Core\ShortcutToolbarViewModel.cs" />
+    <Compile Include="ViewModels\FileTrust\FileTrustWarningViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\ExitGuideWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
@@ -321,6 +347,7 @@
     <Compile Include="Views\Debug\DebugModesWindow.xaml.cs">
       <DependentUpon>DebugModesWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\FileTrust\FileTrustWarning.xaml.cs" />
     <Compile Include="Views\Gallery\GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
     </Compile>
@@ -329,9 +356,6 @@
     </Compile>
     <Compile Include="Views\GuidedTour\ExitGuideWindow.xaml.cs">
       <DependentUpon>ExitGuideWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\GuidedTour\WebBrowserWindow.xaml.cs">
-      <DependentUpon>WebBrowserWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GuidedTour\RealTimeInfoWindow.xaml.cs">
       <DependentUpon>RealTimeInfoWindow.xaml</DependentUpon>
@@ -481,13 +505,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\GuidedTour\ExitGuideWindow.xaml">
+    <Page Include="Views\FileTrust\FileTrustWarning.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\GuidedTour\WebBrowserWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Views\GuidedTour\ExitGuideWindow.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Core\ConnectorContextMenuView.xaml">
       <SubType>Designer</SubType>
@@ -639,6 +663,9 @@
     <EmbeddedResource Include="UI\GuidedTour\DynamoOnboardingGuide_HouseCreationDS.dyn">
 	</EmbeddedResource>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
+    <Resource Include="UI\Images\AboutWindow\logo_about_dark.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Resource>
     <Resource Include="UI\Images\Alignment\align_bottom.png" />
     <Resource Include="UI\Images\Alignment\align_left.png" />
     <Resource Include="UI\Images\Alignment\align_right.png" />
@@ -780,11 +807,31 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\closetab_normal.png" />
+    <Resource Include="UI\Images\dynamonotext.png" />
+    <Resource Include="UI\Images\maximize_16px_blue.png" />
+    <Resource Include="UI\Images\minimize_16px_blue.png" />
+    <Resource Include="UI\Images\minus_16px_blue.png" />
     <Resource Include="UI\Images\NodeStates\alert-64px.png" />
     <Resource Include="UI\Images\NodeStates\error-64px.png" />
     <Resource Include="UI\Images\NodeStates\frozen-64px.png" />
     <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
     <Resource Include="UI\Images\NodeStates\info-64px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-hover-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\max-darktheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\max-darktheme-hover-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\max-lighttheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\max-lighttheme-hover-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\min-darktheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\close-darktheme-hover-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\min-darktheme-hover-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\min-lighttheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\min-lighttheme-hover-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\restore-darktheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\restore-darktheme-hover-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\restore-lighttheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\restore-lighttheme-hover-16px.png" />
     <Resource Include="UI\Images\warning_16px.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1421,12 +1468,6 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\max-default.png" />
-    <Resource Include="UI\Images\min-default.png" />
-    <Resource Include="UI\Images\minimize-hover.png" />
-    <Resource Include="UI\Images\minimize-hover-16px.png" />
-    <Resource Include="UI\Images\minimize-default-16px.png" />
-    <Resource Include="UI\Images\maximize-hover.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\PackageNodes.gif" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\connectTheNodes.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\installedPackage.html" />
@@ -1439,12 +1480,13 @@
     <Resource Include="UI\Images\searchmagnifier.png" />
     <Resource Include="UI\Images\info-grey.png" />
     <Resource Include="UI\Images\remove - default.png" />
-    <Resource Include="UI\Images\close_blue.png" />
-    <Resource Include="UI\Images\close_grey.png" />
     <Resource Include="UI\Images\Folder.png" />
     <Resource Include="UI\Images\caret_down_grey_48px.png" />
     <Resource Include="UI\Images\caret_up_grey_48px.png" />
+    <Resource Include="UI\Images\caret_down_hover_48px.png" />
+    <Resource Include="UI\Images\caret_up_hover_48px.png" />
     <Resource Include="UI\Images\menu_grey_48px.png" />
+    <Resource Include="UI\Images\menu_hover_48px.png" />
     <Resource Include="UI\Images\NodeIcon_placeholder.png" />
     <Resource Include="UI\Images\custom-node.png" />
     <Resource Include="UI\Images\image-icon-default.png" />
@@ -1452,6 +1494,10 @@
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\DynamoPackages_1_1.png" />
     <Resource Include="UI\Images\default_info_16px.png" />
     <Resource Include="UI\Images\clock-icon.png" />
+    <Resource Include="UI\Images\question-default-16px.png" />
+    <Resource Include="UI\Images\question-hover-16px.png" />
+    <Resource Include="UI\Images\info-default-16px.png" />
+    <Resource Include="UI\Images\info-hover-16px.png" />
     <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
     <Resource Include="UI\Images\info_2.png" />
@@ -1479,8 +1525,10 @@
     <Resource Include="UI\Images\Filter.png" />
     <Resource Include="UI\Images\Flag.png" />
     <Resource Include="UI\Images\Profile.png" />
+    <Resource Include="UI\Images\Profile_48px.png" />
     <Resource Include="UI\Images\Requirements.png" />
     <Resource Include="UI\Images\Sort.png" />
+    <Resource Include="UI\Images\sort-hover-16px.png" />
     <Resource Include="UI\Images\View details.png" />
     <Resource Include="UI\Images\more-vertical_selected_16px.png" />
     <Resource Include="UI\Images\pin_default_48_48.png" />
@@ -1499,12 +1547,13 @@
     <Resource Include="UI\Images\caret_down.png" />
     <Resource Include="UI\Images\down-hover-16px.png" />
     <Resource Include="UI\Images\down_16_16.png" />
-    <Resource Include="UI\Images\folder_16_16.png" />
-    <Resource Include="UI\Images\folder-hover-16px.png" />
+    <Resource Include="UI\Images\edit_folder_16px_default.png" />
+    <Resource Include="UI\Images\edit_folder_16px_hover.png" />
     <Resource Include="UI\Images\up_16_16.png" />
     <Resource Include="UI\Images\up-hover-16px.png" />
     <Resource Include="UI\Images\link-16px.png" />
     <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\FileTrustWarningDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

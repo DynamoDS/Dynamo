@@ -1,12 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Dynamo.Controls;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
@@ -19,21 +22,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
     /// </summary>
     public sealed class GuidesManager
     {
-        /// <summary>
-        /// This property contains the list of Guides read from the json file
-        /// </summary>
-        public List<Guide> Guides;
-
+        #region private properties
         /// <summary>
         /// currentGuide will contain the Guide being played
         /// </summary>
-        private Guide currentGuide;
-        private UIElement mainRootElement;
+        internal Guide currentGuide;
+
         private GuideBackground guideBackgroundElement;
-
-        private DynamoViewModel dynamoViewModel;
-
-        internal ExitGuideWindow exitGuideWindow;
+        private readonly UIElement mainRootElement;
+        private readonly DynamoViewModel dynamoViewModel;
 
         private RealTimeInfoWindow exitTourPopup;
 
@@ -49,6 +46,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private const string guideBackgroundName = "GuidesBackground";
         private const string mainGridName = "mainGrid";
         private const string libraryViewName = "Browser";
+        private Stopwatch stopwatch;
+        #endregion
+
+        #region internal properties
+        //The list of guide name strings are hardcoded to match Json definition of guides (no need localization)
+        internal static string GetStartedGuideName = "User Interface Tour";
+        internal static string PackagesGuideName = "Packages";
+        internal static string OnboardingGuideName = "Getting Started";
+
+        internal ExitGuideWindow exitGuideWindow;
 
         internal static string GuidesExecutingDirectory
         {
@@ -73,6 +80,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 return @"Dynamo.Wpf.UI.GuidedTour.DynamoOnboardingGuide_HouseCreationDS.dyn";
             }
         }
+        #endregion
+
+        /// <summary>
+        /// This property contains the list of Guides read from the json file
+        /// </summary>
+        public List<Guide> Guides;
 
         /// <summary>
         /// GuidesManager Constructor 
@@ -87,7 +100,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// Initializator that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
+        /// Initialization that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
         /// </summary>
         internal void Initialize()
         {
@@ -105,7 +118,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             guideBackgroundElement.ClearCutOffSection();
             guideBackgroundElement.ClearHighlightSection();
-        }
+            stopwatch = Stopwatch.StartNew();
+    }
 
         /// <summary>
         /// Creates the background for the GuidedTour
@@ -160,6 +174,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
+                Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
+                Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", ""), currentGuide.SequenceOrder);
             }
         }
 
@@ -178,7 +194,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 guideBackgroundElement.Visibility = Visibility.Visible;
                 currentGuide.GuideBackgroundElement = guideBackgroundElement;
                 currentGuide.MainWindow = mainRootElement;
-                currentGuide.LibraryView = GuideUtilities.FindChild(mainRootElement, libraryViewName);
+                var dynamoView = (mainRootElement as DynamoView);
+                if (dynamoView == null) return;
+                currentGuide.LibraryView = dynamoView.sidebarGrid.Children.OfType<UserControl>().FirstOrDefault();
+
                 currentGuide.Initialize();
                 currentGuide.Play();
                 GuidesValidationMethods.CurrentExecutingGuide = currentGuide;
@@ -194,7 +213,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             currentGuide = (from guide in Guides where guide.Name.Equals(args.GuideName) select guide).FirstOrDefault();
 
             //Check if it's packages guide to open the exit modal 
-            if (args.GuideName == "Packages" && currentGuide.CurrentStep.StepType != Step.StepTypes.SURVEY)
+            if (args.GuideName == GuidesManager.PackagesGuideName && currentGuide.CurrentStep.StepType != Step.StepTypes.SURVEY)
             {
                 guideBackgroundElement.ClearHighlightSection();
                 guideBackgroundElement.ClearCutOffSection();
@@ -209,7 +228,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This method exits from tour 
         /// </summary>
-        private void ExitTour()
+        internal void ExitTour()
         {
 
             if (currentGuide != null)
@@ -218,11 +237,23 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     tmpStep.StepClosed -= Popup_StepClosed;
                 }
+
+                string guidName = Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", "");
+                if (currentGuide.TotalSteps - 1 == currentGuide.CurrentStep.Sequence)
+                {
+                    Logging.Analytics.TrackEvent(Logging.Actions.Completed, Logging.Categories.GuidedTourOperations, guidName, currentGuide.CurrentStep.Sequence);
+                }
+                else 
+                {
+                    Logging.Analytics.TrackEvent(Logging.Actions.End, Logging.Categories.GuidedTourOperations, guidName, currentGuide.CurrentStep.Sequence);
+                }                
+                Logging.Analytics.TrackTimedEvent(Logging.Categories.GuidedTourOperations, Logging.Actions.TimeElapsed.ToString(), stopwatch.Elapsed, guidName);
+
                 currentGuide.ClearGuide();
                 GuideFlowEvents.GuidedTourStart -= TourStarted;
                 GuideFlowEvents.GuidedTourFinish -= TourFinished;
 
-                if(exitGuideWindow != null)
+                if (exitGuideWindow != null)
                 {
                     exitGuideWindow.ExitTourButton.Click -= ExitTourButton_Click;
                     exitGuideWindow.ContinueTourButton.Click -= ContinueTourButton_Click;
@@ -256,6 +287,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             exitGuideWindow.IsOpen = false;
             if (currentGuide != null)
             {
+                GuideFlowEvents.IsAnyGuideActive = true;
                 currentGuide.ContinueStep(currentGuide.CurrentStep.Sequence);
             }
         }
@@ -263,6 +295,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private void ExitTourButton_Click(object sender, RoutedEventArgs e)
         {
             exitGuideWindow.IsOpen = false;
+            GuideFlowEvents.OnGuidedTourExited(currentGuide.Name);
             ExitTour();
         }
 
@@ -401,6 +434,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
             var formattedText = Res.ResourceManager.GetString(jsonStepInfo.StepContent.FormattedText);
             var title = Res.ResourceManager.GetString(jsonStepInfo.StepContent.Title);
 
+            DirectoryInfo userDataFolder = null;
+            if (dynamoViewModel != null)
+            {
+                var pathManager = dynamoViewModel.Model.PathManager;
+
+                //When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+                var docsDir = new DirectoryInfo(pathManager.UserDataDirectory);
+                userDataFolder = docsDir.Exists ? docsDir : null;
+
+            }
+
             switch (jsonStepInfo.StepType)
             {
                 case Step.StepTypes.TOOLTIP:
@@ -417,12 +461,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
                             Title = title
                         }
                     };
+                    var popupWindow = newStep.stepUIPopup as PopupWindow;
+                    if(popupWindow != null && hostControlInfo.HtmlPage != null && !string.IsNullOrEmpty(hostControlInfo.HtmlPage.FileName))
+                    {
+                        popupWindow.WebBrowserUserDataFolder = userDataFolder != null ? userDataFolder.FullName : string.Empty;
+                    }
                     break;
                 case Step.StepTypes.SURVEY:
                     newStep = new Survey(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height)
                     {
                         Sequence = jsonStepInfo.Sequence,
-                        ContentWidth = 300,
                         RatingTextTitle = formattedText.ToString(),
                         StepType = Step.StepTypes.SURVEY,
                         IsRatingVisible = dynamoViewModel.Model.PreferenceSettings.IsADPAnalyticsReportingApproved,
@@ -488,32 +536,32 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// and display message passed as param
         /// </summary>
         /// <param name="content">The target content to display.</param>
-        internal void CreateRealTimeInfoWindow(string content)
+        /// <param name="stayOpen">boolean indicates if the popup will stay open until user dismiss it.</param>
+        /// TODO: Make this API out of guide manager to a more generic place
+        internal void CreateRealTimeInfoWindow(string content, bool stayOpen = false)
         {
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
             UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
 
-            // When popup already exist, replace the content
+            // When popup already exist, replace it
             if ( exitTourPopup != null && exitTourPopup.IsOpen)
             {
-                exitTourPopup.TextContent = content;
+                exitTourPopup.IsOpen = false;
             }
-            else
+            // Otherwise creates the RealTimeInfoWindow popup and set up all the needed values
+            // to show the popup over the Dynamo workspace
+            exitTourPopup = new RealTimeInfoWindow()
             {
-                // Otherwise creates the RealTimeInfoWindow popup and set up all the needed values
-                // to show the popup over the Dynamo workspace
-                exitTourPopup = new RealTimeInfoWindow()
-                {
-                    VerticalOffset = ExitTourVerticalOffset,
-                    HorizontalOffset = ExitTourHorizontalOffset,
-                    Placement = PlacementMode.Left,
-                    TextContent = content
-                };
+                VerticalOffset = ExitTourVerticalOffset,
+                HorizontalOffset = ExitTourHorizontalOffset,
+                Placement = PlacementMode.Left,
+                TextContent = content,
+                StaysOpen = stayOpen
+            };
 
-                if (hostUIElement != null)
-                    exitTourPopup.PlacementTarget = hostUIElement;
-                exitTourPopup.IsOpen = true;
-            }
+            if (hostUIElement != null)
+                exitTourPopup.PlacementTarget = hostUIElement;
+            exitTourPopup.IsOpen = true;
         }
     }
 }

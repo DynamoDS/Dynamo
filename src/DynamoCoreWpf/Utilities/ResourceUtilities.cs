@@ -1,11 +1,15 @@
-﻿using Dynamo.Logging;
+using Dynamo.Logging;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI.GuidedTour;
+using Dynamo.Wpf.Utilities;
+using Microsoft.Web.WebView2.Wpf;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -263,8 +267,12 @@ namespace Dynamo.Utilities
             return textStream;
         }
 
-
-        internal static string ConvertToBase64(Stream stream)
+        /// <summary>
+        /// This method converts a stream to base64 string
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public static string ConvertToBase64(Stream stream)
         {
             byte[] bytes;
             using (var memoryStream = new MemoryStream())
@@ -284,15 +292,33 @@ namespace Dynamo.Utilities
         /// <param name="MainWindow">MainWindow in which the LibraryView is located</param>
         /// <param name="popupInfo">Popup Information about the Step </param>
         /// <param name="parametersInvokeScript">Parameters for the WebBrowser.InvokeScript() function</param>
-        internal static object ExecuteJSFunction(UIElement MainWindow, HostControlInfo popupInfo, object[] parametersInvokeScript)
+        internal static async Task<object> ExecuteJSFunction(UIElement MainWindow, HostControlInfo popupInfo, object[] parametersInvokeScript)
         {
-            const string webBrowserString = "Browser";
-            const string invokeScriptFunction = "InvokeScript";
+            const string invokeScriptFunction = "ExecuteScriptAsync";
             object resultJSHTML = null;
+            Task<string> resutlJS = null;
 
             //Try to find the grid that contains the LibraryView
             var sidebarGrid = (MainWindow as Window).FindName(popupInfo.HostUIElementString) as Grid;
             if (sidebarGrid == null) return null;
+
+            var functionName = parametersInvokeScript[0] as string;
+            object[] functionParameters = parametersInvokeScript[1] as object[];
+            List<string> functionParametersList = new List<string>();
+            foreach(var parameter in functionParameters)
+            {
+                string strParameter = string.Empty;
+                //If we try to use boolVariable.ToString() returns "True" or "False" but the expected parameter in the js function is "true" or "false"
+                if (parameter is bool)
+                    strParameter = parameter.ToString().Equals("True") ? "true" : "false";
+                //The parameter expected in the js method is a string so we need to add the quotes at the beginning and at the end
+                else
+                    strParameter = "\"" + parameter + "\"";
+
+                functionParametersList.Add(strParameter);
+            }
+            //Due that the method WebView2.ExecuteScriptAsync() is expecting just one string parameter, we will need to contatecate the function name and the parameters in parentesis
+            var parametersExecuteScriptString = string.Join(",", functionParametersList);
 
             //We need to iterate every child in the grid due that we need to apply reflection to get the Type and find the LibraryView (a reference to LibraryViewExtensionMSWebBrowser cannot be added).
             foreach (var child in sidebarGrid.Children)
@@ -302,18 +328,91 @@ namespace Dynamo.Utilities
                 {
                     var libraryView = child as UserControl;
                     //get the WebBrowser instance inside the LibraryView
-                    var browser = libraryView.FindName(webBrowserString);
+                    var browser = libraryView.ChildOfType<WebView2>();
                     if (browser == null) return null;
-
                     Type typeBrowser = browser.GetType();
-                    //Due that there are 2 methods with the same name "InvokeScript", then we need to get the one with 2 parameters
-                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == invokeScriptFunction && m.GetParameters().Length == 2);
-                    //Invoke the JS method located in library.html
-                    resultJSHTML = methodInvokeScriptInfo.Invoke(browser, parametersInvokeScript);
+                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == invokeScriptFunction && m.GetParameters().Length == 1);
+                    //Due that WebView2.ExecuteScriptAsync() method is async we need to wait until we get a response
+                    resutlJS = (Task<string>)methodInvokeScriptInfo.Invoke(browser, new object[] { functionName + "(" + parametersExecuteScriptString + ")" });
+                    await resutlJS;
+                    var resultProperty = resutlJS.GetType().GetProperty("Result");
+                    resultJSHTML = resultProperty.GetValue(resutlJS);
+                    if (resultJSHTML.ToString().Equals("null"))
+                        resultJSHTML = null;
                     break;
                 }
             }
             return resultJSHTML;
+        }
+
+        /// <summary>
+        /// Loads HTML file from resource assembly and replace it's key values by base64 files
+        /// </summary>
+        /// <param name="htmlPage">Contains filename and resources to be loaded in page</param>
+        /// <param name="webBrowserComponent">WebView2 instance that will be initialized</param>
+        /// <param name="resourcesPath">Path of the resources that will be loaded into the HTML page</param>
+        /// <param name="fontStylePath">Path to the Font Style that will be used in some part of the HTML page</param>
+        /// <param name="localAssembly">Local Assembly in which the resource will be loaded</param>
+        /// <param name="userDataFolder">the folder that WebView2 will use for storing cache info</param>
+        internal static async void LoadWebBrowser(HtmlPage htmlPage, WebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string))
+        {
+            var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(htmlPage.FileName, localAssembly, false, false);
+
+            bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage.Resources, resourcesPath);
+            bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", fontStylePath);
+
+            if (!string.IsNullOrEmpty(userDataFolder))
+            {
+                //This indicates in which location will be created the WebView2 cache folder
+                webBrowserComponent.CreationProperties = new CoreWebView2CreationProperties()
+                {
+                    UserDataFolder = userDataFolder
+                };
+            }
+
+            await webBrowserComponent.EnsureCoreWebView2Async();
+            // Context menu disabled
+            webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            webBrowserComponent.NavigateToString(bodyHtmlPage);
+        }
+
+        /// <summary>
+        /// Loads resource from a dictionary and replaces its key by an embedded file
+        /// </summary>
+        /// <param name="bodyHtmlPage">Html page string</param>
+        /// <param name="resources">Resources to be loaded</param>
+        /// <param name="resourcesPath">Path to resources</param>
+        /// <returns></returns>
+        internal static string LoadResouces(string bodyHtmlPage, Dictionary<string, string> resources, string resourcesPath)
+        {
+            if (resources != null && resources.Any())
+            {
+                foreach (var resource in resources)
+                {
+                    bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, resource.Key, $"{resourcesPath}.{resource.Value}");
+                }
+            }
+            return bodyHtmlPage;
+        }
+
+        /// <summary>
+        /// Finds a key word inside the html page and replace by a resource file
+        /// </summary>
+        /// <param name="bodyHtmlPage">Current html page</param>
+        /// <param name="key">Key that is going to be replaced</param>
+        /// <param name="resourceFile">Resource file to be included in the page</param>
+        /// <returns></returns>
+        internal static string LoadResourceAndReplaceByKey(string bodyHtmlPage, string key, string resourceFile)
+        {
+            Stream resourceStream = ResourceUtilities.LoadResourceByUrl(resourceFile);
+
+            if (resourceStream != null)
+            {
+                var resourceBase64 = ResourceUtilities.ConvertToBase64(resourceStream);
+                bodyHtmlPage = bodyHtmlPage.Replace(key, resourceBase64);
+            }
+
+            return bodyHtmlPage;
         }
     }
 }

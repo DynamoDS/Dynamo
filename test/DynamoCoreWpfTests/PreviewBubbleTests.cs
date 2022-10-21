@@ -420,6 +420,60 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(34, colorRangeWatchNodeModel.OutPorts[0].Height);
         }
 
+        [Test]
+        public void Watch_MultilineString()
+        {
+            OpenAndRun(@"core\WatchTree.dyn");
+
+            string watchNodeGuid = "c93374ef-5b1f-488e-9303-91b87ad20a73";
+            var multiLineStringWatchNode = NodeViewWithGuid(watchNodeGuid);
+            WatchTree rawMultiLineStringtWatchNode = multiLineStringWatchNode.ChildOfType<WatchTree>();
+
+            var multiLineStringWatchNodeModel = GetNodeModel(watchNodeGuid);            
+            string watchNodeValue = multiLineStringWatchNodeModel.CachedValue.Data.ToString();
+            bool containsNewLine = watchNodeValue.Contains(Environment.NewLine);
+
+            // Fire transition on dynamo main ui thread.
+            View.Dispatcher.Invoke(() =>
+            {
+                multiLineStringWatchNode.PreviewControl.BindToDataSource();
+                multiLineStringWatchNode.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
+                multiLineStringWatchNode.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
+            });
+
+            DispatcherUtil.DoEvents();
+
+            Assert.NotNull(multiLineStringWatchNode);
+            Assert.IsTrue(containsNewLine);
+            Assert.AreEqual(rawMultiLineStringtWatchNode.DefaultHeightSize, rawMultiLineStringtWatchNode.Height);
+        }
+
+        [Test]
+        public void Watch_Dictionary()
+        {
+            OpenAndRun(@"core\WatchTree.dyn");
+
+            string watchNodeGuid = "a3b57ebd-5fff-413d-a6c5-ecee20e80e4e";
+            var dictionaryWatchNode = NodeViewWithGuid(watchNodeGuid);
+            WatchTree rawDictionaryWatchNode = dictionaryWatchNode.ChildOfType<WatchTree>();
+
+            bool isDictionary = rawDictionaryWatchNode.NodeLabel.ToUpper() == nameof(Dynamo.ViewModels.WatchViewModel.DICTIONARY);
+
+            // Fire transition on dynamo main ui thread.
+            View.Dispatcher.Invoke(() =>
+            {
+                dictionaryWatchNode.PreviewControl.BindToDataSource();
+                dictionaryWatchNode.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
+                dictionaryWatchNode.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
+            });
+
+            DispatcherUtil.DoEvents();
+
+            Assert.NotNull(dictionaryWatchNode);
+            Assert.IsTrue(isDictionary);
+            Assert.AreEqual(rawDictionaryWatchNode.DefaultHeightSize, rawDictionaryWatchNode.Height);
+        }
+
         #endregion
 
         [Test]

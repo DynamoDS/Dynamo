@@ -142,7 +142,7 @@ namespace Dynamo.UI.Prompts
                 MessageBoxImage = icon
             };
 
-            if (owner.IsLoaded) 
+            if (owner != null && owner.IsLoaded)
             {
                 dynamoMessageBox.Owner = owner;
             }
@@ -320,6 +320,12 @@ namespace Dynamo.UI.Prompts
         {
             CustomDialogResult = MessageBoxResult.Cancel;
             Close();
+        }
+
+        // ESC Button pressed triggers Window close        
+        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

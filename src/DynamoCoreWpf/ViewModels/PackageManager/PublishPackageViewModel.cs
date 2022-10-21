@@ -76,7 +76,9 @@ namespace Dynamo.PackageManager
                 IsSelected = false;
             }
         }
-        
+
+        public PublishPackageView Owner { get; set; }
+
         /// <summary>
         /// A event called when publishing was a success
         /// </summary>
@@ -1335,15 +1337,28 @@ namespace Dynamo.PackageManager
         {
             if (!(parameter is PackageItemRootViewModel packageItemRootViewModel)) return;
 
-            if (packageItemRootViewModel.FileInfo == null || packageItemRootViewModel.FileInfo == null)
-            {
-                PackageContents.Remove(PackageContents
-                    .First(x => x.Name == packageItemRootViewModel.Name));
-                return;
-            }
+            string fileName = packageItemRootViewModel.FileInfo == null ? packageItemRootViewModel.Name : packageItemRootViewModel.FileInfo.FullName;
+            string fileType = packageItemRootViewModel.DependencyType.ToString();
 
-            PackageContents.Remove(PackageContents
-                .First(x => x.FileInfo?.FullName == packageItemRootViewModel.FileInfo.FullName));
+            if (fileName.ToLower().EndsWith(".dll") || fileType.Equals(DependencyType.Assembly))
+            {
+                Assemblies.Remove(Assemblies
+                    .First(x => x.Name == Path.GetFileNameWithoutExtension(fileName)));
+            }
+            else if (fileType.Equals(DependencyType.CustomNode))
+            {
+                CustomNodeDefinitions.Remove(CustomNodeDefinitions
+                    .First(x => x.DisplayName == fileName));
+            }
+            else
+            {
+                AdditionalFiles.Remove(AdditionalFiles
+                    .First(x => x == fileName));
+            }
+                        
+            RefreshPackageContents();
+            return;
+
         }
 
         private bool CanShowAddFileDialogAndAdd()
@@ -1464,6 +1479,11 @@ namespace Dynamo.PackageManager
         /// Delegate used to submit the publish online request</summary>
         private void Submit()
         {
+            MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(Owner, Resources.PrePackagePublishMessage, Resources.PrePackagePublishTitle, MessageBoxButton.OKCancel, MessageBoxImage.Information);
+            if (response == MessageBoxResult.Cancel)
+            {
+                return;
+            }
             var files = BuildPackage();
             try
             {

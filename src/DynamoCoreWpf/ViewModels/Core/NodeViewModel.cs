@@ -60,6 +60,7 @@ namespace Dynamo.ViewModels
         private bool canToggleFrozen = true;
         private bool isRenamed = false;
         private bool isNodeInCollapsedGroup = false;
+        private const string WatchNodeName = "Watch";
         #endregion
 
         #region public members
@@ -736,8 +737,13 @@ namespace Dynamo.ViewModels
         /// A collection of error/warning/info messages, dismissed via a sub-menu in the node Context Menu.
         /// </summary>
         [JsonIgnore]
-        public ObservableCollection<string> DismissedAlerts => nodeLogic.DismissedAlerts;       
+        public ObservableCollection<string> DismissedAlerts => nodeLogic.DismissedAlerts;
 
+
+        internal bool IsWatchNode
+        {
+            get => OriginalName.Contains(WatchNodeName);
+        }
         #endregion
 
         #region events
@@ -944,8 +950,21 @@ namespace Dynamo.ViewModels
             
             RaisePropertyChanged(nameof(DismissedAlerts));
             RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
+
+            UpdateModelDismissedAlertsCount();
         }
-        
+
+        /// <summary>
+        /// Calls an update for the DismissedAlertCount inside the NodeModel to push PropertyChanged fire
+        /// </summary>
+        private void UpdateModelDismissedAlertsCount()
+        {
+            if (DismissedAlerts != null)
+            {
+                nodeLogic.DismissedAlertsCount = DismissedAlerts.Count;
+            }
+        }
+
         /// <summary>
         /// Dispose function
         /// </summary>
@@ -1199,7 +1218,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void BuildErrorBubble()
         {
-            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(DynamoViewModel)
+            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(this)
             {
                 IsCollapsed = this.IsCollapsed
             };
@@ -1971,12 +1990,12 @@ namespace Dynamo.ViewModels
         }
         
         #region Private Helper Methods
-        private Point GetTopLeft()
+        internal Point GetTopLeft()
         {
             return new Point(NodeModel.X, NodeModel.Y);
         }
 
-        private Point GetBotRight()
+        internal Point GetBotRight()
         {
             return new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
         }

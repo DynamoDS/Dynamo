@@ -1,4 +1,4 @@
-﻿using Dynamo.Core;
+using Dynamo.Core;
 
 namespace Dynamo.Models
 {
@@ -8,6 +8,10 @@ namespace Dynamo.Models
     /// </summary>
     public enum RunType { Manual, Automatic, Periodic }
 
+    /// <summary>
+    /// Node Autocomplete suggestion values
+    /// </summary>
+    public enum NodeAutocompleteSuggestion { MLRecommendation, ObjectType }
     /// <summary>
     /// The RunSettings object contains properties which control
     /// how execution is carried out.
@@ -19,6 +23,12 @@ namespace Dynamo.Models
         private int runPeriod;
         private RunType runType;
         private bool runEnabled;
+        private bool runTypesEnabled;
+
+        /// <summary>
+        /// This static property if is true will block running the graph in any Run Mode
+        /// </summary>
+        internal static bool ForceBlockRun { get; set; } = false;
 
         /// <summary>
         /// Default milliseconds number for the period in periodic run.
@@ -73,6 +83,21 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// This property will enable or disable the ComboBox RunTypes
+        /// </summary>
+        public bool RunTypesEnabled
+        {
+            get { return runTypesEnabled; }
+            set
+            {
+                if (runTypesEnabled == value) return;
+
+                runTypesEnabled = value;
+                RaisePropertyChangeWithDebug(nameof(RunTypesEnabled));
+            }
+        }
+
         #endregion
 
         #region Constructors
@@ -85,6 +110,7 @@ namespace Dynamo.Models
             RunPeriod = DefaultRunPeriod;
             RunType = RunType.Manual;
             RunEnabled = true;
+            RunTypesEnabled = true;
         }
 
         /// <summary>
@@ -97,6 +123,7 @@ namespace Dynamo.Models
             RunPeriod = period;
             RunType = runType;
             RunEnabled = true;
+            RunTypesEnabled = true;
         }
 
         #endregion
@@ -106,6 +133,7 @@ namespace Dynamo.Models
         internal void Reset()
         {
             RunEnabled = true;
+            RunTypesEnabled = true;
             RunType = RunType.Automatic;
             RunPeriod = DefaultRunPeriod;
         }

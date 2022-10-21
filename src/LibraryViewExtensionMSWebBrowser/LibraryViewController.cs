@@ -97,6 +97,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 {
                     var data = simpleRPCPayload["data"] as string;
                     controller.CreateNode(data);
+                    controller.CloseNodeTooltip(true);
                 }
                 else if (funcName == "showNodeTooltip")
                 {

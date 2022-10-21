@@ -87,6 +87,7 @@
     <controls:LacingToTooltipConverter x:Key="LacingToTooltipConverter" />
     <controls:NodeWarningConverter x:Key="NodeWarningConverter"/>
     <controls:NodeOriginalNameToMarginConverter x:Key="NodeOriginalNameToMarginConverter" />
+    <controls:BoolToFAIconNameConverter x:Key="BoolToFAIconNameConverter" />
     <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
     <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter" />
@@ -182,4 +183,5 @@
     <controls:NestedGroupsLabelConverter x:Key="NestedGroupsLabelConverter" />
     <controls:CollectionHasMoreThanNItemsToBoolConverter x:Key="CollectionHasMoreThanNItemsToBoolConverter" />
     <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
+    <controls:ObjectTypeConverter x:Key="ObjectTypeConverter" />
 </ResourceDictionary>

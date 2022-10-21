@@ -721,6 +721,25 @@ namespace WpfVisualizationTests
             Assert.AreEqual(Visibility.Visible, currentWorkspace.statusBarPanel.Visibility, "Navigation buttons did not appear");
         }
 
+
+        [Test]
+        public void HelixWatch3DViewModel_HasRenderedGeometryTest()
+        {
+            var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(bPreviewVm, "HelixWatch3D has not been loaded");
+            Assert.False(bPreviewVm.HasRenderedGeometry);
+
+            OpenVisualizationTest("ASM_points.dyn");
+
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            Assert.True(bPreviewVm.HasRenderedGeometry);
+        }
         #endregion
 
         #region dynamo view tests
@@ -752,7 +771,9 @@ namespace WpfVisualizationTests
             //total points are the two strips of points at the top and
             //bottom of the mesh, duplicated 11x2x2 plus the one mesh
             Assert.AreEqual(1000, BackgroundPreviewGeometry.TotalPoints());
-            Assert.AreEqual(1000 * 36, BackgroundPreviewGeometry.TotalMeshVerticesToRender());
+            //because verts for cuboids are instanced, we only need to render 36 verts.
+            Assert.AreEqual(36, BackgroundPreviewGeometry.TotalMeshVerticesToRender());
+            Assert.AreEqual(1000, BackgroundPreviewGeometry.TotalMeshInstancesToRender());
         }
 
         [Test]
@@ -1277,7 +1298,6 @@ namespace WpfVisualizationTests
 
         }
         [Test]
-        [Category("Failure")]
         public void InstancedMeshesAndLinesAreAddedToBackGroundPreviewForEachMatrixWhenShowEdgesEnabled()
         {
             Model.LibraryServices.ImportLibrary("FFITarget.dll");
@@ -1298,6 +1318,52 @@ namespace WpfVisualizationTests
             Assert.AreEqual(5 * 5 * 5, BackgroundPreviewGeometry.TotalMeshInstancesToRender());
 
         }
+        [Test]
+        public void InstancedShowEdgesAreCorrect()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            OpenVisualizationTest("instancing_cubes_edges.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            //assert cube is created not at origin.
+            var result = GetPreviewValue("2264fad6b59640d0b753ba81c1f53f43").ToString();
+            Assert.AreEqual("Point(X = 2.000, Y = 2.000, Z = 2.000)",result);
+           
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
+
+            // assert that the cube edges have been tessellated back at origin.
+            // not at the location of the first cube.
+            var edgeVerts = BackgroundPreviewGeometry.Curves().SelectMany(x => x.Geometry.Positions);
+            edgeVerts.ToList().ForEach(x => Console.WriteLine(x));
+
+        Assert.AreEqual(@"X:0.5 Y:0.5 Z:0.5
+X: 0.5 Y: 0.5 Z: -0.5
+X: 0.5 Y: 0.5 Z: -0.5
+X: -0.5 Y: 0.5 Z: -0.5
+X: -0.5 Y: 0.5 Z: -0.5
+X: -0.5 Y: 0.5 Z: 0.5
+X: -0.5 Y: 0.5 Z: 0.5
+X: 0.5 Y: 0.5 Z: 0.5
+X: 0.5 Y: -0.5 Z: -0.5
+X: 0.5 Y: -0.5 Z: 0.5
+X: 0.5 Y: -0.5 Z: 0.5
+X: -0.5 Y: -0.5 Z: 0.5
+X: -0.5 Y: -0.5 Z: 0.5
+X: -0.5 Y: -0.5 Z: -0.5
+X: -0.5 Y: -0.5 Z: -0.5
+X: 0.5 Y: -0.5 Z: -0.5
+X: -0.5 Y: 0.5 Z: 0.5
+X: -0.5 Y: -0.5 Z: 0.5
+X: 0.5 Y: 0.5 Z: 0.5
+X: 0.5 Y: -0.5 Z: 0.5
+X: -0.5 Y: 0.5 Z: -0.5
+X: -0.5 Y: -0.5 Z: -0.5
+X: 0.5 Y: 0.5 Z: -0.5
+X: 0.5 Y: -0.5 Z: -0.5".Replace(" ",string.Empty),
+                System.String.Join(Environment.NewLine, edgeVerts.Select(x=>x.ToString())).Replace(" ",string.Empty));
+        }
+
+
     }
 
     internal static class GeometryDictionaryExtensions

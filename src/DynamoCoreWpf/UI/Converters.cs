@@ -24,8 +24,6 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
-using PythonNodeModels;
-using SharpDX.DXGI;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -1300,6 +1298,24 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Converter for Notification Bell updates based on feature enabled or not
+    /// </summary>
+    public class BoolToFAIconNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+                return nameof(FontAwesome.WPF.FontAwesomeIcon.BellOutline);
+            return nameof(FontAwesome.WPF.FontAwesomeIcon.BellSlashOutline);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class BoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1387,10 +1403,10 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (!(value is string)) return Visibility.Collapsed;
+            if (!(value is PackageManagerSearchElement packageManagerSearchElement)) return Visibility.Collapsed;
+            if (packageManagerSearchElement.IsDeprecated) return Visibility.Visible;
 
-            DateTime.TryParse(value.ToString(), out DateTime dateTime);
-
+            DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateTime);
             TimeSpan difference = DateTime.Now - dateTime;
 
             if (difference.TotalDays >= 30) return Visibility.Collapsed;
@@ -1414,6 +1430,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (!(value is PackageManagerSearchElement packageManagerSearchElement)) return Visibility.Collapsed;
+            if (packageManagerSearchElement.IsDeprecated) return Resources.PackageManagerPackageDeprecated;
 
             DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateLastUpdated);
             TimeSpan difference = DateTime.Now - dateLastUpdated;
@@ -1421,9 +1438,9 @@ namespace Dynamo.Controls
 
             if (numberVersions > 1)
             {
-                return difference.TotalDays >= 30 ? "" : Wpf.Properties.Resources.PackageManagerPackageUpdated;
+                return difference.TotalDays >= 30 ? "" : Resources.PackageManagerPackageUpdated;
             }
-            return Wpf.Properties.Resources.PackageManagerPackageNew;
+            return Resources.PackageManagerPackageNew;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -3277,6 +3294,54 @@ namespace Dynamo.Controls
             return "000000";
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }    
+
+    /// <summary>
+    /// Converts the object type to forground color for the object.
+    /// </summary>
+    public class ObjectTypeConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
+
+            if (values != null)
+            {
+                switch (values[0])
+                {
+                    case nameof(TypeCode.Object):
+                        return resourceDictionary["objectLabelBackground"] as SolidColorBrush;
+                    case nameof(TypeCode.Double):
+                        return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
+                    case nameof(TypeCode.Int32):
+                        return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
+                    case nameof(TypeCode.Int64):
+                        return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
+                    case nameof(TypeCode.String):
+                        return resourceDictionary["stringLabelBackground"] as SolidColorBrush;
+                    case nameof(TypeCode.Boolean):
+                        return resourceDictionary["boolLabelBackground"] as SolidColorBrush;                                        
+                    default:
+                        if (values[1].ToString() == "List")
+                        {
+                            return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+                        }
+                        else
+                        {
+                            return resourceDictionary["nullLabelBackground"] as SolidColorBrush;
+                        }
+                };
+            }
+            else
+            {
+                return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+            }
+        }
+        
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

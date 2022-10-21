@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
@@ -326,7 +329,7 @@ namespace DynamoUtilities
                 throw new ArgumentNullException($"The input argument is null or empty.");
             }
 
-            if (absolutePath && !Path.GetFullPath(directoryPath).Equals(directoryPath))
+            if (absolutePath && !Path.GetFullPath(directoryPath).Equals(directoryPath, StringComparison.OrdinalIgnoreCase))
             {
                 throw new ArgumentException($"The input path {directoryPath} must be an absolute path");
             }
@@ -347,6 +350,76 @@ namespace DynamoUtilities
             }
 
             return directoryPath;
+        }
+
+        /// <summary>
+        /// Appends a DirectorySeparatorChar to the end of the path if no separator exists.
+        /// </summary>
+        /// <param name="dirPath"></param>
+        /// <returns></returns>
+        private static string FormatDirectoryPath(string dirPath)
+        {
+            string formattedPath = dirPath;
+
+            string separator = Path.DirectorySeparatorChar.ToString();
+            string altSeparator = Path.AltDirectorySeparatorChar.ToString();
+            if (!formattedPath.EndsWith(separator) && !formattedPath.EndsWith(altSeparator))
+            {
+                formattedPath += separator;
+            }
+            return Path.GetFullPath(formattedPath);
+        }
+
+        internal static bool AreDirectoryPathsEqual(string dir1, string dir2)
+        {
+            string dirPath1 = FormatDirectoryPath(dir1);
+            string dirPath2 = FormatDirectoryPath(dir2);
+            return dirPath1.Equals(dirPath2, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Returns true if "subdirectory" input argument is a subdirectory of the "directory" input argument.
+        /// Returns false otherwise.
+        /// </summary>
+        /// <param name="subdirectory"></param>
+        /// <param name="directory"></param>
+        /// <returns></returns>
+        internal static bool IsSubDirectoryOfDirectory(string subdirectory, string directory)
+        {
+            string subdirPath = FormatDirectoryPath(subdirectory);
+            string directoryPath = FormatDirectoryPath(directory);
+            
+            return subdirPath.StartsWith(directoryPath, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Returns the path configured for package manager to retrieve packages from 
+        /// as defined inside config file
+        /// </summary>
+        /// <param name="o">The "this" object from where the function is being called from.</param>
+        /// <param name="serviceKey">Service or feature for which the address is being requested. 
+        /// It should match the key specified in the config file.</param>
+        /// <returns>Path that will be used to fetch packages</returns>
+        public static string getServiceBackendAddress(object o, string serviceKey)
+        {
+            string url = null;
+            if (o != null)
+            {
+                var path = o.GetType().Assembly.Location;
+                var config = ConfigurationManager.OpenExeConfiguration(path);
+                var key = config.AppSettings.Settings[serviceKey];
+
+                if (key != null)
+                {
+                    url = key.Value;
+                }
+
+                if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                {
+                    throw new ArgumentException("Incorrectly formatted URL provided for the service.", "url");
+                }
+            }
+            return url;
         }
     }
 }

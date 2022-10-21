@@ -445,17 +445,63 @@ namespace Dynamo.Controls
             if (e.ClickCount == 2)
             {
                 Debug.WriteLine("Name double clicked!");
-                if (ViewModel != null && ViewModel.RenameCommand.CanExecute(null))
+                // If workspace is zoomed-out, open an Edit Name dialog, otherwise rename inline
+                if (viewModel.WorkspaceViewModel.Zoom < Configurations.ZoomDirectEditThreshold)
                 {
-                    ViewModel.RenameCommand.Execute(null);
+                    if (ViewModel != null && ViewModel.RenameCommand.CanExecute(null))
+                    {
+                        ViewModel.RenameCommand.Execute(null);
+                    }
+                }
+                else
+                {
+                    ChangeNameInline();
                 }
                 e.Handled = true;
             }
         }
 
-        #region Preview Control Related Event Handlers
+        /// <summary>
+        /// Edit Node Name directly in the Node Header
+        /// </summary>
+        private void ChangeNameInline()
+        {
+            NameBlock.Visibility = Visibility.Collapsed;
+            EditableNameBox.Visibility = Visibility.Visible;
 
-        private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
+            EditableNameBox.Focus();
+            if (EditableNameBox.SelectionLength == 0)
+                EditableNameBox.SelectAll();
+        }
+
+        /// <summary>
+        ///  Finalize Inline Rename by hiding the TextBox and showing the TextBlock
+        /// </summary>
+        private void EndInlineRename()
+        {
+            NameBlock.Visibility = Visibility.Visible;
+            EditableNameBox.Visibility = Visibility.Collapsed;
+
+            ViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(
+                    System.Guid.Empty, ViewModel.NodeModel.GUID, nameof(NodeModel.Name), NameBlock.Text));
+        }
+
+        private void EditableNameBox_OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            EndInlineRename();
+        }
+
+        private void EditableNameBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Escape)
+                EndInlineRename();
+        }
+
+
+    #region Preview Control Related Event Handlers
+
+    private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
             // if the node is located under "Hide preview bubbles" menu item and the item is clicked,
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
@@ -762,5 +808,6 @@ namespace Dynamo.Controls
             grid.ContextMenu.Items.Clear();
             e.Handled = true;
         }
+
     }
 }

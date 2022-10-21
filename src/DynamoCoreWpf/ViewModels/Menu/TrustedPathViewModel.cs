@@ -1,19 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Dynamo.Core;
-using Dynamo.Interfaces;
-using Dynamo.Wpf.Properties;
-using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
-using Dynamo.Models;
-using System.Windows.Data;
-using System.Globalization;
-using System.Linq;
-using Dynamo.Configuration;
-using DynamoUtilities;
-using Dynamo.Wpf.Utilities;
-using Dynamo.Logging;
 using System.Windows;
+using Dynamo.Configuration;
+using Dynamo.Logging;
+using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.Utilities;
+using DynamoUtilities;
+using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 
 namespace Dynamo.ViewModels
 {
@@ -33,8 +27,8 @@ namespace Dynamo.ViewModels
 
     public class TrustedPathViewModel : ViewModelBase
     {
-        private PreferenceSettings settings;
-        private DynamoLogger logger;
+        private readonly PreferenceSettings settings;
+        private readonly DynamoLogger logger;
 
         public ObservableCollection<string> TrustedLocations { get; private set; }
        
@@ -87,7 +81,7 @@ namespace Dynamo.ViewModels
 
         private bool CanDelete(int param)
         {
-            return TrustedLocations.Count > 1;
+            return TrustedLocations.Count > 0;
         }
 
         private bool CanUpdate(int param)
@@ -120,16 +114,26 @@ namespace Dynamo.ViewModels
                     this.logger?.LogError($"Failed to add trusted location ${args.Path} due to the following error: {ex.Message}");
                 }
 
-                string errorMessage = string.Format(Resources.PackageFolderNotAccessible, args.Path);
-                MessageBoxService.Show(errorMessage, Resources.UnableToAccessPackageDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
+                string errorMessage = string.Format(Resources.TrustedLocationNotAccessible, args.Path);
+                MessageBoxService.Show(errorMessage, Resources.UnableToAccessTrustedDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             
-            TrustedLocations.Insert(TrustedLocations.Count, args.Path);
+            TrustedLocations.Insert(TrustedLocations.Count, args.Path);            
+            CommitChanges(null);
             RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(TrustedPathViewModel.Action.Insert));
         }
 
         private void ShowFileDialog(TrustedPathEventArgs e)
+        {
+            OnRequestShowFileDialog(this, e);
+
+            if (e.Cancel == false && settings.IsTrustedLocation(e.Path))
+                e.Cancel = true;
+        }
+
+        private void ShowFileDialogUpdatePath(TrustedPathEventArgs e)
         {
             OnRequestShowFileDialog(this, e);
 
@@ -144,18 +148,22 @@ namespace Dynamo.ViewModels
                 Path = TrustedLocations[index]
             };
 
-            ShowFileDialog(args);
+            ShowFileDialogUpdatePath(args);
 
             if (args.Cancel)
                 return;
 
             TrustedLocations[index] = args.Path;
+            CommitChanges(null);
+            RaisePropertyChanged(nameof(TrustedPathViewModel.Action.Update));
         }
 
         private void RemovePathAt(int index)
         {
             TrustedLocations.RemoveAt(index);
+            CommitChanges(null);
             RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(TrustedPathViewModel.Action.Remove));
         }
 
         private void CommitChanges(object param)
@@ -166,6 +174,25 @@ namespace Dynamo.ViewModels
         internal void InitializeTrustedLocations()
         {
             TrustedLocations = new ObservableCollection<string>(settings?.TrustedLocations ?? new List<string>());
+            RaisePropertyChanged(string.Empty);
         }
+        /// <summary>
+        /// Actions the user can do to the model since it's a List
+        /// </summary>
+        public struct Action
+        {
+            /// <summary>
+            /// Insert a new item
+            /// </summary>
+            public string Insert;
+            /// <summary>
+            /// Update an existing Item
+            /// </summary>
+            public string Update;
+            /// <summary>
+            /// Remove an Item
+            /// </summary>
+            public string Remove;
+        }        
     }
 }

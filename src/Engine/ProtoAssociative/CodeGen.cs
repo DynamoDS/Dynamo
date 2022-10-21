@@ -2058,9 +2058,9 @@ namespace ProtoAssociative
             if (context.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
                 // Save the current scope for the expression interpreter
-                globalClassIndex = context.WatchClassScope = context.MemoryState.CurrentStackFrame.ClassScope;
-                globalProcIndex = core.watchFunctionScope = context.MemoryState.CurrentStackFrame.FunctionScope;
-                int functionBlock = context.MemoryState.CurrentStackFrame.FunctionBlock;
+                globalClassIndex = context.WatchClassScope = context.MemoryState.CurrentStackFrameClassScope;
+                globalProcIndex = core.watchFunctionScope = context.MemoryState.CurrentStackFrameFunctionScope;
+                int functionBlock = context.MemoryState.CurrentStackFrameFunctionBlock;
 
                 if (globalClassIndex != -1)
                     localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
@@ -5415,11 +5415,24 @@ namespace ProtoAssociative
 
                         if (bnode.IsInputExpression)
                         {
+                            
+                            // Emit the following instructions:
+                            // pop lx
+                            // <-- mark this pc as graphnode's start pc if pushed value is a primitive
+                            // push lx
+
                             StackValue regLX = StackValue.BuildRegister(Registers.LX);
                             EmitInstrConsole(kw.pop, kw.regLX);
                             EmitPopUpdateInstruction(regLX, bnode.OriginalAstID);
 
-                            graphNode.updateBlock.updateRegisterStartPC = pc;
+                            // In the case of the RHS being a primitive, we can skip executing instructions 
+                            // to push the updated value and pop it to the register as the register is directly updated.
+                            // In the case of a non-primitive, we let these instructions execute, so that the 
+                            // updated result from the VM can be pushed and popped to update the register.
+                            if (CoreUtils.IsPrimitiveASTNode(bnode.RightNode))
+                            {
+                                graphNode.updateBlock.updateRegisterStartPC = pc;
+                            }
 
                             EmitInstrConsole(kw.push, kw.regLX);
                             EmitPushUpdateInstruction(regLX, bnode.OriginalAstID);

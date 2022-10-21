@@ -995,7 +995,7 @@ namespace DynamoCoreWpfTests
             int count = 0;
             (searchControl.DataContext as SearchViewModel).SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
             searchControl.SearchTextBox.Text = "dsfdf";
-            
+            DispatcherUtil.DoEvents();
 
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
             Assert.AreEqual(count, 1);
@@ -1057,9 +1057,7 @@ namespace DynamoCoreWpfTests
             Mock<LinterExtensionBase> mockLinter = new Mock<LinterExtensionBase>() { CallBase = true };
             SetupMockLinter(mockLinter);
 
-            var startupParams = new StartupParams(Model.AuthenticationManager.AuthProvider,
-                Model.PathManager, new ExtensionLibraryLoader(Model), Model.CustomNodeManager,
-                Model.GetType().Assembly.GetName().Version, Model.PreferenceSettings, Model.LinterManager);
+            var startupParams = new StartupParams(Model);
 
             mockLinter.Object.InitializeBase(Model.LinterManager);
             mockLinter.Object.Startup(startupParams);

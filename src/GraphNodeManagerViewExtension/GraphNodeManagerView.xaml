@@ -4,9 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:Dynamo.GraphNodeManager.Converters"
+             xmlns:dynconverters="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
              xmlns:controls="clr-namespace:Dynamo.GraphNodeManager.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:p="clr-namespace:Dynamo.GraphNodeManager.Properties"
+             xmlns:controls1="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
              x:Name="UserControl"
+             UseLayoutRounding="True"
+             SnapsToDevicePixels="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -16,17 +21,21 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ResourceDictionary Source="Controls/ControlColorsAndBrushes.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <dynconverters:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <dynconverters:InverseBoolToVisibilityConverter  x:Key="InverseBooleanToVisibilityConverter"></dynconverters:InverseBoolToVisibilityConverter>
             <converters:StateToVisibilityCollapsedConverter x:Key="StateToVisibilityCollapsedConverter"/>
             <converters:StateToColorBrushConverter x:Key="StateToColorBrushConverter"/>
             <converters:StateToImageSourceConverter x:Key="StateToImageSourceConverter"/>
             <converters:StateToTextConverter x:Key="StateToTextConverter"/>
+            <converters:BooleanToToolTipTextConverter  x:Key="BooleanToToolTipTextConverter"></converters:BooleanToToolTipTextConverter>
+            <converters:BooleanToFontStyleConverter  x:Key="BooleanToFontStyleConverter"></converters:BooleanToFontStyleConverter>
+            <converters:BooleanToFontFamilyConverter  x:Key="BooleanToFontFamilyConverter"></converters:BooleanToFontFamilyConverter>
+            
             <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource GenericToolTipLight}"></Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -53,6 +62,8 @@
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
             </Grid>
+
+            <!-- Export Button -->
             <Image x:Name="ExportImage"
                        DockPanel.Dock="Right" 
                        Width="16px"
@@ -63,7 +74,6 @@
                        Source="/GraphNodeManagerViewExtension;component/Images/Export.png"
                        Stretch="UniformToFill"
                        MouseUp="ExportImage_OnMouseUp"
-                       ToolTip="Export to Excel"
                        Cursor="Hand">
                 <Image.ContextMenu>
                     <ContextMenu Name="MainContextMenu"
@@ -71,13 +81,26 @@
                                      Style="{StaticResource ContextMenuStyle}"
                                      Background="#666666"
                                      Width="170">
-                        <MenuItem x:Name="CSVItem" Header="Export as CSV" Padding="10" FontSize="12"
+                        <MenuItem x:Name="CSVItem" Header="{x:Static p:Resources.MenuItemExportAsCSV}" Padding="10" FontSize="12"
                                       Command="{Binding ExportCommand}" CommandParameter="CSV"/>
-                        <MenuItem x:Name="JSONItem" Header="Export as JSON" Padding="10" FontSize="12"
+                        <MenuItem x:Name="JSONItem" Header="{x:Static p:Resources.MenuItemExportAsJSON}" Padding="10" FontSize="12"
                                       Command="{Binding ExportCommand}" CommandParameter="JSON"/>
                     </ContextMenu>
                 </Image.ContextMenu>
+                <Image.ToolTip>
+                    <controls1:DynamoToolTip AttachmentSide="Bottom" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                        <Grid>
+                            <TextBlock MaxWidth="320"
+                                       Padding="5"
+                                       Foreground="Black" FontSize="12"
+                                       Text="{Binding IsAnyFilterOn, Converter={StaticResource BooleanToToolTipTextConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                       TextWrapping="Wrap" />
+                        </Grid>
+                    </controls1:DynamoToolTip>
+                </Image.ToolTip>
             </Image>
+
+            <!-- Clear Filter Button -->
             <Button x:Name="ClearFiltersButton"
                     DockPanel.Dock="Right"
                     Content="Clear all" 
@@ -92,30 +115,31 @@
         <!-- Node Data Grid -->
         <DataGrid x:Name="NodesInfoDataGrid"
                   Grid.Row="2"
+                  VerticalAlignment="Top"
                   ItemsSource="{Binding Path=NodesCollection.View}" 
                   IsSynchronizedWithCurrentItem="True"
                   Style="{StaticResource DataGridStyle1}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
-                  Background="#353535"
-                  AlternatingRowBackground="#3C3C3C"
+                  Background="{StaticResource ExtensionBackgroundColor}"
+                  BorderThickness="0"
                   AlternationCount="2"
                   FontSize="10"
-                  Foreground="#F5F5F5"
-                  VerticalAlignment="Center"
+                  FontFamily="{StaticResource ArtifaktElementBold}"
+                  Foreground="{StaticResource DarkThemeBodyMediumBrush}"
                   SelectionUnit="FullRow"
                   SelectionMode="Single"
-                  ScrollViewer.CanContentScroll="False" 
+                  ScrollViewer.CanContentScroll="True" 
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   CanUserResizeColumns="True" 
                   CanUserSortColumns="True"
                   HeadersVisibility="Column"
                   MinColumnWidth="60"
+                  Margin="-3 0"
                   RowDetailsVisibilityMode="Collapsed"
                   IsReadOnly="True"
-                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
-                  SelectionChanged="NodeTable_SelectionChanged">
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" >
             <DataGrid.Resources>
                 <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
                     <EventSetter Event="PreviewMouseLeftButtonUp" Handler="Row_PreviewClickHandler"/>
@@ -129,7 +153,7 @@
                                 <TextBlock 
                                     Text="{Binding Name}"
                                     Foreground="#BBBBBB"
-                                    Margin="3"
+                                    Margin="10 3 3 3"
                                     FontSize="12"
                                 />
                             </StackPanel>
@@ -140,33 +164,57 @@
 
             <DataGrid.Columns>
 
-                <!-- Node Name -->
-                <DataGridTextColumn
-                    Header="Name"
-                    Binding="{Binding Name}"
-                    FontWeight="Light"
-                    Foreground="#F5F5F5"
-                    IsReadOnly="True"
-                    Width="6*"></DataGridTextColumn>
+                <!-- Name -->
+                <DataGridTemplateColumn
+                     Header="{x:Static p:Resources.HeaderNameName}"
+                     IsReadOnly="True"
+                     Width="6*">
+
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel HorizontalAlignment="Stretch">
+                                <!-- Node Name -->
+                                <TextBlock 
+                                    Text="{Binding Name}"
+                                    FontWeight="Light"
+                                    Foreground="{StaticResource DarkThemeBodyMediumBrush}"
+                                    Margin="3 0 0 0"
+                                    DockPanel.Dock="Left"></TextBlock>
+                                <!-- Blue Dot signifying Renamed Nodes -->
+                                <Grid 
+                                    DockPanel.Dock="Right">
+                                    <Ellipse Name="nodeRenamedBlueDot"
+                                             Width="6"
+                                             Height="6"
+                                             Margin="0 0 6 0"
+                                             HorizontalAlignment="Right"
+                                             VerticalAlignment="Center"
+                                             Fill="{StaticResource Blue300Brush}"
+                                             Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                </Grid>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
                 <!-- Type -->
                 <DataGridTemplateColumn
-                    Header="Type" 
+                    Header="{x:Static p:Resources.HeaderNameType}" 
                     Width="3*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/Function.png" 
-                                       ToolTip="Function"
+                                       ToolTip="{x:Static p:Resources.Title_Function}"
                                        Style="{StaticResource ImageStyle}"
                                        Visibility="{Binding StateIsFunction, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/IsInput.png"
-                                       ToolTip="Is Input"
+                                       ToolTip="{x:Static p:Resources.Title_IsInput}"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding StateIsInput, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/IsOutput.png"
-                                       ToolTip="Is Output"
+                                       ToolTip="{x:Static p:Resources.Title_IsOutput}"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding StateIsOutput, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                             </StackPanel>
@@ -176,23 +224,23 @@
 
                 <!-- State -->
                 <DataGridTemplateColumn
-                    Header="State" 
-                    Width="4*"
+                    Header="{x:Static p:Resources.HeaderNameState}" 
+                    Width="3*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/Frozen.png" 
-                                       ToolTip="Frozen"
+                                       ToolTip="{x:Static p:Resources.Title_Frozen}"
                                        Style="{StaticResource ImageStyle}"
                                        Visibility="{Binding StatusIsFrozen, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/Hidden.png"
-                                       ToolTip="Preview Off"
+                                       ToolTip="{x:Static p:Resources.Title_PreviewOff}"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding StatusIsHidden, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                                 <controls:InfoBubbleControl 
                                     Margin="3 0" 
-                                    ToolTip="Information"
+                                    ToolTip="{x:Static p:Resources.Title_Information}"
                                     Visibility="{Binding State, Converter={StaticResource StateToVisibilityCollapsedConverter}, ConverterParameter=Info}"/>
                             </StackPanel>
                         </DataTemplate>
@@ -201,8 +249,8 @@
 
                 <!-- Issues -->
                 <DataGridTemplateColumn
-                    Header="Issues" 
-                    Width="4*"
+                    Header="{x:Static p:Resources.HeaderNameIssues}" 
+                    Width="3*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -213,7 +261,7 @@
                                     Visibility="{Binding State, Converter={StaticResource StateToVisibilityCollapsedConverter}, ConverterParameter=WarningOrError}"/>
                                 <Border Height="14" Width="14" CornerRadius="7" 
                                         VerticalAlignment="Center" HorizontalAlignment="Center"
-                                        ToolTip="Dismissed warnings"
+                                        ToolTip="{x:Static p:Resources.ToolTip_DismissedWarnings}"
                                         Visibility="{Binding DismissedAlertsCount, Converter={StaticResource IntToVisibilityConverter}}"
                                         Background="{StaticResource PrimaryCharcoal100Brush}">
                                     <TextBlock Text="{Binding DismissedAlertsCount}" 
@@ -224,7 +272,7 @@
                                                FontSize="8"/>
                                 </Border>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/MissingNode.png"
-                                       ToolTip="Missing content"
+                                       ToolTip="{x:Static p:Resources.Title_MissingContent}"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding IsDummyNode, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                             </StackPanel>
@@ -232,20 +280,20 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!-- Info -->
+                <!-- Outputs -->
                 <DataGridTemplateColumn
-                    Header="Info" 
-                    Width="Auto"
+                    Header="{x:Static p:Resources.HeaderNameOutputs}" 
+                    Width="3*"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/EmptyList.png"
-                                       ToolTip="Empty list"
+                                       ToolTip="{x:Static p:Resources.Title_EmptyList}"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding IsEmptyList, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                                 <Image Source="/GraphNodeManagerViewExtension;component/Images/Null.png"
-                                       ToolTip="Null"
+                                       ToolTip="{x:Static p:Resources.Title_Null}"
                                        Style="{StaticResource ImageStyle}" 
                                        Visibility="{Binding IsNull, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                             </StackPanel>
@@ -267,7 +315,9 @@
                             <TextBlock Text="{Binding Package}" 
                                        VerticalAlignment="Center" 
                                        Margin="13 10" 
-                                       Foreground="{StaticResource MidGrayBrush}"/>
+                                       FontWeight="Light"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       Foreground="{StaticResource DarkThemeBodyMediumBrush}"/>
                             <ItemsControl x:Name="DetailedRowItemControl"
                                           ItemsSource="{Binding NodeInfos, UpdateSourceTrigger=PropertyChanged}"
                                           AlternationCount="50">
@@ -284,14 +334,15 @@
                                                            Margin="5 0"
                                                            Source="{Binding State, Converter={StaticResource StateToImageSourceConverter}}" 
                                                            Style="{StaticResource ImageStyle}"
+                                                           Visibility="{Binding Dismissed, Converter={StaticResource InverseBooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"
                                                            VerticalAlignment="Top"></Image>
                                                 <TextBlock Grid.Column="1" Margin="10 -2 10 0" 
                                                                TextWrapping="Wrap" 
                                                                VerticalAlignment="Top"
-                                                               SnapsToDevicePixels="True"
-                                                               FontWeight="UltraLight"
-                                                               FontStyle="Italic"
-                                                               Foreground="{StaticResource MidGrayBrush}"
+                                                               FontWeight="Light"
+                                                               FontFamily="{Binding Dismissed, Converter={StaticResource BooleanToFontFamilyConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                                               Foreground="{StaticResource DarkThemeBodyMediumBrush}"
+                                                               FontStyle="{Binding Dismissed, Converter={StaticResource BooleanToFontStyleConverter}, UpdateSourceTrigger=PropertyChanged}"
                                                                FontSize="11">
                                                     <TextBlock.Text>
                                                         <MultiBinding StringFormat="{}{0} {1}" >
@@ -308,10 +359,21 @@
                                                             Tag="{Binding ElementName=DetailedRowItemControl, Path=DataContext}"
                                                             Width="24"
                                                             VerticalAlignment="Top"
-                                                            ToolTip="Copy to clipboard"
                                                             Cursor="Hand">
                                                     <Image Source="/GraphNodeManagerViewExtension;component/Images/Copy.png" 
                                                            Style="{StaticResource ImageStyle}"/>
+                                                    <Button.ToolTip>
+                                                        <controls1:DynamoToolTip AttachmentSide="Bottom" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                                                            <Grid>
+                                                                <TextBlock MaxWidth="320"
+                                                                           Padding="5"
+                                                                           Foreground="Black" FontSize="12"
+                                                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                                           Text="{x:Static p:Resources.ToolTip_CopyToClipboard}"
+                                                                           TextWrapping="Wrap" />
+                                                            </Grid>
+                                                        </controls1:DynamoToolTip>
+                                                    </Button.ToolTip>
                                                 </Button>
                                             </Grid>
                                         </Border>
