@@ -1415,101 +1415,44 @@ namespace EmitMSIL
             {
                 EmitILComment("emit non replicating call");
                 // non-replicating call
-                //TODO if possible only marshal args that resulted from a replicated call.
-                //IF the arguments of this function call were returned from a replicated call -
-                //we need to unmarshal them from CLRStackValue wrappers to plain # objects -
-                // to do this, we need use the methodcache to get the methodinfo
-                // where we can then get the paraminfo we'll use for unmarshling.
-                //
 
-                // Emit methodCache passed as arg to global Execute method.
-                EmitOpCode(OpCodes.Ldarg_1);
-                // Emit className for input to call to CodeGenIL.KeyGen
-                EmitOpCode(OpCodes.Ldstr, className);
-
-                // Emit methodName for input to call to CodeGenIL.KeyGen
-                EmitOpCode(OpCodes.Ldstr, methodName);
-                EmitOpCode(OpCodes.Ldc_I4, numArgs);
-                var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
-                EmitOpCode(OpCodes.Call, keygen);
-
-                var local = DeclareLocal(typeof(IEnumerable<ProtoCore.CLRFunctionEndPoint>), "cached MethodBase objects");
-                //local could be null if we are not emitting currently.
-                if (local != null)
+                Type argT;
+                var unmarshalFunctionArgs = false;
+                //if the args to this function are from replicated calls unmarshal them.
+                foreach (var arg in args)
                 {
-                    EmitOpCode(OpCodes.Ldloca, local);
-                }
 
-                // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<CLRFunctionEndPoint> feps)
-                var dictLookup = typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>).GetMethod(
-                    nameof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>.TryGetValue));
-                EmitOpCode(OpCodes.Callvirt, dictLookup);
-
-                EmitOpCode(OpCodes.Pop);
-                if (local != null)
-                {
-                    EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
-                }
-
-                EmitILComment("load array of args");
-                //emit an array of args to pass to unmarshal
-                EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
-                {
-                    Type t = DfsTraverse(n);
-                    if (isStaticOrCtor)
+                    if (astTypeInfoMap.TryGetValue(arg.ID, out argT) && argT is DSASM.CLRStackValue)
                     {
-                        t = EmitCoercionCode(n, t, parameters[index]);
+                        // one of the args is from replicated call - unmarshal.
+                        unmarshalFunctionArgs = true;
+                        break;
                     }
-                    else if (index > 0)
-                    {
-                        t = EmitCoercionCode(n, t, parameters[index - 1]);
-                    }
-
-                    if (t == null) return;
-
-                    if (t.IsValueType)
-                    {
-                        EmitOpCode(OpCodes.Box, t);
-                    }
-                });
-
-                //TODO_MSIL if possible only unmarshal args that resulted from a replicated call.
-                //emit unmarshal for args
-                // Emit call to load the runtimeCore argument
-                EmitOpCode(OpCodes.Ldarg_3);
-                //TODO cache this at start.
-                //now call unmarshall to convert any clrstackvalues to plain c# objs. 
-                var marshalMethod = typeof(Replication).GetMethod(nameof(Replication.UnMarshalFunctionArguments2),
-                    BindingFlags.Static | BindingFlags.Public);
-                EmitOpCode(OpCodes.Call, marshalMethod);
-                //TODO_MSIL can we just use unmarshal here instead of unmarshalfunctionargs?
-                var unMarshaledArgsArray = DeclareLocal(marshalMethod.ReturnType, "unMarshaledArgsArray");
-                if (unMarshaledArgsArray != null)
-                {
-                    EmitOpCode(OpCodes.Stloc, unMarshaledArgsArray.LocalIndex);
                 }
-                
-                //foreach item in args -
-                //increment index
-                //emit code to index into array
-                //ldelem ref.
-                // we know array.length because it must be the same length as args.len
-
-                if (unMarshaledArgsArray != null)
+                if (unmarshalFunctionArgs)
                 {
-                    for (int i = 0; i < args.Count; i++)
+                    EmitILComment("found replication wrapper arg, unmarshaling ");
+                    EmitUnmarshalFunctionArgs(args, numArgs, parameters, isStaticOrCtor);
+                }
+                else
+                {
+                    EmitILComment("direct call, with no unmarshaling");
+                    //emit args to the stack.
+                    int index = 0;
+                    foreach (var arg in args)
                     {
-                        //load array
-                        EmitOpCode(OpCodes.Ldloc, unMarshaledArgsArray.LocalIndex);
-                        EmitOpCode(OpCodes.Ldc_I4, i);
-                        EmitOpCode(OpCodes.Ldelem_Ref);
-                        if (parameters[i].IsValueType)
+                        Type t = DfsTraverse(arg);
+                        if (isStaticOrCtor)
                         {
-                            EmitOpCode(OpCodes.Unbox_Any, parameters[i]);
+                            t = EmitCoercionCode(arg, t, parameters[index]);
                         }
+                        else if (index > 0)
+                        {
+                            t = EmitCoercionCode(arg, t, parameters[index - 1]);
+                        }
+                        index++;
                     }
                 }
-
 
                 if (clrFep.MemberInfo is MethodInfo mi)
                 {
@@ -1523,6 +1466,97 @@ namespace EmitMSIL
                     var ci = clrFep.MemberInfo as ConstructorInfo;
                     EmitOpCode(OpCodes.Newobj, ci);
                     return ci.DeclaringType;
+                }
+            }
+        }
+
+        private void EmitUnmarshalFunctionArgs(List<AssociativeNode> args, int numArgs, List<Type> parameters, bool isStaticOrCtor)
+        {
+
+            // Emit methodCache passed as arg to global Execute method.
+            EmitOpCode(OpCodes.Ldarg_1);
+            // Emit className for input to call to CodeGenIL.KeyGen
+            EmitOpCode(OpCodes.Ldstr, className);
+
+            // Emit methodName for input to call to CodeGenIL.KeyGen
+            EmitOpCode(OpCodes.Ldstr, methodName);
+            EmitOpCode(OpCodes.Ldc_I4, numArgs);
+            var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
+            EmitOpCode(OpCodes.Call, keygen);
+
+            var local = DeclareLocal(typeof(IEnumerable<ProtoCore.CLRFunctionEndPoint>), "cached MethodBase objects");
+            //local could be null if we are not emitting currently.
+            if (local != null)
+            {
+                EmitOpCode(OpCodes.Ldloca, local);
+            }
+
+            // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<CLRFunctionEndPoint> feps)
+            var dictLookup = typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>).GetMethod(
+                nameof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>.TryGetValue));
+            EmitOpCode(OpCodes.Callvirt, dictLookup);
+
+            EmitOpCode(OpCodes.Pop);
+            if (local != null)
+            {
+                EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
+            }
+
+            EmitILComment("load array of args");
+            //emit an array of args to pass to unmarshal
+            EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
+            {
+                Type t = DfsTraverse(n);
+                if (isStaticOrCtor)
+                {
+                    t = EmitCoercionCode(n, t, parameters[index]);
+                }
+                else if (index > 0)
+                {
+                    t = EmitCoercionCode(n, t, parameters[index - 1]);
+                }
+
+                if (t == null) return;
+
+                if (t.IsValueType)
+                {
+                    EmitOpCode(OpCodes.Box, t);
+                }
+            });
+
+            //emit unmarshal for args
+            // Emit call to load the runtimeCore argument
+            EmitOpCode(OpCodes.Ldarg_3);
+            //TODO cache this at start.
+            //now call unmarshall to convert any clrstackvalues to plain c# objs. 
+            var marshalMethod = typeof(Replication).GetMethod(nameof(Replication.UnMarshalFunctionArguments2),
+                BindingFlags.Static | BindingFlags.Public);
+            EmitOpCode(OpCodes.Call, marshalMethod);
+            //TODO_MSIL can we just use unmarshal here instead of unmarshalfunctionargs?
+            var unMarshaledArgsArray = DeclareLocal(marshalMethod.ReturnType, "unMarshaledArgsArray");
+            if (unMarshaledArgsArray != null)
+            {
+                EmitOpCode(OpCodes.Stloc, unMarshaledArgsArray.LocalIndex);
+            }
+
+            //foreach item in args -
+            //increment index
+            //emit code to index into array
+            //ldelem ref.
+            // we know array.length because it must be the same length as args.len
+
+            if (unMarshaledArgsArray != null)
+            {
+                for (int i = 0; i < args.Count; i++)
+                {
+                    //load array
+                    EmitOpCode(OpCodes.Ldloc, unMarshaledArgsArray.LocalIndex);
+                    EmitOpCode(OpCodes.Ldc_I4, i);
+                    EmitOpCode(OpCodes.Ldelem_Ref);
+                    if (parameters[i].IsValueType)
+                    {
+                        EmitOpCode(OpCodes.Unbox_Any, parameters[i]);
+                    }
                 }
             }
         }
