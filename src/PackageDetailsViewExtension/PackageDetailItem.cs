@@ -137,7 +137,7 @@ namespace Dynamo.PackageDetails
 
         /// <summary>
         /// Returs true if package version is not already installed,
-        /// true if not installed
+        /// false if already installed.
         /// </summary>
         public bool CanInstall
         {
