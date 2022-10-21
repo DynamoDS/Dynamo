@@ -150,6 +150,7 @@ namespace EmitMSIL
 
         private Type EmitCoercionCode(AssociativeNode arg, Type argType, Type param)
         {
+            EmitILComment("coerce impl");
             if (argType == null) return argType;
 
             if(param == typeof(object) && argType.IsValueType)
@@ -243,6 +244,7 @@ namespace EmitMSIL
 
         private Type EmitIEnumerableCoercion<Source, Target>(AssociativeNode arg)
         {
+            EmitILComment("coerce IEnumerable");
             if (compilePass == CompilePass.GatherTypeInfo)
             {
                 return typeof(Target[]);
@@ -361,34 +363,19 @@ namespace EmitMSIL
             mInfo = typeof(IEnumerator).GetMethod(nameof(IEnumerator.MoveNext));
             EmitOpCode(OpCodes.Callvirt, mInfo);
 
-            var leaveLabel = DefineLabel();
             EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel.Value);
-            EmitOpCode(OpCodes.Leave_S, leaveLabel.Value);
-
-            EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
-
-            var finallyLabel = DefineLabel();
-            EmitOpCode(OpCodes.Brfalse_S, finallyLabel.Value);
 
             EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
 
             mInfo = typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
             EmitOpCode(OpCodes.Callvirt, mInfo);
 
-            MarkLabel(finallyLabel.Value, "label: finally label");
-            EmitOpCode(OpCodes.Endfinally);
-
-            MarkLabel(leaveLabel.Value, "label: exit label");
+           
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
 
             localBuilder = DeclareLocal(t, "target array");
             var targetArrayIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, targetArrayIndex);
-
-            var endLabel = DefineLabel();
-            EmitOpCode(OpCodes.Br_S, endLabel.Value);
-
-            MarkLabel(endLabel.Value, "label: end label");
             EmitOpCode(OpCodes.Ldloc, targetArrayIndex);
 
             return t;
@@ -397,6 +384,7 @@ namespace EmitMSIL
         // Coerce int/long/double arrays to IEnumerable<T> or IList<T>
         private Type EmitArrayCoercion<Source, Target>(AssociativeNode arg, Type ienumerableParamType)
         {
+            EmitILComment("array coercion");
             if (compilePass == CompilePass.GatherTypeInfo)
             {
                 var returnType = typeof(Target[]);
@@ -1051,6 +1039,20 @@ namespace EmitMSIL
                 Type t = DfsTraverse(el);
                 if (t == null) return;
 
+                //if this element is a CLRStackValue, we need to unmarshal it.
+                if (t == typeof(DSASM.CLRStackValue))
+                {
+                    //reorganize stack.
+                    EmitOpCode(OpCodes.Pop);
+                    EmitOpCode(OpCodes.Ldarg_2);
+                    DfsTraverse(el);
+                    //TODO cache this.
+                    var unmarshalMethod = typeof(BuiltIn.MSILOutputMap<string, object>).GetMethod("Unmarshal",
+                    BindingFlags.Instance | BindingFlags.Public);
+                    EmitOpCode(OpCodes.Callvirt, unmarshalMethod);
+                    t = unmarshalMethod.ReturnType;
+                }
+
                 if (ot == typeof(object) && t.IsValueType)
                 {
                     EmitOpCode(OpCodes.Box, t);
@@ -1420,7 +1422,6 @@ namespace EmitMSIL
                 // where we can then get the paraminfo we'll use for unmarshling.
                 //
 
-                
                 // Emit methodCache passed as arg to global Execute method.
                 EmitOpCode(OpCodes.Ldarg_1);
                 // Emit className for input to call to CodeGenIL.KeyGen
@@ -1450,6 +1451,7 @@ namespace EmitMSIL
                     EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
                 }
 
+                EmitILComment("load array of args");
                 //emit an array of args to pass to unmarshal
                 EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
                 {
@@ -1471,10 +1473,8 @@ namespace EmitMSIL
                     }
                 });
 
-                //TODO if possible only marshal args that resulted from a replicated call.
-                
+                //TODO_MSIL if possible only marshal args that resulted from a replicated call.
                 //emit marshal for args
-
                 // Emit call to load the runtimeCore argument
                 EmitOpCode(OpCodes.Ldarg_3);
                 //TODO cache this at start.

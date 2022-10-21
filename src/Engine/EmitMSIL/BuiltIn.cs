@@ -18,7 +18,8 @@ namespace EmitMSIL
         /// </summary>
         /// <typeparam name="K"></typeparam>
         /// <typeparam name="V"></typeparam>
-        internal class MSILOutputMap<K, V> : IDictionary<K, V> where V : class
+        [Obsolete("Internal, do not use")]
+        public class MSILOutputMap<K, V> : IDictionary<K, V> where V : class
         {
             private Dictionary<K, V> backingDict = new Dictionary<K, V>();
             private MSILRuntimeCore runtimeCore;
@@ -35,6 +36,16 @@ namespace EmitMSIL
             {
                 get => Unmarshal(key);
                 set => backingDict[key] = value;
+            }
+            /// <summary>
+            /// A utility method for unmarshaling from replication wrappers to
+            /// plain c# objects.
+            /// </summary>
+            /// <param name="clrwrapped"></param>
+            /// <returns></returns>
+            public object Unmarshal(CLRStackValue clrwrapped)
+            {
+                return marshaler.UnMarshal(clrwrapped, clrwrapped.CLRFEPReturnType, runtimeCore);
             }
 
             private V Unmarshal(K key)
