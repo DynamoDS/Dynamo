@@ -171,6 +171,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             var ext = string.Empty;
             var magicstringprod = "__webpack_require__.p+";
+            var minfiedURLHtmlReplacement = minifiedURL;
             // this depends on librariejs minification producing the same results - 
             // longterm this is fragile. We should intercept these requests and handle them instead.
             if (magicreplace)
@@ -197,7 +198,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 base64 = $"data:application/x-font-{ext};charset=utf-8;base64,{base64}";
             }
 
-            html = html.Replace(minifiedURL, '"' + base64 + '"');
+            //In Libraryjs project, Webpack5 is removing the initial slash "/" when loading svg files so in the html we have the string "resources/image.svg" then also we need to remove the slash (the first char) otherwise it won't be replaced by the base64 content.
+            html = html.Replace(minifiedURL.Replace(minfiedURLHtmlReplacement, minfiedURLHtmlReplacement.Remove(0, 1)), '"' + base64 + '"');
             return html;
         }
 
