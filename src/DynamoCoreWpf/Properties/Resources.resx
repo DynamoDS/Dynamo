@@ -1382,8 +1382,8 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Most Recent Update</value>
     <comment>Sort package by the most recent update</comment>
   </data>
-  <data name="PackageSearchViewDeprecated" xml:space="preserve">
-    <value>DEPRECATED</value>
+  <data name="PackageManagerPackageDeprecated" xml:space="preserve">
+    <value>Deprecated</value>
     <comment>Indicate package has been deprecated</comment>
   </data>
   <data name="PackageSearchViewDeprecatedTooltip" xml:space="preserve">
@@ -3288,5 +3288,8 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="WebView2RequiredTitle" xml:space="preserve">
     <value>WebView2 Required</value>
+  </data>
+  <data name="PackageDeprecatedTooltip" xml:space="preserve">
+    <value>This package is outdated and cannot be installed.</value>
   </data>
 </root>

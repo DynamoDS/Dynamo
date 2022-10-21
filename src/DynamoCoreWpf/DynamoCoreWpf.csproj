@@ -1519,6 +1519,7 @@
     <Resource Include="UI\Images\Filter.png" />
     <Resource Include="UI\Images\Flag.png" />
     <Resource Include="UI\Images\Profile.png" />
+    <Resource Include="UI\Images\Profile_48px.png" />
     <Resource Include="UI\Images\Requirements.png" />
     <Resource Include="UI\Images\Sort.png" />
     <Resource Include="UI\Images\View details.png" />
