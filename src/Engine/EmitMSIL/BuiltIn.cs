@@ -36,7 +36,7 @@ namespace EmitMSIL
             {
                 get
                 {
-                    var obj = Unmarshal(key);
+                    var obj = UnmarshalKey(key);
                     backingDict[key] = obj;
                     return obj;
                 }
@@ -53,7 +53,7 @@ namespace EmitMSIL
                 return marshaler.UnMarshal(clrwrapped, clrwrapped.CLRFEPReturnType, runtimeCore);
             }
 
-            private V Unmarshal(K key)
+            private V UnmarshalKey(K key)
             {
                 //TODO consider scanning for nested wrappers we missed.
                 if (backingDict[key] is CLRStackValue clrwrapped)
@@ -66,12 +66,21 @@ namespace EmitMSIL
 
             public ICollection<K> Keys => backingDict.Keys;
 
-            public ICollection<V> Values => backingDict.Keys.Select((x) =>
+            public ICollection<V> Values
             {
-                var obj = Unmarshal(x);
-                backingDict[x] = obj;
-                return obj;
-            }).ToArray();
+                get
+                {
+                    var output = new List<V>(backingDict.Count);
+                    //copy keys so we can mutate dictionary.
+                    foreach (var key in backingDict.Keys.ToList())
+                    {
+                        var obj = UnmarshalKey(key);
+                        output.Add(obj);
+                        backingDict[key] = obj;
+                    }
+                    return output;
+                }
+            }
 
 
             public int Count => backingDict.Count;
@@ -127,7 +136,7 @@ namespace EmitMSIL
             {
                 if (backingDict.TryGetValue(key, out _))
                 {
-                    value = Unmarshal(key);
+                    value = UnmarshalKey(key);
                     backingDict[key] = value;
                     return true;
                 }
