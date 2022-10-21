@@ -724,7 +724,6 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
         }
 
         [Test]
-        [Category("Failure")]//TODO fails when trying to call sum.
         public void IEnumerable_IntDouble_Coercion()
         {
             string code =
@@ -737,8 +736,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             test2 = DSCore.Math.Sum(test1);    
             ";
             var ast = ParserUtils.Parse(code).Body;
-            //TODO undo
-            var output = codeGen.Emit(ast);
+            var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
             Assert.AreEqual(new int[] { 1, 2, 4, 4 }, output["test1"]);
             Assert.AreEqual(11, output["test2"]);
@@ -748,7 +746,6 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
         }
 
         [Test]
-        [Category("Failure")] //TODO fails when trying to call sum.
         public void IList_T_IEnumerable_Coerce()
         {
             string code =
@@ -761,8 +758,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             num2 = DSCore.Math.Sum(num1);  
             ";
             var ast = ParserUtils.Parse(code).Body;
-            //TODO undo
-            var output = codeGen.Emit(ast);
+            var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
             Assert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output["num1"]);
             Assert.AreEqual(55, output["num2"]);
