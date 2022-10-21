@@ -14,7 +14,7 @@ namespace Dynamo.UI
         private DynamoViewModel model;
         private string _fileName = string.Empty;
         private bool _runManualMode = false;
-        private readonly bool enableCustomDialog;
+        private readonly bool enableCustomDialog; // Used in 'Insert' - optional boolean parameter to skip addition of the check button
         private const int RunManualCheckboxId = 0x1001;
 
         public string Filter

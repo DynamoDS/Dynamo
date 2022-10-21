@@ -1861,12 +1861,6 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         private void ShowInsertDialogAndInsertResult(object parameter)
         {
-            if (HomeSpace.HasUnsavedChanges)
-            {
-                if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
-                    return;
-            }
-
             var currentWorkspaceModelType = Model.CurrentWorkspace.GetType();
             var fileExtensions = currentWorkspaceModelType == typeof(CustomNodeWorkspaceModel) ? "*.dyf" : "*.dyn";
 
