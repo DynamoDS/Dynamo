@@ -863,4 +863,10 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="ToolTipInputData" xml:space="preserve">
     <value>Input Data</value>
   </data>
+  <data name="SplashScreenInitPreferencesSettings" xml:space="preserve">
+    <value>Initializing preferences...</value>
+  </data>
+  <data name="SplashScreenLoadNodeLibrary" xml:space="preserve">
+    <value>Loading Node Library...</value>
+  </data>
 </root>

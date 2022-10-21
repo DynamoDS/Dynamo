@@ -1051,8 +1051,8 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
     <value>Package Warning</value>
     <comment>Message box title</comment>
   </data>
-  <data name="SaveConfirmationMessageBoxTitle" xml:space="preserve">
-    <value>Confirmation</value>
+  <data name="UnsavedChangesMessageBoxTitle" xml:space="preserve">
+    <value>Unsaved changes</value>
   </data>
   <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
     <value>Save your model to STL.</value>
@@ -3352,5 +3352,13 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="PackageDeprecatedTooltip" xml:space="preserve">
     <value>This package is outdated and cannot be installed.</value>
+  <data name="SplashScreenViewExtensions" xml:space="preserve">
+    <value>Loading View Extensions...</value>
+  </data>
+  <data name="DynamoViewSettingShowStaticSplashScreen" xml:space="preserve">
+    <value>Show Static Splash Screen</value>
+  </data>
+  <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
+    <value>This setting controls whether user will be directed to an extra static splash screen after the intial launch.</value>
   </data>
 </root>

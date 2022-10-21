@@ -2180,6 +2180,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Static Splash Screen.
+        /// </summary>
+        public static string DynamoViewSettingShowStaticSplashScreen {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingShowStaticSplashScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Geometry Scaling....
         /// </summary>
         public static string DynamoViewSettingsMenuChangeScaleFactor {
@@ -6644,6 +6653,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This setting controls whether user will be directed to an extra static splash screen after the intial launch..
+        /// </summary>
+        public static string PreferencesViewShowStaticSplashScreenTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowStaticSplashScreenTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Whitespace in Python Editor.
         /// </summary>
         public static string PreferencesViewShowWhitespaceInPythonEditor {
@@ -7620,15 +7638,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirmation.
-        /// </summary>
-        public static string SaveConfirmationMessageBoxTitle {
-            get {
-                return ResourceManager.GetString("SaveConfirmationMessageBoxTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Save your model to STL..
         /// </summary>
         public static string SaveModelToSTLDialogTitle {
@@ -7850,6 +7859,15 @@ namespace Dynamo.Wpf.Properties {
         public static string SolutionToFolderNotWritatbleError {
             get {
                 return ResourceManager.GetString("SolutionToFolderNotWritatbleError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading View Extensions....
+        /// </summary>
+        public static string SplashScreenViewExtensions {
+            get {
+                return ResourceManager.GetString("SplashScreenViewExtensions", resourceCulture);
             }
         }
         
@@ -8491,6 +8509,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UnpinNodeTooltip {
             get {
                 return ResourceManager.GetString("UnpinNodeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsaved changes.
+        /// </summary>
+        public static string UnsavedChangesMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("UnsavedChangesMessageBoxTitle", resourceCulture);
             }
         }
         
