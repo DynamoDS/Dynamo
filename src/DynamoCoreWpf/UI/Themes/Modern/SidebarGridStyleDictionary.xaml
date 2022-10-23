@@ -233,14 +233,14 @@
         <StackPanel Name="ImageAndNodeName"
                     Orientation="Horizontal"
                     VerticalAlignment="Center">
-            <StackPanel Visibility="{Binding Path=ViewConfidenceScoreRecentUse, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock
                     HorizontalAlignment="Center"
                     Width="24"
                     FontSize="10"
                     Margin="5,12,0,0"
-                    Visibility="{Binding Path=IsByRecommendation, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Text="{Binding ConfidenceScore, StringFormat= {}{0} %, Mode=OneWay}" Foreground="{StaticResource DynamoStandardLabelTextBrush}">
+                    Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.IsByRecommendation, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Text="{Binding AutoCompletionNodeMachineLearningInfo.ConfidenceScore, StringFormat= {}{0} %, Mode=OneWay}" Foreground="{StaticResource DynamoStandardLabelTextBrush}">
                 </TextBlock>
                 <Image HorizontalAlignment="Center"
                        Height="14"     
@@ -248,7 +248,7 @@
                        Width="14"
                        Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/clock-icon.png"
                        Margin="7,10,8,0"
-                       Visibility="{Binding Path=IsByUse, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                       Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.IsByUse, Converter={StaticResource BooleanToVisibilityConverter}}" />
             </StackPanel>
             <Image HorizontalAlignment="Left"
                    Height="36"
