@@ -46,7 +46,6 @@ namespace Dynamo.Wpf.ViewModels
         {
             Model = element;
             searchViewModel = svm;
-            AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo();
 
             Model.VisibilityChanged += ModelOnVisibilityChanged;
             if (searchViewModel != null)
@@ -397,9 +396,7 @@ namespace Dynamo.Wpf.ViewModels
             OnRequestBitmapSource(iconRequest);
 
             return iconRequest.Icon;
-            }
-
-        public AutoCompletionNodeMachineLearningInfo AutoCompletionNodeMachineLearningInfo { get; set; }
+            }        
     }
 
     public class CustomNodeSearchElementViewModel : NodeSearchElementViewModel
@@ -467,29 +464,5 @@ namespace Dynamo.Wpf.ViewModels
 
             return iconRequest.Icon;
         }
-    }
-
-    public class AutoCompletionNodeMachineLearningInfo
-    {
-        /// <summary>
-        /// Indicates if the user can view the confidence score or the recent use icon
-        /// </summary>
-        public Boolean ViewConfidenceScoreRecentUse { get; set; }
-        /// <summary>
-        /// Rating of confidence
-        /// </summary>
-        public int ConfidenceScore { get; set; }
-        /// <summary>
-        /// Indicates if the Node is part of ML result per use
-        /// </summary>
-        public Boolean IsByUse { get; set; }
-        /// <summary>
-        /// Indicates if the Node is part of the ML result per recommendation
-        /// </summary>
-        public Boolean IsByRecommendation
-        {
-            get
-            { return !IsByUse; }
-        }
-    }
+    }    
 }

@@ -89,16 +89,16 @@ namespace Dynamo.ViewModels
 
             foreach (var item in FilteredResults)
             {
-                item.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
-                item.AutoCompletionNodeMachineLearningInfo.IsByUse = false;
+                item.Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
+                item.Model.AutoCompletionNodeMachineLearningInfo.IsByUse = false;
             }
-            FilteredResults.ToList()[0].AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 50;
-            FilteredResults.ToList()[1].AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 40;
+            FilteredResults.ToList()[0].Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 50;
+            FilteredResults.ToList()[1].Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 40;
             RaisePropertyChanged("ViewConfidenceScoreRecentUse");
 
-            DisplayNoRecommendationsLowConfidence = !FilteredResults.Where(n => n.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= 50).Any();
+            DisplayNoRecommendationsLowConfidence = !FilteredResults.Where(n => n.Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= 50).Any();
             NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
-            DisplayLowConfidence = FilteredResults.Where(n => n.AutoCompletionNodeMachineLearningInfo.IsByRecommendation).Count() == FilteredResults.Count();
+            DisplayLowConfidence = FilteredResults.Where(n => n.Model.AutoCompletionNodeMachineLearningInfo.IsByRecommendation).Count() == FilteredResults.Count();
             
 
             // Case 4: Confidence score are under a threshold, assuming the minimum value is 50 and all results nodes are under it
@@ -150,7 +150,7 @@ namespace Dynamo.ViewModels
 
                 foreach (var item in FilteredResults)
                 {
-                    item.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = false;
+                    item.Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = false;
                 }
                 DisplayNoRecommendationsLowConfidence = false;
                 DisplayLowConfidence = false;
