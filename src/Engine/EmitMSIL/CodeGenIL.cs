@@ -242,6 +242,85 @@ namespace EmitMSIL
             return argType;
         }
 
+        private bool CanCoerce(Type argType, Type paramType)
+        {
+            if (paramType == typeof(object) && argType.IsValueType)
+            {
+                return true;
+            }
+
+            if (paramType.IsAssignableFrom(argType)) return true;
+
+            if (argType == typeof(double) && paramType == typeof(long))
+            {
+                return true;
+            }
+            if (argType == typeof(double) && paramType == typeof(int))
+            {
+                return true;
+            }
+            if (argType == typeof(long) && paramType == typeof(int))
+            {
+                return true;
+            }
+            if (argType == typeof(long) && paramType == typeof(double))
+            {
+                return true;
+            }
+
+            if (argType == typeof(double[]) && typeof(IEnumerable<int>).IsAssignableFrom(paramType))
+            {
+                return true;
+            }
+            if (argType == typeof(int[]) && typeof(IEnumerable<double>).IsAssignableFrom(paramType))
+            {
+                return true;
+            }
+            if (argType == typeof(double[]) && typeof(IEnumerable<long>).IsAssignableFrom(paramType))
+            {
+                return true;
+            }
+            if (argType == typeof(long[]) && typeof(IEnumerable<double>).IsAssignableFrom(paramType))
+            {
+                return true;
+            }
+            if (argType == typeof(long[]) && typeof(IEnumerable<int>).IsAssignableFrom(paramType))
+            {
+                return true;
+            }
+            if (argType == typeof(int[]) && typeof(IEnumerable<long>).IsAssignableFrom(paramType))
+            {
+                return true;
+            }
+            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(paramType))
+            {
+                return true;
+            }
+            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(paramType))
+            {
+                return true;
+            }
+            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(paramType))
+            {
+                return true;
+            }
+            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(paramType))
+            {
+                return true;
+            }
+            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(paramType))
+            {
+                return true;
+            }
+            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(paramType))
+            {
+                return true;
+            }
+            // TODO: Add more coercion cases here.
+
+            return false;
+        }
+
         private Type EmitIEnumerableCoercion<Source, Target>(AssociativeNode arg)
         {
             if (compilePass == CompilePass.GatherTypeInfo)
@@ -1332,7 +1411,8 @@ namespace EmitMSIL
             // TODO: Decide whether to process overloaded methods at compile time or leave it for runtime.
             // For now, we assume no overloads.
             var clrFeps = FunctionLookup(args);
-            var clrFep = SelectFep(clrFeps, args);
+            var clrFep = clrFeps.FirstOrDefault();
+            var clrFep2 = SelectFep(clrFeps, args);
 
             bool doesReplicate = true;
             bool isStaticOrCtor = true;
@@ -1481,18 +1561,27 @@ namespace EmitMSIL
             }
         }
 
+        /// <summary>
+        /// Select the best matching FEP based on compile-time matching of argument-parameter types.
+        /// </summary>
+        /// <param name="clrFeps"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         private ProtoCore.CLRFunctionEndPoint SelectFep(IEnumerable<ProtoCore.CLRFunctionEndPoint> clrFeps, List<AssociativeNode> args)
         {
             if (clrFeps.Count() == 1) return clrFeps.FirstOrDefault();
 
-            ProtoCore.CLRFunctionEndPoint finalFep = null;
             foreach(var fep in clrFeps)
             {
-                if (args.Count != fep.FormalParams.Count) continue;
+                // TODO: Take into account default arguments of a fep as in this case 
+                // the number of arguments need not necessarily match the number of parameters.
 
                 // Just like AST args, FormalParams has the first item equal to
                 // the class (this) object in the case of an instance method.
+                if (args.Count != fep.FormalParams.Count) continue;
+
                 int index = 0;
+                bool match = true;
                 foreach(var fp in fep.FormalParams)
                 {
                     var paramType = fp.CLRType;
@@ -1501,13 +1590,58 @@ namespace EmitMSIL
                     {
                         argType = variables[idn.Value].Item2;
                     }
-                    if(!paramType.IsAssignableFrom(argType))
+                    else
                     {
-                        continue;
+                        // TODO: all ASTs are expected to be found in the astTypeInfoMap
+                        // however, a few of them aren't because these ASTs are regenerated
+                        // in the emit IL compile pass and their IDs have changed since the GatherTypeInfo pass,
+                        // because of which they aren't found in the map.
+                        if (astTypeInfoMap.TryGetValue(args[index].ID, out Type val))
+                        {
+                            argType = val;
+                        }
                     }
+                    // Insufficient information about argument type
+                    if (argType == null || argType == typeof(object))
+                    {
+                        return null;
+                    }
+
+                    // aType and pType are the element type of an ienumerable
+                    Type pType = paramType;
+                    Type aType = argType;
+                    if (paramType.IsArray)
+                    {
+                        pType = paramType.GetElementType();
+                    }
+                    else if(fp.IsIndexable && !typeof(IDictionary).IsAssignableFrom(paramType))
+                    {
+                        pType = paramType.GetGenericArguments().FirstOrDefault();
+                    }
+
+                    if(argType.IsArray)
+                    {
+                        aType = argType.GetElementType();
+                    }
+                    else if(ArrayUtils.IsEnumerable(argType) && argType != typeof(string) &&
+                        !typeof(IDictionary).IsAssignableFrom(argType))
+                    {
+                        aType = argType.GetGenericArguments().FirstOrDefault();
+                    }
+
+                    if (!pType.IsAssignableFrom(aType))
+                    {
+                        if (!CanCoerce(aType, pType))
+                        {
+                            match = false;
+                            break;
+                        }
+                    }
+                    index++;
                 }
+                if (match) return fep;
             }
-            return finalFep;
+            return null;
         }
 
         private bool DoesParamArgRankMatch(List<Type> parameterTypes, List<AssociativeNode> args)

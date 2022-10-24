@@ -96,7 +96,7 @@ namespace EmitMSIL
             return values;
         }
 
-        private static CLRFunctionEndPoint SelectFinalFep(List<CLRFunctionEndPoint> functionEndPoint,
+        private static CLRFunctionEndPoint SelectFinalFep(List<CLRFunctionEndPoint> functionEndPoints,
                                         List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
         {
             List<ReplicationInstruction> replicationControl = new List<ReplicationInstruction>();
@@ -104,10 +104,9 @@ namespace EmitMSIL
             //the existing utility methods
 
             //Filter for exact matches
-
             List<CLRFunctionEndPoint> exactTypeMatchingCandindates = new List<CLRFunctionEndPoint>();
 
-            foreach (CLRFunctionEndPoint possibleFep in functionEndPoint)
+            foreach (CLRFunctionEndPoint possibleFep in functionEndPoints)
             {
                 if (possibleFep.DoesTypeDeepMatch(formalParameters, runtimeCore))
                 {
@@ -115,12 +114,10 @@ namespace EmitMSIL
                 }
             }
 
-
-            //There was an exact match, so dispath to it
+            //There was an exact match, so dispatch to it
             if (exactTypeMatchingCandindates.Count > 0)
             {
-                CLRFunctionEndPoint fep = null;
-
+                CLRFunctionEndPoint fep;
                 if (exactTypeMatchingCandindates.Count == 1)
                 {
                     fep = exactTypeMatchingCandindates[0];
@@ -131,7 +128,6 @@ namespace EmitMSIL
                     // TODO_MSIL: implement SelectFEPFromMultiple
                     //fep = SelectFEPFromMultiple(stackFrame, runtimeCore, exactTypeMatchingCandindates, formalParameters);
                 }
-
                 return fep;
             }
             else
@@ -139,16 +135,17 @@ namespace EmitMSIL
                 Dictionary<CLRFunctionEndPoint, int> candidatesWithDistances = new Dictionary<CLRFunctionEndPoint, int>();
                 Dictionary<CLRFunctionEndPoint, int> candidatesWithCastDistances = new Dictionary<CLRFunctionEndPoint, int>();
 
-                foreach (CLRFunctionEndPoint fep in functionEndPoint)
+                foreach (CLRFunctionEndPoint fep in functionEndPoints)
                 {
                     //@TODO(Luke): Is this value for allow array promotion correct?
                     int distance = fep.ComputeTypeDistance(formalParameters, runtimeCore, false);
-                    if (distance !=
-                        (int)ProcedureDistance.InvalidDistance)
+                    if (distance != (int)ProcedureDistance.InvalidDistance)
+                    {
                         candidatesWithDistances.Add(fep, distance);
+                    }
                 }
 
-                foreach (CLRFunctionEndPoint fep in functionEndPoint)
+                foreach (CLRFunctionEndPoint fep in functionEndPoints)
                 {
                     int dist = fep.ComputeCastDistance(formalParameters);
                     candidatesWithCastDistances.Add(fep, dist);
@@ -163,8 +160,6 @@ namespace EmitMSIL
                                                   Resources.kAmbigousMethodDispatch);
                     return null;
                 }
-
-
                 CLRFunctionEndPoint compliantTarget = GetCompliantTarget(formalParameters, replicationControl,
                                                                       runtimeCore, candidatesWithCastDistances,
                                                                       candidateFunctions, candidatesWithDistances);

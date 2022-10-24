@@ -490,7 +490,7 @@ import(""DSCoreNodes.dll"");
 list = DSCore.Math.Sum([ 1, 2, 3 ]);
 ";
             var ast = ParserUtils.Parse(dscode).Body;
-            var output = codeGen.EmitAndExecute(ast);
+            var output = codeGen.Emit(ast);
             Assert.IsNotEmpty(output);
 
             Assert.IsTrue(output.ContainsKey("list"));
@@ -782,7 +782,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.IsNotEmpty(output);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void SelectFepTest2()
         {
             string code =

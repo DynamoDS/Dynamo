@@ -180,12 +180,12 @@ namespace ProtoCore
                 return (int)ProcedureDistance.ExactMatchDistance;
             }
 
+            int distance = (int)ProcedureDistance.MaxDistance;
             if (args.Count != FormalParams.Count)
             {
-                return (int)ProcedureDistance.MaxDistance;
+                return distance;
             }
 
-            int distance = (int)ProcedureDistance.MaxDistance;
             // Jun Comment:
             // Default args not provided by the caller would have been pushed by the call instruction as optype = DefaultArs
             for (int i = 0; i < args.Count; ++i)
@@ -195,7 +195,7 @@ namespace ProtoCore
 
                 var expectedType = FormalParams[i];
 
-                // If its a default argumnet, then it wasnt provided by the caller
+                // If its a default argument, then it wasnt provided by the caller
                 // The rcvdType is the type of the argument signature
                 if (args[i].IsDefaultArgument)
                 {
@@ -277,14 +277,12 @@ namespace ProtoCore
                 {
                     if (FormalParams[i].Rank != ArrayUtils.GetMaxRankForArray(formalParameters[i])
                         && FormalParams[i].Rank != DSASM.Constants.kArbitraryRank)
+                    {
                         return false;
-
-
-                    Type typ = FormalParams[i].ProtoInfo;
+                    }
                     Dictionary<ClassNode, int> arrayTypes = ArrayUtils.GetTypeStatisticsForArray(formalParameters[i], runtimeCore);
 
                     ClassNode cn = null;
-
                     if (arrayTypes.Count == 0)
                     {
                         //This was an empty array
@@ -299,16 +297,18 @@ namespace ProtoCore
                     }
                     else if (arrayTypes.Count > 1)
                     {
-                        ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(arrayTypes, runtimeCore.ClassTable);
+                        ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(
+                            arrayTypes, runtimeCore.ClassTable);
 
                         if (commonBaseType == null)
+                        {
                             throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported(
                                 string.Format(Resources.ArrayWithNotSupported, "{0C644179-14F5-4172-8EF8-A2F3739901B2}"));
-
+                        }
                         cn = commonBaseType; //From now on perform tests on the commmon base type
                     }
 
-
+                    Type typ = FormalParams[i].ProtoInfo;
                     ClassNode argTypeNode = runtimeCore.ClassTable.ClassNodes[typ.UID];
 
                     //cn now represents the class node of the argument
@@ -317,15 +317,15 @@ namespace ProtoCore
                     //TODO(Jun)This is worrying test
 
                     //Disable var as exact match, otherwise resolution between double and var will fail
-                    if (cn != argTypeNode && cn != runtimeCore.ClassTable.ClassNodes[(int)PrimitiveType.Null] && argTypeNode != runtimeCore.ClassTable.ClassNodes[(int)PrimitiveType.Var])
+                    if (cn != argTypeNode && cn != runtimeCore.ClassTable.ClassNodes[(int)PrimitiveType.Null] &&
+                        argTypeNode != runtimeCore.ClassTable.ClassNodes[(int)PrimitiveType.Var])
+                    {
                         return false;
-
+                    }
                     //if (coersionScore != (int)ProcedureDistance.kExactMatchScore)
                     //    return false;
-
                     continue;
                 }
-
                 if (FormalParams[i].UID != formalParameters[i].TypeUID)
                     return false;
             }
