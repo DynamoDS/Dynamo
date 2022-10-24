@@ -151,7 +151,6 @@ namespace Dynamo.ViewModels
                 }
             }
             DefaultResults = candidates;
-            DisplayNoRecommendationsLowConfidence = false;
         }
 
         internal void DisplayMachineLearningResults()
@@ -228,6 +227,7 @@ namespace Dynamo.ViewModels
 
             if (IsDisplayingMLRecommendation)
             {
+                // TODO: Add a function call to send port and node info to get suggestions
                 DisplayMachineLearningResults();
             }
             else
