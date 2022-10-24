@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using ProtoCore.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -583,19 +584,19 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                 return (int)a == (int)b;
             }
 
-            bool isAIEnum = typeof(IEnumerable<object>).IsAssignableFrom(a.GetType());
-            bool isBIEnum = typeof(IEnumerable<object>).IsAssignableFrom(b.GetType());
-            if (isAIEnum && isBIEnum)
+            bool isAList = a is IList;
+            bool isBList = b is IList;
+            if (isAList && isBList)
             {
-                var aIEnum = (a as IEnumerable<object>).ToList();
-                var bIEnum = (b as IEnumerable<object>).ToList();
+                var aIEnum = a as IList;
+                var bIEnum = b as IList;
 
-                if (aIEnum.Count() != bIEnum.Count()) 
+                if (aIEnum.Count != bIEnum.Count) 
                 { 
                     return false; 
                 }
 
-                for (int ii=0; ii < aIEnum.Count(); ii++)
+                for (int ii=0; ii < aIEnum.Count; ii++)
                 {
                     if (!AreEqual(aIEnum[ii], bIEnum[ii]))
                     {
@@ -605,7 +606,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
 
                 return true;
             }
-            else if (isAIEnum || isBIEnum)
+            else if (isAList || isBList)
             {
                 return false;
             }
@@ -722,6 +723,8 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.AreEqual(10.0, output["b"]);
         }
 
+        #region direct function calls
+
         [Test]
         public void IEnumerable_IntDouble_Coercion()
         {
@@ -763,7 +766,53 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.AreEqual(55, output["num2"]);
 
             var isReplicationLogicFound = File.ReadLines(opCodeFilePath).SkipWhile(line => !line.Contains("ReplicationLogic"));
+            var unmarshalOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("Unmarshal"));
             Assert.IsEmpty(isReplicationLogicFound);
+            Assert.AreEqual(0, unmarshalOccurences.Count());
         }
+        [Test]
+        public void ExpressionListUnMarshals()
+        {
+            string code =
+            @"
+            import(""DesignScriptBuiltin.dll"");
+            import(""DSCoreNodes.dll"");
+            import (""FFITarget.dll"");
+            x = [1,2,3,DSCore.Math.Max(0,0..3)];
+            ";
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(new object[] { 1,2,3,new int[] {0,1,2,3 } }, output["x"]);
+
+            var replicationLogicOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("ReplicationLogic"));
+            var unmarshalOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("Unmarshal"));
+            Assert.AreEqual(1,replicationLogicOccurences.Count());
+            Assert.AreEqual(1, unmarshalOccurences.Count());
+        }
+        [Test]
+        [Category("Failure")]//TODO_MSIL this fails because DSCore.List.FirstItem replicates when it should not.
+        public void DirectFunctionCallsOnly_NoUnMarshaling()
+        {
+            string code =
+            @"
+            import(""DesignScriptBuiltin.dll"");
+            import(""DSCoreNodes.dll"");
+            import (""FFITarget.dll"");
+            l = [2..5000];
+            i = DSCore.List.FirstItem(l);
+            i2 = DSCore.List.FirstItem(i);
+            ";
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(2, output["i2"]);
+
+            var replicationLogicOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("ReplicationLogic"));
+            var unmarshalOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("Unmarshal"));
+            Assert.AreEqual(0, replicationLogicOccurences.Count());
+            Assert.AreEqual(0, unmarshalOccurences.Count());
+        }
+        #endregion
     }
 }

@@ -39,7 +39,7 @@ namespace ProtoTestFx.TD
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
         bool executeInDebugMode = true;
         //hold results from using MSIL compiler / execution.
-        private Dictionary<string, object> MSILMirror;
+        private IDictionary<string, object> MSILMirror;
         //control which engine to use for tests run with this test framework.
         private bool testMSILExecution = false;
 
