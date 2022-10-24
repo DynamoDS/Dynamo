@@ -134,7 +134,7 @@ namespace EmitMSIL
         {
             //Filter for exact matches
 
-            List<CLRFunctionEndPoint> exactTypeMatchingCandidates = new List<CLRFunctionEndPoint>();
+            var exactTypeMatchingCandidates = new List<CLRFunctionEndPoint>();
             foreach (CLRFunctionEndPoint possibleFep in functionEndPoints)
             {
                 if (possibleFep.DoesTypeDeepMatch(formalParameters, runtimeCore))
@@ -178,7 +178,7 @@ namespace EmitMSIL
                     candidatesWithCastDistances.Add(fep, dist);
                 }
 
-                List<CLRFunctionEndPoint> candidateFunctions = GetCandidateFunctions(candidatesWithDistances);
+                var candidateFunctions = GetCandidateFunctions(candidatesWithDistances);
 
                 if (candidateFunctions.Count == 0)
                 {
@@ -360,13 +360,13 @@ namespace EmitMSIL
                     runtimeCore,
                     allowArrayPromotion);
 
-            Dictionary<CLRFunctionEndPoint, int> candidatesWithCastDistances =
+            var candidatesWithCastDistances =
                 FunctionGroup.GetCastDistances(
                     funcGroup,
                     arguments,
                     replicationInstructions);
 
-            List<CLRFunctionEndPoint> candidateFunctions = GetCandidateFunctions(candidatesWithDistances);
+            var candidateFunctions = GetCandidateFunctions(candidatesWithDistances);
 
             CLRFunctionEndPoint compliantTarget = GetCompliantTarget(
                     arguments,
@@ -428,7 +428,7 @@ namespace EmitMSIL
             // Try to match with feps belonging to the class scope (most derived class should have priority).
             // In this case we simply select the function that belongs to the calling class.
             // The assumption here is that all function end points in "feps" have already been checked that they have the same signature.
-            IEnumerable<CLRFunctionEndPoint> exactFeps = feps.Where(x => x.procedureNode.ClassID == typeID);
+            var exactFeps = feps.Where(x => x.procedureNode.ClassID == typeID);
             if (exactFeps.Count() == 1)
             {
                 return exactFeps.First();
@@ -444,8 +444,8 @@ namespace EmitMSIL
                         return fep;
             }
 
-            //We weren't able to distinguish based on class hiearchy, try to sepearete based on array ranking
-            List<int> numberOfArbitraryRanks = new List<int>();
+            //We weren't able to distinguish based on class hiearchy, try to separate based on array ranking
+            var numberOfArbitraryRanks = new List<int>();
 
             foreach (var fep in feps)
             {
@@ -627,13 +627,13 @@ namespace EmitMSIL
                     replicationInstructions,
                     runtimeCore);
 
-            Dictionary<CLRFunctionEndPoint, int> candidatesWithCastDistances =
+            var candidatesWithCastDistances =
                 FunctionGroup.GetCastDistances(
                     funcGroup,
                     arguments,
                     replicationInstructions);
 
-            List<CLRFunctionEndPoint> candidateFunctions = GetCandidateFunctions(candidatesWithDistances);
+            var candidateFunctions = GetCandidateFunctions(candidatesWithDistances);
 
             CLRFunctionEndPoint compliantTarget =
                 GetCompliantTarget(

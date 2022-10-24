@@ -1289,7 +1289,7 @@ namespace ProtoCore
             bool isGlobalFuncScope = stackFrame.ThisPtr.IsPointer &&
                 stackFrame.ThisPtr.Pointer == Constants.kInvalidIndex;
 
-            List<FunctionEndPoint> candidateFunctions = new List<FunctionEndPoint>();
+            var candidateFunctions = new List<FunctionEndPoint>();
             foreach (FunctionEndPoint fep in candidatesWithDistances.Keys)
             {
                 bool isInstanceMethod = fep.procedureNode != null &&
