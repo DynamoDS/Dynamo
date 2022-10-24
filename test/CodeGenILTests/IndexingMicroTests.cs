@@ -186,7 +186,7 @@ a = 0..100..10; //a is an ILIST because of replication?
 b = 5;
 c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
-            var output = codeGen.EmitAndExecute(ast);
+            var output = codeGen.Emit(ast);
             Assert.IsNotEmpty(output);
             Assert.AreEqual(50, output["c"]);
         }

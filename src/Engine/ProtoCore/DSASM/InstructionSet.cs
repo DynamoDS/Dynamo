@@ -139,11 +139,18 @@ namespace ProtoCore.DSASM
 
         internal object Value { get; set; }
 
+        //TODO can we move this higher up and outside of this type?
+        //TODO better name.
+        /// <summary>
+        /// The underlying type of object this wrapper wraps. Usually inferred from the FEP.ReturnType that created this wrapper.
+        /// </summary>
+        public System.Type CLRFEPReturnType { get; internal set; }
 
-        internal CLRStackValue(object value, int protoType)
+        internal CLRStackValue(object value, int protoType, System.Type FEPReturnType = null)
         {
             this.Value = value;
             this.TypeUID = protoType;
+            this.CLRFEPReturnType = FEPReturnType;
         }
 
         internal static CLRStackValue Null => new CLRStackValue(null, (int)PrimitiveType.Null);

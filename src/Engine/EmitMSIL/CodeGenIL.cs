@@ -69,17 +69,17 @@ namespace EmitMSIL
             // Invoke emitted method (ExecuteIL.Execute)
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
-            var output = new Dictionary<string, object>();
+            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
+            compileResult.asmbuilder.Save("DynamicAssembly.dll");
 
             // null can be replaced by an 'input' dictionary if available.
             var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
 
-            compileResult.asmbuilder.Save("DynamicAssembly.dll");
 
             return output;
         }
 
-        internal Dictionary<string, object> EmitAndExecute(List<AssociativeNode> astList)
+        internal IDictionary<string, object> EmitAndExecute(List<AssociativeNode> astList)
         {
             var timer = new Stopwatch();
             timer.Start();
@@ -91,7 +91,7 @@ namespace EmitMSIL
             timer.Restart();
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
-            var output = new Dictionary<string, object>();
+            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
             mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
             timer.Stop();
             CompileAndExecutionTime.executionTime = timer.Elapsed;
@@ -110,7 +110,7 @@ namespace EmitMSIL
             // 1. Create assembly builder (dynamic assembly)
             var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
             // 2. Create module builder
-            var mod = BuilderHelper.CreateDLLModuleBuilder(asm, "DynamicModule");
+            var mod = BuilderHelper.CreateDLLModuleBuilder(asm, "DynamicAssembly");
             // 3. Create type builder (name it "ExecuteIL")
             var type = BuilderHelper.CreateType(mod, "ExecuteIL");
             // 4. Create method ("Execute"), get ILGenerator 
@@ -150,6 +150,7 @@ namespace EmitMSIL
 
         private Type EmitCoercionCode(AssociativeNode arg, Type argType, Type param)
         {
+            EmitILComment("coerce impl");
             if (argType == null) return argType;
 
             if(param == typeof(object) && argType.IsValueType)
@@ -243,6 +244,7 @@ namespace EmitMSIL
 
         private Type EmitIEnumerableCoercion<Source, Target>(AssociativeNode arg)
         {
+            EmitILComment("coerce IEnumerable");
             if (compilePass == CompilePass.GatherTypeInfo)
             {
                 return typeof(Target[]);
@@ -361,34 +363,19 @@ namespace EmitMSIL
             mInfo = typeof(IEnumerator).GetMethod(nameof(IEnumerator.MoveNext));
             EmitOpCode(OpCodes.Callvirt, mInfo);
 
-            var leaveLabel = DefineLabel();
             EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel.Value);
-            EmitOpCode(OpCodes.Leave_S, leaveLabel.Value);
-
-            EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
-
-            var finallyLabel = DefineLabel();
-            EmitOpCode(OpCodes.Brfalse_S, finallyLabel.Value);
 
             EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
 
             mInfo = typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
             EmitOpCode(OpCodes.Callvirt, mInfo);
 
-            MarkLabel(finallyLabel.Value, "label: finally label");
-            EmitOpCode(OpCodes.Endfinally);
-
-            MarkLabel(leaveLabel.Value, "label: exit label");
+           
             EmitOpCode(OpCodes.Ldloc, newArrIndex);
 
             localBuilder = DeclareLocal(t, "target array");
             var targetArrayIndex = localBuilder.LocalIndex;
             EmitOpCode(OpCodes.Stloc, targetArrayIndex);
-
-            var endLabel = DefineLabel();
-            EmitOpCode(OpCodes.Br_S, endLabel.Value);
-
-            MarkLabel(endLabel.Value, "label: end label");
             EmitOpCode(OpCodes.Ldloc, targetArrayIndex);
 
             return t;
@@ -397,6 +384,7 @@ namespace EmitMSIL
         // Coerce int/long/double arrays to IEnumerable<T> or IList<T>
         private Type EmitArrayCoercion<Source, Target>(AssociativeNode arg, Type ienumerableParamType)
         {
+            EmitILComment("array coercion");
             if (compilePass == CompilePass.GatherTypeInfo)
             {
                 var returnType = typeof(Target[]);
@@ -1065,8 +1053,29 @@ namespace EmitMSIL
 
             EmitArray(ot, eln.Exprs, (AssociativeNode el, int idx) =>
             {
-                Type t = DfsTraverse(el);
+
+                Type t;
+                //if this element is a CLRStackValue, we need to unmarshal it.
+
+                if (astTypeInfoMap.TryGetValue(el.ID, out t) && t == typeof(DSASM.CLRStackValue))
+                {
+                    EmitOpCode(OpCodes.Ldarg_2);
+                    DfsTraverse(el);
+                    //TODO cache this
+                    var unmarshalMethod = typeof(BuiltIn.MSILOutputMap<string, object>).GetMethod("Unmarshal",
+                    BindingFlags.Instance | BindingFlags.Public);
+                    EmitOpCode(OpCodes.Callvirt, unmarshalMethod);
+                    t = unmarshalMethod.ReturnType;
+                }
+                else
+                {
+                    t = DfsTraverse(el);
+                }
+
+
                 if (t == null) return;
+
+
 
                 if (ot == typeof(object) && t.IsValueType)
                 {
@@ -1344,6 +1353,7 @@ namespace EmitMSIL
             //}
             if (doesReplicate)
             {
+                EmitILComment("emit replicating call");
                 // Emit methodCache passed as arg to global Execute method.
                 EmitOpCode(OpCodes.Ldarg_1);
 
@@ -1376,6 +1386,7 @@ namespace EmitMSIL
                 }
 
                 // Emit args for input to call to ReplicationLogic
+                EmitILComment("emit args array start");
                 EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
                 {
                     Type t = DfsTraverse(n);
@@ -1395,7 +1406,7 @@ namespace EmitMSIL
                         EmitOpCode(OpCodes.Box, t);
                     }
                 });
-
+                EmitILComment("emit guides array start");
                 // Emit guides
                 EmitArray(typeof(string[]), args, (AssociativeNode n, int idx) =>
                 {
@@ -1422,24 +1433,49 @@ namespace EmitMSIL
                 var repLogic = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic), BindingFlags.Public | BindingFlags.Static);
                 EmitOpCode(OpCodes.Call, repLogic);
 
-                return typeof(object);
+                return typeof(DSASM.CLRStackValue);
             }
             else
             {
+                EmitILComment("emit non replicating call");
                 // non-replicating call
-                int index = 0;
-                foreach(var arg in args)
+
+                Type argT;
+                var unmarshalFunctionArgs = false;
+                //if the args to this function are from replicated calls unmarshal them.
+                foreach (var arg in args)
                 {
-                    Type t = DfsTraverse(arg);
-                    if (isStaticOrCtor)
+
+                    if (astTypeInfoMap.TryGetValue(arg.ID, out argT) && argT == typeof(DSASM.CLRStackValue))
                     {
-                        t = EmitCoercionCode(arg, t, parameters[index]);
+                        // one of the args is from replicated call - unmarshal.
+                        unmarshalFunctionArgs = true;
+                        break;
                     }
-                    else if (index > 0)
+                }
+                if (unmarshalFunctionArgs)
+                {
+                    EmitILComment("found replication wrapper arg, unmarshaling");
+                    EmitUnmarshalFunctionArgs(args, parameters, isStaticOrCtor);
+                }
+                else
+                {
+                    EmitILComment("direct call, with no unmarshaling");
+                    //emit args to the stack.
+                    int index = 0;
+                    foreach (var arg in args)
                     {
-                        t = EmitCoercionCode(arg, t, parameters[index - 1]);
+                        Type t = DfsTraverse(arg);
+                        if (isStaticOrCtor)
+                        {
+                            t = EmitCoercionCode(arg, t, parameters[index]);
+                        }
+                        else if (index > 0)
+                        {
+                            t = EmitCoercionCode(arg, t, parameters[index - 1]);
+                        }
+                        index++;
                     }
-                    index++;
                 }
 
                 if (clrFep.MemberInfo is MethodInfo mi)
@@ -1454,6 +1490,97 @@ namespace EmitMSIL
                     var ci = clrFep.MemberInfo as ConstructorInfo;
                     EmitOpCode(OpCodes.Newobj, ci);
                     return ci.DeclaringType;
+                }
+            }
+        }
+
+        private void EmitUnmarshalFunctionArgs(List<AssociativeNode> args, List<Type> parameters, bool isStaticOrCtor)
+        {
+
+            // Emit methodCache passed as arg to global Execute method.
+            EmitOpCode(OpCodes.Ldarg_1);
+            // Emit className for input to call to CodeGenIL.KeyGen
+            EmitOpCode(OpCodes.Ldstr, className);
+
+            // Emit methodName for input to call to CodeGenIL.KeyGen
+            EmitOpCode(OpCodes.Ldstr, methodName);
+            EmitOpCode(OpCodes.Ldc_I4, args.Count);
+            var keygen = typeof(CodeGenIL).GetMethod(nameof(CodeGenIL.KeyGen));
+            EmitOpCode(OpCodes.Call, keygen);
+
+            var local = DeclareLocal(typeof(IEnumerable<ProtoCore.CLRFunctionEndPoint>), "cached MethodBase objects");
+            //local could be null if we are not emitting currently.
+            if (local != null)
+            {
+                EmitOpCode(OpCodes.Ldloca, local);
+            }
+
+            // Emit methodCache.TryGetValue(KeyGen(...), out IEnumerable<CLRFunctionEndPoint> feps)
+            var dictLookup = typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>).GetMethod(
+                nameof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>.TryGetValue));
+            EmitOpCode(OpCodes.Callvirt, dictLookup);
+
+            EmitOpCode(OpCodes.Pop);
+            if (local != null)
+            {
+                EmitOpCode(OpCodes.Ldloc, local.LocalIndex);
+            }
+
+            EmitILComment("load array of args");
+            //emit an array of args to pass to unmarshal
+            EmitArray(typeof(object), args, (AssociativeNode n, int index) =>
+            {
+                Type t = DfsTraverse(n);
+                if (isStaticOrCtor)
+                {
+                    t = EmitCoercionCode(n, t, parameters[index]);
+                }
+                else if (index > 0)
+                {
+                    t = EmitCoercionCode(n, t, parameters[index - 1]);
+                }
+
+                if (t == null) return;
+
+                if (t.IsValueType)
+                {
+                    EmitOpCode(OpCodes.Box, t);
+                }
+            });
+
+            //emit unmarshal for args
+            // Emit call to load the runtimeCore argument
+            EmitOpCode(OpCodes.Ldarg_3);
+            //TODO_MSIL cache this and other method lookups at start to speedup compile.
+            //now call unmarshall to convert any clrstackvalues to plain c# objs. 
+            var marshalMethod = typeof(Replication).GetMethod(nameof(Replication.UnMarshalFunctionArguments2),
+                BindingFlags.Static | BindingFlags.Public);
+            EmitOpCode(OpCodes.Call, marshalMethod);
+            //TODO_MSIL can we just use unmarshal here instead of unmarshalfunctionargs?
+            var unMarshaledArgsArray = DeclareLocal(marshalMethod.ReturnType, "unMarshaledArgsArray");
+            if (unMarshaledArgsArray != null)
+            {
+                EmitOpCode(OpCodes.Stloc, unMarshaledArgsArray.LocalIndex);
+            }
+
+            //foreach item in args -
+            //increment index
+            //emit code to index into array
+            //ldelem ref.
+            // we know array.length because it must be the same length as args.len
+
+            if (unMarshaledArgsArray != null)
+            {
+                for (int i = 0; i < args.Count; i++)
+                {
+                    //load array
+                    EmitOpCode(OpCodes.Ldloc, unMarshaledArgsArray.LocalIndex);
+                    EmitOpCode(OpCodes.Ldc_I4, i);
+                    EmitOpCode(OpCodes.Ldelem_Ref);
+                    if (parameters[i].IsValueType)
+                    {
+                        EmitOpCode(OpCodes.Unbox_Any, parameters[i]);
+                    }
                 }
             }
         }

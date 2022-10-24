@@ -25,8 +25,16 @@ namespace EmitMSIL
                 CLRStackValue dsObj;
                 if (arg != null)
                 {
-                    var protoType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(arg.GetType());
-                    dsObj = marshaller.Marshal(arg, protoType, runtimeCore);
+                    //if it's already a wrapper - just return, no need to find type or marshal.
+                    if (arg is CLRStackValue clrArg)
+                    {
+                        dsObj = clrArg;
+                    }
+                    else
+                    {
+                        var protoType = ProtoFFI.CLRObjectMarshaler.GetProtoCoreType(arg.GetType());
+                        dsObj = marshaller.Marshal(arg, protoType, runtimeCore);
+                    }
                 }
                 else
                 {
@@ -38,7 +46,13 @@ namespace EmitMSIL
             return stackValues;
         }
 
-        internal static List<object> UnmarshalFunctionArguments(List<CLRFunctionEndPoint.ParamInfo> formalParams, List<CLRStackValue> args, MSILRuntimeCore runtimeCore)
+        public static IList<object> UnMarshalFunctionArguments2(IEnumerable<CLRFunctionEndPoint> feps, IEnumerable args, MSILRuntimeCore runtimeCore)
+        {
+            //TODO_MSIL figure out how to handle multiple feps here.
+            return UnmarshalFunctionArguments(feps.FirstOrDefault().FormalParams, (IList)args, runtimeCore).ToArray();
+        }
+
+        internal static List<object> UnmarshalFunctionArguments(List<CLRFunctionEndPoint.ParamInfo> formalParams, IList args, MSILRuntimeCore runtimeCore)
         {
             var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
             List<object> values = new List<object>();
@@ -47,51 +61,60 @@ namespace EmitMSIL
 
             for (int i = 0; i < args.Count; ++i)
             {
-                CLRStackValue arg = args[i];
-                System.Type paramType = formalParams[i].CLRType;
-                try
+                if (!(args[i] is CLRStackValue))
                 {
-                    object param = null;
-                    if (arg.IsDefaultArgument)
-                        param = System.Type.Missing;
-                    else
+                    values.Add(args[i]);
+                }
+                else
+                {
+                    CLRStackValue arg = (CLRStackValue)args[i];
+                    System.Type paramType = formalParams[i].CLRType;
+                    try
                     {
-                        param = marshaller.UnMarshal(arg, paramType, runtimeCore);
+                        object param = null;
+                        if (arg.IsDefaultArgument)
+                            param = System.Type.Missing;
+                        else
+                        {
+                            param = marshaller.UnMarshal(arg, paramType, runtimeCore);
+                        }
+
+                        /*TODO_MSIL: Figure out how to set/use these flags
+                        if (paraminfos[i].KeepReference && opArg.IsReferenceType)
+                        {
+                            referencedParameters.Add(opArg);
+                        }*/
+
+                        //null is passed for a value type, so we must return null 
+                        //rather than interpreting any value from null. fix defect 1462014 
+                        if (!paramType.IsGenericType && paramType.IsValueType && param == null)
+                        {
+                            //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
+
+                            runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation,
+                                string.Format(Resources.FailedToCastFromNull, paramType.Name));
+
+                            return null;
+                            //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+
+                        }
+
+                        values.Add(param);
                     }
-
-                    /*TODO_MSIL: Figure out how to set/use these flags
-                    if (paraminfos[i].KeepReference && opArg.IsReferenceType)
+                    catch (System.InvalidCastException ex)
                     {
-                        referencedParameters.Add(opArg);
-                    }*/
-
-                    //null is passed for a value type, so we must return null 
-                    //rather than interpreting any value from null. fix defect 1462014 
-                    if (!paramType.IsGenericType && paramType.IsValueType && param == null)
-                    {
-                        //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
-
-                        runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation,
-                            string.Format(Resources.FailedToCastFromNull, paramType.Name));
-
+                        runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
                         return null;
-                        //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
-
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        string message = String.Format(Resources.kFFIFailedToObtainObject, paramType.Name, formalParams[i].CLRType.DeclaringType.Name, formalParams[i].CLRType.Name);
+                        runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
+                        return null;
                     }
 
-                    values.Add(param);
                 }
-                catch (System.InvalidCastException ex)
-                {
-                    runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
-                    return null;
-                }
-                catch (InvalidOperationException)
-                {
-                    string message = String.Format(Resources.kFFIFailedToObtainObject, paramType.Name, formalParams[i].CLRType.DeclaringType.Name, formalParams[i].CLRType.Name);
-                    runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
-                    return null;
-                }
+
             }
             return values;
         }
@@ -183,7 +206,7 @@ namespace EmitMSIL
         /// <param name="replicationAttrs"></param>
         /// <returns></returns>
         [Obsolete("This is an internal function, do not use it.")]
-        public static object ReplicationLogic(List<CLRFunctionEndPoint> feps, IList args, string[][] replicationAttrs, MSILRuntimeCore runtimeCore)
+        public static CLRStackValue ReplicationLogic(List<CLRFunctionEndPoint> feps, IList args, string[][] replicationAttrs, MSILRuntimeCore runtimeCore)
         {
             // TODO_MSIL: Emit these CLRStackValue's from the CodeGen stage.
             var stackValues = MarshalFunctionArguments(args, runtimeCore);
@@ -207,7 +230,7 @@ namespace EmitMSIL
             var finalFep = SelectFinalFep(resolvedFeps, stackValues, runtimeCore);
             Validity.Assert(finalFep != null, "Expected to find a function endpoint");
 
-            object result;
+            CLRStackValue result;
             if (replicationInstructions.Count == 0)
             {
                 // TODO: Ideally, we should not reach here as no-replication cases should ideally be all handled
@@ -768,7 +791,7 @@ namespace EmitMSIL
         /// <param name="formalParameters"></param>
         /// <param name="runtimeCore"></param>
         /// <returns></returns>
-        private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
+        private static CLRStackValue ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
         {
             List<CLRStackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, runtimeCore);
 
@@ -780,18 +803,15 @@ namespace EmitMSIL
             var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
             CLRStackValue dsRetValue = marshaller.Marshal(result, finalFep.ProtoCoreReturnType, runtimeCore);
 
-            //TODO this causes a test failure. (array reduction to var not allowed)
-            //this is always false, and the comment below does not make sense.
-
+            //TODO_MSIL this is always false, and the comment below does not make sense.
             // An explicit call requires return coercion at the return instruction
             if (!dsRetValue.IsExplicitCall)
             {
                 dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep.ProtoCoreReturnType, dsRetValue, runtimeCore);
             }
 
-            var returnVal = marshaller.UnMarshal(dsRetValue, finalFep.CLRReturnType, runtimeCore);
-
-            return returnVal;
+            dsRetValue.CLRFEPReturnType = finalFep.CLRReturnType;
+            return dsRetValue;
         }
 
         private static IList<CLRStackValue> getSubParameters(CLRStackValue o)
@@ -816,7 +836,7 @@ namespace EmitMSIL
         /// <param name="runtimeCore"></param>
         /// <returns></returns>
         /// <exception cref="ReplicationCaseNotCurrentlySupported"></exception>
-        private static object ExecWithRISlowPath(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters,
+        private static CLRStackValue ExecWithRISlowPath(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters,
             List<ReplicationInstruction> replicationInstructions, MSILRuntimeCore runtimeCore)
         {
             //Recursion base case
@@ -882,7 +902,7 @@ namespace EmitMSIL
                 if (hasEmptyArg)
                     retSize = 0;
 
-                object[] retSVs = new object[retSize];
+                var retSVs = new CLRStackValue[retSize];
                 for (int i = 0; i < retSize; i++)
                 {
                     //Build the call
@@ -915,7 +935,10 @@ namespace EmitMSIL
                     retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs, runtimeCore);
                 }
 
-                return retSVs;
+                //TODO will this always be array?
+                //TODO can we avoid calling toList() - would be nice to avoid iterating and copying..
+                //span?
+                return new CLRStackValue(retSVs.ToList(), (int)ProtoCore.PrimitiveType.Array, retSVs[0].CLRFEPReturnType.MakeArrayType());
             }
             else
             {
@@ -941,7 +964,7 @@ namespace EmitMSIL
                     suppressArray = true;
                 }
 
-                object[] retSVs = new object[retSize];
+                CLRStackValue[] retSVs = new CLRStackValue[retSize];
 
                 //Build the call
                 List<CLRStackValue> newFormalParams = formalParameters.ToList();
@@ -961,7 +984,10 @@ namespace EmitMSIL
                     retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs, runtimeCore);
                 }
 
-                return retSVs;
+                //TODO will this always be array?
+                //TODO can we avoid calling toList() - would be nice to avoid iterating and copying..
+                //span?
+                return new CLRStackValue(retSVs.ToList(), (int)ProtoCore.PrimitiveType.Array, retSVs[0].CLRFEPReturnType.MakeArrayType());
             }
         }
     }
