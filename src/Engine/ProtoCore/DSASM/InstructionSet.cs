@@ -137,9 +137,6 @@ namespace ProtoCore.DSASM
 
         internal System.Type Type => Value?.GetType();
 
-        // TODO_MSIL figure out global functions
-        internal bool IsGlobal;// is global function
-
         internal object Value { get; set; }
 
 
@@ -147,7 +144,6 @@ namespace ProtoCore.DSASM
         {
             this.Value = value;
             this.TypeUID = protoType;
-            IsGlobal = false;
         }
 
         internal static CLRStackValue Null => new CLRStackValue(null, (int)PrimitiveType.Null);

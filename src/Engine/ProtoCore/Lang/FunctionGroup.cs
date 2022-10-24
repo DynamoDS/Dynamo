@@ -104,7 +104,6 @@ namespace ProtoCore
         }
 
         internal static bool CanGetExactMatchStatics(
-            CLRStackValue thisPtr,
             List<List<CLRStackValue>> reducedFormalParams,
             List<CLRFunctionEndPoint> funcGroup,
             MSILRuntimeCore runtimeCore,
@@ -117,7 +116,7 @@ namespace ProtoCore
 
             foreach (List<CLRStackValue> formalParamSet in reducedFormalParams)
             {
-                List<CLRFunctionEndPoint> feps = GetExactTypeMatches(thisPtr, formalParamSet, funcGroup, new List<ReplicationInstruction>(), runtimeCore);
+                List<CLRFunctionEndPoint> feps = GetExactTypeMatches(formalParamSet, funcGroup, new List<ReplicationInstruction>(), runtimeCore);
                 if (feps.Count == 0)
                 {
                     return false;
@@ -178,7 +177,6 @@ namespace ProtoCore
         }
 
         internal static List<CLRFunctionEndPoint> GetExactTypeMatches(
-            CLRStackValue thisPtr,
             List<CLRStackValue> formalParams,
             List<CLRFunctionEndPoint> feps,
             List<ReplicationInstruction> replicationInstructions, 
@@ -190,8 +188,9 @@ namespace ProtoCore
             //@TODO(Luke): Need to add type statistics checks to the below if it is an array to stop int[] matching char[]
 
             //Now test the reduced Params over all of the available end points
-            bool isGlobal = thisPtr.IsGlobal;
-            bool isInstance = thisPtr.IsPointer && !thisPtr.IsGlobal;
+            // TODO_MSIL: figure out global and instance scopes
+            bool isGlobal = false;
+            bool isInstance = false;
 
             foreach (CLRFunctionEndPoint fep in feps)
             {

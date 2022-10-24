@@ -293,13 +293,11 @@ namespace ProtoCore
                     else if (arrayTypes.Count == 1)
                     {
                         //UGLY, get the key out of the array types, of which there is only one
-                        foreach (ClassNode key in arrayTypes.Keys)
-                            cn = key;
+                        cn = arrayTypes.Keys.ElementAt(0);
                     }
                     else if (arrayTypes.Count > 1)
                     {
-                        ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(arrayTypes, runtimeCore.ClassTable);
-
+                        var commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(arrayTypes, runtimeCore.ClassTable);
                         if (commonBaseType == null)
                             throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported(
                                 string.Format(Resources.ArrayWithNotSupported, "{0C644179-14F5-4172-8EF8-A2F3739901B2}"));
@@ -308,7 +306,7 @@ namespace ProtoCore
                     }
 
 
-                    ClassNode argTypeNode = runtimeCore.ClassTable.ClassNodes[typ.UID];
+                    var argTypeNode = runtimeCore.ClassTable.ClassNodes[typ.UID];
 
                     //cn now represents the class node of the argument
                     //argTypeNode represents the class node of the argument
