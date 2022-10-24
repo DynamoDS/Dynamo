@@ -396,7 +396,7 @@ namespace Dynamo.Wpf.ViewModels
             OnRequestBitmapSource(iconRequest);
 
             return iconRequest.Icon;
-            }        
+            }
     }
 
     public class CustomNodeSearchElementViewModel : NodeSearchElementViewModel
@@ -464,5 +464,5 @@ namespace Dynamo.Wpf.ViewModels
 
             return iconRequest.Icon;
         }
-    }    
+    }
 }

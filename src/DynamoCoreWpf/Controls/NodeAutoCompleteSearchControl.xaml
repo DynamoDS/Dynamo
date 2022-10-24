@@ -310,14 +310,14 @@
                 <ContextMenu Name="SuggestionsContextMenu" Style="{StaticResource ContextMenuStyle}">
                     <MenuItem Header="{x:Static p:Resources.MachineLearning}"
                               x:Name="miMLRecommendation"
-                              Click="onSuggestion_Click"
+                              Click="OnSuggestion_Click"
                               IsCheckable="True"
-                              IsChecked="{Binding Path=IsDisplayingMLRecommendation, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"/>
+                              IsChecked="{Binding Path=IsDisplayingMLRecommendation, Mode=OneWay, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"/>
                     <MenuItem Header="{x:Static p:Resources.ObjectType}"
                               x:Name="miObjectType"
-                              Click="onSuggestion_Click"
+                              Click="OnSuggestion_Click"
                               IsCheckable="True"
-                              IsChecked="{Binding Path=IsDisplayingMLRecommendation, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"/>
+                              IsChecked="{Binding Path=IsDisplayingMLRecommendation, Mode=OneWay, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"/>
                 </ContextMenu>
             </Grid.ContextMenu>
         </Grid>

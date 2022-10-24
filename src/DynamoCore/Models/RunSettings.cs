@@ -12,6 +12,7 @@ namespace Dynamo.Models
     /// Node Autocomplete suggestion values
     /// </summary>
     public enum NodeAutocompleteSuggestion { MLRecommendation, ObjectType }
+
     /// <summary>
     /// The RunSettings object contains properties which control
     /// how execution is carried out.
