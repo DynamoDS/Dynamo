@@ -869,7 +869,6 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="SplashScreenLoadNodeLibrary" xml:space="preserve">
     <value>Loading Node Library...</value>
   </data>
-</root>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
     <value>No recommendations</value>
   </data>
