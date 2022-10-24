@@ -673,11 +673,11 @@
     <comment>View menu | Pan up</comment>
   </data>
   <data name="DynamoViewViewMenuPreviewNavigate" xml:space="preserve">
-    <value>Navigate Background 3D Preview</value>
+    <value>_Navigate Background 3D Preview</value>
     <comment>View menu | Navigate background 3D preview</comment>
   </data>
   <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
-    <value>Show Grid</value>
+    <value>_Show Grid</value>
     <comment>View menu | Show Grid</comment>
   </data>
   <data name="DynamoViewViewMenuShowBackground3DPreview" xml:space="preserve">
@@ -1051,8 +1051,8 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
     <value>Package Warning</value>
     <comment>Message box title</comment>
   </data>
-  <data name="SaveConfirmationMessageBoxTitle" xml:space="preserve">
-    <value>Confirmation</value>
+  <data name="UnsavedChangesMessageBoxTitle" xml:space="preserve">
+    <value>Unsaved changes</value>
   </data>
   <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
     <value>Save your model to STL.</value>
@@ -1386,8 +1386,8 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Most Recent Update</value>
     <comment>Sort package by the most recent update</comment>
   </data>
-  <data name="PackageSearchViewDeprecated" xml:space="preserve">
-    <value>DEPRECATED</value>
+  <data name="PackageManagerPackageDeprecated" xml:space="preserve">
+    <value>Deprecated</value>
     <comment>Indicate package has been deprecated</comment>
   </data>
   <data name="PackageSearchViewDeprecatedTooltip" xml:space="preserve">
@@ -1590,7 +1590,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Publish a {0} Package</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Markdown Files Directory (optional)</value>
+    <value>Markdown Files Path (optional)</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
     <value>An optional location for documenting your package in the markdown format.</value>
@@ -2128,7 +2128,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Is Output</value>
   </data>
   <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
-    <value>Available Previews</value>
+    <value>_Available Previews</value>
   </data>
   <data name="PresetWarningMessage" xml:space="preserve">
     <value>No input nodes selected. Select at least one input node to create a preset.</value>
@@ -2152,7 +2152,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Publish Locally</value>
   </data>
   <data name="BackgroundPreviewName" xml:space="preserve">
-    <value>Background Preview</value>
+    <value>_Background Preview</value>
     <comment>The name of the 3D background preview.</comment>
   </data>
   <data name="CameraDataLoadError" xml:space="preserve">
@@ -3300,31 +3300,31 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Package Upload Scan</value>
   </data>
   <data name="ImportPreferencesInfo" xml:space="preserve">
-   <value>Your custom settings can be imported here. It will be applied once Dynamo and any host program restarts</value>
-   <comment>Import Preferences Info.</comment>
+    <value>Your custom settings can be imported here. Settings will be applied once Dynamo and any host program restarts.</value>
+    <comment>Import Preferences Info.</comment>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
-   <value>Import</value>
-   <comment>Import Preferences Text.</comment>
+    <value>Import</value>
+    <comment>Import Preferences Text.</comment>
   </data>
   <data name="ExportPreferencesText" xml:space="preserve">
-   <value>Export</value>
-   <comment>Export Preferences Text.</comment>
+    <value>Export</value>
+    <comment>Export Preferences Text.</comment>
   </data>
   <data name="ExportSettingsDialogTitle" xml:space="preserve">
-   <value>Select Folder to Export</value>
+    <value>Select Folder to Export</value>
   </data>
   <data name="FileDialogImportSettingsFiles" xml:space="preserve">
-   <value>Settings Files ({0})|{0}</value>
+    <value>Settings Files ({0})|{0}</value>
   </data>
   <data name="ImportSettingsDialogTitle" xml:space="preserve">
-   <value>Import Settings</value>
+    <value>Import Settings</value>
   </data>
   <data name="ImportSettingsSuccessMessage" xml:space="preserve">
-   <value>Import Success</value>
+    <value>Import Success</value>
   </data>
   <data name="ImportSettingsFailedMessage" xml:space="preserve">
-   <value>Import Failed</value>
+    <value>Import Failed</value>
   </data>
   <data name="PreferencesSettingHardwareAcceleration" xml:space="preserve">
     <value>Use Hardware Acceleration</value>
@@ -3349,5 +3349,17 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="AddFilePathButtonName" xml:space="preserve">
     <value>Add File Path</value>
+  </data>
+  <data name="PackageDeprecatedTooltip" xml:space="preserve">
+    <value>This package is outdated and cannot be installed.</value>
+  </data>
+  <data name="SplashScreenViewExtensions" xml:space="preserve">
+    <value>Loading View Extensions...</value>
+  </data>
+  <data name="DynamoViewSettingShowStaticSplashScreen" xml:space="preserve">
+    <value>Show Static Splash Screen</value>
+  </data>
+  <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
+    <value>This setting controls whether user will be directed to an extra static splash screen after the intial launch.</value>
   </data>
 </root>

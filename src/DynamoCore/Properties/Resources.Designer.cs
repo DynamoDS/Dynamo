@@ -1871,6 +1871,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Initializing preferences....
+        /// </summary>
+        public static string SplashScreenInitPreferencesSettings {
+            get {
+                return ResourceManager.GetString("SplashScreenInitPreferencesSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Node Library....
+        /// </summary>
+        public static string SplashScreenLoadNodeLibrary {
+            get {
+                return ResourceManager.GetString("SplashScreenLoadNodeLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a string..
         /// </summary>
         public static string StringNodeDescription {

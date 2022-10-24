@@ -167,7 +167,7 @@
     <value>Default Background Preview</value>
   </data>
   <data name="BackgroundPreviewName" xml:space="preserve">
-    <value>Background Preview</value>
+    <value>_Background Preview</value>
     <comment>The name of the 3D background preview.</comment>
   </data>
   <data name="BrowserNodeButtonLabel" xml:space="preserve">
@@ -914,7 +914,7 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>View menu | Show geometry in some context</comment>
   </data>
   <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
-    <value>Available Previews</value>
+    <value>_Available Previews</value>
   </data>
   <data name="DynamoViewViewMenuConnector" xml:space="preserve">
     <value>_Connectors</value>
@@ -957,7 +957,7 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>View menu | Pan up</comment>
   </data>
   <data name="DynamoViewViewMenuPreviewNavigate" xml:space="preserve">
-    <value>Navigate Background 3D Preview</value>
+    <value>_Navigate Background 3D Preview</value>
     <comment>View menu | Navigate background 3D preview</comment>
   </data>
   <data name="DynamoViewViewMenuShowBackground3DPreview" xml:space="preserve">
@@ -973,7 +973,7 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>View menu | Show console</comment>
   </data>
   <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
-    <value>Show Grid</value>
+    <value>_Show Grid</value>
     <comment>View menu | Show Grid</comment>
   </data>
   <data name="DynamoViewViewMenuZoom" xml:space="preserve">
@@ -1623,8 +1623,8 @@ Next assemblies were loaded several times:
     <value>Most Recent Update</value>
     <comment>Sort package by the most recent update</comment>
   </data>
-  <data name="PackageSearchViewDeprecated" xml:space="preserve">
-    <value>DEPRECATED</value>
+  <data name="PackageManagerPackageDeprecated" xml:space="preserve">
+    <value>Deprecated</value>
     <comment>Indicate package has been deprecated</comment>
   </data>
   <data name="PackageSearchViewDeprecatedTooltip" xml:space="preserve">
@@ -1856,8 +1856,8 @@ Want to publish a different package?</value>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
     <value>Run at the specified interval.</value>
   </data>
-  <data name="SaveConfirmationMessageBoxTitle" xml:space="preserve">
-    <value>Confirmation</value>
+  <data name="UnsavedChangesMessageBoxTitle" xml:space="preserve">
+    <value>Unsaved changes</value>
   </data>
   <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
     <value>Save your model to STL.</value>
@@ -2814,7 +2814,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Add Directory And Its Files To Package</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Markdown Files Directory (optional)</value>
+    <value>Markdown Files Path (optional)</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
     <value>An optional location for documenting your package in the markdown format.</value>
@@ -3313,31 +3313,31 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Package Upload Scan</value>
   </data>
   <data name="ImportPreferencesInfo" xml:space="preserve">
-   <value>Your custom settings can be imported here. It will be applied once Dynamo and any host program restarts</value>
-   <comment>Import Preferences Info.</comment>
+    <value>Your custom settings can be imported here. Settings will be applied once Dynamo and any host program restarts.</value>
+    <comment>Import Preferences Info.</comment>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
-   <value>Import</value>
-   <comment>Import Preferences Text.</comment>
+    <value>Import</value>
+    <comment>Import Preferences Text.</comment>
   </data>
   <data name="ExportPreferencesText" xml:space="preserve">
-   <value>Export</value>
-   <comment>Export Preferences Text.</comment>
+    <value>Export</value>
+    <comment>Export Preferences Text.</comment>
   </data>
   <data name="ExportSettingsDialogTitle" xml:space="preserve">
-   <value>Select Folder to Export</value>
+    <value>Select Folder to Export</value>
   </data>
   <data name="FileDialogImportSettingsFiles" xml:space="preserve">
-   <value>Settings Files ({0})|{0}</value>
+    <value>Settings Files ({0})|{0}</value>
   </data>
   <data name="ImportSettingsDialogTitle" xml:space="preserve">
-   <value>Import Settings</value>
+    <value>Import Settings</value>
   </data>
   <data name="ImportSettingsSuccessMessage" xml:space="preserve">
-   <value>Import Success</value>
+    <value>Import Success</value>
   </data>
   <data name="ImportSettingsFailedMessage" xml:space="preserve">
-   <value>Import Failed</value>
+    <value>Import Failed</value>
   </data>
   <data name="PreferencesSettingHardwareAcceleration" xml:space="preserve">
     <value>Use Hardware Acceleration</value>
@@ -3350,7 +3350,7 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Auto-Backup Interval</value>
     <comment>Setting menu | Auto-Backup Interval</comment>
   </data>
-    <data name="PreferencesSettingMaxRecentFiles" xml:space="preserve">
+  <data name="PreferencesSettingMaxRecentFiles" xml:space="preserve">
     <value>Maximum Number of Recent Files</value>
     <comment>Setting menu | Maximum Number of Recent Files</comment>
   </data>
@@ -3362,5 +3362,17 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="AddFilePathButtonName" xml:space="preserve">
     <value>Add File Path</value>
+  </data>
+  <data name="PackageDeprecatedTooltip" xml:space="preserve">
+    <value>This package is outdated and cannot be installed.</value>
+  </data>
+  <data name="SplashScreenViewExtensions" xml:space="preserve">
+    <value>Loading View Extensions...</value>
+  </data>
+  <data name="DynamoViewSettingShowStaticSplashScreen" xml:space="preserve">
+    <value>Show Static Splash Screen</value>
+  </data>
+  <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
+    <value>This setting controls whether user will be directed to an extra static splash screen after the intial launch.</value>
   </data>
 </root>

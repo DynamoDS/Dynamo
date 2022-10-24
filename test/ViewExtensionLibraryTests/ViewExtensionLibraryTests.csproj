@@ -11,7 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
 	  <PackageRefence Include="Moq" Version="4.2.1507.118" />
-	  <PackageRefence Include="Newtonsoft.Json" Version="8.0.3" />
+	  <PackageRefence Include="Newtonsoft.Json" Version="13.0.1" />
 	  <PackageRefence Include="NUnit" Version="2.6.3" />
     <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
