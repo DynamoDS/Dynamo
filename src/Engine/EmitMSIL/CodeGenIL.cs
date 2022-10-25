@@ -2005,5 +2005,10 @@ namespace EmitMSIL
             }
             throw new ArgumentException("Identifier node expected.");
         }
+
+        public void Dispose()
+        {
+        }
     }
+
 }
