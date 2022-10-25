@@ -637,50 +637,7 @@ namespace EmitMSIL
 
             foreach (var exp in array.Exprs)
             {
-                if (exp is ExprListNode eln)
-                {
-                    var subArray = GetTypeStatisticsForArray(eln);
-                    var t = GetOverallTypeForArray(subArray);
-
-                    if (t != typeof(object))
-                    {
-                        t = t.MakeArrayType();
-                    }
-                    arrayTypes.Add(t);
-                }
-                else
-                {
-                    Type t;
-                    switch (exp.Kind)
-                    {
-                        case AstKind.Integer:
-                            t = typeof(long);
-                            break;
-                        case AstKind.Double:
-                            t = typeof(double);
-                            break;
-                        case AstKind.Boolean:
-                            t = typeof(bool);
-                            break;
-                        case AstKind.Char:
-                            t = typeof(char);
-                            break;
-                        case AstKind.String:
-                            t = typeof(string);
-                            break;
-                        case AstKind.Identifier:
-                            if(variables.TryGetValue((exp as IdentifierNode).Value, out Tuple<int, Type> tuple))
-                            {
-                                t = tuple.Item2;
-                            }
-                            else t = typeof(object);
-                            break;
-                        default:
-                            t = typeof(object);
-                            break;
-                    }
-                    arrayTypes.Add(t);
-                }
+                arrayTypes.Add(DfsTraverse(exp));
             }
             return arrayTypes;
         }
@@ -1031,48 +988,60 @@ namespace EmitMSIL
             {
                 throw new ArgumentException("AST node must be an Expression List.");
             }
-            var arrayTypes = GetTypeStatisticsForArray(eln);
-            var ot = GetOverallTypeForArray(arrayTypes);
-
-            EmitArray(ot, eln.Exprs, (AssociativeNode el, int idx) =>
+            if (compilePass == CompilePass.GatherTypeInfo)
             {
+                var arrayTypes = GetTypeStatisticsForArray(eln);
+                return GetOverallTypeForArray(arrayTypes).MakeArrayType();
+            }
+            if (compilePass == CompilePass.emitIL)
+            {
+                Type ot;
+                if(!astTypeInfoMap.TryGetValue(node.ID, out ot))
+                {
+                    throw new Exception("unkown array type");
+                }
+                var otElementType = ot.GetElementType();
+                EmitArray(otElementType, eln.Exprs, (AssociativeNode el, int idx) =>
+                {
 
-                Type t;
+                    Type t;
                 //if this element is a CLRStackValue, we need to unmarshal it.
 
-                if (astTypeInfoMap.TryGetValue(el.ID, out t) && t == typeof(DSASM.CLRStackValue))
-                {
-                    EmitOpCode(OpCodes.Ldarg_2);
-                    DfsTraverse(el);
-                    //TODO cache this
-                    var unmarshalMethod = typeof(BuiltIn.MSILOutputMap<string, object>).GetMethod("Unmarshal",
-                    BindingFlags.Instance | BindingFlags.Public);
-                    EmitOpCode(OpCodes.Callvirt, unmarshalMethod);
-                    t = unmarshalMethod.ReturnType;
-                }
-                else
-                {
-                    t = DfsTraverse(el);
-                }
-
-
-                if (t == null) return;
-
-
-
-                if (ot == typeof(object) && t.IsValueType)
-                {
-                    EmitOpCode(OpCodes.Box, t);
-                }
-                if (ot == typeof(double))
-                {
-                    if (t == typeof(int) || t == typeof(long))
+                    if (astTypeInfoMap.TryGetValue(el.ID, out t) && t == typeof(DSASM.CLRStackValue))
                     {
-                        EmitOpCode(OpCodes.Conv_R8);
+                        EmitOpCode(OpCodes.Ldarg_2);
+                        DfsTraverse(el);
+                    //TODO cache this
+                        var unmarshalMethod = typeof(BuiltIn.MSILOutputMap<string, object>).GetMethod("Unmarshal",
+                        BindingFlags.Instance | BindingFlags.Public);
+                        EmitOpCode(OpCodes.Callvirt, unmarshalMethod);
+                        t = unmarshalMethod.ReturnType;
                     }
-                }
-            });
-            return ot.MakeArrayType();
+                    else
+                    {
+                        t = DfsTraverse(el);
+                    }
+
+
+                    if (t == null) return;
+
+
+
+                    if (otElementType == typeof(object) && t.IsValueType)
+                    {
+                        EmitOpCode(OpCodes.Box, t);
+                    }
+                    if (otElementType == typeof(double))
+                    {
+                        if (t == typeof(int) || t == typeof(long))
+                        {
+                            EmitOpCode(OpCodes.Conv_R8);
+                        }
+                    }
+                });
+                return ot;
+            }
+            return null;
         }
 
         /// <summary>
