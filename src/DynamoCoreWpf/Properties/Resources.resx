@@ -3362,4 +3362,7 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
     <value>This setting controls whether user will be directed to an extra static splash screen after the intial launch.</value>
   </data>
+  <data name="RecentFileNumberInfo" xml:space="preserve">
+    <value>Reducing the number will only keep the very recent files and discard the rest of them.</value>
+  </data>
 </root>
