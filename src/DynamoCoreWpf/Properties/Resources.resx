@@ -3363,6 +3363,6 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>This setting controls whether user will be directed to an extra static splash screen after the intial launch.</value>
   </data>
   <data name="RecentFileNumberInfo" xml:space="preserve">
-    <value>Reducing the number will only keep the very recent files and discard the rest of them.</value>
+    <value>Reducing this number will discard all recent files beyond your chosen number.</value>
   </data>
 </root>

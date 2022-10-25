@@ -7440,7 +7440,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reducing the number will only keep the very recent files and discard the rest of them..
+        ///   Looks up a localized string similar to Reducing this number will discard all recent files beyond your chosen number..
         /// </summary>
         public static string RecentFileNumberInfo {
             get {
