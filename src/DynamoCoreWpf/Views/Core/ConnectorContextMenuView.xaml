@@ -48,6 +48,10 @@
                             </Style>
                         </MenuItem.Style>
                     </MenuItem>
+                    <MenuItem x:Name="StartNode" Header="{x:Static props:Resources.ConnectorContextMenuHeaderStartNode}" 
+                              Command="{Binding StartNodeCommand}"/>
+                    <MenuItem x:Name="EndNode" Header="{x:Static props:Resources.ConnectorContextMenuHeaderEndNode}" 
+                              Command="{Binding EndNodeCommand}"/>
                 </ContextMenu>
         </Button.ContextMenu>
         </Button>

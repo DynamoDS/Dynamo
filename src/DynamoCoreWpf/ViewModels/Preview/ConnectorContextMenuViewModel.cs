@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using Dynamo.Logging;
 using Dynamo.UI.Commands;
@@ -96,6 +96,14 @@ namespace Dynamo.ViewModels
         /// Alerts ConnectorViewModel to pin the connector
         /// </summary>
         public DelegateCommand PinConnectedSurrogateCommand { get; set; }
+        /// <summary>
+        /// Alerts ConnectorViewModel to focus the view on start node
+        /// </summary>
+        public DelegateCommand StartNodeCommand { get; set; }
+        /// <summary>
+        /// Alerts ConnectorViewModel to focus the view on end node
+        /// </summary>
+        public DelegateCommand EndNodeCommand { get; set; }
 
         private void InitCommands()
         {
@@ -103,6 +111,8 @@ namespace Dynamo.ViewModels
             SelectConnectedSurrogateCommand = new DelegateCommand(SelectConnectedSurrogateCommandExecute, x => true);
             BreakConnectionsSurrogateCommand = new DelegateCommand(BreakConnectionsSurrogateCommandExecute, x => true);
             PinConnectedSurrogateCommand = new DelegateCommand(PinConnectedSurrogateCommandExecute, x => true);
+            StartNodeCommand = new DelegateCommand(StartNodeCommandExecute, x => true);
+            EndNodeCommand = new DelegateCommand(EndNodeCommandExecute, x => true);
         }
 
         /// <summary>
@@ -154,6 +164,24 @@ namespace Dynamo.ViewModels
             ViewModel.PinConnectorCommand.Execute(null);
             // Track pin connected nodes event
             Analytics.TrackEvent(Actions.Pin, Categories.ConnectorOperations, "PinWire");
+        }
+
+        /// <summary>
+        /// Executes the start node command on connector view model
+        /// </summary>
+        /// <param name="obj"></param>
+        private void StartNodeCommandExecute(object obj)
+        {
+            ViewModel.StartNodeCommand.Execute(null);
+        }
+
+        /// <summary>
+        /// Executes the end node command on connector view model
+        /// </summary>
+        /// <param name="obj"></param>
+        private void EndNodeCommandExecute(object obj)
+        {
+            ViewModel.EndNodeCommand.Execute(null);
         }
 
         #endregion
