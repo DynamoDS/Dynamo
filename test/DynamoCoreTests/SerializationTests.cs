@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -649,6 +649,27 @@ namespace Dynamo.Tests
         {
             CurrentDynamoModel.AddHomeWorkspace();
             Assert.DoesNotThrow(() => { CurrentDynamoModel.CurrentWorkspace.ToJson(null); });
+        }
+        [Test]
+        public void NullWorkspaceRefsDeserializedAsEmpty()
+        {
+
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\nullWorkspaceRefs.dyn");
+            var json = File.ReadAllText(testFile);
+
+            Assert.DoesNotThrow(() =>
+            {
+               var ws =  WorkspaceModel.FromJson(
+                json, this.CurrentDynamoModel.LibraryServices,
+                null,
+                null,
+                this.CurrentDynamoModel.NodeFactory,
+                true,
+                true,
+                this.CurrentDynamoModel.CustomNodeManager);
+
+                Assert.NotNull(ws);
+            });
         }
 
         [Test]
