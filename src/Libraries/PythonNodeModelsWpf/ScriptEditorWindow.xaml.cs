@@ -108,7 +108,7 @@ namespace PythonNodeModelsWpf
 
         #region Text Zoom in Python Editor
         // React to ctrl + mouse wheel to zoom in and out
-        private void EditorBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        private void editText_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             bool ctrl = Keyboard.Modifiers == ModifierKeys.Control;
             if (ctrl)
@@ -125,7 +125,7 @@ namespace PythonNodeModelsWpf
         // Update function, increases/decreases by a specific increment
         public void UpdateFontSize(bool increase)
         {
-            double currentSize = editText.FontSize; //EditorBox.FontSize;
+            double currentSize = editText.FontSize;
 
             if (increase)
             {
@@ -145,6 +145,7 @@ namespace PythonNodeModelsWpf
             }
         }
         #endregion
+
         #region Autocomplete Event Handlers
 
         private void UpdateAvailableEngines(object sender = null, NotifyCollectionChangedEventArgs e = null)
