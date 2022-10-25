@@ -168,6 +168,79 @@ namespace EmitMSIL
             }
         }
 
+        internal static CLRFunctionEndPoint SelectFinalFep(IEnumerable<CLRFunctionEndPoint> functionEndPoints,
+            List<ProtoCore.AST.AssociativeAST.AssociativeNode> formalParameters,
+            List<System.Type> argTypes, MSILRuntimeCore runtimeCore)
+        {
+            List<ReplicationInstruction> replicationControl = new List<ReplicationInstruction>();
+            //We're never going to replicate so create an empty structure to allow us to use
+            //the existing utility methods
+
+            //Filter for exact matches
+            List<CLRFunctionEndPoint> exactTypeMatchingCandindates = new List<CLRFunctionEndPoint>();
+
+            foreach (CLRFunctionEndPoint possibleFep in functionEndPoints)
+            {
+                if (possibleFep.DoesTypeDeepMatch(formalParameters, argTypes, runtimeCore))
+                {
+                    exactTypeMatchingCandindates.Add(possibleFep);
+                }
+            }
+
+            //There was an exact match, so dispatch to it
+            if (exactTypeMatchingCandindates.Count > 0)
+            {
+                CLRFunctionEndPoint fep;
+                if (exactTypeMatchingCandindates.Count == 1)
+                {
+                    fep = exactTypeMatchingCandindates[0];
+                }
+                else
+                {
+                    fep = exactTypeMatchingCandindates[0];
+                    // TODO_MSIL: implement SelectFEPFromMultiple
+                    //fep = SelectFEPFromMultiple(stackFrame, runtimeCore, exactTypeMatchingCandindates, formalParameters);
+                }
+                return fep;
+            }
+            else
+            {
+                Dictionary<CLRFunctionEndPoint, int> candidatesWithDistances = new Dictionary<CLRFunctionEndPoint, int>();
+                Dictionary<CLRFunctionEndPoint, int> candidatesWithCastDistances = new Dictionary<CLRFunctionEndPoint, int>();
+
+                foreach (CLRFunctionEndPoint fep in functionEndPoints)
+                {
+                    //@TODO(Luke): Is this value for allow array promotion correct?
+                    int distance = fep.ComputeTypeDistance(formalParameters, argTypes, runtimeCore, false);
+                    if (distance != (int)ProcedureDistance.InvalidDistance)
+                    {
+                        candidatesWithDistances.Add(fep, distance);
+                    }
+                }
+
+                foreach (CLRFunctionEndPoint fep in functionEndPoints)
+                {
+                    int dist = fep.ComputeCastDistance(argTypes, runtimeCore);
+                    candidatesWithCastDistances.Add(fep, dist);
+                }
+
+                // TODO_MSIL: implement GetCandidateFunctions;
+                List<CLRFunctionEndPoint> candidateFunctions = candidatesWithDistances.Keys.ToList(); //GetCandidateFunctions(candidatesWithDistances);
+
+                if (candidateFunctions.Count == 0)
+                {
+                    runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AmbiguousMethodDispatch,
+                                                  Resources.kAmbigousMethodDispatch);
+                    return null;
+                }
+                CLRFunctionEndPoint compliantTarget = GetCompliantTarget(null, null,
+                                                                      runtimeCore, candidatesWithCastDistances,
+                                                                      candidateFunctions, candidatesWithDistances);
+
+                return compliantTarget;
+            }
+        }
+
 
         /// <summary>
         /// Invoke method with replication.

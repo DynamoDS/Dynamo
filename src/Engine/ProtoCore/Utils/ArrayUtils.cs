@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.DSASM;
@@ -363,6 +363,46 @@ namespace ProtoCore.Utils
             return usageFreq;
         }
 
+        internal static Dictionary<ClassNode, int> GetTypeStatisticsForArray(AST.AssociativeAST.AssociativeNode array, System.Type type, MSILRuntimeCore runtimeCore)
+        {
+            if (!(array is AST.AssociativeAST.ExprListNode))
+            {
+                Dictionary<ClassNode, int> ret = new Dictionary<ClassNode, int>();
+                ret.Add(runtimeCore.ClassTable.ClassNodes[runtimeCore.GetProtoCoreTypeID(type)], 1);
+                return ret;
+            }
+
+            Dictionary<ClassNode, int> usageFreq = new Dictionary<ClassNode, int>();
+
+            //This is the element on the heap that manages the data structure
+            var dsArray = (array as AST.AssociativeAST.ExprListNode).Exprs;
+            foreach (var exp in dsArray)
+            {
+                if (exp is AST.AssociativeAST.ExprListNode)
+                {
+                    //TODO_MSIL: Move this function to CodeGenIL to get exact type for sub-AST.
+                    Dictionary<ClassNode, int> subLayer = GetTypeStatisticsForArray(exp, type, runtimeCore);
+                    foreach (ClassNode cn in subLayer.Keys)
+                    {
+                        if (!usageFreq.ContainsKey(cn))
+                            usageFreq.Add(cn, 0);
+
+                        usageFreq[cn] = usageFreq[cn] + subLayer[cn];
+                    }
+                }
+                else
+                {
+                    //TODO_MSIL: Move this function to CodeGenIL to get exact type for sub-AST.
+                    ClassNode cn = runtimeCore.ClassTable.ClassNodes[runtimeCore.GetProtoCoreTypeID(type)];
+                    if (!usageFreq.ContainsKey(cn))
+                        usageFreq.Add(cn, 0);
+
+                    usageFreq[cn] += 1;
+                }
+            }
+
+            return usageFreq;
+        }
 
         private static int GetMaxRankForArray<T>(T sv, Func<T, System.Collections.IEnumerable> asArr, int tracer)
         {
@@ -425,6 +465,27 @@ namespace ProtoCore.Utils
             return 1 + maxReduction;
         }
 
+
+        internal static int GetRank(System.Type type)
+        {
+            return type.IsArray ? GetArrayRank(type) : GetEnumerableRank(type);
+        }
+
+        private static int GetArrayRank(System.Type type)
+        {
+            if (!type.IsArray) return 0;
+
+            return 1 + GetArrayRank(type.GetElementType());
+        }
+
+        private static int GetEnumerableRank(System.Type type)
+        {
+            var genericArgs = type.GetGenericArguments();
+            if (genericArgs.Length == 0) return 0;
+
+            return 1 + GetEnumerableRank(genericArgs.FirstOrDefault());
+        }
+
         /// <summary>
         /// Whether sv is double or arrays contains double value.
         /// </summary>
@@ -450,6 +511,16 @@ namespace ProtoCore.Utils
 
             var svArr = sv.Value as IList<CLRStackValue>;
             return svArr.Any(v => ContainsDoubleElement(v));
+        }
+
+        internal static bool ContainsDoubleElement(AST.AssociativeAST.AssociativeNode arg, System.Type type)
+        {
+            if (!IsEnumerable(type))
+                return type == typeof(double);
+
+            var exprs = arg as AST.AssociativeAST.ExprListNode;
+            // TODO_MSIL: Move to CodeGenIL to get AST type
+            return exprs.Exprs.Any(v => ContainsDoubleElement(v, type));
         }
 
         /// <summary>

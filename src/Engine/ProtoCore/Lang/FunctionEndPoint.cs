@@ -173,6 +173,60 @@ namespace ProtoCore
             return distance;
         }
 
+        internal int ComputeCastDistance(List<System.Type> args, MSILRuntimeCore runtimeCore)
+        {
+            //Compute the cost to migrate a class calls argument types to the coresponding base types
+            //This cannot be used to determine whether a function can be called as it will ignore anything that doesn't
+            //it should only be used to determine which class is closer
+            if (args.Count != FormalParams.Count)
+            {
+                return int.MaxValue;
+            }
+
+            if (0 == args.Count)
+            {
+                return 0;
+            }
+
+            int distance = 0;
+            for (int i = 0; i < args.Count; ++i)
+            {
+                int rcvdTypeId = runtimeCore.GetProtoCoreTypeID(args[i]);
+                System.Type rcvdType = args[i];
+
+                // If its a default argumnet, then it wasnt provided by the caller
+                // The rcvdType is the type of the argument signature
+                // TODO_MSIL: Deal with default args.
+                //if (args[i].IsDefaultArgument)
+                //{
+                //    rcvdTypeId = FormalParams[i].UID;
+                //    rcvdType = FormalParams[i].CLRType;
+                //}
+
+                var expectedType = FormalParams[i];
+                if (expectedType.IsIndexable != ArrayUtils.IsEnumerable(args[i])) //Replication code will take care of this
+                {
+                    continue;
+                }
+                else if (expectedType.IsIndexable)  // both are arrays
+                {
+                    continue;
+                }
+                else if (expectedType.UID == rcvdTypeId)
+                {
+                    continue;
+                }
+                else if (rcvdTypeId != Constants.kInvalidIndex && expectedType.UID != Constants.kInvalidIndex)
+                {
+                    int currentCost = ClassUtils.GetUpcastCountTo(
+                        (rcvdTypeId, rcvdType),
+                        (expectedType.UID, expectedType.CLRType));
+                    distance += currentCost;
+                }
+            }
+            return distance;
+        }
+
         internal int ComputeTypeDistance(List<CLRStackValue> args, MSILRuntimeCore runtimeCore, bool allowArrayPromotion = false)
         {
             if (args.Count == 0 && FormalParams.Count == 0)
@@ -263,6 +317,98 @@ namespace ProtoCore
             return distance;
         }
 
+        internal int ComputeTypeDistance(List<AST.AssociativeAST.AssociativeNode> args, List<System.Type> argTypes,
+            MSILRuntimeCore runtimeCore, bool allowArrayPromotion = false)
+        {
+            if (argTypes.Count == 0 && FormalParams.Count == 0)
+            {
+                return (int)ProcedureDistance.ExactMatchDistance;
+            }
+
+            int distance = (int)ProcedureDistance.MaxDistance;
+            if (argTypes.Count != FormalParams.Count)
+            {
+                return distance;
+            }
+
+            // Jun Comment:
+            // Default args not provided by the caller would have been pushed by the call instruction as optype = DefaultArs
+            for (int i = 0; i < argTypes.Count; ++i)
+            {
+                System.Type rcvdType = argTypes[i];
+                int rcvdTypeId = runtimeCore.GetProtoCoreTypeID(argTypes[i]);
+
+                var expectedType = FormalParams[i];
+
+                // If its a default argument, then it wasnt provided by the caller
+                // The rcvdType is the type of the argument signature
+                // TODO_MSIL: Deal with default args.
+                //if (args[i].IsDefaultArgument)
+                //{
+                //    rcvdTypeId = expectedType.UID;
+                //    rcvdType = expectedType.CLRType;
+                //}
+
+                int currentScore = (int)ProcedureDistance.NotMatchScore;
+
+                //sv rank > param rank
+                if (allowArrayPromotion)
+                {
+                    //stop array -> single
+                    if (ArrayUtils.IsEnumerable(argTypes[i]) && !expectedType.IsIndexable) //Replication code will take care of this
+                    {
+                        distance = (int)ProcedureDistance.MaxDistance;
+                        break;
+                    }
+                }
+                else
+                {
+                    //stop array -> single && single -> array
+                    if (ArrayUtils.IsEnumerable(argTypes[i]) != expectedType.IsIndexable)
+                    //Replication code will take care of this
+                    {
+                        distance = (int)ProcedureDistance.MaxDistance;
+                        break;
+                    }
+                }
+
+                if (expectedType.IsIndexable && (expectedType.IsIndexable == ArrayUtils.IsEnumerable(argTypes[i])))
+                {
+                    //In case of conversion from double to int, add a conversion score.
+                    //There are overloaded methods and the difference is the parameter type between int and double.
+                    //Add this to make it call the correct one. - Randy
+                    bool bContainsDouble = ArrayUtils.ContainsDoubleElement(args[i], argTypes[i]);
+                    if (expectedType.UID == (int)PrimitiveType.Integer && bContainsDouble)
+                    {
+                        currentScore = (int)ProcedureDistance.CoerceDoubleToIntScore;
+                    }
+                    else if (expectedType.UID == (int)PrimitiveType.Double && !bContainsDouble)
+                    {
+                        currentScore = (int)ProcedureDistance.CoerceIntToDoubleScore;
+                    }
+                    else
+                    {
+                        currentScore = (int)ProcedureDistance.ExactMatchScore;
+                    }
+                }
+                else if (expectedType.CLRType == rcvdType && (expectedType.IsIndexable == ArrayUtils.IsEnumerable(argTypes[i])))
+                {
+                    currentScore = (int)ProcedureDistance.ExactMatchScore;
+                }
+                else if (rcvdTypeId != Constants.kInvalidIndex)
+                {
+                    currentScore = runtimeCore.GetCoercionScore(rcvdTypeId, expectedType.UID);
+                    if (currentScore == (int)ProcedureDistance.NotMatchScore)
+                    {
+                        distance = (int)ProcedureDistance.MaxDistance;
+                        break;
+                    }
+                }
+                distance -= currentScore;
+            }
+            return distance;
+        }
+
         public bool DoesTypeDeepMatch(List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
         {
             if (formalParameters.Count != FormalParams.Count)
@@ -327,6 +473,75 @@ namespace ProtoCore
                     continue;
                 }
                 if (FormalParams[i].UID != formalParameters[i].TypeUID)
+                    return false;
+            }
+            return true;
+        }
+
+        public bool DoesTypeDeepMatch(List<AST.AssociativeAST.AssociativeNode> args, List<System.Type> formalParameters, MSILRuntimeCore runtimeCore)
+        {
+            if (formalParameters.Count != FormalParams.Count)
+                return false;
+
+            for (int i = 0; i < FormalParams.Count; i++)
+            {
+                if (FormalParams[i].IsIndexable != ArrayUtils.IsEnumerable(formalParameters[i]))
+                    return false;
+
+                if (FormalParams[i].IsIndexable && ArrayUtils.IsEnumerable(formalParameters[i]))
+                {
+                    if (FormalParams[i].Rank != ArrayUtils.GetRank(formalParameters[i])
+                        && FormalParams[i].Rank != DSASM.Constants.kArbitraryRank)
+                    {
+                        return false;
+                    }
+                    Dictionary<ClassNode, int> arrayTypes = ArrayUtils.GetTypeStatisticsForArray(args[i], formalParameters[i], runtimeCore);
+
+                    ClassNode cn = null;
+                    if (arrayTypes.Count == 0)
+                    {
+                        //This was an empty array
+                        Validity.Assert(cn == null, "If it was an empty array, there shouldn't be a type node");
+                        cn = runtimeCore.ClassTable.ClassNodes[(int)PrimitiveType.Null];
+                    }
+                    else if (arrayTypes.Count == 1)
+                    {
+                        //UGLY, get the key out of the array types, of which there is only one
+                        foreach (ClassNode key in arrayTypes.Keys)
+                            cn = key;
+                    }
+                    else if (arrayTypes.Count > 1)
+                    {
+                        ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(
+                            arrayTypes, runtimeCore.ClassTable);
+
+                        if (commonBaseType == null)
+                        {
+                            throw new Exceptions.ReplicationCaseNotCurrentlySupported(
+                                string.Format(Resources.ArrayWithNotSupported, "{0C644179-14F5-4172-8EF8-A2F3739901B2}"));
+                        }
+                        cn = commonBaseType; //From now on perform tests on the commmon base type
+                    }
+
+                    Type typ = FormalParams[i].ProtoInfo;
+                    ClassNode argTypeNode = runtimeCore.ClassTable.ClassNodes[typ.UID];
+
+                    //cn now represents the class node of the argument
+                    //argTypeNode represents the class node of the argument
+
+                    //TODO(Jun)This is worrying test
+
+                    //Disable var as exact match, otherwise resolution between double and var will fail
+                    if (cn != argTypeNode && cn != runtimeCore.ClassTable.ClassNodes[(int)PrimitiveType.Null] &&
+                        argTypeNode != runtimeCore.ClassTable.ClassNodes[(int)PrimitiveType.Var])
+                    {
+                        return false;
+                    }
+                    //if (coersionScore != (int)ProcedureDistance.kExactMatchScore)
+                    //    return false;
+                    continue;
+                }
+                if (FormalParams[i].UID != runtimeCore.GetProtoCoreTypeID(formalParameters[i]))
                     return false;
             }
             return true;

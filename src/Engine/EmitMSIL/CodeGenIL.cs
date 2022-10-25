@@ -1411,8 +1411,29 @@ namespace EmitMSIL
             // TODO: Decide whether to process overloaded methods at compile time or leave it for runtime.
             // For now, we assume no overloads.
             var clrFeps = FunctionLookup(args);
-            var clrFep = clrFeps.FirstOrDefault();
-            var clrFep2 = SelectFep(clrFeps, args);
+            //var clrFep = clrFeps.FirstOrDefault();
+            //var clrFep = SelectFep(clrFeps, args);
+
+            var argTypes = new List<Type>();
+            foreach (var arg in args)
+            {
+                if (arg is IdentifierNode idn)
+                {
+                    argTypes.Add(variables[idn.Value].Item2);
+                }
+                else
+                {
+                    // TODO: all ASTs are expected to be found in the astTypeInfoMap
+                    // however, a few of them aren't because these ASTs are regenerated
+                    // in the emit IL compile pass and their IDs have changed since the GatherTypeInfo pass,
+                    // because of which they aren't found in the map.
+                    if (astTypeInfoMap.TryGetValue(arg.ID, out Type val))
+                    {
+                        argTypes.Add(val);
+                    }
+                }
+            }
+            var clrFep = Replication.SelectFinalFep(clrFeps, args, argTypes, runtimeCore);
 
             bool doesReplicate = true;
             bool isStaticOrCtor = true;
@@ -1684,7 +1705,7 @@ namespace EmitMSIL
                         // non-rectangular (jagged) array best handled by replication
                         return false;
                     }
-                    if (argRank != GetRank(p)) return false;
+                    if (argRank != ArrayUtils.GetRank(p)) return false;
                 }
                 else if (args[argIndex] is IdentifierNode idn)
                 {
@@ -1695,8 +1716,8 @@ namespace EmitMSIL
 
                     if (!p.Equals(t))
                     {
-                        var argRank = GetRank(t);
-                        var paramRank = GetRank(p);
+                        var argRank = ArrayUtils.GetRank(t);
+                        var paramRank = ArrayUtils.GetRank(p);
                         if (argRank != paramRank) return false;
 
                         // If both have rank 0, it could also be because their type info is ambiguous.
@@ -1709,25 +1730,6 @@ namespace EmitMSIL
             return true;
         }
 
-        private static int GetRank(Type type)
-        {
-            return type.IsArray ? GetArrayRank(type) : GetEnumerableRank(type);
-        }
-
-        private static int GetArrayRank(Type type)
-        {
-            if (!type.IsArray) return 0;
-
-            return 1 + GetArrayRank(type.GetElementType());
-        }
-
-        private static int GetEnumerableRank(Type type)
-        {
-            var genericArgs = type.GetGenericArguments();
-            if (genericArgs.Length == 0) return 0;
-
-            return 1 + GetEnumerableRank(genericArgs.FirstOrDefault());
-        }
 
         private static int GetArgumentRank(AssociativeNode val)
         {
