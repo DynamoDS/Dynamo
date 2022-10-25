@@ -222,7 +222,7 @@
     <value>File object</value>
   </data>
   <data name="FilePathDescription" xml:space="preserve">
-    <value>Allows you to select a file on the system to get its file path</value>
+    <value>Allows you to select a file on the system and returns its file path</value>
     <comment>Description for File Path</comment>
   </data>
   <data name="FilterPortDataConditionToolTip" xml:space="preserve">
