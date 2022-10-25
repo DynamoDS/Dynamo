@@ -8,6 +8,7 @@ using ProtoFFI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration.Assemblies;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace EmitMSIL
 
         internal ProtoCore.MSILRuntimeCore runtimeCore;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
+        private string logPath;
         /// <summary>
         /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
         /// </summary>
@@ -60,8 +62,8 @@ namespace EmitMSIL
 
         internal CodeGenIL(IDictionary<string, IList> input, string filePath, ProtoCore.MSILRuntimeCore runtimeCore)
         {
+            this.logPath = filePath;
             this.input = input;
-            writer = new StreamWriter(filePath);
             this.runtimeCore = runtimeCore;
         }
 
@@ -103,41 +105,43 @@ namespace EmitMSIL
 
         private (AssemblyBuilder asmbuilder, TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
         {
-            compilePass = CompilePass.MethodLookup;
-            // 0. Gather all loaded function endpoints and cache them.
-            foreach (var ast in astList)
+            writer = new StreamWriter(logPath);
+            using (Disposable.Create(() => { writer.Close(); writer.Dispose(); }))
             {
-                DfsTraverse(ast);
-            }
-            // 1. Create assembly builder (dynamic assembly)
-            var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
-            // 2. Create module builder
-            var mod = BuilderHelper.CreateDLLModuleBuilder(asm, "DynamicAssembly");
-            // 3. Create type builder (name it "ExecuteIL")
-            var type = BuilderHelper.CreateType(mod, "ExecuteIL");
-            // 4. Create method ("Execute"), get ILGenerator 
-            var execMethod = BuilderHelper.CreateMethod(type, "Execute",
-                System.Reflection.MethodAttributes.Static | System.Reflection.MethodAttributes.Private, typeof(void), new[] { typeof(IDictionary<string, IList>),
+                compilePass = CompilePass.MethodLookup;
+                // 0. Gather all loaded function endpoints and cache them.
+                foreach (var ast in astList)
+                {
+                    DfsTraverse(ast);
+                }
+                // 1. Create assembly builder (dynamic assembly)
+                var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
+                // 2. Create module builder
+                var mod = BuilderHelper.CreateDLLModuleBuilder(asm, "DynamicAssembly");
+                // 3. Create type builder (name it "ExecuteIL")
+                var type = BuilderHelper.CreateType(mod, "ExecuteIL");
+                // 4. Create method ("Execute"), get ILGenerator 
+                var execMethod = BuilderHelper.CreateMethod(type, "Execute",
+                    System.Reflection.MethodAttributes.Static | System.Reflection.MethodAttributes.Private, typeof(void), new[] { typeof(IDictionary<string, IList>),
                 typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>), typeof(IDictionary<string, object>), typeof(ProtoCore.MSILRuntimeCore)});
-            ilGen = execMethod.GetILGenerator();
+                ilGen = execMethod.GetILGenerator();
 
-            compilePass = CompilePass.GatherTypeInfo;
-            // 5. Traverse AST and gather what type info we can.
-            foreach (var ast in astList)
-            {
-                DfsTraverse(ast);
+                compilePass = CompilePass.GatherTypeInfo;
+                // 5. Traverse AST and gather what type info we can.
+                foreach (var ast in astList)
+                {
+                    DfsTraverse(ast);
+                }
+
+                compilePass = CompilePass.emitIL;
+                // 6. Traverse AST and use ILGen to emit code for Execute method
+                foreach (var ast in astList)
+                {
+                    DfsTraverse(ast);
+                }
+                EmitOpCode(OpCodes.Ret);
+                return (asm, type);
             }
-
-            compilePass = CompilePass.emitIL;
-            // 6. Traverse AST and use ILGen to emit code for Execute method
-            foreach (var ast in astList)
-            {
-                DfsTraverse(ast);
-            }
-            EmitOpCode(OpCodes.Ret);
-
-            writer.Close();
-            return (asm, type);
         }
 
         // Given a double value on the stack, emit call to Math.Round(arg, 0, MidpointRounding.AwayFromZero);
@@ -2001,11 +2005,5 @@ namespace EmitMSIL
             }
             throw new ArgumentException("Identifier node expected.");
         }
-
-        public void Dispose()
-        {
-            writer?.Dispose();
-        }
     }
-
 }
