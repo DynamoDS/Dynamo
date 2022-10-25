@@ -1286,15 +1286,19 @@ namespace ProtoCore
         private List<FunctionEndPoint> GetCandidateFunctions(StackFrame stackFrame,
                                                              Dictionary<FunctionEndPoint, int> candidatesWithDistances)
         {
-            List<FunctionEndPoint> candidateFunctions = new List<FunctionEndPoint>();
+            bool isGlobalFuncScope = stackFrame.ThisPtr.IsPointer &&
+                stackFrame.ThisPtr.Pointer == Constants.kInvalidIndex;
 
+            var candidateFunctions = new List<FunctionEndPoint>();
             foreach (FunctionEndPoint fep in candidatesWithDistances.Keys)
             {
-                if ((stackFrame.ThisPtr.IsPointer &&
-                     stackFrame.ThisPtr.Pointer == Constants.kInvalidIndex && fep.procedureNode != null
-                     && !fep.procedureNode.IsConstructor) && !fep.procedureNode.IsStatic
-                    && (fep.procedureNode.ClassID != -1))
+                bool isInstanceMethod = fep.procedureNode != null &&
+                    fep.procedureNode.ClassID != Constants.kGlobalScope  &&//valid class
+                    !fep.procedureNode.IsConstructor && !fep.procedureNode.IsStatic;//not static and not constructor  
+
+                if (isGlobalFuncScope && isInstanceMethod)
                 {
+                    // Filter out class instance methods when dealing with global function scope
                     continue;
                 }
 

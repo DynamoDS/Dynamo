@@ -117,28 +117,27 @@ namespace ProtoCore.DSASM
     public struct CLRStackValue
     {
         // TODO_MSIL: Figure out if we need to use an AddressType, like StackValue
-        public bool IsEnumerable => Type != typeof(string) && ArrayUtils.IsEnumerable(Type);
+        internal bool IsEnumerable => Type != typeof(string) && ArrayUtils.IsEnumerable(Type);
 
-        public bool IsDouble => Value is double;
+        internal bool IsDouble => Value is double;
 
         // TODO_MSIL: Figure out how to set/use this flag;
-        public bool IsDefaultArgument => false;
+        internal bool IsDefaultArgument => false;
 
         // TODO_MSIL: Figure out if we need to use an AddressType, like StackValue
-        public bool IsPointer => Type != null && Type != typeof(string) && !ArrayUtils.IsEnumerable(Type) && !Type.IsValueType && Type.IsClass;
+        internal bool IsPointer => Type != null && Type != typeof(string) && !ArrayUtils.IsEnumerable(Type) && !Type.IsValueType && Type.IsClass;
 
         // TODO_MSIL: Figure out how to set/use this flag;
-        public bool IsExplicitCall => false;
+        internal bool IsExplicitCall => false;
 
-        public bool IsNull => Value == null;
+        internal bool IsNull => Value == null;
 
         // Equivalent to StackValue.metaData.type
-        public int TypeUID { get; set; }
+        internal int TypeUID { get; set; }
 
-        public System.Type Type => Value?.GetType();
+        internal System.Type Type => Value?.GetType();
 
-        // TODO_MSIL: Figure out how bad boxing/unboxing is for performance
-        public object Value { get; set; }
+        internal object Value { get; set; }
 
         //TODO can we move this higher up and outside of this type?
         //TODO better name.
@@ -157,7 +156,7 @@ namespace ProtoCore.DSASM
         internal static CLRStackValue Null => new CLRStackValue(null, (int)PrimitiveType.Null);
 
         #region Converters
-        public CLRStackValue ToBoolean()
+        internal CLRStackValue ToBoolean()
         {
             switch (TypeUID)
             {
@@ -191,7 +190,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public CLRStackValue ToDouble()
+        internal CLRStackValue ToDouble()
         {
             switch (TypeUID)
             {
@@ -206,7 +205,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public CLRStackValue ToInteger()
+        internal CLRStackValue ToInteger()
         {
             switch (TypeUID)
             {
