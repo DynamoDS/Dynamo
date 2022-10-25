@@ -1540,8 +1540,14 @@ namespace EmitMSIL
         private bool DoesParamArgRankMatch(List<Type> parameterTypes, List<AssociativeNode> args)
         {
             var argIndex = 0;
+          
             foreach (var p in parameterTypes)
             {
+                var currentArg = args[argIndex];
+                if (compilePass == CompilePass.GatherTypeInfo)
+                {
+                    DfsTraverse(currentArg);
+                }
                 if (CoreUtils.IsPrimitiveASTNode(args[argIndex]) || args[argIndex] is CharNode)
                 {
                     // arg is a single value (primitive type), but param is not (array promotion case).
@@ -1564,7 +1570,7 @@ namespace EmitMSIL
                             break;
                     }
                 }
-                else if (args[argIndex] is ExprListNode exp)
+                else if (currentArg is ExprListNode exp)
                 {
                     if (!ArrayUtils.IsEnumerable(p) || p == typeof(string))
                     {
@@ -1579,22 +1585,23 @@ namespace EmitMSIL
                     }
                     if (argRank != GetRank(p)) return false;
                 }
-                else if (args[argIndex] is IdentifierNode idn)
+                else if (currentArg is IdentifierNode idn)
                 {
                     if (idn.ReplicationGuides.Count > 0) return false;
 
                     var t = variables[idn.Value].Item2;
                     if (t == typeof(object)) return false;
 
-                    if (!p.Equals(t))
+                    if(!DoesParamArgRankMatchInner(p, t)) return false;
+                }
+                else if (currentArg is RangeExprNode rgnNode)
+                {
+                    Type t;
+                    if (!astTypeInfoMap.TryGetValue(rgnNode.ID, out t))
                     {
-                        var argRank = GetRank(t);
-                        var paramRank = GetRank(p);
-                        if (argRank != paramRank) return false;
-
-                        // If both have rank 0, it could also be because their type info is ambiguous.
-                        if (argRank == 0 && paramRank == 0) return false;
+                        throw new Exception("unkown ast type");
                     }
+                    if (!DoesParamArgRankMatchInner(p, t)) return false;
                 }
                 else return false;
                 argIndex++;
@@ -1602,8 +1609,40 @@ namespace EmitMSIL
             return true;
         }
 
+        private static bool DoesParamArgRankMatchInner(Type p, Type t)
+        {
+            if (!p.Equals(t))
+            {
+                //if both types are value types, let's
+                //let coercion figure this out.
+                if (p.IsValueType && t.IsValueType)
+                {
+                    return true;
+                }
+
+                var argRank = GetRank(t);
+                var paramRank = GetRank(p);
+
+                //if the param is an arbitrary rank array and
+                //arg is some array type, replication should not occur.
+                if (paramRank == -1 && argRank > 0)
+                {
+                    return true;
+                }
+                if (argRank != paramRank) return false;
+
+                // If both have rank 0, it could also be because their type info is ambiguous.
+                if (argRank == 0 && paramRank == 0) return false;
+            }
+            return true;
+        }
+
         private static int GetRank(Type type)
         {
+            //TODO IList returns wrong rank.
+            if(type == typeof(IList)){
+                return -1;
+            }
             return type.IsArray ? GetArrayRank(type) : GetEnumerableRank(type);
         }
 
