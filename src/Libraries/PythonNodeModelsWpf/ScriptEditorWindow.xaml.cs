@@ -34,6 +34,10 @@ namespace PythonNodeModelsWpf
         private bool nodeWasModified = false;
         private string originalScript;
 
+        // Reasonable max and min font size values for zooming limits
+        private const double FONT_MAX_SIZE = 60d;
+        private const double FONT_MIN_SIZE = 5d;
+
         public string CachedEngine { get; set; }
 
         /// <summary>
@@ -107,7 +111,12 @@ namespace PythonNodeModelsWpf
         }
 
         #region Text Zoom in Python Editor
-        // React to ctrl + mouse wheel to zoom in and out
+        /// <summary>
+        /// PreviewMouseWheel event handler to zoom in and out
+        /// Additional check to make sure reacting to ctrl + mouse wheel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EditorBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             bool ctrl = Keyboard.Modifiers == ModifierKeys.Control;
@@ -118,12 +127,11 @@ namespace PythonNodeModelsWpf
             }
         }
 
-        // Reasonable max and min font size values
-        private const double FONT_MAX_SIZE = 60d;
-        private const double FONT_MIN_SIZE = 5d;
-
-        // Update function, increases/decreases by a specific increment
-        public void UpdateFontSize(bool increase)
+        /// <summary>
+        /// Function to increases/decreases font size in avalon editor by a specific increment
+        /// </summary>
+        /// <param name="increase"></param>
+        private void UpdateFontSize(bool increase)
         {
             double currentSize = editText.FontSize;
 
