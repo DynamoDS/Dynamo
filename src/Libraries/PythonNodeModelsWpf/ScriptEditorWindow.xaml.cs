@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows;
@@ -105,6 +105,47 @@ namespace PythonNodeModelsWpf
             CachedEngine = nodeModel.EngineName;
             EngineSelectorComboBox.SelectedItem = CachedEngine;
         }
+
+        #region Text Zoom in Python Editor
+        // React to ctrl + mouse wheel to zoom in and out
+        private void EditorBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            bool ctrl = Keyboard.Modifiers == ModifierKeys.Control;
+            if (ctrl)
+            {
+                this.UpdateFontSize(e.Delta > 0);
+                e.Handled = true;
+            }
+        }
+
+        // Reasonable max and min font size values
+        private const double FONT_MAX_SIZE = 60d;
+        private const double FONT_MIN_SIZE = 5d;
+
+        // Update function, increases/decreases by a specific increment
+        public void UpdateFontSize(bool increase)
+        {
+            double currentSize = editText.FontSize;
+
+            if (increase)
+            {
+                if (currentSize < FONT_MAX_SIZE)
+                {
+                    double newSize = Math.Min(FONT_MAX_SIZE, currentSize + 1);
+                    editText.FontSize = newSize;
+                }
+            }
+            else
+            {
+                if (currentSize > FONT_MIN_SIZE)
+                {
+                    double newSize = Math.Max(FONT_MIN_SIZE, currentSize - 1);
+                    editText.FontSize = newSize;
+                }
+            }
+        }
+        #endregion
+
         #region Autocomplete Event Handlers
 
         private void UpdateAvailableEngines(object sender = null, NotifyCollectionChangedEventArgs e = null)
