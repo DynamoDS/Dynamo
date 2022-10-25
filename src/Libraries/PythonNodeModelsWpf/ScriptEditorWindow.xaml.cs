@@ -108,7 +108,7 @@ namespace PythonNodeModelsWpf
 
         #region Text Zoom in Python Editor
         // React to ctrl + mouse wheel to zoom in and out
-        private void editText_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        private void EditorBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             bool ctrl = Keyboard.Modifiers == ModifierKeys.Control;
             if (ctrl)
