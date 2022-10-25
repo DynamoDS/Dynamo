@@ -341,7 +341,7 @@
                                   Name="openButton"
                                   InputGestureText="Ctrl + O">
                         </MenuItem>
-                        <MenuItem Header="Insert"
+                        <MenuItem Header="Insert..."
                                   Command="{Binding ShowInsertDialogAndInsertResultCommand}"
                                   Name="insertButton"
                                   InputGestureText="Ctrl + I">

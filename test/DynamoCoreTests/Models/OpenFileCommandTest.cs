@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Xml;
 using Dynamo.Models;
@@ -70,6 +70,35 @@ namespace Dynamo.Tests.ModelsTest
             //Assert
             Assert.Throws<FileNotFoundException>(() => OpenFileCommand.DeserializeCore(elemTest));
         }
+
+
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestTryInsertFile()
+        {
+            //Arrange
+            string wspath = Path.Combine(TestDirectory, @"core\callsite\RebindingSingleDimension.dyn");
+            var fileCommand = new DynamoModel.InsertFileCommand(wspath);
+
+            //We need a XmlDocument instance to create a new custom XmlElement
+            XmlDocument xmlDocument = new XmlDocument();
+            XmlElement elemTest = xmlDocument.CreateElement("TestCommand");
+
+            //Act
+            var command = new InsertFileCommandDerivedTest(wspath);
+            command.SerializeCoreTest(elemTest);
+            var deserializedCommand = InsertFileCommand.DeserializeCore(elemTest);
+
+            //We need to set up the DynamoModel inside the OpenFileCommandDerivedTest class before calling TrackAnalytics()
+            command.ExecuteTest(CurrentDynamoModel);
+            command.TrackAnalytics();
+
+            //Assert
+            //It will validate that the Deserialized element is valid
+            Assert.IsNotNull(deserializedCommand);
+
+        }
     }
     
     /// <summary>
@@ -93,6 +122,46 @@ namespace Dynamo.Tests.ModelsTest
     class OpenFileCommandDerivedTest : OpenFileCommand
     {
         public OpenFileCommandDerivedTest(string filePath) : base(filePath)
+        {
+        }
+
+        public void ExecuteTest(DynamoModel dynamoModel)
+        {
+            ExecuteCore(dynamoModel);
+        }
+
+        public void SerializeCoreTest(System.Xml.XmlElement element)
+        {
+            SerializeCore(element);
+        }
+
+        protected override void ExecuteCore(DynamoModel dynamoModel)
+        {
+            try
+            {
+                //This will raise a NotImplementedException since ExecuteCore should not be implemented for a PausePlaybackCommand 
+                base.ExecuteCore(dynamoModel);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        protected override void SerializeCore(System.Xml.XmlElement element)
+        {
+            base.SerializeCore(element);
+        }
+    }
+
+    /// <summary>
+    /// This test class was created with the purpose of execute in the Derived class the next protected methods 
+    /// void ExecuteCore(DynamoModel dynamoModel)
+    /// void SerializeCore(XmlElement element)
+    /// </summary>
+    class InsertFileCommandDerivedTest : InsertFileCommand
+    {
+        public InsertFileCommandDerivedTest(string filePath) : base(filePath)
         {
         }
 
