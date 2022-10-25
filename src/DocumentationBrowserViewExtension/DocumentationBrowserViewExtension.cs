@@ -182,15 +182,14 @@ namespace Dynamo.DocumentationBrowser
             this.DynamoViewModel.Model.InsertFileFromPath(e.Data);
 
             if (!DynamoSelection.Instance.Selection.Any()) return;
+            DoEvents();
 
+            GroupInsertedGraph(existingGroups, e.Name);
             DoEvents();
 
             // We have selected all the nodes and notes from the inserted graph
             // Now is the time to auto layout the inserted nodes
             this.DynamoViewModel.GraphAutoLayoutCommand.Execute(null);
-            DoEvents();
-
-            GroupInsertedGraph(existingGroups, e.Name);
             DoEvents();
 
             this.DynamoViewModel.FitViewCommand.Execute(null);
