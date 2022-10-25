@@ -1718,7 +1718,7 @@ namespace EmitMSIL
                         return willReplicate;
                     }
                 }
-                willReplicate = DoesParamArgRankMatch(paramTypes, args);
+                willReplicate = !DoesParamArgRankMatch(paramTypes, args);
                 return willReplicate;
             }
         }
