@@ -26,10 +26,10 @@ namespace Dynamo.UI.Controls
 
         internal event Action<ShowHideFlags> RequestShowNodeAutoCompleteSearch;
 
-        public NodeAutoCompleteSearchViewModel ViewModel
-        {
-            get { return DataContext as NodeAutoCompleteSearchViewModel; }
-        }
+        /// <summary>
+        /// Node AutoComplete Search ViewModel DataContext
+        /// </summary>
+        public NodeAutoCompleteSearchViewModel ViewModel => DataContext as NodeAutoCompleteSearchViewModel;
 
         public NodeAutoCompleteSearchControl()
         {
@@ -282,6 +282,30 @@ namespace Dynamo.UI.Controls
         internal void CloseAutoCompletion()
         {
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+        }
+
+        /// <summary>
+        /// A common method to handle the suggestions Button being clicked
+        /// </summary>
+        private void DisplaySuggestions(object sender, RoutedEventArgs e)
+        {
+            var cm = this.SuggestionsContextMenu;
+            cm.PlacementTarget = sender as Button;
+            cm.IsOpen = true;
+        }
+
+        private void OnSuggestion_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem selectedSuggestion = sender as MenuItem;
+            if (selectedSuggestion.Name.Contains(nameof(Models.NodeAutocompleteSuggestion.MLRecommendation)))
+            {
+                ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.MLRecommendation;
+            }
+            else
+            {
+                ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.ObjectType;
+            }
+            ViewModel.ResetAutoCompleteSearchViewState();
         }
     }
 }

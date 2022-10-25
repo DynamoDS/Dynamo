@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -23,7 +23,7 @@
 	<PackageReference Include="CefSharp.Wpf" Version="65.0.1">
 	  <GeneratePathProperty>true</GeneratePathProperty>
 	</PackageReference>
-	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	<ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj" />
 	<ProjectReference Include="..\DynamoCore\DynamoCore.csproj" />
     <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">

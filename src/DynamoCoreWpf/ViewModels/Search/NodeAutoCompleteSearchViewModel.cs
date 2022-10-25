@@ -1,5 +1,5 @@
-﻿using System;
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Dynamo.Engine;
@@ -18,10 +18,14 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class NodeAutoCompleteSearchViewModel : SearchViewModel
     {
-
         internal PortViewModel PortViewModel { get; set; }
         private List<NodeSearchElement> searchElementsCache;
         private List<NodeSearchElement> defaultSearchElementsCache;
+        private string lowConfidenceMessageAdditional;
+        private string noRecommendationsOrLowConfidenceMessage;
+        private string noRecommendationsOrLowConfidenceTitle;
+        private bool displayNoRecommendationsLowConfidence;
+        private bool displayLowConfidence;
 
         /// <summary>
         /// Cache of default node suggestions, use it in case where
@@ -30,12 +34,107 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal IEnumerable<NodeSearchElementViewModel> DefaultResults { get; set; }
 
+        /// <summary>
+        /// For checking if the ML method is selected
+        /// </summary>
+        public bool IsDisplayingMLRecommendation
+        {
+            get
+            {
+                return dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion == Models.NodeAutocompleteSuggestion.MLRecommendation;
+            }
+        }
+
+        /// <summary>
+        /// The No Recommendations or Low Confidence Title
+        /// </summary>
+        public string NoRecommendationsOrLowConfidenceTitle
+        {
+            get { return noRecommendationsOrLowConfidenceTitle; }
+            set
+            {
+                noRecommendationsOrLowConfidenceTitle = value;
+                RaisePropertyChanged(nameof(NoRecommendationsOrLowConfidenceTitle));
+            }
+        }
+
+        /// <summary>
+        /// The No Recommendations or Low Confidence message
+        /// </summary>
+        public string NoRecommendationsOrLowConfidenceMessage
+        {
+            get { return noRecommendationsOrLowConfidenceMessage; }
+            set
+            {
+                noRecommendationsOrLowConfidenceMessage = value;
+                RaisePropertyChanged(nameof(NoRecommendationsOrLowConfidenceMessage));
+            }
+        }
+
+        /// <summary>
+        /// The Low Confidence additonal message
+        /// </summary>
+        public string LowConfidenceMessageAdditional
+        {
+            get { return lowConfidenceMessageAdditional; }
+            set
+            {
+                lowConfidenceMessageAdditional = value;
+                RaisePropertyChanged(nameof(LowConfidenceMessageAdditional));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if display the No recommendations / Low confidence message (image and texts)
+        /// </summary>
+        public bool DisplayNoRecommendationsLowConfidence
+        {
+            get { return displayNoRecommendationsLowConfidence; }
+            set
+            {
+                displayNoRecommendationsLowConfidence = value;
+                RaisePropertyChanged(nameof(DisplayNoRecommendationsLowConfidence));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if display the Low confidence option and Tooltip
+        /// </summary>
+        public bool DisplayLowConfidence
+        {
+            get { return displayLowConfidence; }
+            set
+            {
+                displayLowConfidence = value;
+                RaisePropertyChanged(nameof(DisplayLowConfidence));
+            }
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dynamoViewModel">Dynamo ViewModel</param>
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
             // Off load some time consuming operation here
             InitializeDefaultAutoCompleteCandidates();
         }
 
+        /// <summary>
+        /// Reset Node AutoComplete search view state
+        /// </summary>
+        internal void ResetAutoCompleteSearchViewState()
+        {
+            if (!IsDisplayingMLRecommendation)
+            {
+                NoRecommendationsOrLowConfidenceMessage = string.Empty;
+                NoRecommendationsOrLowConfidenceTitle = string.Empty;
+                LowConfidenceMessageAdditional = string.Empty;
+                DisplayNoRecommendationsLowConfidence = false;
+                DisplayLowConfidence = false;
+            }
+            PopulateAutoCompleteCandidates();
+        }
 
         private void InitializeDefaultAutoCompleteCandidates()
         {
@@ -53,22 +152,103 @@ namespace Dynamo.ViewModels
             }
             DefaultResults = candidates;
         }
-        
+
+        internal void DisplayMachineLearningResults()
+        {
+            // Case 1: no results (0 items)
+            FilteredResults = new List<NodeSearchElementViewModel>();
+            DisplayNoRecommendationsLowConfidence = true;
+            DisplayLowConfidence = false;
+            NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteNoRecommendationsTitle;
+            NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
+            DisplayLowConfidence = false;
+
+            // Case 2: the result has at least one item assuming each node could be by recommendation or by use
+            /*
+            FilteredResults = DefaultResults.Where(e => e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
+
+            foreach (var item in FilteredResults)
+            {
+                item.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
+                item.AutoCompletionNodeMachineLearningInfo.IsByUse = true;
+            }
+            DisplayNoRecommendationsLowConfidence = !FilteredResults.Where(n => n.AutoCompletionNodeMachineLearningInfo.IsByRecommendation).Any();
+            DisplayLowConfidence = false;
+            NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteNoRecommendationsTitle;
+            NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
+            DisplayLowConfidence = false;
+            */
+
+            // Case 3: Confidence score are under a threshold, assuming the minimum value is 50 and some result nodes are under it
+            /*
+            FilteredResults = DefaultResults.Where(e => e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
+
+            foreach (var item in FilteredResults)
+            {
+                item.Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
+                item.Model.AutoCompletionNodeMachineLearningInfo.IsByUse = false;
+            }
+            FilteredResults.ToList()[0].Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 50;
+            FilteredResults.ToList()[1].Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 40;
+            RaisePropertyChanged("ViewConfidenceScoreRecentUse");
+
+            DisplayNoRecommendationsLowConfidence = !FilteredResults.Where(n => n.Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= 50).Any();
+            NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
+            DisplayLowConfidence = FilteredResults.Where(n => n.Model.AutoCompletionNodeMachineLearningInfo.IsByRecommendation).Count() == FilteredResults.Count();
+            */
+            
+
+            // Case 4: Confidence score are under a threshold, assuming the minimum value is 50 and all results nodes are under it
+            /*
+            FilteredResults = DefaultResults.Where(e => e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
+            foreach (var item in FilteredResults)
+            {
+                item.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
+                item.AutoCompletionNodeMachineLearningInfo.IsByUse = false;
+            }
+            FilteredResults.ToList()[0].AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 30;
+            FilteredResults.ToList()[1].AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 40;
+
+            if (!FilteredResults.Where(n => n.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= 50).Any())
+            {
+                FilteredResults = new List<NodeSearchElementViewModel>();
+                DisplayNoRecommendationsLowConfidence = true;
+                NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteLowConfidenceTitle;
+                NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteLowConfidenceMessage;
+                LowConfidenceMessageAdditional = Resources.AutocompleteLowConfidenceMessageAditional;
+                DisplayLowConfidence = true;
+            }
+            */
+        }
+
         internal void PopulateAutoCompleteCandidates()
         {
             if (PortViewModel == null) return;
 
-            searchElementsCache = GetMatchingSearchElements().ToList();
-
-            // If node match searchElements found, use default suggestions. 
-            // These default suggestions will be populated based on the port type.
-            if (!searchElementsCache.Any())
+            if (IsDisplayingMLRecommendation)
             {
-                PopulateDefaultAutoCompleteCandidates();
+                // TODO: Add a function call to send port and node info to get suggestions
+                DisplayMachineLearningResults();
             }
             else
             {
-                FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
+                // Only call GetMatchingSearchElements() for object type match comparison
+                searchElementsCache = GetMatchingSearchElements().ToList();
+                // If node match searchElements found, use default suggestions. 
+                // These default suggestions will be populated based on the port type.
+                if (!searchElementsCache.Any())
+                {
+                    PopulateDefaultAutoCompleteCandidates();
+                }
+                else
+                {
+                    FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
+                }
+
+                foreach (var item in FilteredResults)
+                {
+                    item.Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = false;
+                }
             }
         }
 
@@ -127,7 +307,7 @@ namespace Dynamo.ViewModels
             {
                 if (searchElementsCache.Any())
                 {
-                    FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache); 
+                    FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
                 }
                 else
                 {
@@ -146,7 +326,7 @@ namespace Dynamo.ViewModels
                 {
                     var foundNodes = Search(input, defaultSearchElementsCache);
                     FilteredResults = new List<NodeSearchElementViewModel>(foundNodes).OrderBy(x => x.Name).ThenBy(x => x.Description);
-                }        
+                }
             }
         }
 
@@ -453,6 +633,5 @@ namespace Dynamo.ViewModels
             }
 
         }
-
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -52,11 +52,19 @@ namespace Dynamo.Configuration
         private bool isBackgroundGridVisible;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
+        private bool isStaticSplashScreenEnabled;
+        private bool isCreatedFromValidFile = true;
+
         #region Constants
         /// <summary>
         /// Indicates the maximum number of files shown in Recent Files
         /// </summary>
         internal const int DefaultMaxNumRecentFiles = 10;
+
+        /// <summary>
+        /// The default time interval between backup files. 1 minute.
+        /// </summary>
+        internal const int DefaultBackupInterval = 60000;
 
         /// <summary>
         /// Indicates the default render precision, i.e. the maximum number of tessellation divisions
@@ -398,6 +406,30 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// Manually deserialize some preferences from the PreferencesSettings file.
+        /// This is done so that we can avoid exposing these property setters to the public API.
+        /// </summary>
+        /// <param name="content">The content of the XML file</param>
+
+        private void DeserializeInternalPrefsContent(string content)
+        {
+            try
+            {
+                //manually load some xml we don't want to create public setters for.
+                var doc = new System.Xml.XmlDocument();
+                doc.LoadXml(content);
+                var prefs = doc.SelectSingleNode($@"//{nameof(PreferenceSettings)}");
+
+                var deserializedLocations = DeserializeTrustedLocations(prefs);
+                SetTrustedLocations(deserializedLocations.Distinct());
+                var trustWarningsDisabled = DeserializeDisableTrustWarnings(prefs);
+                SetTrustWarningsDisabled(trustWarningsDisabled);
+            }
+            catch
+            { }
+        }
+
+        /// <summary>
         /// Represents a copy of the list of trusted locations that the user added.
         /// Do not use this list to check if a new path is trusted or not.
         /// To check if a new path is trusted or not please use the IsTrustedLocation API (IsTrustedLocation supports locations)
@@ -477,6 +509,22 @@ namespace Dynamo.Configuration
             {
                 isNotificationCenterEnabled = value;
                 RaisePropertyChanged(nameof(EnableNotificationCenter));
+            }
+        }
+
+
+        /// <summary>
+        /// This defines if the user wants to see the static splash screen again
+        /// </summary>
+        public bool EnableStaticSplashScreen
+        {
+            get
+            {
+                return isStaticSplashScreenEnabled;
+            }
+            set
+            {
+                isStaticSplashScreenEnabled = value;
             }
         }
 
@@ -579,6 +627,11 @@ namespace Dynamo.Configuration
         public RunType DefaultRunType { get; set; }
 
         /// <summary>
+        /// Defines the default method of the Node Autocomplete
+        /// </summary>
+        public NodeAutocompleteSuggestion DefaultNodeAutocompleteSuggestion { get; set; }
+
+        /// <summary>
         /// Show Run Preview flag.
         /// </summary>
         public bool ShowRunPreview { get; set; }
@@ -661,8 +714,9 @@ namespace Dynamo.Configuration
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
             DefaultRunType = RunType.Automatic;
+            DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
 
-            BackupInterval = 60000; // 1 minute
+            BackupInterval = DefaultBackupInterval;
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
                         
@@ -673,6 +727,7 @@ namespace Dynamo.Configuration
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
             EnableNotificationCenter = true;
+            isStaticSplashScreenEnabled = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
@@ -753,7 +808,7 @@ namespace Dynamo.Configuration
             {
                 if (settings == null)
                 {
-                    return new PreferenceSettings();
+                    return new PreferenceSettings() { isCreatedFromValidFile = false };
                 }
             }
 
@@ -762,6 +817,45 @@ namespace Dynamo.Configuration
             MigrateStdLibTokenToBuiltInToken(settings);
 
             settings.DeserializeInternalPrefs(filePath);
+
+            return settings;
+        }
+
+        /// <summary>
+        /// Loads PreferenceSettings from specified XML file if possible,
+        /// else initializes PreferenceSettings with default values.
+        /// </summary>
+        /// <param name="content">The content of the xml file</param>
+        /// <returns></returns>
+        public static PreferenceSettings LoadContent(string content)
+        {
+            // Constructor will be called anyway in either condition below so no need to initialize now.
+            PreferenceSettings settings = null;
+
+            if(string.IsNullOrEmpty(content))
+                return new PreferenceSettings();
+
+            try
+            {
+                var serializer = new XmlSerializer(typeof(PreferenceSettings));
+                using (TextReader reader = new StringReader(content))
+                {
+                    settings = serializer.Deserialize(reader) as PreferenceSettings;
+                }
+            }
+            catch
+            {
+                if (settings == null)
+                {
+                    return new PreferenceSettings() { isCreatedFromValidFile = false };
+                }
+            }
+
+            settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
+            settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
+            MigrateStdLibTokenToBuiltInToken(settings);
+
+            settings.DeserializeInternalPrefsContent(content);
 
             return settings;
         }
@@ -924,6 +1018,52 @@ namespace Dynamo.Configuration
             }
             
         }
+
+        /// <summary>
+        /// Different ways to ask the user about display the Trusted location
+        /// </summary>
+        public enum AskForTrustedLocationResult
+        {
+            /// <summary>
+            /// Ask for the Trusted location
+            /// </summary>
+            Ask,
+            /// <summary>
+            /// Don't ask about the Trusted location
+            /// </summary>
+            DontAsk,
+            /// <summary>
+            /// Unable to ask about the Trusted location
+            /// </summary>
+            UnableToAsk
+        }
+
+        /// <summary>
+        /// AskForTrustedLocation function
+        /// </summary>
+        /// <param name="isOpenedFile"></param>
+        /// <param name="isHomeSpace"></param>
+        /// <param name="isShowStartPage"></param>
+        /// <param name="isDisableTrustWarnings"></param>
+        /// <param name="isFileInTrustedLocation"></param>
+        /// <returns></returns>
+        public static AskForTrustedLocationResult AskForTrustedLocation(bool isOpenedFile, bool isFileInTrustedLocation, bool isHomeSpace, bool isShowStartPage, bool isDisableTrustWarnings)
+        {
+            AskForTrustedLocationResult result = AskForTrustedLocationResult.UnableToAsk;
+            if (isOpenedFile)
+            {
+                if (isHomeSpace && !isShowStartPage && !isDisableTrustWarnings && !isFileInTrustedLocation)
+                {
+                    result = AskForTrustedLocationResult.Ask;
+                }
+                else
+                {
+                    result = AskForTrustedLocationResult.DontAsk;
+                }
+            }
+            return result;
+        }
+
         #endregion
 
         #region ILogSource
@@ -946,6 +1086,15 @@ namespace Dynamo.Configuration
         public List<string> StaticFields()
         {
             return typeof(PreferenceSettings).GetMembers(BindingFlags.Static | BindingFlags.NonPublic).OfType<FieldInfo>().Select(field => field.Name).ToList();
+        }
+
+        /// <summary>
+        /// Indicates when an instance has been created from a preferences file correctly, a support property
+        /// </summary>
+        [XmlIgnore]
+        public bool IsCreatedFromValidFile
+        {
+            get { return isCreatedFromValidFile; }
         }
     }
 }

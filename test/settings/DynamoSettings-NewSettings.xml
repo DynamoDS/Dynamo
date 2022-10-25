@@ -63,6 +63,7 @@
   <ShowTabsAndSpacesInScriptEditor>true</ShowTabsAndSpacesInScriptEditor>
   <EnableNodeAutoComplete>false</EnableNodeAutoComplete>
   <EnableNotificationCenter>false</EnableNotificationCenter>
+  <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
   <DefaultPythonEngine/>
   <SelectedPackagePathForInstall>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\2.16</SelectedPackagePathForInstall>
   <NamespacesToExcludeFromLibrary>
@@ -83,6 +84,7 @@
   <DisableBuiltinPackages>true</DisableBuiltinPackages>
   <DisableCustomPackageLocations>true</DisableCustomPackageLocations>
   <DefaultRunType>Manual</DefaultRunType>
+  <DefaultNodeAutocompleteSuggestion>ObjectType</DefaultNodeAutocompleteSuggestion>
   <ShowRunPreview>true</ShowRunPreview>
   <GroupStyleItemsList>
     <GroupStyleItem>
