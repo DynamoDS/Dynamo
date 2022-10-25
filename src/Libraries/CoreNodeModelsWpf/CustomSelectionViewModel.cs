@@ -30,7 +30,7 @@ namespace CoreNodeModelsWpf
 
         private void RemoveItem(object parameter)
         {
-            if (parameter is DynamoDropDownItem item)
+            if (Model.Items.Count > 1 && parameter is DynamoDropDownItem item)
             {
                 Model.Items.Remove(item);
                 Model.OnNodeModified();

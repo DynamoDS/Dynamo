@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -43,8 +43,8 @@ namespace Dynamo.Notifications
         private readonly DynamoViewModel dynamoViewModel;
         private readonly Button notificationsButton;
 
-        private static readonly int notificationPopupHorizontalOffset = -295;
-        private static readonly int notificationPopupVerticalOffset = 10;
+        private static readonly int notificationPopupHorizontalOffset = -288;
+        private static readonly int notificationPopupVerticalOffset = 5;
         private static readonly int limitOfMonthsFilterNotifications = 6;
 
         private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";

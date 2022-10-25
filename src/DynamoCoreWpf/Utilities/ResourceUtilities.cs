@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -454,15 +455,33 @@ namespace Dynamo.Utilities
         /// <param name="MainWindow">MainWindow in which the LibraryView is located</param>
         /// <param name="popupInfo">Popup Information about the Step </param>
         /// <param name="parametersInvokeScript">Parameters for the WebBrowser.InvokeScript() function</param>
-        internal static object ExecuteJSFunction(UIElement MainWindow, HostControlInfo popupInfo, object[] parametersInvokeScript)
+        internal static async Task<object> ExecuteJSFunction(UIElement MainWindow, HostControlInfo popupInfo, object[] parametersInvokeScript)
         {
-            const string webBrowserString = "Browser";
-            const string invokeScriptFunction = "InvokeScript";
+            const string invokeScriptFunction = "ExecuteScriptAsync";
             object resultJSHTML = null;
+            Task<string> resutlJS = null;
 
             //Try to find the grid that contains the LibraryView
             var sidebarGrid = (MainWindow as Window).FindName(popupInfo.HostUIElementString) as Grid;
             if (sidebarGrid == null) return null;
+
+            var functionName = parametersInvokeScript[0] as string;
+            object[] functionParameters = parametersInvokeScript[1] as object[];
+            List<string> functionParametersList = new List<string>();
+            foreach(var parameter in functionParameters)
+            {
+                string strParameter = string.Empty;
+                //If we try to use boolVariable.ToString() returns "True" or "False" but the expected parameter in the js function is "true" or "false"
+                if (parameter is bool)
+                    strParameter = parameter.ToString().Equals("True") ? "true" : "false";
+                //The parameter expected in the js method is a string so we need to add the quotes at the beginning and at the end
+                else
+                    strParameter = "\"" + parameter + "\"";
+
+                functionParametersList.Add(strParameter);
+            }
+            //Due that the method WebView2.ExecuteScriptAsync() is expecting just one string parameter, we will need to contatecate the function name and the parameters in parentesis
+            var parametersExecuteScriptString = string.Join(",", functionParametersList);
 
             //We need to iterate every child in the grid due that we need to apply reflection to get the Type and find the LibraryView (a reference to LibraryViewExtensionMSWebBrowser cannot be added).
             foreach (var child in sidebarGrid.Children)
@@ -472,14 +491,17 @@ namespace Dynamo.Utilities
                 {
                     var libraryView = child as UserControl;
                     //get the WebBrowser instance inside the LibraryView
-                    var browser = libraryView.FindName(webBrowserString);
+                    var browser = libraryView.ChildOfType<WebView2>();
                     if (browser == null) return null;
-
                     Type typeBrowser = browser.GetType();
-                    //Due that there are 2 methods with the same name "InvokeScript", then we need to get the one with 2 parameters
-                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == invokeScriptFunction && m.GetParameters().Length == 2);
-                    //Invoke the JS method located in library.html
-                    resultJSHTML = methodInvokeScriptInfo.Invoke(browser, parametersInvokeScript);
+                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == invokeScriptFunction && m.GetParameters().Length == 1);
+                    //Due that WebView2.ExecuteScriptAsync() method is async we need to wait until we get a response
+                    resutlJS = (Task<string>)methodInvokeScriptInfo.Invoke(browser, new object[] { functionName + "(" + parametersExecuteScriptString + ")" });
+                    await resutlJS;
+                    var resultProperty = resutlJS.GetType().GetProperty("Result");
+                    resultJSHTML = resultProperty.GetValue(resutlJS);
+                    if (resultJSHTML.ToString().Equals("null"))
+                        resultJSHTML = null;
                     break;
                 }
             }
