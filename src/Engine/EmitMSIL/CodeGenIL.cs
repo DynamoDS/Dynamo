@@ -1,3 +1,4 @@
+using Dynamo.Scheduler;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Lang;
@@ -32,6 +33,7 @@ namespace EmitMSIL
         private Dictionary<int, Type> astTypeInfoMap = new Dictionary<int, Type>();
         private StreamWriter writer;
         private Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>> methodCache = new Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>();
+        private Dictionary<string, bool> willReplicateCache = new Dictionary<string, bool>();
         private CompilePass compilePass;
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
@@ -1331,7 +1333,7 @@ namespace EmitMSIL
 
             var isStaticOrCtor = clrFep.IsStatic || clrFep.IsConstructor;
 
-            var doesReplicate = WillCallReplicate(parameters, isStaticOrCtor, args);
+            var doesReplicate = WillCallReplicate(clrFep.Signature, parameters, isStaticOrCtor, args);
 
             // TODO: Figure out a way to avoid calling WillCallReplicate twice -
             // once in the GatherTypeInfo phase and again in the emitIL phase.
@@ -1691,25 +1693,33 @@ namespace EmitMSIL
             return 1 + firstRank;
         }
 
-        private bool WillCallReplicate(List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
+        private bool WillCallReplicate(string fepSig, List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
         {
-            if (isStaticOrCtor)
+            if (willReplicateCache.TryGetValue(fepSig, out bool willReplicate))
             {
-                return !DoesParamArgRankMatch(paramTypes, args);
+                return willReplicate;
             }
-            else
+
+            using (Disposable.Create(() => willReplicateCache.Add(fepSig, willReplicate)))
             {
+                if (isStaticOrCtor)
+                {
+                    willReplicate = !DoesParamArgRankMatch(paramTypes, args);
+                    return willReplicate;
+                }
+
                 // args[0] is assigned to the instance object in case of an instance method.
-                if(args[0] is IdentifierNode idn)
+                if (args[0] is IdentifierNode idn)
                 {
                     var t = variables[idn.Value].Item2;
-
-                    if(t.IsArray || ArrayUtils.IsEnumerable(t))
+                    if (t.IsArray || ArrayUtils.IsEnumerable(t))
                     {
-                        return true;
+                        willReplicate = true;
+                        return willReplicate;
                     }
                 }
-                return !DoesParamArgRankMatch(paramTypes, args);
+                willReplicate = DoesParamArgRankMatch(paramTypes, args);
+                return willReplicate;
             }
         }
 

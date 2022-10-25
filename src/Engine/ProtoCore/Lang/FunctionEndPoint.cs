@@ -46,6 +46,10 @@ namespace ProtoCore
 
         public MemberInfo MemberInfo => method.Info;
 
+        private string sig = string.Empty;
+
+        internal string Signature => sig;
+
         public System.Type CLRReturnType
         {
             get {
@@ -66,6 +70,25 @@ namespace ProtoCore
             this.method = method;
             this.FormalParams = formalParams;
             this.procedureNode = procedureNode;
+
+            if (method.Info is MethodInfo mInfo)
+            {
+                sig += mInfo.ReturnType.FullName + " " + mInfo.DeclaringType.FullName + ":" + mInfo.Name;
+            }
+            else if (method.Info is ConstructorInfo cInfo)
+            {
+                sig += cInfo.DeclaringType.FullName + ":" + cInfo.Name;
+            }
+            sig += "(";
+
+            var paramStrings = new List<string>();
+            foreach (var item in FormalParams)
+            {
+                paramStrings.Add(item.CLRType.FullName);
+            }
+
+            sig += string.Join(",", paramStrings);
+            sig += ")";
         }
 
         public static Dictionary<string, ProtoFFI.FFIHandler> FFIHandlers = new Dictionary<string, ProtoFFI.FFIHandler>();
