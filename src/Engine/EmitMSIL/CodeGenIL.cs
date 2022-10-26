@@ -24,7 +24,6 @@ namespace EmitMSIL
         internal string className;
         internal string methodName;
         private IDictionary<string, IList> input;
-        //private Dictionary<int, bool> isRepCall = new Dictionary<int, bool>();
 
         internal ProtoCore.MSILRuntimeCore runtimeCore;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
