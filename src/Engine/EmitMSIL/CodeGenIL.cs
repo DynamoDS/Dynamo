@@ -1573,18 +1573,13 @@ namespace EmitMSIL
                 }
                 else if (currentArg is ExprListNode exp)
                 {
-                    if (!ArrayUtils.IsEnumerable(p) || p == typeof(string))
+                    if (exp.ReplicationGuides.Count > 0) return false;
+                    Type t;
+                    if (!astTypeInfoMap.TryGetValue(exp.ID, out t))
                     {
-                        // arg is an enumerable type, param is not.
-                        return false;
+                        throw new Exception("unkown ast type");
                     }
-                    var argRank = GetArgumentRank(exp);
-                    if (argRank == -1)
-                    {
-                        // non-rectangular (jagged) array best handled by replication
-                        return false;
-                    }
-                    if (argRank != GetRank(fep,p,argIndex)) return false;
+                    if (!DoesParamArgRankMatchInner(fep, p, t, argIndex)) return false;
                 }
                 else if (currentArg is IdentifierNode idn)
                 {
