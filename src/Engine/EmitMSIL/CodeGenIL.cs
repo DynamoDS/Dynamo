@@ -1652,7 +1652,6 @@ namespace EmitMSIL
 
         private static int GetRank(ProtoCore.CLRFunctionEndPoint fep,Type type,int paramIndex)
         {
-            //TODO IList returns wrong rank.
             if(type == typeof(IList)){
                 return -1;
             }
