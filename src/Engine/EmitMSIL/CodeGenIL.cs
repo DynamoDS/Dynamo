@@ -105,8 +105,7 @@ namespace EmitMSIL
 
         private (AssemblyBuilder asmbuilder, TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
         {
-            writer = new StreamWriter(logPath);
-            using (Disposable.Create(() => { writer.Close(); writer.Dispose(); }))
+            using (writer = new StreamWriter(logPath))
             {
                 compilePass = CompilePass.MethodLookup;
                 // 0. Gather all loaded function endpoints and cache them.
