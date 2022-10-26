@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using NUnit.Framework;
 using ProtoCore.Utils;
 
@@ -150,6 +150,7 @@ e=1.5%'a';
             Assert.IsNull(results[4]);
         }
         [Test]
+        //TODO_MSIL - this test fails when enabling direct function call validation in ReplicationLogic
         public void Neg_Operator()
         {
             var dscode = @"

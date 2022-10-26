@@ -794,6 +794,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
         [Category("Failure")]//TODO_MSIL this fails because DSCore.List.FirstItem replicates when it should not.
         //unfortunately we cannot know for sure that the second invocation will be safe.// but according to the
         //type parameters it should be...ie in the DS runtime an object return type is var[]..[] and so is an IList[] param...
+        //TODO_MSIL - this test fails when enabling direct function call validation in ReplicationLogic
         public void DirectFunctionCallsOnly_NoUnMarshaling()
         {
             string code =
