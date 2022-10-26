@@ -92,7 +92,6 @@ namespace EmitMSIL
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
             var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
-            //compileResult.asmbuilder.Save("DynamicAssembly.dll");
             mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
             timer.Stop();
             CompileAndExecutionTime.executionTime = timer.Elapsed;
