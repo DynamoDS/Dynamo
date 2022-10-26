@@ -59,6 +59,7 @@ namespace Dynamo.Tests
         }
 
         [Test, TestCaseSource("FindWorkspaces"), Category("Performance")]
+        ////TODO_MSIL - many of these tests fails when enabling direct function call validation in ReplicationLogic
         public void PerformanceTest(string filePath)
         {
             DoWorkspaceOpenAndCompare(filePath);
