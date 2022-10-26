@@ -3822,7 +3822,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Machine Learning.
+        ///   Looks up a localized string similar to ML Recommendation.
         /// </summary>
         public static string MachineLearning {
             get {
