@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
@@ -43,7 +43,7 @@ namespace DynamoPerformanceTests
 
             // Default arguments
             IConfig config = PerformanceTestHelper.getFastReleaseConfig();
-            var testDirectory = "../../../graphs/";
+            var testDirectory = "../../../../../../test/core/Performance";
             var baseResultsPath = string.Empty;
             var newResultsPath = "BenchmarkDotNet.Artifacts/results/";
             var saveComparisonPath = string.Empty;
