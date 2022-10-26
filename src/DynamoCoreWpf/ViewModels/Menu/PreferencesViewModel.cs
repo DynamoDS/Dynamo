@@ -49,6 +49,7 @@ namespace Dynamo.ViewModels
         private ObservableCollection<string> languagesList;
         private ObservableCollection<string> packagePathsForInstall;
         private ObservableCollection<string> fontSizeList;
+        private ObservableCollection<int> groupStyleFontSizeList;
         private ObservableCollection<string> numberFormatList;
         private StyleItem addStyleControl;
         private ObservableCollection<string> pythonEngineList;
@@ -463,6 +464,21 @@ namespace Dynamo.ViewModels
             {
                 fontSizeList = value;
                 RaisePropertyChanged(nameof(FontSizeList));
+            }
+        }
+        /// <summary>
+        /// GroupStyleFontSizeList contains the list of sizes for defined fonts to be applied to a GroupStyle
+        /// </summary>
+        public ObservableCollection<int> GroupStyleFontSizeList
+        {
+            get
+            {
+                return groupStyleFontSizeList;
+            }
+            set
+            {
+                groupStyleFontSizeList = value;
+                RaisePropertyChanged(nameof(GroupStyleFontSizeList));
             }
         }
 
@@ -1012,6 +1028,19 @@ namespace Dynamo.ViewModels
                 Wpf.Properties.Resources.ScalingExtraLargeButton
             };
             SelectedFontSize = Wpf.Properties.Resources.ScalingMediumButton;
+
+            GroupStyleFontSizeList = new ObservableCollection<int>
+            {
+                14,
+                18,
+                24,
+                30,
+                36,
+                48,
+                60,
+                72,
+                96
+            };
 
             // Number format settings
             NumberFormatList = new ObservableCollection<string>

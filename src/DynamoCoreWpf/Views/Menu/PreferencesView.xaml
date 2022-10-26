@@ -40,12 +40,12 @@
 
             <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
             <DataTemplate x:Key="styleViewItemTemplate">
-                <Border Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}"
-                        BorderThickness="1">
+                 <Border Background="{StaticResource PreferencesWindowBackgroundColor}" Padding="0,0,0,10" Margin="0,0,0,5"
+                        BorderThickness="1" BorderBrush="#FF97A0A5">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0">
                             <Grid>
@@ -59,8 +59,10 @@
                                         Grid.Row="0"
                                         Margin="5,0,0,0"
                                         Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                <StackPanel Orientation="Horizontal" 
-                                            Margin="10,0,0,0"
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Left"
+                                            Width="auto"
+                                            Margin="10,0,20,0"
                                             Grid.Row="1">
                                     <Border x:Name="borderColor"
                                             Background="{Binding HexColorString, Converter={StaticResource StringToBrushColorConverter}}" 
@@ -74,7 +76,12 @@
                             </Grid>
                         </Grid>
                         <Grid Grid.Column="1">
-                            <Button Name="removeStyle"
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Button Name="removeStyle"
                                     Margin="0,0,8,0"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
@@ -82,13 +89,26 @@
                                     Click="RemoveStyle_Click"
                                     Style="{StaticResource FlatIconButtonStyle}"
                                     Width="20"
-                                    Height="30">
-                                <fa:ImageAwesome Icon="Trash"          
+                                    Height="30"
+									Grid.Row="0">
+                                    <fa:ImageAwesome Icon="Trash"          
                                                  Width="15"
                                                  Height="25"
                                                  IsHitTestVisible="False"
                                                  Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                            </Button>
+                                </Button>
+                                <StackPanel Orientation="Horizontal"
+                                            Grid.Row="1">
+                                    <Image Width="24" Height="24" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Source="/DynamoCoreWpf;component/UI/Images/font-size.png"/>
+                                    <ComboBox Grid.Row="1"
+                                                  HorizontalAlignment="Left"
+                                                  Margin="2,0,0,0"
+                                                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.GroupStyleFontSizeList}" 
+                                                  SelectedItem="{Binding Path=FontSize}"
+                                                  Style="{StaticResource NoBordersComboBoxStyle}">
+                                    </ComboBox>
+                                </StackPanel>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Border>
