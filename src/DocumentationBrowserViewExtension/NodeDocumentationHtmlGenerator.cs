@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
+using SharpDX.DXGI;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -89,7 +90,7 @@ namespace Dynamo.DocumentationBrowser
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<details open>");
-            sb.AppendLine(CreateExpanderTitle("Node Information"));
+            sb.AppendLine(CreateExpanderTitle(Resources.NodeDocumentationNodeInfo));
             sb.AppendLine(CreateNodeInfo(e));
             sb.AppendLine(InjectImageNavigation(mkDown));
             sb.AppendLine("<br>");
@@ -119,15 +120,17 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine(imageRow);
             sb.AppendLine("<div class=\"btn--container\">");
             sb.AppendLine(
-                "<button type=\"button\" id=\"zoomin\" class=\"button plusIcon\" title=\"Zoom in\" ></button>\r\n");
+                $"<button type=\"button\" id=\"zoomin\" class=\"button plusIcon\" title=\"{Resources.ImageZoomInToolTip}\" ></button>\r\n");
             sb.AppendLine(
-                "<button type=\"button\" id=\"zoomout\" class=\"button minusIcon\" title=\"Zoom out\" ></button>\r\n");
+                $"<button type=\"button\" id=\"zoomout\" class=\"button minusIcon\" title=\"{Resources.ImageZoomOutToolTip}\" ></button>\r\n");
             sb.AppendLine(
-                "<button type=\"button\" id=\"zoomfit\" class=\"button fitIcon\"  title=\"Zoom to fit\" ></button>");
+                $"<button type=\"button\" id=\"zoomfit\" class=\"button fitIcon\"  title=\"{Resources.ImageFitToolTip}\" ></button>");
             sb.AppendLine(@"</div>");
             sb.AppendLine("<div class=\"btn--insert--container\">");
+
+            var tooltip = Resources.ImageInsertToolTip.Replace("\\n", Environment.NewLine);
             sb.AppendLine(
-                "<button type=\"button\" id=\"insert\" class=\"button insertIcon\" title=\"Insert to workspace\" ></button>\r\n");
+                $"<button type=\"button\" id=\"insert\" class=\"button insertIcon\" title=\"{tooltip}\" ></button>\r\n");
             sb.AppendLine(@"</div>");
             sb.AppendLine(@"</div>");
 
@@ -138,14 +141,12 @@ namespace Dynamo.DocumentationBrowser
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<details open>");
-            sb.AppendLine(CreateExpanderTitle("Node Issue Help"));
+            sb.AppendLine(CreateExpanderTitle(Resources.NodeDocumentationIssueHelp));
             for (int i = 0; i < e.NodeInfos.Count(); i++)
             {
                 try
                 {
                     sb.AppendLine("<br>");
-                    sb.AppendLine($"<strong>{"State"}</strong>");
-                    sb.AppendLine($"<p>{e.NodeInfos.ElementAt(i).State}</p>");
                     sb.AppendLine($"<strong>{"Message"}</strong>");
                     sb.AppendLine($"<p>{GetNthRowFromStringSplit(e.NodeInfos.ElementAt(i).Message, 0)}</p>");
 
@@ -170,7 +171,7 @@ namespace Dynamo.DocumentationBrowser
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<details open>");
-            sb.AppendLine(CreateExpanderTitle("Inputs"));
+            sb.AppendLine(CreateExpanderTitle(Resources.NodeDocumentationInputs));
             sb.AppendLine(CreateInputsAndOutputs(e));
             sb.AppendLine(@"</details>");
 
@@ -181,7 +182,16 @@ namespace Dynamo.DocumentationBrowser
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<summary>");
-            sb.AppendLine($"<strong>{title}</strong>");
+            if (title.Equals(Resources.NodeDocumentationIssueHelp))
+            {
+                sb.AppendLine($"<strong style=\"margin-right: 10px;\">{title}</strong>");
+                sb.AppendLine("<span class=\"alertIcon\" style=\"margin-top: 4px; width: 14px; height: 14px\">");
+                sb.AppendLine(@"</span>");
+            }
+            else
+            {
+                sb.AppendLine($"<strong>{title}</strong>");
+            }
             sb.AppendLine("<span class=\"icon\">");
             sb.AppendLine(@"</span>");
             sb.AppendLine(@"</summary>");
@@ -208,19 +218,11 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine($"<h2>{Resources.NodeDocumentationInputs}</h2>");
             sb.AppendLine("<table class=\"table--border\">");
             sb.AppendLine("<tr class=\"table--border\">");
-            sb.AppendLine($"<th class=\"table--border\">{"Name"}</th>");
-            sb.AppendLine($"<th class=\"table--border\">{"Type"}</th>");
-            sb.AppendLine($"<th class=\"table--border\">{"Description"}</th>");
-            sb.AppendLine($"<th class=\"table--border\">{"Default value"}</th>");
+            sb.AppendLine($"<th class=\"table--border\">{Resources.NodeInputsName}</th>");
+            sb.AppendLine($"<th class=\"table--border\">{Resources.NodeInputsType}</th>");
+            sb.AppendLine($"<th class=\"table--border\">{Resources.NodeInputsDescription}</th>");
+            sb.AppendLine($"<th class=\"table--border\">{Resources.NodeInputsValue}</th>");
             sb.AppendLine(@"</tr>");
-
-            //sb.AppendLine("<tr class=\"table--border\">");
-            //sb.AppendLine($"<td class=\"table--border\">{Resources.NodeDocumentationCategory}</td>");
-            //sb.AppendLine($"<td class=\"table--border\">{e.Category}</td>");
-            //sb.AppendLine(@"</tr>");
-            //sb.AppendLine("<tr class=\"table--border\">");
-            //sb.AppendLine($"<td class=\"table--border\">{Resources.NodeDocumentationInputs}</td>");
-            //sb.AppendLine("<td class=\"table--border\">");
 
             for (int i = 0; i < e.InputNames.Count(); i++)
             {
@@ -240,14 +242,14 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine($"<h2>{Resources.NodeDocumentationOutputs}</h2>");
             sb.AppendLine("<table class=\"table--border\">");
             sb.AppendLine("<tr class=\"table--border\">");
-            sb.AppendLine($"<th class=\"table--border\">{"Name"}</th>");
-            sb.AppendLine($"<th class=\"table--border\">{"Description"}</th>");
-            sb.AppendLine($"<th class=\"table--border\">{"Data type"}</th>");
+            sb.AppendLine($"<th class=\"table--border\">{Resources.NodeInputsName}</th>");
+            sb.AppendLine($"<th class=\"table--border\">{Resources.NodeInputsDescription}</th>");
+            sb.AppendLine($"<th class=\"table--border\">{Resources.NodeInputsDataType}</th>");
             sb.AppendLine(@"</tr>");
 
             for (int i = 0; i < e.OutputNames.Count(); i++)
             {
-                sb.AppendLine("<tr class=\"table--border\">");
+                sb.AppendLine(" <tr class=\"table--border\">");
                 sb.AppendLine($"<td class=\"table--border\">{e.OutputNames.ElementAt(i)}</td>");
                 sb.AppendLine($"<td class=\"table--border\">{GetNthRowFromStringSplit(e.OutputDescriptions.ElementAt(i), 0)}</td>");
                 sb.AppendLine(@"</tr>");

@@ -172,7 +172,7 @@ namespace Dynamo.DocumentationBrowser
                 var homeWorkspace = DynamoViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
                 if (homeWorkspace != null && homeWorkspace.RunSettings.RunType != RunType.Manual)
                 {
-                    DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow("Example file added to workspace. Run mode changed to Manual.", true);
+                    DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Resources.ToastInsertGraphNotificationText, true);
                     homeWorkspace.RunSettings.RunType = RunType.Manual;
                 }
             }
@@ -218,7 +218,7 @@ namespace Dynamo.DocumentationBrowser
             DynamoSelection.Instance.Selection.AddRange(hostGroups.Select(x => x.AnnotationModel));
             DoEvents();
 
-            var annotation = this.DynamoViewModel.Model.CurrentWorkspace.AddAnnotation("Inserted Dynamo graph", Guid.NewGuid());
+            var annotation = this.DynamoViewModel.Model.CurrentWorkspace.AddAnnotation(Resources.InsertedGroupSubTitle, Guid.NewGuid());
             annotation.AnnotationText = graphName;
             DoEvents();
 

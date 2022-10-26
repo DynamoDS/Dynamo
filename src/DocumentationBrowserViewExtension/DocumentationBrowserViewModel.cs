@@ -353,7 +353,7 @@ namespace Dynamo.DocumentationBrowser
                 }
                 else
                 {
-                    // TODO: Remove test graph with appropriate resource
+                    // TODO: Remove test graph with appropriate resource, replace with Toast notification
                     raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\Example.dyn",
                         Path.GetFileNameWithoutExtension(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\Example.dyn")));
                     //raiseInsertGraph(this, new MyEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\NormalGalleryContents.xml")); // Test with xml file
