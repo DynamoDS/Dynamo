@@ -28,11 +28,11 @@ namespace ProtoCore
             public int UID => ProtoInfo.UID;
         }
 
+        internal ProcedureNode procedureNode;
+
         private FFIMemberInfo method;
 
-        internal CLRStackValue ThisPtr;
-
-        internal ProtoCore.Type ProtoCoreReturnType;
+        internal ProtoCore.Type ProtoCoreReturnType => procedureNode.ReturnType;
 
         internal List<ParamInfo> FormalParams
         {
@@ -61,13 +61,14 @@ namespace ProtoCore
             }
         }
 
+        
         internal Attribute[][] ParamAttributes => method.GetParameters().Select(x => x.Info.GetCustomAttributes().ToArray()).ToArray();
 
-        internal CLRFunctionEndPoint(FFIMemberInfo method, List<ParamInfo> formalParams, ProtoCore.Type retType)
+        internal CLRFunctionEndPoint(FFIMemberInfo method, List<ParamInfo> formalParams, ProcedureNode procedureNode)
         {
             this.method = method;
             this.FormalParams = formalParams;
-            this.ProtoCoreReturnType = retType;
+            this.procedureNode = procedureNode;
         }
 
         public static Dictionary<string, ProtoFFI.FFIHandler> FFIHandlers = new Dictionary<string, ProtoFFI.FFIHandler>();
@@ -114,8 +115,7 @@ namespace ProtoCore
             int dist = ComputeTypeDistance(reducedParamSVs, runtimeCore, allowArrayPromotion);
             if (dist >= 0 && dist != (int)ProcedureDistance.MaxDistance) //Is it possible to convert to this type?
             {
-                // TODO_MSIL: implement CheckInvalidArrayCoersion
-                //if (!FunctionGroup.CheckInvalidArrayCoersion(fep, reducedParamSVs, allowArrayPromotion))
+                if (!FunctionGroup.CheckInvalidArrayCoercion(this, reducedParamSVs, runtimeCore, allowArrayPromotion))
                 return dist;
             }
 
@@ -296,13 +296,11 @@ namespace ProtoCore
                     else if (arrayTypes.Count == 1)
                     {
                         //UGLY, get the key out of the array types, of which there is only one
-                        foreach (ClassNode key in arrayTypes.Keys)
-                            cn = key;
+                        cn = arrayTypes.Keys.ElementAt(0);
                     }
                     else if (arrayTypes.Count > 1)
                     {
-                        ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(arrayTypes, runtimeCore.ClassTable);
-
+                        var commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(arrayTypes, runtimeCore.ClassTable);
                         if (commonBaseType == null)
                             throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported(
                                 string.Format(Resources.ArrayWithNotSupported, "{0C644179-14F5-4172-8EF8-A2F3739901B2}"));
@@ -311,7 +309,7 @@ namespace ProtoCore
                     }
 
 
-                    ClassNode argTypeNode = runtimeCore.ClassTable.ClassNodes[typ.UID];
+                    var argTypeNode = runtimeCore.ClassTable.ClassNodes[typ.UID];
 
                     //cn now represents the class node of the argument
                     //argTypeNode represents the class node of the argument
