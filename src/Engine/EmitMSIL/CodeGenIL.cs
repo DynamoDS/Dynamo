@@ -13,6 +13,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using DSASM = ProtoCore.DSASM;
+using Autodesk.DesignScript.Runtime;
 
 namespace EmitMSIL
 {
@@ -1283,7 +1284,7 @@ namespace EmitMSIL
 
             var isStaticOrCtor = clrFep.IsStatic || clrFep.IsConstructor;
 
-            var doesReplicate = WillCallReplicate(parameters, isStaticOrCtor, args);
+            var doesReplicate = WillCallReplicate(clrFep, parameters, isStaticOrCtor, args);
 
             // TODO: Figure out a way to avoid calling WillCallReplicate twice -
             // once in the GatherTypeInfo phase and again in the emitIL phase.
@@ -1537,7 +1538,7 @@ namespace EmitMSIL
             }
         }
 
-        private bool DoesParamArgRankMatch(List<Type> parameterTypes, List<AssociativeNode> args)
+        private bool DoesParamArgRankMatch(ProtoCore.CLRFunctionEndPoint fep, List<Type> parameterTypes, List<AssociativeNode> args)
         {
             var argIndex = 0;
           
@@ -1583,7 +1584,7 @@ namespace EmitMSIL
                         // non-rectangular (jagged) array best handled by replication
                         return false;
                     }
-                    if (argRank != GetRank(p)) return false;
+                    if (argRank != GetRank(fep,p,argIndex)) return false;
                 }
                 else if (currentArg is IdentifierNode idn)
                 {
@@ -1592,7 +1593,7 @@ namespace EmitMSIL
                     var t = variables[idn.Value].Item2;
                     if (t == typeof(object)) return false;
 
-                    if(!DoesParamArgRankMatchInner(p, t)) return false;
+                    if(!DoesParamArgRankMatchInner(fep,p, t,argIndex)) return false;
                 }
                 else if (currentArg is RangeExprNode rgnNode)
                 {
@@ -1601,7 +1602,7 @@ namespace EmitMSIL
                     {
                         throw new Exception("unkown ast type");
                     }
-                    if (!DoesParamArgRankMatchInner(p, t)) return false;
+                    if (!DoesParamArgRankMatchInner(fep,p, t,argIndex)) return false;
                 }
                 else return false;
                 argIndex++;
@@ -1609,7 +1610,7 @@ namespace EmitMSIL
             return true;
         }
 
-        private static bool DoesParamArgRankMatchInner(Type p, Type t)
+        private static bool DoesParamArgRankMatchInner(ProtoCore.CLRFunctionEndPoint fep,Type p, Type t, int paramIndex)
         {
             if (!p.Equals(t))
             {
@@ -1620,8 +1621,8 @@ namespace EmitMSIL
                     return true;
                 }
 
-                var argRank = GetRank(t);
-                var paramRank = GetRank(p);
+                var argRank = GetRank(fep,t,paramIndex);
+                var paramRank = GetRank(fep,p, paramIndex);
 
                 //if the param is an arbitrary rank array and
                 //arg is some array type, replication should not occur.
@@ -1637,10 +1638,14 @@ namespace EmitMSIL
             return true;
         }
 
-        private static int GetRank(Type type)
+        private static int GetRank(ProtoCore.CLRFunctionEndPoint fep,Type type,int paramIndex)
         {
             //TODO IList returns wrong rank.
             if(type == typeof(IList)){
+                return -1;
+            }
+            if(type == typeof(object) && fep.ParamAttributes[paramIndex].Any(attr => attr is ArbitraryDimensionArrayImportAttribute))
+            {
                 return -1;
             }
             return type.IsArray ? GetArrayRank(type) : GetEnumerableRank(type);
@@ -1682,11 +1687,11 @@ namespace EmitMSIL
             return 1 + firstRank;
         }
 
-        private bool WillCallReplicate(List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
+        private bool WillCallReplicate(ProtoCore.CLRFunctionEndPoint fep,List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
         {
             if (isStaticOrCtor)
             {
-                return !DoesParamArgRankMatch(paramTypes, args);
+                return !DoesParamArgRankMatch(fep,paramTypes, args);
             }
             else
             {
@@ -1700,7 +1705,7 @@ namespace EmitMSIL
                         return true;
                     }
                 }
-                return !DoesParamArgRankMatch(paramTypes, args);
+                return !DoesParamArgRankMatch(fep,paramTypes, args);
             }
         }
 

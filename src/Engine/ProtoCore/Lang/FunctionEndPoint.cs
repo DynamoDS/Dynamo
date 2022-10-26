@@ -61,6 +61,8 @@ namespace ProtoCore
             }
         }
 
+        internal Attribute[][] ParamAttributes => method.GetParameters().Select(x => x.Info.GetCustomAttributes().ToArray()).ToArray();
+
         internal CLRFunctionEndPoint(FFIMemberInfo method, List<ParamInfo> formalParams, ProtoCore.Type retType)
         {
             this.method = method;
