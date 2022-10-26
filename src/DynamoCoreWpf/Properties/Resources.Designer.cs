@@ -475,7 +475,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go to End Node.
+        ///   Looks up a localized string similar to Navigate Downstream.
         /// </summary>
         public static string ConnectorContextMenuHeaderEndNode {
             get {
@@ -520,7 +520,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go to Start Node.
+        ///   Looks up a localized string similar to Navigate Upstream.
         /// </summary>
         public static string ConnectorContextMenuHeaderStartNode {
             get {
