@@ -35,7 +35,7 @@ namespace EmitMSIL
         private Dictionary<int, Type> astTypeInfoMap = new Dictionary<int, Type>();
         private StreamWriter writer;
         private Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>> methodCache = new Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>();
-        private Dictionary<string, bool> willReplicateCache = new Dictionary<string, bool>();
+        private Dictionary<int, bool> willReplicateCache = new Dictionary<int, bool>();
         private CompilePass compilePass;
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
@@ -1297,7 +1297,8 @@ namespace EmitMSIL
             //if the method name is builtin.valueAtIndex then don't emit a function call yet.
             //instead try to emit direct indexing... to do so, we'll need to wait until ilemit phase
             //so variable dictionary has valid data.
-            if (className == Node.BuiltinGetValueAtIndexTypeName && methodName == Node.BuiltinValueAtIndexMethodName)
+            if (className == Node.BuiltinGetValueAtIndexTypeName &&
+                methodName == Node.BuiltinValueAtIndexMethodName)
             {
                 if (compilePass == CompilePass.MethodLookup)
                 {
@@ -1337,26 +1338,8 @@ namespace EmitMSIL
 
             var isStaticOrCtor = clrFep.IsStatic || clrFep.IsConstructor;
 
-            var doesReplicate = WillCallReplicate(clrFep.Signature, parameters, isStaticOrCtor, args);
-
-            // TODO: Figure out a way to avoid calling WillCallReplicate twice -
-            // once in the GatherTypeInfo phase and again in the emitIL phase.
-            // We should be able to cache the result in the GatherTypeInfo compile pass
-            // and reuse it in the emitIL pass.
-            //if (compilePass == CompilePass.GatherTypeInfo)
-            //{
-            //    if(isRepCall.ContainsKey(node.ID))
-            //    {
-            //        throw new Exception($"ast {node.ID}:{node.Kind} already exists in replicated call map.");
-            //    }
-            //    isRepCall.Add(node.ID, WillCallReplicate(parameters, isStatic, args));
-            //}
-
-            //bool doesReplicate = false;
-            //if(!isRepCall.TryGetValue(node.ID, out doesReplicate))
-            //{
-            //    throw new Exception($"ast { node.ID }:{ node.Kind} does not exist in replicated call map.");
-            //}
+            args.Select(x => x.ID);
+            var doesReplicate = WillCallReplicate(node.ID, parameters, isStaticOrCtor, args);
             if (doesReplicate)
             {
                 EmitILComment("emit replicating call");
@@ -1697,14 +1680,14 @@ namespace EmitMSIL
             return 1 + firstRank;
         }
 
-        private bool WillCallReplicate(string fepSig, List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
+        private bool WillCallReplicate(int id, List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
         {
-            if (willReplicateCache.TryGetValue(fepSig, out bool willReplicate))
+            if (willReplicateCache.TryGetValue(id, out bool willReplicate))
             {
                 return willReplicate;
             }
 
-            using (Disposable.Create(() => willReplicateCache.Add(fepSig, willReplicate)))
+            using (Disposable.Create(() => willReplicateCache.Add(id, willReplicate)))
             {
                 if (isStaticOrCtor)
                 {
@@ -1897,6 +1880,12 @@ namespace EmitMSIL
 
 
             var rangeExprFunc = AstFactory.BuildFunctionCall(methodName, arguments);
+
+            // We need to keep the ID of the generated fuction call stable
+            // in order to make use of caches in between different compile stages.
+            // So just copy it from the rangeExpression node
+            rangeExprFunc.InheritID(range.ID);
+
             var idlist = new IdentifierListNode()
             {
                 LeftNode = new IdentifierNode(typeof(Builtin.RangeHelpers).FullName),
