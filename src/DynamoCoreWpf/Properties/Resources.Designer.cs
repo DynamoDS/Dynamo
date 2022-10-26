@@ -475,6 +475,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go to End Node.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderEndNode {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderEndNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide Wire.
         /// </summary>
         public static string ConnectorContextMenuHeaderHideConnector {
@@ -507,6 +516,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ConnectorContextMenuHeaderShowConnector {
             get {
                 return ResourceManager.GetString("ConnectorContextMenuHeaderShowConnector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go to Start Node.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderStartNode {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderStartNode", resourceCulture);
             }
         }
         
