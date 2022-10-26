@@ -92,6 +92,7 @@ namespace EmitMSIL
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
             var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
+            //compileResult.asmbuilder.Save("DynamicAssembly.dll");
             mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
             timer.Stop();
             CompileAndExecutionTime.executionTime = timer.Elapsed;
@@ -1159,7 +1160,7 @@ namespace EmitMSIL
                     //can't handle these with compile time indexing.
                     //TODO remove IList from this if stmt when we figure out function call return wrapping behavior.
                     //this is still a problem for BuiltIn Dictionaries that are wrapped in an IList.
-                    if (arrayT == null || arrayT == typeof(IList) || arrayT == typeof(object))
+                    if (arrayT == null || arrayT == typeof(IList) || arrayT == typeof(object) || arrayT == typeof(DSASM.CLRStackValue))
                     {
                         return (false, null);
                     }
@@ -1312,6 +1313,7 @@ namespace EmitMSIL
                     //emit a function call to ValueAtIndex.
                     else
                     {
+                        className = Node.BuiltinGetValueAtIndexTypeName;
                         methodName = nameof(DesignScript.Builtin.Get.ValueAtIndex);
                         EmitILComment("NOT ENOUGH TYPE INFO TO EMIT INDEXING, EMIT ValueAtIndex FUNCTION CALL");
                     }
