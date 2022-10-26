@@ -119,15 +119,15 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine(imageRow);
             sb.AppendLine("<div class=\"btn--container\">");
             sb.AppendLine(
-                "<button type=\"button\" id=\"zoomin\" class=\"button plusIcon\" title=\"Zoom in\" >.</button>\r\n");
+                "<button type=\"button\" id=\"zoomin\" class=\"button plusIcon\" title=\"Zoom in\" ></button>\r\n");
             sb.AppendLine(
-                "<button type=\"button\" id=\"zoomout\" class=\"button minusIcon\" title=\"Zoom out\" >.</button>\r\n");
+                "<button type=\"button\" id=\"zoomout\" class=\"button minusIcon\" title=\"Zoom out\" ></button>\r\n");
             sb.AppendLine(
-                "<button type=\"button\" id=\"zoomfit\" class=\"button fitIcon\"  title=\"Zoom to fit\" >.</button>");
+                "<button type=\"button\" id=\"zoomfit\" class=\"button fitIcon\"  title=\"Zoom to fit\" ></button>");
             sb.AppendLine(@"</div>");
-            sb.AppendLine("<div class=\"btn--container insert--container\">");
+            sb.AppendLine("<div class=\"btn--insert--container\">");
             sb.AppendLine(
-                "<button type=\"button\" id=\"insert\" class=\"button insertIcon\" title=\"Insert to workspace\" >.</button>\r\n");
+                "<button type=\"button\" id=\"insert\" class=\"button insertIcon\" title=\"Insert to workspace\" ></button>\r\n");
             sb.AppendLine(@"</div>");
             sb.AppendLine(@"</div>");
 

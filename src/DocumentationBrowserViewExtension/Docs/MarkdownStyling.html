@@ -262,48 +262,83 @@
                 border-bottom: none;
             }
         }
+
         .button {
-            background-color: transparent;
-            color: transparent;
-            border: 0;
-            width: 16px;
-            height: 16px;
-            margin-left: 4px;
-            margin-right: 4px;
+            content: "";
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             vertical-align: middle;
+            border: 0;
+            margin: -2px;
+            text-decoration: none;
+            width: 24px;
+            height: 24px;
+            background-position: center;
+            opacity: 1;
         }
 
         .button:hover {
-            background-color: rgba(235, 235, 235, 1);
-            opacity: 1;
-            border: 0;
+            border: 1px solid rgba(235, 235, 235, 1);
             cursor: pointer;
-            vertical-align: middle;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            background-position: center;
         }
 
         .plusIcon {
             background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAA6SURBVHgB7ZE7CgAwCENjT56b9zN06VAHHVR8IDgEDQkQGpLzzE8zYKTAAbmLFtbL1ouLA+1L15iCBTWVDhDHjQkyAAAAAElFTkSuQmCC")
-                no-repeat;
-            background-size: contain;
+                no-repeat white;
             background-position: center;
+            background-size: 50%;
         }
+
+        .plusIcon:hover {
+            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABCSURBVHgB7dGxDQAgCATAxy3cxnkcyHncxjE0FjYWWEgBhEtIKAghPKBa7WPu4mYSPjlYQKd5PevWSiaRC1gRoxULEPUQVLw6bfkAAAAASUVORK5CYII=")
+                no-repeat white;
+            background-position: center;
+            background-size: 50%;
+        }
+
         .minusIcon {
             background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAApSURBVHgB7cuxDQAwCAPBTyb35oCQGIAW+SoXfrAD3gxJwUL9u/2YQQK8sQQErW7syAAAAABJRU5ErkJggg==")
-                no-repeat;
-            background-size: contain;
+                no-repeat white;
             background-position: center;
+            background-size: 50%;
         }
+
+        .minusIcon:hover {
+            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAxSURBVHgB7csxDQAgDAXRAxe4QQ+C0IMbZLRJkwro2vw33XIgDYyM875RcPeKdyICDtfhBARBNxvQAAAAAElFTkSuQmCC")
+                no-repeat white;
+            background-position: center;
+            background-size: 50%;
+        }
+
         .fitIcon {
-            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABJSURBVHgB7ZJLCgAgCEQ1Org3t4ICGSICCze+jV9wkCGKhlciImoHvWaot/NCTio28DL2UYlbQWIY38UP3+x98YHOeHTiMwXxNEo/Hg4pjk5XAAAAAElFTkSuQmCC")
-                no-repeat;
-            background-size: contain;
+            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAA1SURBVHgB3ZExCgBQCELzn9yb/1qCcmto6W1SKChIfiuEhuh2fzYE6aDOSv6NEy6w3xLWl3bvzBoJVzBU/AAAAABJRU5ErkJggg==")
+                no-repeat white;
             background-position: center;
+            background-size: 50%;
         }
-        .insertIcon {
-            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAtSURBVHgB7dAhDgAACEJR5sm5qVdxNIvRoONtBOoHNpBMbfpd4Cc3cAO51aAA8J8l+U+H2ccAAAAASUVORK5CYII=")
-                no-repeat;
-            background-size: contain;
+
+        .fitIcon:hover {
+            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAA/SURBVHgB3ZFBDQAwCAPpXMzN9EzQ9MwNMuBFQvrjwYf7EZo2aXG/miTe2cg3/5cUQTiwMxO6csIE+ltC+9IOvDkcTZzUABAAAAAASUVORK5CYII=")
+                no-repeat white;
             background-position: center;
+            background-size: 50%;
+        }
+
+        .insertIcon {
+            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADqSURBVHgBtZSBDcIgEEUPwgA4gbqBG6gTuEI3sAM0ASZwBOsE1hGcQEfADbpB/WdK0pAWS4w/ufS4wMv9g1QYYzQRlUKIJWWo67qbc67hXOKwQRyQ+5zAmWvfACkEJ4211tFM4bAFxIe1okz1gCPs7GGn/dj5AfAMdTmxWcPeI6qVYwDWlB2e02oAKPgCYgDqG3zalB09AJzHOkD9JKXcJmcSAIgiBgyVhAQAYJfUvq9XDBs1hlz3yxb5guZ0gta9UmoVB4DrrE6qqnrRTGU9tr9C2I5HFBjYjvLFj80LzjBI/hVoypfH9d/fPhxtWeK++60AAAAASUVORK5CYII=")
+                no-repeat white;
+            background-position: center;
+            background-size: 50%;
+        }
+
+        .insertIcon:hover {
+            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAEuSURBVHgBtZNLTsMwEIZnnIBgl26QUha0N+geiSQn4ApZglmQGxROABsSpC4oJ6CcwIELwA0IElKyI8tCpQw2YKkUK9RI/SVLnpH9eR4eTMST9w4bCSDsgIWImtss2p6ovTtjm0OkJiTEiQ0Egd3IADrnUb92icgDCUgD/3RZABfliaQU2nbBUt+A4xk5USqjUD72X8Ao2nrUfiMkEa8ez6uHed+hqBITQMmYzhSmHgPqaftAlDEiDRcBXLwMGnDqlnTQ0wCGcGWKANE5cxgErYXVAEKIR+FPwLxaC6sBWeBft537s8VIMOZ5Of6yqE7DbufXY6aLl5Ff4Br1Ftc6vfWtIrnY7T7DkrL6bCuFuJ+DRBAf5WUIliKAgexegcrg99U+qmm2VCMB2Z5/9wHLE3lsCTs1DgAAAABJRU5ErkJggg==")
+                no-repeat white;
+            background-position: center;
+            background-size: 50%;
         }
     </style>
     <style>
@@ -376,21 +411,17 @@
 
         .container .btn--container {
             position: absolute;
+            border-radius: 10%;
             top: 12px;
-            right: 60px;
-            background-color: white;
-            color: white;
-            font-size: 16px;
-            padding: 4px;
-            /* padding-top: 3px; */
-            border: 2px solid #cacaca;
-            border-radius: 3px;
+            box-shadow: rgba(15, 15, 15, 0.1) 2px 2px 2px 2px, rgba(15, 15, 15, 0.1) -2px -2px 2px 2px;
+            right: 45px;
         }
-
-        .container .insert--container {
+        .container .btn--insert--container {
+            position: absolute;
+            border-radius: 10%;
+            top: 12px;
+            box-shadow: rgba(15, 15, 15, 0.1) 2px 2px 2px 2px, rgba(15, 15, 15, 0.1) -2px -2px 2px 2px;
             right: 12px;
-            height: 18px;
-            padding-top: 8px;
         }
     </style>
 </head>
