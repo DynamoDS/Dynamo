@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using Dynamo.Models;
 using NUnit.Framework;
@@ -70,8 +71,7 @@ namespace Dynamo.Tests.ModelsTest
             //Assert
             Assert.Throws<FileNotFoundException>(() => OpenFileCommand.DeserializeCore(elemTest));
         }
-
-
+        
 
         [Test]
         [Category("UnitTests")]
@@ -90,14 +90,38 @@ namespace Dynamo.Tests.ModelsTest
             command.SerializeCoreTest(elemTest);
             var deserializedCommand = InsertFileCommand.DeserializeCore(elemTest);
 
-            //We need to set up the DynamoModel inside the OpenFileCommandDerivedTest class before calling TrackAnalytics()
+            //We need to set up the DynamoModel inside the InsertFileCommandDerivedTest class before calling TrackAnalytics()
             command.ExecuteTest(CurrentDynamoModel);
             command.TrackAnalytics();
 
             //Assert
             //It will validate that the Deserialized element is valid
             Assert.IsNotNull(deserializedCommand);
+        }
 
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestInsertNodesCount()
+        {
+            // Home space contains 0 nodes
+            var currentCount = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
+            Assert.AreEqual(0, currentCount);
+
+            //Act
+            string wspath = Path.Combine(TestDirectory, @"core\callsite\RebindingSingleDimension.dyn");
+            this.CurrentDynamoModel.InsertFileFromPath(wspath);
+
+            //Assert
+            currentCount = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
+            Assert.AreNotEqual(0, currentCount);
+
+            //If we try to insert the same graph, currently Dynamo should not allow us
+            // TODO - this part of the test might change if we include a logic
+            // to recreate the GUIDs of the 'same' nodes to allow for duplicate or partial duplicate insertions
+            this.CurrentDynamoModel.InsertFileFromPath(wspath);
+            var updatedCount = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
+            Assert.AreEqual(currentCount, updatedCount);
         }
     }
     
