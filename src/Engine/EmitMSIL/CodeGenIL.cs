@@ -1338,7 +1338,6 @@ namespace EmitMSIL
 
             var isStaticOrCtor = clrFep.IsStatic || clrFep.IsConstructor;
 
-            args.Select(x => x.ID);
             var doesReplicate = WillCallReplicate(node.ID, parameters, isStaticOrCtor, args);
             if (doesReplicate)
             {
