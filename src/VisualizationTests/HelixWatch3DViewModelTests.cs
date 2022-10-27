@@ -1308,7 +1308,7 @@ namespace WpfVisualizationTests
             Assert.AreEqual(0, BackgroundPreviewGeometry.NumberOfVisibleCurves());
             ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
             //this graph displays a grid, cones, cone edges, cube instances, cube edge instances.
-            Assert.AreEqual(3, BackgroundPreviewGeometry.NumberOfVisibleCurves());
+            Assert.AreEqual(2, BackgroundPreviewGeometry.NumberOfVisibleCurves());
             //cone and mesh
             Assert.AreEqual(2, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
             
