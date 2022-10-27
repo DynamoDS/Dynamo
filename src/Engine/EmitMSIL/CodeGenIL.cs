@@ -1554,8 +1554,16 @@ namespace EmitMSIL
                 }
             }
         }
-
-        private bool DoesParamArgRankMatch(ProtoCore.CLRFunctionEndPoint fep, List<Type> parameterTypes, List<AssociativeNode> args)
+        /// <summary>
+        /// Checks that all arguments are compatible with the parameters of a given fep.
+        /// Checks rank, type, and attributes to make this determination.
+        /// </summary>
+        /// <param name="fep"></param>
+        /// <param name="parameterTypes"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        private bool DoParamsRankMatchArgs(ProtoCore.CLRFunctionEndPoint fep, List<Type> parameterTypes, List<AssociativeNode> args)
         {
             var argIndex = 0;
           
@@ -1566,7 +1574,7 @@ namespace EmitMSIL
                 {
                     DfsTraverse(currentArg);
                 }
-                if (CoreUtils.IsPrimitiveASTNode(args[argIndex]) || args[argIndex] is CharNode)
+                if (CoreUtils.IsPrimitiveASTNode(args[argIndex]) || currentArg is CharNode)
                 {
                     // arg is a single value (primitive type), but param is not (array promotion case).
                     if (ArrayUtils.IsEnumerable(p) && p != typeof(string))
@@ -1574,7 +1582,7 @@ namespace EmitMSIL
                         return false;
                     }
 
-                    switch (args[argIndex].Kind)
+                    switch (currentArg.Kind)
                     {
                         case AstKind.String:
                             var strNode = args[argIndex] as StringNode;
@@ -1596,7 +1604,7 @@ namespace EmitMSIL
                     {
                         throw new Exception("unkown ast type");
                     }
-                    if (!DoesParamArgRankMatchInner(fep, p, t, argIndex)) return false;
+                    if (!DoesParamRankMatchArg(fep, p, t, argIndex)) return false;
                 }
                 else if (currentArg is IdentifierNode idn)
                 {
@@ -1605,7 +1613,7 @@ namespace EmitMSIL
                     var t = variables[idn.Value].Item2;
                     if (t == typeof(object)) return false;
 
-                    if(!DoesParamArgRankMatchInner(fep,p, t,argIndex)) return false;
+                    if(!DoesParamRankMatchArg(fep,p, t,argIndex)) return false;
                 }
                 else if (currentArg is RangeExprNode rgnNode)
                 {
@@ -1614,7 +1622,7 @@ namespace EmitMSIL
                     {
                         throw new Exception("unkown ast type");
                     }
-                    if (!DoesParamArgRankMatchInner(fep,p, t,argIndex)) return false;
+                    if (!DoesParamRankMatchArg(fep,p, t,argIndex)) return false;
                 }
                 else return false;
                 argIndex++;
@@ -1622,19 +1630,28 @@ namespace EmitMSIL
             return true;
         }
 
-        private static bool DoesParamArgRankMatchInner(ProtoCore.CLRFunctionEndPoint fep,Type p, Type t, int paramIndex)
+        /// <summary>
+        /// Check that a paramter's rank and type is compatibile with the given argument.
+        /// This function besides checking rank directly, also does checks using the FEP attributes.
+        /// </summary>
+        /// <param name="fep">the function end point wrapper</param>
+        /// <param name="paramType">type of param on the fep</param>
+        /// <param name="argType">actual argument type</param>
+        /// <param name="paramIndex">parameter index in list of params to fep.</param>
+        /// <returns></returns>
+        private static bool DoesParamRankMatchArg(ProtoCore.CLRFunctionEndPoint fep,Type paramType, Type argType, int paramIndex)
         {
-            if (!p.Equals(t))
+            if (!paramType.Equals(argType))
             {
                 //if both types are value types, let's
                 //let coercion figure this out.
-                if (p.IsValueType && t.IsValueType)
+                if (paramType.IsValueType && argType.IsValueType)
                 {
                     return true;
                 }
 
-                var argRank = GetRank(fep,t,paramIndex);
-                var paramRank = GetRank(fep,p, paramIndex);
+                var argRank = GetRank(fep,argType,paramIndex);
+                var paramRank = GetRank(fep,paramType, paramIndex);
 
                 //if the param is an arbitrary rank array and
                 //arg is some array type, replication should not occur.
@@ -1677,32 +1694,11 @@ namespace EmitMSIL
             return 1 + GetEnumerableRank(genericArgs.FirstOrDefault());
         }
 
-        private static int GetArgumentRank(AssociativeNode val)
-        {
-            var arr = val is ExprListNode ? (val as ExprListNode).Exprs : null;
-            if (arr == null)
-            {
-                return 0;
-            }
-            int firstRank = 0;
-            int i = 0;
-            //De-ref the val
-            foreach (var subVal in arr)
-            {
-                int rank = GetArgumentRank(subVal);
-                if (i == 0) firstRank = rank;
-
-                if (rank != firstRank) return -1;
-                i++;
-            }
-            return 1 + firstRank;
-        }
-
         private bool WillCallReplicate(ProtoCore.CLRFunctionEndPoint fep,List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
         {
             if (isStaticOrCtor)
             {
-                return !DoesParamArgRankMatch(fep,paramTypes, args);
+                return !DoParamsRankMatchArgs(fep,paramTypes, args);
             }
             else
             {
@@ -1716,7 +1712,7 @@ namespace EmitMSIL
                         return true;
                     }
                 }
-                return !DoesParamArgRankMatch(fep,paramTypes, args);
+                return !DoParamsRankMatchArgs(fep,paramTypes, args);
             }
         }
 
