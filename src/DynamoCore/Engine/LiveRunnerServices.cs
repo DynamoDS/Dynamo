@@ -101,8 +101,11 @@ namespace Dynamo.Engine
             if (verboseLogging)
                 Log("LRS.UpdateGraph: " + graphData);
 
-            (liveRunner as LiveRunner).DSExecutionEngine = dsExecution;
-            (liveRunner as LiveRunner).IsTestMode = Models.DynamoModel.IsTestMode;
+            var runner = liveRunner as LiveRunner;
+            runner.DSExecutionEngine = dsExecution;
+            runner.CompileToMSILOnly = compileToMSILOnly;
+            runner.IsTestMode = Models.DynamoModel.IsTestMode;
+
             liveRunner.UpdateGraph(graphData);
         }
 

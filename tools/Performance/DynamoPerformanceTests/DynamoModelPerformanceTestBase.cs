@@ -77,14 +77,14 @@ namespace DynamoPerformanceTests
         //    OpenModel(DynamoFilePath);
         //}
 
-        [IterationSetup(Target = nameof(RunMSIL))]
-        public void IterationSetupRunMSIL()
-        {
-            Setup();
+        //[IterationSetup(Target = nameof(RunMSIL))]
+        //public void IterationSetupRunMSIL()
+        //{
+        //    Setup();
 
-            // open the dyn file to run with MSIL engine.
-            OpenModel(DynamoFilePath, dsExecution: false);
-        }
+        //    // open the dyn file to run with MSIL engine.
+        //    OpenModel(DynamoFilePath, dsExecution: false);
+        //}
 
         [IterationSetup(Target = nameof(CompileMSIL))]
         public void IterationSetupCompileMSIL()
@@ -115,11 +115,11 @@ namespace DynamoPerformanceTests
         //    BeginRun();
         //}
 
-        [Benchmark]
-        public void RunMSIL()
-        {
-            BeginRun();
-        }
+        //[Benchmark]
+        //public void RunMSIL()
+        //{
+        //    BeginRun();
+        //}
 
         [Benchmark]
         public void CompileMSIL()
