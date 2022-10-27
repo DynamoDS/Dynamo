@@ -275,8 +275,15 @@ namespace Dynamo.Models
                     + DefaultUpdateManager.GetProductVersion();
             }
         }
-
+        /// <summary>
+        /// Set to false for new MSIL based compilation engine, true otherwise.
+        /// </summary>
         internal bool DSExecutionEngine = true;
+
+        /// <summary>
+        /// Set to true for new MSIL engine for compilation to MSIL only, no execution.
+        /// </summary>
+        internal bool CompileMSILOnly = false;
 
         /// <summary>
         ///     Debugging settings for this instance of Dynamo.
@@ -1747,7 +1754,8 @@ namespace Dynamo.Models
                 geometryFactoryPath,
                 DebugSettings.VerboseLogging)
             {
-                DSExecutionEngine = DSExecutionEngine
+                DSExecutionEngine = DSExecutionEngine,
+                CompileMSILOnly = CompileMSILOnly
             };
 
             EngineController.MessageLogged += LogMessage;

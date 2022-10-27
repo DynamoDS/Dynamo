@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -147,6 +147,14 @@ namespace Dynamo
             string openPath = Path.Combine(TestDirectory, relativeFilePath);
 
             CurrentDynamoModel.DSExecutionEngine = dsExecution;
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath));
+        }
+
+        protected void OpenModelForMSILCompilation(string relativeFilePath)
+        {
+            string openPath = Path.Combine(TestDirectory, relativeFilePath);
+
+            CurrentDynamoModel.CompileMSILOnly = true;
             CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath));
         }
 

@@ -69,12 +69,12 @@ namespace EmitMSIL
             // Invoke emitted method (ExecuteIL.Execute)
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
-            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
             compileResult.asmbuilder.Save("DynamicAssembly.dll");
+
+            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
 
             // null can be replaced by an 'input' dictionary if available.
             var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
-
 
             return output;
         }
@@ -99,7 +99,7 @@ namespace EmitMSIL
             return output;
         }
 
-        private (AssemblyBuilder asmbuilder, TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
+        internal (AssemblyBuilder asmbuilder, TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
         {
             compilePass = CompilePass.MethodLookup;
             // 0. Gather all loaded function endpoints and cache them.
@@ -1062,8 +1062,8 @@ namespace EmitMSIL
                     EmitOpCode(OpCodes.Ldarg_2);
                     DfsTraverse(el);
                     //TODO cache this
-                    var unmarshalMethod = typeof(BuiltIn.MSILOutputMap<string, object>).GetMethod("Unmarshal",
-                    BindingFlags.Instance | BindingFlags.Public);
+                    var unmarshalMethod = typeof(BuiltIn.MSILOutputMap<string, object>).GetMethod(
+                        nameof(BuiltIn.MSILOutputMap<string, object>.Unmarshal), BindingFlags.Instance | BindingFlags.Public);
                     EmitOpCode(OpCodes.Callvirt, unmarshalMethod);
                     t = unmarshalMethod.ReturnType;
                 }

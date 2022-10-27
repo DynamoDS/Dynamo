@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +45,8 @@ namespace Dynamo.Engine
         internal static event Action VMLibrariesReset;
 
         internal bool DSExecutionEngine { get; set; }
+        internal bool CompileMSILOnly { get; set; }
+
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime => liveRunnerServices.CompileAndExecutionTime;
 
         /// <summary>

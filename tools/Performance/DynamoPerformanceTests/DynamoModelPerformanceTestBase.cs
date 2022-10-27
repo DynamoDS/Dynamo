@@ -68,14 +68,14 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Setup method to be called before each RunModel benchmark.
         /// </summary>
-        [IterationSetup(Target = nameof(Run))]
-        public void IterationSetupRunModel()
-        {
-            Setup();
+        //[IterationSetup(Target = nameof(Run))]
+        //public void IterationSetupRunModel()
+        //{
+        //    Setup();
 
-            //open the dyn file
-            OpenModel(DynamoFilePath);
-        }
+        //    //open the dyn file
+        //    OpenModel(DynamoFilePath);
+        //}
 
         [IterationSetup(Target = nameof(RunMSIL))]
         public void IterationSetupRunMSIL()
@@ -84,6 +84,15 @@ namespace DynamoPerformanceTests
 
             // open the dyn file to run with MSIL engine.
             OpenModel(DynamoFilePath, dsExecution: false);
+        }
+
+        [IterationSetup(Target = nameof(CompileMSIL))]
+        public void IterationSetupCompileMSIL()
+        {
+            Setup();
+
+            // open the dyn file to run with MSIL engine.
+            OpenModelForMSILCompilation(DynamoFilePath);
         }
 
         /// <summary>
@@ -100,14 +109,20 @@ namespace DynamoPerformanceTests
         #region Benchmark methods
 
 
+        //[Benchmark]
+        //public void Run()
+        //{
+        //    BeginRun();
+        //}
+
         [Benchmark]
-        public void Run()
+        public void RunMSIL()
         {
             BeginRun();
         }
 
         [Benchmark]
-        public void RunMSIL()
+        public void CompileMSIL()
         {
             BeginRun();
         }

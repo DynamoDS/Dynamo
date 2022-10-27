@@ -1219,6 +1219,7 @@ namespace ProtoScript.Runners
         private IDictionary<string, object> graphOutput;
         internal bool IsTestMode = false;
         internal bool DSExecutionEngine = true;
+        internal bool CompileToMSILOnly = false;
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
         internal class DebugByteCodeMode : IDisposable
@@ -1285,6 +1286,20 @@ namespace ProtoScript.Runners
             {
                 graphOutput = codeGenIL.Emit(finalDeltaAstList);
             }
+            CompileAndExecutionTime = codeGenIL.CompileAndExecutionTime;
+        }
+
+        private void CompileMSILOnly(List<AssociativeNode> finalDeltaAstList)
+        {
+            Dictionary<string, IList> input = new Dictionary<string, IList>();
+            var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            //TODO_MSIL: remove the dependency on the old VM by implementing
+            //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
+            msilRuntimeCore = msilRuntimeCore ?? new MSILRuntimeCore(runtimeCore);
+            var codeGenIL = new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"), msilRuntimeCore);
+
+            codeGenIL.CompileAstToDynamicType(finalDeltaAstList, System.Reflection.Emit.AssemblyBuilderAccess.Save);
             CompileAndExecutionTime = codeGenIL.CompileAndExecutionTime;
         }
 
@@ -1779,6 +1794,11 @@ namespace ProtoScript.Runners
                 if (!DSExecutionEngine)
                 {
                     CompileAndExecuteMSIL(finalDeltaAstList);
+                    return;
+                }
+                if(CompileToMSILOnly)
+                {
+                    CompileMSILOnly(finalDeltaAstList);
                     return;
                 }
 
