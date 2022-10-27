@@ -1590,7 +1590,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Publish a {0} Package</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Markdown Files Directory (optional)</value>
+    <value>Markdown Files Path (optional)</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
     <value>An optional location for documenting your package in the markdown format.</value>
@@ -2548,7 +2548,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="MachineLearning" xml:space="preserve">
-    <value>Machine Learning</value>
+    <value>ML Recommendation</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
@@ -3267,6 +3267,12 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="ContextMenuConnectionsShowAll" xml:space="preserve">
     <value>Show All Wires</value>
   </data>
+  <data name="ConnectorContextMenuHeaderStartNode" xml:space="preserve">
+    <value>Navigate Upstream</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
+    <value>Navigate Downstream</value>
+  </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Node Connections</value>
   </data>
@@ -3300,7 +3306,7 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Package Upload Scan</value>
   </data>
   <data name="ImportPreferencesInfo" xml:space="preserve">
-    <value>Your custom settings can be imported here. It will be applied once Dynamo and any host program restarts</value>
+    <value>Your custom settings can be imported here. Settings will be applied once Dynamo and any host program restarts.</value>
     <comment>Import Preferences Info.</comment>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
@@ -3361,5 +3367,8 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
     <value>This setting controls whether user will be directed to an extra static splash screen after the intial launch.</value>
+  </data>
+  <data name="RecentFileNumberInfo" xml:space="preserve">
+    <value>Reducing this number will discard all recent files beyond your chosen number.</value>
   </data>
 </root>

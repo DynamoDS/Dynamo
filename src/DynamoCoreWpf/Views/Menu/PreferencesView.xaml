@@ -397,6 +397,18 @@
                                                  Foreground="{StaticResource PreferencesWindowFontColor}"
                                                  BorderThickness="0,0,0,2"
                                                  PreviewTextInput="NumberValidationTextBox"/>
+                                        <Image Name="RecentFileNumberInfoIcon"
+                                               Grid.Row="1"
+                                               Width="16"
+                                               Height="16"
+                                               Margin="30,0,0,0"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource ToggleInfoStyle}">
+                                            <Image.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.RecentFileNumberInfo}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Image.ToolTip>
+                                        </Image>
                                     </Grid>
                                 </Grid>
 

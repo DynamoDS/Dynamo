@@ -21,6 +21,10 @@ namespace Dynamo.Search.SearchElements
         private bool isVisibleInSearch = true;
 
         internal AutoCompletionNodeElementInfo AutoCompletionNodeElementInfo { get; set; } = new AutoCompletionNodeElementInfo();
+        /// <summary>
+        /// Machine Learning related info
+        /// </summary>
+        public AutoCompletionNodeMachineLearningInfo AutoCompletionNodeMachineLearningInfo { get; set; } = new AutoCompletionNodeMachineLearningInfo();
 
         /// <summary>
         /// Event is fired when a node visibility in library search was changed.
@@ -291,6 +295,33 @@ namespace Dynamo.Search.SearchElements
     internal class AutoCompletionNodeElementInfo
     {
         internal int PortToConnect { get; set; }
+    }
+
+    /// <summary>
+    /// This class will support the Machine Learning info related to a node element of Auto-completion feature.
+    /// </summary>
+    public class AutoCompletionNodeMachineLearningInfo
+    {
+        /// <summary>
+        /// Indicates if the user can view the confidence score or the recent use icon
+        /// </summary>
+        public Boolean ViewConfidenceScoreRecentUse { get; set; }
+        /// <summary>
+        /// Rating of confidence
+        /// </summary>
+        public int ConfidenceScore { get; set; }
+        /// <summary>
+        /// Indicates if the Node is part of ML result per use
+        /// </summary>
+        public Boolean IsByUse { get; set; }
+        /// <summary>
+        /// Indicates if the Node is part of the ML result per recommendation
+        /// </summary>
+        public Boolean IsByRecommendation
+        {
+            get
+            { return !IsByUse; }
+        }
     }
 
     /// <summary>

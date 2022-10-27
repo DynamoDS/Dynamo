@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -868,5 +868,26 @@ This package likely contains an assembly that is blocked. You will need to load 
   </data>
   <data name="SplashScreenLoadNodeLibrary" xml:space="preserve">
     <value>Loading Node Library...</value>
+  </data>
+  <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
+    <value>No recommendations</value>
+  </data>
+  <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
+    <value>Low confidence</value>
+  </data>
+  <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
+    <value>There’s no node that we can recommend to you, you may try</value>
+  </data>
+  <data name="AutocompleteSwitchToObjectTypeMessage" xml:space="preserve">
+    <value>switching to Object Type Autocomplete</value>
+  </data>
+  <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
+    <value>We are not very confident that the nodes below will work, you may try them or</value>
+  </data>
+  <data name="AutocompleteLowConfidenceMessageAditional" xml:space="preserve">
+    <value>to view more options</value>
+  </data>
+  <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
+    <value>Low Confidence Tooltip</value>
   </data>
 </root>
