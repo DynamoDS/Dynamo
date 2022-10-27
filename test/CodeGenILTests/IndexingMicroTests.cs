@@ -219,5 +219,45 @@ c=a[b];";
             Assert.AreEqual("val", output["c"]);
         }
         #endregion
+
+        #region replicated_function_call
+        [Test]
+        public void IndexIntoReplicatedFunctionCall_IntegerArray1()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+a=[-1,-2,-3];
+b = DSCore.Math.Abs(a);
+c = b[0];";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(1, output["c"]);
+        }
+
+        [Test]
+        public void IndexIntoReplicatedFunctionCall_IntegerArray2()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+a=[-1,-2,-3];
+b = DSCore.Math.Abs(a)[0];";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(1, output["b"]);
+        }
+        [Test]
+        public void IndexIntoReplicatedFunctionCall_IntegerArray3()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+a = DSCore.Math.Abs([-1,-2,-3])[0];";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(1, output["a"]);
+        }
+        #endregion
     }
 }
