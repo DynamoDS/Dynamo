@@ -1,3 +1,4 @@
+using Dynamo.Scheduler;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Lang;
@@ -7,6 +8,7 @@ using ProtoFFI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration.Assemblies;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -22,16 +24,17 @@ namespace EmitMSIL
         internal string className;
         internal string methodName;
         private IDictionary<string, IList> input;
-        //private Dictionary<int, bool> isRepCall = new Dictionary<int, bool>();
 
         internal ProtoCore.MSILRuntimeCore runtimeCore;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
+        private string logPath;
         /// <summary>
         /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
         /// </summary>
         private Dictionary<int, Type> astTypeInfoMap = new Dictionary<int, Type>();
         private StreamWriter writer;
         private Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>> methodCache = new Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>();
+        private Dictionary<int, bool> willReplicateCache = new Dictionary<int, bool>();
         private CompilePass compilePass;
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
@@ -58,8 +61,8 @@ namespace EmitMSIL
 
         internal CodeGenIL(IDictionary<string, IList> input, string filePath, ProtoCore.MSILRuntimeCore runtimeCore)
         {
+            this.logPath = filePath;
             this.input = input;
-            writer = new StreamWriter(filePath);
             this.runtimeCore = runtimeCore;
         }
 
@@ -101,41 +104,42 @@ namespace EmitMSIL
 
         private (AssemblyBuilder asmbuilder, TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
         {
-            compilePass = CompilePass.MethodLookup;
-            // 0. Gather all loaded function endpoints and cache them.
-            foreach (var ast in astList)
+            using (writer = new StreamWriter(logPath))
             {
-                DfsTraverse(ast);
-            }
-            // 1. Create assembly builder (dynamic assembly)
-            var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
-            // 2. Create module builder
-            var mod = BuilderHelper.CreateDLLModuleBuilder(asm, "DynamicAssembly");
-            // 3. Create type builder (name it "ExecuteIL")
-            var type = BuilderHelper.CreateType(mod, "ExecuteIL");
-            // 4. Create method ("Execute"), get ILGenerator 
-            var execMethod = BuilderHelper.CreateMethod(type, "Execute",
-                System.Reflection.MethodAttributes.Static | System.Reflection.MethodAttributes.Private, typeof(void), new[] { typeof(IDictionary<string, IList>),
+                compilePass = CompilePass.MethodLookup;
+                // 0. Gather all loaded function endpoints and cache them.
+                foreach (var ast in astList)
+                {
+                    DfsTraverse(ast);
+                }
+                // 1. Create assembly builder (dynamic assembly)
+                var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
+                // 2. Create module builder
+                var mod = BuilderHelper.CreateDLLModuleBuilder(asm, "DynamicAssembly");
+                // 3. Create type builder (name it "ExecuteIL")
+                var type = BuilderHelper.CreateType(mod, "ExecuteIL");
+                // 4. Create method ("Execute"), get ILGenerator 
+                var execMethod = BuilderHelper.CreateMethod(type, "Execute",
+                    System.Reflection.MethodAttributes.Static | System.Reflection.MethodAttributes.Private, typeof(void), new[] { typeof(IDictionary<string, IList>),
                 typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>), typeof(IDictionary<string, object>), typeof(ProtoCore.MSILRuntimeCore)});
-            ilGen = execMethod.GetILGenerator();
+                ilGen = execMethod.GetILGenerator();
 
-            compilePass = CompilePass.GatherTypeInfo;
-            // 5. Traverse AST and gather what type info we can.
-            foreach (var ast in astList)
-            {
-                DfsTraverse(ast);
+                compilePass = CompilePass.GatherTypeInfo;
+                // 5. Traverse AST and gather what type info we can.
+                foreach (var ast in astList)
+                {
+                    DfsTraverse(ast);
+                }
+
+                compilePass = CompilePass.emitIL;
+                // 6. Traverse AST and use ILGen to emit code for Execute method
+                foreach (var ast in astList)
+                {
+                    DfsTraverse(ast);
+                }
+                EmitOpCode(OpCodes.Ret);
+                return (asm, type);
             }
-
-            compilePass = CompilePass.emitIL;
-            // 6. Traverse AST and use ILGen to emit code for Execute method
-            foreach (var ast in astList)
-            {
-                DfsTraverse(ast);
-            }
-            EmitOpCode(OpCodes.Ret);
-
-            writer.Close();
-            return (asm, type);
         }
 
         // Given a double value on the stack, emit call to Math.Round(arg, 0, MidpointRounding.AwayFromZero);
@@ -1159,7 +1163,7 @@ namespace EmitMSIL
                     //can't handle these with compile time indexing.
                     //TODO remove IList from this if stmt when we figure out function call return wrapping behavior.
                     //this is still a problem for BuiltIn Dictionaries that are wrapped in an IList.
-                    if (arrayT == null || arrayT == typeof(IList) || arrayT == typeof(object))
+                    if (arrayT == null || arrayT == typeof(IList) || arrayT == typeof(object) || arrayT == typeof(DSASM.CLRStackValue))
                     {
                         return (false, null);
                     }
@@ -1291,7 +1295,8 @@ namespace EmitMSIL
             //if the method name is builtin.valueAtIndex then don't emit a function call yet.
             //instead try to emit direct indexing... to do so, we'll need to wait until ilemit phase
             //so variable dictionary has valid data.
-            if (className == Node.BuiltinGetValueAtIndexTypeName && methodName == Node.BuiltinValueAtIndexMethodName)
+            if (className == Node.BuiltinGetValueAtIndexTypeName &&
+                methodName == Node.BuiltinValueAtIndexMethodName)
             {
                 if (compilePass == CompilePass.MethodLookup)
                 {
@@ -1312,6 +1317,7 @@ namespace EmitMSIL
                     //emit a function call to ValueAtIndex.
                     else
                     {
+                        className = Node.BuiltinGetValueAtIndexTypeName;
                         methodName = nameof(DesignScript.Builtin.Get.ValueAtIndex);
                         EmitILComment("NOT ENOUGH TYPE INFO TO EMIT INDEXING, EMIT ValueAtIndex FUNCTION CALL");
                     }
@@ -1331,26 +1337,7 @@ namespace EmitMSIL
 
             var isStaticOrCtor = clrFep.IsStatic || clrFep.IsConstructor;
 
-            var doesReplicate = WillCallReplicate(parameters, isStaticOrCtor, args);
-
-            // TODO: Figure out a way to avoid calling WillCallReplicate twice -
-            // once in the GatherTypeInfo phase and again in the emitIL phase.
-            // We should be able to cache the result in the GatherTypeInfo compile pass
-            // and reuse it in the emitIL pass.
-            //if (compilePass == CompilePass.GatherTypeInfo)
-            //{
-            //    if(isRepCall.ContainsKey(node.ID))
-            //    {
-            //        throw new Exception($"ast {node.ID}:{node.Kind} already exists in replicated call map.");
-            //    }
-            //    isRepCall.Add(node.ID, WillCallReplicate(parameters, isStatic, args));
-            //}
-
-            //bool doesReplicate = false;
-            //if(!isRepCall.TryGetValue(node.ID, out doesReplicate))
-            //{
-            //    throw new Exception($"ast { node.ID }:{ node.Kind} does not exist in replicated call map.");
-            //}
+            var doesReplicate = WillCallReplicate(node.ID, parameters, isStaticOrCtor, args);
             if (doesReplicate)
             {
                 EmitILComment("emit replicating call");
@@ -1691,25 +1678,33 @@ namespace EmitMSIL
             return 1 + firstRank;
         }
 
-        private bool WillCallReplicate(List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
+        private bool WillCallReplicate(int id, List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
         {
-            if (isStaticOrCtor)
+            if (willReplicateCache.TryGetValue(id, out bool willReplicate))
             {
-                return !DoesParamArgRankMatch(paramTypes, args);
+                return willReplicate;
             }
-            else
+
+            using (Disposable.Create(() => willReplicateCache.Add(id, willReplicate)))
             {
+                if (isStaticOrCtor)
+                {
+                    willReplicate = !DoesParamArgRankMatch(paramTypes, args);
+                    return willReplicate;
+                }
+
                 // args[0] is assigned to the instance object in case of an instance method.
-                if(args[0] is IdentifierNode idn)
+                if (args[0] is IdentifierNode idn)
                 {
                     var t = variables[idn.Value].Item2;
-
-                    if(t.IsArray || ArrayUtils.IsEnumerable(t))
+                    if (t.IsArray || ArrayUtils.IsEnumerable(t))
                     {
-                        return true;
+                        willReplicate = true;
+                        return willReplicate;
                     }
                 }
-                return !DoesParamArgRankMatch(paramTypes, args);
+                willReplicate = !DoesParamArgRankMatch(paramTypes, args);
+                return willReplicate;
             }
         }
 
@@ -1883,6 +1878,12 @@ namespace EmitMSIL
 
 
             var rangeExprFunc = AstFactory.BuildFunctionCall(methodName, arguments);
+
+            // We need to keep the ID of the generated fuction call stable
+            // in order to make use of caches in between different compile stages.
+            // So just copy it from the rangeExpression node
+            rangeExprFunc.InheritID(range.ID);
+
             var idlist = new IdentifierListNode()
             {
                 LeftNode = new IdentifierNode(typeof(Builtin.RangeHelpers).FullName),
@@ -1994,7 +1995,6 @@ namespace EmitMSIL
 
         public void Dispose()
         {
-            writer?.Dispose();
         }
     }
 
