@@ -216,7 +216,9 @@ namespace Dynamo.Wpf.Views
 
             var colorHexString = grid.FindName("colorHexVal") as Label;
 
-            var newItem = new StyleItem() { Name = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString() };
+            var groupStyleFontSize = grid.FindName("groupStyleFontSize") as ComboBox;
+
+            var newItem = new StyleItem() { Name = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString(), FontSize = Convert.ToInt32(groupStyleFontSize.SelectedValue) };
 
             if (string.IsNullOrEmpty(newItem.Name))
                 newItem.Name = "Input";

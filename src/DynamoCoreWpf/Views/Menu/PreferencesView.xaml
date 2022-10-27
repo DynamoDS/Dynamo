@@ -36,6 +36,7 @@
             <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter"/>
             <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter"/>
             <controls:InverseBoolToVisibilityConverter  x:Key="InverseBoolToVisibilityConverter "/>
+            <controls:InverseBoolToEnablingConverter  x:Key="InverseBoolToEnablingConverter "/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
             <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
@@ -105,7 +106,8 @@
                                                   Margin="2,0,0,0"
                                                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.GroupStyleFontSizeList}" 
                                                   SelectedItem="{Binding Path=FontSize}"
-                                                  Style="{StaticResource NoBordersComboBoxStyle}">
+                                                  Style="{StaticResource NoBordersComboBoxStyle}"
+                                                  IsEnabled="{Binding Path=IsDefault, Converter={StaticResource InverseBoolToEnablingConverter}}">
                                     </ComboBox>
                                 </StackPanel>
                             </Grid>
@@ -832,7 +834,15 @@
                                                         <Label x:Name="colorHexVal" 
                                                                 FontSize="13"
                                                                 Content="{Binding Background, ElementName=buttonColorPicker, Converter={StaticResource BrushColorToStringConverter}}"
-                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                                Foreground="{StaticResource PreferencesWindowFontColor}" Margin="0,0,20,0"/>
+                                                        <Image Width="24" Height="24" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Source="/DynamoCoreWpf;component/UI/Images/font-size.png"/>
+                                                        <ComboBox x:Name="groupStyleFontSize"
+                                                                HorizontalAlignment="Left"
+                                                                Margin="2,0,0,0"
+                                                                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.GroupStyleFontSizeList}" 
+                                                                SelectedItem="{Binding Path=AddStyleControl.FontSize}"
+                                                                Style="{StaticResource NoBordersComboBoxStyle}">
+                                                        </ComboBox>
                                                     </StackPanel>
                                                     <Grid  Grid.Column="1">
                                                         <Grid.ColumnDefinitions>

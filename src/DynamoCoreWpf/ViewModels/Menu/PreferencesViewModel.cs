@@ -520,9 +520,10 @@ namespace Dynamo.ViewModels
         /// <param name="style">style to be added</param>
         public void AddStyle(StyleItem style)
         {
-            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { 
-                HexColorString = style.HexColorString, 
-                Name = style.Name, 
+            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem {
+                HexColorString = style.HexColorString,
+                Name = style.Name,
+                FontSize = style.FontSize,
                 IsDefault = style.IsDefault
             });
             RaisePropertyChanged(nameof(StyleItemsList));
@@ -1440,8 +1441,7 @@ namespace Dynamo.ViewModels
         {
             IsEnabledAddStyleButton = true;
             IsSaveButtonEnabled = true;
-            AddStyleControl.Name = String.Empty;
-            AddStyleControl.HexColorString = GetRandomHexStringColor();
+            AddStyleControl = new StyleItem();
             IsWarningEnabled = false;
             IsVisibleAddStyleBorder = false;          
         }
