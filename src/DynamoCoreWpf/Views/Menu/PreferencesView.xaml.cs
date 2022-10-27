@@ -1,5 +1,8 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -8,7 +11,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Core;
+using Dynamo.Exceptions;
 using Dynamo.Logging;
+using Dynamo.UI;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -57,6 +63,8 @@ namespace Dynamo.Wpf.Views
             //We need to store the ScaleFactor value in a temporary variable always when the Preferences dialog is created.
             scaleValue = dynViewModel.ScaleFactorLog;
             ResetGroupStyleForm();
+
+            viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
         }
 
         /// <summary>
@@ -76,6 +84,23 @@ namespace Dynamo.Wpf.Views
 
             // Init all package filters 
             dynamoViewModel.PreferencesViewModel.InitPackageListFilters();
+
+            dynamoViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged += TrustedPathsViewModel_PropertyChanged;
+        }
+
+        /// <summary>
+        /// Evaluates if the user interacts over the Trusted Locations
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TrustedPathsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            List<string> actions = typeof(TrustedPathViewModel.Action).GetFields().Select(a => a.Name).ToList();
+
+            if (actions.Contains(e.PropertyName))
+            {
+                dynViewModel.CheckCurrentFileInTrustedLocation();
+            }
         }
 
         /// <summary>
@@ -109,8 +134,11 @@ namespace Dynamo.Wpf.Views
             viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
             TrustedPathView.Dispose();
+            Dispose();
 
             RunGraphWhenScaleFactorUpdated();
+
+            dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
 
             Close();
         }
@@ -285,9 +313,25 @@ namespace Dynamo.Wpf.Views
             Log(LogMessage.Info(message));
         }
 
+        /// <summary>
+        /// Unified handler for more info request from mouse left button click
+        /// </summary>
+        /// <param name="sender">sender control</param>
+        /// <param name="e"></param>
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
         {
-            dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+            if (sender is Label lable)
+            {
+                if (lable.Name == "Titleinfo")
+                {
+                    dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+                }
+                else if (lable.Name == "TrustWarningInfoLabel")
+                {
+                    dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.FileTrustWarningDocumentationUriString, UriKind.Relative)));
+
+                }
+            }
         }
 
         private void ReloadCPython_Click(object sender, RoutedEventArgs e)
@@ -352,6 +396,108 @@ namespace Dynamo.Wpf.Views
                 scrollviewer.LineDown();
             }
             e.Handled = true;
+        }
+
+        private void importTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            string fileExtension = "*" + Path.GetExtension(PathManager.PreferenceSettingsFileName);
+            string[] fileFilter = { string.Format(Res.FileDialogImportSettingsFiles, fileExtension) };
+            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            openFileDialog.Filter = String.Join("|", fileFilter);
+            openFileDialog.Title = Res.ImportSettingsDialogTitle;
+            openFileDialog.Multiselect = false;
+            openFileDialog.RestoreDirectory = true;
+
+            var result = openFileDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    if (viewModel.importSettings(openFileDialog.FileName))
+                    {
+                        Wpf.Utilities.MessageBoxService.Show(
+                       Res.ImportSettingsSuccessMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        Wpf.Utilities.MessageBoxService.Show(
+                       Res.ImportSettingsFailedMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }                    
+                }
+                catch (Exception ex)
+                {
+                    Wpf.Utilities.MessageBoxService.Show(
+                       ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }            
+        }
+
+        private void exportTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var dialog = new DynamoFolderBrowserDialog
+            {
+                Title = Res.ExportSettingsDialogTitle,
+                Owner = this
+            };
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string selectedPathFile = Path.Combine(dialog.SelectedPath, PathManager.PreferenceSettingsFileName);
+
+                try
+                {
+                    if (File.Exists(selectedPathFile))
+                    {
+                        string uniqueId = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString();
+                        string suffixPlusDot = $"_{ uniqueId}.";
+                        string uniqueFileName = PathManager.PreferenceSettingsFileName.Replace(".", suffixPlusDot);
+                        selectedPathFile = Path.Combine(dialog.SelectedPath, uniqueFileName);
+                    }
+
+                    File.Copy(dynViewModel.Model.PathManager.PreferenceFilePath, selectedPathFile);
+                    string argument = "/select, \"" + selectedPathFile + "\"";
+                    System.Diagnostics.Process.Start("explorer.exe", argument);
+                }
+                catch (Exception ex)
+                {
+                    Wpf.Utilities.MessageBoxService.Show(
+                       ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+        }
+
+        // Show File path dialog
+        private void OnRequestShowFileDialog(object sender, EventArgs e)
+        {
+            var args = e as PythonTemplatePathEventArgs;
+            args.Cancel = true;
+
+            var dialog = new System.Windows.Forms.OpenFileDialog
+            {
+                // Navigate to initial folder.
+                FileName = args.Path
+            };
+
+            //Filter python files.
+            dialog.Filter = "Python File|*.py";
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                args.Cancel = false;
+                args.Path = dialog.FileName;
+            }
+        }
+
+        // Number input textbox validation
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        internal void Dispose()
+        {
+            viewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
         }
     }
 }

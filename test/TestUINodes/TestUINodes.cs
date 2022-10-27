@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Drawing;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph.Nodes;
+using CoreNodeModels;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using DSCore.IO;
+using System.Linq;
 
 namespace TestUINodes
 {
@@ -78,6 +81,63 @@ namespace TestUINodes
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), func2),
 
             };
+        }
+    }
+
+    [NodeName("Test Selection Node2")]
+    [NodeCategory("TestUINodes")]
+    [NodeDescription("A test selection node.")]
+    [OutPortTypes("var")]
+    [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
+    public class TestSelectionNode2 : SelectionBase<int, int>
+    {
+        public TestSelectionNode2() : base(
+                SelectionType.One,
+                SelectionObjectType.None,
+                "message",
+                "prefix")
+        {
+        }
+
+        public override IModelSelectionHelper<int> SelectionHelper => throw new NotImplementedException();
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node;
+            Func<IList, int> func = DSCore.List.Count;
+
+            var results = SelectionResults.ToList();
+
+            if (SelectionResults == null || !results.Any())
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                node = AstFactory.BuildFunctionCall(func,
+                    new List<AssociativeNode> { AstFactory.BuildExprList(SelectionResults.Select(i => AstFactory.BuildIntNode((long)i) as AssociativeNode).ToList()) });
+            }
+
+            return new[]
+            {
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)
+            };
+        }
+
+        protected override IEnumerable<int> ExtractSelectionResults(int selections)
+        {
+            return new List<int> { selections };
+        }
+
+        protected override string GetIdentifierFromModelObject(int modelObject)
+        {
+            return modelObject.ToString();
+        }
+
+        protected override int GetModelObjectFromIdentifer(string id)
+        {
+            return id.Length;
         }
     }
 }

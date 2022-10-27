@@ -59,6 +59,10 @@ launchSettings.json
 ###############
 *_ReSharper*
 
+# IDE #
+###############
+.idea
+
 #documentation files
 doc/html/
 Dynamo.sln.DotSettings
@@ -103,3 +107,7 @@ logo.png
 /src/Notifications/node_modules
 /src/Notifications/package.json
 /src/Notifications/package-lock.json
+src/Notifications/.npm-cache
+/src/DynamoSandbox/node_modules
+/src/DynamoSandbox/package-lock.json
+/src/DynamoSandbox/package.json

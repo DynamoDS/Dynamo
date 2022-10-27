@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 
@@ -59,13 +60,13 @@ namespace Dynamo.DocumentationBrowser
 
             if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
             {
-                var coreDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                var coreDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
                 dynamoCoreFallbackDocPath = coreDir.Exists ? coreDir : null;
             }
 
             if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
             {
-                var hostDir = new DirectoryInfo(Path.Combine(pathManager.HostApplicationDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                var hostDir = new DirectoryInfo(Path.Combine(pathManager.HostApplicationDirectory, Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
                 hostDynamoFallbackDocPath = hostDir.Exists ? hostDir : null;
             }   
         }

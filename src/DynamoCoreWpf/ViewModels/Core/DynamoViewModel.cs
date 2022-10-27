@@ -218,8 +218,8 @@ namespace Dynamo.ViewModels
 
                     // Keep DynamoModel.CurrentWorkspace update-to-date
                     int modelIndex = model.Workspaces.IndexOf(currentWorkspaceViewModel.Model);
-                    ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));
-                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
+                    ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));                   
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
                 }
             }
         }
@@ -1104,12 +1104,22 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
                     //RaisePropertyChanged("RunEnabled");
+                    if (!DynamoModel.IsTestMode)
+                    {
+                        ExitGuidedTourIfOpened();
+                    }
                     break;
 
                 case "EnablePresetOptions":
                     RaisePropertyChanged("EnablePresetOptions");
                     break;
             }
+        }
+
+        private void ExitGuidedTourIfOpened()
+        {
+            if (GuideFlowEvents.IsAnyGuideActive)
+                MainGuideManager.ExitTour();
         }
 
         // TODO(Sriram): This method is currently not used, but it should really 
@@ -1844,7 +1854,7 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(ex.StackTrace);
 
                 if (ex is IOException || ex is UnauthorizedAccessException)
-                    MessageBoxService.Show(ex.Message, Resources.SaveConfirmationMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBoxService.Show(ex.Message, Resources.UnsavedChangesMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -3085,6 +3095,24 @@ namespace Dynamo.ViewModels
                     return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Check if the current file is located in a Trusted Location in order to display to the User the proper message
+        /// </summary>
+        public void CheckCurrentFileInTrustedLocation()
+        {
+            PreferenceSettings.AskForTrustedLocationResult askToTheUser =
+                PreferenceSettings.AskForTrustedLocation(CurrentSpaceViewModel.FileName.Length > 0,
+                CurrentSpaceViewModel.FileName.Length > 0 ? PreferenceSettings.IsTrustedLocation(Path.GetDirectoryName(CurrentSpaceViewModel.FileName)) : false,
+                (currentWorkspaceViewModel?.IsHomeSpace ?? false),
+                ShowStartPage,
+                model.PreferenceSettings.DisableTrustWarnings);
+
+            if (askToTheUser == PreferenceSettings.AskForTrustedLocationResult.Ask) {
+
+                FileTrustViewModel.AllowOneTimeTrust = false;
+            }
         }
 
         #endregion

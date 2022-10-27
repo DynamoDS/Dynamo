@@ -37,22 +37,6 @@ namespace Dynamo.GraphNodeManager
         }
 
         /// <summary>
-        /// Handles selection changed of DataGrid Item
-        /// Calls a method in the ViewModel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NodeTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!allowSelection) return;
-            allowSelection = false;
-
-            var vm = this.DataContext as GraphNodeManagerViewModel;
-            if ((sender as DataGrid) == null) return;
-            vm.NodeSelect((sender as DataGrid).SelectedItem);
-        }
-
-        /// <summary>
         /// Handles export image click function
         /// </summary>
         /// <param name="sender"></param>
@@ -76,6 +60,8 @@ namespace Dynamo.GraphNodeManager
         /// <param name="e"></param>
         private void Row_PreviewClickHandler(object sender, MouseButtonEventArgs e)
         {
+            FocusNode(sender);  // Always zoom around the node
+
             if (mouseHandled)
             {
                 mouseHandled = false;
@@ -94,6 +80,13 @@ namespace Dynamo.GraphNodeManager
 
             if (row.DetailsVisibility == Visibility.Collapsed) selectedRow = null;
             else selectedRow = row;
+        }
+
+        private void FocusNode(object sender)
+        {
+            var vm = this.DataContext as GraphNodeManagerViewModel;
+            if ((sender as DataGridRow) == null) return;
+            vm.NodeSelect((sender as DataGridRow).Item);
         }
 
         /// <summary>
@@ -129,5 +122,6 @@ namespace Dynamo.GraphNodeManager
 
             Clipboard.SetText(message);
         }
+
     }
 }

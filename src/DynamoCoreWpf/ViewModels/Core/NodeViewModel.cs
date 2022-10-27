@@ -950,8 +950,21 @@ namespace Dynamo.ViewModels
             
             RaisePropertyChanged(nameof(DismissedAlerts));
             RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
+
+            UpdateModelDismissedAlertsCount();
         }
-        
+
+        /// <summary>
+        /// Calls an update for the DismissedAlertCount inside the NodeModel to push PropertyChanged fire
+        /// </summary>
+        private void UpdateModelDismissedAlertsCount()
+        {
+            if (DismissedAlerts != null)
+            {
+                nodeLogic.DismissedAlertsCount = DismissedAlerts.Count;
+            }
+        }
+
         /// <summary>
         /// Dispose function
         /// </summary>
@@ -1486,9 +1499,6 @@ namespace Dynamo.ViewModels
 
         private void ShowHelp(object parameter)
         {
-            //var helpDialog = new NodeHelpPrompt(this.NodeModel);
-            //helpDialog.Show();
-
             OnRequestShowNodeHelp(this, new NodeDialogEventArgs(NodeModel));
             Analytics.TrackEvent(Actions.ViewDocumentation, Categories.NodeContextMenuOperations, NodeModel.Name);
         }

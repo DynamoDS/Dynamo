@@ -139,39 +139,12 @@
 
                 <Menu HorizontalAlignment="Right"
                       Style="{StaticResource MainMenu}"
+                      Margin="0,0,10,0"
                       IsMainMenu="True">
-                    <MenuItem Name="MenuItem"
-                              Margin="0 0 -30 0">
-                        <MenuItem.Header>
-                                <Button x:Name="notificationsButton" 
-                                        BorderBrush="Transparent"                                         
-                                        Background="Transparent">
-                                    <DockPanel>
-                                    <fa:FontAwesome Margin="0,0,20,0"  
-                                                    DockPanel.Dock="Bottom" 
-                                                    Icon="BellOutline" 
-                                                    Foreground="{StaticResource Blue400Brush}" 
-                                                    FontSize="20px"/>
-                                    <Border DockPanel.Dock="Top" Background="{StaticResource Blue400Brush}" CornerRadius="2" 
-                                                Padding="2" Height="15" Width="15" VerticalAlignment="Center" 
-                                                HorizontalAlignment="Center">
-                                        <!--TODO insert data bind for the notifications -->
-                                        <TextBlock     
-                                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                Foreground="White" 
-                                                FontWeight="Bold" 
-                                                TextAlignment="Center"
-                                                FontSize="9">99
-                                        </TextBlock>
-                                        </Border>                                   
-                                    </DockPanel>                                   
-                                </Button>                                
-                        </MenuItem.Header>
-                    </MenuItem>
                     <MenuItem Name="exportMenu"
                               Cursor="Hand"
                               Focusable="False"
-                              Margin="0,-3,0,0"
+                              Margin="0,-3,-10,0"
                               MouseEnter="exportMenu_MouseEnter"
                               MouseLeave="exportMenu_MouseLeave">
                         <MenuItem.Header>
@@ -208,8 +181,72 @@
                             </MenuItem.ToolTip>
                         </MenuItem>
                     </MenuItem>
+                    <MenuItem Name="NotificationCenter"
+                              Margin="-15 0 -30 0">
+                        <MenuItem.Header>
+                            <Button x:Name="notificationsButton"
+                                    BorderBrush="Transparent"
+                                    Margin="10,0,10,0"
+                                    BorderThickness="0"
+                                    Cursor="Hand">
+                                <Button.ToolTip>
+                                    <ToolTip Content="{x:Static p:Resources.NotificationCenterButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
+                                </Button.ToolTip>
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Background" Value="{StaticResource DarkerGreyBrush}"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border Background="{TemplateBinding Background}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{StaticResource HighlightedBrush}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <DockPanel>
+                                    <fa:FontAwesome Margin="10,0,25,0"  
+                                                    DockPanel.Dock="Top" 
+                                                    Icon="{Binding Path=DataContext.PreferenceSettings.EnableNotificationCenter, RelativeSource={RelativeSource AncestorType={x:Type Window}}, 
+                                                         Converter={StaticResource BoolToFAIconNameConverter}}"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{StaticResource PrimaryCharcoal300Brush}"
+                                                    FontSize="18px"/>
+                                    <Border DockPanel.Dock="Bottom" 
+                                            Background="{StaticResource Blue400Brush}" 
+                                            CornerRadius="2"
+                                            Visibility="{Binding IsNotificationsCounterVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" 
+                                            Padding="2"
+                                            Margin="10,0,0,0"
+                                            Height="14"
+                                            Width="14"
+                                            VerticalAlignment="Center" 
+                                            HorizontalAlignment="Center">
+                                        <TextBlock Name="NotificationCount"
+                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                   Foreground="White" 
+                                                   FontWeight="DemiBold"
+                                                   TextAlignment="Center"
+                                                   Text="{Binding NotificationsNumber}"
+                                                   FontSize="9">
+                                        </TextBlock>
+                                    </Border>
+                                </DockPanel>
+                            </Button>
+                        </MenuItem.Header>
+                    </MenuItem>
                 </Menu>
-                <controls:GraphUpdateNotificationControl x:Name="UpdateControl" HorizontalAlignment="Right" 
+                <!--The update indication-->
+                <controls:GraphUpdateNotificationControl x:Name="UpdateControl"
+                                                         HorizontalAlignment="Right" 
                                                          Margin="0,0,50,0"
                                                          Visibility="{Binding Path=DataContext.IsUpdateAvailable, RelativeSource={RelativeSource AncestorType={x:Type Window}}, 
                                                          Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>

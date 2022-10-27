@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -104,9 +104,13 @@ namespace Dynamo.Applications
                 // and issue commands until the extension calls model.Shutdown().
                 bool keepAlive = false;
                 bool showHelp = false;
+                bool noConsoleCli = false;
 
                 // Disables all analytics (Google and ADP)
                 bool disableAnalytics = false;
+
+                // CrashReport tool location
+                string cerLocation = string.Empty;
 
                 // Allow Dynamo launcher to identify Dynamo variation for log purpose like analytics, e.g. Dynamo Revit
                 var hostname = string.Empty;
@@ -128,11 +132,12 @@ namespace Dynamo.Applications
                 " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i => importPaths.Add(i))
                 .Add("gp=|GP=|geometrypath=|GeometryPath=", "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.", gp => asmPath = gp)
                 .Add("k|K|keepalive", "Keepalive mode, leave the Dynamo process running until a loaded extension shuts it down.", k => keepAlive = k != null)
+                .Add("nc|NC|noconsolecli", "Don't rely on the console window to interact with CLI in Keepalive mode", nc => noConsoleCli = nc != null)
                 .Add("hn=|HN=|hostname", "Identify Dynamo variation associated with host", hn => hostname = hn)
                 .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
                 .Add("da|DA|disableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
-                ;
+                .Add("cr=|CR=|cerLocation", "Specify the crash error report tool location on disk ", cr => cerLocation = cr);
                 optionsSet.Parse(args);
 
                 if (showHelp)
@@ -156,8 +161,10 @@ namespace Dynamo.Applications
                     ImportedPaths = importPaths,
                     ASMPath = asmPath,
                     KeepAlive = keepAlive,
+                    NoConsoleCli = noConsoleCli,
                     DisableAnalytics = disableAnalytics,
-                    AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname,  ParentId = parentId, SessionId = sessionId }
+                    AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname, ParentId = parentId, SessionId = sessionId },
+                    CERLocation = cerLocation
                 };
             }
 
@@ -176,10 +183,13 @@ namespace Dynamo.Applications
             public IEnumerable<String> ImportedPaths { get; set; }
             public string ASMPath { get; set; }
             public bool KeepAlive { get; set; }
+            public bool NoConsoleCli { get; set; }
             [Obsolete("This property will be removed in Dynamo 3.0 - please use AnalyticsInfo")]
             public string HostName { get; set; }
             public bool DisableAnalytics { get; set; }
-            public HostAnalyticsInfo AnalyticsInfo { get; set; } 
+            public HostAnalyticsInfo AnalyticsInfo { get; set; }
+
+            public string CERLocation { get; set; }
         }
 
         /// <summary>
@@ -194,8 +204,7 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
-                new Version(228,0,0),
-                new Version(227,0,0),
+                new Version(228,5,0),
             };
 
             var preloader = new Preloader(rootFolder, versions);
@@ -241,6 +250,8 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
+            // Preload ASM and display corresponding message on splash screen
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
             var model = StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, info);
             model.IsASMLoaded = isASMloaded;
@@ -337,7 +348,7 @@ namespace Dynamo.Applications
             };
 
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
-            config.StartInTestMode = CLImode ? true : false;
+            config.StartInTestMode = CLImode;
             config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
 
             var model = DynamoModel.Start(config);

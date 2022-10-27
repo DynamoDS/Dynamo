@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class CoreNodeModelWpfResources {
@@ -61,11 +61,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Advanced.
+        /// </summary>
+        public static string ColorPaletteUIAdvancedButtonHeader {
+            get {
+                return ResourceManager.GetString("ColorPaletteUIAdvancedButtonHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Recent Colors.
         /// </summary>
         public static string ColorPaletteUIRecentColors {
             get {
                 return ResourceManager.GetString("ColorPaletteUIRecentColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard.
+        /// </summary>
+        public static string ColorPaletteUIStandardButtonHeader {
+            get {
+                return ResourceManager.GetString("ColorPaletteUIStandardButtonHeader", resourceCulture);
             }
         }
         
@@ -84,6 +102,24 @@ namespace Dynamo.Wpf.Properties {
         public static string DateTimeInputToolTip {
             get {
                 return ResourceManager.GetString("DateTimeInputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display.
+        /// </summary>
+        public static string LblDisplay {
+            get {
+                return ResourceManager.GetString("LblDisplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value.
+        /// </summary>
+        public static string LblValue {
+            get {
+                return ResourceManager.GetString("LblValue", resourceCulture);
             }
         }
     }

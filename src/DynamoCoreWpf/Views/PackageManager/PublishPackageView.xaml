@@ -6,10 +6,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:ui="clr-namespace:Dynamo.UI" 
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
         d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
         Name="PublishInfoControl"
-        Width="900"
+        Width="940"
         Height="710"
         MinWidth="630"
         MinHeight="500"
@@ -377,7 +378,7 @@
 
                 <!--  Dialog Title  -->
                 <TextBlock x:Name="headerTitle"
-                           Margin="25,16"
+                           Margin="25,16,10,16"
                            VerticalAlignment="Top"
                            DockPanel.Dock="Left"
                            FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -386,6 +387,21 @@
                            Foreground="{StaticResource PreferencesWindowFontColor}"
                            Text="{x:Static p:Resources.PublishPackageViewPublish}"
                            TextAlignment="Left" />
+                <Label HorizontalAlignment="Left" 
+                       DockPanel.Dock="Left"
+                       Name="Titleinfo" 
+                       VerticalAlignment="Top" 
+                       Height="26" 
+                       Width="26" 
+                       Margin="0,16,0,0"
+                       MouseLeftButtonDown="OnMoreInfoClicked">
+                    <Label.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.PublishPackageDocTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                    </Label.ToolTip>
+                    <Label.Content>
+                        <fa:ImageAwesome Width="15" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Left" Icon="QuestionCircleOutline" Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                    </Label.Content>
+                </Label>
             </DockPanel>
         </Border>
 

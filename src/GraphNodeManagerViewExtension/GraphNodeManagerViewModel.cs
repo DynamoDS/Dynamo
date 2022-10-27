@@ -206,18 +206,18 @@ namespace Dynamo.GraphNodeManager
 
 
         private void InitializeFilters()
-        {   //TODO this should really not use localized text... it should use an enum etc.
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_EmptyList }); 
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Error });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Frozen });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_MissingContent });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Function });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Information });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsInput });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsOutput });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Null });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Warning });
-            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_PreviewOff });
+        {   
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_EmptyList, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.EmptyList)  }); 
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Error, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Error) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Frozen, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Frozen) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Function, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Function) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Information, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Info) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsInput, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.IsInput) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_IsOutput, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.IsOutput) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_MissingContent, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.MissingNode) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Null, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Null) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_Warning, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Alert) });
+            FilterItems.Add(new FilterViewModel(this){Name = Resources.Title_PreviewOff, FilterImage = ResourceUtilities.ConvertToImageSource(Properties.Resources.Hidden) });
 
             filterDictionary = new Dictionary<string, FilterViewModel>(FilterItems.ToDictionary(fi => fi.Name));
         }
@@ -324,17 +324,29 @@ namespace Dynamo.GraphNodeManager
         internal void ExportGraph(object parameter)
         {
             if (parameter == null) return;
-            string type = parameter.ToString();
+            var type = parameter.ToString();
+            var promptName =  System.IO.Path.GetFileNameWithoutExtension(currentWorkspace.FileName);
+
+            var filteredNodes = FilteredNodesArray();
 
             switch (type)
             {
                 case "CSV":
-                    Utilities.Utilities.ExportToCSV(Nodes.ToArray());
+                    Utilities.Utilities.ExportToCSV(filteredNodes, promptName);
                     break;
                 case "JSON":
-                    Utilities.Utilities.ExportToJson(Nodes.ToArray());
+                    Utilities.Utilities.ExportToJson(filteredNodes, promptName);
                     break;
             }
+        }
+
+        /// <summary>
+        /// Helper method to return an Array of the currently active Nodes
+        /// </summary>
+        /// <returns></returns>
+        private GridNodeViewModel [] FilteredNodesArray()
+        {
+            return GraphNodeManagerView.NodesInfoDataGrid.ItemsSource.Cast<GridNodeViewModel>().ToArray();
         }
 
         /// <summary>

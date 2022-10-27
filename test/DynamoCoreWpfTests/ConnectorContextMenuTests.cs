@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
@@ -132,6 +132,36 @@ namespace DynamoCoreWpfTests
             // Values after Hide All Wires is run
             Assert.AreEqual(0, visibleConnectors.Count());
             Assert.AreEqual(4, hiddenConnectors.Count());
+        }
+
+        [Test]
+        public void GoToStartNodeTest()
+        {
+            Open(@"UI/ConnectorContextMenuTestFile.dyn");
+
+            var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
+            Assert.AreEqual(connectorViewModel.ConnectorModel.Start.Owner.IsSelected, false);
+
+            connectorViewModel.InstantiateContextMenuCommand.Execute(null);
+            var contextMenuViewModel = connectorViewModel.ConnectorContextMenuViewModel;
+            contextMenuViewModel.GoToStartNodeCommand.Execute(null);
+
+            Assert.AreEqual(connectorViewModel.ConnectorModel.Start.Owner.IsSelected, true);
+        }
+
+        [Test]
+        public void GoToEndNodeTest()
+        {
+            Open(@"UI/ConnectorContextMenuTestFile.dyn");
+
+            var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
+            Assert.AreEqual(connectorViewModel.ConnectorModel.End.Owner.IsSelected, false);
+
+            connectorViewModel.InstantiateContextMenuCommand.Execute(null);
+            var contextMenuViewModel = connectorViewModel.ConnectorContextMenuViewModel;
+            contextMenuViewModel.GoToEndNodeCommand.Execute(null);
+
+            Assert.AreEqual(connectorViewModel.ConnectorModel.End.Owner.IsSelected, true);
         }
 
         /// <summary>
