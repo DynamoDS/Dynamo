@@ -275,6 +275,22 @@ namespace Dynamo.Wpf.Views
             }
         }
 
+        private void onChangedGroupStyleColor_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
+
+            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Button colorButton = sender as Button;
+                
+                if (colorButton != null)
+                {
+                    GroupStyleItem selectedGroupStyle = (GroupStyleItem)colorButton.DataContext;
+                    selectedGroupStyle.HexColorString = colorDialog.Color.R.ToString("X2") + colorDialog.Color.G.ToString("X2") + colorDialog.Color.B.ToString("X2");
+                }                
+            }
+        }
+
         /// <summary>
         /// This event is generated every time the user clicks a Radio Button in the Geometry Scaling section
         /// The method just get the Radio Button clicked and saves the ScaleValue selected

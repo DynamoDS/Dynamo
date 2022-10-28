@@ -65,10 +65,13 @@
                                             Width="auto"
                                             Margin="10,0,20,0"
                                             Grid.Row="1">
-                                    <Border x:Name="borderColor"
-                                            Background="{Binding HexColorString, Converter={StaticResource StringToBrushColorConverter}}" 
+                                    <Button
+                                            Style="{StaticResource ButtonColorPickerStyle}"
+                                            Background="{Binding HexColorString, Converter={StaticResource StringToBrushColorConverter}}"
+                                            Click="onChangedGroupStyleColor_Click"
                                             Width="25" 
-                                            Height="15"/>
+                                            Height="15"
+                                            IsEnabled="{Binding Path=IsDefault, Converter={StaticResource InverseBoolToEnablingConverter}}" />
                                     <Label Name="colorHexVal" 
                                             Foreground="{StaticResource PreferencesWindowFontColor}"
                                             FontSize="13"
