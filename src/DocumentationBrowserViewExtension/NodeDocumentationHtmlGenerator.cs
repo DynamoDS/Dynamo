@@ -109,6 +109,7 @@ namespace Dynamo.DocumentationBrowser
             var imageRow = mkArray.Last();
             if (!imageRow.Contains("img"))
             {
+                sb.AppendLine(mkArray.First());
                 return sb.ToString();   // terminate early if no image
             }
 
