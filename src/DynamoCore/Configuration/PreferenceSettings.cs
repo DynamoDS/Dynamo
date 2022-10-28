@@ -682,8 +682,8 @@ namespace Dynamo.Configuration
 
         #region Dynamo Player and Generative Design settings
 
-        // Collections of folders used by Dynamo Player or Generative Design as entry points. For now, the key is either "DynamoPlayer" or "GenerativeDesign"
-        internal Dictionary<string, List<DynamoPlayerFolderItem>> DynamoPlayerFolderItems;
+        // Collections of folders used by Dynamo Player or Generative Design as entry points.
+        public Dictionary<string, List<DynamoPlayerFolderItem>> DynamoPlayerFolderItems;
 
         #endregion
 
@@ -739,12 +739,6 @@ namespace Dynamo.Configuration
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
-
-            DynamoPlayerFolderItems = new Dictionary<string, List<DynamoPlayerFolderItem>>()
-            {
-                { "DynamoPlayer", new List<DynamoPlayerFolderItem>() },
-                { "GenerativeDesign", new List<DynamoPlayerFolderItem>() },
-            };
         }
 
         /// <summary>
@@ -1075,138 +1069,6 @@ namespace Dynamo.Configuration
                 }
             }
             return result;
-        }
-
-        #endregion
-
-        #region Dynamo Player Folders Management API
-
-        /// <summary>
-        /// Add a Dynamo Player folder or a Generative Design study folder to the settings
-        /// </summary>
-        /// <param name="folderItem">The folder to be added</param>
-        /// <param name="isGenerativeDesignFolder">True if this is a Generative Design study folder, False if this is Dynamo Player folder</param>
-        /// <returns>True if the folder with the same path or ID has been added, False if the folder has already been added</returns>
-        public bool AddDynamoPlayerFolderItem(DynamoPlayerFolderItem folderItem, bool isGenerativeDesignFolder = false)
-        {
-            // Check if the folder has already exists in the settings
-
-            if (FindDynamoPlayerFolderByPath(folderItem.Path, isGenerativeDesignFolder) != null ||
-                FindDynamoPlayerFolderById(folderItem.Id, isGenerativeDesignFolder) != null)
-            {
-                return false;
-            }
-
-            if (isGenerativeDesignFolder)
-            {
-                DynamoPlayerFolderItems["GenerativeDesign"].Remove(folderItem);
-            }
-            else
-            {
-                DynamoPlayerFolderItems["DynamoPlayer"].Remove(folderItem);
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Check if a Dynamo Player folder or a Generative Design study folder with a given path already exists in the settings
-        /// </summary>
-        /// <param name="path">the full path of the folder</param>
-        /// <param name="isGenerativeDesignFolder">True if this is a Generative Design study folder, False if this is Dynamo Player folder</param>
-        /// <returns>The found folder item, null if none exists</returns>
-        public DynamoPlayerFolderItem FindDynamoPlayerFolderByPath(string path, bool isGenerativeDesignFolder = false)
-        {
-            List<DynamoPlayerFolderItem> targetList = isGenerativeDesignFolder ?
-                DynamoPlayerFolderItems["GenerativeDesign"] :
-                DynamoPlayerFolderItems["DynamoPlayer"];
-
-            foreach (DynamoPlayerFolderItem folderItem in targetList)
-            {
-                if (folderItem.Path == path)
-                {
-                    return folderItem;
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Check if a Dynamo Player folder or a Generative Design study folder with a given ID already exists in the settings
-        /// </summary>
-        /// <param name="id">the id of the folder</param>
-        /// <param name="isGenerativeDesignFolder">True if this is a Generative Design study folder, False if this is Dynamo Player folder</param>
-        /// <returns>The found folder item, null if none exists</returns>
-        public  DynamoPlayerFolderItem FindDynamoPlayerFolderById(string id, bool isGenerativeDesignFolder = false)
-        {
-            List<DynamoPlayerFolderItem> targetList = isGenerativeDesignFolder ?
-                DynamoPlayerFolderItems["GenerativeDesign"] :
-                DynamoPlayerFolderItems["DynamoPlayer"];
-
-            foreach (DynamoPlayerFolderItem folderItem in targetList)
-            {
-                if (folderItem.Id == id)
-                {
-                    return folderItem;
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Remove a Dynamo Player or a Generative Design study folder given its path
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="isGenerativeDesignFolder">True if this is a Generative Design study folder, False if this is Dynamo Player folder</param>
-        /// <returns>True if the folder has been removed, False if the folder with the given path does not exist in the settings</returns>
-        public bool RemoveDynamoPlayerFolderByPath(string path, bool isGenerativeDesignFolder = false)
-        {
-            DynamoPlayerFolderItem targetFolderItem = FindDynamoPlayerFolderByPath(path, isGenerativeDesignFolder);
-
-            if (targetFolderItem == null)
-            {
-                return false;
-            }
-
-            if (isGenerativeDesignFolder)
-            {
-                DynamoPlayerFolderItems["GenerativeDesign"].Remove(targetFolderItem);
-            }
-            else
-            {
-                DynamoPlayerFolderItems["DynamoPlayer"].Remove(targetFolderItem);
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Remove a Dynamo Player or a Generative Design study folder given its ID
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="isGenerativeDesignFolder">True if this is a Generative Design study folder, False if this is Dynamo Player folder</param>
-        /// <returns>True if the folder has been removed, False if the folder with the given id does not exist in the settings</returns>
-        public bool RemoveDynamoPlayerFolderById(string id, bool isGenerativeDesignFolder = false)
-        {
-            DynamoPlayerFolderItem targetFolderItem = FindDynamoPlayerFolderById(id, isGenerativeDesignFolder);
-
-            if (targetFolderItem == null)
-            {
-                return false;
-            }
-
-            if (isGenerativeDesignFolder)
-            {
-                DynamoPlayerFolderItems["GenerativeDesign"].Remove(targetFolderItem);
-            }
-            else
-            {
-                DynamoPlayerFolderItems["DynamoPlayer"].Remove(targetFolderItem);
-            }
-
-            return true;
         }
 
         #endregion
