@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
@@ -524,11 +524,12 @@ namespace Dynamo.Models
                 secondPort = endPort;
             }
 
+            // TODO: Add visibility setting passing or make it accessible globally
             ConnectorModel newConnectorModel = ConnectorModel.Make(
                 firstPort.Owner,
                 secondPort.Owner,
                 firstPort.Index,
-                secondPort.Index);
+                secondPort.Index)
 
             // Record the creation of connector in the undo recorder.
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
