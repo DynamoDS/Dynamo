@@ -10,6 +10,7 @@
     <AssemblyName>DynamoCore</AssemblyName>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DocumentationFile>$(OutputPath)\DynamoCore.XML</DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
     <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
@@ -21,6 +22,7 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Autodesk.IDSDK" Version="1.1.5" />
     <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.0.2506" />
     <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2365" GeneratePathProperty="true" />
     <PackageReference Include="Greg" Version="2.3.0.2505" />

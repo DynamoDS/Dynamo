@@ -15,9 +15,7 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
-	<Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
-		<Exec Command="npm install --prefix ./ @dynamods/splash-screen@latest" />
-    </Target>
+
 
   <PropertyGroup>
     <ApplicationIcon>logo_square_32x32.ico</ApplicationIcon>

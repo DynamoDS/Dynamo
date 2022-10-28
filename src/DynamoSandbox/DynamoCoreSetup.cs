@@ -28,6 +28,7 @@ namespace DynamoSandbox
         private readonly HostAnalyticsInfo analyticsInfo;
         private const string sandboxWikiPage = @"https://github.com/DynamoDS/Dynamo/wiki/How-to-Utilize-Dynamo-Builds";
         private DynamoView dynamoView;
+        private IDSDKManager idsdkManager;
 
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
@@ -58,11 +59,14 @@ namespace DynamoSandbox
             try
             {
                 DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
+                idsdkManager = new IDSDKManager();
 
                 splashScreen = new Dynamo.DynamoSandbox.SplashScreen();
                 splashScreen.webView.NavigationCompleted += WebView_NavigationCompleted;
                 splashScreen.RequestLaunchDynamo = LaunchDynamo;
                 splashScreen.RequestImportSettings = ImportSettings;
+                splashScreen.RequestSignIn = SignIn;
+                splashScreen.RequestSignOut = SignOut;
                 splashScreen.Show();
 
                 app.Run();
@@ -150,6 +154,19 @@ namespace DynamoSandbox
             }
         }
 
+        private bool SignIn(bool status)
+        {
+            if (!status) return idsdkManager.IsLoggedIn();
+            bool ret = idsdkManager.Login();
+            return ret;
+        }
+
+        private bool SignOut()
+        {
+            bool ret = idsdkManager.Logout();
+            return ret;
+        }
+
         private void DynamoModel_RequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)
         {
             if(splashScreen != null)
@@ -187,7 +204,8 @@ namespace DynamoSandbox
             // If user lauching Dynamo first time or picked to always show splash screen, display it. Otherwise, display Dynamo view directly.
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {
-                splashScreen.SetLoadingDone();
+                splashScreen.SetSignInStatus(idsdkManager.IsLoggedIn());
+                splashScreen.SetLoadingDone(idsdkManager.IsLoggedIn());
             }
             else
             {
@@ -206,7 +224,7 @@ namespace DynamoSandbox
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
-            splashScreen.SetLabels();
+            splashScreen.SetLabels(idsdkManager.IsLoggedIn());
             LoadDynamoView();
             splashScreen.webView.NavigationCompleted -= WebView_NavigationCompleted;
         }

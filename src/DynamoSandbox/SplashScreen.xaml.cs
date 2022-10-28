@@ -21,6 +21,8 @@ namespace Dynamo.DynamoSandbox
 
         internal Action<bool> RequestLaunchDynamo;
         internal Action<string> RequestImportSettings;
+        internal Func<bool,bool> RequestSignIn; 
+        internal Func<bool> RequestSignOut;
 
         public SplashScreen()
         {
@@ -66,7 +68,7 @@ namespace Dynamo.DynamoSandbox
 
             webView.NavigateToString(htmlString);
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
-               new ScriptObject(RequestLaunchDynamo, RequestImportSettings));
+               new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut));
         }
 
         internal async void SetBarProperties(string version, string loadingDescription, float barSize)
@@ -76,7 +78,7 @@ namespace Dynamo.DynamoSandbox
             await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', '{Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms')");
         }
 
-        internal async void SetLoadingDone()
+        internal async void SetLoadingDone(bool status)
         {
             loadingTimer.Stop();
             loadingTimer = null;
@@ -92,15 +94,24 @@ namespace Dynamo.DynamoSandbox
         }
 
         /// <summary>
+        /// Set the login status on splash screen.
+        /// </summary>
+        internal async void SetSignInStatus(bool status)
+        {
+            await webView.CoreWebView2.ExecuteScriptAsync($"window.setSignInStatus({status})");
+        }
+
+        /// <summary>
         /// Setup the values for all lables on splash screen using resources
         /// </summary>
-        internal async void SetLabels()
+        internal async void SetLabels(bool signInStatus)
         {
             await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
-               $"welcomeToDynamoTitle: '{Properties.Resources.SplashScreenWelcomeToDynamo}'," +
-               $"signInTitle: '{Properties.Resources.SplashScreenSignIn}'," +
-               $"launchTitle: '{Properties.Resources.SplashScreenLaunchTitle}'," +
-               $"showScreenAgainLabel: '{Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
+               $"welcomeToDynamoTitle: 'ddynamo'," +
+               $"signInTitle: 'ddd{(signInStatus ? Properties.Resources.SplashScreenSignedIn : Properties.Resources.SplashScreenSignIn)}'," +
+               $"signInStatus:" + signInStatus + "," +
+               $"launchTitle: 'ddd{Properties.Resources.SplashScreenLaunchTitle}'," +
+               $"showScreenAgainLabel: 'ddd{Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
         }
 
         protected override void OnClosed(EventArgs e)
@@ -127,11 +138,15 @@ namespace Dynamo.DynamoSandbox
     {
         readonly Action<bool> RequestLaunchDynamo;
         readonly Action<string> RequestImportSettings;
+        readonly Func<bool,bool> RequestSignIn;
+        readonly Func<bool> RequestSignOut;
 
-        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings)
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func<bool, bool> requestSignIn, Func<bool> requestSignOut)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
             RequestImportSettings = requestImportSettings;
+            RequestSignIn = requestSignIn;
+            RequestSignOut = requestSignOut;
         }
 
         public void LaunchDynamo(bool showScreenAgain)
@@ -142,6 +157,14 @@ namespace Dynamo.DynamoSandbox
         public void ImportSettings(string file)
         {
             RequestImportSettings(file);
+        }
+        public bool SignIn(bool status)
+        {
+            return RequestSignIn(status);
+        }
+        public bool SignOut()
+        {
+            return RequestSignOut();
         }
     }
 }
