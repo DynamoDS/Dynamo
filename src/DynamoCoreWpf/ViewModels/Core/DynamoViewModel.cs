@@ -276,6 +276,9 @@ namespace Dynamo.ViewModels
 
                 if (DisplayInteractiveGuideCommand != null)
                     DisplayInteractiveGuideCommand.RaiseCanExecuteChanged();
+
+                if(ShowInsertDialogAndInsertResultCommand != null)
+                    ShowInsertDialogAndInsertResultCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -1667,11 +1670,11 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Open a definition or workspace.
+        /// Insert a definition or a custom node.
         /// </summary>
         /// <param name="parameters"></param>
         /// For most cases, parameters variable refers to the file path to open
-        /// However, when this command is used in OpenFileDialog, the variable is
+        /// However, when this command is used in InsertFileDialog, the variable is
         /// a Tuple<string, bool> instead. The boolean flag is used to override the
         /// RunSetting of the workspace.
         private void Insert(object parameters)
@@ -1705,7 +1708,6 @@ namespace Dynamo.ViewModels
                 // Execute graph open command
                 ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode));
 
-                //this.GraphAutoLayoutCommand.Execute(null); // ??
                 this.FitViewCommand.Execute(null); // ??
 
                 // Only show trust warning popup when current opened workspace is homeworkspace and not custom node workspace
@@ -1870,7 +1872,6 @@ namespace Dynamo.ViewModels
                          BrandingResourceProvider.ProductName, fileExtensions) + "|" +
                          string.Format(Resources.FileDialogAllFiles, "*.*"),
                 Title = string.Format("Insert Title (Replace)", BrandingResourceProvider.ProductName)
-                //Title = string.Format(Resources.OpenDynamoDefinitionDialogTitle, BrandingResourceProvider.ProductName)
             };
 
             // if you've got the current space path, use it as the inital dir
@@ -1915,8 +1916,7 @@ namespace Dynamo.ViewModels
 
         private bool CanShowInsertDialogAndInsertResultCommand(object parameter)
         {
-            // TODO: Fix condition
-            return HomeSpace.RunSettings.RunEnabled;
+            return HomeSpace.RunSettings.RunEnabled && !this.showStartPage;
         }
 
         private void OpenRecent(object path)

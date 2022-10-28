@@ -341,7 +341,7 @@
                                   Name="openButton"
                                   InputGestureText="Ctrl + O">
                         </MenuItem>
-                        <MenuItem Header="Insert..."
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuInsert}"
                                   Command="{Binding ShowInsertDialogAndInsertResultCommand}"
                                   Name="insertButton"
                                   InputGestureText="Ctrl + I">

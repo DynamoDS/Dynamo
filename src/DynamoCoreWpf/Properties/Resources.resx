@@ -3371,4 +3371,7 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="RecentFileNumberInfo" xml:space="preserve">
     <value>Reducing this number will discard all recent files beyond your chosen number.</value>
   </data>
+  <data name="DynamoViewFileMenuInsert" xml:space="preserve">
+    <value>Insert...</value>
+  </data>
 </root>

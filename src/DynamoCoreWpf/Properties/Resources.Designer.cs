@@ -1649,6 +1649,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert....
+        /// </summary>
+        public static string DynamoViewFileMenuInsert {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _New.
         /// </summary>
         public static string DynamoViewFileMenuNew {

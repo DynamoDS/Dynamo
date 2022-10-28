@@ -77,8 +77,9 @@ namespace Dynamo.DocumentationBrowser
 
         private Func<LayoutSpecification> layouthandler;
 
+        // Interface implementation allowing us to subscribe to the LayoutSpecification handler 
         public event Action<string> RequestApplyLayoutSpec;
-
+        // Interface implementation allowing us to subscribe to the LayoutSpecification handler 
         public event Func<LayoutSpecification> RequestLayoutSpec
         {
             add { layouthandler += value; }
@@ -175,7 +176,7 @@ namespace Dynamo.DocumentationBrowser
 
         private void OnInsertFile(object sender, InsertDocumentationLinkEventArgs e)
         {
-            if (DynamoViewModel.Model.CurrentWorkspace.GetType() == typeof(HomeWorkspaceModel))
+            if (DynamoViewModel.Model.CurrentWorkspace is HomeWorkspaceModel)
             {
                 var homeWorkspace = DynamoViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
                 if (homeWorkspace != null && homeWorkspace.RunSettings.RunType != RunType.Manual)
