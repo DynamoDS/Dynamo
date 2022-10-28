@@ -1692,7 +1692,7 @@ namespace EmitMSIL
             {
                 if (isStaticOrCtor)
                 {
-                    willReplicate = !DoesParamArgRankMatch(paramTypes, args);
+                    willReplicate = !DoParamsRankMatchArgs(fep,paramTypes, args);
                     return willReplicate;
                 }
 
@@ -1706,7 +1706,7 @@ namespace EmitMSIL
                         return willReplicate;
                     }
                 }
-                willReplicate = !DoesParamArgRankMatch(paramTypes, args);
+                willReplicate = !DoParamsRankMatchArgs(fep,paramTypes, args);
                 return willReplicate;
             }
         }
