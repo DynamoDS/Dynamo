@@ -18,7 +18,7 @@ namespace Dynamo.Configuration
     static class ExtensionMethods
     {
         /// <summary>
-        /// Copy Properties from a PreferenceSettings instance to another iterating the Properties of the destination instance and populate them from their source counterparts, excluding the properties that are obsolete and only read.  
+        /// Copy Properties from a PreferenceSettings instance to another iterating the Properties of the destination instance and populate them from their source counterparts, excluding the properties that are obsolete and only read.
         /// </summary>
         /// <param name="source"></param>
         /// <param name="destination"></param>
@@ -84,7 +84,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Default time
         /// </summary>
-        public static readonly System.DateTime DynamoDefaultTime = new System.DateTime(1977, 4, 12, 12, 12, 0, 0);        
+        public static readonly System.DateTime DynamoDefaultTime = new System.DateTime(1977, 4, 12, 12, 12, 0, 0);
 
         #endregion
 
@@ -162,7 +162,7 @@ namespace Dynamo.Configuration
         public List<BackgroundPreviewActiveState> BackgroundPreviews { get; set; }
 
         /// <summary>
-        /// Returns active state of specified background preview 
+        /// Returns active state of specified background preview
         /// </summary>
         /// <param name="name">Background preview name</param>
         /// <returns>The active state</returns>
@@ -174,7 +174,7 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Sets active state of specified background preview 
+        /// Sets active state of specified background preview
         /// </summary>
         /// <param name="name">Background preview name</param>
         /// <param name="value">Active state</param>
@@ -373,7 +373,7 @@ namespace Dynamo.Configuration
             try
             {
                 return bool.Parse(preferenceSettingsElement.SelectSingleNode($@"//{nameof(DisableTrustWarnings)}").InnerText);
-                
+
             }
             catch (Exception ex)
             {
@@ -470,7 +470,7 @@ namespace Dynamo.Configuration
         public int BackupFilesCount { get; set; }
 
         /// <summary>
-        /// Indicates if the user has accepted the terms of 
+        /// Indicates if the user has accepted the terms of
         /// use for downloading packages from package manager.
         /// </summary>
         public bool PackageDownloadTouAccepted { get; set; }
@@ -644,7 +644,7 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// Limits the size of the tags used by the SearchDictionary
-        /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value 
+        /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value
         /// if found at deserialize time.
         /// </summary>
         internal static int nodeSearchTagSizeLimit = 300;
@@ -660,7 +660,7 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
-        /// This static property is not serialized and is assigned IronPythonResolveTargetVersion's value 
+        /// This static property is not serialized and is assigned IronPythonResolveTargetVersion's value
         /// if found at deserialize time.
         /// </summary>
         internal static Version ironPythonResolveTargetVersion = new Version(2, 4, 0);
@@ -678,6 +678,13 @@ namespace Dynamo.Configuration
         /// Stores the notification ids that was read by the user
         /// </summary>
         public List<string> ReadNotificationIds { get; set; }
+        #endregion
+
+        #region Dynamo Player and Generative Design settings
+
+        // Collections of folders used by Dynamo Player or Generative Design as entry points. For now, the key is either "DynamoPlayer" or "GenerativeDesign"
+        internal Dictionary<string, List<DynamoPlayerFolderItem>> DynamoPlayerFolderItems;
+
         #endregion
 
         /// <summary>
@@ -719,7 +726,7 @@ namespace Dynamo.Configuration
             BackupInterval = DefaultBackupInterval;
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
-                        
+
             CustomPackageFolders = new List<string>();
 
             PythonTemplateFilePath = "";
@@ -732,6 +739,12 @@ namespace Dynamo.Configuration
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
+
+            DynamoPlayerFolderItems = new Dictionary<string, List<DynamoPlayerFolderItem>>()
+            {
+                { "DynamoPlayer", new List<DynamoPlayerFolderItem>() },
+                { "GenerativeDesign", new List<DynamoPlayerFolderItem>() },
+            };
         }
 
         /// <summary>
@@ -761,11 +774,11 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Saves PreferenceSettings in a default directory when no path is 
+        /// Saves PreferenceSettings in a default directory when no path is
         /// specified.
         /// </summary>
         /// <param name="preferenceFilePath">The file path to save preference
-        /// settings to. If this parameter is null or empty string, preference 
+        /// settings to. If this parameter is null or empty string, preference
         /// settings will be saved to the default path.</param>
         /// <returns>True if file is saved successfully, false if an error occurred.</returns>
         public bool SaveInternal(string preferenceFilePath)
@@ -1016,7 +1029,7 @@ namespace Dynamo.Configuration
             {
                 return false;
             }
-            
+
         }
 
         /// <summary>
@@ -1066,6 +1079,138 @@ namespace Dynamo.Configuration
 
         #endregion
 
+        #region Dynamo Player Folders Management API
+
+        /// <summary>
+        /// Add a Dynamo Player folder or a Generative Design study folder to the settings
+        /// </summary>
+        /// <param name="folderItem">The folder to be added</param>
+        /// <param name="isGenerativeDesignFolder">True if this is a Generative Design study folder, False if this is Dynamo Player folder</param>
+        /// <returns>True if the folder with the same path or ID has been added, False if the folder has already been added</returns>
+        public bool AddDynamoPlayerFolderItem(DynamoPlayerFolderItem folderItem, bool isGenerativeDesignFolder = false)
+        {
+            // Check if the folder has already exists in the settings
+
+            if (FindDynamoPlayerFolderByPath(folderItem.Path, isGenerativeDesignFolder) != null ||
+                FindDynamoPlayerFolderById(folderItem.Id, isGenerativeDesignFolder) != null)
+            {
+                return false;
+            }
+
+            if (isGenerativeDesignFolder)
+            {
+                DynamoPlayerFolderItems["GenerativeDesign"].Remove(folderItem);
+            }
+            else
+            {
+                DynamoPlayerFolderItems["DynamoPlayer"].Remove(folderItem);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Check if a Dynamo Player folder or a Generative Design study folder with a given path already exists in the settings
+        /// </summary>
+        /// <param name="path">the full path of the folder</param>
+        /// <param name="isGenerativeDesignFolder">True if this is a Generative Design study folder, False if this is Dynamo Player folder</param>
+        /// <returns>The found folder item, null if none exists</returns>
+        public DynamoPlayerFolderItem FindDynamoPlayerFolderByPath(string path, bool isGenerativeDesignFolder = false)
+        {
+            List<DynamoPlayerFolderItem> targetList = isGenerativeDesignFolder ?
+                DynamoPlayerFolderItems["GenerativeDesign"] :
+                DynamoPlayerFolderItems["DynamoPlayer"];
+
+            foreach (DynamoPlayerFolderItem folderItem in targetList)
+            {
+                if (folderItem.Path == path)
+                {
+                    return folderItem;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Check if a Dynamo Player folder or a Generative Design study folder with a given ID already exists in the settings
+        /// </summary>
+        /// <param name="id">the id of the folder</param>
+        /// <param name="isGenerativeDesignFolder">True if this is a Generative Design study folder, False if this is Dynamo Player folder</param>
+        /// <returns>The found folder item, null if none exists</returns>
+        public  DynamoPlayerFolderItem FindDynamoPlayerFolderById(string id, bool isGenerativeDesignFolder = false)
+        {
+            List<DynamoPlayerFolderItem> targetList = isGenerativeDesignFolder ?
+                DynamoPlayerFolderItems["GenerativeDesign"] :
+                DynamoPlayerFolderItems["DynamoPlayer"];
+
+            foreach (DynamoPlayerFolderItem folderItem in targetList)
+            {
+                if (folderItem.Id == id)
+                {
+                    return folderItem;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Remove a Dynamo Player or a Generative Design study folder given its path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="isGenerativeDesignFolder">True if this is a Generative Design study folder, False if this is Dynamo Player folder</param>
+        /// <returns>True if the folder has been removed, False if the folder with the given path does not exist in the settings</returns>
+        public bool RemoveDynamoPlayerFolderByPath(string path, bool isGenerativeDesignFolder = false)
+        {
+            DynamoPlayerFolderItem targetFolderItem = FindDynamoPlayerFolderByPath(path, isGenerativeDesignFolder);
+
+            if (targetFolderItem == null)
+            {
+                return false;
+            }
+
+            if (isGenerativeDesignFolder)
+            {
+                DynamoPlayerFolderItems["GenerativeDesign"].Remove(targetFolderItem);
+            }
+            else
+            {
+                DynamoPlayerFolderItems["DynamoPlayer"].Remove(targetFolderItem);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Remove a Dynamo Player or a Generative Design study folder given its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="isGenerativeDesignFolder">True if this is a Generative Design study folder, False if this is Dynamo Player folder</param>
+        /// <returns>True if the folder has been removed, False if the folder with the given id does not exist in the settings</returns>
+        public bool RemoveDynamoPlayerFolderById(string id, bool isGenerativeDesignFolder = false)
+        {
+            DynamoPlayerFolderItem targetFolderItem = FindDynamoPlayerFolderById(id, isGenerativeDesignFolder);
+
+            if (targetFolderItem == null)
+            {
+                return false;
+            }
+
+            if (isGenerativeDesignFolder)
+            {
+                DynamoPlayerFolderItems["GenerativeDesign"].Remove(targetFolderItem);
+            }
+            else
+            {
+                DynamoPlayerFolderItems["DynamoPlayer"].Remove(targetFolderItem);
+            }
+
+            return true;
+        }
+
+        #endregion
+
         #region ILogSource
 
         /// <summary>
@@ -1095,6 +1240,47 @@ namespace Dynamo.Configuration
         public bool IsCreatedFromValidFile
         {
             get { return isCreatedFromValidFile; }
+        }
+    }
+
+    public class DynamoPlayerFolderItem
+    {
+        /// <summary>
+        /// The full path if the folder
+        /// </summary>
+        public string Path;
+
+        /// <summary>
+        /// The display name of the folder
+        /// </summary>
+        public string DisplayName;
+
+        /// <summary>
+        /// The ID of the folder
+        /// </summary>
+        public string Id;
+
+        /// <summary>
+        /// Whether this folder is removable from the settings (Built-in folders are non-removable)
+        /// </summary>
+        public bool IsRemovable = true;
+
+        /// <summary>
+        /// The order of the folder
+        /// </summary>
+        public int Order = -1;
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="path">The full path of the folder</param>
+        /// <param name="displayName">The display name of the folder</param>
+        /// <param name="id">The id of the folder</param>
+        public DynamoPlayerFolderItem(string path, string displayName, string id)
+        {
+            Path = path;
+            DisplayName = displayName;
+            Id = id;
         }
     }
 }
