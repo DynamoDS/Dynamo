@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -130,6 +130,6 @@
     <value>Error Loading A Dependency</value>
   </data>
   <data name="SplashScreenPreLoadingAsm" xml:space="preserve">
-    <value>Preloading ASM...</value>
+    <value>Preloading Geometry library</value>
   </data>
 </root>

@@ -130,6 +130,6 @@
     <value>Error Loading A Dependency</value>
   </data>
   <data name="SplashScreenPreLoadingAsm" xml:space="preserve">
-    <value>Preloading ASM...</value>
+    <value>Preloading Geometry library</value>
   </data>
 </root>

@@ -160,15 +160,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign in to Autodesk A360 to access online services that integrate with your desktop software..
-        /// </summary>
-        public static string Autodesk360SignInButtonContentToolTip {
-            get {
-                return ResourceManager.GetString("Autodesk360SignInButtonContentToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Autodesk A360.
         /// </summary>
         public static string Autodesk360SignInButtonTitleToolTip {
@@ -3818,6 +3809,15 @@ namespace Dynamo.Wpf.Properties {
         public static string LoadedPackagesConflictMessageBoxTitle {
             get {
                 return ResourceManager.GetString("LoadedPackagesConflictMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logout.
+        /// </summary>
+        public static string LogoutMenuItemText {
+            get {
+                return ResourceManager.GetString("LogoutMenuItemText", resourceCulture);
             }
         }
         
@@ -7850,6 +7850,33 @@ namespace Dynamo.Wpf.Properties {
         public static string ShowWiresPopupMenuItem {
             get {
                 return ResourceManager.GetString("ShowWiresPopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in to access online services that integrate with your desktop software..
+        /// </summary>
+        public static string SignInButtonContentToolTip {
+            get {
+                return ResourceManager.GetString("SignInButtonContentToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign In.
+        /// </summary>
+        public static string SignInButtonText {
+            get {
+                return ResourceManager.GetString("SignInButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signing In.
+        /// </summary>
+        public static string SigningInButtonText {
+            get {
+                return ResourceManager.GetString("SigningInButtonText", resourceCulture);
             }
         }
         

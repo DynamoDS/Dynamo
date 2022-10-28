@@ -61,7 +61,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Goto the Dynamo builds wiki site({0}) for more information..
+        ///   Looks up a localized string similar to Go to the Dynamo builds wiki site({0}) for more information..
         /// </summary>
         internal static string SandboxBuildsPageDialogMessage {
             get {
@@ -70,7 +70,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not start DynamoSandbox, unhandled exception..
+        ///   Looks up a localized string similar to Could not start Dynamo Sandbox, unhandled exception..
         /// </summary>
         internal static string SandboxCrashMessage {
             get {
@@ -115,7 +115,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Launching dynamo view....
+        ///   Looks up a localized string similar to Launching Dynamo View....
         /// </summary>
         internal static string SplashScreenLaunchingDynamo {
             get {

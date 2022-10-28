@@ -154,6 +154,7 @@ namespace DynamoSandbox
             }
         }
 
+        //Returns true if the user was successfully logged in, else false.
         private bool SignIn(bool status)
         {
             if (!status) return idsdkManager.IsLoggedIn();
@@ -161,10 +162,11 @@ namespace DynamoSandbox
             return ret;
         }
 
+        //Returns true if the user was successfully logged out, else false.
         private bool SignOut()
         {
-            bool ret = idsdkManager.Logout();
-            return ret;
+            idsdkManager.Logout();
+            return !idsdkManager.IsLoggedIn();
         }
 
         private void DynamoModel_RequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)
@@ -179,9 +181,9 @@ namespace DynamoSandbox
         private void LoadDynamoView()
         {
             DynamoModel model;
-            Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
+            StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
 
-            model = Dynamo.Applications.StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
+            model = StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
 
             model.CERLocation = CERLocation;
 
