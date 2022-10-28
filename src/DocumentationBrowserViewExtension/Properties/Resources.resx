@@ -141,7 +141,7 @@
     <comment>Header in Node Info table</comment>
   </data>
   <data name="NodeDocumentationInputs" xml:space="preserve">
-    <value>Inputs and Outputs</value>
+    <value>Inputs</value>
     <comment>Header in Node Info table</comment>
   </data>
   <data name="NodeDocumentationNodeInfo" xml:space="preserve">
@@ -206,5 +206,8 @@
   </data>
   <data name="ToastInsertGraphNotificationText" xml:space="preserve">
     <value>Example file added to workspace. Run mode changed to Manual.</value>
+  </data>
+  <data name="NodeDocumentationInputsAndOutputs" xml:space="preserve">
+    <value>Inputs and Outputs</value>
   </data>
 </root>

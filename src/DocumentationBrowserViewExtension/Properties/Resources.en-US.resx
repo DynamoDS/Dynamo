@@ -163,8 +163,11 @@
     <comment>Header in Node Info table</comment>
   </data>
   <data name="NodeDocumentationInputs" xml:space="preserve">
-    <value>Inputs and Outputs</value>
+    <value>Inputs</value>
     <comment>Header in Node Info table</comment>
+  </data>
+  <data name="NodeDocumentationInputsAndOutputs" xml:space="preserve">
+    <value>Inputs and Outputs</value>
   </data>
   <data name="NodeDocumentationIssueHelp" xml:space="preserve">
     <value>Node Issue Help</value>

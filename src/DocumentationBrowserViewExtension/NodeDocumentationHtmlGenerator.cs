@@ -171,7 +171,7 @@ namespace Dynamo.DocumentationBrowser
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<details open>");
-            sb.AppendLine(CreateExpanderTitle(Resources.NodeDocumentationInputs));
+            sb.AppendLine(CreateExpanderTitle(Resources.NodeDocumentationInputsAndOutputs));
             sb.AppendLine(CreateInputsAndOutputs(e));
             sb.AppendLine(@"</details>");
 

@@ -242,6 +242,8 @@ namespace Dynamo.DocumentationBrowser
 
         private string GetGraphLinkFromMDLocation(Uri link)
         {
+            if (link == null || link.Equals(new Uri(String.Empty, UriKind.Relative))) return string.Empty;
+
             string graphPath = link.AbsolutePath.Replace(".md", ".dyn");
             return File.Exists(graphPath) ? graphPath : null;
         }
@@ -297,7 +299,8 @@ namespace Dynamo.DocumentationBrowser
                 var mkDown = MarkdownHandlerInstance.ParseToHtml(e.MinimumQualifiedName, e.PackageName);
                 string breadCrumbs = string.Empty;
 
-                if(!BreadCrumbsDictionary.TryGetValue(e.Type, out breadCrumbs))
+
+                if(BreadCrumbsDictionary != null && !BreadCrumbsDictionary.TryGetValue(e.Type, out breadCrumbs))
                 {
                     foreach (var pair in BreadCrumbsDictionary)
                     {

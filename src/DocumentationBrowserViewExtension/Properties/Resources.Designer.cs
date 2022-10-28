@@ -178,11 +178,20 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Inputs and Outputs.
+        ///   Looks up a localized string similar to Inputs.
         /// </summary>
         public static string NodeDocumentationInputs {
             get {
                 return ResourceManager.GetString("NodeDocumentationInputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inputs and Outputs.
+        /// </summary>
+        public static string NodeDocumentationInputsAndOutputs {
+            get {
+                return ResourceManager.GetString("NodeDocumentationInputsAndOutputs", resourceCulture);
             }
         }
         
