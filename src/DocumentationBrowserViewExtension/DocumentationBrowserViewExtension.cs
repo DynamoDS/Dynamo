@@ -96,6 +96,10 @@ namespace Dynamo.DocumentationBrowser
             if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
             {
                 var docsDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
+                if (!docsDir.Exists)
+                {
+                    docsDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, "en-US", FALLBACK_DOC_DIRECTORY_NAME));
+                }
                 fallbackDocPath = docsDir.Exists ? docsDir : null;
             }
 
@@ -106,6 +110,10 @@ namespace Dynamo.DocumentationBrowser
                 //Then we need to remove the last folder from the path so we can find the fallback_docs directory.
                 var hostAppDirectory = Directory.GetParent(pathManager.HostApplicationDirectory).FullName;
                 var docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
+                if (!docsDir.Exists)
+                {
+                    docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, "en-US", FALLBACK_DOC_DIRECTORY_NAME));
+                }
                 fallbackDocPath = docsDir.Exists ? docsDir : null;
             }
 
@@ -287,10 +295,15 @@ namespace Dynamo.DocumentationBrowser
 
         private void PopulateBreadCrumbsDictionary(LayoutSpecification layoutSpec)
         {
+            BreadCrumbsDict = new Dictionary<string, string>();
+
+            if (layoutSpec == null || !layoutSpec.sections.Any())
+            {
+                return;
+            }
             var section = layoutSpec.sections.First();
             var breadCrumb = string.Empty;
 
-            BreadCrumbsDict = new Dictionary<string, string>();
 
             if (section.childElements.Count == 0) return;
 
