@@ -113,7 +113,8 @@ namespace Dynamo.DocumentationBrowser
                 this.documentationBrowser.Dispose();
             }
             this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
-            this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
+            if(this.documentationBrowser.CoreWebView2 != null)
+                this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
         }
 
         async void InitializeAsync()

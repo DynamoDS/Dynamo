@@ -243,9 +243,15 @@ namespace Dynamo.DocumentationBrowser
         private string GetGraphLinkFromMDLocation(Uri link)
         {
             if (link == null || link.Equals(new Uri(String.Empty, UriKind.Relative))) return string.Empty;
-
-            string graphPath = link.AbsolutePath.Replace(".md", ".dyn");
-            return File.Exists(graphPath) ? graphPath : null;
+            try
+            {
+                string graphPath = link.AbsolutePath.Replace(".md", ".dyn");
+                return File.Exists(graphPath) ? graphPath : null;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
 
         private void WatchMdFile(string mdLink)
