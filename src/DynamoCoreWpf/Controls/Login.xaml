@@ -54,7 +54,7 @@
             </StackPanel>
 
             <Button.ContextMenu>
-                <ContextMenu Style="{StaticResource ContextMenuStyle}">
+                <ContextMenu Style="{StaticResource ContextMenuStyle}" Width="150" Height="90">
                     <MenuItem Name="Logout" Command="{Binding ToggleLoginStateCommand}" Header="{x:Static p:Resources.LogoutMenuItemText}"></MenuItem>
                 </ContextMenu>
             </Button.ContextMenu>
