@@ -161,23 +161,21 @@ namespace Dynamo.ViewModels
             DisplayLowConfidence = false;
             NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteNoRecommendationsTitle;
             NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
-            DisplayLowConfidence = false;
 
             // Case 2: the result has at least one item assuming each node could be by recommendation or by use
             /*
             FilteredResults = DefaultResults.Where(e => e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
-
             foreach (var item in FilteredResults)
             {
-                item.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
-                item.AutoCompletionNodeMachineLearningInfo.IsByUse = true;
+                item.Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
+                item.Model.AutoCompletionNodeMachineLearningInfo.IsByUse = true;
             }
-            DisplayNoRecommendationsLowConfidence = !FilteredResults.Where(n => n.AutoCompletionNodeMachineLearningInfo.IsByRecommendation).Any();
+            DisplayNoRecommendationsLowConfidence = !FilteredResults.Where(n => n.Model.AutoCompletionNodeMachineLearningInfo.IsByRecommendation).Any();
             DisplayLowConfidence = false;
             NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteNoRecommendationsTitle;
             NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
-            DisplayLowConfidence = false;
             */
+
 
             // Case 3: Confidence score are under a threshold, assuming the minimum value is 50 and some result nodes are under it
             /*
@@ -196,20 +194,19 @@ namespace Dynamo.ViewModels
             NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
             DisplayLowConfidence = FilteredResults.Where(n => n.Model.AutoCompletionNodeMachineLearningInfo.IsByRecommendation).Count() == FilteredResults.Count();
             */
-            
 
             // Case 4: Confidence score are under a threshold, assuming the minimum value is 50 and all results nodes are under it
             /*
             FilteredResults = DefaultResults.Where(e => e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
             foreach (var item in FilteredResults)
             {
-                item.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
-                item.AutoCompletionNodeMachineLearningInfo.IsByUse = false;
+                item.Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
+                item.Model.AutoCompletionNodeMachineLearningInfo.IsByUse = false;
             }
-            FilteredResults.ToList()[0].AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 30;
-            FilteredResults.ToList()[1].AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 40;
+            FilteredResults.ToList()[0].Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 30;
+            FilteredResults.ToList()[1].Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 40;
 
-            if (!FilteredResults.Where(n => n.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= 50).Any())
+            if (!FilteredResults.Where(n => n.Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= 50).Any())
             {
                 FilteredResults = new List<NodeSearchElementViewModel>();
                 DisplayNoRecommendationsLowConfidence = true;
