@@ -1911,9 +1911,6 @@ Do you want to install the latest Dynamo update?</value>
   <data name="TermsOfUseViewTitle" xml:space="preserve">
     <value>Package Manager Terms of Use</value>
   </data>
-  <data name="GalleryDynamoVersion" xml:space="preserve">
-    <value>Version {0}.{1}.{2}</value>
-  </data>
   <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
   </data>
@@ -2548,7 +2545,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="MachineLearning" xml:space="preserve">
-    <value>Machine Learning</value>
+    <value>ML Recommendation</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
@@ -3006,9 +3003,6 @@ To install the latest version of a package, click Install. \n
   <data name="PackagesGuideUsePackageTitle" xml:space="preserve">
     <value>Use package nodes</value>
   </data>
-  <data name="GettingStartedMenuItem" xml:space="preserve">
-    <value>_Getting Started</value>
-  </data>
   <data name="PackagesGuideInstallAPackageText" xml:space="preserve">
     <value>Package installations are typically quick, depending on their size and other factors. \n\n**Click Install** to install the latest version of the sample Autodesk package and proceed with this guide.</value>
   </data>
@@ -3267,6 +3261,12 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="ContextMenuConnectionsShowAll" xml:space="preserve">
     <value>Show All Wires</value>
   </data>
+  <data name="ConnectorContextMenuHeaderStartNode" xml:space="preserve">
+    <value>Navigate Upstream</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
+    <value>Navigate Downstream</value>
+  </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Node Connections</value>
   </data>
@@ -3370,5 +3370,8 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="SigningInButtonText" xml:space="preserve">
     <value>Signing In</value>
+  </data>
+  <data name="RecentFileNumberInfo" xml:space="preserve">
+    <value>Reducing this number will discard all recent files beyond your chosen number.</value>
   </data>
 </root>

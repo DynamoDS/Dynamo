@@ -19,7 +19,7 @@ namespace UnitsUI.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -88,7 +88,7 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Convert a value between selected Unit systems..
+        ///   Looks up a localized string similar to Converts a value between selected unit systems.
         /// </summary>
         internal static string ConvertUnitsDescription {
             get {
@@ -169,7 +169,7 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converts input string with unit values into the equivalent value of the expression..
+        ///   Looks up a localized string similar to Converts an input string with unit values into the equivalent value of the expression.
         /// </summary>
         internal static string ParseUnitInputDescription {
             get {
