@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Interfaces;
 using Dynamo.PackageManager;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
@@ -13,9 +14,20 @@ namespace Dynamo.PackageDetails
     {
         #region Private Fields
 
+        /// <summary>
+        /// A reference to the ViewExtension.
+        /// </summary>
+        private PackageDetailsViewExtension PackageDetailsViewExtension { get; set; }
         private readonly PackageManagerClientViewModel packageManagerClientViewModel;
         private List<PackageDetailItem> packageDetailItems;
         private string license;
+        private IPreferences Preferences
+        {
+            get {
+                if (packageManagerClientViewModel == null && Models.DynamoModel.IsTestMode) return null;
+                return packageManagerClientViewModel.DynamoViewModel.PreferenceSettings;
+            }
+        }
 
         #endregion
 
@@ -93,9 +105,10 @@ namespace Dynamo.PackageDetails
         public string PackageRepositoryURL { get; }
 
         /// <summary>
-        /// A reference to the ViewExtension.
+        /// Returns, true if custom package paths are not disabled,
+        /// False if custom package paths are disabled.
         /// </summary>
-        private PackageDetailsViewExtension PackageDetailsViewExtension { get; set; }
+        public bool IsEnabledForInstall { get; private set; }
 
         #endregion
 
@@ -188,6 +201,8 @@ namespace Dynamo.PackageDetails
         {
             PackageLoader packageLoader = packageDetailsViewExtension.PackageManagerExtension.PackageLoader;
             packageManagerClientViewModel = packageDetailsViewExtension.PackageManagerClientViewModel;
+            IsPackageDeprecated = packageManagerSearchElement.IsDeprecated;
+            IsEnabledForInstall = Preferences == null || !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
 
             // Reversing the versions, so they appear newest-first.
             PackageDetailItems = packageManagerSearchElement.Header.versions
@@ -197,7 +212,8 @@ namespace Dynamo.PackageDetails
                 (
                     packageManagerSearchElement.Name,
                     x,
-                    DetectWhetherCanInstall(packageLoader, x.version, packageManagerSearchElement.Name)
+                    DetectWhetherCanInstall(packageLoader, x.version, packageManagerSearchElement.Name),
+                    IsEnabledForInstall && !IsPackageDeprecated
                 )).ToList();
 
             PackageName = packageManagerSearchElement.Name;
@@ -206,7 +222,6 @@ namespace Dynamo.PackageDetails
             DatePublished = packageManagerSearchElement.LatestVersionCreated;
             NumberDownloads = packageManagerSearchElement.Downloads;
             NumberVotes = packageManagerSearchElement.Votes;
-            IsPackageDeprecated = packageManagerSearchElement.IsDeprecated;
             PackageDetailsViewExtension = packageDetailsViewExtension;
             License = packageManagerSearchElement.Header.license;
             PackageSiteURL = packageManagerSearchElement.SiteUrl;

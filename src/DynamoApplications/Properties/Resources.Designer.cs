@@ -95,5 +95,14 @@ namespace DynamoApplications.Properties {
                 return ResourceManager.GetString("MismatchedAssemblyVersionTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preloading ASM....
+        /// </summary>
+        public static string SplashScreenPreLoadingAsm {
+            get {
+                return ResourceManager.GetString("SplashScreenPreLoadingAsm", resourceCulture);
+            }
+        }
     }
 }

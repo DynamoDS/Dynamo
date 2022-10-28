@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<PreferenceSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsFirstRun>false</IsFirstRun>
+  <IsAnalyticsReportingApproved>false</IsAnalyticsReportingApproved>
+  <LibraryWidth>300</LibraryWidth>
+  <ConsoleHeight>123</ConsoleHeight>
+  <ShowPreviewBubbles>false</ShowPreviewBubbles>
+  <ShowCodeBlockLineNumber>false</ShowCodeBlockLineNumber>
+  <ShowConnector>false</ShowConnector>
+  <ShowConnectorToolTip>false</ShowConnectorToolTip>
+  <ConnectorType>POLYLINE</ConnectorType>
+  <BackgroundPreviews>
+    <BackgroundPreviewActiveState>
+      <Name>IsBackgroundPreviewActive</Name>
+      <IsActive>false</IsActive>
+    </BackgroundPreviewActiveState>
+  </BackgroundPreviews>
+  <IsBackgroundGridVisible>false</IsBackgroundGridVisible>
+  <RenderPrecision>8</RenderPrecision>
+  <ShowEdges>true</ShowEdges>
+  <ShowDetailedLayout>false</ShowDetailedLayout>
+  <WindowX>-8</WindowX>
+  <WindowY>-8</WindowY>
+  <WindowW>1936</WindowW>
+  <WindowH>1056</WindowH>
+  <UseHardwareAcceleration>false</UseHardwareAcceleration>
+  <NumberFormat>f4</NumberFormat>
+  <MaxNumRecentFiles>12</MaxNumRecentFiles>
+  <RecentFiles>
+    <string>C:\Users\jesus.alvino\Documents\outport_valuemarker_portDefaultValueMarkerVisible.dyn</string>
+    <string>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\backup\Altura-Minima.dyn</string>
+    <string>C:\Dynamo\bin\AnyCPU\Debug\samples\en-US\Core\Core_AttractorPoint.dyn</string>
+    <string>C:\Users\jesus.alvino\Documents\customnode.dyf</string>
+    <string>C:\Users\jesus.alvino\Documents\Altura-Minima.dyn</string>
+    <string>C:\Users\jesus.alvino\Documents\DYN-4825-Draw.dyn</string>
+    <string>C:\Users\jesus.alvino\Downloads\dyn-5003.dyn</string>
+    <string>C:\Users\jesus.alvino\Documents\armadar.dyf</string>
+    <string>C:\Users\jesus.alvino\Documents\WatchNode-4-Dictionary.dyn</string>
+    <string>C:\Dynamo\test\core\WatchTree.dyn</string>
+  </RecentFiles>
+  <BackupFiles>
+    <string>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\backup\backup.DYN</string>
+  </BackupFiles>
+  <CustomPackageFolders>
+    <string>%BuiltInPackages%</string>
+    <string>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\2.16</string>
+    <string>C:\ProgramData\Dynamo\Dynamo Core\2.16\packages</string>
+  </CustomPackageFolders>
+  <DisableTrustWarnings>true</DisableTrustWarnings>
+  <TrustedLocations>
+    <string>C:\</string>
+    <string>E:\</string>
+  </TrustedLocations>
+  <PackageDirectoriesToUninstall>
+    <string>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\2.14\packages\Dynamo Samples</string>
+  </PackageDirectoriesToUninstall>
+  <PythonTemplateFilePath>testpath</PythonTemplateFilePath>
+  <BackupInterval>70000</BackupInterval>
+  <BackupFilesCount>2</BackupFilesCount>
+  <PackageDownloadTouAccepted>true</PackageDownloadTouAccepted>
+  <OpenFileInManualExecutionMode>true</OpenFileInManualExecutionMode>
+  <IsIronPythonDialogDisabled>true</IsIronPythonDialogDisabled>
+  <ShowTabsAndSpacesInScriptEditor>true</ShowTabsAndSpacesInScriptEditor>
+  <EnableNodeAutoComplete>false</EnableNodeAutoComplete>
+  <EnableNotificationCenter>false</EnableNotificationCenter>
+  <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
+  <DefaultPythonEngine/>
+  <SelectedPackagePathForInstall>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\2.16</SelectedPackagePathForInstall>
+  <NamespacesToExcludeFromLibrary>
+	<string>OnlyForTesting</string>
+  </NamespacesToExcludeFromLibrary>
+  <ViewExtensionSettings>
+    <ViewExtensionSettings>
+      <Name>Package Details</Name>
+      <UniqueId>C71CA1B9-BF9F-425A-A12C-53DF56770406</UniqueId>
+      <DisplayMode>DockRight</DisplayMode>
+    </ViewExtensionSettings>
+    <ViewExtensionSettings>
+      <Name>Documentation Browser</Name>
+      <UniqueId>68B45FC0-0BD1-435C-BF28-B97CB03C71C8</UniqueId>
+      <DisplayMode>DockRight</DisplayMode>
+    </ViewExtensionSettings>
+  </ViewExtensionSettings>
+  <DisableBuiltinPackages>true</DisableBuiltinPackages>
+  <DisableCustomPackageLocations>true</DisableCustomPackageLocations>
+  <DefaultRunType>Manual</DefaultRunType>
+  <DefaultNodeAutocompleteSuggestion>ObjectType</DefaultNodeAutocompleteSuggestion>
+  <ShowRunPreview>true</ShowRunPreview>
+  <GroupStyleItemsList>
+    <GroupStyleItem>
+      <Name>Actions</Name>
+      <HexColorString>B9F9E1</HexColorString>
+      <IsDefault>true</IsDefault>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Inputs</Name>
+      <HexColorString>FFB8D8</HexColorString>
+      <IsDefault>true</IsDefault>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Outputs</Name>
+      <HexColorString>FFC999</HexColorString>
+      <IsDefault>true</IsDefault>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Review</Name>
+      <HexColorString>A4E1FF</HexColorString>
+      <IsDefault>true</IsDefault>
+    </GroupStyleItem>
+  </GroupStyleItemsList>
+  <NodeSearchTagSizeLimit>500</NodeSearchTagSizeLimit>
+  <IronPythonResolveTargetVersion>2.1.X</IronPythonResolveTargetVersion>
+  <ReadNotificationIds>
+    <string>1</string>
+  </ReadNotificationIds>
+</PreferenceSettings>

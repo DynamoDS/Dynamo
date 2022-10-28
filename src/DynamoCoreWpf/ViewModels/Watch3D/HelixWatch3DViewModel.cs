@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -183,7 +183,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private int currentFrameSkipCount;
 
         private const double EqualityTolerance = 0.000001;
-        private double nearPlaneDistanceFactor = 0.001;
+        //near plane distance also affects depth precision.
+        //https://developer.nvidia.com/content/depth-precision-visualized
+        private double nearPlaneDistanceFactor = 0.01;
         internal const double DefaultNearClipDistance = 0.1f;
         internal const double DefaultFarClipDistance = 100000;
 
@@ -407,6 +409,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 base.IsGridVisible = value;
                 SetGridVisibility();
+            }
+        }
+        
+        /// <summary>
+        /// Identifies if the Graph yields any rendered, visible or hidden, geometry
+        /// Any graph would always render at least 3 elements:
+        /// Headlight, Grid, and Axis
+        /// Should be used after all Tasks have been processed by the Dispatcher
+        /// </summary>
+        public bool HasRenderedGeometry
+        {
+            get
+            {
+                return Element3DDictionary.Count() > 3;
             }
         }
 
@@ -2483,6 +2499,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Set the near clip plane to some fraction of the 
             // of the distance to the first point.
             var closest = distances.First(d => d >= 0);
+
+            //near plane distance disproportionately affects depth (zbuffer) precision.
+            //keep it as far away as possible.
+            //https://developer.nvidia.com/content/depth-precision-visualized
             near = closest.AlmostEqualTo(0, EqualityTolerance) ? DefaultNearClipDistance : Math.Max(DefaultNearClipDistance, closest * nearPlaneDistanceFactor);
             far = distances.Last() * 2;
 

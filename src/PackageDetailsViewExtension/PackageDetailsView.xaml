@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.PackageDetails.PackageDetailsView"
+<UserControl x:Class="Dynamo.PackageDetails.PackageDetailsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
@@ -21,6 +21,7 @@
             </ResourceDictionary.MergedDictionaries>
             <controls:NegativeIntToZeroConverter x:Key="NegativeIntToZeroConverter" />
             <controls:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+            <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:EmptyStringToHiddenConverter x:Key="EmptyStringToHiddenConverter" />
             <Style x:Key="LabelStyle" TargetType="TextBlock">
@@ -149,12 +150,33 @@
             <StackPanel Name="MainStackPanel">
 
                 <!--  Package Name  -->
-                <TextBlock Name="PackageNameLabel"
-                           MinWidth="200"
-                           Margin="0,0,0,10"
-                           FontSize="16px"
-                           Foreground="White"
-                           Text="{Binding PackageName}" />
+                <StackPanel MinWidth="200"
+                            Margin="0,0,0,10"
+                            Orientation="Horizontal">
+                    <TextBlock Name="PackageNameLabel"
+                            Width="Auto"
+                            FontSize="16px"
+                            Foreground="White"
+                            Text="{Binding PackageName}" />
+                    <Border Name="PackageStatusLabel"
+                            Width="Auto"
+                            Height="20"
+                            Margin="15,0,0,0"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            BorderBrush="{StaticResource PrimaryCharcoal300Brush}"
+                            BorderThickness="1"
+                            CornerRadius="3"
+                            Visibility="{Binding IsPackageDeprecated, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock VerticalAlignment="Center"
+                                FontSize="13"
+                                Padding="2,0"
+                                FontFamily="{StaticResource ArtifaktElementRegular}"
+                                Foreground="{StaticResource PrimaryCharcoal300Brush}"
+                                Text="{x:Static p:Resources.PackageManagerPackageDeprecated}"
+                                ToolTip="{x:Static p:Resources.PackageDeprecatedTooltip}" />
+                    </Border>
+                </StackPanel>
 
                 <!--  Author Icon + Name  -->
                 <StackPanel MinWidth="200"
@@ -164,7 +186,7 @@
                                Width="16px"
                                Height="16px">
                         <Rectangle.Fill>
-                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Profile.png" />
+                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Profile_48px.png" />
                         </Rectangle.Fill>
                     </Rectangle>
                     <TextBlock Name="PackageAuthorLabel"
@@ -292,7 +314,8 @@
                                                                 Command="{Binding ElementName=PackageDetailsWindow, Path=DataContext.TryInstallPackageVersionCommand}"
                                                                 CommandParameter="{Binding PackageVersionNumber}"
                                                                 Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
-                                                                IsEnabled="{Binding CanInstall}">
+                                                                ToolTipService.ShowOnDisabled="True"
+                                                                IsEnabled="{Binding IsEnabledForInstall}">
                                                             <Button.Template>
                                                                 <ControlTemplate TargetType="{x:Type Button}">
                                                                     <Border Name="ButtonBorder"
@@ -310,20 +333,42 @@
                                                                                 <Rectangle.Style>
                                                                                     <Style TargetType="Rectangle">
                                                                                         <Style.Triggers>
+                                                                                            <DataTrigger Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsPackageDeprecated}" Value="True">
+                                                                                                <Setter Property="Fill">
+                                                                                                    <Setter.Value>
+                                                                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
+                                                                                                    </Setter.Value>
+                                                                                                </Setter>
+                                                                                                <Setter Property="Opacity" Value="0.5" />
+                                                                                            </DataTrigger>
                                                                                             <DataTrigger Binding="{Binding Path=CanInstall}" Value="False">
                                                                                                 <Setter Property="Fill">
                                                                                                     <Setter.Value>
                                                                                                         <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/checkmark - grey.png" />
                                                                                                     </Setter.Value>
                                                                                                 </Setter>
+                                                                                                <Setter Property="Opacity" Value="1" />
                                                                                             </DataTrigger>
-                                                                                            <DataTrigger Binding="{Binding Path=CanInstall}" Value="True">
+                                                                                            <DataTrigger Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsEnabledForInstall}" Value="False">
+                                                                                                <Setter Property="Fill">
+                                                                                                    <Setter.Value>
+                                                                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - disabled.png" />
+                                                                                                    </Setter.Value>
+                                                                                                </Setter>
+                                                                                                <Setter Property="Opacity" Value="1" />
+                                                                                            </DataTrigger>
+                                                                                            <MultiDataTrigger>
+                                                                                                <MultiDataTrigger.Conditions>
+                                                                                                    <Condition Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsPackageDeprecated}" Value="False" />
+                                                                                                    <Condition Binding="{Binding Path=CanInstall}" Value="True" />
+                                                                                                    <Condition Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsEnabledForInstall}" Value="True" />
+                                                                                                </MultiDataTrigger.Conditions>
                                                                                                 <Setter Property="Fill">
                                                                                                     <Setter.Value>
                                                                                                         <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
                                                                                                     </Setter.Value>
                                                                                                 </Setter>
-                                                                                            </DataTrigger>
+                                                                                            </MultiDataTrigger>
                                                                                         </Style.Triggers>
                                                                                     </Style>
                                                                                 </Rectangle.Style>
@@ -345,15 +390,28 @@
                                                                         <Trigger Property="IsPressed" Value="True">
                                                                             <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#5F5F5F" />
                                                                         </Trigger>
-                                                                        <Trigger Property="IsEnabled" Value="False">
-                                                                            <Setter Property="TextBlock.Foreground" Value="#999999" />
-                                                                        </Trigger>
-                                                                        <DataTrigger Binding="{Binding Path=CanInstall, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                                        <DataTrigger Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsPackageDeprecated}" Value="True">
+                                                                            <Setter Property="TextBlock.Opacity" Value="0.5" />
                                                                             <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                                            <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDeprecatedTooltip}" />
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding Path=CanInstall, UpdateSourceTrigger=PropertyChanged}" Value="False">
                                                                             <Setter Property="TextBlock.Foreground" Value="#999999" />
+                                                                            <Setter Property="Opacity" Value="1" />
                                                                         </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsEnabledForInstall}" Value="False">
+                                                                            <Setter Property="TextBlock.Foreground" Value="#999999" />
+                                                                            <Setter Property="TextBlock.Opacity" Value="1" />
+                                                                        </DataTrigger>
+                                                                        <MultiDataTrigger>
+                                                                            <MultiDataTrigger.Conditions>
+                                                                                <Condition Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsPackageDeprecated}" Value="False" />
+                                                                                <Condition Binding="{Binding Path=CanInstall}" Value="True" />
+                                                                                <Condition Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsEnabledForInstall}" Value="True" />
+                                                                            </MultiDataTrigger.Conditions>
+                                                                            <Setter Property="TextBlock.Opacity" Value="1" />
+                                                                            <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                                        </MultiDataTrigger>
                                                                     </ControlTemplate.Triggers>
                                                                 </ControlTemplate>
                                                             </Button.Template>

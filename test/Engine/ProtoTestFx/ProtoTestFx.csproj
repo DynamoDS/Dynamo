@@ -19,7 +19,7 @@
     <Compile Remove="DebugService.cs" />
   </ItemGroup>
   <ItemGroup>
-	  <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	  <PackageReference Include="NUnit" Version="2.6.3" />
     <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />

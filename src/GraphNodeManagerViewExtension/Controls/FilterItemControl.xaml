@@ -18,7 +18,7 @@
             <local:BooleanToColorConverter x:Key="BooleanToColorConverter" 
                                            DefaultBrush="{StaticResource DarkGreyBrush}" 
                                            HoverBrush="{StaticResource DarkMidGreyBrush}" 
-                                           PressedBrush="{StaticResource PrimaryCharcoal300Brush}" 
+                                           PressedBrush="{StaticResource DarkMidGreyBrush}" 
                                            ToggleDefaultBrush="{StaticResource MidBlueBrush}" 
                                            ToggleHoverBrush="{StaticResource MidDarkBlueBrush}" 
                                            TogglePressedBrush="{StaticResource MidLightBlueBrush}" />

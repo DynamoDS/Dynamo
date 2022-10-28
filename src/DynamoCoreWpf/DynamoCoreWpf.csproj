@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -57,7 +57,7 @@
   <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2365" />
   <PackageReference Include="Greg" Version="2.3.0.2505" />
   <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
-	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	<PackageReference Include="RestSharp" Version="106.12.0" />
 	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" CopyXML="true" />
 	<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
@@ -1483,7 +1483,10 @@
     <Resource Include="UI\Images\Folder.png" />
     <Resource Include="UI\Images\caret_down_grey_48px.png" />
     <Resource Include="UI\Images\caret_up_grey_48px.png" />
+    <Resource Include="UI\Images\caret_down_hover_48px.png" />
+    <Resource Include="UI\Images\caret_up_hover_48px.png" />
     <Resource Include="UI\Images\menu_grey_48px.png" />
+    <Resource Include="UI\Images\menu_hover_48px.png" />
     <Resource Include="UI\Images\NodeIcon_placeholder.png" />
     <Resource Include="UI\Images\custom-node.png" />
     <Resource Include="UI\Images\image-icon-default.png" />
@@ -1491,6 +1494,10 @@
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\DynamoPackages_1_1.png" />
     <Resource Include="UI\Images\default_info_16px.png" />
     <Resource Include="UI\Images\clock-icon.png" />
+    <Resource Include="UI\Images\question-default-16px.png" />
+    <Resource Include="UI\Images\question-hover-16px.png" />
+    <Resource Include="UI\Images\info-default-16px.png" />
+    <Resource Include="UI\Images\info-hover-16px.png" />
     <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
     <Resource Include="UI\Images\info_2.png" />
@@ -1518,8 +1525,10 @@
     <Resource Include="UI\Images\Filter.png" />
     <Resource Include="UI\Images\Flag.png" />
     <Resource Include="UI\Images\Profile.png" />
+    <Resource Include="UI\Images\Profile_48px.png" />
     <Resource Include="UI\Images\Requirements.png" />
     <Resource Include="UI\Images\Sort.png" />
+    <Resource Include="UI\Images\sort-hover-16px.png" />
     <Resource Include="UI\Images\View details.png" />
     <Resource Include="UI\Images\more-vertical_selected_16px.png" />
     <Resource Include="UI\Images\pin_default_48_48.png" />
@@ -1567,6 +1576,7 @@
     <Resource Include="UI\Images\bubble-arrow.png" />
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
+    <Resource Include="UI\Images\no-recommendations.png" />
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
