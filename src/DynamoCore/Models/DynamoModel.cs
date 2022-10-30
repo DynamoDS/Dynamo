@@ -1959,11 +1959,6 @@ namespace Dynamo.Models
                             ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfoFromJson(fileContents);
 
                             InsertWorkspace(ws, viewInfo);
-                            //Raise an event to deserialize the view parameters before
-                            //setting the graph to run
-                            //OnComputeModelDeserialized();
-
-                            //SetPeriodicEvaluation(ws);
                         }
                     }
                 }
@@ -2089,8 +2084,8 @@ namespace Dynamo.Models
 
             if (nodes == null || !nodes.Any() || NodesAlreadyLoaded(nodes))
             {
-                //this.dynamoviewmodel.MainGuideManager.CreateRealTimeInfoWindow("Example file added to workspace. Run mode changed to Manual.", true);
-                // TODO: Notify the user that the insert has failed somehow
+                OnRequestNotification(Resources.FailedInsertFileNodeExistNotification);
+
                 return;
             }
 

@@ -735,6 +735,7 @@ namespace Dynamo.ViewModels
             WatchHandler.RequestSelectGeometry += BackgroundPreviewViewModel.AddLabelForPath;
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
             model.ComputeModelDeserialized += model_ComputeModelDeserialized;
+            model.RequestNotification += model_RequestNotification;
 
             preferencesViewModel = new PreferencesViewModel(this);
 
@@ -1795,6 +1796,15 @@ namespace Dynamo.ViewModels
             }
 
             // TODO: Finish initialization of the WorkspaceViewModel
+        }
+
+        /// <summary>
+        /// Create a toast notification with a notification sent by the DynamoModel
+        /// </summary>
+        /// <param name="notification"></param>
+        private void model_RequestNotification(string notification)
+        {
+            this.MainGuideManager.CreateRealTimeInfoWindow(notification, true);
         }
 
         /// <summary>
