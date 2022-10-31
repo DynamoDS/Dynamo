@@ -549,7 +549,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void FindFilesRespectsPathOrder()
         {
-            var path1 = Path.Combine(Path.GetTempPath(),"firstFindFile");
+            var path1 = Path.Combine(Path.GetTempPath(), "firstFindFile");
             var path2 = Path.Combine(Path.GetTempPath(), "secondFindFile");
 
             Directory.CreateDirectory(path1);
@@ -568,11 +568,11 @@ namespace Dynamo.Tests
             }
 
 
-            Assert.AreEqual(filePath1, DocumentationServices.FindFileInPaths("SaveFile", ".txt", new String[] { path1,path2 }));
+            Assert.AreEqual(filePath1, DocumentationServices.FindFileInPaths("SaveFile", ".txt", new String[] { path1, path2 }));
             Assert.AreEqual(filePath2, DocumentationServices.FindFileInPaths("SaveFile", ".txt", new String[] { path2, path1 }));
 
-            Directory.Delete(path1,true);
-            Directory.Delete(path2,true);
+            Directory.Delete(path1, true);
+            Directory.Delete(path2, true);
         }
 
         [Test]
@@ -763,7 +763,7 @@ namespace Dynamo.Tests
             testingSTR = Graph.Nodes.Utilities.NormalizeAsResourceName("Ab/b.double-int");
             Assert.AreEqual("Abb.double-int", testingSTR);
         }
-		
+
         [Category("UnitTests")]
         public void TestTypeSwitch()
         {
@@ -792,7 +792,7 @@ namespace Dynamo.Tests
                 TypeSwitch.Default(() => v = null));
             Assert.AreEqual(v, 42);
 
-            StringNode sNode = new StringNode(); 
+            StringNode sNode = new StringNode();
             node = sNode;
             TypeSwitch.Do(
                 node,
