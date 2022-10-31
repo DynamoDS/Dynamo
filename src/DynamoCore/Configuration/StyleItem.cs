@@ -10,7 +10,7 @@ namespace Dynamo.Configuration
         private string hexColorString;
         private string name;
         private bool isDefault = false;
-        private int fontSize = 14;
+        private int fontSize = 36;
 
         /// This property will contain the Group Name of the stored style
         public string Name
