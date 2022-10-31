@@ -2358,6 +2358,56 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="workspaceViewInfo">The extra view information from the workspace to update the model with.</param>
         /// <param name="centerNodes">Should Nodes be centered at their locations.</param>
+        public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo)
+        {
+            if (workspaceViewInfo == null)
+                return;
+
+
+            X = workspaceViewInfo.X;
+            Y = workspaceViewInfo.Y;
+            Zoom = workspaceViewInfo.Zoom;
+
+            OnCurrentOffsetChanged(
+                this,
+                new PointEventArgs(new Point2D(X, Y)));
+
+            // This function loads standard nodes
+            LoadNodes(workspaceViewInfo.NodeViews);
+
+            // This function loads notes from the Notes array in the JSON format
+            // NOTE: This is here to support early JSON graphs
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadLegacyNotes(workspaceViewInfo.Notes);
+
+            // This function loads notes from the Annotations array in the JSON format
+            // that have an empty nodes collection
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadNotesFromAnnotations(workspaceViewInfo.Annotations);
+
+            ///This function loads ConnectorPins to the corresponding connector models.
+            LoadConnectorPins(workspaceViewInfo.ConnectorPins);
+
+            // This function loads annotations from the Annotations array in the JSON format
+            // that have a non-empty nodes collection
+            LoadAnnotations(workspaceViewInfo.Annotations);
+
+            // TODO, QNTM-1099: These items are not in the extra view info
+            // Name = info.Name;
+            // Description = info.Description;
+            // FileName = info.FileName;
+        }
+
+        /// <summary>
+        /// Updates a workspace model with extra view information. When loading a workspace from JSON,
+        /// the data is split into two parts, model and view. This method sets the view information.
+        /// This overload allows to 'move' the incoming when placing them
+        /// </summary>
+        /// <param name="workspaceViewInfo"></param>
+        /// <param name="offsetX">Offset in X direction (positive - left, negative - right)</param>
+        /// <param name="offsetY">Offset in Y direction (positive - down, negative - up)</param>
         public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo, double offsetX = 0.0, double offsetY = 0.0)
         {
             if (workspaceViewInfo == null)

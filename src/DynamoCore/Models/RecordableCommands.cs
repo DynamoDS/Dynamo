@@ -558,7 +558,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            ///
+            /// Insert Graph or Custom Node from a file path into the current Workspace
             /// </summary>
             /// <param name="filePath">The path to the file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
