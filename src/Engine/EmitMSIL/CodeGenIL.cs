@@ -32,7 +32,9 @@ namespace EmitMSIL
         /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
         /// </summary>
         private Dictionary<int, Type> astTypeInfoMap = new Dictionary<int, Type>();
+#if DEBUG
         private StreamWriter writer;
+#endif
         private Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>> methodCache = new Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>();
         private Dictionary<int, bool> willReplicateCache = new Dictionary<int, bool>();
         private CompilePass compilePass;
@@ -63,6 +65,9 @@ namespace EmitMSIL
         {
             this.logPath = filePath;
             this.input = input;
+#if DEBUG
+            writer = new StreamWriter(filePath);
+#endif
             this.runtimeCore = runtimeCore;
         }
 
@@ -104,8 +109,12 @@ namespace EmitMSIL
 
         private (AssemblyBuilder asmbuilder, TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
         {
+            AssemblyBuilder asm;
+            TypeBuilder type;
+#if DEBUG
             using (writer = new StreamWriter(logPath))
             {
+#endif
                 compilePass = CompilePass.MethodLookup;
                 // 0. Gather all loaded function endpoints and cache them.
                 foreach (var ast in astList)
@@ -113,11 +122,11 @@ namespace EmitMSIL
                     DfsTraverse(ast);
                 }
                 // 1. Create assembly builder (dynamic assembly)
-                var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
+                asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
                 // 2. Create module builder
                 var mod = BuilderHelper.CreateDLLModuleBuilder(asm, "DynamicAssembly");
                 // 3. Create type builder (name it "ExecuteIL")
-                var type = BuilderHelper.CreateType(mod, "ExecuteIL");
+                type = BuilderHelper.CreateType(mod, "ExecuteIL");
                 // 4. Create method ("Execute"), get ILGenerator 
                 var execMethod = BuilderHelper.CreateMethod(type, "Execute",
                     System.Reflection.MethodAttributes.Static | System.Reflection.MethodAttributes.Private, typeof(void), new[] { typeof(IDictionary<string, IList>),
@@ -139,7 +148,14 @@ namespace EmitMSIL
                 }
                 EmitOpCode(OpCodes.Ret);
                 return (asm, type);
+#if DEBUG
             }
+#endif
+            EmitOpCode(OpCodes.Ret);
+#if DEBUG
+            writer.Close();
+#endif
+            return (asm, type);
         }
 
         // Given a double value on the stack, emit call to Math.Round(arg, 0, MidpointRounding.AwayFromZero);
@@ -848,7 +864,9 @@ namespace EmitMSIL
         private LocalBuilder DeclareLocal(Type t, string identifier)
         {         
             if (compilePass == CompilePass.GatherTypeInfo) return null;
+#if DEBUG
             writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {t} {identifier}");
+#endif
             return ilGen.DeclareLocal(t);
         }
 
@@ -856,42 +874,54 @@ namespace EmitMSIL
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, label);
+#if DEBUG
             writer.WriteLine($"{opCode} {label}");
+#endif
         }
 
         private void EmitOpCode(OpCode opCode, LocalBuilder local)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, local);
+#if DEBUG
             writer.WriteLine($"{opCode} {local}");
+#endif
         }
 
         private void EmitOpCode(OpCode opCode)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode);
+#if DEBUG
             writer.WriteLine(opCode);
+#endif
         }
 
         private void EmitOpCode(OpCode opCode, Type t)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, t);
+#if DEBUG
             writer.WriteLine($"{opCode} {t}");
+#endif
         }
 
         private void EmitOpCode(OpCode opCode, int index)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, index);
+#if DEBUG
             writer.WriteLine($"{opCode} {index}");
+#endif
         }
 
         private void EmitOpCode(OpCode opCode, string str)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, str);
+#if DEBUG
             writer.WriteLine($"{opCode} {str}");
+#endif
         }
 
         private void EmitOpCode(OpCode opCode, MethodBase mBase)
@@ -906,27 +936,35 @@ namespace EmitMSIL
             {
                 ilGen.Emit(opCode, mBase as ConstructorInfo);
             }
+#if DEBUG
             writer.WriteLine($"{opCode} {mBase}");
+#endif
         }
 
         private void EmitOpCode(OpCode opCode, double val)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, val);
+#if DEBUG
             writer.WriteLine($"{opCode} {val}");
+#endif
         }
 
         private void EmitOpCode(OpCode opCode, long val)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, val);
+#if DEBUG
             writer.WriteLine($"{opCode} {val}");
+#endif
         }
 
         private void EmitILComment(string comment)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
+#if DEBUG
             writer.WriteLine($"//{comment}");
+#endif
         }
 
         private Label? DefineLabel()
@@ -938,7 +976,9 @@ namespace EmitMSIL
         private void MarkLabel(Label label,string labelcomment = "")
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
+#if DEBUG
             writer.WriteLine($"//{labelcomment}");
+#endif
             ilGen.MarkLabel(label);
         }
 
@@ -1995,6 +2035,9 @@ namespace EmitMSIL
 
         public void Dispose()
         {
+#if DEBUG
+            writer?.Dispose();
+#endif
         }
     }
 
