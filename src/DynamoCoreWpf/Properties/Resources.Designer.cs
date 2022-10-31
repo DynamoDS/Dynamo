@@ -475,6 +475,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Navigate Downstream.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderEndNode {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderEndNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide Wire.
         /// </summary>
         public static string ConnectorContextMenuHeaderHideConnector {
@@ -507,6 +516,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ConnectorContextMenuHeaderShowConnector {
             get {
                 return ResourceManager.GetString("ConnectorContextMenuHeaderShowConnector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate Upstream.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderStartNode {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderStartNode", resourceCulture);
             }
         }
         
@@ -2895,15 +2913,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version {0}.{1}.{2}.
-        /// </summary>
-        public static string GalleryDynamoVersion {
-            get {
-                return ResourceManager.GetString("GalleryDynamoVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string GenericTaskDialogOptionCancel {
@@ -3116,15 +3125,6 @@ namespace Dynamo.Wpf.Properties {
         public static string GetStartedLinkText {
             get {
                 return ResourceManager.GetString("GetStartedLinkText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Getting Started.
-        /// </summary>
-        public static string GettingStartedMenuItem {
-            get {
-                return ResourceManager.GetString("GettingStartedMenuItem", resourceCulture);
             }
         }
         
@@ -3831,7 +3831,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Machine Learning.
+        ///   Looks up a localized string similar to ML Recommendation.
         /// </summary>
         public static string MachineLearning {
             get {
@@ -7445,6 +7445,15 @@ namespace Dynamo.Wpf.Properties {
         public static string QueryMember {
             get {
                 return ResourceManager.GetString("QueryMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reducing this number will discard all recent files beyond your chosen number..
+        /// </summary>
+        public static string RecentFileNumberInfo {
+            get {
+                return ResourceManager.GetString("RecentFileNumberInfo", resourceCulture);
             }
         }
         

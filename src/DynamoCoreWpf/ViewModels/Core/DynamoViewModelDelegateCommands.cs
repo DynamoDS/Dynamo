@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Wpf.ViewModels;
 using Microsoft.Practices.Prism.Commands;
@@ -82,8 +82,6 @@ namespace Dynamo.ViewModels
             ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
             SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
             DumpLibraryToXmlCommand = new DelegateCommand(model.DumpLibraryToXml, model.CanDumpLibraryToXml);
-            ShowGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(true), o => true);
-            CloseGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(false), o => true);
             ShowNewPresetsDialogCommand = new DelegateCommand(ShowNewPresetStateDialogAndMakePreset, CanShowNewPresetStateDialog);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             OpenDocumentationLinkCommand = new DelegateCommand(OpenDocumentationLink);
@@ -167,8 +165,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand OpenRecentCommand { get; set; }
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
         public DelegateCommand DumpLibraryToXmlCommand { get; set; }
-        public DelegateCommand ShowGalleryCommand { get; set; }
-        public DelegateCommand CloseGalleryCommand { get; set; }
         public DelegateCommand ShowNewPresetsDialogCommand { get; set; }
         public DelegateCommand NodeFromSelectionCommand { get; set; }
         public DelegateCommand OpenDocumentationLinkCommand { get; set; }

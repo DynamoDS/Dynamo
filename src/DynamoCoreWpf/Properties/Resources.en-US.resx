@@ -1059,9 +1059,6 @@ Failed to publish file(s):
   <data name="FolderNotWritableError" xml:space="preserve">
     <value>You do not have write permission to {0}.</value>
   </data>
-  <data name="GalleryDynamoVersion" xml:space="preserve">
-    <value>Version {0}.{1}.{2}</value>
-  </data>
   <data name="GenericTaskDialogSampleLeftButton" xml:space="preserve">
     <value>Sample Left Button</value>
     <comment>Sample button, it will be replaced at runtime</comment>
@@ -2332,7 +2329,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="MachineLearning" xml:space="preserve">
-    <value>Machine Learning</value>
+    <value>ML Recommendation</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
@@ -3025,9 +3022,6 @@ To install the latest version of a package, click Install. \n
   <data name="ConfigureADPButtonText" xml:space="preserve">
     <value>Configure Autodesk Analytics Program</value>
   </data>
-  <data name="GettingStartedMenuItem" xml:space="preserve">
-    <value>_Getting Started</value>
-  </data>
   <data name="ContinueInstall" xml:space="preserve">
     <value>Continue install</value>
   </data>
@@ -3280,6 +3274,12 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="ContextMenuConnectionsShowAll" xml:space="preserve">
     <value>Show All Wires</value>
   </data>
+  <data name="ConnectorContextMenuHeaderStartNode" xml:space="preserve">
+    <value>Navigate Upstream</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
+    <value>Navigate Downtream</value>
+  </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Node Connections</value>
   </data>
@@ -3374,6 +3374,9 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
     <value>This setting controls whether user will be directed to an extra static splash screen after the intial launch.</value>
+  </data>
+  <data name="RecentFileNumberInfo" xml:space="preserve">
+    <value>Reducing this number will discard all recent files beyond your chosen number.</value>
   </data>
   <data name="GroupStyleFontSizeToolTip" xml:space="preserve">
     <value>Font size</value>

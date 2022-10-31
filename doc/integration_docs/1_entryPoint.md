@@ -138,7 +138,7 @@ It consists of the following:
 
 * UserDataRootFolder // User data folder, e.g. `"AppData\Roaming\Dynamo\Dynamo Revit"` 
 
-* CommonDataRootFolder // Default folder for saving custom definitions, samples, gallery etc.
+* CommonDataRootFolder // Default folder for saving custom definitions, samples, etc.
 
 * Context // Integrator host name + version `(Revit<BuildNum>)`
 

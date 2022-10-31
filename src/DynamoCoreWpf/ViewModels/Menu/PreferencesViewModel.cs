@@ -278,6 +278,7 @@ namespace Dynamo.ViewModels
                     preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
                     nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
                 }
+                dynamoViewModel.HomeSpaceViewModel.NodeAutoCompleteSearchViewModel.ResetAutoCompleteSearchViewState();
                 RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
             }
         }
