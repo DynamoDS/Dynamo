@@ -741,6 +741,11 @@ namespace DynamoCoreWpfTests
                 // Act
                 var output = converter.SanitizeHtml(content);
 
+                if (!string.IsNullOrEmpty(output))
+                {
+                    var thisIsIt = output;
+                }
+
                 // Assert
                 Assert.IsNullOrEmpty(output);
             }
