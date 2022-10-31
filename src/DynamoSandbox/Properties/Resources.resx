@@ -153,11 +153,11 @@
   <data name="SplashScreenShowScreenAgainLabel" xml:space="preserve">
     <value>Don’t show this screen again</value>
   </data>
-  <data name="SplashScreenSignedIn" xml:space="preserve">
-    <value>Signed in</value>
-  </data>
   <data name="SplashScreenSignIn" xml:space="preserve">
-    <value>Sign in</value>
+    <value>Sign In</value>
+  </data>
+  <data name="SplashScreenSignOut" xml:space="preserve">
+    <value>Sign Out</value>
   </data>
   <data name="SplashScreenWelcomeToDynamo" xml:space="preserve">
     <value>Welcome to Dynamo!</value>

@@ -96,7 +96,6 @@ namespace Dynamo.Core
         }
 
         #region IDSDK methods
-        private const string IDSDK_CLIENT_ID = "IAtF1TBSlCeGqWAXKsBkcZBBwomALZsq";
         private class IDSDK_User_Info {
             internal string UserId { get; set; }
             internal string UserFirstName { get; set; }
@@ -173,9 +172,9 @@ namespace Dynamo.Core
         #endregion
 
         #region IDSDK Utilities
-        private bool SetProductConfigs(String productLineCode, idsdk_server server, String oauthKey)
+        private bool SetProductConfigs(string productLineCode, idsdk_server server, string oauthKey)
         {
-            idsdk_status_code bRet = Client.SetProductConfig(oauthKey, "", productLineCode, "2024", "1.2.3.4", server);
+            idsdk_status_code bRet = Client.SetProductConfig(oauthKey, "", productLineCode, DateTime.Now.Year.ToString(), "1.2.3.4", server);
             return Client.IsSuccess(bRet);
         }
         /// <summary>
@@ -198,8 +197,12 @@ namespace Dynamo.Core
             {
                 if (Client.IsInitialized())
                 {
-                    bool ret = SetProductConfigs("Dynamo", idsdk_server.IDSDK_PRODUCTION_SERVER, IDSDK_CLIENT_ID);
-                    return ret;
+                    bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
+                    if (ret)
+                    {
+                        ret = SetProductConfigs("Dynamo", server, client_id);
+                        return ret;
+                    }
                 }
             }
             return false;
@@ -213,6 +216,26 @@ namespace Dynamo.Core
                 return true;
             }
             return false;
+        }
+        private bool GetClientIDAndServer(out idsdk_server server, out string client_id)
+        {
+            server = idsdk_server.IDSDK_PRODUCTION_SERVER;
+                
+            client_id = DynamoUtilities.PathHelper.getServiceConfigValues(this, "IDSDK_CLIENT_ID");
+
+            string env = DynamoUtilities.PathHelper.getServiceConfigValues(this, "IDSDK_ENVIRONMENT");
+            if (!string.IsNullOrEmpty(env))
+            {
+                if (env.Trim().ToLower() == "stg")
+                {
+                    server = idsdk_server.IDSDK_STAGING_SERVER;
+                }
+                else if (env.Trim().ToLower() == "dev")
+                {
+                    server = idsdk_server.IDSDK_DEVELOPMENT_SERVER;
+                }
+            }
+            return !string.IsNullOrEmpty(client_id);
         }
         #endregion
     }

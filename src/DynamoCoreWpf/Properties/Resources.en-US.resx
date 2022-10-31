@@ -3376,7 +3376,7 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>This setting controls whether user will be directed to an extra static splash screen after the intial launch.</value>
   </data>
   <data name="LogoutMenuItemText" xml:space="preserve">
-    <value>Logout</value>
+    <value>Sign Out</value>
   </data>
   <data name="SignInButtonText" xml:space="preserve">
     <value>Sign In</value>

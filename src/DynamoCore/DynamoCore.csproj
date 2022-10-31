@@ -10,7 +10,6 @@
     <AssemblyName>DynamoCore</AssemblyName>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DocumentationFile>$(OutputPath)\DynamoCore.XML</DocumentationFile>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
     <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>

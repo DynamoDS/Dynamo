@@ -14,7 +14,6 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
-
 namespace DynamoSandbox
 {
     class DynamoCoreSetup
@@ -28,7 +27,7 @@ namespace DynamoSandbox
         private readonly HostAnalyticsInfo analyticsInfo;
         private const string sandboxWikiPage = @"https://github.com/DynamoDS/Dynamo/wiki/How-to-Utilize-Dynamo-Builds";
         private DynamoView dynamoView;
-        private IDSDKManager idsdkManager;
+        private AuthenticationManager authManager;
 
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
@@ -59,7 +58,6 @@ namespace DynamoSandbox
             try
             {
                 DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
-                idsdkManager = new IDSDKManager();
 
                 splashScreen = new Dynamo.DynamoSandbox.SplashScreen();
                 splashScreen.webView.NavigationCompleted += WebView_NavigationCompleted;
@@ -154,19 +152,21 @@ namespace DynamoSandbox
             }
         }
 
-        //Returns true if the user was successfully logged in, else false.
-        private bool SignIn(bool status)
+        /// <summary>
+        /// Returns true if the user was successfully logged in, else false.
+        /// </summary>
+        /// <param name="status">If set to false, it will only return the login status without performing the login function</param>
+        private bool SignIn()
         {
-            if (!status) return idsdkManager.IsLoggedIn();
-            bool ret = idsdkManager.Login();
-            return ret;
+            authManager.Login();
+            return authManager.IsLoggedIn();
         }
 
         //Returns true if the user was successfully logged out, else false.
         private bool SignOut()
         {
-            idsdkManager.Logout();
-            return !idsdkManager.IsLoggedIn();
+            authManager.Logout();
+            return !authManager.IsLoggedIn();
         }
 
         private void DynamoModel_RequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)
@@ -202,12 +202,13 @@ namespace DynamoSandbox
 
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenLaunchingDynamo, 70));
             dynamoView = new DynamoView(viewModel);
+            authManager = model.AuthenticationManager;
 
             // If user lauching Dynamo first time or picked to always show splash screen, display it. Otherwise, display Dynamo view directly.
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {
-                splashScreen.SetSignInStatus(idsdkManager.IsLoggedIn());
-                splashScreen.SetLoadingDone(idsdkManager.IsLoggedIn());
+                splashScreen.SetSignInStatus(authManager.IsLoggedIn());
+                splashScreen.SetLoadingDone();
             }
             else
             {
@@ -226,7 +227,7 @@ namespace DynamoSandbox
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
-            splashScreen.SetLabels(idsdkManager.IsLoggedIn());
+            splashScreen.SetLabels();
             LoadDynamoView();
             splashScreen.webView.NavigationCompleted -= WebView_NavigationCompleted;
         }
