@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.PackageManager;
@@ -23,6 +23,7 @@ namespace Dynamo.PackageDetails
         private string copyRightYear;
         private List<string> packages;
         private bool canInstall;
+        private bool isEnabledForInstall;
         private string packageName;
         private PackageLoader PackageLoader { get; }
 
@@ -134,6 +135,10 @@ namespace Dynamo.PackageDetails
             }
         }
 
+        /// <summary>
+        /// Returs true if package version is not already installed,
+        /// false if already installed.
+        /// </summary>
         public bool CanInstall
         {
             get => canInstall;
@@ -141,6 +146,20 @@ namespace Dynamo.PackageDetails
             {
                 canInstall = value;
                 RaisePropertyChanged(nameof(CanInstall));
+            }
+        }
+
+        /// <summary>
+        /// Returs true if package is enabled for download and custom package paths are not disabled,
+        /// False if custom package paths are disabled or package is deprecated, or package is already installed.
+        /// </summary>
+        public bool IsEnabledForInstall
+        {
+            get => isEnabledForInstall;
+            set
+            {
+                isEnabledForInstall = value;
+                RaisePropertyChanged(nameof(IsEnabledForInstall));
             }
         }
 
@@ -152,7 +171,8 @@ namespace Dynamo.PackageDetails
         /// <param name="packageName"></param>
         /// <param name="packageVersion"></param>
         /// <param name="canInstall"></param>
-        public PackageDetailItem(string packageName, PackageVersion packageVersion, bool canInstall)
+        /// <param name="isEnabledForInstall">True, if package is not already downloaded, is not deprecated, and package loading is allowed.</param>
+        public PackageDetailItem(string packageName, PackageVersion packageVersion, bool canInstall, bool isEnabledForInstall = true)
         {
             this.PackageName = packageName;
             this.PackageVersion = packageVersion;
@@ -160,7 +180,9 @@ namespace Dynamo.PackageDetails
             this.CopyRightHolder = PackageVersion.copyright_holder;
             this.CopyRightYear = PackageVersion.copyright_year;
             this.CanInstall = canInstall;
-            
+            this.IsEnabledForInstall = isEnabledForInstall && canInstall;
+
+
             // To avoid displaying package self-dependencies.
             // For instance, avoiding Clockwork showing that it depends on Clockwork.
             this.Packages = PackageVersion.full_dependency_ids

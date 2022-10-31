@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -14,9 +14,24 @@
     <!-- Specify runtimeIdentifier to get around error NETSDK1047: Assets file 'obj\project.assets.json' doesn't have a target for 'net48/win7-x64'-->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
+
+	<Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+		<Exec Command="npm install --prefix ./ @dynamods/splash-screen@latest" />
+    </Target>
+
   <PropertyGroup>
     <ApplicationIcon>logo_square_32x32.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="node_modules\%40dynamods\splash-screen\build\index.bundle.js" />
+    <None Remove="node_modules\%40dynamods\splash-screen\build\index.html" />
+    <None Remove="WebApp\splashScreenBackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="node_modules\@dynamods\splash-screen\build\index.bundle.js" />
+    <EmbeddedResource Include="node_modules\@dynamods\splash-screen\build\index.html" />
+    <EmbeddedResource Include="WebApp\splashScreenBackground.png" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
@@ -69,7 +84,7 @@
     <Resource Include="logo_square_32x32.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="SettingsMigrationWindow.xaml">
+    <Page Include="SplashScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -85,6 +100,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.en-US.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
@@ -95,5 +115,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>

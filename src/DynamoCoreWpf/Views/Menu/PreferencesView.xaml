@@ -1,4 +1,4 @@
-<!--The Preferences Modal Dialog was created folloring the screen design (width, height, colors, styles) located in the next site:
+<!--The Preferences Modal Dialog was created following the screen design (width, height, colors, styles) located in the next site:
     https://www.figma.com/file/i2e1g2calbisxZTadS8pOV/DynamoPreferencePalette?node-id=3%3A3353-->
 <Window x:Class="Dynamo.Wpf.Views.PreferencesView"
         x:Name="DynamoPreferencesWindow"
@@ -179,6 +179,7 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
 
                                 <!--The first Grid Row will contain the Language label and combobox added in a StackPanel vertical-->
@@ -257,8 +258,33 @@
                                     </Grid>
                                 </Grid>
 
+                                <!--This Grid contains controls for selecting Static Splash Screen Display options-->
+                                <Grid Grid.Row="3"
+                                  Margin="4,0,0,20">
+                                    <Grid>
+                                        <Grid.ToolTip>
+                                            <ToolTip Content="{x:Static p:Resources.PreferencesViewShowStaticSplashScreenTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                        </Grid.ToolTip>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ToggleButton Width="{StaticResource ToggleButtonWidth}"
+                                                  Height="{StaticResource ToggleButtonHeight}"
+                                                  VerticalAlignment="Center"
+                                                  Margin="2,0,0,0"
+                                                  Grid.Column="0" 
+                                                  IsEnabled="True"
+                                                  IsChecked="{Binding Path=StaticSplashScreenEnabled}"
+                                                  Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Grid.Column="1"
+                                           Content="{x:Static p:Resources.DynamoViewSettingShowStaticSplashScreen}"
+                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    </Grid>
+                                </Grid>
+
                                 <!--This Grid contains controls for selecting Font Size and Number Format options -->
-                                <Grid Grid.Row="3" Margin="4,0,0,20">
+                                <Grid Grid.Row="4" Margin="4,0,0,20">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
@@ -308,7 +334,7 @@
                                 </Grid>
 
                                 <!--This Grid contains controls for backup files time interval and maximum number of recent files-->
-                                <Grid Grid.Row="4" Margin="4,0,0,20">
+                                <Grid Grid.Row="5" Margin="4,0,0,20">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
@@ -371,11 +397,23 @@
                                                  Foreground="{StaticResource PreferencesWindowFontColor}"
                                                  BorderThickness="0,0,0,2"
                                                  PreviewTextInput="NumberValidationTextBox"/>
+                                        <Image Name="RecentFileNumberInfoIcon"
+                                               Grid.Row="1"
+                                               Width="16"
+                                               Height="16"
+                                               Margin="30,0,0,0"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource ToggleInfoStyle}">
+                                            <Image.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.RecentFileNumberInfo}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Image.ToolTip>
+                                        </Image>
                                     </Grid>
                                 </Grid>
 
                                 <!--Geometry Scaling Expander-->
-                                <Grid Grid.Row="5"
+                                <Grid Grid.Row="6"
                                   Margin="-3,0,1,20">
                                     <Expander x:Name="Scale"
                                       Grid.Row="1" 

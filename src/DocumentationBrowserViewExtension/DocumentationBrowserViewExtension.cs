@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.DocumentationBrowser.Properties;
@@ -66,7 +67,7 @@ namespace Dynamo.DocumentationBrowser
             var pathManager = viewStartupParams.PathManager;
             if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
             {
-                var docsDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                var docsDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
                 fallbackDocPath = docsDir.Exists ? docsDir : null;
             }
 
@@ -76,7 +77,7 @@ namespace Dynamo.DocumentationBrowser
                 //e.g. for Revit the variable HostApplicationDirectory = C:\Program Files\Autodesk\Revit 2023\AddIns\DynamoForRevit\Revit
                 //Then we need to remove the last folder from the path so we can find the fallback_docs directory.
                 var hostAppDirectory = Directory.GetParent(pathManager.HostApplicationDirectory).FullName;
-                var docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                var docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
                 fallbackDocPath = docsDir.Exists ? docsDir : null;
             }
 

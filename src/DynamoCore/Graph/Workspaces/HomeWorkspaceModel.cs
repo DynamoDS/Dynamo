@@ -879,7 +879,7 @@ namespace Dynamo.Graph.Workspaces
                     scheduler.ScheduleForExecution(task);
                 }
             }
-            //Show node exection is checked but the graph has not RUN
+            //Show node execution is checked but the graph has not RUN
             else
             {
                 var deltaComputeStateArgs = new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted);
@@ -889,13 +889,12 @@ namespace Dynamo.Graph.Workspaces
 
         private void OnPreviewGraphCompleted(AsyncTask asyncTask)
         {
-            var updateTask = asyncTask as PreviewGraphAsyncTask;
-            if (updateTask != null)
+            if (asyncTask is PreviewGraphAsyncTask updateTask)
             {
                 var nodeGuids = updateTask.previewGraphData;
-                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(nodeGuids,graphExecuted);
-                OnSetNodeDeltaState(deltaComputeStateArgs);               
-            }            
+                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(nodeGuids, graphExecuted);
+                OnSetNodeDeltaState(deltaComputeStateArgs);
+            }
         }
 
 

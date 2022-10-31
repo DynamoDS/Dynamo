@@ -14,7 +14,6 @@
     </metadata>
     <files>
         <file src="..\..\..\bin\AnyCPU\Release\samples\**" target="Samples" />
-        <file src="..\..\..\bin\AnyCPU\Release\gallery\**" target="gallery" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>

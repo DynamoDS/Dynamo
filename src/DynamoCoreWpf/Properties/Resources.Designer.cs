@@ -475,6 +475,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Navigate Downstream.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderEndNode {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderEndNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide Wire.
         /// </summary>
         public static string ConnectorContextMenuHeaderHideConnector {
@@ -507,6 +516,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ConnectorContextMenuHeaderShowConnector {
             get {
                 return ResourceManager.GetString("ConnectorContextMenuHeaderShowConnector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate Upstream.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderStartNode {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderStartNode", resourceCulture);
             }
         }
         
@@ -2180,6 +2198,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Static Splash Screen.
+        /// </summary>
+        public static string DynamoViewSettingShowStaticSplashScreen {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingShowStaticSplashScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Geometry Scaling....
         /// </summary>
         public static string DynamoViewSettingsMenuChangeScaleFactor {
@@ -2886,15 +2913,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version {0}.{1}.{2}.
-        /// </summary>
-        public static string GalleryDynamoVersion {
-            get {
-                return ResourceManager.GetString("GalleryDynamoVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string GenericTaskDialogOptionCancel {
@@ -3111,15 +3129,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Getting Started.
-        /// </summary>
-        public static string GettingStartedMenuItem {
-            get {
-                return ResourceManager.GetString("GettingStartedMenuItem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cancel and Show Issues.
         /// </summary>
         public static string GraphIssuesOnSave_CancelBtn {
@@ -3327,7 +3336,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your custom settings can be imported here. It will be applied once Dynamo and any host program restarts.
+        ///   Looks up a localized string similar to Your custom settings can be imported here. Settings will be applied once Dynamo and any host program restarts..
         /// </summary>
         public static string ImportPreferencesInfo {
             get {
@@ -3813,7 +3822,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Machine Learning.
+        ///   Looks up a localized string similar to ML Recommendation.
         /// </summary>
         public static string MachineLearning {
             get {
@@ -5042,6 +5051,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This package is outdated and cannot be installed..
+        /// </summary>
+        public static string PackageDeprecatedTooltip {
+            get {
+                return ResourceManager.GetString("PackageDeprecatedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copyright Holder.
         /// </summary>
         public static string PackageDetailsCopyRightHolder {
@@ -5273,6 +5291,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageManagerInstall {
             get {
                 return ResourceManager.GetString("PackageManagerInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deprecated.
+        /// </summary>
+        public static string PackageManagerPackageDeprecated {
+            get {
+                return ResourceManager.GetString("PackageManagerPackageDeprecated", resourceCulture);
             }
         }
         
@@ -5633,15 +5660,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageSearchViewContextMenuSortyByUpdate {
             get {
                 return ResourceManager.GetString("PackageSearchViewContextMenuSortyByUpdate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to DEPRECATED.
-        /// </summary>
-        public static string PackageSearchViewDeprecated {
-            get {
-                return ResourceManager.GetString("PackageSearchViewDeprecated", resourceCulture);
             }
         }
         
@@ -6635,6 +6653,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This setting controls whether user will be directed to an extra static splash screen after the intial launch..
+        /// </summary>
+        public static string PreferencesViewShowStaticSplashScreenTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowStaticSplashScreenTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Whitespace in Python Editor.
         /// </summary>
         public static string PreferencesViewShowWhitespaceInPythonEditor {
@@ -7170,7 +7197,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Markdown Files Directory (optional).
+        ///   Looks up a localized string similar to Markdown Files Path (optional).
         /// </summary>
         public static string PublishPackageViewMarkdownFilesDirectory {
             get {
@@ -7413,6 +7440,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reducing this number will discard all recent files beyond your chosen number..
+        /// </summary>
+        public static string RecentFileNumberInfo {
+            get {
+                return ResourceManager.GetString("RecentFileNumberInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please check if you intended to render this amount of geometry, and consider turning off the preview of other nodes within your graph, lowering the amount of Geometry you wish to render, or turning down the render precision..
         /// </summary>
         public static string RenderingMemoryOutageDescription {
@@ -7607,15 +7643,6 @@ namespace Dynamo.Wpf.Properties {
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Confirmation.
-        /// </summary>
-        public static string SaveConfirmationMessageBoxTitle {
-            get {
-                return ResourceManager.GetString("SaveConfirmationMessageBoxTitle", resourceCulture);
             }
         }
         
@@ -7841,6 +7868,15 @@ namespace Dynamo.Wpf.Properties {
         public static string SolutionToFolderNotWritatbleError {
             get {
                 return ResourceManager.GetString("SolutionToFolderNotWritatbleError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading View Extensions....
+        /// </summary>
+        public static string SplashScreenViewExtensions {
+            get {
+                return ResourceManager.GetString("SplashScreenViewExtensions", resourceCulture);
             }
         }
         
@@ -8482,6 +8518,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UnpinNodeTooltip {
             get {
                 return ResourceManager.GetString("UnpinNodeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsaved changes.
+        /// </summary>
+        public static string UnsavedChangesMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("UnsavedChangesMessageBoxTitle", resourceCulture);
             }
         }
         
