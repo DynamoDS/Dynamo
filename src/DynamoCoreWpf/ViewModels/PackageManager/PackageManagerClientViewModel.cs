@@ -598,7 +598,6 @@ namespace Dynamo.ViewModels
                     if (duplicatePackage.InUse(DynamoViewModel.Model))
                     {// Loaded assemblies or package in use in workspace
                         dialogResult = MessageBoxService.Show(
-                            Owner,
                             string.Format(Resources.MessageSamePackageDiffVersInLocalPackages, packageToDownload, dupPkg, DynamoViewModel.BrandingResourceProvider.ProductName),
                             Resources.LoadedPackagesConflictMessageBoxTitle,
                             MessageBoxButton.OKCancel, new string[] { Resources.UninstallLoadedPackage, Resources.GenericTaskDialogOptionCancel }, MessageBoxImage.Exclamation);
@@ -613,7 +612,6 @@ namespace Dynamo.ViewModels
                     else
                     {
                         dialogResult = MessageBoxService.Show(
-                            Owner,
                             String.Format(Resources.MessageAlreadyInstallDynamo,
                             DynamoViewModel.BrandingResourceProvider.ProductName, dupPkg, packageToDownload), 
                             Resources.PackagesInUseConflictMessageBoxTitle,
