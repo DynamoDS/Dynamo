@@ -152,9 +152,7 @@ namespace EmitMSIL
             }
 #endif
             EmitOpCode(OpCodes.Ret);
-#if DEBUG
-            writer.Close();
-#endif
+
             return (asm, type);
         }
 
