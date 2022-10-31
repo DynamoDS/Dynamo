@@ -1839,6 +1839,11 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Inserts a Dynamo graph or Custom Node inside the current workspace from a file path
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="forceManualExecutionMode"></param>
         public void InsertFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
             XmlDocument xmlDoc;
@@ -1948,11 +1953,8 @@ namespace Dynamo.Models
                 DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
                 if (dynamoPreferences != null)
                 {
-                    // TODO, QNTM-1101: Figure out JSON migration strategy
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
-                        
-                        //ExtraWorkspaceViewInfo viewInfo = Dynamo.View WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
                         WorkspaceModel ws;
                         if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
                         {
@@ -3346,12 +3348,6 @@ namespace Dynamo.Models
 
                 var guidValue = WorkspaceModel.IdToGuidConverter(annotation.Id);
                 var matchingNote = CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == guidValue);
-
-                //if (matchingNote != null)
-                //{
-                //    matchingNote.CenterX += offsetX;
-                //    matchingNote.CenterY += offsetY; 
-                //}
             }
         }
 
@@ -3363,13 +3359,7 @@ namespace Dynamo.Models
                 {
                     continue;  // prevent loading the same node twice
                 }
-
-                //if (offsetX != 0 || offsetY != 0)
-                //{
-                //    node.CenterX += offsetX;
-                //    node.CenterY += offsetY;
-                //}
-
+                
                 currentWorkspace.AddAndRegisterNode(node, false);
             }
         }
