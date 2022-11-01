@@ -32,9 +32,9 @@ namespace EmitMSIL
         /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
         /// </summary>
         private Dictionary<int, Type> astTypeInfoMap = new Dictionary<int, Type>();
-#if DEBUG
+//#if DEBUG
         private StreamWriter writer;
-#endif
+//#endif
         private Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>> methodCache = new Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>();
         private Dictionary<int, bool> willReplicateCache = new Dictionary<int, bool>();
         private CompilePass compilePass;
@@ -65,9 +65,6 @@ namespace EmitMSIL
         {
             this.logPath = filePath;
             this.input = input;
-#if DEBUG
-            writer = new StreamWriter(filePath);
-#endif
             this.runtimeCore = runtimeCore;
         }
 
@@ -2033,9 +2030,6 @@ namespace EmitMSIL
 
         public void Dispose()
         {
-#if DEBUG
-            writer?.Dispose();
-#endif
         }
     }
 
