@@ -13,6 +13,7 @@ using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Selection;
@@ -226,7 +227,6 @@ namespace Dynamo.DocumentationBrowser
                 group.DissolveNestedGroupsCommand.Execute(null);
             }
 
-           
             foreach (var group in hostGroups)
             {
                 selection.RemoveAll(x => group.AnnotationModel.ContainsModel(x as ModelBase));
@@ -251,6 +251,9 @@ namespace Dynamo.DocumentationBrowser
 
                 DynamoSelection.Instance.ClearSelection();
                 DynamoSelection.Instance.Selection.AddRange(annotation.Nodes);
+                if(annotation.HasNestedGroups)
+                    DynamoSelection.Instance.Selection.AddRange(annotation.Nodes.OfType<AnnotationModel>().SelectMany(x => x.Nodes));
+
                 DoEvents();
             }
 
@@ -263,7 +266,6 @@ namespace Dynamo.DocumentationBrowser
             foreach (var group in this.DynamoViewModel.CurrentSpaceViewModel.Annotations)
             {
                 if (existingGroups.Contains(group)) continue;
-
                 if (group.AnnotationModel.HasNestedGroups)
                 {
                     hostGroups.Add(group);
@@ -279,7 +281,18 @@ namespace Dynamo.DocumentationBrowser
 
             foreach (var selected in DynamoSelection.Instance.Selection)
             {
+                foreach (var group in this.DynamoViewModel.CurrentSpaceViewModel.Annotations)
+                {
+                    if (group.Nodes.Contains(selected))
+                    {
+                        if(!selection.Contains(group.AnnotationModel))
+                            selection.Add(group.AnnotationModel);
+                        goto SkipSelection;
+                    }
+                }
                 selection.Add(selected);
+                SkipSelection:
+                    continue;
             }
 
             return selection;

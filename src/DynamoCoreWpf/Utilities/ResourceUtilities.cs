@@ -89,9 +89,12 @@ namespace Dynamo.Utilities
                 offset.x = offset.y = 0;
             }
 
-            function insert(){
+            function insert(ev){
+                ev.preventDefault();
+                document.getElementById('insert').removeEventListener('click', insert);
                 let message = 'insert';
                 window.chrome.webview.postMessage(message);
+                document.getElementById('insert').addEventListener('click', insert);
             }
 
             function zoom(zoomtype)
@@ -205,9 +208,7 @@ namespace Dynamo.Utilities
             document.getElementById('zoomfit').addEventListener('click', function() {
               fit();
             });
-           document.getElementById('insert').addEventListener('click', function () {
-              insert();
-           });
+            document.getElementById('insert').addEventListener('click', insert);
 
             document.getElementById('img--container').addEventListener('wheel', scroll);
             document.querySelectorAll('.container').forEach(pannable);
