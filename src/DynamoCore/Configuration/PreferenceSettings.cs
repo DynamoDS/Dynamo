@@ -682,7 +682,9 @@ namespace Dynamo.Configuration
 
         #region Dynamo Player and Generative Design settings
 
-        // Collections of folders used by Dynamo Player or Generative Design as entry points.
+        /// <summary>
+        /// Collections of folders used by Dynamo Player or Generative Design as entry points.
+        /// </summary>
         public Dictionary<string, List<DynamoPlayerFolderItem>> DynamoPlayerFolderItems;
 
         #endregion
@@ -1105,6 +1107,9 @@ namespace Dynamo.Configuration
         }
     }
 
+    /// <summary>
+    /// This class describes a folder (usually containing Dynamo graphs) used by the Dynamo Player / Generative Design as an entry point
+    /// </summary>
     public class DynamoPlayerFolderItem
     {
         /// <summary>
