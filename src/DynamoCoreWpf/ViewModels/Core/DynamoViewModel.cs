@@ -1577,7 +1577,9 @@ namespace Dynamo.ViewModels
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, "Json file content");
                     }
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
-                    MessageBoxService.Show(errorMsgString, 
+                    MessageBoxService.Show(
+                        Owner,
+                        errorMsgString, 
                         Properties.Resources.FileLoadFailureMessageBoxTitle, 
                         MessageBoxButton.OK, 
                         MessageBoxImage.Exclamation);
@@ -1659,7 +1661,12 @@ namespace Dynamo.ViewModels
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
                     }
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
-                    MessageBoxService.Show(errorMsgString, commandString, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBoxService.Show(
+                        Owner,
+                        errorMsgString,
+                        commandString,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
                 else
                 {
@@ -2012,7 +2019,12 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(ex.StackTrace);
 
                 if (ex is IOException || ex is UnauthorizedAccessException)
-                    MessageBoxService.Show(ex.Message, Resources.UnsavedChangesMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBoxService.Show(
+                        Owner,
+                        ex.Message,
+                        Resources.UnsavedChangesMessageBoxTitle,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
             }
         }
 
@@ -2069,7 +2081,12 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(ex.StackTrace);
 
                 if (ex is IOException || ex is UnauthorizedAccessException)
-                    MessageBoxService.Show(ex.Message, string.Empty, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBoxService.Show(
+                        Owner,
+                        ex.Message,
+                        string.Empty,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
             }
         }
 
@@ -3003,13 +3020,21 @@ namespace Dynamo.ViewModels
                 catch(LibraryLoadFailedException ex)
                 {
                     Wpf.Utilities.MessageBoxService.Show(
-                        ex.Message, Properties.Resources.LibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        Owner,
+                        ex.Message,
+                        Properties.Resources.LibraryLoadFailureMessageBoxTitle,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation);;
                 }
                 catch(DynamoServices.AssemblyBlockedException ex)
                 {
                     var failureMessage = string.Format(Properties.Resources.LibraryLoadFailureForBlockedAssembly, ex.Message);
                     Wpf.Utilities.MessageBoxService.Show(
-                        failureMessage, Properties.Resources.LibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        Owner,
+                        failureMessage,
+                        Properties.Resources.LibraryLoadFailureMessageBoxTitle,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation);
                 }
             }
         }

@@ -1059,9 +1059,6 @@ Failed to publish file(s):
   <data name="FolderNotWritableError" xml:space="preserve">
     <value>You do not have write permission to {0}.</value>
   </data>
-  <data name="GalleryDynamoVersion" xml:space="preserve">
-    <value>Version {0}.{1}.{2}</value>
-  </data>
   <data name="GenericTaskDialogSampleLeftButton" xml:space="preserve">
     <value>Sample Left Button</value>
     <comment>Sample button, it will be replaced at runtime</comment>
@@ -3024,9 +3021,6 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="ConfigureADPButtonText" xml:space="preserve">
     <value>Configure Autodesk Analytics Program</value>
-  </data>
-  <data name="GettingStartedMenuItem" xml:space="preserve">
-    <value>_Getting Started</value>
   </data>
   <data name="ContinueInstall" xml:space="preserve">
     <value>Continue install</value>

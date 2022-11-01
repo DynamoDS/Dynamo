@@ -623,10 +623,6 @@
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
                               Name="HelpMenu"
                               Focusable="False">
-                        <MenuItem Header="{x:Static p:Resources.GettingStartedMenuItem}"
-                                  Name="WhatsNew"
-                                  Command="{Binding ShowGalleryCommand}">
-                        </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.InteractiveGuides}"
                                   x:Name="InteractiveGuidesMenuItem"
                                   Command="{Binding DisplayInteractiveGuideCommand}">
@@ -1788,16 +1784,6 @@
                          UpdateSourceTrigger="Explicit" />
             </ItemsControl.Visibility>
         </ItemsControl>
-
-        <!--Gallery or What's new-->
-        <Grid Name="galleryBackground"
-              Visibility="Hidden"
-              Canvas.ZIndex="2"
-              MouseLeftButtonDown="OnGalleryBackgroundMouseClick">
-            <Grid.Background>
-                <SolidColorBrush Color="Black" Opacity="0.8"/>
-            </Grid.Background>
-        </Grid>
 
         <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>
     </Grid>
