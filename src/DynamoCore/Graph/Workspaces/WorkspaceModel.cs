@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -2361,6 +2362,7 @@ namespace Dynamo.Graph.Workspaces
             if (workspaceViewInfo == null)
                 return;
 
+
             X = workspaceViewInfo.X;
             Y = workspaceViewInfo.Y;
             Zoom = workspaceViewInfo.Zoom;
@@ -2390,14 +2392,54 @@ namespace Dynamo.Graph.Workspaces
             // This function loads annotations from the Annotations array in the JSON format
             // that have a non-empty nodes collection
             LoadAnnotations(workspaceViewInfo.Annotations);
-
-            // TODO, QNTM-1099: These items are not in the extra view info
-            // Name = info.Name;
-            // Description = info.Description;
-            // FileName = info.FileName;
         }
 
-        private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews)
+        /// <summary>
+        /// Updates a workspace model with extra view information. When loading a workspace from JSON,
+        /// the data is split into two parts, model and view. This method sets the view information.
+        /// This overload allows to 'move' the incoming when placing them
+        /// </summary>
+        /// <param name="workspaceViewInfo"></param>
+        /// <param name="offsetX">Offset in X direction (positive - left, negative - right)</param>
+        /// <param name="offsetY">Offset in Y direction (positive - down, negative - up)</param>
+        public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo, double offsetX = 0.0, double offsetY = 0.0)
+        {
+            if (workspaceViewInfo == null)
+                return;
+
+
+            X = workspaceViewInfo.X;
+            Y = workspaceViewInfo.Y;
+            Zoom = workspaceViewInfo.Zoom;
+
+            OnCurrentOffsetChanged(
+                this,
+                new PointEventArgs(new Point2D(X, Y)));
+
+            // This function loads standard nodes
+            LoadNodes(workspaceViewInfo.NodeViews, offsetX, offsetY);
+
+            // This function loads notes from the Notes array in the JSON format
+            // NOTE: This is here to support early JSON graphs
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadLegacyNotes(workspaceViewInfo.Notes, offsetX, offsetY);
+
+            // This function loads notes from the Annotations array in the JSON format
+            // that have an empty nodes collection
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadNotesFromAnnotations(workspaceViewInfo.Annotations, offsetX, offsetY);
+
+            ///This function loads ConnectorPins to the corresponding connector models.
+            LoadConnectorPins(workspaceViewInfo.ConnectorPins, offsetX, offsetY);
+
+            // This function loads annotations from the Annotations array in the JSON format
+            // that have a non-empty nodes collection
+            LoadAnnotations(workspaceViewInfo.Annotations);
+        }
+
+        private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews, double offsetX = 0.0, double offsetY = 0.0)
         {
             if (nodeViews == null)
                 return;
@@ -2408,8 +2450,16 @@ namespace Dynamo.Graph.Workspaces
                 var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
                 if (nodeModel != null)
                 {
-                    nodeModel.X = nodeViewInfo.X;
-                    nodeModel.Y = nodeViewInfo.Y;
+                    if (offsetX == 0.0 && offsetY == 0.0)
+                    {
+                        nodeModel.X = nodeViewInfo.X;
+                        nodeModel.Y = nodeViewInfo.Y;
+                    }
+                    else
+                    {
+                        nodeModel.X = nodeViewInfo.X + offsetX;
+                        nodeModel.Y = nodeViewInfo.Y + offsetY;
+                    }
                     nodeModel.IsFrozen = nodeViewInfo.Excluded;
                     nodeModel.IsSetAsInput = nodeViewInfo.IsSetAsInput;
                     nodeModel.IsSetAsOutput = nodeViewInfo.IsSetAsOutput;
@@ -2431,7 +2481,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private void LoadLegacyNotes(IEnumerable<ExtraNoteViewInfo> noteViews)
+        private void LoadLegacyNotes(IEnumerable<ExtraNoteViewInfo> noteViews, double offsetX = 0.0, double offsetY = 0.0)
         {
             if (noteViews == null)
                 return;
@@ -2441,7 +2491,15 @@ namespace Dynamo.Graph.Workspaces
                 var guidValue = IdToGuidConverter(noteViewInfo.Id);
 
                 // TODO, QNTM-1099: Figure out if ZIndex needs to be set here as well
-                var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
+                NoteModel noteModel;
+                if (offsetX == 0.0 && offsetY == 0.0)
+                {
+                    noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
+                }
+                else
+                {
+                    noteModel = new NoteModel(noteViewInfo.X + offsetX, noteViewInfo.Y + offsetY, noteViewInfo.Text, guidValue);
+                }
 
                 //if this note does not exist, add it to the workspace.
                 var matchingNote = this.Notes.FirstOrDefault(x => x.GUID == noteModel.GUID);
@@ -2452,7 +2510,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private void LoadNotesFromAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
+        private void LoadNotesFromAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews, double offsetX = 0.0, double offsetY = 0.0)
         {
             if (annotationViews == null)
                 return;
@@ -2472,12 +2530,25 @@ namespace Dynamo.Graph.Workspaces
                 var pinnedNode = this.Nodes.
                     FirstOrDefault(x => x.GUID.ToString("N") == annotationViewInfo.PinnedNode);
 
-                var noteModel = new NoteModel(
-                    annotationViewInfo.Left,
-                    annotationViewInfo.Top,
-                    text,
-                    annotationGuidValue,
-                    pinnedNode);
+                NoteModel noteModel;
+                if (offsetX == 0.0 && offsetY == 0.0)
+                {
+                    noteModel = new NoteModel(
+                        annotationViewInfo.Left,
+                        annotationViewInfo.Top,
+                        text,
+                        annotationGuidValue,
+                        pinnedNode);
+                }
+                else
+                {
+                    noteModel = new NoteModel(
+                        annotationViewInfo.Left + offsetX,
+                        annotationViewInfo.Top + offsetY,
+                        text,
+                        annotationGuidValue,
+                        pinnedNode);
+                }
 
                 //if this note does not exist, add it to the workspace.
                 var matchingNote = this.Notes.FirstOrDefault(x => x.GUID == noteModel.GUID);
@@ -2488,7 +2559,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private void LoadConnectorPins(IEnumerable<ExtraConnectorPinInfo> pinInfo)
+        private void LoadConnectorPins(IEnumerable<ExtraConnectorPinInfo> pinInfo, double offsetX = 0.0, double offsetY = 0.0)
         {
             if (pinInfo == null) { return; }
 
@@ -2499,7 +2570,15 @@ namespace Dynamo.Graph.Workspaces
                 var matchingConnector = Connectors.FirstOrDefault(x => x.GUID == connectorGuid);
                 if (matchingConnector is null) { return; }
 
-                matchingConnector.AddPin(pinViewInfo.Left, pinViewInfo.Top);
+                if (offsetX == 0.0 && offsetY == 0.0)
+                {
+                    matchingConnector.AddPin(pinViewInfo.Left, pinViewInfo.Top);
+                }
+                else
+                {
+                    matchingConnector.AddPin(pinViewInfo.Left + offsetX, pinViewInfo.Top + offsetY);
+                }
+
             }
         }
 
@@ -2604,7 +2683,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private Guid IdToGuidConverter(string id)
+        internal static Guid IdToGuidConverter(string id)
         {
             Guid deterministicGuid;
             if (!Guid.TryParse(id, out deterministicGuid))

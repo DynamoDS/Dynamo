@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dynamo.Models;
 
 namespace Dynamo.ViewModels
@@ -144,6 +144,7 @@ namespace Dynamo.ViewModels
                 case "AddModelToGroupCommand":
                 case "CreateAndConnectNodeCommand":
                 case "AddGroupToGroupCommand":
+                case "InsertFileCommand":
                     RaiseCanExecuteUndoRedo();
                     break;
 
@@ -189,6 +190,7 @@ namespace Dynamo.ViewModels
 
                 case "OpenFileCommand":
                 case "OpenFileFromJsonCommand":
+                case "InsertFileCommand":
                 case "RunCancelCommand":
                 case "ForceRunCancelCommand":
                 case "CreateNodeCommand":

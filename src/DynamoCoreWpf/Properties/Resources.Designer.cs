@@ -1649,6 +1649,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert....
+        /// </summary>
+        public static string DynamoViewFileMenuInsert {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _New.
         /// </summary>
         public static string DynamoViewFileMenuNew {
@@ -1883,11 +1892,47 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Graph changes are executed in real time. Best suited for smaller graphs, known graphs, and Dynamo Sandbox..
+        /// </summary>
+        public static string DynamoViewRunTypesAutomaticToolTip {
+            get {
+                return ResourceManager.GetString("DynamoViewRunTypesAutomaticToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run mode can not be changed until warning is resolved.
         /// </summary>
         public static string DynamoViewRunTypesComboBoxToolTipDisabled {
             get {
                 return ResourceManager.GetString("DynamoViewRunTypesComboBoxToolTipDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run mode\n\nControls when graph changes are executed..
+        /// </summary>
+        public static string DynamoViewRunTypesComboBoxToolTipEnabled {
+            get {
+                return ResourceManager.GetString("DynamoViewRunTypesComboBoxToolTipEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host applications..
+        /// </summary>
+        public static string DynamoViewRunTypesManualToolTip {
+            get {
+                return ResourceManager.GetString("DynamoViewRunTypesManualToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph changes are executed at a specified interval. Only available when the graph contains specific nodes, such as DateTime.Now or WebRequest..
+        /// </summary>
+        public static string DynamoViewRunTypesPeriodicToolTip {
+            get {
+                return ResourceManager.GetString("DynamoViewRunTypesPeriodicToolTip", resourceCulture);
             }
         }
         
@@ -6424,6 +6469,19 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewDefaultPythonEngine {
             get {
                 return ResourceManager.GetString("PreferencesViewDefaultPythonEngine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set the default run mode for your graphs. In Manual mode,  graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host programs.
+        ///
+        ///In Automatic mode, graph changes are executed in real time. This mode provides immediate feedback. 
+        ///
+        ///In certain complex graphs or host program scenarios, Automatic mode may cause instability issues or other problems. If this happens, try switching to Manual mode..
+        /// </summary>
+        public static string PreferencesViewDefaultRunSettingsInfoTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewDefaultRunSettingsInfoTooltip", resourceCulture);
             }
         }
         

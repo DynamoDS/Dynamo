@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Dynamo.Extensions;
 using Dynamo.Logging;
@@ -6,7 +6,6 @@ using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.Wpf.Extensions
 {
-
     /// <summary>
     /// An object which may request a layout specification to be applied to the current library.
     /// </summary>
@@ -17,6 +16,11 @@ namespace Dynamo.Wpf.Extensions
         /// The string parameter here should be the layout spec json to merge into the existing spec.
         /// </summary>
         event Action<string> RequestApplyLayoutSpec;
+
+        /// <summary>
+        /// Event that is raised when LayoutSpecSource requests a LayoutSpec
+        /// </summary>
+        event Func<LayoutSpecification> RequestLayoutSpec;
     }
 
     /// <summary>
@@ -109,6 +113,13 @@ namespace Dynamo.Wpf.Extensions
                 }
         }
 
+        private void RequsetLayoutSpeckHandler(string speckJSON)
+        {
+            var test = speckJSON;
+            var customizationService = extensionManager.Service<ILibraryViewCustomization>();
+            var originalLayoutSpec = customizationService.GetSpecification();
+        }
+
         private void UnsubscribeViewExtension(IViewExtension obj)
         {
             if (obj is IViewExtensionSource)
@@ -119,7 +130,16 @@ namespace Dynamo.Wpf.Extensions
             if (obj is ILayoutSpecSource ls)
             {
                 ls.RequestApplyLayoutSpec -= RequestApplyLayoutSpecHandler;
+                ls.RequestLayoutSpec -= RequsetLayoutSpeckHandler;
             }
+        }
+
+        private LayoutSpecification RequsetLayoutSpeckHandler()
+        {
+            var customizationService = extensionManager.Service<ILibraryViewCustomization>();
+            var originalLayoutSpec = customizationService.GetSpecification();
+
+            return originalLayoutSpec;
         }
 
         private void SubscribeViewExtension(IViewExtension obj)
@@ -132,6 +152,7 @@ namespace Dynamo.Wpf.Extensions
             if (obj is ILayoutSpecSource ls)
             {
                 ls.RequestApplyLayoutSpec += RequestApplyLayoutSpecHandler;
+                ls.RequestLayoutSpec += RequsetLayoutSpeckHandler;
             }
         }
         public ViewExtensionLoader ExtensionLoader
