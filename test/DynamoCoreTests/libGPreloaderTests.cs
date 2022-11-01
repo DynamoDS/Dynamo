@@ -513,7 +513,7 @@ namespace Dynamo.Tests
         [Test]
         public void ASM229InstallationsAreValidated()
         {
-            var incomplete229List = LoadListFromCsv("incomplete228List.csv");
+            var incomplete229List = LoadListFromCsv("incomplete229List.csv");
             Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete229List, 229));
             // Add missing DLLs. Now the the installation should be valid.
             incomplete229List.Add("tsplines11.dll");
