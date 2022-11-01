@@ -235,12 +235,10 @@ namespace Dynamo.DocumentationBrowser
             var annotationViewModel = DynamoViewModel.CurrentSpaceViewModel.Annotations
                     .First(x => x.AnnotationModel == annotation);
 
-            // Is that the correct way of getting a GroupStyleItem from StyleItem?
             var styleItem = annotationViewModel.GroupStyleList.First(x => x.Name.Equals(DynamoProperties.Resources.GroupStyleDefaultReview));
             var groupStyleItem = new GroupStyleItem {Name = styleItem.Name, HexColorString = styleItem.HexColorString};
             annotationViewModel.UpdateGroupStyle(groupStyleItem);
 
-            //DefaultGroupStyleItems
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.AddRange(annotation.Nodes);
             DoEvents();

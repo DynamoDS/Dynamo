@@ -2357,7 +2357,6 @@ namespace Dynamo.Graph.Workspaces
         /// the data is split into two parts, model and view. This method sets the view information.
         /// </summary>
         /// <param name="workspaceViewInfo">The extra view information from the workspace to update the model with.</param>
-        /// <param name="centerNodes">Should Nodes be centered at their locations.</param>
         public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo)
         {
             if (workspaceViewInfo == null)
@@ -2394,7 +2393,6 @@ namespace Dynamo.Graph.Workspaces
             // that have a non-empty nodes collection
             LoadAnnotations(workspaceViewInfo.Annotations);
 
-            // TODO, QNTM-1099: These items are not in the extra view info
             // Name = info.Name;
             // Description = info.Description;
             // FileName = info.FileName;
