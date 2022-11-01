@@ -3396,4 +3396,34 @@ In Automatic mode, graph changes are executed in real time. This mode provides i
 
 In certain complex graphs or host program scenarios, Automatic mode may cause instability issues or other problems. If this happens, try switching to Manual mode.</value>
   </data>
+  <data name="SplashScreenFailedImportSettings" xml:space="preserve">
+    <value>Failed to Import Settings</value>
+  </data>
+  <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
+    <value>Something went wrong when importing your custom setting file. Please try again or proceed with default settings.</value>
+  </data>
+  <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
+    <value>Launching Dynamo View...</value>
+  </data>
+  <data name="SplashScreenLaunchTitle" xml:space="preserve">
+    <value>Launch Dynamo</value>
+  </data>
+  <data name="SplashScreenLoadingTimeLabel" xml:space="preserve">
+    <value>Loading time</value>
+  </data>
+  <data name="SplashScreenSettingsImported" xml:space="preserve">
+    <value>Settings imported</value>
+  </data>
+  <data name="SplashScreenShowScreenAgainLabel" xml:space="preserve">
+    <value>Don’t show this screen again</value>
+  </data>
+  <data name="SplashScreenSignIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="SplashScreenSignOut" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="SplashScreenWelcomeToDynamo" xml:space="preserve">
+    <value>Welcome to Dynamo!</value>
+  </data>
 </root>

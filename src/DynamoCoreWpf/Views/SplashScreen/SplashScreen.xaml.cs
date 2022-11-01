@@ -7,22 +7,20 @@ using System.Windows;
 using Microsoft.Web.WebView2.Core;
 
 
-namespace Dynamo.DynamoSandbox
+namespace Dynamo.UI.Views
 {
     public partial class SplashScreen : Window
     {
         // These are hardcoded string and should only change when npm package structure changed or image path changed
-        private static readonly string htmlEmbeddedFile = "Dynamo.DynamoSandbox.node_modules._dynamods.splash_screen.build.index.html";
-        private static readonly string jsEmbeddedFile = "Dynamo.DynamoSandbox.node_modules._dynamods.splash_screen.build.index.bundle.js";
-        private static readonly string backgroundImage = "Dynamo.DynamoSandbox.WebApp.splashScreenBackground.png";
+        private static readonly string htmlEmbeddedFile = "Dynamo.UI.Views.SplashScreen.node_modules._dynamods.splash_screen.build.index.html";
+        private static readonly string jsEmbeddedFile = "Dynamo.UI.Views.SplashScreen.node_modules._dynamods.splash_screen.build.index.bundle.js";
+        private static readonly string backgroundImage = "Dynamo.UI.Views.SplashScreen.WebApp.splashScreenBackground.png";
         private static readonly string imageFileExtension = "png";
 
         private Stopwatch loadingTimer;
 
         internal Action<bool> RequestLaunchDynamo;
         internal Action<string> RequestImportSettings;
-        internal Func<bool> RequestSignIn; 
-        internal Func<bool> RequestSignOut;
 
         public SplashScreen()
         {
@@ -68,7 +66,7 @@ namespace Dynamo.DynamoSandbox
 
             webView.NavigateToString(htmlString);
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
-               new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut));
+               new ScriptObject(RequestLaunchDynamo, RequestImportSettings));
         }
 
         internal async void SetBarProperties(string version, string loadingDescription, float barSize)
@@ -94,22 +92,13 @@ namespace Dynamo.DynamoSandbox
         }
 
         /// <summary>
-        /// Set the login status on splash screen.
-        /// </summary>
-        internal async void SetSignInStatus(bool status)
-        {
-            await webView.CoreWebView2.ExecuteScriptAsync("window.setSignInStatus({" +
-                $"signInTitle: '" + (status ? Properties.Resources.SplashScreenSignOut : Properties.Resources.SplashScreenSignIn).ToString() + "'," +
-                $"signInStatus: '" + status + "'})");
-        }
-
-        /// <summary>
         /// Setup the values for all lables on splash screen using resources
         /// </summary>
         internal async void SetLabels()
         {
             await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
                $"welcomeToDynamoTitle: '{Properties.Resources.SplashScreenWelcomeToDynamo}'," +
+               $"signInTitle: '{Properties.Resources.SplashScreenSignIn}'," +
                $"launchTitle: '{Properties.Resources.SplashScreenLaunchTitle}'," +
                $"showScreenAgainLabel: '{Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
         }
@@ -138,15 +127,11 @@ namespace Dynamo.DynamoSandbox
     {
         readonly Action<bool> RequestLaunchDynamo;
         readonly Action<string> RequestImportSettings;
-        readonly Func<bool> RequestSignIn;
-        readonly Func<bool> RequestSignOut;
 
-        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut)
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
             RequestImportSettings = requestImportSettings;
-            RequestSignIn = requestSignIn;
-            RequestSignOut = requestSignOut;
         }
 
         public void LaunchDynamo(bool showScreenAgain)
@@ -157,14 +142,6 @@ namespace Dynamo.DynamoSandbox
         public void ImportSettings(string file)
         {
             RequestImportSettings(file);
-        }
-        public bool SignIn()
-        {
-            return RequestSignIn();
-        }
-        public bool SignOut()
-        {
-            return RequestSignOut();
         }
     }
 }

@@ -6,7 +6,6 @@ using System.Windows;
 using Dynamo.Applications;
 using Dynamo.Controls;
 using Dynamo.Core;
-using Dynamo.DynamoSandbox;
 using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -18,7 +17,7 @@ namespace DynamoSandbox
 {
     class DynamoCoreSetup
     {
-        private Dynamo.DynamoSandbox.SplashScreen splashScreen;
+        private DynamoView.SplashScreen splashScreen;
         private DynamoViewModel viewModel = null;
         private readonly string commandFilePath;
         private readonly string CERLocation;
