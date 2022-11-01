@@ -2392,10 +2392,6 @@ namespace Dynamo.Graph.Workspaces
             // This function loads annotations from the Annotations array in the JSON format
             // that have a non-empty nodes collection
             LoadAnnotations(workspaceViewInfo.Annotations);
-
-            // Name = info.Name;
-            // Description = info.Description;
-            // FileName = info.FileName;
         }
 
         /// <summary>
@@ -2441,11 +2437,6 @@ namespace Dynamo.Graph.Workspaces
             // This function loads annotations from the Annotations array in the JSON format
             // that have a non-empty nodes collection
             LoadAnnotations(workspaceViewInfo.Annotations);
-
-            // TODO, QNTM-1099: These items are not in the extra view info
-            // Name = info.Name;
-            // Description = info.Description;
-            // FileName = info.FileName;
         }
 
         private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews, double offsetX = 0.0, double offsetY = 0.0)

@@ -1716,7 +1716,7 @@ namespace Dynamo.ViewModels
                 // Execute graph open command
                 ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode));
 
-                this.FitViewCommand.Execute(null); // ??
+                this.FitViewCommand.Execute(null); 
 
                 // Only show trust warning popup when current opened workspace is homeworkspace and not custom node workspace
                 if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
