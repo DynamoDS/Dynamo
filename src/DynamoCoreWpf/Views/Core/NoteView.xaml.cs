@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -114,7 +112,7 @@ namespace Dynamo.Nodes
             var dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
             editWindow = new EditWindow(dynamoViewModel, true)
             {
-                Title = Dynamo.Wpf.Properties.Resources.EditNoteWindowTitle
+                Title = Wpf.Properties.Resources.EditNoteWindowTitle
             };
 
             editWindow.EditTextBoxPreviewKeyDown += noteTextBox_PreviewKeyDown;
@@ -126,6 +124,7 @@ namespace Dynamo.Nodes
                 Source = (DataContext as NoteViewModel),
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
+            editWindow.TitleTextBlock.Text = Wpf.Properties.Resources.EditNoteWindowTitle;
 
             editWindow.ShowDialog();
 
