@@ -148,8 +148,8 @@
   <data name="AddToLibraryButton" xml:space="preserve">
     <value>Add</value>
   </data>
-  <data name="Autodesk360SignInButtonContentToolTip" xml:space="preserve">
-    <value>Sign in to Autodesk A360 to access online services that integrate with your desktop software.</value>
+  <data name="SignInButtonContentToolTip" xml:space="preserve">
+    <value>Sign in to access online services that integrate with your desktop software.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3374,6 +3374,15 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
     <value>This setting controls whether user will be directed to an extra static splash screen after the intial launch.</value>
+  </data>
+  <data name="LogoutMenuItemText" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="SignInButtonText" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="SigningInButtonText" xml:space="preserve">
+    <value>Signing In</value>
   </data>
   <data name="RecentFileNumberInfo" xml:space="preserve">
     <value>Reducing this number will discard all recent files beyond your chosen number.</value>
