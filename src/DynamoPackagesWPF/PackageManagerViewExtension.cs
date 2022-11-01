@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Logging;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Greg.Responses;
 
@@ -58,6 +59,9 @@ namespace Dynamo.PackageManager.UI
             add { layouthandler += value; }
             remove { layouthandler -= value; }
         }
+
+        public event Func<LayoutSpecification> RequestLayoutSpec;
+
 
         Action<NotificationMessage> notificationLogged;
         event Action<NotificationMessage> INotificationSource.NotificationLogged

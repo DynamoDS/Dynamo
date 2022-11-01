@@ -294,7 +294,6 @@
     <Compile Include="ViewModels\Core\Converters\DynamoPythonScriptEditorTextOptions.cs" />
     <Compile Include="ViewModels\Core\Converters\SerializationConverters.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
-    <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
     <Compile Include="ViewModels\Core\InPortViewModel.cs" />
     <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
@@ -349,9 +348,6 @@
       <DependentUpon>DebugModesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FileTrust\FileTrustWarning.xaml.cs" />
-    <Compile Include="Views\Gallery\GalleryView.xaml.cs">
-      <DependentUpon>GalleryView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
     </Compile>
@@ -1284,10 +1280,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Gallery\GalleryView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\CodeCompletion\CodeCompletionEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1463,9 +1455,6 @@
     <Resource Include="UI\Images\PackageManager\custom-path-dialog-move-up.png" />
     <Resource Include="UI\Images\PackageManager\custom-path-dialog-plus.png" />
     <Resource Include="UI\Images\drag_move.cur" />
-    <Resource Include="UI\Images\StartPage\icon-whats-new.png" />
-    <Resource Include="UI\Images\Gallery\gallery-button-close-states.png" />
-    <Resource Include="UI\Images\Gallery\gallery-button-next-prev-states.png" />
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1575,7 +1564,6 @@
     <None Include="ViewModels\Watch3D\shaderSource\vsDynamoMesh.hlsl" />
     <None Include="ViewModels\Watch3D\shaderSource\vsDynamoPointLine.hlsl" />
     <Resource Include="UI\Images\bubble-arrow.png" />
-    <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
     <Resource Include="UI\Images\no-recommendations.png" />
   </ItemGroup>

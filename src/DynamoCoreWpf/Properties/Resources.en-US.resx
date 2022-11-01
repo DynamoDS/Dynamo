@@ -148,8 +148,8 @@
   <data name="AddToLibraryButton" xml:space="preserve">
     <value>Add</value>
   </data>
-  <data name="Autodesk360SignInButtonContentToolTip" xml:space="preserve">
-    <value>Sign in to Autodesk A360 to access online services that integrate with your desktop software.</value>
+  <data name="SignInButtonContentToolTip" xml:space="preserve">
+    <value>Sign in to access online services that integrate with your desktop software.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -1059,9 +1059,6 @@ Failed to publish file(s):
   <data name="FolderNotWritableError" xml:space="preserve">
     <value>You do not have write permission to {0}.</value>
   </data>
-  <data name="GalleryDynamoVersion" xml:space="preserve">
-    <value>Version {0}.{1}.{2}</value>
-  </data>
   <data name="GenericTaskDialogSampleLeftButton" xml:space="preserve">
     <value>Sample Left Button</value>
     <comment>Sample button, it will be replaced at runtime</comment>
@@ -1845,16 +1842,16 @@ Want to publish a different package?</value>
     <value>Run started with new working range...</value>
   </data>
   <data name="RunTypeToolTipAutomatically" xml:space="preserve">
-    <value>Run whenever there is a change to the graph.</value>
+    <value>Graph changes are executed in real time. Best suited for smaller graphs, known graphs, and Dynamo Sandbox.</value>
   </data>
   <data name="RunTypeToolTipManually" xml:space="preserve">
-    <value>Run whenever you press the Run button.</value>
+    <value>Graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host applications.</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
     <value>Periodic running is disabled when there are no nodes in your graph that support it.</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
-    <value>Run at the specified interval.</value>
+    <value>Graph changes are executed at a specified interval. Only available when the graph contains specific nodes, such as DateTime.Now or WebRequest.</value>
   </data>
   <data name="UnsavedChangesMessageBoxTitle" xml:space="preserve">
     <value>Unsaved changes</value>
@@ -2332,7 +2329,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="MachineLearning" xml:space="preserve">
-    <value>Machine Learning</value>
+    <value>ML Recommendation</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
@@ -3025,9 +3022,6 @@ To install the latest version of a package, click Install. \n
   <data name="ConfigureADPButtonText" xml:space="preserve">
     <value>Configure Autodesk Analytics Program</value>
   </data>
-  <data name="GettingStartedMenuItem" xml:space="preserve">
-    <value>_Getting Started</value>
-  </data>
   <data name="ContinueInstall" xml:space="preserve">
     <value>Continue install</value>
   </data>
@@ -3280,6 +3274,12 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="ContextMenuConnectionsShowAll" xml:space="preserve">
     <value>Show All Wires</value>
   </data>
+  <data name="ConnectorContextMenuHeaderStartNode" xml:space="preserve">
+    <value>Navigate Upstream</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
+    <value>Navigate Downtream</value>
+  </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Node Connections</value>
   </data>
@@ -3375,6 +3375,15 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
     <value>This setting controls whether user will be directed to an extra static splash screen after the intial launch.</value>
   </data>
+  <data name="LogoutMenuItemText" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="SignInButtonText" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="SigningInButtonText" xml:space="preserve">
+    <value>Signing In</value>
+  </data>
   <data name="RecentFileNumberInfo" xml:space="preserve">
     <value>Reducing this number will discard all recent files beyond your chosen number.</value>
   </data>
@@ -3383,5 +3392,27 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="WebView2RequiredTitle" xml:space="preserve">
     <value>WebView2 Required</value>
+  </data>
+  <data name="DynamoViewFileMenuInsert" xml:space="preserve">
+    <value>Insert...</value>
+  </data>
+  <data name="DynamoViewRunTypesAutomaticToolTip" xml:space="preserve">
+    <value>Graph changes are executed in real time. Best suited for smaller graphs, known graphs, and Dynamo Sandbox.</value>
+  </data>
+  <data name="DynamoViewRunTypesComboBoxToolTipEnabled" xml:space="preserve">
+    <value>Run mode\n\nControls when graph changes are executed.</value>
+  </data>
+  <data name="DynamoViewRunTypesManualToolTip" xml:space="preserve">
+    <value>Graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host applications.</value>
+  </data>
+  <data name="DynamoViewRunTypesPeriodicToolTip" xml:space="preserve">
+    <value>Graph changes are executed at a specified interval. Only available when the graph contains specific nodes, such as DateTime.Now or WebRequest.</value>
+  </data>
+  <data name="PreferencesViewDefaultRunSettingsInfoTooltip" xml:space="preserve">
+    <value>Set the default run mode for your graphs. In Manual mode,  graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host programs.
+
+In Automatic mode, graph changes are executed in real time. This mode provides immediate feedback. 
+
+In certain complex graphs or host program scenarios, Automatic mode may cause instability issues or other problems. If this happens, try switching to Manual mode.</value>
   </data>
 </root>

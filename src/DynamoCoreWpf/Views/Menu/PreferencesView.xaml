@@ -209,11 +209,31 @@
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
-                                    <Label Grid.Row="0"
-                                       Margin="-3,0,10,0"
-                                       FontWeight="Bold"
-                                       Content="{x:Static p:Resources.PreferencesViewRunSettingsLabel}" 
-                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    <WrapPanel Grid.Row="0">
+                                        <Label 
+                                           Margin="-3,0,10,0"
+                                           FontWeight="Bold"
+                                           Content="{x:Static p:Resources.PreferencesViewRunSettingsLabel}" 
+                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Grid>
+                                            <Label
+                                                Content="?"
+                                                FontSize="7"
+                                                Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+                                            <Ellipse Width="12" Height="12"
+                                                     Stroke="{StaticResource PreferencesWindowFontColor}"
+                                                     StrokeThickness="0.5"
+                                                     Margin="0 1 0 0"
+                                                     UseLayoutRounding="True"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"></Ellipse>
+                                            <Grid.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.PreferencesViewDefaultRunSettingsInfoTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Grid.ToolTip>
+                                        </Grid>
+                                    </WrapPanel>
                                     <Grid Grid.Row="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>

@@ -536,6 +536,18 @@ namespace Dynamo.Models
 
         }
 
+        /// <summary>
+        /// This event is used to raise a toast notification from the DynamoViewModel 
+        /// </summary>
+        internal event Action<string> RequestNotification;
+        internal void OnRequestNotification(string notification)
+        {
+            if (RequestNotification != null)
+            {
+                RequestNotification(notification);
+            }
+        }
+
         #endregion
     }
 
