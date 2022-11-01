@@ -65,9 +65,6 @@ namespace EmitMSIL
         {
             this.logPath = filePath;
             this.input = input;
-#if DEBUG
-            writer = new StreamWriter(filePath);
-#endif
             this.runtimeCore = runtimeCore;
         }
 
@@ -2033,9 +2030,6 @@ namespace EmitMSIL
 
         public void Dispose()
         {
-#if DEBUG
-            writer?.Dispose();
-#endif
         }
     }
 
