@@ -1911,9 +1911,6 @@ Do you want to install the latest Dynamo update?</value>
   <data name="TermsOfUseViewTitle" xml:space="preserve">
     <value>Package Manager Terms of Use</value>
   </data>
-  <data name="GalleryDynamoVersion" xml:space="preserve">
-    <value>Version {0}.{1}.{2}</value>
-  </data>
   <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
   </data>
@@ -3005,9 +3002,6 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="PackagesGuideUsePackageTitle" xml:space="preserve">
     <value>Use package nodes</value>
-  </data>
-  <data name="GettingStartedMenuItem" xml:space="preserve">
-    <value>_Getting Started</value>
   </data>
   <data name="PackagesGuideInstallAPackageText" xml:space="preserve">
     <value>Package installations are typically quick, depending on their size and other factors. \n\n**Click Install** to install the latest version of the sample Autodesk package and proceed with this guide.</value>

@@ -45,7 +45,6 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.FileTrust;
-using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using Brush = System.Windows.Media.Brush;
@@ -75,7 +74,6 @@ namespace Dynamo.Controls
         private readonly Stopwatch _timer;
         private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
-        private GalleryView galleryView;
         private readonly LoginService loginService;
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
@@ -871,7 +869,6 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="isFirstRun">
         /// Indicates if it is the first time new Dynamo version runs.
-        /// It is used to decide whether the Gallery need to be shown on the StartPage.
         /// </param>
         private void InitializeStartPage(bool isFirstRun)
         {
@@ -942,7 +939,7 @@ namespace Dynamo.Controls
             // Do an initial load of the cursor collection
             CursorLibrary.GetCursor(CursorSet.ArcSelect);
 
-            //Backing up IsFirstRun to determine whether to show Gallery
+            //Backing up IsFirstRun to determine whether to do certain action
             var isFirstRun = dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
 
             // If first run, Collect Info Prompt will appear
@@ -1008,9 +1005,6 @@ namespace Dynamo.Controls
 
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow += DynamoViewModelRequestAboutWindow;
-
-            //SHOW or HIDE GALLERY
-            dynamoViewModel.RequestShowHideGallery += DynamoViewModelRequestShowHideGallery;
 
             LoadNodeViewCustomizations();
             SubscribeNodeViewCustomizationEvents();
@@ -1158,44 +1152,6 @@ namespace Dynamo.Controls
             aboutWindow.Owner = this;
             aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             aboutWindow.ShowDialog();
-        }
-
-        private void OnGalleryBackgroundMouseClick(object sender, MouseButtonEventArgs e)
-        {
-            dynamoViewModel.CloseGalleryCommand.Execute(null);
-            e.Handled = true;
-        }
-
-        private void DynamoViewModelRequestShowHideGallery(bool showGallery)
-        {
-            if (showGallery)
-            {
-                if (galleryView == null) //On-demand instantiation
-                {
-                    galleryView = new GalleryView(new GalleryViewModel(dynamoViewModel));
-                    Grid.SetColumnSpan(galleryBackground, mainGrid.ColumnDefinitions.Count);
-                    Grid.SetRowSpan(galleryBackground, mainGrid.RowDefinitions.Count);
-                }
-
-                if (galleryView.ViewModel.HasContents)
-                {
-                    galleryBackground.Children.Clear();
-                    galleryBackground.Children.Add(galleryView);
-                    galleryBackground.Visibility = Visibility.Visible;
-                    galleryView.Focus(); //get keyboard focus
-                }
-            }
-            //hide gallery
-            else
-            {
-                if (galleryBackground != null)
-                {
-                    if (galleryView != null && galleryBackground.Children.Contains(galleryView))
-                        galleryBackground.Children.Remove(galleryView);
-
-                    galleryBackground.Visibility = Visibility.Hidden;
-                }
-            }
         }
 
         private PublishPackageView _pubPkgView;
@@ -1655,9 +1611,6 @@ namespace Dynamo.Controls
 
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow -= DynamoViewModelRequestAboutWindow;
-
-            //SHOW or HIDE GALLERY
-            dynamoViewModel.RequestShowHideGallery -= DynamoViewModelRequestShowHideGallery;
 
             //first all view extensions have their shutdown methods called
             //when this view is finally disposed, dispose will be called on them.

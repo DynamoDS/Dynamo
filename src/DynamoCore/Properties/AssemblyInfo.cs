@@ -23,7 +23,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoWPFCLI")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")] // Dynamic assembly created by Moq
 [assembly: InternalsVisibleTo("WpfVisualizationTests")]
-[assembly: InternalsVisibleTo("LibraryViewExtension")]
 [assembly: InternalsVisibleTo("PackageDetailsViewExtension")]
 [assembly: InternalsVisibleTo("ViewExtensionLibraryTests")]
 [assembly: InternalsVisibleTo("DynamoPerformanceTests")]
@@ -34,7 +33,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("PythonNodeModels")]
-[assembly: InternalsVisibleTo("LibraryViewExtensionMSWebBrowser")]
 [assembly: InternalsVisibleTo("LibraryViewExtensionWebView2")]
 [assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
 [assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]

@@ -2913,15 +2913,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version {0}.{1}.{2}.
-        /// </summary>
-        public static string GalleryDynamoVersion {
-            get {
-                return ResourceManager.GetString("GalleryDynamoVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string GenericTaskDialogOptionCancel {
@@ -3134,15 +3125,6 @@ namespace Dynamo.Wpf.Properties {
         public static string GetStartedLinkText {
             get {
                 return ResourceManager.GetString("GetStartedLinkText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Getting Started.
-        /// </summary>
-        public static string GettingStartedMenuItem {
-            get {
-                return ResourceManager.GetString("GettingStartedMenuItem", resourceCulture);
             }
         }
         
