@@ -177,6 +177,14 @@ namespace Dynamo.DocumentationBrowser
 
         private void OnInsertFile(object sender, InsertDocumentationLinkEventArgs e)
         {
+            if (e.Data.Equals("File not found"))
+            {
+                var message = $"Example file from {e.Name} could not be found";
+                DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(message, true);
+
+                return;
+            }
+
             if (DynamoViewModel.Model.CurrentWorkspace is HomeWorkspaceModel)
             {
                 var homeWorkspace = DynamoViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
@@ -229,19 +237,23 @@ namespace Dynamo.DocumentationBrowser
             DoEvents();
 
             var annotation = this.DynamoViewModel.Model.CurrentWorkspace.AddAnnotation(Resources.InsertedGroupSubTitle, Guid.NewGuid());
-            annotation.AnnotationText = graphName;
-            DoEvents();
+            if (annotation != null)
+            {
+                annotation.AnnotationText = graphName;
+                DoEvents();
 
-            var annotationViewModel = DynamoViewModel.CurrentSpaceViewModel.Annotations
-                    .First(x => x.AnnotationModel == annotation);
+                var annotationViewModel = DynamoViewModel.CurrentSpaceViewModel.Annotations
+                        .First(x => x.AnnotationModel == annotation);
 
-            var styleItem = annotationViewModel.GroupStyleList.First(x => x.Name.Equals(DynamoProperties.Resources.GroupStyleDefaultReview));
-            var groupStyleItem = new GroupStyleItem {Name = styleItem.Name, HexColorString = styleItem.HexColorString};
-            annotationViewModel.UpdateGroupStyle(groupStyleItem);
+                var styleItem = annotationViewModel.GroupStyleList.First(x => x.Name.Equals(DynamoProperties.Resources.GroupStyleDefaultReview));
+                var groupStyleItem = new GroupStyleItem {Name = styleItem.Name, HexColorString = styleItem.HexColorString};
+                annotationViewModel.UpdateGroupStyle(groupStyleItem);
 
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.AddRange(annotation.Nodes);
-            DoEvents();
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.AddRange(annotation.Nodes);
+                DoEvents();
+            }
+
         }
 
         private List<AnnotationViewModel> GetAllHostingGroups(List<AnnotationViewModel> existingGroups)
