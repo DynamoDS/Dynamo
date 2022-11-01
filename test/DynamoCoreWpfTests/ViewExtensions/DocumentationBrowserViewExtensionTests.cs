@@ -503,7 +503,7 @@ namespace DynamoCoreWpfTests
             var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
             var expectedNodeDocumentationNamespace = $"<p><i>Package.{nodeName}</i></p>";
             var expectedAddtionalNodeDocumentationHeader = @"<h1 id=""hello-dynamo"">Hello Dynamo!</h1>";
-            var expectedAddtionalNodeDocumentationImage = String.Format(@"<img id=""drag--img"" class=""resizable--img"" src=""http://appassets/{0}"" alt=""Dynamo Icon image"">", Path.GetFileName(localImagePath));
+            var expectedAddtionalNodeDocumentationImage = String.Format(@"<img id='drag--img' class='resizable--img'  src=""http://appassets/{0}"" alt=""Dynamo Icon image"" />", Path.GetFileName(localImagePath));
 
 
             // Act
