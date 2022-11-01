@@ -10,10 +10,10 @@ using Dynamo.DynamoSandbox;
 using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
-
 
 namespace DynamoSandbox
 {
@@ -57,6 +57,10 @@ namespace DynamoSandbox
         {
             try
             {
+                //This line validates if the WebView2 Runtime is installed in the computer, if is not we return and then exit Dynamo
+                if (!WebView2Utilities.ValidateWebView2RuntimeInstalled())
+                    return;
+
                 DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
 
                 splashScreen = new Dynamo.DynamoSandbox.SplashScreen();
