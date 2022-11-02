@@ -106,7 +106,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import settings.
+        ///   Looks up a localized string similar to Import Settings.
         /// </summary>
         internal static string SplashScreenImportSettings {
             get {
