@@ -1808,16 +1808,16 @@ Do you want to install the latest Dynamo update?</value>
     <value>Run is not available when running Automatically or Periodically.</value>
   </data>
   <data name="RunTypeToolTipAutomatically" xml:space="preserve">
-    <value>Run whenever there is a change to the graph.</value>
+    <value>Graph changes are executed in real time. Best suited for smaller graphs, known graphs, and Dynamo Sandbox.</value>
   </data>
   <data name="RunTypeToolTipManually" xml:space="preserve">
-    <value>Run whenever you press the Run button.</value>
+    <value>Graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host applications.</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
     <value>Periodic running is disabled when there are no nodes in your graph that support it.</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
-    <value>Run at the specified interval.</value>
+    <value>Graph changes are executed at a specified interval. Only available when the graph contains specific nodes, such as DateTime.Now or WebRequest.</value>
   </data>
   <data name="RunCompletedMessage" xml:space="preserve">
     <value>Run completed.</value>
@@ -1914,8 +1914,8 @@ Do you want to install the latest Dynamo update?</value>
   <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
   </data>
-  <data name="Autodesk360SignInButtonContentToolTip" xml:space="preserve">
-    <value>Sign in to Autodesk A360 to access online services that integrate with your desktop software.</value>
+  <data name="SignInButtonContentToolTip" xml:space="preserve">
+    <value>Sign in to access online services that integrate with your desktop software.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3362,8 +3362,39 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
     <value>This setting controls whether user will be directed to an extra static splash screen after the intial launch.</value>
   </data>
+  <data name="LogoutMenuItemText" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="SignInButtonText" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="SigningInButtonText" xml:space="preserve">
+    <value>Signing In</value>
+  </data>
   <data name="RecentFileNumberInfo" xml:space="preserve">
     <value>Reducing this number will discard all recent files beyond your chosen number.</value>
+  </data>
+  <data name="DynamoViewFileMenuInsert" xml:space="preserve">
+    <value>Insert...</value>
+  </data>
+  <data name="DynamoViewRunTypesAutomaticToolTip" xml:space="preserve">
+    <value>Graph changes are executed in real time. Best suited for smaller graphs, known graphs, and Dynamo Sandbox.</value>
+  </data>
+  <data name="DynamoViewRunTypesComboBoxToolTipEnabled" xml:space="preserve">
+    <value>Run mode\n\nControls when graph changes are executed.</value>
+  </data>
+  <data name="DynamoViewRunTypesManualToolTip" xml:space="preserve">
+    <value>Graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host applications.</value>
+  </data>
+  <data name="DynamoViewRunTypesPeriodicToolTip" xml:space="preserve">
+    <value>Graph changes are executed at a specified interval. Only available when the graph contains specific nodes, such as DateTime.Now or WebRequest.</value>
+  </data>
+  <data name="PreferencesViewDefaultRunSettingsInfoTooltip" xml:space="preserve">
+    <value>Set the default run mode for your graphs. In Manual mode,  graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host programs.
+
+In Automatic mode, graph changes are executed in real time. This mode provides immediate feedback. 
+
+In certain complex graphs or host program scenarios, Automatic mode may cause instability issues or other problems. If this happens, try switching to Manual mode.</value>
   </data>
   <data name="GroupStyleFontSizeToolTip" xml:space="preserve">
     <value>Font size</value>

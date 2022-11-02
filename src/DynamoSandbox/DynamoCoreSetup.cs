@@ -14,7 +14,6 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
-
 namespace DynamoSandbox
 {
     class DynamoCoreSetup
@@ -28,6 +27,7 @@ namespace DynamoSandbox
         private readonly HostAnalyticsInfo analyticsInfo;
         private const string sandboxWikiPage = @"https://github.com/DynamoDS/Dynamo/wiki/How-to-Utilize-Dynamo-Builds";
         private DynamoView dynamoView;
+        private AuthenticationManager authManager;
 
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
@@ -63,6 +63,8 @@ namespace DynamoSandbox
                 splashScreen.webView.NavigationCompleted += WebView_NavigationCompleted;
                 splashScreen.RequestLaunchDynamo = LaunchDynamo;
                 splashScreen.RequestImportSettings = ImportSettings;
+                splashScreen.RequestSignIn = SignIn;
+                splashScreen.RequestSignOut = SignOut;
                 splashScreen.Show();
 
                 app.Run();
@@ -150,6 +152,23 @@ namespace DynamoSandbox
             }
         }
 
+        /// <summary>
+        /// Returns true if the user was successfully logged in, else false.
+        /// </summary>
+        /// <param name="status">If set to false, it will only return the login status without performing the login function</param>
+        private bool SignIn()
+        {
+            authManager.Login();
+            return authManager.IsLoggedIn();
+        }
+
+        //Returns true if the user was successfully logged out, else false.
+        private bool SignOut()
+        {
+            authManager.Logout();
+            return !authManager.IsLoggedIn();
+        }
+
         private void DynamoModel_RequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)
         {
             if(splashScreen != null)
@@ -162,9 +181,9 @@ namespace DynamoSandbox
         private void LoadDynamoView()
         {
             DynamoModel model;
-            Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
+            StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
 
-            model = Dynamo.Applications.StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
+            model = StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
 
             model.CERLocation = CERLocation;
 
@@ -183,10 +202,12 @@ namespace DynamoSandbox
 
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenLaunchingDynamo, 70));
             dynamoView = new DynamoView(viewModel);
+            authManager = model.AuthenticationManager;
 
             // If user lauching Dynamo first time or picked to always show splash screen, display it. Otherwise, display Dynamo view directly.
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {
+                splashScreen.SetSignInStatus(authManager.IsLoggedIn());
                 splashScreen.SetLoadingDone();
             }
             else

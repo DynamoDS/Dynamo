@@ -13,7 +13,7 @@ namespace IntegrationTests
         public void DynamoSandboxLoadsASMFromValidPath()
         {
             var versions = new List<Version>(){
-
+                    new Version(229,0,0),
                     new Version(228, 6, 0)
             };
 

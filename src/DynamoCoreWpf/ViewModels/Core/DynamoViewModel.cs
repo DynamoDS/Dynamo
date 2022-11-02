@@ -276,6 +276,9 @@ namespace Dynamo.ViewModels
 
                 if (DisplayInteractiveGuideCommand != null)
                     DisplayInteractiveGuideCommand.RaiseCanExecuteChanged();
+
+                if(ShowInsertDialogAndInsertResultCommand != null)
+                    ShowInsertDialogAndInsertResultCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -732,6 +735,7 @@ namespace Dynamo.ViewModels
             WatchHandler.RequestSelectGeometry += BackgroundPreviewViewModel.AddLabelForPath;
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
             model.ComputeModelDeserialized += model_ComputeModelDeserialized;
+            model.RequestNotification += model_RequestNotification;
 
             preferencesViewModel = new PreferencesViewModel(this);
 
@@ -1573,7 +1577,9 @@ namespace Dynamo.ViewModels
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, "Json file content");
                     }
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
-                    MessageBoxService.Show(errorMsgString, 
+                    MessageBoxService.Show(
+                        Owner,
+                        errorMsgString, 
                         Properties.Resources.FileLoadFailureMessageBoxTitle, 
                         MessageBoxButton.OK, 
                         MessageBoxImage.Exclamation);
@@ -1626,6 +1632,93 @@ namespace Dynamo.ViewModels
                 // Execute graph open command
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
                 // Only show trust warning popop when current opened workspace is homeworkspace and not custom node workspace
+                if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
+                {
+                    // Skip these when opening dyf
+                    FileTrustViewModel.DynFileDirectoryName = directoryName;
+                    FileTrustViewModel.ShowWarningPopup = true;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
+                    FileTrustViewModel.AllowOneTimeTrust = false;
+                }
+            }
+            catch (Exception e)
+            {
+                if (!DynamoModel.IsTestMode)
+                {
+                    string commandString = String.Format(Resources.MessageErrorOpeningFileGeneral);
+                    string errorMsgString;
+                    // Catch all the IO exceptions and file access here. The message provided by .Net is clear enough to indicate the problem in this case.
+                    if (e is IOException || e is UnauthorizedAccessException)
+                    {
+                        errorMsgString = String.Format(e.Message, filePath);
+                    }
+                    else if (e is System.Xml.XmlException || e is Newtonsoft.Json.JsonReaderException)
+                    {
+                        errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, filePath);
+                    }
+                    else
+                    {
+                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
+                    }
+                    model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
+                    MessageBoxService.Show(
+                        Owner,
+                        errorMsgString,
+                        commandString,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+                else
+                {
+                    throw (e);
+                }
+                return;
+            }
+            this.ShowStartPage = false; // Hide start page if there's one.
+        }
+
+        /// <summary>
+        /// Insert a definition or a custom node.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// For most cases, parameters variable refers to the file path to open
+        /// However, when this command is used in InsertFileDialog, the variable is
+        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// RunSetting of the workspace.
+        private void Insert(object parameters)
+        {
+            // try catch for exceptions thrown while opening files, say from a future version, 
+            // that can't be handled reliably
+            filePath = string.Empty;
+            fileContents = string.Empty;
+            bool forceManualMode = true;
+            try
+            {
+                if (parameters is Tuple<string, bool> packedParams)
+                {
+                    filePath = packedParams.Item1;
+                    forceManualMode = packedParams.Item2;
+                }
+                else
+                {
+                    filePath = parameters as string;
+                }
+
+                var directoryName = Path.GetDirectoryName(filePath);
+
+                // Display trust warning when file is not among trust location and warning feature is on
+                bool displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
+                    && !filePath.EndsWith("dyf")
+                    && !DynamoModel.IsTestMode
+                    && !PreferenceSettings.DisableTrustWarnings
+                    && FileTrustViewModel != null;
+                RunSettings.ForceBlockRun = displayTrustWarning;
+                // Execute graph open command
+                ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode));
+
+                this.FitViewCommand.Execute(null); 
+
+                // Only show trust warning popup when current opened workspace is homeworkspace and not custom node workspace
                 if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
                 {
                     // Skip these when opening dyf
@@ -1713,6 +1806,15 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Create a toast notification with a notification sent by the DynamoModel
+        /// </summary>
+        /// <param name="notification"></param>
+        private void model_RequestNotification(string notification)
+        {
+            this.MainGuideManager.CreateRealTimeInfoWindow(notification, true);
+        }
+
+        /// <summary>
         /// Present the open dialog and open the workspace that is selected.
         /// </summary>
         /// <param name="parameter"></param>
@@ -1769,6 +1871,69 @@ namespace Dynamo.ViewModels
         private bool CanShowOpenDialogAndOpenResultCommand(object parameter)
         {
             return HomeSpace.RunSettings.RunEnabled;
+        }
+
+
+        /// <summary>
+        /// Present the open dialog and open the workspace that is selected.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void ShowInsertDialogAndInsertResult(object parameter)
+        {
+            var currentWorkspaceModelType = Model.CurrentWorkspace.GetType();
+            var fileExtensions = currentWorkspaceModelType == typeof(CustomNodeWorkspaceModel) ? "*.dyf" : "*.dyn";
+
+            DynamoOpenFileDialog _fileDialog = new DynamoOpenFileDialog(this, false)
+            {
+                Filter = string.Format(Resources.FileDialogDynamoDefinitions,
+                         BrandingResourceProvider.ProductName, fileExtensions) + "|" +
+                         string.Format(Resources.FileDialogAllFiles, "*.*"),
+                Title = string.Format("Insert Title (Replace)", BrandingResourceProvider.ProductName)
+            };
+
+            // if you've got the current space path, use it as the inital dir
+            if (!string.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
+            {
+                string path = Model.CurrentWorkspace.FileName;
+                if (File.Exists(path))
+                {
+                    var fi = new FileInfo(Model.CurrentWorkspace.FileName);
+                    _fileDialog.InitialDirectory = fi.DirectoryName;
+                }
+                else
+                {
+                    _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
+                }
+            }
+            else // use the samples directory, if it exists
+            {
+                Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
+                string location = Path.GetDirectoryName(dynamoAssembly.Location);
+                string UICulture = CultureInfo.CurrentUICulture.Name;
+                string path = Path.Combine(location, "samples", UICulture);
+
+                if (Directory.Exists(path))
+                    _fileDialog.InitialDirectory = path;
+            }
+
+            if (HomeSpace.RunSettings.RunType != RunType.Manual)
+            {
+                MainGuideManager.CreateRealTimeInfoWindow("Example file added to workspace. Run mode changed to Manual.", true);
+                HomeSpace.RunSettings.RunType = RunType.Manual;
+            }
+
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (CanOpen(_fileDialog.FileName))
+                {
+                    Insert(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+                }
+            }
+        }
+
+        private bool CanShowInsertDialogAndInsertResultCommand(object parameter)
+        {
+            return HomeSpace.RunSettings.RunEnabled && !this.showStartPage;
         }
 
         private void OpenRecent(object path)
@@ -1854,7 +2019,12 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(ex.StackTrace);
 
                 if (ex is IOException || ex is UnauthorizedAccessException)
-                    MessageBoxService.Show(ex.Message, Resources.UnsavedChangesMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBoxService.Show(
+                        Owner,
+                        ex.Message,
+                        Resources.UnsavedChangesMessageBoxTitle,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
             }
         }
 
@@ -1911,7 +2081,12 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(ex.StackTrace);
 
                 if (ex is IOException || ex is UnauthorizedAccessException)
-                    MessageBoxService.Show(ex.Message, string.Empty, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBoxService.Show(
+                        Owner,
+                        ex.Message,
+                        string.Empty,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
             }
         }
 
@@ -2845,13 +3020,21 @@ namespace Dynamo.ViewModels
                 catch(LibraryLoadFailedException ex)
                 {
                     Wpf.Utilities.MessageBoxService.Show(
-                        ex.Message, Properties.Resources.LibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        Owner,
+                        ex.Message,
+                        Properties.Resources.LibraryLoadFailureMessageBoxTitle,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation);;
                 }
                 catch(DynamoServices.AssemblyBlockedException ex)
                 {
                     var failureMessage = string.Format(Properties.Resources.LibraryLoadFailureForBlockedAssembly, ex.Message);
                     Wpf.Utilities.MessageBoxService.Show(
-                        failureMessage, Properties.Resources.LibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        Owner,
+                        failureMessage,
+                        Properties.Resources.LibraryLoadFailureMessageBoxTitle,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation);
                 }
             }
         }
@@ -3060,6 +3243,7 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel.PropertyChanged -= Watch3DViewModelPropertyChanged;
             WatchHandler.RequestSelectGeometry -= BackgroundPreviewViewModel.AddLabelForPath;
             model.ComputeModelDeserialized -= model_ComputeModelDeserialized;
+            model.RequestNotification -= model_RequestNotification;
 
             return true;
         }

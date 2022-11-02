@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
@@ -14,6 +14,7 @@ namespace Dynamo.UI
         private DynamoViewModel model;
         private string _fileName = string.Empty;
         private bool _runManualMode = false;
+        private readonly bool enableCustomDialog; // Used in 'Insert' - optional boolean parameter to skip addition of the check button
         private const int RunManualCheckboxId = 0x1001;
 
         public string Filter
@@ -64,10 +65,12 @@ namespace Dynamo.UI
             get { return _runManualMode; }
         }
 
-        public DynamoOpenFileDialog(DynamoViewModel model)
+        public DynamoOpenFileDialog(DynamoViewModel model, bool enableCustomDialog = true)
         {
             this.model = model;
+            this.enableCustomDialog = enableCustomDialog;
             _dialog = new NativeFileOpenDialog();
+            if (!enableCustomDialog) return;
             IFileDialogCustomize customize = (IFileDialogCustomize) _dialog;
             customize.AddCheckButton(RunManualCheckboxId, 
                 Dynamo.Wpf.Properties.Resources.FileDialogManualMode,
@@ -89,6 +92,8 @@ namespace Dynamo.UI
             dialogResult.GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out _fileName);
 
             IFileDialogCustomize customize = (IFileDialogCustomize) _dialog;
+            if (!enableCustomDialog) return DialogResult.OK;
+
             customize.GetCheckButtonState(RunManualCheckboxId, out _runManualMode);
             model.PreferenceSettings.OpenFileInManualExecutionMode = _runManualMode;
 

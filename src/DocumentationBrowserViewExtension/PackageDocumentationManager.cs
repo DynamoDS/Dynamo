@@ -61,12 +61,20 @@ namespace Dynamo.DocumentationBrowser
             if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
             {
                 var coreDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
+                if (!coreDir.Exists)
+                {
+                    coreDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, "en-US", FALLBACK_DOC_DIRECTORY_NAME));
+                }
                 dynamoCoreFallbackDocPath = coreDir.Exists ? coreDir : null;
             }
 
             if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
             {
                 var hostDir = new DirectoryInfo(Path.Combine(pathManager.HostApplicationDirectory, Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
+                if (!hostDir.Exists)
+                {
+                    hostDir = new DirectoryInfo(Path.Combine(pathManager.HostApplicationDirectory, "en-US", FALLBACK_DOC_DIRECTORY_NAME));
+                }
                 hostDynamoFallbackDocPath = hostDir.Exists ? hostDir : null;
             }   
         }

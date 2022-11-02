@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -8,9 +9,30 @@ using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.DocumentationBrowser
 {
+    public class InsertDocumentationLinkEventArgs : EventArgs
+    {
+        private string data;
+        private string name;
+        public InsertDocumentationLinkEventArgs(string _Data, string _Name)
+        {
+            data = _Data;
+            name = _Name;
+        } 
+
+        public string Data
+        {
+            get { return data; }
+        }
+        public string Name
+        {
+            get { return name; }
+        }
+    } 
+
     public class DocumentationBrowserViewModel : NotificationObject, IDisposable
     {
         #region Constants
@@ -29,6 +51,13 @@ namespace Dynamo.DocumentationBrowser
         private readonly PackageDocumentationManager packageManagerDoc;
         private MarkdownHandler markdownHandler;
         private FileSystemWatcher markdownFileWatcher;
+
+        /// <summary>
+        /// Contains the resolvable node to library location breadcrumbs information
+        /// Key: Node Name
+        /// Value: Breadcrumbs " / " concatenated information
+        /// </summary>
+        internal Dictionary<string, string> BreadCrumbsDictionary { get; set; }
 
         /// <summary>
         /// The link to the documentation website or file to display.
@@ -55,7 +84,7 @@ namespace Dynamo.DocumentationBrowser
         }
 
         private Uri link;
-
+        private string graphPath;
         private string content;
 
         private MarkdownHandler MarkdownHandlerInstance => markdownHandler ?? (markdownHandler = new MarkdownHandler());
@@ -95,7 +124,7 @@ namespace Dynamo.DocumentationBrowser
                 }
             }
         }
-
+        
         internal Action<ILogMessage> MessageLogged;
         private OpenDocumentationLinkEventArgs openDocumentationLinkEventArgs;
 
@@ -154,6 +183,7 @@ namespace Dynamo.DocumentationBrowser
             try
             {
                 string targetContent;
+                string graph;
                 Uri link;
                 switch (e)
                 {
@@ -163,17 +193,20 @@ namespace Dynamo.DocumentationBrowser
                             openNodeAnnotationEventArgs.PackageName);
 
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
+                        graph = GetGraphLinkFromMDLocation(link);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
                         break;
 
                     case OpenDocumentationLinkEventArgs openDocumentationLink:
                         link = openDocumentationLink.Link;
+                        graph = GetGraphLinkFromMDLocation(link);
                         targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly);
                         break;
 
                     default:
                         // Navigate to unsupported 
                         targetContent = null;
+                        graph = null;
                         link = null;
                         break;
                 }
@@ -186,6 +219,7 @@ namespace Dynamo.DocumentationBrowser
                 {
                     this.content = targetContent;
                     this.Link = link;
+                    this.graphPath = graph;
                 }
             }
             catch (FileNotFoundException)
@@ -204,6 +238,20 @@ namespace Dynamo.DocumentationBrowser
                 return;
             }
             this.shouldLoadDefaultContent = false;
+        }
+
+        private string GetGraphLinkFromMDLocation(Uri link)
+        {
+            if (link == null || link.Equals(new Uri(String.Empty, UriKind.Relative))) return string.Empty;
+            try
+            {
+                string graphPath = link.AbsolutePath.Replace(".md", ".dyn");
+                return File.Exists(graphPath) ? graphPath : null;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
 
         private void WatchMdFile(string mdLink)
@@ -243,6 +291,7 @@ namespace Dynamo.DocumentationBrowser
             var nodeAnnotationArgs = openDocumentationLinkEventArgs as OpenNodeAnnotationEventArgs;
             this.content = CreateNodeAnnotationContent(nodeAnnotationArgs);
             this.Link = new Uri(e.FullPath);
+            this.graphPath = GetGraphLinkFromMDLocation(this.Link);
         }
 
         private string CreateNodeAnnotationContent(OpenNodeAnnotationEventArgs e)
@@ -252,12 +301,28 @@ namespace Dynamo.DocumentationBrowser
             {
                 writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
 
-                // Get the Node info section
-                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e);
-                writer.WriteLine(nodeDocumentation);
-
                 // Convert the markdown file to html
-                MarkdownHandlerInstance.ParseToHtml(ref writer, e.MinimumQualifiedName, e.PackageName);
+                var mkDown = MarkdownHandlerInstance.ParseToHtml(e.MinimumQualifiedName, e.PackageName);
+                string breadCrumbs = string.Empty;
+
+
+                if(BreadCrumbsDictionary != null && !BreadCrumbsDictionary.TryGetValue(e.Type, out breadCrumbs))
+                {
+                    foreach (var pair in BreadCrumbsDictionary)
+                    {
+                        if (pair.Key.Contains(e.Type))
+                        {
+                            breadCrumbs = pair.Value;
+                            break;
+                        }
+                    }
+                }
+
+                writer.WriteLine(NodeDocumentationHtmlGenerator.OpenDocument());
+                // Get the Node info section
+                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e, breadCrumbs, mkDown);
+                writer.WriteLine(nodeDocumentation);
+                writer.WriteLine(NodeDocumentationHtmlGenerator.CloseDocument());
 
                 writer.Flush();
                 var output = writer.ToString();
@@ -267,8 +332,9 @@ namespace Dynamo.DocumentationBrowser
                 {
                     LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
                 }
-
+                
                 // inject the syntax highlighting script at the bottom at the document.
+                output += DocumentationBrowserUtils.GetImageNavigationScript();
                 output += DocumentationBrowserUtils.GetDPIScript();
                 output += DocumentationBrowserUtils.GetSyntaxHighlighting();
 
@@ -279,6 +345,33 @@ namespace Dynamo.DocumentationBrowser
                 writer?.Dispose();
             }
         }
+
+        /// <summary>
+        /// Load the help graph associated with the node inside the current Dynamo workspace 
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        internal void InsertGraph()
+        {
+            var raiseInsertGraph = HandleInsertFile;
+
+            if (raiseInsertGraph != null)
+            {
+                if (graphPath != null)
+                {
+                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(graphPath, Path.GetFileNameWithoutExtension(graphPath)));
+                }
+                else
+                {
+                    // TODO: Remove test graph with appropriate resource, replace with Toast notification
+                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\Example.dyn",
+                        Path.GetFileNameWithoutExtension(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\Example.dyn")));
+                    //raiseInsertGraph(this, new MyEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\NormalGalleryContents.xml")); // Test with xml file
+                }
+            }
+        }
+
+        internal delegate void InsertDocumentationLinkEventHandler(object sender, InsertDocumentationLinkEventArgs e);
+        internal event InsertDocumentationLinkEventHandler HandleInsertFile;
 
         #endregion
 
@@ -347,5 +440,6 @@ namespace Dynamo.DocumentationBrowser
         }
 
         #endregion
+
     }
 }

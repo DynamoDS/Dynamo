@@ -434,18 +434,18 @@ namespace Dynamo.Wpf.Views
                     if (viewModel.importSettings(openFileDialog.FileName))
                     {
                         Wpf.Utilities.MessageBoxService.Show(
-                       Res.ImportSettingsSuccessMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+                            this, Res.ImportSettingsSuccessMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
                         Wpf.Utilities.MessageBoxService.Show(
-                       Res.ImportSettingsFailedMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            this, Res.ImportSettingsFailedMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }                    
                 }
                 catch (Exception ex)
                 {
                     Wpf.Utilities.MessageBoxService.Show(
-                       ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        this, ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }            
         }
@@ -479,7 +479,10 @@ namespace Dynamo.Wpf.Views
                 catch (Exception ex)
                 {
                     Wpf.Utilities.MessageBoxService.Show(
-                       ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        this,
+                        ex.Message,
+                        Res.ImportSettingsFailedMessage,
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
         }
