@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Greg;
 using Greg.AuthProviders;
@@ -32,6 +32,11 @@ namespace Dynamo.Core
         internal LoginState LoginState
         {
             get { return HasAuthProvider ? authProvider.LoginState : LoginState.LoggedOut; }
+        }
+
+        internal bool IsLoggedIn()
+        {
+            return HasAuthProvider && authProvider.LoginState == LoginState.LoggedIn ? true : false;
         }
 
         /// <summary>

@@ -19,7 +19,7 @@ namespace Dynamo.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -89,11 +89,74 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to We are not very confident that the nodes below will work, you may try them or.
+        /// </summary>
+        public static string AutocompleteLowConfidenceMessage {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to view more options.
+        /// </summary>
+        public static string AutocompleteLowConfidenceMessageAditional {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceMessageAditional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low confidence.
+        /// </summary>
+        public static string AutocompleteLowConfidenceTitle {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low Confidence Tooltip.
+        /// </summary>
+        public static string AutocompleteLowConfidenceTooltip {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There’s no node that we can recommend to you, you may try.
+        /// </summary>
+        public static string AutocompleteNoRecommendationsMessage {
+            get {
+                return ResourceManager.GetString("AutocompleteNoRecommendationsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No recommendations.
+        /// </summary>
+        public static string AutocompleteNoRecommendationsTitle {
+            get {
+                return ResourceManager.GetString("AutocompleteNoRecommendationsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search Autocomplete Results.
         /// </summary>
         public static string AutocompleteSearchTextBlockText {
             get {
                 return ResourceManager.GetString("AutocompleteSearchTextBlockText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to switching to Object Type Autocomplete.
+        /// </summary>
+        public static string AutocompleteSwitchToObjectTypeMessage {
+            get {
+                return ResourceManager.GetString("AutocompleteSwitchToObjectTypeMessage", resourceCulture);
             }
         }
         
@@ -557,6 +620,15 @@ namespace Dynamo.Properties {
         public static string ExceptionEncountered {
             get {
                 return ResourceManager.GetString("ExceptionEncountered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to insert the file as some of the nodes already exist in the current worspace..
+        /// </summary>
+        public static string FailedInsertFileNodeExistNotification {
+            get {
+                return ResourceManager.GetString("FailedInsertFileNodeExistNotification", resourceCulture);
             }
         }
         
@@ -1804,6 +1876,24 @@ namespace Dynamo.Properties {
         public static string SearchTextBlockText {
             get {
                 return ResourceManager.GetString("SearchTextBlockText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initializing preferences....
+        /// </summary>
+        public static string SplashScreenInitPreferencesSettings {
+            get {
+                return ResourceManager.GetString("SplashScreenInitPreferencesSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Node Library....
+        /// </summary>
+        public static string SplashScreenLoadNodeLibrary {
+            get {
+                return ResourceManager.GetString("SplashScreenLoadNodeLibrary", resourceCulture);
             }
         }
         

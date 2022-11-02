@@ -36,7 +36,7 @@
                 <Setter Property="Template"
                         Value="{StaticResource LibraryScrollViewerControlTemplate}" />
             </Style>
-
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -101,39 +101,94 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Image.Style>
-                        </Image>
+                            </Image>
                     </StackPanel>
                 </Grid>
             </Border>
         </Grid>
-        
-        <Border Opacity=".9"
-                Background="{StaticResource LibraryCommonBackground}"
-                Grid.Row="1"
-                Name="AutoCompleteCandidates"
-                MaxHeight="250">
-            <ListBox Name="MembersListBox"
-                     HorizontalAlignment="Left"
-                     Background="Transparent"
-                     BorderBrush="Transparent"
-                     ItemContainerStyle="{StaticResource SearchMemberStyle}"
-                     ItemsSource="{Binding FilteredResults, NotifyOnTargetUpdated=True}"
-                     TargetUpdated="OnMembersListBoxUpdated"
-                     PreviewMouseWheel="OnMembersListBoxMouseWheel"
-                     Margin="10,0,5,0"
-                     Visibility="Visible">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                            <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
-                                      Style="{StaticResource InCanvasScrollViewerStyle}"
-                                      CanContentScroll="True"
-                                      Width="{Binding Source={x:Static resx:Resources.Autocomplete}, Converter={StaticResource NodeAutocompleteWidthConverter}}">
-                                <ContentPresenter ContentTemplate="{StaticResource MemberTemplate}" />
-                        </ScrollViewer>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Border>
+         <StackPanel Opacity=".9"
+             Background="{StaticResource LibraryCommonBackground}"
+             Grid.Row="1"
+             Name="AutoCompleteCandidates"
+             MaxHeight="300">
+             <ListBox Name="MembersListBox"
+                      HorizontalAlignment="Left"
+                      Background="Transparent"
+                      BorderBrush="Transparent"
+                      ItemContainerStyle="{StaticResource SearchMemberStyle}"
+                      ItemsSource="{Binding FilteredResults, NotifyOnTargetUpdated=True}"
+                      TargetUpdated="OnMembersListBoxUpdated"
+                      PreviewMouseWheel="OnMembersListBoxMouseWheel"
+                      Margin="10,0,5,0"
+                      Visibility="Visible">
+                 <ListBox.ItemTemplate>
+                     <DataTemplate>
+                         <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
+                                   Style="{StaticResource InCanvasScrollViewerStyle}"
+                                   CanContentScroll="True"
+                                   Width="{Binding Source={x:Static resx:Resources.Autocomplete}, Converter={StaticResource NodeAutocompleteWidthConverter}}">
+                             <ContentPresenter ContentTemplate="{StaticResource MemberTemplate}" />
+                         </ScrollViewer>
+                     </DataTemplate>
+                 </ListBox.ItemTemplate>
+             </ListBox>
+             <StackPanel Visibility="{Binding Path=DisplayNoRecommendationsLowConfidence, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Image
+                     Name="DisablePackageInstallIcon"
+                     Width="205"
+                     Height="120"
+                     Margin="0,30,0,0"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Top" Source="/DynamoCoreWpf;component/UI/Images/no-recommendations.png">
+                    </Image>
+                    <TextBlock Text="{Binding Path=NoRecommendationsOrLowConfidenceTitle}"
+                            Background="Transparent"
+                            Padding="5"
+                            Foreground="{StaticResource AutocompletionWindowFontColor}"
+                            TextAlignment="Center"
+                            FontSize="14">
+                    </TextBlock>
+                    <StackPanel Orientation="Vertical" MaxWidth="250" Margin="0,0,0,30">
+                        <TextBlock Height="auto" TextWrapping="Wrap" FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#F5F5F5" FontSize="11">
+                         <Run Text="{Binding Path=NoRecommendationsOrLowConfidenceMessage}"
+                                Foreground="{StaticResource AutocompletionWindowFontColor}">
+                         </Run>
+                         <Run Text="{x:Static resx:Resources.AutocompleteSwitchToObjectTypeMessage}"
+                                Foreground="{StaticResource Blue400Brush}">
+                         </Run>
+                         <Run Text="{Binding Path=LowConfidenceMessageAdditional}"
+                                Foreground="{StaticResource AutocompletionWindowFontColor}">
+                         </Run>
+                        </TextBlock>
+                    </StackPanel>
+             </StackPanel>
+             <StackPanel x:Name="LowConfidenceSpace" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,10,0,10"
+                         Visibility="{Binding Path=DisplayLowConfidence, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Image HorizontalAlignment="Center"
+                     Height="14"     
+                     VerticalAlignment="Center"
+                     Width="14"
+                     Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/caret_down.png"
+                     Margin="18,0,15,0"/>
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    FontSize="14"
+                    Text="{x:Static resx:Resources.AutocompleteLowConfidenceTitle}" Foreground="{StaticResource DynamoStandardLabelTextBrush}"/>
+                <Image
+                    Grid.Column="0"
+                    Margin="10,0,0,0"
+                    Width="14"
+                    Height="14"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource QuestionIcon}"
+                    ToolTipService.ShowDuration="10000">
+                    <Image.ToolTip>
+                            <ToolTip Content="{x:Static resx:Resources.AutocompleteLowConfidenceTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                    </Image.ToolTip>
+                </Image>
+             </StackPanel>
+         </StackPanel>
 
         <Border Margin="-4,2,-2,2" Grid.RowSpan="2">
             <Popup StaysOpen="True"
@@ -150,7 +205,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
+            </Grid.ColumnDefinitions> 
             <Border CornerRadius="8"
                 BorderThickness="1"
                 Padding="5"
@@ -255,14 +310,14 @@
                 <ContextMenu Name="SuggestionsContextMenu" Style="{StaticResource ContextMenuStyle}">
                     <MenuItem Header="{x:Static p:Resources.MachineLearning}"
                               x:Name="miMLRecommendation"
-                              Click="onSuggestion_Click"
+                              Click="OnSuggestion_Click"
                               IsCheckable="True"
-                              IsChecked="{Binding Path=IsDisplayingMLRecommendation, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"/>
+                              IsChecked="{Binding Path=IsDisplayingMLRecommendation, Mode=OneWay, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"/>
                     <MenuItem Header="{x:Static p:Resources.ObjectType}"
                               x:Name="miObjectType"
-                              Click="onSuggestion_Click"
+                              Click="OnSuggestion_Click"
                               IsCheckable="True"
-                              IsChecked="{Binding Path=IsDisplayingMLRecommendation, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"/>
+                              IsChecked="{Binding Path=IsDisplayingMLRecommendation, Mode=OneWay, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"/>
                 </ContextMenu>
             </Grid.ContextMenu>
         </Grid>

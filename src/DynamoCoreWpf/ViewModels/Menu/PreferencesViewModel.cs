@@ -6,11 +6,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Resources;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Events;
-using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
@@ -279,6 +277,7 @@ namespace Dynamo.ViewModels
                     preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
                     nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
                 }
+                dynamoViewModel.HomeSpaceViewModel.NodeAutoCompleteSearchViewModel.ResetAutoCompleteSearchViewState();
                 RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
             }
         }
@@ -297,6 +296,22 @@ namespace Dynamo.ViewModels
                 preferenceSettings.ShowRunPreview = value;
                 dynamoViewModel.ShowRunPreview = value;
                 RaisePropertyChanged(nameof(RunPreviewIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the Show Static Splash Screen toogle button
+        /// </summary>
+        public bool StaticSplashScreenEnabled
+        {
+            get
+            {
+                return preferenceSettings.EnableStaticSplashScreen;
+            }
+            set
+            {
+                preferenceSettings.EnableStaticSplashScreen = value;
+                RaisePropertyChanged(nameof(StaticSplashScreenEnabled));
             }
         }
 
@@ -914,6 +929,28 @@ namespace Dynamo.ViewModels
             }
             newPreferences.CopyProperties(preferenceSettings);
 
+            return setSettings(newPreferences);
+        }
+
+        /// <summary>
+        /// Returns a boolean value indicating if the Settings importing was successful or not by sending the content of the xml file
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public bool importSettingsContent(string content)
+        {
+            var newPreferences = PreferenceSettings.LoadContent(content);
+            if (!newPreferences.IsCreatedFromValidFile)
+            {
+                return false;
+            }
+            newPreferences.CopyProperties(preferenceSettings);
+
+            return setSettings(newPreferences);
+        }
+
+        private bool setSettings(PreferenceSettings newPreferences)
+        {
             // Explicit copy
             preferenceSettings.SetTrustWarningsDisabled(newPreferences.DisableTrustWarnings);
             preferenceSettings.SetTrustedLocations(newPreferences.TrustedLocations);
@@ -1280,6 +1317,7 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(MaxNumRecentFiles):
                     description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingMaxRecentFiles), System.Globalization.CultureInfo.InvariantCulture);
+                    UpdateRecentFiles();
                     goto default;
                 case nameof(PythonTemplateFilePath):
                     description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingCustomPythomTemplate), System.Globalization.CultureInfo.InvariantCulture);
@@ -1407,6 +1445,14 @@ namespace Dynamo.ViewModels
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 AddPythonEnginesOptions();
+            }
+        }
+
+        private void UpdateRecentFiles()
+        {
+            if (dynamoViewModel.RecentFiles.Count > MaxNumRecentFiles)
+            {
+                dynamoViewModel.RecentFiles.RemoveRange(MaxNumRecentFiles, dynamoViewModel.RecentFiles.Count - MaxNumRecentFiles);
             }
         }
     }

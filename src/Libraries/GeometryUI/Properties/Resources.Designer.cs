@@ -61,7 +61,7 @@ namespace GeometryUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exports the specified geometry to the given SAT  file path..
+        ///   Looks up a localized string similar to Exports the given geometry to the given SAT file path.
         /// </summary>
         public static string ExportToSATDescripiton {
             get {

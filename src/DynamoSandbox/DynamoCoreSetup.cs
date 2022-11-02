@@ -1,25 +1,24 @@
-﻿using System;
+using System;
 using System.Diagnostics;
-using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using Dynamo.Applications;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.DynamoSandbox;
+using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels.Watch3D;
-using System.Linq;
-using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Wpf.Utilities;
+using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace DynamoSandbox
 {
     class DynamoCoreSetup
     {
-        private SettingsMigrationWindow migrationWindow;
+        private Dynamo.DynamoSandbox.SplashScreen splashScreen;
         private DynamoViewModel viewModel = null;
         private readonly string commandFilePath;
         private readonly string CERLocation;
@@ -27,6 +26,8 @@ namespace DynamoSandbox
         private readonly string ASMPath;
         private readonly HostAnalyticsInfo analyticsInfo;
         private const string sandboxWikiPage = @"https://github.com/DynamoDS/Dynamo/wiki/How-to-Utilize-Dynamo-Builds";
+        private DynamoView dynamoView;
+        private AuthenticationManager authManager;
 
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
@@ -56,36 +57,27 @@ namespace DynamoSandbox
         {
             try
             {
-                DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
-                DynamoModel model;
-                Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
-                model = Dynamo.Applications.StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
+                DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
 
-                model.CERLocation = CERLocation;
+                splashScreen = new Dynamo.DynamoSandbox.SplashScreen();
+                splashScreen.webView.NavigationCompleted += WebView_NavigationCompleted;
+                splashScreen.RequestLaunchDynamo = LaunchDynamo;
+                splashScreen.RequestImportSettings = ImportSettings;
+                splashScreen.RequestSignIn = SignIn;
+                splashScreen.RequestSignOut = SignOut;
+                splashScreen.Show();
 
-                viewModel = DynamoViewModel.Start(
-                    new DynamoViewModel.StartConfiguration()
-                    {
-                        CommandFilePath = commandFilePath,
-                        DynamoModel = model,
-                        Watch3DViewModel =
-                            HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
-                                null,
-                                new Watch3DViewModelStartupParams(model),
-                                model.Logger),
-                        ShowLogin = true
-                    });
-
-                var view = new DynamoView(viewModel);
-                view.Loaded += OnDynamoViewLoaded;
-
-                app.Run(view);
+                app.Run();
 
                 DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
-
+                // WebView2 could be null at this moment to prevent crash
+                if (splashScreen.webView != null)
+                {
+                    splashScreen.webView.NavigationCompleted -= WebView_NavigationCompleted;
+                }
             }
-            catch(DynamoServices.AssemblyBlockedException e)
+            catch (DynamoServices.AssemblyBlockedException e)
             {
                 var failureMessage = string.Format(Dynamo.Properties.Resources.CoreLibraryLoadFailureForBlockedAssembly, e.Message);
                 Dynamo.Wpf.Utilities.MessageBoxService.Show(
@@ -112,8 +104,7 @@ namespace DynamoSandbox
                     {
                         // Show the unhandled exception dialog so user can copy the 
                         // crash details and report the crash if she chooses to.
-                        viewModel.Model.OnRequestsCrashPrompt(null,
-                            new CrashPromptArgs(e));
+                        viewModel.Model.OnRequestsCrashPrompt(new CrashErrorReportArgs(e));
 
                         // Give user a chance to save (but does not allow cancellation)
                         viewModel.Exit(allowCancel: false);
@@ -145,6 +136,102 @@ namespace DynamoSandbox
             }
         }
 
+        /// <summary>
+        /// Import setting file from chosen path
+        /// </summary>
+        /// <param name="fileContent"></param>
+        private async void ImportSettings(string fileContent)
+        {
+            if (viewModel.PreferencesViewModel.importSettingsContent(fileContent))
+            {
+                splashScreen.SetImportStatus(ImportStatus.success, Resources.SplashScreenSettingsImported, string.Empty);
+            }
+            else
+            {
+                splashScreen.SetImportStatus(ImportStatus.error, Resources.SplashScreenFailedImportSettings, Resources.SplashScreenImportSettingsFailDescription);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the user was successfully logged in, else false.
+        /// </summary>
+        /// <param name="status">If set to false, it will only return the login status without performing the login function</param>
+        private bool SignIn()
+        {
+            authManager.Login();
+            return authManager.IsLoggedIn();
+        }
+
+        //Returns true if the user was successfully logged out, else false.
+        private bool SignOut()
+        {
+            authManager.Logout();
+            return !authManager.IsLoggedIn();
+        }
+
+        private void DynamoModel_RequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)
+        {
+            if(splashScreen != null)
+            {
+                splashScreen.SetBarProperties(Dynamo.Utilities.AssemblyHelper.GetDynamoVersion().ToString(),
+                    args.LoadDescription, args.BarSize);
+            }
+        }
+
+        private void LoadDynamoView()
+        {
+            DynamoModel model;
+            StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
+
+            model = StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
+
+            model.CERLocation = CERLocation;
+
+            viewModel = DynamoViewModel.Start(
+                   new DynamoViewModel.StartConfiguration()
+                   {
+                       CommandFilePath = commandFilePath,
+                       DynamoModel = model,
+                       Watch3DViewModel =
+                           HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
+                               null,
+                               new Watch3DViewModelStartupParams(model),
+                               model.Logger),
+                       ShowLogin = true
+                   });
+
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenLaunchingDynamo, 70));
+            dynamoView = new DynamoView(viewModel);
+            authManager = model.AuthenticationManager;
+
+            // If user lauching Dynamo first time or picked to always show splash screen, display it. Otherwise, display Dynamo view directly.
+            if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
+            {
+                splashScreen.SetSignInStatus(authManager.IsLoggedIn());
+                splashScreen.SetLoadingDone();
+            }
+            else
+            {
+                LaunchDynamo(true);
+            }
+        }
+
+        private void LaunchDynamo(bool isCheckboxChecked)
+        {
+            viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
+            splashScreen.Close();
+            Application.Current.MainWindow = dynamoView;
+            dynamoView.Show();
+            dynamoView.Activate();
+        }
+
+        private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        {
+            splashScreen.SetLabels();
+            LoadDynamoView();
+            splashScreen.webView.NavigationCompleted -= WebView_NavigationCompleted;
+        }
+
         private void ASMPreloadFailureHandler(string failureMessage)
         {
             MessageBoxService.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -158,19 +245,19 @@ namespace DynamoSandbox
 
         private void CloseMigrationWindow()
         {
-            if (migrationWindow == null)
+            if (splashScreen == null)
                 return;
 
-            migrationWindow.Close();
-            migrationWindow = null;
+            splashScreen.Close();
+            splashScreen = null;
         }
 
         private void MigrationStatusDialogRequested(SettingsMigrationEventArgs args)
         {
             if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.Begin)
             {
-                migrationWindow = new SettingsMigrationWindow();
-                migrationWindow.Show();
+                splashScreen = new Dynamo.DynamoSandbox.SplashScreen();
+                splashScreen.ShowDialog();
             }
             else if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.End)
             {

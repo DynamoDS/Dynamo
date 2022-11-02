@@ -26,10 +26,10 @@ namespace Dynamo.UI.Controls
 
         internal event Action<ShowHideFlags> RequestShowNodeAutoCompleteSearch;
 
-        public NodeAutoCompleteSearchViewModel ViewModel
-        {
-            get { return DataContext as NodeAutoCompleteSearchViewModel; }
-        }
+        /// <summary>
+        /// Node AutoComplete Search ViewModel DataContext
+        /// </summary>
+        public NodeAutoCompleteSearchViewModel ViewModel => DataContext as NodeAutoCompleteSearchViewModel;
 
         public NodeAutoCompleteSearchControl()
         {
@@ -294,16 +294,18 @@ namespace Dynamo.UI.Controls
             cm.IsOpen = true;
         }
 
-        private void onSuggestion_Click(object sender, RoutedEventArgs e)
+        private void OnSuggestion_Click(object sender, RoutedEventArgs e)
         {
             MenuItem selectedSuggestion = sender as MenuItem;
-            if (selectedSuggestion.Name.Contains(nameof(Dynamo.Models.NodeAutocompleteSuggestion.MLRecommendation)))
+            if (selectedSuggestion.Name.Contains(nameof(Models.NodeAutocompleteSuggestion.MLRecommendation)))
             {
                 ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.MLRecommendation;
-            } else
+            }
+            else
             {
                 ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.ObjectType;
             }
+            ViewModel.ResetAutoCompleteSearchViewState();
         }
     }
 }

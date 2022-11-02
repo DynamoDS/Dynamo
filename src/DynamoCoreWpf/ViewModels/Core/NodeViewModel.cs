@@ -1499,9 +1499,6 @@ namespace Dynamo.ViewModels
 
         private void ShowHelp(object parameter)
         {
-            //var helpDialog = new NodeHelpPrompt(this.NodeModel);
-            //helpDialog.Show();
-
             OnRequestShowNodeHelp(this, new NodeDialogEventArgs(NodeModel));
             Analytics.TrackEvent(Actions.ViewDocumentation, Categories.NodeContextMenuOperations, NodeModel.Name);
         }

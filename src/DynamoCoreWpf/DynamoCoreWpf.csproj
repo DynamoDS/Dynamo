@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -54,7 +54,7 @@
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2365" />
+  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3046" />
   <PackageReference Include="Greg" Version="2.3.0.2505" />
   <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -293,7 +293,6 @@
     <Compile Include="ViewModels\Core\Converters\DynamoPythonScriptEditorTextOptions.cs" />
     <Compile Include="ViewModels\Core\Converters\SerializationConverters.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
-    <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
     <Compile Include="ViewModels\Core\InPortViewModel.cs" />
     <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
@@ -348,9 +347,6 @@
       <DependentUpon>DebugModesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FileTrust\FileTrustWarning.xaml.cs" />
-    <Compile Include="Views\Gallery\GalleryView.xaml.cs">
-      <DependentUpon>GalleryView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
     </Compile>
@@ -1283,10 +1279,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Gallery\GalleryView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\CodeCompletion\CodeCompletionEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1462,9 +1454,6 @@
     <Resource Include="UI\Images\PackageManager\custom-path-dialog-move-up.png" />
     <Resource Include="UI\Images\PackageManager\custom-path-dialog-plus.png" />
     <Resource Include="UI\Images\drag_move.cur" />
-    <Resource Include="UI\Images\StartPage\icon-whats-new.png" />
-    <Resource Include="UI\Images\Gallery\gallery-button-close-states.png" />
-    <Resource Include="UI\Images\Gallery\gallery-button-next-prev-states.png" />
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1525,6 +1514,7 @@
     <Resource Include="UI\Images\Filter.png" />
     <Resource Include="UI\Images\Flag.png" />
     <Resource Include="UI\Images\Profile.png" />
+    <Resource Include="UI\Images\Profile_48px.png" />
     <Resource Include="UI\Images\Requirements.png" />
     <Resource Include="UI\Images\Sort.png" />
     <Resource Include="UI\Images\sort-hover-16px.png" />
@@ -1573,8 +1563,8 @@
     <None Include="ViewModels\Watch3D\shaderSource\vsDynamoMesh.hlsl" />
     <None Include="ViewModels\Watch3D\shaderSource\vsDynamoPointLine.hlsl" />
     <Resource Include="UI\Images\bubble-arrow.png" />
-    <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
+    <Resource Include="UI\Images\no-recommendations.png" />
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />

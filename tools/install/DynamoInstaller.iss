@@ -112,9 +112,6 @@ Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\Dynamo Revit\{#Major
 ;DirectX
 Source: temp\DirectX\*.*; DestDir: {tmp}\DirectX;
 
-;Gallery
-Source: temp\gallery\*; DestDir: "{commonappdata}\Dynamo\Dynamo Revit\{#Major}.{#Minor}\gallery"; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
-
 ;3rdParty
 Source: temp\3rdParty\OpenSourceComponents\*; DestDir: "{app}\3rdParty\OpenSourceComponents"; Flags: ignoreversion overwritereadonly recursesubdirs;
 
