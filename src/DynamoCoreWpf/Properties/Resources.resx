@@ -3396,4 +3396,7 @@ In Automatic mode, graph changes are executed in real time. This mode provides i
 
 In certain complex graphs or host program scenarios, Automatic mode may cause instability issues or other problems. If this happens, try switching to Manual mode.</value>
   </data>
+  <data name="GroupStyleFontSizeToolTip" xml:space="preserve">
+    <value>Font size</value>
+  </data>
 </root>

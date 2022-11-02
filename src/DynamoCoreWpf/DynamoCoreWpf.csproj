@@ -829,6 +829,7 @@
     <Resource Include="UI\Images\TitleBarButtons\restore-lighttheme-default-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\restore-lighttheme-hover-16px.png" />
     <Resource Include="UI\Images\warning_16px.png" />
+    <Resource Include="UI\Images\font-size.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\whiteclosetab.png" />

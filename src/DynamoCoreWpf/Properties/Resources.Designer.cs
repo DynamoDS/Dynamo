@@ -3327,6 +3327,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Font size.
+        /// </summary>
+        public static string GroupStyleFontSizeToolTip {
+            get {
+                return ResourceManager.GetString("GroupStyleFontSizeToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string GroupStylesCancelButtonText {
