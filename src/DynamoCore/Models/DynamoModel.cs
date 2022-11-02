@@ -2081,10 +2081,11 @@ namespace Dynamo.Models
         {
             var nodes = ws.Nodes;
             var connectors = ws.Connectors;
+            var notes = viewInfo?.Annotations;
 
             DynamoSelection.Instance.ClearSelection();
 
-            if (nodes == null || !nodes.Any() || NodesAlreadyLoaded(nodes))
+            if ((nodes == null && notes == null) || (!nodes.Any() && !notes.Any()) || (NodesAlreadyLoaded(nodes) || NotesAlreadyLoaded(notes)))
             {
                 OnRequestNotification(Resources.FailedInsertFileNodeExistNotification);
 
@@ -2109,11 +2110,11 @@ namespace Dynamo.Models
 
             InsertAnnotations(viewInfo.Annotations, offsetX, offsetY);
 
-            List<NoteModel> notes = GetInsertedNotes(viewInfo.Annotations);
+            List<NoteModel> insertedNotes = GetInsertedNotes(viewInfo.Annotations);
 
             DynamoSelection.Instance.Selection.AddRange(nodes);
-            DynamoSelection.Instance.Selection.AddRange(notes);
-
+            DynamoSelection.Instance.Selection.AddRange(insertedNotes);
+            
             currentWorkspace.HasUnsavedChanges = true;
         }
         
@@ -3342,6 +3343,8 @@ namespace Dynamo.Models
         #region insert private methods
         private void InsertAnnotations(IEnumerable<ExtraAnnotationViewInfo> viewInfoAnnotations, double offsetX, double offsetY)
         {
+            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
+
             foreach (var annotation in viewInfoAnnotations)
             {
                 if (annotation.Nodes.Any() || annotation.PinnedNode != null) continue;
@@ -3362,21 +3365,14 @@ namespace Dynamo.Models
                 
                 currentWorkspace.AddAndRegisterNode(node, false);
             }
+            RecordUndoModels(currentWorkspace, nodes.Cast<ModelBase>().ToList());
         }
 
-        private void ReverseNodesLocation(IEnumerable<NodeModel> nodes, IEnumerable<NodeModel> originalNodes)
-        {
-            foreach (var node in nodes)
-            {
-                var original = originalNodes.First(x => x.GUID == node.GUID);
-                
-                node.CenterX += original.CenterX;
-                node.CenterY += original.CenterY;
-            }
-        }
-
+        
         private void InsertConnectors(IEnumerable<ConnectorModel> connectors)
         {
+            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
+
             foreach (var connectorModel in connectors)
             {
                 var startNode = connectorModel.Start.Owner;
@@ -3389,8 +3385,11 @@ namespace Dynamo.Models
                     connector.Delete();
                 }
 
-                ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
+                var newConnector = ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
+                newConnectors.Add(newConnector);
             }
+
+            RecordUndoModels(currentWorkspace, newConnectors.Cast<ModelBase>().ToList());
         }
 
         private List<NoteModel> GetInsertedNotes(IEnumerable<ExtraAnnotationViewInfo> viewInfoAnnotations)
@@ -3409,8 +3408,21 @@ namespace Dynamo.Models
                     result.Add(matchingNote);
                 }
             }
+            RecordUndoModels(currentWorkspace, result.Cast<ModelBase>().ToList());
 
             return result;
+        }
+
+        private void RecordUndoModels(WorkspaceModel workspace, List<ModelBase> undoItems)
+        {
+            var userActionDictionary = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+            //Add models that were newly created
+            foreach (var undoItem in undoItems)
+            {
+                userActionDictionary.Add(undoItem, UndoRedoRecorder.UserAction.Creation);
+            }
+
+            WorkspaceModel.RecordModelsForUndo(userActionDictionary, workspace.UndoRecorder);
         }
 
         private void GetInsertNodesOffset(IEnumerable<NodeModel> currentWorkspaceNodes
@@ -3483,6 +3495,20 @@ namespace Dynamo.Models
             foreach (var node in nodes)
             {
                 if (currentWorkspace.Nodes.Any(n => n.GUID == node.GUID))
+                {
+                    // if at least one node is inside the workspace, return true
+                    return true;
+                }
+            }
+            // If no nodes exist with the same GUID, then we are good to go
+            return false;
+        }
+
+        private bool NotesAlreadyLoaded(IEnumerable<ExtraAnnotationViewInfo> notes)
+        {
+            foreach (var note in notes)
+            {
+                if (currentWorkspace.Notes.Any(n => n.GUID.ToString() == note.Id))
                 {
                     // if at least one node is inside the workspace, return true
                     return true;

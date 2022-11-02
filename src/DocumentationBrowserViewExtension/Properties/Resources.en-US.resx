@@ -123,6 +123,9 @@
   <data name="ExtensionName" xml:space="preserve">
     <value>Documentation Browser</value>
   </data>
+  <data name="FileNotFoundFailureMessage" xml:space="preserve">
+    <value>File not found</value>
+  </data>
   <data name="ImageFitToolTip" xml:space="preserve">
     <value>Zoom to fit</value>
     <comment>Image Control ToolTip</comment>
@@ -206,6 +209,9 @@
   </data>
   <data name="ScriptTagsRemovalWarning" xml:space="preserve">
     <value>Script tags detected in the help document have been removed.</value>
+  </data>
+  <data name="ToastFileNotFoundLocationNotificationText" xml:space="preserve">
+    <value>Example file from {0} could not be found</value>
   </data>
   <data name="ToastInsertGraphNotificationText" xml:space="preserve">
     <value>Example file added to workspace. Run mode changed to Manual.</value>

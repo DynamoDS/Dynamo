@@ -79,6 +79,15 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File not found.
+        /// </summary>
+        public static string FileNotFoundFailureMessage {
+            get {
+                return ResourceManager.GetString("FileNotFoundFailureMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zoom to fit.
         /// </summary>
         public static string ImageFitToolTip {
@@ -282,6 +291,15 @@ namespace Dynamo.DocumentationBrowser.Properties {
         public static string ScriptTagsRemovalWarning {
             get {
                 return ResourceManager.GetString("ScriptTagsRemovalWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Example file from {0} could not be found.
+        /// </summary>
+        public static string ToastFileNotFoundLocationNotificationText {
+            get {
+                return ResourceManager.GetString("ToastFileNotFoundLocationNotificationText", resourceCulture);
             }
         }
         

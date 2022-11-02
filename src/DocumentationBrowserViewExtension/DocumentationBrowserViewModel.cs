@@ -362,13 +362,8 @@ namespace Dynamo.DocumentationBrowser
                 }
                 else
                 {
-                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs("File not found",this.Link.AbsolutePath));
+                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(Resources.FileNotFoundFailureMessage, this.Link.AbsolutePath));
                     return;
-
-                    // TODO: Remove test graph with appropriate resource, replace with Toast notification
-                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(@"C:\Users\dnenov\OneDrive\Documents\Test\documentation browser\Example.dyn",
-                        Path.GetFileNameWithoutExtension(@"C:\Users\dnenov\OneDrive\Documents\Test\documentation browser\Example.dyn")));
-                    //raiseInsertGraph(this, new MyEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\NormalGalleryContents.xml")); // Test with xml file
                 }
             }
         }

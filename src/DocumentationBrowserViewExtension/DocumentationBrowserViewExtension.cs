@@ -178,9 +178,9 @@ namespace Dynamo.DocumentationBrowser
 
         private void OnInsertFile(object sender, InsertDocumentationLinkEventArgs e)
         {
-            if (e.Data.Equals("File not found"))
+            if (e.Data.Equals(Resources.FileNotFoundFailureMessage))
             {
-                var message = $"Example file from {e.Name} could not be found";
+                var message = String.Format(Resources.ToastFileNotFoundLocationNotificationText, e.Name);
                 DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(message, true);
 
                 return;
