@@ -890,4 +890,7 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Low Confidence Tooltip</value>
   </data>
+  <data name="FailedInsertFileNodeExistNotification" xml:space="preserve">
+    <value>Failed to insert the file as some of the nodes already exist in the current worspace.</value>
+  </data>
 </root>
