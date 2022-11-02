@@ -135,6 +135,9 @@
   <data name="SplashScreenFailedImportSettings" xml:space="preserve">
     <value>Failed to Import Settings</value>
   </data>
+  <data name="SplashScreenImportSettings" xml:space="preserve">
+    <value>Import settings</value>
+  </data>
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>Something went wrong when importing your custom setting file. Please try again or proceed with default settings.</value>
   </data>
