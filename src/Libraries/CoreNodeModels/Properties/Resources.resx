@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -537,7 +537,7 @@
     <value>A converted numeric value.</value>
   </data>
   <data name="DateTimeDescription" xml:space="preserve">
-    <value>Creates a dateTime object from a formatted date and time string. Date and time must be in the format "April 12, 1977 12:00 PM"</value>
+    <value>Creates a dateTime object from a formatted date and time string. Date and time must be in the default DateTime format "MMMM dd, yyyy h:mm tt", e.g. "April 02, 1977 12:00 PM"</value>
   </data>
   <data name="ColorRangeSearchTags" xml:space="preserve">
     <value>colorrange;</value>
