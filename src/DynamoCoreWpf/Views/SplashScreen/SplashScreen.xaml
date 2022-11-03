@@ -1,13 +1,10 @@
-<Window x:Class="Dynamo.UI.Views.SplashScreen"
+<Window x:Class="Dynamo.UI.Views.SplashScreen.SplashScreen"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="NoResize"      
-        AllowsTransparency="False"
-        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        AllowsTransparency="False"        
         Width="545"
         Height="377">
-    <wv2:WebView2 Name="webView"></wv2:WebView2>
 </Window>

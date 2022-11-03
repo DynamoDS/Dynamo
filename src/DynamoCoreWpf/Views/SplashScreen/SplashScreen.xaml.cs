@@ -5,16 +5,16 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 
-
-namespace Dynamo.UI.Views
+namespace Dynamo.UI.Views.SplashScreen
 {
     public partial class SplashScreen : Window
     {
         // These are hardcoded string and should only change when npm package structure changed or image path changed
-        private static readonly string htmlEmbeddedFile = "Dynamo.UI.Views.SplashScreen.node_modules._dynamods.splash_screen.build.index.html";
-        private static readonly string jsEmbeddedFile = "Dynamo.UI.Views.SplashScreen.node_modules._dynamods.splash_screen.build.index.bundle.js";
-        private static readonly string backgroundImage = "Dynamo.UI.Views.SplashScreen.WebApp.splashScreenBackground.png";
+        private static readonly string htmlEmbeddedFile = "Dynamo.Wpf.node_modules._dynamods.splash_screen.build.index.html";
+        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.node_modules._dynamods.splash_screen.build.index.bundle.js";
+        private static readonly string backgroundImage = "Dynamo.Wpf.Views.SplashScreen.WebApp.splashScreenBackground.png";
         private static readonly string imageFileExtension = "png";
 
         private Stopwatch loadingTimer;
@@ -22,12 +22,17 @@ namespace Dynamo.UI.Views
         internal Action<bool> RequestLaunchDynamo;
         internal Action<string> RequestImportSettings;
 
+        internal WebView2 webView;
+
         public SplashScreen()
         {
             InitializeComponent();
 
             loadingTimer = new Stopwatch();
             loadingTimer.Start();
+
+            webView = new WebView2();
+            AddChild(webView);
         }
 
         protected override async void OnContentRendered(EventArgs e)
@@ -40,7 +45,7 @@ namespace Dynamo.UI.Views
             var webView2Environment = await CoreWebView2Environment.CreateAsync();
             await webView.EnsureCoreWebView2Async(webView2Environment);
             // Context menu disabled
-            webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            //webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             var assembly = Assembly.GetExecutingAssembly();
 
             using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))
@@ -73,7 +78,7 @@ namespace Dynamo.UI.Views
         {
             var elapsedTime = loadingTimer.ElapsedMilliseconds;
             loadingTimer = Stopwatch.StartNew();
-            await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', '{Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms')");
+            await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', '{Wpf.Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms')");
         }
 
         internal async void SetLoadingDone()
@@ -97,10 +102,10 @@ namespace Dynamo.UI.Views
         internal async void SetLabels()
         {
             await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
-               $"welcomeToDynamoTitle: '{Properties.Resources.SplashScreenWelcomeToDynamo}'," +
-               $"signInTitle: '{Properties.Resources.SplashScreenSignIn}'," +
-               $"launchTitle: '{Properties.Resources.SplashScreenLaunchTitle}'," +
-               $"showScreenAgainLabel: '{Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
+               $"welcomeToDynamoTitle: '{Wpf.Properties.Resources.SplashScreenWelcomeToDynamo}'," +
+               $"signInTitle: '{Wpf.Properties.Resources.SplashScreenSignIn}'," +
+               $"launchTitle: '{Wpf.Properties.Resources.SplashScreenLaunchTitle}'," +
+               $"showScreenAgainLabel: '{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
         }
 
         protected override void OnClosed(EventArgs e)

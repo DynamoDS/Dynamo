@@ -17,7 +17,7 @@ namespace DynamoSandbox
 {
     class DynamoCoreSetup
     {
-        private DynamoView.SplashScreen splashScreen;
+        private Dynamo.UI.Views.SplashScreen.SplashScreen splashScreen;
         private DynamoViewModel viewModel = null;
         private readonly string commandFilePath;
         private readonly string CERLocation;
@@ -58,12 +58,12 @@ namespace DynamoSandbox
             {
                 DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
 
-                splashScreen = new Dynamo.DynamoSandbox.SplashScreen();
+                splashScreen = new Dynamo.UI.Views.SplashScreen.SplashScreen();
                 splashScreen.webView.NavigationCompleted += WebView_NavigationCompleted;
                 splashScreen.RequestLaunchDynamo = LaunchDynamo;
                 splashScreen.RequestImportSettings = ImportSettings;
-                splashScreen.RequestSignIn = SignIn;
-                splashScreen.RequestSignOut = SignOut;
+                //splashScreen.RequestSignIn = SignIn;
+                //splashScreen.RequestSignOut = SignOut;
                 splashScreen.Show();
 
                 app.Run();
@@ -143,11 +143,11 @@ namespace DynamoSandbox
         {
             if (viewModel.PreferencesViewModel.importSettingsContent(fileContent))
             {
-                splashScreen.SetImportStatus(ImportStatus.success, Resources.SplashScreenSettingsImported, string.Empty);
+                splashScreen.SetImportStatus(Dynamo.UI.Views.SplashScreen.ImportStatus.success, Resources.SplashScreenSettingsImported, string.Empty);
             }
             else
             {
-                splashScreen.SetImportStatus(ImportStatus.error, Resources.SplashScreenFailedImportSettings, Resources.SplashScreenImportSettingsFailDescription);
+                splashScreen.SetImportStatus(Dynamo.UI.Views.SplashScreen.ImportStatus.error, Resources.SplashScreenFailedImportSettings, Resources.SplashScreenImportSettingsFailDescription);
             }
         }
 
@@ -206,7 +206,7 @@ namespace DynamoSandbox
             // If user lauching Dynamo first time or picked to always show splash screen, display it. Otherwise, display Dynamo view directly.
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {
-                splashScreen.SetSignInStatus(authManager.IsLoggedIn());
+                //splashScreen.SetSignInStatus(authManager.IsLoggedIn());
                 splashScreen.SetLoadingDone();
             }
             else
@@ -255,7 +255,7 @@ namespace DynamoSandbox
         {
             if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.Begin)
             {
-                splashScreen = new Dynamo.DynamoSandbox.SplashScreen();
+                splashScreen = new Dynamo.UI.Views.SplashScreen.SplashScreen();
                 splashScreen.ShowDialog();
             }
             else if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.End)
