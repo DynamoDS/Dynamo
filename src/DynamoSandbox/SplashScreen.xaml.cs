@@ -111,7 +111,7 @@ namespace Dynamo.DynamoSandbox
             await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
                $"welcomeToDynamoTitle: '{Properties.Resources.SplashScreenWelcomeToDynamo}'," +
                $"launchTitle: '{Properties.Resources.SplashScreenLaunchTitle}'," +
-               $"importSettingsTitle: 'dd{Properties.Resources.SplashScreenImportSettings}'," +
+               $"importSettingsTitle: '{Properties.Resources.SplashScreenImportSettings}'," +
                $"showScreenAgainLabel: '{Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
         }
 
