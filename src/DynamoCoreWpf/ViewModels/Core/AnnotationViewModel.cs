@@ -1063,6 +1063,7 @@ namespace Dynamo.ViewModels
             if (itemEntryParameter == null) return;
 
             Background = (Color)ColorConverter.ConvertFromString("#" + itemEntryParameter.HexColorString);
+            FontSize = (double)itemEntryParameter.FontSize;
 
             WorkspaceViewModel.HasUnsavedChanges = true;
         }
