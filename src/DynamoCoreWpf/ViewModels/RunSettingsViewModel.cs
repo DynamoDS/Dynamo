@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -186,7 +186,9 @@ namespace Dynamo.Wpf.ViewModels
         {
             get
             {
-               return Resources.DynamoViewRunTypesComboBoxToolTipDisabled;
+                return RunTypesEnabled
+                    ? Resources.DynamoViewRunTypesComboBoxToolTipEnabled.Replace("\\n", System.Environment.NewLine)
+                    : Resources.DynamoViewRunButtonToolTipDisabled;
             }
         }
 
@@ -331,7 +333,7 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("RunTypesEnabled");
                     break;
                 case "RunTypesComboBoxToolTipIsEnabled":
-                    RaisePropertyChanged("RunTypesComboBoxToolTipIsEnabled");
+                    RaisePropertyChanged("RunTypesComboBoxToolTip");
                     break;
             }
         }

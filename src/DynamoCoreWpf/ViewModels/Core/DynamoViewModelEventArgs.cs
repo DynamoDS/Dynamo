@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -206,6 +206,10 @@ namespace Dynamo.ViewModels
         /// Collection of the nodes outputs description.
         /// </summary>
         public IEnumerable<string> OutputDescriptions { get; private set; }
+        /// <summary>
+        /// Collection of the nodes collection of warnings/errors/infos.
+        /// </summary>
+        public IEnumerable<Info> NodeInfos { get; private set; }
 
         /// <summary>
         /// Creates a new instance of OpenNodeAnnotationEventArgs, which contains data used
@@ -223,6 +227,7 @@ namespace Dynamo.ViewModels
             Type = model.Name;
             Description = model.Description;
             Category = model.Category;
+            NodeInfos = model.NodeInfos;
             SetInputs(model);
             SetOutputs(model);
 

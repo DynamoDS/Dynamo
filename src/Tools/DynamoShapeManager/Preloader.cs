@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -56,6 +56,7 @@ namespace DynamoShapeManager
         public Preloader(string rootFolder)
             : this(rootFolder, new[]
             {
+                new Version(229,0,0),
                 new Version(228,5,0),
             })
         {

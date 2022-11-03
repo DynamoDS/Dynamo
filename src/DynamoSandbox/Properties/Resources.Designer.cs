@@ -19,7 +19,7 @@ namespace Dynamo.DynamoSandbox.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,7 +61,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Goto the Dynamo builds wiki site({0}) for more information..
+        ///   Looks up a localized string similar to Go to the Dynamo builds wiki site({0}) for more information..
         /// </summary>
         internal static string SandboxBuildsPageDialogMessage {
             get {
@@ -70,7 +70,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not start DynamoSandbox, unhandled exception..
+        ///   Looks up a localized string similar to Could not start Dynamo Sandbox, unhandled exception..
         /// </summary>
         internal static string SandboxCrashMessage {
             get {
@@ -106,6 +106,15 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import Settings.
+        /// </summary>
+        internal static string SplashScreenImportSettings {
+            get {
+                return ResourceManager.GetString("SplashScreenImportSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Something went wrong when importing your custom setting file. Please try again or proceed with default settings..
         /// </summary>
         internal static string SplashScreenImportSettingsFailDescription {
@@ -115,7 +124,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Launching dynamo view....
+        ///   Looks up a localized string similar to Launching Dynamo View....
         /// </summary>
         internal static string SplashScreenLaunchingDynamo {
             get {
@@ -160,11 +169,20 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign in.
+        ///   Looks up a localized string similar to Sign In.
         /// </summary>
         internal static string SplashScreenSignIn {
             get {
                 return ResourceManager.GetString("SplashScreenSignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign Out.
+        /// </summary>
+        internal static string SplashScreenSignOut {
+            get {
+                return ResourceManager.GetString("SplashScreenSignOut", resourceCulture);
             }
         }
         

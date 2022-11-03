@@ -624,6 +624,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to insert the file as some of the nodes already exist in the current worspace..
+        /// </summary>
+        public static string FailedInsertFileNodeExistNotification {
+            get {
+                return ResourceManager.GetString("FailedInsertFileNodeExistNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to get mirror for variable:  {0}; reason: {1}..
         /// </summary>
         public static string FailedToGetMirrorVariable {

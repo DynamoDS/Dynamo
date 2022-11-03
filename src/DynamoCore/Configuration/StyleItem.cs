@@ -1,4 +1,4 @@
-﻿using Dynamo.Core;
+using Dynamo.Core;
 
 namespace Dynamo.Configuration
 {
@@ -10,6 +10,7 @@ namespace Dynamo.Configuration
         private string hexColorString;
         private string name;
         private bool isDefault = false;
+        private int fontSize = 36;
 
         /// This property will contain the Group Name of the stored style
         public string Name
@@ -43,6 +44,19 @@ namespace Dynamo.Configuration
             {
                 isDefault = value;
                 RaisePropertyChanged(nameof(IsDefault));
+            }
+        }
+
+        /// <summary>
+        /// This property will support the font size of the GroupStyle
+        /// </summary>
+        public int FontSize
+        {
+            get { return fontSize; }
+            set
+            {
+                fontSize = value;
+                RaisePropertyChanged(nameof(FontSize));
             }
         }
     }
