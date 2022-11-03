@@ -1857,7 +1857,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             var count = range.Item2 - range.Item1 + 1; //Count of mesh vertices
                             var uniqueId = baseId + ":" + j + MeshKey + "_Texture";
                             
-                            AddMeshData(uniqueId, m,startIndex,count, drawDead, baseId, rp.TextureMapsList[j], rp.TextureMapsStrideList[j], rp.Transform, rp.RequiresPerVertexColoration);
+                            AddMeshData(uniqueId, m,startIndex,count, drawDead, baseId, rp.TextureMapsList[j], rp.TextureMapsStrideList[j],
+                                rp.Transform, rp.RequiresPerVertexColoration);
 
                             //Track cumulative total of mesh vertices added.
                             processedMeshVertexCount+= count;
@@ -1912,7 +1913,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         MeshVertexRangesToRemove.AddRange(rp.MeshVertexRangesAssociatedWithInstancing.Values.ToList());
                     }
 
-                    //If mseh vertex ranges have been utilized previously for instantiating instanced geometry or multiple texture maps we only process the remaining mesh data
+                    //If mesh vertex ranges have been utilized previously for instantiating instanced geometry or multiple texture maps we only process the remaining mesh data
                     //We clone the mesh object so that we do not modify the render package data.
                     if (MeshVertexRangesToRemove.Any())
                     {
@@ -1920,11 +1921,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                         RemoveMeshGeometryByRange(MeshVertexRangesToRemove, mCopy);
 
-                        AddMeshData(id, mCopy, 0, mCopy.Positions.Count, drawDead, baseId, rp.Colors, rp.ColorsStride, rp.Transform, rp.RequiresPerVertexColoration);
+                        AddMeshData(id, mCopy, 0, mCopy.Positions.Count, drawDead, baseId, rp.Colors, rp.ColorsStride,
+                            rp.Transform, rp.RequiresPerVertexColoration);
                     }
                     else
                     {
-                        AddMeshData(id, m, 0, m.Positions.Count, drawDead, baseId, rp.Colors, rp.ColorsStride, rp.Transform, rp.RequiresPerVertexColoration);
+                        AddMeshData(id, m, 0, m.Positions.Count, drawDead, baseId, rp.Colors, rp.ColorsStride,
+                            rp.Transform, rp.RequiresPerVertexColoration);
                     }
                 }
             }
@@ -2433,7 +2436,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
-        /// Create the Mesh Geometry Model object for the scenen
+        /// Create the Mesh Geometry Model object for the scene
         /// </summary>
         /// <param name="transform">A 4x4 matrix that is used to transform all mesh geometry</param>
         /// <param name="requiresPerVertexColoration">Whether or not the individual vertices should be colored using the data in the corresponding arrays</param>
@@ -2484,7 +2487,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
-        /// Create the Line Geometry Model object for the scenen
+        /// Create the Line Geometry Model object for the scene
         /// </summary>
         /// <param name="transform">A 4x4 matrix that is used to transform all mesh geometry</param>
         /// <param name="isSelected">Bool defining the selected state</param>
