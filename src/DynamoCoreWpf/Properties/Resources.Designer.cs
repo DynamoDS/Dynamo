@@ -3327,6 +3327,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Font size.
+        /// </summary>
+        public static string GroupStyleFontSizeToolTip {
+            get {
+                return ResourceManager.GetString("GroupStyleFontSizeToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string GroupStylesCancelButtonText {
@@ -8733,6 +8742,24 @@ namespace Dynamo.Wpf.Properties {
         public static string WatchNodeRawDataMenu {
             get {
                 return ResourceManager.GetString("WatchNodeRawDataMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo requires WebView2 Evergreen Runtime, which is not installed on your computer. Please use the link below to download the Evergreen Standalone Installer and install the program. Then relaunch Dynamo. \n\n#WebView2 Runtime Installer=https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-sectionedge/webview2/#download-section.
+        /// </summary>
+        public static string WebView2RequiredMessage {
+            get {
+                return ResourceManager.GetString("WebView2RequiredMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WebView2 Required.
+        /// </summary>
+        public static string WebView2RequiredTitle {
+            get {
+                return ResourceManager.GetString("WebView2RequiredTitle", resourceCulture);
             }
         }
         

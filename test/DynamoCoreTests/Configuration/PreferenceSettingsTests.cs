@@ -8,6 +8,7 @@ using System.Xml;
 using System;
 using Dynamo.Interfaces;
 using System.Reflection;
+using Dynamo.Utilities;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -363,7 +364,12 @@ namespace Dynamo.Tests.Configuration
             // checking if the new Setting are completely different from the Default
             Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.Properties.Count, failMessage);
 
+            // GroupStyle - Assigning Default styles
+            defaultSettings.GroupStyleItemsList = GroupStyleItem.DefaultGroupStyleItems.AddRange(defaultSettings.GroupStyleItemsList.Where(style => style.IsDefault != true)).ToList();
             newSettings.CopyProperties(defaultSettings);
+            // Checking if the new settings has at least a Custom Style
+            Assert.IsTrue(defaultSettings.GroupStyleItemsList.Where(style => style.IsDefault == false).Count() > 0);
+
             // Explicit copy
             defaultSettings.SetTrustWarningsDisabled(newSettings.DisableTrustWarnings);
             defaultSettings.SetTrustedLocations(newSettings.TrustedLocations);

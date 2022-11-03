@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Dynamo.Configuration;
@@ -23,6 +23,9 @@ namespace CoreNodeModels.Input
             ShouldDisplayPreviewCore = false;
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public DateTime()
         {
             Value = System.DateTime.UtcNow;

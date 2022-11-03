@@ -10,6 +10,7 @@ using Dynamo.DynamoSandbox;
 using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
@@ -57,6 +58,10 @@ namespace DynamoSandbox
         {
             try
             {
+                //This line validates if the WebView2 Runtime is installed in the computer, if is not we return and then exit Dynamo
+                if (!WebView2Utilities.ValidateWebView2RuntimeInstalled())
+                    return;
+
                 DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
 
                 splashScreen = new Dynamo.DynamoSandbox.SplashScreen();
@@ -140,9 +145,10 @@ namespace DynamoSandbox
         /// Import setting file from chosen path
         /// </summary>
         /// <param name="fileContent"></param>
-        private async void ImportSettings(string fileContent)
+        private void ImportSettings(string fileContent)
         {
-            if (viewModel.PreferencesViewModel.importSettingsContent(fileContent))
+            bool isImported = viewModel.PreferencesViewModel.importSettingsContent(fileContent);
+            if (isImported)
             {
                 splashScreen.SetImportStatus(ImportStatus.success, Resources.SplashScreenSettingsImported, string.Empty);
             }
@@ -150,6 +156,7 @@ namespace DynamoSandbox
             {
                 splashScreen.SetImportStatus(ImportStatus.error, Resources.SplashScreenFailedImportSettings, Resources.SplashScreenImportSettingsFailDescription);
             }
+            Analytics.TrackEvent(Actions.ImportSettings, Categories.SplashScreenOperations, isImported.ToString());
         }
 
         /// <summary>
@@ -159,14 +166,18 @@ namespace DynamoSandbox
         private bool SignIn()
         {
             authManager.Login();
-            return authManager.IsLoggedIn();
+            bool ret = authManager.IsLoggedIn();
+            Analytics.TrackEvent(Actions.SignIn, Categories.SplashScreenOperations, ret.ToString());
+            return ret;
         }
 
         //Returns true if the user was successfully logged out, else false.
         private bool SignOut()
         {
             authManager.Logout();
-            return !authManager.IsLoggedIn();
+            bool ret = !authManager.IsLoggedIn();
+            Analytics.TrackEvent(Actions.SignOut, Categories.SplashScreenOperations, ret.ToString());
+            return ret;
         }
 
         private void DynamoModel_RequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)

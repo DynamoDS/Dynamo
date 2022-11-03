@@ -287,6 +287,7 @@
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="Utilities\PreferencesPanelUtilities.cs" />
+    <Compile Include="Utilities\WebView2Utilities.cs" />
     <Compile Include="ViewModels\Core\AnnotationExtension.cs" />
     <Compile Include="ViewModels\Core\AnnotationViewModel.cs" />
     <Compile Include="Utilities\ResourceUtilities.cs" />
@@ -829,6 +830,7 @@
     <Resource Include="UI\Images\TitleBarButtons\restore-lighttheme-default-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\restore-lighttheme-hover-16px.png" />
     <Resource Include="UI\Images\warning_16px.png" />
+    <Resource Include="UI\Images\font-size.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\whiteclosetab.png" />
