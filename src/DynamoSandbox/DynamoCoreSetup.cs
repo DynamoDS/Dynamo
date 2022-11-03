@@ -32,6 +32,10 @@ namespace DynamoSandbox
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="args"></param>
         public DynamoCoreSetup(string[] args)
         {
             var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
@@ -73,7 +77,6 @@ namespace DynamoSandbox
 
                 app.Run();
 
-                DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
                 // WebView2 could be null at this moment to prevent crash
                 if (splashScreen.webView != null)
@@ -261,19 +264,5 @@ namespace DynamoSandbox
             splashScreen.Close();
             splashScreen = null;
         }
-
-        private void MigrationStatusDialogRequested(SettingsMigrationEventArgs args)
-        {
-            if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.Begin)
-            {
-                splashScreen = new Dynamo.UI.Views.SplashScreen();
-                splashScreen.ShowDialog();
-            }
-            else if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.End)
-            {
-                CloseMigrationWindow();
-            }
-        }
-
     }
 }
