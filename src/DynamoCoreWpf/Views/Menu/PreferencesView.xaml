@@ -59,7 +59,11 @@
                                         HorizontalAlignment="Left"
                                         Grid.Row="0"
                                         Margin="5,0,0,0"
-                                        Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        Foreground="{StaticResource PreferencesWindowFontColor}">
+                                    <Label.ToolTip>
+                                        <ToolTip Content="{Binding Name}" Style="{StaticResource GenericToolTipLight}"/>
+                                    </Label.ToolTip>
+                                </Label>
                                 <StackPanel Orientation="Horizontal"
                                             HorizontalAlignment="Left"
                                             Width="auto"

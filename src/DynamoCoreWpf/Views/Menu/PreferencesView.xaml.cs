@@ -386,6 +386,10 @@ namespace Dynamo.Wpf.Views
                 viewModel.IsSaveButtonEnabled = true;
                 viewModel.CurrentWarningMessage = string.Empty;
                 viewModel.IsWarningEnabled = false;
+                if (e.Key == Key.Return)
+                {
+                    AddStyle_SaveButton_Click(AddStyle_SaveButton, new RoutedEventArgs());
+                }
             }
         }
 
