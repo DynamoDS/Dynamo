@@ -240,7 +240,10 @@ namespace DynamoSandbox
         {
             splashScreen.SetLabels();
             LoadDynamoView();
-            splashScreen.webView.NavigationCompleted -= WebView_NavigationCompleted;
+            if (splashScreen.webView != null)
+            {
+                splashScreen.webView.NavigationCompleted -= WebView_NavigationCompleted;
+            }
         }
 
         private void ASMPreloadFailureHandler(string failureMessage)
