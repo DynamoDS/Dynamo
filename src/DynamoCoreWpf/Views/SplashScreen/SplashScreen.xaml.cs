@@ -117,7 +117,7 @@ namespace Dynamo.UI.Views
             await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
                $"welcomeToDynamoTitle: '{Wpf.Properties.Resources.SplashScreenWelcomeToDynamo}'," +
                $"launchTitle: '{Wpf.Properties.Resources.SplashScreenLaunchTitle}'," +
-               $"importSettingsTitle: 'dd{Wpf.Properties.Resources.SplashScreenImportSettings}'," +
+               $"importSettingsTitle: '{Wpf.Properties.Resources.SplashScreenImportSettings}'," +
                $"showScreenAgainLabel: '{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
         }
 
