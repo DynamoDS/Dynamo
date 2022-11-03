@@ -380,6 +380,10 @@ namespace Dynamo.Wpf.Views
             if (string.IsNullOrEmpty(groupNameBox.Text))
             {
                 viewModel.IsSaveButtonEnabled = false;
+                if (e.Key == Key.Return)
+                {
+                    viewModel.EnableGroupStyleWarningState(Res.PreferencesViewAlreadyExistingStyleWarning);
+                }
             }
             else
             {
