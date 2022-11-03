@@ -3374,6 +3374,12 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="RecentFileNumberInfo" xml:space="preserve">
     <value>Reducing this number will discard all recent files beyond your chosen number.</value>
   </data>
+  <data name="WebView2RequiredMessage" xml:space="preserve">
+    <value>Dynamo requires WebView2 Evergreen Runtime, which is not installed on your computer. Please use the link below to download the Evergreen Standalone Installer and install the program. Then relaunch Dynamo. \n\n#WebView2 Runtime Installer=https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-sectionedge/webview2/#download-section</value>
+  </data>
+  <data name="WebView2RequiredTitle" xml:space="preserve">
+    <value>WebView2 Required</value>
+  </data>
   <data name="DynamoViewFileMenuInsert" xml:space="preserve">
     <value>Insert...</value>
   </data>
