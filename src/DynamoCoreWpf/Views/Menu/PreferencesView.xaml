@@ -54,16 +54,18 @@
                                     <RowDefinition Height="*"></RowDefinition>
                                     <RowDefinition Height="*"></RowDefinition>
                                 </Grid.RowDefinitions>
-                                <Label Name="groupNameLabel"
-                                        Content="{Binding Name}"
+                                <TextBlock Name="groupNameLabel"
+                                        Text="{Binding Name}"
                                         HorizontalAlignment="Left"
                                         Grid.Row="0"
                                         Margin="5,0,0,0"
+                                        TextTrimming="CharacterEllipsis"
+                                        MaxWidth="140"
                                         Foreground="{StaticResource PreferencesWindowFontColor}">
-                                    <Label.ToolTip>
+                                    <TextBlock.ToolTip>
                                         <ToolTip Content="{Binding Name}" Style="{StaticResource GenericToolTipLight}"/>
-                                    </Label.ToolTip>
-                                </Label>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
                                 <StackPanel Orientation="Horizontal"
                                             HorizontalAlignment="Left"
                                             Width="auto"

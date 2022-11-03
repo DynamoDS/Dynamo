@@ -256,10 +256,10 @@ namespace Dynamo.Wpf.Views
            var grid = (removeButton.Parent as Grid).Parent as Grid;
 
             //Find inside the Grid the label that contains the GroupName (unique id)
-           var groupNameLabel = grid.FindName("groupNameLabel") as Label;
+           var groupNameLabel = grid.FindName("groupNameLabel") as TextBlock;
 
             //Remove the selected style from the list
-            viewModel.RemoveStyleEntry(groupNameLabel.Content.ToString());
+            viewModel.RemoveStyleEntry(groupNameLabel.Text.ToString());
             Logging.Analytics.TrackEvent(Actions.Delete, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
