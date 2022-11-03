@@ -9,6 +9,7 @@ using Dynamo.Core;
 using Dynamo.DynamoSandbox;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using System.Linq;
@@ -56,6 +57,10 @@ namespace DynamoSandbox
         {
             try
             {
+                //This line validates if the WebView2 Runtime is installed in the computer, if is not we return and then exit Dynamo
+                if (!WebView2Utilities.ValidateWebView2RuntimeInstalled())
+                    return;
+
                 DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
                 DynamoModel model;
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
