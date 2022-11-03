@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI"
-         xmlns:localui="clr-namespace:Dynamo.Wpf.UI.GuidedTour"
+        xmlns:localui="clr-namespace:Dynamo.Wpf.UI.GuidedTour"
         xmlns:w="clr-namespace:System.Windows;assembly=PresentationCore"
         Title="{x:Static p:Resources.GenericTaskDialogTitle}"
         MinWidth="400"
@@ -116,7 +116,6 @@
                            Foreground="#3C3C3C"
                            Text="{Binding BodyText, UpdateSourceTrigger=PropertyChanged}"
                            TextWrapping="Wrap" />
-                <!--This is the content (text/media) section of the Popup-->
                 <localui:CustomRichTextBox x:Name="ContentRichTextBox" 
                                            IsDocumentEnabled="True"
                                            Visibility="Collapsed"
