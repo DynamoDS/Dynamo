@@ -8,14 +8,12 @@ using CoreNodeModels;
 using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Events;
-using Dynamo.Exceptions;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Moq;
 using Newtonsoft.Json;
@@ -711,8 +709,9 @@ namespace Dynamo.Tests
             var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
             OpenModel(testFile);
             var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
-            Assert.AreEqual(node.Description, "Makes a new list out of the given inputs");
+            Assert.AreEqual(node.Description, CoreNodeModels.Properties.Resources.ListCreateDescription);
         }
+
         [Test]
         public void OutPortDescriptionDeserilizationTest()
         {

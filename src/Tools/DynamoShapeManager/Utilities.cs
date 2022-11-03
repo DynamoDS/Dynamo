@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
@@ -91,6 +91,50 @@ namespace DynamoShapeManager
             "ADPSDKWRAPPER.DLL",
             "ADPSDKUI.DLL",
             "ADPSDKCORE.DLL"
+        };
+        private static readonly ISet<string> ASM229DllNames = new HashSet<string>()
+        {
+            "TBB.DLL",
+            "TBBMALLOC.DLL",
+            "TSPLINES11.DLL",
+            "ASMAHL229A.DLL",
+            "ASMBASE229A.DLL",
+            "ASMBLND229A.DLL",
+            "ASMBOOL229A.DLL",
+            "ASMCOVR229A.DLL",
+            "ASMCSTR229A.DLL",
+            "ASMCT229A.DLL",
+            "ASMDATAX229A.DLL",
+            "ASMDEFM229A.DLL",
+            "ASMEULR229A.DLL",
+            "ASMFCT229A.DLL",
+            "ASMFREC229A.DLL",
+            "ASMGA229A.DLL",
+            "ASMHEAL229A.DLL",
+            "ASMIMPORT229A.DLL",
+            "ASMINTR229A.DLL",
+            "ASMKERN229A.DLL",
+            "ASMLAW229A.DLL",
+            "ASMLOP229A.DLL",
+            "ASMLOPT229A.DLL",
+            "ASMNPCH229A.DLL",
+            "ASMOFST229A.DLL",
+            "ASMOPER229A.DLL",
+            "ASMPID229A.DLL",
+            "ASMRBASE229A.DLL",
+            "ASMRBI229A.DLL",
+            "ASMREM229A.DLL",
+            "ASMSASM229A.DLL",
+            "ASMSBAP229A.DLL",
+            "ASMSBOOL229A.DLL",
+            "ASMSHL229A.DLL",
+            "ASMSKIN229A.DLL",
+            "ASMSWP229A.DLL",
+            "ASMTOPT229A.DLL",
+            "ASMTWK229A.DLL",
+            "ASMUFLD229A.DLL",
+            "ASMWELD229A.DLL",
+            "MMSDK.DLL"
         };
 
         #endregion
@@ -551,6 +595,8 @@ namespace DynamoShapeManager
             {
                 case 228:
                     return !ASM228DllNames.Except(fileNames).Any();
+                case 229:
+                    return !ASM229DllNames.Except(fileNames).Any();
                 default:
                     // We don't know this version so it's safest to assume it's not complete.
                     return false;

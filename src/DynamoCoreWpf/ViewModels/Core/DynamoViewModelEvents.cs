@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 
@@ -106,15 +106,6 @@ namespace Dynamo.ViewModels
             if (RequestAboutWindow != null)
             {
                 RequestAboutWindow(vm);
-            }
-        }
-
-        public event RequestShowHideGalleryHandler RequestShowHideGallery;
-        public virtual void OnRequestShowHideGallery(bool showGallery)
-        {
-            if (RequestShowHideGallery != null)
-            {
-                RequestShowHideGallery(showGallery);
             }
         }
 

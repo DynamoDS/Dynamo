@@ -216,7 +216,9 @@ namespace Dynamo.Wpf.Views
 
             var colorHexString = grid.FindName("colorHexVal") as Label;
 
-            var newItem = new StyleItem() { Name = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString() };
+            var groupStyleFontSize = grid.FindName("groupStyleFontSize") as ComboBox;
+
+            var newItem = new StyleItem() { Name = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString(), FontSize = Convert.ToInt32(groupStyleFontSize.SelectedValue) };
 
             if (string.IsNullOrEmpty(newItem.Name))
                 newItem.Name = "Input";
@@ -270,6 +272,22 @@ namespace Dynamo.Wpf.Views
                 Button colorButton = sender as Button;
                 if (colorButton != null)
                     colorButton.Background = new SolidColorBrush(Color.FromRgb(colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
+            }
+        }
+
+        private void onChangedGroupStyleColor_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
+
+            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Button colorButton = sender as Button;
+                
+                if (colorButton != null)
+                {
+                    GroupStyleItem selectedGroupStyle = (GroupStyleItem)colorButton.DataContext;
+                    selectedGroupStyle.HexColorString = colorDialog.Color.R.ToString("X2") + colorDialog.Color.G.ToString("X2") + colorDialog.Color.B.ToString("X2");
+                }                
             }
         }
 
@@ -416,18 +434,18 @@ namespace Dynamo.Wpf.Views
                     if (viewModel.importSettings(openFileDialog.FileName))
                     {
                         Wpf.Utilities.MessageBoxService.Show(
-                       Res.ImportSettingsSuccessMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+                            this, Res.ImportSettingsSuccessMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
                         Wpf.Utilities.MessageBoxService.Show(
-                       Res.ImportSettingsFailedMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            this, Res.ImportSettingsFailedMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }                    
                 }
                 catch (Exception ex)
                 {
                     Wpf.Utilities.MessageBoxService.Show(
-                       ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        this, ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }            
         }
@@ -461,7 +479,10 @@ namespace Dynamo.Wpf.Views
                 catch (Exception ex)
                 {
                     Wpf.Utilities.MessageBoxService.Show(
-                       ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        this,
+                        ex.Message,
+                        Res.ImportSettingsFailedMessage,
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
         }

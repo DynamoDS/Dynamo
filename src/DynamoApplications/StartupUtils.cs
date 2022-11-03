@@ -204,6 +204,7 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
+                new Version(229,0,0),
                 new Version(228,5,0),
             };
 
@@ -346,7 +347,7 @@ namespace Dynamo.Applications
                 HostAnalyticsInfo = info,
                 CLIMode = CLImode
             };
-
+            config.AuthProvider = CLImode ? null : new Core.IDSDKManager();
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
             config.StartInTestMode = CLImode;
             config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;

@@ -91,21 +91,31 @@
       <Name>Actions</Name>
       <HexColorString>B9F9E1</HexColorString>
       <IsDefault>true</IsDefault>
+	  <FontSize>36</FontSize>
     </GroupStyleItem>
     <GroupStyleItem>
       <Name>Inputs</Name>
       <HexColorString>FFB8D8</HexColorString>
       <IsDefault>true</IsDefault>
+	  <FontSize>36</FontSize>
     </GroupStyleItem>
     <GroupStyleItem>
       <Name>Outputs</Name>
       <HexColorString>FFC999</HexColorString>
       <IsDefault>true</IsDefault>
+	  <FontSize>36</FontSize>
     </GroupStyleItem>
     <GroupStyleItem>
       <Name>Review</Name>
       <HexColorString>A4E1FF</HexColorString>
       <IsDefault>true</IsDefault>
+	  <FontSize>36</FontSize>
+    </GroupStyleItem>
+	<GroupStyleItem>
+      <Name>Style 5</Name>
+      <HexColorString>B9F9E1</HexColorString>
+      <IsDefault>false</IsDefault>
+	  <FontSize>14</FontSize>
     </GroupStyleItem>
   </GroupStyleItemsList>
   <NodeSearchTagSizeLimit>500</NodeSearchTagSizeLimit>
