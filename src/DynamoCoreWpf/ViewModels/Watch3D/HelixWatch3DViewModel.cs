@@ -1796,7 +1796,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                                 var range = item.Value;
                                 var startIndex = range.Item1; //Start line vertex index
                                 var count = range.Item2 - range.Item1 + 1; //Count of line vertices
-                                var uniqueId = baseId + ":" + j + LinesKey + "_Instance";
+                                var uniqueId = baseId + ":" + j + LinesKey + "_instance";
 
                                 List<Matrix> instances;
                                 if (rp.instanceTransforms.TryGetValue(item.Key, out instances))
@@ -1855,7 +1855,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             var range = rp.MeshVerticesRangesAssociatedWithTextureMaps[j];
                             var startIndex = range.Item1; //Start mesh vertex index
                             var count = range.Item2 - range.Item1 + 1; //Count of mesh vertices
-                            var uniqueId = baseId + ":" + j + MeshKey + "_Texture";
+                            var uniqueId = baseId + ":" + j + MeshKey + "_texture";
                             
                             AddMeshData(uniqueId, m,startIndex,count, drawDead, baseId, rp.TextureMapsList[j], rp.TextureMapsStrideList[j],
                                 rp.Transform, rp.RequiresPerVertexColoration);
@@ -1889,7 +1889,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             var range = item.Value;
                             var startIndex = range.start; //Start mesh vertex index
                             var count = range.end - range.start + 1; //Count of mesh vertices
-                            var uniqueId = baseId + ":" + j + MeshKey + "_Instance";
+                            var uniqueId = baseId + ":" + j + MeshKey + "_instance";
 
                             List<Matrix> instances;
                             if (rp.instanceTransforms.TryGetValue(item.Key, out instances))
