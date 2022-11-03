@@ -980,13 +980,11 @@ namespace Dynamo.Wpf.Rendering
         public MeshGeometry3D Mesh
         {
             get { return mesh; }
-            internal set { mesh = value; }
         }
 
         public LineGeometry3D Lines
         {
             get { return lines; }
-            internal set { lines = value; }
         }
 
         public PointGeometry3D Points

@@ -1777,7 +1777,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var l = rp.Lines;
                     if (l.Positions.Any())
                     {
-                        LineGeometry3D lCopy = null;
                         var processedLineVertexCount = 0;
                         var LineVertexRangesToRemove = new List<(int start, int end)>();
 
@@ -1821,11 +1820,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             //We clone the line object so that we do not modify the render package data.
                             if (LineVertexRangesToRemove.Any())
                             {
-                                if (lCopy == null)
-                                {
-                                    lCopy = CloneLineGeometry(l);
-                                }
-
+                                var lCopy = CloneLineGeometry(l);
+                               
                                 RemoveLineGeometryByRange(LineVertexRangesToRemove, lCopy);
 
                                 AddLineData(id, lCopy, 0, lCopy.Positions.Count, drawDead, baseId, rp.Transform, rp.IsSelected, rp.Mesh.Positions.Any());
@@ -1841,7 +1837,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     if (!m.Positions.Any()) continue;
 
-                    MeshGeometry3D mCopy = null;
                     var processedMeshVertexCount = 0;
                     var MeshVertexRangesToRemove = new List<(int start, int end)>();
 
@@ -1921,10 +1916,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     //We clone the mesh object so that we do not modify the render package data.
                     if (MeshVertexRangesToRemove.Any())
                     {
-                        if (mCopy == null)
-                        {
-                            mCopy = CloneMeshGeometry(m);
-                        }
+                        var mCopy = CloneMeshGeometry(m);
 
                         RemoveMeshGeometryByRange(MeshVertexRangesToRemove, mCopy);
 
