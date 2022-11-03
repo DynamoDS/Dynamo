@@ -1778,7 +1778,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (l.Positions.Any())
                     {
                         var processedLineVertexCount = 0;
-                        var LineVertexRangesToRemove = new List<(int start, int end)>();
+                        var lineVertexRangesToRemove = new List<(int start, int end)>();
 
                         id = baseId + LinesKey;
 
@@ -1810,7 +1810,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             }
 
                             //Add ranges of line geometry to exclude for regions already generated related to instancing.
-                            LineVertexRangesToRemove.AddRange(rp.LineVertexRangesAssociatedWithInstancing.Values.ToList());
+                            lineVertexRangesToRemove.AddRange(rp.LineVertexRangesAssociatedWithInstancing.Values.ToList());
                         }
 
                         //If all the line vertex data has been processed we move on to mesh data.
@@ -1818,11 +1818,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         { 
                             //If line vertex ranges have been utilized previously for instantiating instanced geometry or multiple texture maps only process the remaining line data
                             //We clone the line object so that we do not modify the render package data.
-                            if (LineVertexRangesToRemove.Any())
+                            if (lineVertexRangesToRemove.Any())
                             {
                                 var lCopy = CloneLineGeometry(l);
                                
-                                RemoveLineGeometryByRange(LineVertexRangesToRemove, lCopy);
+                                RemoveLineGeometryByRange(lineVertexRangesToRemove, lCopy);
 
                                 AddLineData(id, lCopy, 0, lCopy.Positions.Count, drawDead, baseId, rp.Transform, rp.IsSelected, rp.Mesh.Positions.Any());
                             }
@@ -1838,7 +1838,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (!m.Positions.Any()) continue;
 
                     var processedMeshVertexCount = 0;
-                    var MeshVertexRangesToRemove = new List<(int start, int end)>();
+                    var meshVertexRangesToRemove = new List<(int start, int end)>();
 
                     //If we are using the legacy colors array for texture map we need to create a new Geometry3d object with a unique key.
                     id = (rp.Colors != null ? rp.Description : baseId) + MeshKey;
@@ -1871,7 +1871,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         }
 
                         //Otherwise, add ranges of mesh geometry to exclude for regions already generated related to texture maps.
-                        MeshVertexRangesToRemove.AddRange(
+                        meshVertexRangesToRemove.AddRange(
                             rp.MeshVerticesRangesAssociatedWithTextureMaps.Select(x=>(x.Item1,x.Item2)).ToList());
                     }
 
@@ -1910,16 +1910,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         }
 
                         //Otherwise, add ranges of mesh geometry to exclude for regions already generated related to instancing.
-                        MeshVertexRangesToRemove.AddRange(rp.MeshVertexRangesAssociatedWithInstancing.Values.ToList());
+                        meshVertexRangesToRemove.AddRange(rp.MeshVertexRangesAssociatedWithInstancing.Values.ToList());
                     }
 
                     //If mesh vertex ranges have been utilized previously for instantiating instanced geometry or multiple texture maps we only process the remaining mesh data
                     //We clone the mesh object so that we do not modify the render package data.
-                    if (MeshVertexRangesToRemove.Any())
+                    if (meshVertexRangesToRemove.Any())
                     {
                         var mCopy = CloneMeshGeometry(m);
 
-                        RemoveMeshGeometryByRange(MeshVertexRangesToRemove, mCopy);
+                        RemoveMeshGeometryByRange(meshVertexRangesToRemove, mCopy);
 
                         AddMeshData(id, mCopy, 0, mCopy.Positions.Count, drawDead, baseId, rp.Colors, rp.ColorsStride,
                             rp.Transform, rp.RequiresPerVertexColoration);
