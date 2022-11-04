@@ -60,10 +60,13 @@ namespace Watch3DNodeModelsWpf
         {
             OnClear();
 
-            var gathered = watchModel.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).ToList();
+            var connectedNodes = watchModel.ImediateUpstreamNodes();
 
-            gathered.ForEach(n => n.WasRenderPackageUpdatedAfterExecution = false);
-            gathered.ForEach(n => n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, false, true));
+            foreach(var n in connectedNodes)
+            {
+                n.WasRenderPackageUpdatedAfterExecution = false;
+                n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, false, true);
+            }
         }
 
         protected override void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -86,8 +89,8 @@ namespace Watch3DNodeModelsWpf
 
             if(e.PropertyName == nameof(node.CachedValue))
             {
-                var connected = watchModel.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner));
-                if (!connected.Contains(node))
+                var connecteNodes = watchModel.ImediateUpstreamNodes();
+                if (!connecteNodes.Contains(node))
                 {
                     return;
                 }
@@ -97,10 +100,7 @@ namespace Watch3DNodeModelsWpf
 
             if (e.PropertyName == "IsFrozen")
             {
-                var visibleUpstream = new List<NodeModel>();
-                watchModel.VisibleUpstreamNodes(visibleUpstream);
-
-                if (!visibleUpstream.Contains(node))
+                if (!watchModel.UpstreamCache.Contains(node))
                 { 
                     return;
                 }
@@ -125,12 +125,9 @@ namespace Watch3DNodeModelsWpf
         protected override void OnRenderPackagesUpdated(NodeModel node,
             RenderPackageCache renderPackages)
         {
-            var updatedNode = dynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == node.GUID);
-            if (updatedNode == null) return;
+            var connectedNodes = watchModel.ImediateUpstreamNodes();
 
-            var visibleUpstream = watchModel.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).ToList();
-
-            if (!visibleUpstream.Contains(updatedNode))
+            if (!connectedNodes.Contains(node))
             {
                 return;
             }
