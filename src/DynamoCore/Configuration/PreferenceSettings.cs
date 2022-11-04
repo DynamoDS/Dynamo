@@ -683,9 +683,9 @@ namespace Dynamo.Configuration
         #region Dynamo Player and Generative Design settings
 
         /// <summary>
-        /// Collections of folders used by Dynamo Player or Generative Design as entry points.
+        /// Collections of folders used by individual Dynamo Player or Generative Design entry points.
         /// </summary>
-        public Dictionary<string, List<DynamoPlayerFolderItem>> DynamoPlayerFolderItems;
+        public List<DynamoPlayerFolderGroup> DynamoPlayerFolderGroups { get; set; }
 
         #endregion
 
@@ -741,6 +741,7 @@ namespace Dynamo.Configuration
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
+            DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
         }
 
         /// <summary>
@@ -1104,50 +1105,6 @@ namespace Dynamo.Configuration
         public bool IsCreatedFromValidFile
         {
             get { return isCreatedFromValidFile; }
-        }
-    }
-
-    /// <summary>
-    /// This class describes a folder (usually containing Dynamo graphs) used by the Dynamo Player / Generative Design as an entry point
-    /// </summary>
-    public class DynamoPlayerFolderItem
-    {
-        /// <summary>
-        /// The full path if the folder
-        /// </summary>
-        public string Path;
-
-        /// <summary>
-        /// The display name of the folder
-        /// </summary>
-        public string DisplayName;
-
-        /// <summary>
-        /// The ID of the folder
-        /// </summary>
-        public string Id;
-
-        /// <summary>
-        /// Whether this folder is removable from the settings (Built-in folders are non-removable)
-        /// </summary>
-        public bool IsRemovable = true;
-
-        /// <summary>
-        /// The order of the folder
-        /// </summary>
-        public int Order = -1;
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="path">The full path of the folder</param>
-        /// <param name="displayName">The display name of the folder</param>
-        /// <param name="id">The id of the folder</param>
-        public DynamoPlayerFolderItem(string path, string displayName, string id)
-        {
-            Path = path;
-            DisplayName = displayName;
-            Id = id;
         }
     }
 }

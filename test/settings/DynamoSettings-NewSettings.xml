@@ -123,4 +123,5 @@
   <ReadNotificationIds>
     <string>1</string>
   </ReadNotificationIds>
+  <DynamoPlayerFolderGroups/>
 </PreferenceSettings>

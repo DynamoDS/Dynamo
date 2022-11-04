@@ -431,7 +431,8 @@ namespace Dynamo.Wpf.Views
             {
                 try
                 {
-                    if (viewModel.importSettings(openFileDialog.FileName))
+                    bool isImported = viewModel.importSettings(openFileDialog.FileName);
+                    if (isImported)
                     {
                         Wpf.Utilities.MessageBoxService.Show(
                             this, Res.ImportSettingsSuccessMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Information);
@@ -440,7 +441,8 @@ namespace Dynamo.Wpf.Views
                     {
                         Wpf.Utilities.MessageBoxService.Show(
                             this, Res.ImportSettingsFailedMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    }                    
+                    }
+                    Analytics.TrackEvent(Actions.ImportSettings, Categories.Preferences, isImported.ToString());
                 }
                 catch (Exception ex)
                 {
