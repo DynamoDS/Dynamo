@@ -140,7 +140,7 @@
             false
         );
 
-        function replaceImages() {
+    async function replaceImages() {
             var allimages = document.getElementsByTagName("img");
             for(var j = 0; j < allimages.length; j++){
 
@@ -155,19 +155,15 @@
                      continue;
                 }
                 //request the icon from the extension.
-                window.chrome.webview.hostObjects.bridgeTwoWay.GetBase64StringFromPath(src);
+                await window.chrome.webview.hostObjects.bridgeTwoWay.GetBase64StringFromPath(src).sync();
             }
         }
 
-        function completeReplaceImages(base64String, img_src) {
-            var images = document.getElementsByTagName('img');
-            for (var i = 0; i < images.length; ++i) {
-                if (images[i].src == img_src) {
-                    images[i].src = base64String;
-                }
-                    
-            }     
+    function completeReplaceImages(base64String, img_src) {
+        if (currentImage != null) {
+            currentImage.src = base64String;
         }
+    }
 
         function refreshLibViewFromData(loadedTypes,layoutSpec){
             var append = false; // Replace existing contents instead of appending.
@@ -218,6 +214,9 @@
             setTimeout(function () {
                 replaceImages();
             }, replaceImageDelayTime);
+            setTimeout(function () {
+                replaceImages();
+            }, replaceImageDelayTime*5);
         }, true);
 
         libController.on(libController.ItemMouseEnterEventName, function (arg) {

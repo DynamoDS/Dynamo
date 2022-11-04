@@ -6,16 +6,16 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 
-
-namespace Dynamo.DynamoSandbox
+namespace Dynamo.UI.Views
 {
     public partial class SplashScreen : Window
     {
         // These are hardcoded string and should only change when npm package structure changed or image path changed
-        private static readonly string htmlEmbeddedFile = "Dynamo.DynamoSandbox.node_modules._dynamods.splash_screen.build.index.html";
-        private static readonly string jsEmbeddedFile = "Dynamo.DynamoSandbox.node_modules._dynamods.splash_screen.build.index.bundle.js";
-        private static readonly string backgroundImage = "Dynamo.DynamoSandbox.WebApp.splashScreenBackground.png";
+        private static readonly string htmlEmbeddedFile = "Dynamo.Wpf.node_modules._dynamods.splash_screen.build.index.html";
+        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.node_modules._dynamods.splash_screen.build.index.bundle.js";
+        private static readonly string backgroundImage = "Dynamo.Wpf.Views.SplashScreen.WebApp.splashScreenBackground.png";
         private static readonly string imageFileExtension = "png";
 
         private Stopwatch loadingTimer;
@@ -26,13 +26,19 @@ namespace Dynamo.DynamoSandbox
         internal Action<string> RequestImportSettings;
         internal Func<bool> RequestSignIn; 
         internal Func<bool> RequestSignOut;
+        internal WebView2 webView;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public SplashScreen()
         {
             InitializeComponent();
 
             loadingTimer = new Stopwatch();
             loadingTimer.Start();
+            webView = new WebView2();
+            AddChild(webView);
         }
 
         protected override async void OnContentRendered(EventArgs e)
@@ -78,7 +84,7 @@ namespace Dynamo.DynamoSandbox
             var elapsedTime = loadingTimer.ElapsedMilliseconds;
             totalLoadingTime += elapsedTime;
             loadingTimer = Stopwatch.StartNew();
-            await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', '{Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms')");
+            await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', '{Wpf.Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms')");
         }
 
         internal async void SetLoadingDone()
@@ -103,7 +109,7 @@ namespace Dynamo.DynamoSandbox
         internal async void SetSignInStatus(bool status)
         {
             await webView.CoreWebView2.ExecuteScriptAsync("window.setSignInStatus({" +
-                $"signInTitle: '" + (status ? Properties.Resources.SplashScreenSignOut : Properties.Resources.SplashScreenSignIn).ToString() + "'," +
+                $"signInTitle: '" + (status ? Wpf.Properties.Resources.SplashScreenSignOut : Wpf.Properties.Resources.SplashScreenSignIn).ToString() + "'," +
                 $"signInStatus: '" + status + "'})");
         }
 
@@ -113,10 +119,10 @@ namespace Dynamo.DynamoSandbox
         internal async void SetLabels()
         {
             await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
-               $"welcomeToDynamoTitle: '{Properties.Resources.SplashScreenWelcomeToDynamo}'," +
-               $"launchTitle: '{Properties.Resources.SplashScreenLaunchTitle}'," +
-               $"importSettingsTitle: 'dd{Properties.Resources.SplashScreenImportSettings}'," +
-               $"showScreenAgainLabel: '{Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
+               $"welcomeToDynamoTitle: '{Wpf.Properties.Resources.SplashScreenWelcomeToDynamo}'," +
+               $"launchTitle: '{Wpf.Properties.Resources.SplashScreenLaunchTitle}'," +
+               $"importSettingsTitle: '{Wpf.Properties.Resources.SplashScreenImportSettings}'," +
+               $"showScreenAgainLabel: '{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
         }
 
         /// <summary>
