@@ -214,6 +214,9 @@
             setTimeout(function () {
                 replaceImages();
             }, replaceImageDelayTime);
+            setTimeout(function () {
+                replaceImages();
+            }, replaceImageDelayTime*5);
         }, true);
 
         libController.on(libController.ItemMouseEnterEventName, function (arg) {
