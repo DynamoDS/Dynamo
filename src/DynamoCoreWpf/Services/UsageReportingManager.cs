@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using Dynamo.Core;
 using Dynamo.Logging;
@@ -245,15 +245,7 @@ namespace Dynamo.Services
             {
                 Owner = ownerWindow
             };
-            usageReportingPrompt.Loaded += UsageReportingPromptLoaded;
             usageReportingPrompt.ShowDialog();
-            usageReportingPrompt.Loaded -= UsageReportingPromptLoaded;
-        }
-
-        void UsageReportingPromptLoaded(object sender, RoutedEventArgs e)
-        {
-            DynamoModel.OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                        SettingsMigrationEventArgs.EventStatusType.End));
         }
     }
 }
