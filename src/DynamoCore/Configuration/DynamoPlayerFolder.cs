@@ -76,7 +76,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Creates an empty DynamoPlayerFolderGroup
         /// </summary>
-        DynamoPlayerFolderGroup()
+        public DynamoPlayerFolderGroup()
         {
             Folders = new List<DynamoPlayerFolder>();
         }
@@ -86,7 +86,7 @@ namespace Dynamo.Configuration
         /// </summary>
         /// <param name="entryPoint">The name of the Player entry point</param>
         /// <param name="folders">The list of Folder data</param>
-        DynamoPlayerFolderGroup(string entryPoint, List<DynamoPlayerFolder> folders)
+        public DynamoPlayerFolderGroup(string entryPoint, List<DynamoPlayerFolder> folders)
         {
             EntryPoint = entryPoint;
             Folders = folders;
