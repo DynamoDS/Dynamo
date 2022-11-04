@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Input;
 using Microsoft.Web.WebView2.Core;
 
 
@@ -18,6 +19,8 @@ namespace Dynamo.DynamoSandbox
         private static readonly string imageFileExtension = "png";
 
         private Stopwatch loadingTimer;
+
+        private long totalLoadingTime;
 
         internal Action<bool> RequestLaunchDynamo;
         internal Action<string> RequestImportSettings;
@@ -39,8 +42,7 @@ namespace Dynamo.DynamoSandbox
             string htmlString = string.Empty;
             string jsonString = string.Empty;
 
-            var webView2Environment = await CoreWebView2Environment.CreateAsync();
-            await webView.EnsureCoreWebView2Async(webView2Environment);
+            await webView.EnsureCoreWebView2Async();
             // Context menu disabled
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             var assembly = Assembly.GetExecutingAssembly();
@@ -68,12 +70,13 @@ namespace Dynamo.DynamoSandbox
 
             webView.NavigateToString(htmlString);
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
-               new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut));
+               new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut, CloseWindow));
         }
 
         internal async void SetBarProperties(string version, string loadingDescription, float barSize)
         {
             var elapsedTime = loadingTimer.ElapsedMilliseconds;
+            totalLoadingTime += elapsedTime;
             loadingTimer = Stopwatch.StartNew();
             await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', '{Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms')");
         }
@@ -83,6 +86,7 @@ namespace Dynamo.DynamoSandbox
             loadingTimer.Stop();
             loadingTimer = null;
             await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
+            await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime('Total loading time: {totalLoadingTime}ms')");
         }
 
         internal async void SetImportStatus(ImportStatus importStatus, string importSettingsTitle, string errorDescription)
@@ -115,6 +119,14 @@ namespace Dynamo.DynamoSandbox
                $"showScreenAgainLabel: '{Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
         }
 
+        /// <summary>
+        /// If the user wants to close the window, we shutdown the application and don't lanch Dynamo
+        /// </summary>
+        private void CloseWindow()
+        {
+           Application.Current.Shutdown();
+        }
+
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
@@ -141,13 +153,15 @@ namespace Dynamo.DynamoSandbox
         readonly Action<string> RequestImportSettings;
         readonly Func<bool> RequestSignIn;
         readonly Func<bool> RequestSignOut;
+        readonly Action RequestCloseWindow;
 
-        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut)
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut, Action requestCloseWindow)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
             RequestImportSettings = requestImportSettings;
             RequestSignIn = requestSignIn;
             RequestSignOut = requestSignOut;
+            RequestCloseWindow = requestCloseWindow;
         }
 
         public void LaunchDynamo(bool showScreenAgain)
@@ -166,6 +180,10 @@ namespace Dynamo.DynamoSandbox
         public bool SignOut()
         {
             return RequestSignOut();
+        }
+        public void CloseWindow()
+        {
+            RequestCloseWindow();
         }
     }
 }
