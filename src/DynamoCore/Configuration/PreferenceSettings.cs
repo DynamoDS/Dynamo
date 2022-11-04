@@ -683,7 +683,7 @@ namespace Dynamo.Configuration
         #region Dynamo Player and Generative Design settings
 
         /// <summary>
-        /// Collections of folders used by individual Dynamo Player or Generative Design entry points.
+        /// Collections of folders used by individual Dynamo Player or Generative Design as entry points.
         /// </summary>
         public List<DynamoPlayerFolderGroup> DynamoPlayerFolderGroups { get; set; }
 

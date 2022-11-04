@@ -264,6 +264,11 @@ namespace Dynamo.Tests.Configuration
             {
                 var sourcePi = newGeneralSettings.GetType().GetProperty(destinationPi.Name);
 
+                if (sourcePi.Name == "DynamoPlayerFolderGroups")
+                {
+                    string a = "";
+                }
+
                 if (!PropertyHasExcludedAttributes(destinationPi) && !PropertyHasStaticField(defaultSettings, destinationPi))
                 {
                     evaluatedProperties.Add(destinationPi.Name);
@@ -311,6 +316,18 @@ namespace Dynamo.Tests.Configuration
                     {
                         if (((List<BackgroundPreviewActiveState>)sourcePi.GetValue(newGeneralSettings, null)).Count ==
                             ((List<BackgroundPreviewActiveState>)destinationPi.GetValue(defaultSettings, null)).Count)
+                        {
+                            propertiesWithSameValue.Add(destinationPi.Name);
+                        }
+                        else
+                        {
+                            propertiesWithDifferentValue.Add(destinationPi.Name);
+                        }
+                    }
+                    else if (destinationPi.PropertyType == typeof(List<DynamoPlayerFolderGroup>))
+                    {
+                        if (((List<DynamoPlayerFolderGroup>)sourcePi.GetValue(newGeneralSettings, null)).Count ==
+                            ((List<DynamoPlayerFolderGroup>)destinationPi.GetValue(defaultSettings, null)).Count)
                         {
                             propertiesWithSameValue.Add(destinationPi.Name);
                         }
