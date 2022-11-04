@@ -42,10 +42,10 @@
             <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
             <DataTemplate x:Key="styleViewItemTemplate">
                  <Border Background="{StaticResource PreferencesWindowBackgroundColor}" Padding="0,0,0,10" Margin="0,0,0,5"
-                        BorderThickness="1" BorderBrush="#FF97A0A5">
+                        BorderThickness="1" BorderBrush="#FF97A0A5" Width="210">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0">
@@ -60,7 +60,8 @@
                                         Grid.Row="0"
                                         Margin="5,0,0,0"
                                         TextTrimming="CharacterEllipsis"
-                                        MaxWidth="140"
+                                        MinWidth="110"
+                                        MaxWidth="135"
                                         Foreground="{StaticResource PreferencesWindowFontColor}">
                                     <TextBlock.ToolTip>
                                         <ToolTip Content="{Binding Name}" Style="{StaticResource GenericToolTipLight}"/>
