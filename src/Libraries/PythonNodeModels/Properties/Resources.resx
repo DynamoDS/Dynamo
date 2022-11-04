@@ -192,7 +192,7 @@
     <value>Use this dropdown to choose the python version/engine to execute your code.</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
-    <value>Migration Assistant to update your Python 2 scripts to Python 3. Engine must be set to Python 2 version to work.</value>
+    <value>Run migration utility tool to make the script Python 3 compliant.</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
     <value>IronPython;CPython;</value>

@@ -6,7 +6,7 @@
                     xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
                     xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
                     xmlns:fa="http://schemas.fontawesome.io/icons/"
-                    xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                    xmlns:interactivity="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors"
                     xmlns:nodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore"
                     xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
                     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"

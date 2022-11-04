@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Dynamo.Microsoft.Xaml.Behaviors;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Interactivity;
 using System.Windows.Shapes;
 
 namespace Dynamo.Wpf.UI

@@ -118,8 +118,7 @@ namespace DynamoCoreWpfTests
             selectConversionTo.SelectedItem = DynamoConversions.ConversionUnit.Centimeters;
 
             Assert.IsFalse(selectConversionFrom.IsEnabled);
-            Assert.AreEqual(selectConversionFrom.ToolTip.ToString(), "Testing Tooltip");
-
+            
             //Validates that the conversion from Inches to Centimeters was successful
             Assert.AreEqual(inchesToCmFactor * float.Parse(NumberNode.Value), float.Parse(WatchNode.CachedValue.ToString()));
         }

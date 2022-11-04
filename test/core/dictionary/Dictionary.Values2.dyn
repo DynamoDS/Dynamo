@@ -1,0 +1,291 @@
+{
+  "Uuid": "c8354dfc-6e74-4928-bd3d-66f567f0fabe",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Dictionary.Values2",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "DesignScript.Builtin.Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "DesignScriptBuiltin.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[\"a\", \"b\"];\n[1,[1,2]];",
+      "Id": "70ec60f495c94b2fbe1ab3793e66fe18",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2479054ee2354d689a00b8f34c093886",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d434efb9324747c9a0d68f7f27d191df",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DesignScript.Builtin.Dictionary.ByKeysValues@string[],var[]..[]",
+      "Id": "5a80c8502943442da90a91bba94396c6",
+      "Inputs": [
+        {
+          "Id": "0752766af76e451c9192ea875b1eda81",
+          "Name": "keys",
+          "Description": "Keys of dictionary\n\nstring[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6e9566dd06db442ead8a83f365aef415",
+          "Name": "values",
+          "Description": "Values of dictionary\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3cc11dc224e54cd8a3e2f3a3f94da762",
+          "Name": "dictionary",
+          "Description": "Dictionary from keys and values",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a Dictionary with the supplied keys and values. The number of entries is the shorter of keys or values.\n\nDictionary.ByKeysValues (keys: string[], values: var[]..[]): Dictionary"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DesignScript.Builtin.Dictionary.Values",
+      "Id": "bc957838571c4c56af2bb714f9f40bd7",
+      "Inputs": [
+        {
+          "Id": "968e6d50293b4be482f0ddacd802f612",
+          "Name": "dictionary",
+          "Description": "DesignScript.Builtin.Dictionary",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "23810686995546df85becf324834ad1b",
+          "Name": "values",
+          "Description": "Values of the dictionary",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces the values in a Dictionary.\n\nDictionary.Values: var[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "{\"a\":\"foo\"};",
+      "Id": "e7907beec296425092286d5fef087b73",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b5560d7fe000449dbdd5410363ef4795",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DesignScript.Builtin.Dictionary.Values",
+      "Id": "f64c1972520144d7a6d342937584c47e",
+      "Inputs": [
+        {
+          "Id": "0119d15bcb074c6ca366529dc5991f9a",
+          "Name": "dictionary",
+          "Description": "DesignScript.Builtin.Dictionary",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0810027d2247408881f0e5a17e71eecc",
+          "Name": "values",
+          "Description": "Values of the dictionary",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces the values in a Dictionary.\n\nDictionary.Values: var[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "2479054ee2354d689a00b8f34c093886",
+      "End": "0752766af76e451c9192ea875b1eda81",
+      "Id": "5eb17621a0754df194fba7bdb7d83d6d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d434efb9324747c9a0d68f7f27d191df",
+      "End": "6e9566dd06db442ead8a83f365aef415",
+      "Id": "d07b589b98d24d97be478cf863679455",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3cc11dc224e54cd8a3e2f3a3f94da762",
+      "End": "0119d15bcb074c6ca366529dc5991f9a",
+      "Id": "f3002e8504fb4e4fa469726bffdf90ab",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b5560d7fe000449dbdd5410363ef4795",
+      "End": "968e6d50293b4be482f0ddacd802f612",
+      "Id": "91c792e517e241748f10c58382ccdb90",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.16",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.15.0.5383",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "70ec60f495c94b2fbe1ab3793e66fe18",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 201.80021627432291,
+        "Y": 302.27524298868087
+      },
+      {
+        "Name": "Dictionary.ByKeysValues",
+        "ShowGeometry": true,
+        "Id": "5a80c8502943442da90a91bba94396c6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 445.46940614142329,
+        "Y": 306.41816192420157
+      },
+      {
+        "Name": "Dictionary.Values",
+        "ShowGeometry": true,
+        "Id": "bc957838571c4c56af2bb714f9f40bd7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 552.39999999999986,
+        "Y": 51.59999999999998
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "e7907beec296425092286d5fef087b73",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 217.0,
+        "Y": 108.0
+      },
+      {
+        "Name": "Dictionary.Values",
+        "ShowGeometry": true,
+        "Id": "f64c1972520144d7a6d342937584c47e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 832.04843009156468,
+        "Y": 334.44237696998408
+      }
+    ],
+    "Annotations": [],
+    "X": -100.718905,
+    "Y": 16.527137500000023,
+    "Zoom": 0.97676875
+  }
+}

@@ -316,6 +316,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, vm.packageLoader.LocalPackages.Count());
 
             // simulate turning off "disable custom package paths" toggle.
+            (setting as IDisablePackageLoadingPreferences).DisableCustomPackageLocations = false;
             vm.SetPackagesScheduledState(setting.CustomPackageFolders.First(), false);
 
             // simulate closing preferences dialog by saving changes to packagepathviewmodel 
@@ -381,19 +382,13 @@ namespace DynamoCoreWpfTests
             {
                 CustomPackageFolders = {@"Z:\" }
             };
-            var pathManager = new Mock<IPathManager>();
-            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
-                () => setting.CustomPackageFolders);
-
-            PackageLoader loader = new PackageLoader(pathManager.Object);
-            loader.PackagesLoaded += Loader_PackagesLoaded;
+            var vm = CreatePackagePathViewModel(setting);
+            vm.packageLoader.PackagesLoaded += Loader_PackagesLoaded;
 
             LoadPackageParams loadParams = new LoadPackageParams
             {
                 Preferences = setting,
             };
-            CustomNodeManager customNodeManager = Model.CustomNodeManager;
-            var vm= new PackagePathViewModel(loader, loadParams, customNodeManager);
 
             vm.SaveSettingCommand.Execute(null);
 
@@ -421,7 +416,7 @@ namespace DynamoCoreWpfTests
             {
                 count = count + obj.Count();
             }
-            loader.PackagesLoaded -= Loader_PackagesLoaded;
+            vm.packageLoader.PackagesLoaded -= Loader_PackagesLoaded;
         }
 
         [Test]
@@ -446,17 +441,18 @@ namespace DynamoCoreWpfTests
 
         #endregion
         #region Setup methods
-        private PackagePathViewModel CreatePackagePathViewModel(PreferenceSettings setting)
+        private PackagePathViewModel CreatePackagePathViewModel(PreferenceSettings settings)
         {
-            var pathManager = new Mock<IPathManager>();
-            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
-                () => setting.CustomPackageFolders);
+            var pathManager = new PathManager(new PathManagerParams { })
+            {
+                Preferences = settings
+            };
 
-            PackageLoader loader = new PackageLoader(pathManager.Object);
+            PackageLoader loader = new PackageLoader(pathManager);
             
             LoadPackageParams loadParams = new LoadPackageParams
             {
-                Preferences = setting,
+                Preferences = settings,
             };
             CustomNodeManager customNodeManager = Model.CustomNodeManager;
             return new PackagePathViewModel(loader, loadParams, customNodeManager);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using Analytics.NET.Google;
-using Analytics.NET.ADP;
+using Autodesk.Analytics.Google;
+using Autodesk.Analytics.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
 using Dynamo.Interfaces;
@@ -12,9 +12,6 @@ namespace Dynamo.Logging
 {
     class DynamoAnalyticsSession : IAnalyticsSession
     {
-        private Heartbeat heartbeat;
-        private UsageLog logger;
-
         public DynamoAnalyticsSession()
         {
             UserId = GetUserID();
@@ -24,10 +21,6 @@ namespace Dynamo.Logging
         public void Start(DynamoModel model)
         {
             StabilityCookie.Startup();
-
-            heartbeat = Heartbeat.GetInstance(model);
-
-            logger = new UsageLog("Dynamo", UserId, SessionId);
         }
 
         public void Dispose()
@@ -37,24 +30,13 @@ namespace Dynamo.Logging
                 StabilityCookie.WriteCrashingShutdown();
             else
                 StabilityCookie.WriteCleanShutdown();
-            
-            if (null != heartbeat)
-                Heartbeat.DestroyInstance();
-            heartbeat = null;
-
-            if (null != logger)
-                logger.Dispose();
-            logger = null;
-        }
-
-        public ILogger Logger
-        {
-            get { return logger; }
         }
 
         public string UserId { get; private set; }
 
         public string SessionId { get; private set; }
+        [Obsolete("Do not use, will be removed, was only used by legacy instrumentation.")]
+        public ILogger Logger => throw new NotImplementedException();
 
         public static String GetUserID()
         {
@@ -133,6 +115,7 @@ namespace Dynamo.Logging
             {
                 return preferences != null
                     && Service.IsInitialized
+                    && !Analytics.DisableAnalytics
                     && preferences.IsAnalyticsReportingApproved;
             }
         }
@@ -142,11 +125,12 @@ namespace Dynamo.Logging
         /// </summary>
         private bool ReportingADPAnalytics
         {
-            get 
+            get
             {
                 return preferences != null
                     && Service.IsInitialized
-                    && preferences.IsADPAnalyticsReportingApproved; 
+                    && !Analytics.DisableAnalytics
+                    && preferences.IsADPAnalyticsReportingApproved;
             }
         }
 
@@ -155,9 +139,13 @@ namespace Dynamo.Logging
         /// </summary>
         public bool ReportingUsage
         {
-            get { return preferences != null
-                    && Service.IsInitialized
-                    && preferences.IsUsageReportingApproved; }
+            get
+            {
+                return preferences != null
+                  && Service.IsInitialized
+                  && !Analytics.DisableAnalytics
+                  && preferences.IsUsageReportingApproved;
+            }
         }
 
         /// <summary>
@@ -172,12 +160,12 @@ namespace Dynamo.Logging
 
             if (Session == null) Session = new DynamoAnalyticsSession();
 
-            //Setup Analytics service, StabilityCookie, Heartbeat and UsageLog.
+            //Setup Analytics service, and StabilityCookie.
             Session.Start(dynamoModel);
 
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
-            
+
             var hostName = string.IsNullOrEmpty(dynamoModel.HostName) ? "Dynamo" : dynamoModel.HostName;
 
             hostInfo = new HostContextInfo() { ParentId = dynamoModel.HostAnalyticsInfo.ParentId, SessionId = dynamoModel.HostAnalyticsInfo.SessionId };
@@ -196,9 +184,10 @@ namespace Dynamo.Logging
             //Some clients such as Revit may allow start/close Dynamo multiple times
             //in the same session so register only if the factory is not registered.
             if (service.GetTrackerFactory(GATrackerFactory.Name) == null)
+            {
                 service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
-
-            Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+                service.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+            }
         }
 
         private void RegisterADPTracker(Service service)
@@ -206,9 +195,10 @@ namespace Dynamo.Logging
             //Some clients such as Revit may allow start/close Dynamo multiple times
             //in the same session so register only if the factory is not registered.
             if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
+            {
                 service.Register(new ADPTrackerFactory());
-
-            Service.Instance.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
+                service.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
+            }
         }
 
         /// <summary>
@@ -217,7 +207,7 @@ namespace Dynamo.Logging
         /// </summary>
         public void Start()
         {
-            if (preferences != null && 
+            if (preferences != null &&
                 (preferences.IsAnalyticsReportingApproved || preferences.IsADPAnalyticsReportingApproved))
             {
                 //Register trackers
@@ -225,7 +215,7 @@ namespace Dynamo.Logging
 
                 // Use separate functions to avoid loading the tracker dlls if they are not opted in (as an extra safety measure).
                 // ADP will be loaded because opt-in/opt-out is handled/serialized exclusively by the ADP module.
-                
+
                 // Register Google Tracker only if the user is opted in.
                 if (preferences.IsAnalyticsReportingApproved)
                     RegisterGATracker(service);
@@ -363,12 +353,6 @@ namespace Dynamo.Logging
         [Obsolete("Function will be removed in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
         public void LogPiiInfo(string tag, string data)
         {
-            if (!ReportingUsage) return;
-
-            if (Session != null && Session.Logger != null)
-            {
-                Session.Logger.Log(tag, data);
-            }
         }
 
         public void Dispose()

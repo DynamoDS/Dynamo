@@ -17,6 +17,13 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
+        public static void GetNumber()
+        {
+            Assert.AreEqual("01200", String.GetNumber("01 Level 200"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public static void Concat()
         {
             Assert.AreEqual("", String.Concat());

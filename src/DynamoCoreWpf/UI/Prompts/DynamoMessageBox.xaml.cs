@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -11,6 +14,7 @@ namespace Dynamo.UI.Prompts
 {
     /// <summary>
     /// A stylised version of the WPF MessageBox class, integrated with the MessageBoxService.
+    /// Sets a CustomDialogResult property instead of DialogResult during ShowDialog().
     /// </summary>
     public partial class DynamoMessageBox : INotifyPropertyChanged
     {
@@ -23,6 +27,15 @@ namespace Dynamo.UI.Prompts
 
         #region Public Properties
         
+        [Obsolete("Do not use, instead use CustomDialogResult. This property will not be set during ShowDialog()")]
+        public new bool? DialogResult
+        {
+            get => base.DialogResult;
+            set => base.DialogResult = value;
+        }
+
+        internal MessageBoxResult CustomDialogResult { get; set; } = MessageBoxResult.None;
+
         /// <summary>
         /// The title/caption of the message
         /// </summary>
@@ -106,7 +119,68 @@ namespace Dynamo.UI.Prompts
             };
 
             dynamoMessageBox.ConfigureButtons(button);
-            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
+        }
+
+
+        /// <summary>
+        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
+        /// </summary>
+        /// <param name="messageBoxText">Content of the message</param>
+        /// <param name="caption">MessageBox title</param>
+        /// <param name="showRichTextBox">True if we will be using the RichTextBox instead of the usual one</param>
+        /// <param name="button">OK button shown in the MessageBox</param>
+        /// <param name="icon">Type of message: Warning, Error</param>
+        /// <returns></returns>
+        public static MessageBoxResult Show(string messageBoxText, string caption, bool showRichTextBox, MessageBoxButton button,
+           MessageBoxImage icon)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon
+            };
+            
+            if (showRichTextBox)
+            {
+                dynamoMessageBox.BodyTextBlock.Visibility = Visibility.Collapsed;
+                dynamoMessageBox.ContentRichTextBox.Visibility = Visibility.Visible;
+            }             
+            dynamoMessageBox.ConfigureButtons(button);
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
+        }
+        /// <summary>
+        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
+        /// </summary>
+        /// <param name="owner">owner window</param>
+        /// <param name="messageBoxText"></param>
+        /// <param name="caption"></param>
+        /// <param name="button"></param>
+        /// <param name="icon"></param>
+        /// <returns></returns>
+        public static MessageBoxResult Show(Window owner,string messageBoxText, string caption, MessageBoxButton button,
+            MessageBoxImage icon)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon
+            };
+
+            if (owner != null && owner.IsLoaded)
+            {
+                dynamoMessageBox.Owner = owner;
+            }
+
+            dynamoMessageBox.ConfigureButtons(button);
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
         }
 
         /// <summary>
@@ -126,7 +200,8 @@ namespace Dynamo.UI.Prompts
             };
 
             dynamoMessageBox.ConfigureButtons(button);
-            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
         }
 
         /// <summary>
@@ -144,7 +219,8 @@ namespace Dynamo.UI.Prompts
             };
 
             dynamoMessageBox.ConfigureButtons(MessageBoxButton.OK);
-            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
         }
 
         /// <summary>
@@ -159,7 +235,24 @@ namespace Dynamo.UI.Prompts
                 BodyText = messageBoxText
             };
             dynamoMessageBox.ConfigureButtons(MessageBoxButton.OK);
-            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
+        }
+
+        internal static MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button, IEnumerable<string> buttonNames,
+            MessageBoxImage icon)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon
+            };
+
+            dynamoMessageBox.ConfigureButtons(button,buttonNames);
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -168,55 +261,50 @@ namespace Dynamo.UI.Prompts
         /// Shows or hides buttons on the view as necessary.
         /// </summary>
         /// <param name="messageBoxButton"></param>
-        private void ConfigureButtons(MessageBoxButton messageBoxButton)
+        /// <param name="buttonNames">names that will be used to override the standard button names.
+        /// Number of names must match the number of visible buttons set by messageBoxButton parameter.</param>
+        internal void ConfigureButtons(MessageBoxButton messageBoxButton, IEnumerable<string> buttonNames = null)
         {
             switch (messageBoxButton)
             {
                 case MessageBoxButton.OK:
+                    if(buttonNames!=null && buttonNames.Count() == 1)
+                    {
+                        OkButton.Content = buttonNames.ElementAt(0);
+                    }
                     OkButton.Visibility = Visibility.Visible;
                     break;
                 case MessageBoxButton.OKCancel:
+                    if (buttonNames != null && buttonNames.Count() == 2)
+                    {
+                        OkButton.Content = buttonNames.ElementAt(0);
+                        CancelButton.Content = buttonNames.ElementAt(1);
+                    }
                     OkButton.Visibility = Visibility.Visible;
                     CancelButton.Visibility = Visibility.Visible;
                     break;
                 case MessageBoxButton.YesNoCancel:
+                    if (buttonNames != null && buttonNames.Count() == 3)
+                    {
+                        YesButton.Content = buttonNames.ElementAt(0);
+                        NoButton.Content = buttonNames.ElementAt(1);
+                        CancelButton.Content = buttonNames.ElementAt(2);
+                    }
                     YesButton.Visibility = Visibility.Visible;
                     NoButton.Visibility = Visibility.Visible;
-                    CancelButton.Visibility = Visibility.Collapsed;
+                    CancelButton.Visibility = Visibility.Visible;
                     break;
                 case MessageBoxButton.YesNo:
+                    if (buttonNames != null && buttonNames.Count() == 2)
+                    {
+                        YesButton.Content = buttonNames.ElementAt(0);
+                        NoButton.Content = buttonNames.ElementAt(1);
+                    }
                     YesButton.Visibility = Visibility.Visible;
                     NoButton.Visibility = Visibility.Visible;
                     break;
             }
         }
-
-        /// <summary>
-        /// Converts the nullable bool result from ShowDialog into the appropriate MessageBoxResult.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public MessageBoxResult ConvertResult(bool? value)
-        {
-            switch (MessageBoxButton)
-            {
-                case MessageBoxButton.OK:
-                    if (value == null || value == false) return MessageBoxResult.None;
-                    return MessageBoxResult.OK;
-                case MessageBoxButton.OKCancel:
-                    if (value == null) return MessageBoxResult.None;
-                    return value == true ? MessageBoxResult.OK : MessageBoxResult.Cancel;
-                case MessageBoxButton.YesNoCancel:
-                    if (value == null) return MessageBoxResult.None;
-                    return value == true ? MessageBoxResult.Yes : MessageBoxResult.Cancel;
-                case MessageBoxButton.YesNo:
-                    if (value == null) return MessageBoxResult.None;
-                    return value == true ? MessageBoxResult.Yes : MessageBoxResult.No;
-                default:
-                    return MessageBoxResult.None;
-            }
-        }
-
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -233,39 +321,42 @@ namespace Dynamo.UI.Prompts
         {
             if (e.ChangedButton != MouseButton.Left) return;
             DragMove();
-            Analytics.TrackEvent(
-                Actions.Move,
-                Categories.PackageManagerOperations);
         }
 
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
+            CustomDialogResult = MessageBoxResult.None;
             Close();
         }
 
         private void OkButton_OnClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
+            CustomDialogResult = MessageBoxResult.OK;
             Close();
         }
 
         private void YesButton_OnClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
+            CustomDialogResult = MessageBoxResult.Yes;
             Close();
         }
 
         private void NoButton_OnClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
+            CustomDialogResult = MessageBoxResult.No;
             Close();
         }
 
         private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
+            CustomDialogResult = MessageBoxResult.Cancel;
             Close();
+        }
+
+        // ESC Button pressed triggers Window close        
+        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

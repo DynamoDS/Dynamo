@@ -1,0 +1,147 @@
+{
+  "Uuid": "027298f0-9572-4770-98bf-25ccec5e5669",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "unit_dropdown_different_schema_version",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "UnitsUI.DynamoUnitConvert, UnitsUI",
+      "MeasurementType": "autodesk.unit.quantity:power-1.0.5",
+      "FromConversion": "autodesk.unit.unit:britishThermalUnitsPerHour-1.0.5",
+      "ToConversion": "autodesk.unit.unit:britishThermalUnitsPerHour-1.0.5",
+      "NodeType": "ExtensionNode",
+      "Id": "f84587c6af6448ca9f722047fdd00c14",
+      "Inputs": [
+        {
+          "Id": "3ad96881af6c4f9586830e1095ea287a",
+          "Name": "",
+          "Description": "A value to convert",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b6dd2a3aa60a4348a72dfb2d6d6cfee1",
+          "Name": "",
+          "Description": "Converted value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Convert a value between selected Unit systems."
+    },
+    {
+      "ConcreteType": "UnitsUI.DynamoUnitConvert, UnitsUI",
+      "MeasurementType": "autodesk.unit.quantity:stress-1.0.0",
+      "FromConversion": "autodesk.unit.unit:pascals-1.0.0",
+      "ToConversion": "autodesk.unit.unit:pascals-1.0.0",
+      "NodeType": "ExtensionNode",
+      "Id": "3b543595f8e34f9b8ba00672b67794cc",
+      "Inputs": [
+        {
+          "Id": "41f0b892f3c748d08528940a7d40e2a3",
+          "Name": "",
+          "Description": "A value to convert",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4b496e9524284a3ca841858a6984ae6c",
+          "Name": "",
+          "Description": "Converted value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Convert a value between selected Unit systems."
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.0.3196",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "1",
+        "Id": "f84587c6af6448ca9f722047fdd00c14",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 128.0,
+        "Y": 140.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "1",
+        "Id": "3b543595f8e34f9b8ba00672b67794cc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 121.373887240356,
+        "Y": 328.88278931750745
+      }
+    ],
+    "Annotations": [],
+    "X": 67.9574223052067,
+    "Y": 1.2213261985745021,
+    "Zoom": 1.0360578756006076
+  }
+}

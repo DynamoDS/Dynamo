@@ -1,12 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Dynamo.Controls;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.ViewModels.GuidedTour;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 using Res = Dynamo.Wpf.Properties.Resources;
@@ -18,19 +22,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
     /// </summary>
     public sealed class GuidesManager
     {
-        /// <summary>
-        /// This property contains the list of Guides read from the json file
-        /// </summary>
-        public List<Guide> Guides;
-
+        #region private properties
         /// <summary>
         /// currentGuide will contain the Guide being played
         /// </summary>
-        private Guide currentGuide;
-        private UIElement mainRootElement;
-        private GuideBackground guideBackgroundElement;
+        internal Guide currentGuide;
 
-        private DynamoViewModel dynamoViewModel;
+        private GuideBackground guideBackgroundElement;
+        private readonly UIElement mainRootElement;
+        private readonly DynamoViewModel dynamoViewModel;
 
         private RealTimeInfoWindow exitTourPopup;
 
@@ -46,6 +46,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private const string guideBackgroundName = "GuidesBackground";
         private const string mainGridName = "mainGrid";
         private const string libraryViewName = "Browser";
+        private Stopwatch stopwatch;
+        #endregion
+
+        #region internal properties
+        //The list of guide name strings are hardcoded to match Json definition of guides (no need localization)
+        internal static string GetStartedGuideName = "User Interface Tour";
+        internal static string PackagesGuideName = "Packages";
+        internal static string OnboardingGuideName = "Getting Started";
+
+        internal ExitGuideWindow exitGuideWindow;
 
         internal static string GuidesExecutingDirectory
         {
@@ -63,6 +73,20 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
+        internal static string OnboardingGuideWorkspaceEmbeededResource
+        {
+            get
+            {
+                return @"Dynamo.Wpf.UI.GuidedTour.DynamoOnboardingGuide_HouseCreationDS.dyn";
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// This property contains the list of Guides read from the json file
+        /// </summary>
+        public List<Guide> Guides;
+
         /// <summary>
         /// GuidesManager Constructor 
         /// </summary>
@@ -72,11 +96,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             mainRootElement = root;
             dynamoViewModel = dynViewModel;
-            guideBackgroundElement = Guide.FindChild(root, guideBackgroundName) as GuideBackground;
+            guideBackgroundElement = GuideUtilities.FindChild(root, guideBackgroundName) as GuideBackground;
         }
 
         /// <summary>
-        /// Initializator that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
+        /// Initialization that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
         /// </summary>
         internal void Initialize()
         {
@@ -86,11 +110,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             Guides = new List<Guide>();
 
-            CreateGuideSteps(GuidesJsonFilePath);
+            //Due that we are passing the GuideBackground for each Step we need to create first the background and then Create the Steps
             CreateBackground();
+            CreateGuideSteps(GuidesJsonFilePath);
 
-            guideBackgroundElement.HoleRect = new Rect();
-        }
+            GuidesValidationMethods.CurrentExecutingGuidesManager = this;
+
+            guideBackgroundElement.ClearCutOffSection();
+            guideBackgroundElement.ClearHighlightSection();
+            stopwatch = Stopwatch.StartNew();
+    }
 
         /// <summary>
         /// Creates the background for the GuidedTour
@@ -109,7 +138,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     Visibility = Visibility.Hidden
                 };
 
-                Grid mainGrid = Guide.FindChild(mainRootElement, mainGridName) as Grid;
+                Grid mainGrid = GuideUtilities.FindChild(mainRootElement, mainGridName) as Grid;
                 mainGrid.Children.Add(guideBackgroundElement);
                 Grid.SetColumnSpan(guideBackgroundElement, 5);
                 Grid.SetRowSpan(guideBackgroundElement, 6);
@@ -121,6 +150,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal void UpdateGuideStepsLocation()
         {
+            //If there is no guide being executed then we shouldn't do anything
+            if (!GuideFlowEvents.IsAnyGuideActive) return;
+
             if (currentGuide != null)
             {
                 currentGuide.CurrentStep.UpdateLocation();
@@ -142,6 +174,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
+                Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
+                Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", ""), currentGuide.SequenceOrder);
             }
         }
 
@@ -160,9 +194,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 guideBackgroundElement.Visibility = Visibility.Visible;
                 currentGuide.GuideBackgroundElement = guideBackgroundElement;
                 currentGuide.MainWindow = mainRootElement;
-                currentGuide.LibraryView = Guide.FindChild(mainRootElement, libraryViewName);
+                var dynamoView = (mainRootElement as DynamoView);
+                if (dynamoView == null) return;
+                currentGuide.LibraryView = dynamoView.sidebarGrid.Children.OfType<UserControl>().FirstOrDefault();
+
                 currentGuide.Initialize();
                 currentGuide.Play();
+                GuidesValidationMethods.CurrentExecutingGuide = currentGuide;
             }
         }
 
@@ -173,22 +211,92 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private void TourFinished(GuidedTourStateEventArgs args)
         {
             currentGuide = (from guide in Guides where guide.Name.Equals(args.GuideName) select guide).FirstOrDefault();
+
+            //Check if it's packages guide to open the exit modal 
+            if (args.GuideName == GuidesManager.PackagesGuideName && currentGuide.CurrentStep.StepType != Step.StepTypes.SURVEY)
+            {
+                guideBackgroundElement.ClearHighlightSection();
+                guideBackgroundElement.ClearCutOffSection();
+                CreateExitModal(currentGuide.CurrentStep.ExitGuide);
+            }
+            else
+            {
+                ExitTour();
+            }
+        }
+
+        /// <summary>
+        /// This method exits from tour 
+        /// </summary>
+        internal void ExitTour()
+        {
+
             if (currentGuide != null)
             {
                 foreach (Step tmpStep in currentGuide.GuideSteps)
                 {
                     tmpStep.StepClosed -= Popup_StepClosed;
                 }
+
+                string guidName = Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", "");
+                if (currentGuide.TotalSteps - 1 == currentGuide.CurrentStep.Sequence)
+                {
+                    Logging.Analytics.TrackEvent(Logging.Actions.Completed, Logging.Categories.GuidedTourOperations, guidName, currentGuide.CurrentStep.Sequence);
+                }
+                else 
+                {
+                    Logging.Analytics.TrackEvent(Logging.Actions.End, Logging.Categories.GuidedTourOperations, guidName, currentGuide.CurrentStep.Sequence);
+                }                
+                Logging.Analytics.TrackTimedEvent(Logging.Categories.GuidedTourOperations, Logging.Actions.TimeElapsed.ToString(), stopwatch.Elapsed, guidName);
+
                 currentGuide.ClearGuide();
                 GuideFlowEvents.GuidedTourStart -= TourStarted;
                 GuideFlowEvents.GuidedTourFinish -= TourFinished;
 
+                if (exitGuideWindow != null)
+                {
+                    exitGuideWindow.ExitTourButton.Click -= ExitTourButton_Click;
+                    exitGuideWindow.ContinueTourButton.Click -= ContinueTourButton_Click;
+                }
+
                 //Hide guide background overlay
                 guideBackgroundElement.Visibility = Visibility.Hidden;
-
+                GuidesValidationMethods.CurrentExecutingGuide = null;
                 tourStarted = false;
             }
 
+        }
+
+        /// <summary>
+        /// Creates the exit modal when close button is pressed
+        /// </summary>
+        /// <param name="exitGuide">This parameter contains the properties to build exit guide modal</param>
+        internal void CreateExitModal(ExitGuide exitGuide)
+        {
+            var viewModel = new ExitGuideWindowViewModel(exitGuide);
+            exitGuideWindow = new ExitGuideWindow((FrameworkElement)mainRootElement, viewModel);
+
+            exitGuideWindow.ExitTourButton.Click += ExitTourButton_Click;
+            exitGuideWindow.ContinueTourButton.Click += ContinueTourButton_Click;
+
+            exitGuideWindow.IsOpen = true;
+        }
+
+        private void ContinueTourButton_Click(object sender, RoutedEventArgs e)
+        {
+            exitGuideWindow.IsOpen = false;
+            if (currentGuide != null)
+            {
+                GuideFlowEvents.IsAnyGuideActive = true;
+                currentGuide.ContinueStep(currentGuide.CurrentStep.Sequence);
+            }
+        }
+
+        private void ExitTourButton_Click(object sender, RoutedEventArgs e)
+        {
+            exitGuideWindow.IsOpen = false;
+            GuideFlowEvents.OnGuidedTourExited(currentGuide.Name);
+            ExitTour();
         }
 
         /// <summary>
@@ -222,23 +330,26 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     Name = guide.Name,
                 };
 
+                newGuide.SequenceOrder = guide.SequenceOrder;
+                newGuide.GuideNameResource = guide.GuideNameResource;
+
                 totalTooltips = (from step in guide.GuideSteps
                                  where step.StepType == Step.StepTypes.TOOLTIP ||
                                        step.StepType == Step.StepTypes.SURVEY
-                                 select step).Count();
+                                 select step).GroupBy(x=>x.Sequence).Count();
 
                 foreach (Step step in guide.GuideSteps)
                 {
-                    HostControlInfo hostControlInfo = CreateHostControl(step);
+                    HostControlInfo hostControlInfo = CreateHostControl(step.HostPopupInfo);
                     Step newStep = CreateStep(step, hostControlInfo, totalTooltips);
+                    newStep.GuideName = guide.Name;
 
                     //If the UI Automation info was read from the json file then we create an StepUIAutomation instance containing all the info for each automation entry
                     if (step.UIAutomation != null)
                     {
                         foreach (var automation in step.UIAutomation)
                         {
-                            var automationStepInfo = CreateStepUIAutomationInfo(automation);
-                            newStep.UIAutomation.Add(automationStepInfo);
+                            newStep.UIAutomation.Add(automation);
                         }
                     }
 
@@ -252,6 +363,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     {
                         //Passing the DynamoViewModel to each step so we can execute the Pre Validation methods 
                         newStep.DynamoViewModelStep = dynamoViewModel;
+
+                        newStep.StepGuideBackground = guideBackgroundElement;
+                        newStep.MainWindow = mainRootElement;
+
+                        newStep.ExitGuide = step.ExitGuide;
 
                         //The step is added to the new Guide being created
                         newGuide.GuideSteps.Add(newStep);
@@ -270,50 +386,38 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="jsonStepInfo">Step that contains all the info deserialized from the Json file</param>
         /// <returns></returns>
-        private HostControlInfo CreateHostControl(Step jsonStepInfo)
+        private HostControlInfo CreateHostControl(HostControlInfo jsonHostControlInfo)
         {
-            var popupInfo = new HostControlInfo()
+            //We use the HostControlInfo copy construtor
+            var popupInfo = new HostControlInfo(jsonHostControlInfo, mainRootElement);
+
+            //If the CutOff area was defined in the json file then a section of the background overlay will be removed
+            if (jsonHostControlInfo.CutOffRectArea != null)
             {
-                PopupPlacement = jsonStepInfo.HostPopupInfo.PopupPlacement,
-                HostUIElementString = jsonStepInfo.HostPopupInfo.HostUIElementString,
-                HostUIElement = mainRootElement,
-                VerticalPopupOffSet = jsonStepInfo.HostPopupInfo.VerticalPopupOffSet,
-                HorizontalPopupOffSet = jsonStepInfo.HostPopupInfo.HorizontalPopupOffSet,
-                HtmlPage = jsonStepInfo.HostPopupInfo.HtmlPage,
-                HighlightColor = jsonStepInfo.HostPopupInfo.HighlightColor,
-                WidthBoxDelta = jsonStepInfo.HostPopupInfo.WidthBoxDelta,
-                HeightBoxDelta = jsonStepInfo.HostPopupInfo.HeightBoxDelta
-            };
+                popupInfo.CutOffRectArea = new CutOffArea()
+                {
+                    WindowElementNameString = jsonHostControlInfo.CutOffRectArea.WindowElementNameString,
+                    NodeId = jsonHostControlInfo.CutOffRectArea.NodeId,
+                    WidthBoxDelta = jsonHostControlInfo.CutOffRectArea.WidthBoxDelta,
+                    HeightBoxDelta = jsonHostControlInfo.CutOffRectArea.HeightBoxDelta,
+                    XPosOffset = jsonHostControlInfo.CutOffRectArea.XPosOffset,
+                    YPosOffset = jsonHostControlInfo.CutOffRectArea.YPosOffset
+                };
+            }
+
+            //If the Highlight area was defined in the json file then a rectangle will be highlighted in the Overlay
+            if (jsonHostControlInfo.HighlightRectArea != null)
+            {
+                //We use the HighlightArea copy construtor
+                popupInfo.HighlightRectArea = new HighlightArea(jsonHostControlInfo.HighlightRectArea);
+            }
 
             //The host_ui_element read from the json file need to exists otherwise the host will be null
-            UIElement hostUIElement = Guide.FindChild(mainRootElement, popupInfo.HostUIElementString);
+            UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, popupInfo.HostUIElementString);
             if (hostUIElement != null)
                 popupInfo.HostUIElement = hostUIElement;
 
             return popupInfo;
-        }
-
-        /// <summary>
-        /// This method will create an StepUIAutomation instance based on the information passed as parameter
-        /// </summary>
-        /// <param name="jsonUIAutomation">StepUIAutomation instance read from the json file</param>
-        /// <returns></returns>
-        private StepUIAutomation CreateStepUIAutomationInfo(StepUIAutomation jsonUIAutomation)
-        {
-            var uiAutomationInfo = new StepUIAutomation()
-            {
-                Sequence = jsonUIAutomation.Sequence,
-                ControlType = jsonUIAutomation.ControlType,
-                Name = jsonUIAutomation.Name,
-                Action = jsonUIAutomation.Action
-            };
-
-            //This section will search the UIElement in the Dynamo VisualTree in which an automation action will be executed
-            UIElement automationUIElement = Guide.FindChild(mainRootElement, jsonUIAutomation.Name);
-            if (automationUIElement != null)
-                uiAutomationInfo.UIElementAutomation = automationUIElement;
-
-            return uiAutomationInfo;
         }
 
         /// <summary>
@@ -329,6 +433,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //This section will retrive the strings from the Resources.resx file
             var formattedText = Res.ResourceManager.GetString(jsonStepInfo.StepContent.FormattedText);
             var title = Res.ResourceManager.GetString(jsonStepInfo.StepContent.Title);
+
+            DirectoryInfo userDataFolder = null;
+            if (dynamoViewModel != null)
+            {
+                var pathManager = dynamoViewModel.Model.PathManager;
+
+                //When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+                var docsDir = new DirectoryInfo(pathManager.UserDataDirectory);
+                userDataFolder = docsDir.Exists ? docsDir : null;
+
+            }
 
             switch (jsonStepInfo.StepType)
             {
@@ -346,12 +461,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
                             Title = title
                         }
                     };
+                    var popupWindow = newStep.stepUIPopup as PopupWindow;
+                    if(popupWindow != null && hostControlInfo.HtmlPage != null && !string.IsNullOrEmpty(hostControlInfo.HtmlPage.FileName))
+                    {
+                        popupWindow.WebBrowserUserDataFolder = userDataFolder != null ? userDataFolder.FullName : string.Empty;
+                    }
                     break;
                 case Step.StepTypes.SURVEY:
                     newStep = new Survey(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height)
                     {
                         Sequence = jsonStepInfo.Sequence,
-                        ContentWidth = 300,
                         RatingTextTitle = formattedText.ToString(),
                         StepType = Step.StepTypes.SURVEY,
                         IsRatingVisible = dynamoViewModel.Model.PreferenceSettings.IsADPAnalyticsReportingApproved,
@@ -391,8 +510,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     break;
             }//StepType
 
+            newStep.GuideManager = this;
+
             return newStep;
         }
+
+        internal Guide GetNextGuide()
+        {
+            var nextGuide = Guides.FirstOrDefault(x => x.SequenceOrder == currentGuide.SequenceOrder + 1);
+            return nextGuide;
+        }
+
 
         private void Popup_StepClosed(string name, Step.StepTypes stepType)
         {
@@ -408,32 +536,32 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// and display message passed as param
         /// </summary>
         /// <param name="content">The target content to display.</param>
-        internal void CreateRealTimeInfoWindow(string content)
+        /// <param name="stayOpen">boolean indicates if the popup will stay open until user dismiss it.</param>
+        /// TODO: Make this API out of guide manager to a more generic place
+        internal void CreateRealTimeInfoWindow(string content, bool stayOpen = false)
         {
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
-            UIElement hostUIElement = Guide.FindChild(mainRootElement, "statusBarPanel");
+            UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
 
-            // When popup already exist, replace the content
+            // When popup already exist, replace it
             if ( exitTourPopup != null && exitTourPopup.IsOpen)
             {
-                exitTourPopup.TextContent = content;
+                exitTourPopup.IsOpen = false;
             }
-            else
+            // Otherwise creates the RealTimeInfoWindow popup and set up all the needed values
+            // to show the popup over the Dynamo workspace
+            exitTourPopup = new RealTimeInfoWindow()
             {
-                // Otherwise creates the RealTimeInfoWindow popup and set up all the needed values
-                // to show the popup over the Dynamo workspace
-                exitTourPopup = new RealTimeInfoWindow()
-                {
-                    VerticalOffset = ExitTourVerticalOffset,
-                    HorizontalOffset = ExitTourHorizontalOffset,
-                    Placement = PlacementMode.Left,
-                    TextContent = content
-                };
+                VerticalOffset = ExitTourVerticalOffset,
+                HorizontalOffset = ExitTourHorizontalOffset,
+                Placement = PlacementMode.Left,
+                TextContent = content,
+                StaysOpen = stayOpen
+            };
 
-                if (hostUIElement != null)
-                    exitTourPopup.PlacementTarget = hostUIElement;
-                exitTourPopup.IsOpen = true;
-            }
+            if (hostUIElement != null)
+                exitTourPopup.PlacementTarget = hostUIElement;
+            exitTourPopup.IsOpen = true;
         }
     }
 }

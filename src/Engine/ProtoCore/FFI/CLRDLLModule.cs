@@ -634,18 +634,6 @@ namespace ProtoFFI
             return false;
         }
 
-        private bool AllowsRankReduction(MethodInfo method)
-        {
-            object[] atts = method.GetCustomAttributes(false);
-            foreach (var item in atts)
-            {
-                if (item is AllowRankReductionAttribute)
-                    return true;
-            }
-
-            return false;
-        }
-
         private ProtoCore.AST.AssociativeAST.VarDeclNode ParseFieldDeclaration(FieldInfo f)
         {
             if (null == f || SupressesImport(f))
@@ -716,7 +704,7 @@ namespace ProtoFFI
             }
             func.Signature = ParseArgumentSignature(method);
 
-            if ((retype.IsIndexable && mattrs.AllowRankReduction)
+            if ((retype.IsIndexable && (mattrs.AllowRankReduction || mattrs.ArbitraryDimensionArrayImport))
                 || (typeof(object).Equals(method.ReturnType)))
             {
                 retype.rank = Constants.kArbitraryRank;
@@ -1188,17 +1176,18 @@ namespace ProtoFFI
                     //This probably wasn't a .NET dll
                     System.Diagnostics.Debug.WriteLine(exception.Message);
                     System.Diagnostics.Debug.WriteLine(exception.StackTrace);
-                    throw new System.Exception(string.Format("Dynamo can only import .NET DLLs. Failed to load library: {0}.", name));
+                    throw new Exception(string.Format("Dynamo can only import .NET DLLs. Failed to load library: {0}.", name));
                 }
-
-                catch (System.Exception exception)
+                catch(DynamoServices.AssemblyBlockedException exception)
                 {
-                    // If the exception is having HRESULT of 0x80131515, then perhaps we need to instruct the user to "unblock" the downloaded DLL. Please seee the following link for details:
-                    // http://blogs.msdn.com/b/brada/archive/2009/12/11/visual-studio-project-sample-loading-error-assembly-could-not-be-loaded-and-will-be-ignored-could-not-load-file-or-assembly-or-one-of-its-dependencies-operation-is-not-supported-exception-from-hresult-0x80131515.aspx
-                    // 
+                    // this exception is caught upstream after displaying a failed load library warning to the user.
+                    throw exception;
+                }
+                catch (Exception exception)
+                {
                     System.Diagnostics.Debug.WriteLine(exception.Message);
                     System.Diagnostics.Debug.WriteLine(exception.StackTrace);
-                    throw new System.Exception(string.Format("Fail to load library: {0}.", name));
+                    throw new Exception(string.Format("Fail to load library: {0}.", name));
                 }
             }
 
@@ -1260,7 +1249,7 @@ namespace ProtoFFI
     /// </summary>
     public class FFIMethodAttributes : ProtoCore.AST.AssociativeAST.MethodAttributes
     {
-        private Attribute[] attributes;
+        private List<Attribute> attributes;
         /// <summary>
         /// FFI method attributes.
         /// </summary>
@@ -1268,6 +1257,7 @@ namespace ProtoFFI
         {
             get { return attributes; }
         }
+        internal bool ArbitraryDimensionArrayImport { get; }
         public bool AllowRankReduction { get; protected set; }
         public bool RequireTracing { get; protected set; }
 
@@ -1341,13 +1331,22 @@ namespace ProtoFFI
             }
 
             Attribute[] atts;
+            attributes = new List<Attribute>();
             if (method is MethodInfo mInfo && getterAttributes != null && getterAttributes.TryGetValue(mInfo, out atts))
             {
-                attributes = atts;
+                attributes.AddRange(atts);
             }
             else
             {
-                attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
+                attributes.AddRange(method.GetCustomAttributes(false).Cast<Attribute>());
+            }
+            if(method is MethodInfo minfo)
+            {
+                var returnTypeAtts = minfo.ReturnTypeCustomAttributes;
+                if (returnTypeAtts != null)
+                {
+                    attributes.AddRange(returnTypeAtts.GetCustomAttributes(false).Cast<Attribute>());
+                }
             }
 
             foreach (var attr in attributes)
@@ -1398,6 +1397,10 @@ namespace ProtoFFI
                 else if (attr is AllowArrayPromotionAttribute)
                 {
                     AllowArrayPromotion = (attr as AllowArrayPromotionAttribute).IsAllowed;
+                }
+                else if(attr is ArbitraryDimensionArrayImportAttribute)
+                {
+                    ArbitraryDimensionArrayImport = true;
                 }
             }
         }

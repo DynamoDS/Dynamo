@@ -586,7 +586,8 @@ namespace Dynamo.Graph.Nodes
                 {
                     func = targetClass.ProcTable.GetPropertyGetterByName(funcName);
                 }
-                type = func.ReturnType;
+                if(func != null) type = func.ReturnType;
+
                 return type;
             }
 
@@ -1236,58 +1237,7 @@ namespace Dynamo.Graph.Nodes
             return string.Format("{0}_{1}", identifierName, AstIdentifierGuid);
         }
 
-        private class ImperativeIdentifierInPlaceMapper : ImperativeAstReplacer
-        {
-            private ProtoCore.Core core;
-            private Func<string, bool> cond;
-            private Func<string, string> mapper;
-
-            public ImperativeIdentifierInPlaceMapper(ProtoCore.Core core, Func<string, bool> cond, Func<string, string> mapper)
-            {
-                this.core = core;
-                this.cond = cond;
-                this.mapper = mapper;
-            }
-
-            public override ProtoCore.AST.ImperativeAST.ImperativeNode VisitIdentifierNode(ProtoCore.AST.ImperativeAST.IdentifierNode node)
-            {
-                var variable = node.Value;
-                if (cond(variable))
-                    node.Value = node.Name = mapper(variable);
-
-                return base.VisitIdentifierNode(node);
-            }
-
-            public override ProtoCore.AST.ImperativeAST.ImperativeNode VisitIdentifierListNode(ProtoCore.AST.ImperativeAST.IdentifierListNode node)
-            {
-                node.LeftNode = node.LeftNode.Accept(this);
-
-                var rightNode = node.RightNode;
-                while (rightNode != null)
-                {
-                    if (rightNode is ProtoCore.AST.ImperativeAST.FunctionCallNode)
-                    {
-                        var funcCall = rightNode as ProtoCore.AST.ImperativeAST.FunctionCallNode;
-                        funcCall.FormalArguments = VisitNodeList(funcCall.FormalArguments);
-                        if (funcCall.ArrayDimensions != null)
-                        {
-                            funcCall.ArrayDimensions = funcCall.ArrayDimensions.Accept(this) as ProtoCore.AST.ImperativeAST.ArrayNode;
-                        }
-                        break;
-                    }
-                    else if (rightNode is ProtoCore.AST.ImperativeAST.IdentifierListNode)
-                    {
-                        rightNode = (rightNode as ProtoCore.AST.ImperativeAST.IdentifierListNode).RightNode;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-
-                return node;
-            }
-        }
+        
 
         private class IdentifierInPlaceMapper : AstReplacer
         {

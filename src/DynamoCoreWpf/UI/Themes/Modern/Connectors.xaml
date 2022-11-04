@@ -2,7 +2,7 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
                       xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
                       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-                      xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                      xmlns:i="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors"
                       xmlns:views="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
                       xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
                       xmlns:mouse="clr-namespace:Dynamo.Wpf.UI;assembly=DynamoCoreWpf">
@@ -118,10 +118,10 @@
 
             <Canvas x:Name="MainCanvas" Canvas.Top="0" Canvas.Left="0" ZIndex="1">
                 <Ellipse  Name="endDot" Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" 
-                          Style="{StaticResource SEllipses}" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
+                          Style="{StaticResource SEllipses}" Width="11" Height="11" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
                           Canvas.Top="{Binding CurvePoint3.Y}" Canvas.Left="{Binding CurvePoint3.X}" Canvas.ZIndex="1"/>
                 <Ellipse  Name="startDot" Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource SEllipses}" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
+                          Style="{StaticResource SEllipses}" Width="11" Height="11" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
                           Canvas.Top="{Binding CurvePoint0.Y}" Canvas.Left="{Binding CurvePoint0.X}" Canvas.ZIndex="1"/>
             </Canvas>
 
@@ -145,15 +145,14 @@
             </Path>
             <ContentControl Content="{Binding ConnectorContextMenuViewModel}"
                             HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            Panel.ZIndex="1"/>
+                            VerticalAlignment="Stretch"/>
             <ContentControl Content="{Binding ConnectorAnchorViewModel}"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
-                            Panel.ZIndex="2"/>
+                            Panel.ZIndex="3"/>
             <ContentControl Content="{Binding ConnectorPinViewCollection}"
                             ContentTemplate="{StaticResource ShowPinCollection}"
-                            Panel.ZIndex="3"/>
+                            Panel.ZIndex="2"/>
         </Grid>
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Path=IsFrozen, Mode=OneWay}" Value="True">               

@@ -540,14 +540,13 @@ namespace ProtoCore.Lang
             StackValue svCallconvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
             interpreter.runtime.TX = svCallconvention;
 
-            List<StackValue> registers = interpreter.runtime.GetRegisters();
-
             // Comment Jun: the caller type is the current type in the stackframe
             StackFrameType callerType = stackFrame.StackFrameType;
 
 
             blockCaller = runtimeCore.DebugProps.CurrentBlockId;
-            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, 0, registers, 0);
+            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, 
+                depth, framePointer, 0, interpreter.runtime.GetRegisters(), 0);
 
             StackValue ret = interpreter.runtime.Bounce(blockId, 0, bounceStackFrame, 0, false, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
 
@@ -636,7 +635,7 @@ namespace ProtoCore.Lang
                 }
                 else
                 {
-                    runtimeCore.RuntimeStatus.LogWarning(WarningID.DereferencingNonPointer, Resources.kDeferencingNonPointer);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.DereferencingNonPointer, Resources.kDereferencingNonPointer);
                     return StackValue.Null;
                 }
             }

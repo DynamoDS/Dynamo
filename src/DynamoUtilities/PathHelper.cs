@@ -1,7 +1,11 @@
-﻿using System;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Xml;
 using Newtonsoft.Json;
 
@@ -103,6 +107,51 @@ namespace DynamoUtilities
         }
 
         /// <summary>
+        /// Returns whether current user has read access to the folder path.
+        /// </summary>
+        /// <param name="folderPath">Folder path</param>
+        /// <returns></returns>
+        internal static bool HasReadPermissionOnDir(string folderPath)
+        {
+            try
+            {
+                var readAllow = false;
+                var readDeny = false;
+                var accessControlList = Directory.GetAccessControl(folderPath);
+                if (accessControlList == null)
+                    return false;
+
+                var accessRules = accessControlList.GetAccessRules(true, true,
+                                            typeof(System.Security.Principal.SecurityIdentifier));
+                if (accessRules == null)
+                    return false;
+
+                var curentUser = WindowsIdentity.GetCurrent();
+                foreach (FileSystemAccessRule rule in accessRules)
+                {
+                    // When current rule does not contain setting related to Read, skip.
+                    if ((FileSystemRights.Read & rule.FileSystemRights) != FileSystemRights.Read)
+                        continue;
+
+                    if (!curentUser.User.Equals(rule.IdentityReference) &&
+                        !curentUser.Groups.Contains(rule.IdentityReference))
+                        continue;
+                    
+                    if (rule.AccessControlType == AccessControlType.Allow)
+                        readAllow = true;
+                    else if (rule.AccessControlType == AccessControlType.Deny)
+                        readDeny = true;
+                }
+
+                return readAllow && !readDeny;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// This is a utility method for checking if given path contains valid XML document.
         /// </summary>
         /// <param name="path">path to the target xml file</param>
@@ -128,6 +177,42 @@ namespace DynamoUtilities
         }
 
         /// <summary>
+        /// This is a utility method for checking if a given string represents a valid Json document.
+        /// </summary>
+        /// <param name="fileContents"> string contents of target json file</param>
+        /// <returns>Return true if fileContents is Json, false if file is not Json, exception as out param</returns>
+        public static bool isFileContentsValidJson(string fileContents, out Exception ex)
+        {
+            ex = null;
+            if (string.IsNullOrEmpty(fileContents))
+            {
+                ex = new JsonReaderException();
+                return false;
+            }
+            
+            try
+            {
+                fileContents = fileContents.Trim();
+                if ((fileContents.StartsWith("{") && fileContents.EndsWith("}")) || //For object
+                    (fileContents.StartsWith("[") && fileContents.EndsWith("]"))) //For array
+                {
+                    var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
+                    return true;
+                }
+                else 
+                {
+                    ex = new JsonReaderException();
+                }
+            }
+            catch(Exception e)
+            {
+                ex = e;
+            }
+            
+            return false;
+        }
+
+        /// <summary>
         /// This is a utility method for checking if given path contains valid Json document.
         /// </summary>
         /// <param name="path">path to the target json file</param>
@@ -139,16 +224,7 @@ namespace DynamoUtilities
             try
             {
                 fileContents = File.ReadAllText(path);
-                fileContents = fileContents.Trim();
-                if ((fileContents.StartsWith("{") && fileContents.EndsWith("}")) || //For object
-                    (fileContents.StartsWith("[") && fileContents.EndsWith("]"))) //For array
-                {
-                    var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
-                    ex = null;
-                    return true;
-                }
-                ex = new JsonReaderException();
-                return false;
+                return isFileContentsValidJson(fileContents, out ex);
             }
             catch (Exception e) //some other exception
             {
@@ -218,6 +294,157 @@ namespace DynamoUtilities
                 fileExists = false;
                 size = string.Empty;
             }
+        }
+
+        internal static Char[] SpecialAndInvalidCharacters()
+        {
+            // Excluding white spaces and uncommon characters, only keeping the displayed in the Windows alert
+            return System.IO.Path.GetInvalidFileNameChars().Where(x => !char.IsWhiteSpace(x) && (int)x > 31).ToArray();
+        }
+
+        /// <summary>
+        /// Checks is the path is considered valid directory path.
+        /// An exception is thrown if the path is considered invalid.
+        /// A path is considered valid if the following conditions are true:
+        /// 1. Path is not null and not empty.
+        /// 2. Path is an absolute path (not relative).
+        /// 4. Path has valid characters.
+        /// 5. Path exists and points to a folder.
+        /// 6. Dynamo has read permissions to access the path.
+        /// </summary>
+        /// <param name="directoryPath">The directory path that needs to be validated</param>
+        /// <param name="absolutePath"></param>
+        /// <param name="mustExist"></param>
+        /// <param name="read"></param>
+        /// <param name="write"></param>
+        /// <returns>A normalized and validated path</returns>
+        /// <exception cref="ArgumentNullException">Input argument is null or empty.</exception>
+        /// <exception cref="ArgumentException">Input argument is not an absolute path.</exception>
+        /// <exception cref="DirectoryNotFoundException">Path directory does not exist</exception>
+        /// <exception cref="System.Security.SecurityException">Dynamo does not have the required permissions.</exception>
+        internal static string ValidateDirectory(string directoryPath, bool absolutePath = true, bool mustExist = true, bool read = true, bool write = false)
+        {
+            if (string.IsNullOrWhiteSpace(directoryPath))
+            {
+                throw new ArgumentNullException($"The input argument is null or empty.");
+            }
+
+            if (absolutePath && !Path.GetFullPath(directoryPath).Equals(directoryPath, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException($"The input path {directoryPath} must be an absolute path");
+            }
+
+            if (mustExist && !Directory.Exists(directoryPath))
+            {
+                throw new DirectoryNotFoundException($"The input path: {directoryPath} does not exist or is not a folder");
+            }
+
+            if (read && !PathHelper.HasReadPermissionOnDir(directoryPath))
+            {
+                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {directoryPath}");
+            }
+
+            if (write && !PathHelper.HasWritePermissionOnDir(directoryPath))
+            {
+                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {directoryPath}");
+            }
+
+            return directoryPath;
+        }
+
+        /// <summary>
+        /// Appends a DirectorySeparatorChar to the end of the path if no separator exists.
+        /// </summary>
+        /// <param name="dirPath"></param>
+        /// <returns></returns>
+        private static string FormatDirectoryPath(string dirPath)
+        {
+            string formattedPath = dirPath;
+
+            string separator = Path.DirectorySeparatorChar.ToString();
+            string altSeparator = Path.AltDirectorySeparatorChar.ToString();
+            if (!formattedPath.EndsWith(separator) && !formattedPath.EndsWith(altSeparator))
+            {
+                formattedPath += separator;
+            }
+            return Path.GetFullPath(formattedPath);
+        }
+
+        internal static bool AreDirectoryPathsEqual(string dir1, string dir2)
+        {
+            string dirPath1 = FormatDirectoryPath(dir1);
+            string dirPath2 = FormatDirectoryPath(dir2);
+            return dirPath1.Equals(dirPath2, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Returns true if "subdirectory" input argument is a subdirectory of the "directory" input argument.
+        /// Returns false otherwise.
+        /// </summary>
+        /// <param name="subdirectory"></param>
+        /// <param name="directory"></param>
+        /// <returns></returns>
+        internal static bool IsSubDirectoryOfDirectory(string subdirectory, string directory)
+        {
+            string subdirPath = FormatDirectoryPath(subdirectory);
+            string directoryPath = FormatDirectoryPath(directory);
+            
+            return subdirPath.StartsWith(directoryPath, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Returns the path configured for the requested service to retrieve URL resources
+        /// as defined inside the config file
+        /// </summary>
+        /// <param name="o">The "this" object from where the function is being called from.</param>
+        /// <param name="serviceKey">Service or feature for which the address is being requested. 
+        /// It should match the key specified in the config file.</param>
+        /// <returns>Path that will be used to fetch resources</returns>
+        public static string getServiceBackendAddress(object o, string serviceKey)
+        {
+            string url = null;
+            if (o != null)
+            {
+                var path = o.GetType().Assembly.Location;
+                var config = ConfigurationManager.OpenExeConfiguration(path);
+                var key = config.AppSettings.Settings[serviceKey];
+
+                if (key != null)
+                {
+                    url = key.Value;
+                }
+
+                if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                {
+                    throw new ArgumentException("Incorrectly formatted URL provided for the service.", "url");
+                }
+            }
+            return url;
+        }
+
+        /// <summary>
+        /// Returns the path configured for the requested service to retrieve resources value
+        /// as defined inside the config file
+        /// </summary>
+        /// <param name="o">The "this" object from where the function is being called from.</param>
+        /// <param name="serviceKey">Service or feature for which the resource is being requested. 
+        /// It should match the key specified in the config file.</param>
+        /// <returns>Value related to the key in the config file</returns>
+        public static string getServiceConfigValues(object o, string serviceKey)
+        {
+            string val = null;
+            if (o != null)
+            {
+                var path = o.GetType().Assembly.Location;
+                var config = ConfigurationManager.OpenExeConfiguration(path);
+                var key = config.AppSettings.Settings[serviceKey];
+
+                if (key != null)
+                {
+                    val = key.Value;
+                }
+            }
+            return val;
         }
     }
 }

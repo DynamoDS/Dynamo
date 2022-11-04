@@ -112,6 +112,17 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
+        public static void ListContainsNumbers()
+        {
+            var list = new[] { 1, 2, 3, 4, 5 };
+            foreach(var l in list)
+            {
+                Assert.IsTrue(List.Contains(list, (double)(l / 3.0) * 3));
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public static void ListIsHomogeneous()
         {
             Assert.IsTrue(List.IsHomogeneous(new ArrayList { 1, 2, 4, 8 }));

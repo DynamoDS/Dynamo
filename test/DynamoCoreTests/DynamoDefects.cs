@@ -489,8 +489,8 @@ namespace Dynamo.Tests
             var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
                 ("1ad8632e-7ddc-4cc7-bfa5-58cb899a5ddf");
 
-            Assert.IsTrue(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
-            Assert.IsTrue(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsTrue(node1.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
+            Assert.IsTrue(node2.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
         }
 
         [Test]
@@ -506,8 +506,8 @@ namespace Dynamo.Tests
             var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("91a7cf31-f4d2-4084-b570-113cca9d1c9f");
             var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("7a29dbea-76fa-4a03-b403-c8d6572f84b1");
 
-            Assert.IsTrue(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
-            Assert.IsTrue(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsTrue(node1.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
+            Assert.IsTrue(node2.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
 
             var node3 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("73485bcb-bfa9-4899-98f9-06b8d193f05b");
             
@@ -517,8 +517,8 @@ namespace Dynamo.Tests
             AssertPreviewValue(node1.GUID.ToString(), 2);
             AssertPreviewValue(node2.GUID.ToString(), 2);
 
-            Assert.IsFalse(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
-            Assert.IsFalse(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsFalse(node1.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
+            Assert.IsFalse(node2.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
         }
 
         [Test]
@@ -535,9 +535,9 @@ namespace Dynamo.Tests
             var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("ab7171e7-e60f-48f2-9743-0cd21b6864e3");
             var node3 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("c52afcc9-d9b4-45ba-b4f6-ba636ecc1d0f");
 
-            Assert.IsTrue(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
-            Assert.IsTrue(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
-            Assert.IsTrue(node3.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsTrue(node1.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
+            Assert.IsTrue(node2.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
+            Assert.IsTrue(node3.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
 
             var node4 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("e0fd9547-edf7-4922-829b-329c436136c0");
 
@@ -548,9 +548,9 @@ namespace Dynamo.Tests
             AssertPreviewValue(node2.GUID.ToString(), 5);
             AssertPreviewValue(node3.GUID.ToString(), 5);
 
-            Assert.IsFalse(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
-            Assert.IsFalse(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
-            Assert.IsFalse(node3.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsFalse(node1.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
+            Assert.IsFalse(node2.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
+            Assert.IsFalse(node3.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
         }
 
         [Test]
@@ -566,8 +566,8 @@ namespace Dynamo.Tests
             var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("f98c67f3-6670-4ade-bd01-3210a342c10b");
             var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("64f35283-99a5-4cf8-9459-a684e4fa798a");
 
-            Assert.IsTrue(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
-            Assert.IsTrue(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsTrue(node1.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
+            Assert.IsTrue(node2.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
 
             var node3 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("e0fd9547-edf7-4922-829b-329c436136c0");
 
@@ -579,8 +579,8 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("7f9c12b4-7579-431d-9af3-8c808e1cfc57", 10);
 
-            Assert.IsFalse(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
-            Assert.IsFalse(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsFalse(node1.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
+            Assert.IsFalse(node2.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
         }
 
         [Test]
@@ -597,9 +597,9 @@ namespace Dynamo.Tests
             var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("64f35283-99a5-4cf8-9459-a684e4fa798a");
             var node3 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("7f9c12b4-7579-431d-9af3-8c808e1cfc57");
 
-            Assert.IsTrue(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
-            Assert.IsTrue(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
-            Assert.IsTrue(node3.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsTrue(node1.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
+            Assert.IsTrue(node2.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
+            Assert.IsTrue(node3.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
 
             var node4 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("e0fd9547-edf7-4922-829b-329c436136c0");
 
@@ -610,9 +610,9 @@ namespace Dynamo.Tests
             AssertPreviewValue(node2.GUID.ToString(), 2);
             AssertPreviewValue(node3.GUID.ToString(), 10);
 
-            Assert.IsFalse(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
-            Assert.IsFalse(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
-            Assert.IsFalse(node3.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsFalse(node1.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
+            Assert.IsFalse(node2.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
+            Assert.IsFalse(node3.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
         }
     }
 }

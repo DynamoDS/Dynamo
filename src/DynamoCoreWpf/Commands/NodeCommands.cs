@@ -194,7 +194,7 @@ namespace Dynamo.ViewModels
             {
                 if (_computeRunStateOfTheNodeCommand == null)
                 {
-                    _computeRunStateOfTheNodeCommand = new DelegateCommand(ToggleIsFrozen, CanToggleIsFrozen);
+                    _computeRunStateOfTheNodeCommand = new DelegateCommand(ToggleIsFrozen);
                 }
 
                 return _computeRunStateOfTheNodeCommand;

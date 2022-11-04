@@ -81,7 +81,7 @@
         {
           "Id": "251f29db159749899ae3a3975effafd1",
           "Name": "crossSections",
-          "Description": "Curve[]",
+          "Description": "Curves to loft through\n\nCurve[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -92,7 +92,7 @@
         {
           "Id": "286336646072471a93c77f1e996c0c17",
           "Name": "Surface",
-          "Description": "Surface",
+          "Description": "Surface created by loft",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -120,7 +120,7 @@
         {
           "Id": "f780841ae6da4c2ab4acebc80add1bab",
           "Name": "thickness",
-          "Description": "double\nDefault value : 1",
+          "Description": "Amount to thicken\n\ndouble\nDefault value : 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -131,7 +131,7 @@
         {
           "Id": "d44d4c21aa7241a99f1da447945edb49",
           "Name": "Solid",
-          "Description": "Solid",
+          "Description": "Thickened surface as solid",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -407,7 +407,7 @@
         {
           "Id": "52e7161c9ea64de99fcf0330d163062b",
           "Name": "firstPoint",
-          "Description": "First point along the curve\n\nPoint",
+          "Description": "1st point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -416,7 +416,7 @@
         {
           "Id": "b9c43b4e0d9c42f88edec8f7b6107a89",
           "Name": "secondPoint",
-          "Description": "Second point along the curve\n\nPoint",
+          "Description": "2nd point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -425,7 +425,7 @@
         {
           "Id": "1bb1b9e5fdc2469ab1aeb5f8645246ce",
           "Name": "thirdPoint",
-          "Description": "Third point along the curve\n\nPoint",
+          "Description": "3rd point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -436,7 +436,7 @@
         {
           "Id": "6edbb95162b94a099abab130f43653fa",
           "Name": "Arc",
-          "Description": "An Arc",
+          "Description": "Arc created from three points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -601,115 +601,154 @@
     {
       "Start": "ba875c5844064f988760b984b9273533",
       "End": "39fbd4382b204d4ab8925eddab5f7079",
-      "Id": "222c4898aebf410291ae8efacc53f9dd"
+      "Id": "222c4898aebf410291ae8efacc53f9dd",
+      "IsHidden": "False"
     },
     {
       "Start": "0e670948a58845449910e7c8cabc1b7e",
       "End": "5ad77d2a93904bbca63c6bd1b5f03728",
-      "Id": "49f6d73c00574d739d0fa57fe78c8ba8"
+      "Id": "49f6d73c00574d739d0fa57fe78c8ba8",
+      "IsHidden": "False"
     },
     {
       "Start": "2dbd35addb8548ce8609faa1f6e72284",
       "End": "113e440a84844fdc8e43bdd6bcf422e6",
-      "Id": "a5ae880530424d07ad3f1a31bb4eb94c"
+      "Id": "a5ae880530424d07ad3f1a31bb4eb94c",
+      "IsHidden": "False"
     },
     {
       "Start": "286336646072471a93c77f1e996c0c17",
       "End": "f2e5e4a0e6d4449b8659817e14904b6b",
-      "Id": "7a073297d38949c9889f23f6aeaf2403"
+      "Id": "7a073297d38949c9889f23f6aeaf2403",
+      "IsHidden": "False"
     },
     {
       "Start": "d44d4c21aa7241a99f1da447945edb49",
       "End": "92fc3e47f94c461db8e3ba6c6f1245a5",
-      "Id": "7c285c915819498c84532e0bcb26f581"
+      "Id": "7c285c915819498c84532e0bcb26f581",
+      "IsHidden": "False"
     },
     {
       "Start": "a823cfd2a46445f1be574b86872f1a49",
       "End": "f780841ae6da4c2ab4acebc80add1bab",
-      "Id": "53adf5e803df4fd29ef369e64a2ac6b0"
+      "Id": "53adf5e803df4fd29ef369e64a2ac6b0",
+      "IsHidden": "False"
     },
     {
       "Start": "684f94f7bed4452c9b74d8c60aee2e65",
       "End": "251f29db159749899ae3a3975effafd1",
-      "Id": "b454eca059694f64923a2faadfaadede"
+      "Id": "b454eca059694f64923a2faadfaadede",
+      "IsHidden": "False"
     },
     {
       "Start": "87f38c379057477e8ca01eb8cfdf6389",
       "End": "4979a185d98f45cc83b065495ff1e261",
-      "Id": "c5035daf42d145e490ece0c2de8c5a16"
+      "Id": "c5035daf42d145e490ece0c2de8c5a16",
+      "IsHidden": "False"
     },
     {
       "Start": "7754037e0aed481e9c69007945085fd7",
       "End": "b99973a8dc554d78bc05c2e73bce3214",
-      "Id": "a6517e70231541e7a265b465e22c2b79"
+      "Id": "a6517e70231541e7a265b465e22c2b79",
+      "IsHidden": "False"
     },
     {
       "Start": "7754037e0aed481e9c69007945085fd7",
       "End": "198dd499b896417dba3d314e4b89b8b1",
-      "Id": "5d5f9a75a2be4da382e5e54bac02c167"
+      "Id": "5d5f9a75a2be4da382e5e54bac02c167",
+      "IsHidden": "False"
     },
     {
       "Start": "0bca3b179328404cbdf012ff14a880be",
       "End": "52e7161c9ea64de99fcf0330d163062b",
-      "Id": "7406196f11b5446f8b34a49c9837227a"
+      "Id": "7406196f11b5446f8b34a49c9837227a",
+      "IsHidden": "False"
     },
     {
       "Start": "00081269a4ba4e6e833b3a1c1349852d",
       "End": "b9c43b4e0d9c42f88edec8f7b6107a89",
-      "Id": "0e9342e2681541f2afe55df7c8f9e522"
+      "Id": "0e9342e2681541f2afe55df7c8f9e522",
+      "IsHidden": "False"
     },
     {
       "Start": "3bed522caad5486caf4811eeb160b311",
       "End": "1bb1b9e5fdc2469ab1aeb5f8645246ce",
-      "Id": "d58017d66287465c9b11164f1efd3c0d"
+      "Id": "d58017d66287465c9b11164f1efd3c0d",
+      "IsHidden": "False"
     },
     {
       "Start": "055808b37f434c368a18e0c7009f1df6",
       "End": "c24b9c2d6b3d44d086df7396dbd0ed3a",
-      "Id": "c44e257079e647e89eb95bc10146d521"
+      "Id": "c44e257079e647e89eb95bc10146d521",
+      "IsHidden": "False"
     },
     {
       "Start": "055808b37f434c368a18e0c7009f1df6",
       "End": "afbff14e7a8e41989297711c52c97ac3",
-      "Id": "f18fb10aa3524fafa7e7ca4a94e04f37"
+      "Id": "f18fb10aa3524fafa7e7ca4a94e04f37",
+      "IsHidden": "False"
     },
     {
       "Start": "055808b37f434c368a18e0c7009f1df6",
       "End": "94e99d7751fd4c929eefbd758001db29",
-      "Id": "edb4e5d9201946da9a83154942d6a4f4"
+      "Id": "edb4e5d9201946da9a83154942d6a4f4",
+      "IsHidden": "False"
     },
     {
       "Start": "6edbb95162b94a099abab130f43653fa",
       "End": "d51580ee6935481195170ee48daecb53",
-      "Id": "63a052caca0542cfbef828e6e26a196c"
+      "Id": "63a052caca0542cfbef828e6e26a196c",
+      "IsHidden": "False"
     },
     {
       "Start": "ebb1b2c4b8ef4bfe8438241dd9488e12",
       "End": "d6135002763147cdbb6104b76dd1b08d",
-      "Id": "0ca67ea486914c659417ad989d45c4a4"
+      "Id": "0ca67ea486914c659417ad989d45c4a4",
+      "IsHidden": "False"
     },
     {
       "Start": "959e801eaf6c4b07a2178e06891ab428",
       "End": "708f125596354b1e981ec9e4061f9822",
-      "Id": "2a500b4ff1a545e8b61f746f06aa7fea"
+      "Id": "2a500b4ff1a545e8b61f746f06aa7fea",
+      "IsHidden": "False"
     },
     {
       "Start": "509fa0f9065f4cb4978c96d3a924c4ef",
       "End": "388ddafc95da47d894e43a9f52cb451f",
-      "Id": "3a64fa39fde3442d96c16ea647444f62"
+      "Id": "3a64fa39fde3442d96c16ea647444f62",
+      "IsHidden": "False"
     },
     {
       "Start": "557cb966466c4c9d9f1eff7238650d1c",
       "End": "8b332e67ff9d471899bedd243f5a1d02",
-      "Id": "0e19a8372ede4a6dba7479aff3455026"
+      "Id": "0e19a8372ede4a6dba7479aff3455026",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [
     {
       "NodeId": "597be846-c424-42cf-9039-4165ab1b4156",
       "Binding": {
-        "ByGeometriesAndView_InClassDecl-1_InFunctionScope-1_Instance0_597be846-c424-42cf-9039-4165ab1b4156": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMi4xLjUxNzUlMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPnRydWU8L0Jhc2UtMF9IYXNEYXRhPg0KPEJhc2UtMF9EYXRhIGlkPSJyZWYtMyI+UEZOUFFWQXRSVTVXT2tWdWRtVnNiM0JsSUhodGJHNXpPbmh6YVQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0V0YVc1emRHRnVZMlVpSUhodGJHNXpPbmh6WkQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0VpSUhodGJHNXpPbE5QUVZBdFJVNURQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SWdlRzFzYm5NNlUwOUJVQzFGVGxZOUltaDBkSEE2THk5elkyaGxiV0Z6TG5odGJITnZZWEF1YjNKbkwzTnZZWEF2Wlc1MlpXeHZjR1V2SWlCNGJXeHVjenBqYkhJOUltaDBkSEE2THk5elkyaGxiV0Z6TG0xcFkzSnZjMjltZEM1amIyMHZjMjloY0M5bGJtTnZaR2x1Wnk5amJISXZNUzR3SWlCVFQwRlFMVVZPVmpwbGJtTnZaR2x1WjFOMGVXeGxQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SStEUW84VTA5QlVDMUZUbFk2UW05a2VUNE5DanhoTVRwVFpYSnBZV3hwZW1GaWJHVkpaQ0JwWkQwaWNtVm1MVEVpSUhodGJHNXpPbUV4UFNKb2RIUndPaTh2YzJOb1pXMWhjeTV0YVdOeWIzTnZablF1WTI5dEwyTnNjaTl1YzJGemMyVnRMMUpsZG1sMFUyVnlkbWxqWlhNdVVHVnljMmx6ZEdWdVkyVXZVbVYyYVhSVFpYSjJhV05sY3lVeVF5VXlNRlpsY25OcGIyNGxNMFF5TGpJdU1TNDFNakV3SlRKREpUSXdRM1ZzZEhWeVpTVXpSRzVsZFhSeVlXd2xNa01sTWpCUWRXSnNhV05MWlhsVWIydGxiaVV6Ukc1MWJHd2lQZzBLUEhOMGNtbHVaMGxFSUdsa1BTSnlaV1l0TXlJK056ZzFNalptTjJFdE9HWmtPUzAwWXpRMUxXRm1aV010TURCa1l6SXdOakF3T1RaaExUQXdNVEF5TW1JeVBDOXpkSEpwYm1kSlJENE5DanhwYm5SSlJENHhNRFUzTkRVNFBDOXBiblJKUkQ0TkNqd3ZZVEU2VTJWeWFXRnNhWHBoWW14bFNXUStEUW84TDFOUFFWQXRSVTVXT2tKdlpIaytEUW84TDFOUFFWQXRSVTVXT2tWdWRtVnNiM0JsUGcwSzwvQmFzZS0wX0RhdGE+DQo8QmFzZS0wX0hhc05lc3RlZERhdGE+ZmFsc2U8L0Jhc2UtMF9IYXNOZXN0ZWREYXRhPg0KPC9hMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXI+DQo8L1NPQVAtRU5WOkJvZHk+DQo8L1NPQVAtRU5WOkVudmVsb3BlPg0K"
+        "ByGeometriesAndView_InClassDecl-1_InFunctionScope-1_Instance0_597be846-c424-42cf-9039-4165ab1b4156": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMTMuMC4zMjcwJTJDJTIwQ3VsdHVyZSUzRG5ldXRyYWwlMkMlMjBQdWJsaWNLZXlUb2tlbiUzRG51bGwiPg0KPE51bWJlck9mRWxlbWVudHM+MTwvTnVtYmVyT2ZFbGVtZW50cz4NCjxCYXNlLTBfSGFzRGF0YT50cnVlPC9CYXNlLTBfSGFzRGF0YT4NCjxCYXNlLTBfRGF0YSBpZD0icmVmLTMiPlBGTlBRVkF0UlU1V09rVnVkbVZzYjNCbElIaHRiRzV6T25oemFUMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFdGFXNXpkR0Z1WTJVaUlIaHRiRzV6T25oelpEMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFaUlIaHRiRzV6T2xOUFFWQXRSVTVEUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUlnZUcxc2JuTTZVMDlCVUMxRlRsWTlJbWgwZEhBNkx5OXpZMmhsYldGekxuaHRiSE52WVhBdWIzSm5MM052WVhBdlpXNTJaV3h2Y0dVdklpQjRiV3h1Y3pwamJISTlJbWgwZEhBNkx5OXpZMmhsYldGekxtMXBZM0p2YzI5bWRDNWpiMjB2YzI5aGNDOWxibU52WkdsdVp5OWpiSEl2TVM0d0lpQlRUMEZRTFVWT1ZqcGxibU52WkdsdVoxTjBlV3hsUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUkrRFFvOFUwOUJVQzFGVGxZNlFtOWtlVDROQ2p4aE1UcFRaWEpwWVd4cGVtRmliR1ZKWkNCcFpEMGljbVZtTFRFaUlIaHRiRzV6T21FeFBTSm9kSFJ3T2k4dmMyTm9aVzFoY3k1dGFXTnliM052Wm5RdVkyOXRMMk5zY2k5dWMyRnpjMlZ0TDFKbGRtbDBVMlZ5ZG1salpYTXVVR1Z5YzJsemRHVnVZMlV2VW1WMmFYUlRaWEoyYVdObGN5VXlReVV5TUZabGNuTnBiMjRsTTBReUxqRXpMakF1TXpJM01TVXlReVV5TUVOMWJIUjFjbVVsTTBSdVpYVjBjbUZzSlRKREpUSXdVSFZpYkdsalMyVjVWRzlyWlc0bE0wUnVkV3hzSWo0TkNqeHpkSEpwYm1kSlJDQnBaRDBpY21WbUxUTWlQakkzTW1OallXRmtMVEV4TWpBdE5HSTBNUzA0WXpnd0xUVTFNMkk0T0RZNU1ERXpOQzB3TURFd01qZzJOend2YzNSeWFXNW5TVVErRFFvOGFXNTBTVVErTVRBMU9Ea3hPVHd2YVc1MFNVUStEUW84TDJFeE9sTmxjbWxoYkdsNllXSnNaVWxrUGcwS1BDOVRUMEZRTFVWT1ZqcENiMlI1UGcwS1BDOVRUMEZRTFVWT1ZqcEZiblpsYkc5d1pUNE5DZz09PC9CYXNlLTBfRGF0YT4NCjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+DQo8L2ExOkNhbGxTaXRlX3gwMDJCX1RyYWNlU2VyaWFsaXNlckhlbHBlcj4NCjwvU09BUC1FTlY6Qm9keT4NCjwvU09BUC1FTlY6RW52ZWxvcGU+DQo="
       }
     }
   ],
@@ -718,7 +757,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.2.1.5175",
+      "Version": "2.13.0.3270",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -734,6 +773,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -930,7 +970,12 @@
       {
         "Id": "370f5e82ca1a4f9a93d1f064a76ddbdb",
         "Title": "Model Lines have been  pre-selected from Revit, Element IDs saved with the Dynamo file",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 840.039356460182,
         "Top": 619.823494459318,
         "Width": 0.0,
@@ -944,7 +989,12 @@
       {
         "Id": "a5dd9cfc31564778b33662fd8b7e26b7",
         "Title": "Run this graph the DynamoSample.rvt file in the Samples folder located with your Revit installation\r\nC:\\ProgramData\\Autodesk\\RVT (Your Revit Version)\\Dynamo\\samples\\Data",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 840.055813900441,
         "Top": 434.806638430955,
         "Width": 0.0,
@@ -958,7 +1008,12 @@
       {
         "Id": "8dd36d86278741cf92e0f89eddf64eba",
         "Title": "Import a solid form into Revit",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 840.408067932615,
         "Top": 537.352842271657,
         "Width": 0.0,

@@ -1859,7 +1859,7 @@ i = [Imperative]
             thisTest.VerifyRunScriptSource(src, err);
 
             //Verification 
-            thisTest.Verify("i", new[] {5.5, 2});
+            thisTest.Verify("i", new[] {5.5, 1});
             thisTest.Verify("d2", 0);
 
         }
@@ -1909,7 +1909,7 @@ def foo ()
 test = foo();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 5.5, 2 };
+            Object[] v1 = new Object[] { 5.5, 1 };
             //Verification 
             thisTest.Verify("test", v1);
         }
@@ -2057,7 +2057,7 @@ r = [Imperative]
 }
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", "expected");
+            thisTest.Verify("r", "null==true");
         }
 
         [Test]
@@ -2081,7 +2081,7 @@ r = [Imperative]
 }
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", "expected");
+            thisTest.Verify("r", "!null==true");
         }
 
         [Test]
@@ -2169,7 +2169,7 @@ return = null==false?""null==false"":""null==false is false"";
 }
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", "null==false is false");
+            thisTest.Verify("r", "null==false");
         }
 
         [Test]

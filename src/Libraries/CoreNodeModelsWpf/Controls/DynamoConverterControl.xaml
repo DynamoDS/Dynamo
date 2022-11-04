@@ -1,78 +1,133 @@
 ﻿<UserControl x:Class="CoreNodeModelsWpf.Controls.DynamoConverterControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:conversions="clr-namespace:DynamoConversions;assembly=DynamoConversions"  
-             xmlns:ui2="clr-namespace:Dynamo.UI;assembly=DynamoCore"
-             xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
-             mc:Ignorable="d" Width="400" Height="Auto">
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:conversions="clr-namespace:DynamoConversions;assembly=DynamoConversions"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             Width="400"
+             Height="Auto"
+             mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
             <controls:UnitToTextConverter x:Key="UnitToTextConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
 
-    <Grid Width="Auto" Height="Auto">
-        
+    <Grid Width="Auto"
+          Height="Auto"
+          Margin="6,0,0,0">
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        <ComboBox Name="SelectConversionMetric"                
-                ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionMetricDictionary}, Path=Keys}"   
-                Grid.Row="0"
-                Height ="{x:Static configuration:Configurations.PortHeightInPixels}"
-                SelectedItem="{Binding SelectedMetricConversion}">
+
+        <ComboBox Name="SelectConversionMetric"
+                  Grid.Row="0"
+                  Height="{x:Static configuration:Configurations.PortHeightInPixels}"
+                  ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionMetricDictionary}, Path=Keys}"
+                  SelectedItem="{Binding SelectedMetricConversion}"
+                  Style="{StaticResource RefreshComboBox}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Converter={StaticResource UnitToTextConverter}}"></TextBlock>
+                    <TextBlock Text="{Binding Converter={StaticResource UnitToTextConverter}}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
 
         <Grid Grid.Row="1">
-            
+
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="55" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            
-            <ComboBox Name="SelectConversionFrom" 
-                Grid.Column="0"
-                ItemsSource="{Binding SelectedFromConversionSource}"
-                Height ="{x:Static configuration:Configurations.PortHeightInPixels}"                                        
-                ToolTip="{Binding SelectionFromBoxToolTip}"
-                ToolTipService.ShowOnDisabled="True" 
-                IsEnabled="{Binding IsSelectionFromBoxEnabled}"
-                SelectedItem="{Binding SelectedFromConversion, Mode=TwoWay}">
+
+            <ComboBox Name="SelectConversionFrom"
+                      Grid.Column="0"
+                      Height="{x:Static configuration:Configurations.PortHeightInPixels}"
+                      MinWidth="50"
+                      IsEnabled="{Binding IsSelectionFromBoxEnabled}"
+                      ItemsSource="{Binding SelectedFromConversionSource}"
+                      SelectedItem="{Binding SelectedFromConversion, Mode=TwoWay}"
+                      Style="{StaticResource RefreshComboBox}"
+                      ToolTipService.ShowOnDisabled="True">
+                <ComboBox.ToolTip>
+                    <ToolTip Content="{Binding SelectionFromBoxToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                </ComboBox.ToolTip>
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Converter={StaticResource UnitToTextConverter}}"></TextBlock>
+                        <TextBlock Text="{Binding Converter={StaticResource UnitToTextConverter}}" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
+
             </ComboBox>
 
             <Button Name="DirectionButton"
-                Grid.Column="1"
-                Content="⇄"  
-                FontWeight="Bold"
-                FontSize="13"
-                Height ="{x:Static configuration:Configurations.PortHeightInPixels}"
-                Width="40" Command="{Binding ToggleButtonClick}"/>
+                    Grid.Column="1"
+                    Width="40"
+                    Height="29"
+                    Margin="0,0,5,0"
+                    VerticalAlignment="Top"
+                    Command="{Binding ToggleButtonClick}"
+                    Content="⇄"
+                    FontWeight="Bold">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Border x:Name="container" BorderThickness="1"
+                                            BorderBrush="#4A4A4A" Padding="0">
+                                        <Grid x:Name="inner" Background="#666666">
+                                            <TextBlock x:Name="text"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="14px"
+                                                       Foreground="#DCDCDC"
+                                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="Button.IsMouseOver" Value="true">
+                                            <Setter TargetName="inner" Property="Background" Value="#373737" />
+                                        </Trigger>
+                                        <Trigger Property="Button.IsPressed" Value="true">
+                                            <Setter TargetName="inner" Property="Background" Value="#272727" />
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="true">
+                                            <Setter TargetName="text" Property="Foreground" Value="#DCDCDC" />
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="false">
+                                            <Setter TargetName="container" Property="BorderBrush" Value="Transparent" />
+                                            <Setter TargetName="inner" Property="Background" Value="#373737" />
+                                            <Setter TargetName="text" Property="Foreground" Value="#555555" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+            </Button>
 
-            <ComboBox x:Name="SelectConversionTo"   
-                Grid.Column="2"
-        	    ItemsSource="{Binding SelectedToConversionSource}"
-                Height ="{x:Static configuration:Configurations.PortHeightInPixels}"                       
-        	    SelectedItem="{Binding SelectedToConversion, Mode=TwoWay}">
+            <ComboBox x:Name="SelectConversionTo"
+                      Grid.Column="2"
+                      Height="{x:Static configuration:Configurations.PortHeightInPixels}"
+                      MinWidth="50"
+                      ItemsSource="{Binding SelectedToConversionSource}"
+                      SelectedItem="{Binding SelectedToConversion, Mode=TwoWay}"
+                      Style="{StaticResource RefreshComboBox}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Converter={StaticResource UnitToTextConverter}}"></TextBlock>
+                        <TextBlock Text="{Binding Converter={StaticResource UnitToTextConverter}}" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>

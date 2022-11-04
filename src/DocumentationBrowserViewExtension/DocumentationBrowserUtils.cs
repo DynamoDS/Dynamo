@@ -1,4 +1,5 @@
-﻿using System.IO;
+using Dynamo.Utilities;
+using System.IO;
 using System.Reflection;
 
 namespace Dynamo.DocumentationBrowser
@@ -8,45 +9,22 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     internal static class DocumentationBrowserUtils
     {
-        private const string DPISCRIPT = @"<script> function getDPIScale()
-        {
-            var dpi = 96.0;
-            if (window.screen.deviceXDPI != undefined)
-            {
-                dpi = window.screen.deviceXDPI;
-            }
-            else
-            {
-                var tmpNode = document.createElement('DIV');
-                tmpNode.style.cssText = 'width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden';
-                document.body.appendChild(tmpNode);
-                dpi = parseInt(tmpNode.offsetWidth);
-                tmpNode.parentNode.removeChild(tmpNode);
-            }
-
-            return dpi / 96.0;
-        }
-
-        function adaptDPI()
-        {
-            var dpiScale = getDPIScale();
-            document.body.style.zoom = dpiScale;
-
-            var widthPercentage = ((100.0 / dpiScale)-5).toString() + '%';
-            document.body.style.width = widthPercentage;
-        }
-        adaptDPI() 
-        </script>";
-
         /// <summary>
         /// Returns the DPIScript
         /// </summary>
         /// <param name="content"></param>
         internal static string GetDPIScript()
         {
-            return DPISCRIPT;
+            return ResourceUtilities.DPISCRIPT;
         }
-
+        /// <summary>
+        /// Returns the Image Navigation Script
+        /// </summary>
+        /// <returns></returns>
+        internal static string GetImageNavigationScript()
+        {
+            return ResourceUtilities.IMGNAVIGATIONSCRIPT;
+        }
         /// <summary>
         /// Returns the content of an embedded resource file.
         /// </summary>

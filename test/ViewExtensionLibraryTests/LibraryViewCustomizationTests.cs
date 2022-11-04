@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Interfaces;
-using Dynamo.LibraryUI;
+using Dynamo.LibraryViewExtensionWebView2;
 using Dynamo.Wpf.Interfaces;
 using Moq;
 using NUnit.Framework;
+
 
 namespace ViewExtensionLibraryTests
 {
     public class LibraryViewCustomizationTests
     {
+        /*
         [Test, Category("UnitTests"), Category("Failure")]
         public void AddSections()
         {
@@ -287,6 +289,162 @@ namespace ViewExtensionLibraryTests
                 Assert.AreEqual(3, spec.sections.Count);
                 Assert.AreEqual("A, B, C", string.Join(", ", spec.sections.Select(s => s.text)));
             }
+        }
+*/
+        /// <summary>
+        /// new category and group should be merged with existing section.
+        /// </summary>
+        [Test, Category("UnitTests")]
+        public void MergeLayoutSpecWithSameSection()
+        {
+            var customization = new LibraryViewCustomization();
+            var spec = customization.GetSpecification();
+            Assert.False(spec.sections.Any()); //By default empty spec
+
+            customization.SpecificationUpdated += (o, e) => { };
+
+            var sections = new[] { "A", "B", "C" }.Select(s => new LayoutSection(s));
+            Assert.True(customization.AddSections(sections));
+
+            //create a new partial spec and merge into section A.
+            var specToMerge = new LayoutSpecification();
+            var sectionToMerge = new LayoutSection("A");
+            var category = new LayoutElement("category") { elementType = LayoutElementType.category };
+            category.childElements.Add(new LayoutElement("group") { elementType = LayoutElementType.group });
+
+            sectionToMerge.childElements.Add(category);
+            specToMerge.sections.Add(sectionToMerge);
+            customization.MergeSpecification(specToMerge);
+
+
+            spec = customization.GetSpecification();
+            Assert.AreEqual(3, spec.sections.Count);
+            Assert.AreEqual("A, B, C", string.Join(", ", spec.sections.Select(s => s.text)));
+            Assert.AreEqual("A, category, group, B, , C, ", string.Join(", ", spec.sections.Select(x=>x.text +", "+ string.Join(", ",x.EnumerateChildren().Select(c=>c.text)))));
+        }
+
+        /// <summary>
+        /// New group should be merged with exsisting sec/category.
+        /// </summary>
+        [Test, Category("UnitTests")]
+        public void MergeLayoutSpecWithSameCategory()
+        {
+            var customization = new LibraryViewCustomization();
+            var spec = customization.GetSpecification();
+            Assert.False(spec.sections.Any()); //By default empty spec
+
+            customization.SpecificationUpdated += (o, e) => { };
+
+            var sections = new[] { "A", "B", "C" }.Select(s => new LayoutSection(s));
+            var category = new LayoutElement("category") { elementType = LayoutElementType.category };
+            sections.ElementAt(0).childElements.Add(category);
+            Assert.True(customization.AddSections(sections));
+
+            //create a new partial spec and merge into section A.
+            var specToMerge = new LayoutSpecification();
+            var sectionToMerge = new LayoutSection("A");
+            category.childElements.Add(new LayoutElement("group") { elementType = LayoutElementType.group });
+
+            sectionToMerge.childElements.Add(category);
+            specToMerge.sections.Add(sectionToMerge);
+            customization.MergeSpecification(specToMerge);
+
+
+            spec = customization.GetSpecification();
+            Assert.AreEqual(3, spec.sections.Count);
+            Assert.AreEqual("A, B, C", string.Join(", ", spec.sections.Select(s => s.text)));
+            Assert.AreEqual("A, category, group, B, , C, ", string.Join(", ", spec.sections.Select(x => x.text + ", " + string.Join(", ", x.EnumerateChildren().Select(c => c.text)))));
+        }
+        /// <summary>
+        /// No changes if all items already exist.
+        /// </summary>
+        [Test, Category("UnitTests")]
+        public void MergeLayoutSpecWithSameGroup()
+        {
+            var customization = new LibraryViewCustomization();
+            var spec = customization.GetSpecification();
+            Assert.False(spec.sections.Any()); //By default empty spec
+
+            customization.SpecificationUpdated += (o, e) => { };
+
+            var sections = new[] { "A", "B", "C" }.Select(s => new LayoutSection(s));
+            var category = new LayoutElement("category") { elementType = LayoutElementType.category };
+            category.childElements.Add(new LayoutElement("group") { elementType = LayoutElementType.group });
+            sections.ElementAt(0).childElements.Add(category);
+            Assert.True(customization.AddSections(sections));
+
+            //create a new partial spec and merge into section A.
+            var specToMerge = new LayoutSpecification();
+            var sectionToMerge = new LayoutSection("A");
+            sectionToMerge.childElements.Add(category);
+            specToMerge.sections.Add(sectionToMerge);
+            customization.MergeSpecification(specToMerge);
+
+
+            spec = customization.GetSpecification();
+            Assert.AreEqual(3, spec.sections.Count);
+            Assert.AreEqual("A, B, C", string.Join(", ", spec.sections.Select(s => s.text)));
+            Assert.AreEqual("A, category, group, B, , C, ", string.Join(", ", spec.sections.Select(x => x.text + ", " + string.Join(", ", x.EnumerateChildren().Select(c => c.text)))));
+        }
+        /// <summary>
+        /// Entire new section / all children should me merged with layout spec.
+        /// </summary>
+        [Test, Category("UnitTests")]
+        public void MergeLayoutSpecWithNewSection()
+        {
+            var customization = new LibraryViewCustomization();
+            var spec = customization.GetSpecification();
+            Assert.False(spec.sections.Any()); //By default empty spec
+
+            customization.SpecificationUpdated += (o, e) => { };
+
+            var sections = new[] { "A", "B", "C" }.Select(s => new LayoutSection(s));
+            Assert.True(customization.AddSections(sections));
+
+            //create a new partial spec and merge into section A.
+            var specToMerge = new LayoutSpecification();
+            var sectionToMerge = new LayoutSection("D");
+            var category = new LayoutElement("category") { elementType = LayoutElementType.category };
+            category.childElements.Add(new LayoutElement("group") { elementType = LayoutElementType.group });
+
+            sectionToMerge.childElements.Add(category);
+            specToMerge.sections.Add(sectionToMerge);
+            customization.MergeSpecification(specToMerge);
+
+
+            spec = customization.GetSpecification();
+            Assert.AreEqual(4, spec.sections.Count);
+            Assert.AreEqual("A, B, C, D", string.Join(", ", spec.sections.Select(s => s.text)));
+            Assert.AreEqual("A, , B, , C, , D, category, group", string.Join(", ", spec.sections.Select(x => x.text + ", " + string.Join(", ", x.EnumerateChildren().Select(c => c.text)))));
+        }
+
+        /// <summary>
+        /// AddElements should call merge with existing category.
+        /// </summary>
+        [Test, Category("UnitTests")]
+        public void AddElementsShouldMergeIfExistingCategory()
+        {
+            var customization = new LibraryViewCustomization();
+            var spec = customization.GetSpecification();
+            Assert.False(spec.sections.Any()); //By default empty spec
+
+            customization.SpecificationUpdated += (o, e) => { };
+
+            var section = new LayoutSection("default");
+            var category = new LayoutElement("category") { elementType = LayoutElementType.category };
+            section.childElements.Add(category);
+            Assert.True(customization.AddSections(new List<LayoutSection>() { section }));
+            category.childElements.Add(new LayoutElement("group") { elementType = LayoutElementType.group });
+            var category2 = new LayoutElement("category") { elementType = LayoutElementType.category };
+            category2.childElements.Add(new LayoutElement("group2") { elementType = LayoutElementType.group });
+
+            customization.AddElements(new List<LayoutElement>(){category2});
+
+
+            spec = customization.GetSpecification();
+            Assert.AreEqual(1, spec.sections.Count);
+            Assert.AreEqual("default", string.Join(", ", spec.sections.Select(s => s.text)));
+            Assert.AreEqual("default, category, group, group2", string.Join(", ", spec.sections.Select(x => x.text + ", " + string.Join(", ", x.EnumerateChildren().Select(c => c.text)))));
         }
     }
 }

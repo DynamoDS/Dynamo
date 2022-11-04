@@ -6,6 +6,7 @@ using ProtoCore.DSDefinitions;
 using ProtoCore.Properties;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
+using DynamoUtilities;
 
 namespace ProtoCore
 {
@@ -55,6 +56,7 @@ namespace ProtoCore
 
     public class RuntimeStatus
     {
+        private readonly DynamoLock rwl = new DynamoLock();
         private ProtoCore.RuntimeCore runtimeCore;
         private List<Runtime.WarningEntry> warnings;
 
@@ -70,11 +72,14 @@ namespace ProtoCore
             set;
         }
 
-        public IEnumerable<Runtime.WarningEntry> Warnings
+        public List<Runtime.WarningEntry> Warnings
         {
             get
             {
-                return warnings;
+                using (rwl.CreateReadLock())
+                {
+                    return warnings.ToList();
+                }
             }
         }
 
@@ -82,23 +87,35 @@ namespace ProtoCore
         {
             get
             {
-                return warnings.Count;
+                using (rwl.CreateReadLock())
+                {
+                    return warnings.Count;
+                }
             }
         }
 
         public void ClearWarningForExpression(int expressionID)
         {
-            warnings.RemoveAll(w => w.ExpressionID == expressionID);
+            using (rwl.CreateWriteLock())
+            {
+                warnings.RemoveAll(w => w.ExpressionID == expressionID);
+            }
         }
 
         public void ClearWarningsForGraph(Guid guid)
         {
-            warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
+            using (rwl.CreateWriteLock())
+            {
+                warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
+            }
         }
 
         public void ClearWarningsForAst(int astID)
         {
-            warnings.RemoveAll(w => w.AstID.Equals(astID));
+            using (rwl.CreateWriteLock())
+            {
+                warnings.RemoveAll(w => w.AstID.Equals(astID));
+            }
         }
 
         public RuntimeStatus(RuntimeCore runtimeCore,
@@ -172,7 +189,11 @@ namespace ProtoCore
                 AstID = executingGraphNode == null ? Constants.kInvalidIndex : executingGraphNode.OriginalAstID,
                 Filename = filename
             };
-            warnings.Add(entry);
+
+            using (rwl.CreateWriteLock())
+            {
+                warnings.Add(entry);
+            }
         }
 
         public void LogWarning(Runtime.WarningID ID, string message)

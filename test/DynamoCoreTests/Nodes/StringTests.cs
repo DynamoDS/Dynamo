@@ -396,6 +396,14 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
             AssertPreviewValue("f8767579-f7c1-475f-980e-7cd6a42684c8", 123521);
         }
+        [Test]
+        public void TestStringGetNumberFileInput()
+        {
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestStringGetNumber_normal.dyn");
+
+            RunModel(testFilePath);
+            AssertPreviewValue("09c8d5ba431a442e886fe234922c6e3c", "123521");
+        }
 
         [Test]
         public void TestStringToNumberFunctionInput()

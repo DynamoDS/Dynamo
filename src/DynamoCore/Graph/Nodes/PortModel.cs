@@ -153,6 +153,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        private Point2D center = new Point2D();
         /// <summary>
         /// Center is used by connected connectors to update their shape
         /// The "center" of a port is derived from the type of port and
@@ -164,27 +165,43 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                double halfHeight = Height * 0.5;
-
-                double offset = Owner.GetPortVerticalOffset(this);
-                double y = Owner.Y + NodeModel.HeaderHeight + halfHeight + offset + 9;
-
-                switch (PortType)
+                // If it is a proxy port, return the center as it is already set in the Annotion Model.
+                if (IsProxyPort)
                 {
-                    case PortType.Input:
-                        return new Point2D(Owner.X, y);
-                    case PortType.Output:
-                        if (Owner is CodeBlockNodeModel)
-                        {
-                            // Special case because code block outputs are smaller than regular outputs.
-                            // This ensures the output port of the first code block output aligns with
-                            // the first input port of any node.
-                            return new Point2D(Owner.X + Owner.Width, y + 9);
-                        }
-                        return new Point2D(Owner.X + Owner.Width, y);
+                    return center;
                 }
+                // If it is a node port, calculate the center based on that node position.
+                else 
+                {
+                    double halfHeight = Height * 0.5;
 
-                return new Point2D();
+                    double offset = Owner.GetPortVerticalOffset(this);
+                    double y = Owner.Y + NodeModel.HeaderHeight + halfHeight + offset + 9;
+
+                    switch (PortType)
+                    {
+                        case PortType.Input:
+                            return new Point2D(Owner.X, y);
+                        case PortType.Output:
+                            if (Owner is CodeBlockNodeModel)
+                            {
+                                // Special case because code block outputs are smaller than regular outputs.
+                                // This ensures the output port of the first code block output aligns with
+                                // the first input port of any node.
+                                return new Point2D(Owner.X + Owner.Width, y + 9);
+                            }
+                            return new Point2D(Owner.X + Owner.Width, y);
+                    }
+
+                    return new Point2D();
+                }
+            }
+            internal set 
+            {
+                if (center.Equals(value)) return;
+
+                center = value;
+                RaisePropertyChanged(nameof(Center));
             }
         }
 
@@ -309,8 +326,11 @@ namespace Dynamo.Graph.Nodes
                 return Connectors.Any() || (UsingDefaultValue && DefaultValue != null);
             }
         }
+
         #endregion
-        
+
+        internal bool IsProxyPort { get; set; } = false;
+
         [JsonConstructor]
         internal PortModel(string name, string toolTip)
         {

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Web;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -14,6 +14,7 @@ using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 
 namespace Dynamo.WorkspaceDependency
@@ -80,7 +81,7 @@ namespace Dynamo.WorkspaceDependency
             catch (Exception ex)
             {
                 String message = Dynamo.WorkspaceDependency.Properties.Resources.ProvideFeedbackError + "\n\n" + ex.Message;
-                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBoxService.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -99,7 +100,7 @@ namespace Dynamo.WorkspaceDependency
                 {
                     currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
                 }
-                DependencyRegen(obj as WorkspaceModel);
+                DependencyRegen(obj as WorkspaceModel, true);
                 // Update current workspace
                 currentWorkspace = obj as WorkspaceModel;
                 currentWorkspace.Saved += TriggerDependencyRegen;
@@ -130,9 +131,12 @@ namespace Dynamo.WorkspaceDependency
         /// Regenerate dependency table
         /// </summary>
         /// <param name="ws">workspace model</param>
-        internal void DependencyRegen(WorkspaceModel ws)
+        /// <param name="forceCompute">flag indicating if the workspace references should be computed</param>
+        internal void DependencyRegen(WorkspaceModel ws, bool forceCompute = false)
         {
             RestartBanner.Visibility = Visibility.Hidden;
+            ws.ForceComputeWorkspaceReferences = forceCompute;
+
             var packageDependencies = ws.NodeLibraryDependencies.Where(d => d is PackageDependencyInfo).ToList();
             var localDefinitions = ws.NodeLocalDefinitions.Where(d => d is DependencyInfo).ToList();
             var externalFiles = ws.ExternalFiles.Where(d => d is DependencyInfo).ToList();
@@ -152,7 +156,6 @@ namespace Dynamo.WorkspaceDependency
                             info.Path = customNodeInfo.Path;
                         }
                     }
-
                     info.Size = PathHelper.GetFileSize(info.Path);
                 }
                 catch (Exception ex)
@@ -160,12 +163,12 @@ namespace Dynamo.WorkspaceDependency
                     dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
                 }
 
-                HasDependencyIssue = info.Path == null;
+                HasDependencyIssue = string.IsNullOrEmpty(info.Path);
             }
 
             foreach (DependencyInfo info in externalFiles)
             {
-                HasDependencyIssue = info.Path == null;
+                HasDependencyIssue = string.IsNullOrEmpty(info.Path);
             }
 
             var pythonPackageDependencies = ws.OnRequestPackageDependencies();
@@ -213,6 +216,7 @@ namespace Dynamo.WorkspaceDependency
             LocalDefinitions.IsExpanded = localDefinitionDataRows.Count() > 0;
             ExternalFiles.IsExpanded = externalFilesDataRows.Count() > 0;
 
+            ws.ForceComputeWorkspaceReferences = false;
 
             PackageDependencyTable.ItemsSource = dataRows;
             LocalDefinitionsTable.ItemsSource = localDefinitionDataRows;
@@ -220,11 +224,19 @@ namespace Dynamo.WorkspaceDependency
         }
 
         /// <summary>
-        /// Calls the DependencyRegen function when the DummyNodesReloaded event is triggered from the dynamo model.
+        /// Calls DependencyRegen when workspace is saved
         /// </summary>
         internal void TriggerDependencyRegen()
         {
             DependencyRegen(currentWorkspace);
+        }
+
+        /// <summary>
+        /// Calls DependencyRegen with forceCompute as true, as dummy nodes are reloaded.
+        /// </summary>
+        internal void ForceTriggerDependencyRegen()
+        {
+            DependencyRegen(currentWorkspace, true);
         }
 
         /// <summary>
@@ -236,7 +248,7 @@ namespace Dynamo.WorkspaceDependency
             InitializeComponent();
             this.DataContext = this;
             currentWorkspace = p.CurrentWorkspaceModel as WorkspaceModel;
-            WorkspaceModel.DummyNodesReloaded += TriggerDependencyRegen;
+            WorkspaceModel.DummyNodesReloaded += ForceTriggerDependencyRegen;
             currentWorkspace.Saved += TriggerDependencyRegen;
             p.CurrentWorkspaceChanged += OnWorkspaceChanged;
             p.CurrentWorkspaceCleared += OnWorkspaceCleared;
@@ -267,10 +279,11 @@ namespace Dynamo.WorkspaceDependency
             {
                 var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
                 DownloadSpecifiedPackageAndRefresh(info);
+                Analytics.TrackEvent(Actions.DownloadNew, Categories.WorkspaceReferencesOperations);
             }
             catch (Exception ex)
             {
-                dependencyViewExtension.OnMessageLogged(LogMessage.Info(String.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
+                dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
             }
         }
 
@@ -282,7 +295,6 @@ namespace Dynamo.WorkspaceDependency
         internal void DownloadSpecifiedPackageAndRefresh(PackageDependencyInfo info)
         {
             packageInstaller.DownloadAndInstallPackage(info);
-            DependencyRegen(currentWorkspace);
         }
 
         /// <summary>
@@ -297,6 +309,7 @@ namespace Dynamo.WorkspaceDependency
             {
                 var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
                 UpdateWorkspaceToUseInstalledPackage(info);
+                Analytics.TrackEvent(Actions.KeepOld, Categories.WorkspaceReferencesOperations, info.Name);
             }
             catch (Exception ex)
             {
@@ -335,7 +348,7 @@ namespace Dynamo.WorkspaceDependency
             loadedParams.CurrentWorkspaceChanged -= OnWorkspaceChanged;
             loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
             currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
-            WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
+            WorkspaceModel.DummyNodesReloaded -= ForceTriggerDependencyRegen;
             currentWorkspace.Saved -= TriggerDependencyRegen;
             HomeWorkspaceModel.WorkspaceClosed -= this.CloseExtensionTab;
             PackageDependencyTable.ItemsSource = null;
@@ -349,6 +362,11 @@ namespace Dynamo.WorkspaceDependency
         private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             DependencyRegen(currentWorkspace);
+        }
+
+        private void ForceRefresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            DependencyRegen(currentWorkspace, true);
         }
     }
 

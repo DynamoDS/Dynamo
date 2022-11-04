@@ -5,6 +5,7 @@ using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
 using NUnit.Framework;
 
@@ -277,6 +278,7 @@ namespace Dynamo.Tests
             count = customPackageFolders.Where(s => s == libraryPath).Count();
             Assert.IsTrue(count == 1);
         }
+
         [Test]
         [Category("UnitTests")]
         public void TestBuiltinPackagesTokenIsFirstInList()
@@ -289,6 +291,27 @@ namespace Dynamo.Tests
 
             // Check that builtinPackages token is first
             Assert.AreEqual(DynamoModel.BuiltInPackagesToken, customPackageFolders[0]);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void Dispose_DS_ClassInstance()
+        {
+            CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary("..\\..\\..\\test\\core\\library\\testclass.ds");
+
+            var testNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("Test.CreateTest"));
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(testNode, 0, 0, true, false));
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
+            Assert.IsNotNull(node);
+
+            int stackCount = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeMemory.Stack.Count;
+            CurrentDynamoModel.DeleteModelInternal(new List<Graph.ModelBase>() { node });
+
+            // There is an issue with global variables, they do not get cleaned up properly 
+            // so in this case the stack count will be increased by 1.
+            // Change this after the issue is fixed
+            int stackCountAfterDelete = stackCount + 1;
+            Assert.AreEqual(stackCount + 1, CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeMemory.Stack.Count);
         }
     }
 }

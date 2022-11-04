@@ -67,7 +67,9 @@ namespace SystemTestServices
             if (assemblyResolver == null)
             {
                 assemblyResolver = new AssemblyResolver();
-                assemblyResolver.Setup(testConfig.DynamoCorePath);
+                assemblyResolver.Setup(testConfig.DynamoCorePath, new [] {
+                    Path.Combine(testConfig.DynamoCorePath, "nodes")
+                });
             }
 
             SetupCore();

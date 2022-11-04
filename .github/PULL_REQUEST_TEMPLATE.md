@@ -25,6 +25,11 @@ Check these if you believe they are true
 - [ ] Changes to the API follow [Semantic Versioning](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Versions) and are documented in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
 - [ ] This PR modifies some build requirements and the readme is updated
 
+### Release Notes
+
+(FILL ME IN) Brief description of the fix / enhancement. **Mandatory section** 
+
+
 ### Reviewers
 
 (FILL ME IN) Reviewer 1  (If possible, assign the Reviewer for the PR)

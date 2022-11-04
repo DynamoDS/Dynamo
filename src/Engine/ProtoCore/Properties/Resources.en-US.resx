@@ -142,7 +142,7 @@
     <value>Checks if the list has a uniform depth</value>
   </data>
   <data name="CloseBracketExpected" xml:space="preserve">
-    <value>')' expected - Imcomplete Closure</value>
+    <value>')' expected - Incomplete Closure</value>
   </data>
   <data name="ContainsKeys" xml:space="preserve">
     <value>Checks if the specified key is present in the specified key-value pair list</value>
@@ -237,8 +237,8 @@
   <data name="kCyclicDependency" xml:space="preserve">
     <value>A cyclic dependency exists between two variables href=kCyclicDependency.html</value>
   </data>
-  <data name="kDeferencingNonPointer" xml:space="preserve">
-    <value>Internal error, please report: Dereferencing a non-pointer. href=DeferencingNonPointer.html</value>
+  <data name="kDereferencingNonPointer" xml:space="preserve">
+    <value>Internal error, please report: Dereferencing a non-pointer. href=DereferencingNonPointer.html</value>
   </data>
   <data name="kExceptionTypeUndefined" xml:space="preserve">
     <value>The exception type '{0}' is not defined</value>
@@ -322,7 +322,7 @@
     <value>Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
-    <value>There is no version of {0} that accepts argument type(s) ({1}).</value>
+    <value>There is no version of {0} that accepts argument type(s) ({1}). href=NonOverloadMethodResolutionError.html</value>
   </data>
   <data name="kMethodStackOverflow" xml:space="preserve">
     <value>'{0}()' recursed until Dynamo ran out of memory, please add a base case.</value>

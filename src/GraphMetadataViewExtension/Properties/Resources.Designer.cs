@@ -61,6 +61,78 @@ namespace Dynamo.GraphMetadata.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom Property.
+        /// </summary>
+        public static string CustomPropertyControl_CustomPropertyDefault {
+            get {
+                return ResourceManager.GetString("CustomPropertyControl_CustomPropertyDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Properties.
+        /// </summary>
+        public static string ExtensionName {
+            get {
+                return ResourceManager.GetString("ExtensionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Author Name.
+        /// </summary>
+        public static string GraphMetaData_AuthorName {
+            get {
+                return ResourceManager.GetString("GraphMetaData_AuthorName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Properties.
+        /// </summary>
+        public static string GraphMetaData_CustomProperties {
+            get {
+                return ResourceManager.GetString("GraphMetaData_CustomProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string GraphMetaData_Description {
+            get {
+                return ResourceManager.GetString("GraphMetaData_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph Type.
+        /// </summary>
+        public static string GraphMetaData_GraphType {
+            get {
+                return ResourceManager.GetString("GraphMetaData_GraphType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image.
+        /// </summary>
+        public static string GraphMetaData_Image {
+            get {
+                return ResourceManager.GetString("GraphMetaData_Image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn More URL.
+        /// </summary>
+        public static string GraphMetaData_LearnMoreURL {
+            get {
+                return ResourceManager.GetString("GraphMetaData_LearnMoreURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Drag and Drop or Select image.
         /// </summary>
         public static string ImageSelector_Message_DefaultFeedback {
@@ -106,7 +178,7 @@ namespace Dynamo.GraphMetadata.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Graph Properties.
+        ///   Looks up a localized string similar to Show Graph _Properties.
         /// </summary>
         public static string MenuItemText {
             get {

@@ -39,6 +39,7 @@ namespace ProtoCore.AssociativeEngine
         /// </summary>
         /// <param name="block"></param>
         /// <param name="graphNodesInScope"></param>
+        [Obsolete("This method is deprecated and will be removed in a future Dynamo version.")]
         public static void MarkAllGraphNodesDirty(int block, List<AssociativeGraph.GraphNode> graphNodesInScope)
         {
             if (graphNodesInScope != null)
@@ -49,6 +50,21 @@ namespace ProtoCore.AssociativeEngine
                     {
                         gnode.isDirty = true;
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Marks all graphnodes in the scope dirty.
+        /// </summary>
+        /// <param name="graphNodesInScope"></param>
+        internal static void MarkAllGraphNodesDirty(List<AssociativeGraph.GraphNode> graphNodesInScope)
+        {
+            if (graphNodesInScope != null)
+            {
+                foreach (AssociativeGraph.GraphNode gnode in graphNodesInScope)
+                {
+                    gnode.isDirty = true;
                 }
             }
         }
@@ -730,8 +746,8 @@ namespace ProtoCore.AssociativeEngine
         /// <param name="core"></param>
         /// <param name="nodeList"></param>
         /// <returns></returns>
-        public static AssociativeGraph.GraphNode MarkGraphNodesDirtyAtGlobalScope
-(RuntimeCore core, IEnumerable<AST.AssociativeAST.AssociativeNode> nodeList)
+        public static AssociativeGraph.GraphNode MarkGraphNodesDirtyAtGlobalScope(
+            RuntimeCore core, IEnumerable<AST.AssociativeAST.AssociativeNode> nodeList)
         {
             if (nodeList == null)
             {
@@ -751,9 +767,7 @@ namespace ProtoCore.AssociativeEngine
                 {
                     if (gnode.isActive && gnode.OriginalAstID == bNode.OriginalAstID)
                     {
-                        
                         gnode.isDirty = true;
-                        gnode.isActive = true;
                         if (gnode.updateBlock.updateRegisterStartPC != Constants.kInvalidIndex)
                         {
                             gnode.updateBlock.startpc = gnode.updateBlock.updateRegisterStartPC;
@@ -1513,8 +1527,20 @@ namespace ProtoCore.AssociativeGraph
             graphNodeMap = new Dictionary<ulong, List<GraphNode>>();
         }
 
+        private List<GraphNode> cachedNodes;
+
         public List<GraphNode> GetGraphNodesAtScope(int classIndex, int procIndex)
         {
+            if (classIndex == Constants.kInvalidPC && procIndex == Constants.kInvalidPC)
+            {
+                if (cachedNodes == null)
+                {
+                    graphNodeMap.TryGetValue(GetGraphNodeKey(classIndex, procIndex), out cachedNodes);
+                }
+
+                return cachedNodes;
+            }
+
             List<GraphNode> nodes = new List<GraphNode>();
             graphNodeMap.TryGetValue(GetGraphNodeKey(classIndex, procIndex), out nodes);
             return nodes;

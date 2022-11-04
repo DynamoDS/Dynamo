@@ -50,7 +50,8 @@ namespace DynamoMSOfficeTests
             ViewModel.HomeSpace.Run();
 
             Assert.AreEqual(ElementState.Warning, node.State);
-            StringAssert.Contains("A worksheet with the provided name 'NotAWorksheet' was not found in the workbook.", node.ToolTipText);
+            Assert.True(node.Infos.Any(x => x.Message.Contains("A worksheet with the provided name 'NotAWorksheet' was not found in the workbook.") &&
+            x.State == ElementState.Warning));
         }
 
         [Test]
@@ -162,7 +163,7 @@ namespace DynamoMSOfficeTests
             ViewModel.HomeSpace.Run();
 
             Assert.AreEqual(ElementState.Warning, node.State);
-            StringAssert.Contains("A workbook was not found in the provided path.", node.ToolTipText);
+            Assert.True(node.Infos.Any(x => x.Message.Contains("A workbook was not found in the provided path.") && x.State == ElementState.Warning));
         }
 
         [Test]

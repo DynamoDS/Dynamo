@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Dynamo Basic Sample",
   "Name": "Basics_Basic03",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -13,7 +13,8 @@
       "Type": "number",
       "Value": "0",
       "NumberType": "Double",
-      "Description": "Creates a number."
+      "Description": "Creates a number.",
+      "SelectedIndex": 0
     },
     {
       "Id": "52048c4773fb4d5f9221e4c6b2b41126",
@@ -21,7 +22,8 @@
       "Type": "number",
       "Value": "9",
       "NumberType": "Double",
-      "Description": "Creates a number."
+      "Description": "Creates a number.",
+      "SelectedIndex": 0
     },
     {
       "Id": "e6d6a43f59af48b3a87fb578db52c908",
@@ -29,7 +31,8 @@
       "Type": "number",
       "Value": "1",
       "NumberType": "Double",
-      "Description": "Creates a number."
+      "Description": "Creates a number.",
+      "SelectedIndex": 0
     },
     {
       "Id": "4dd172c6a364465fa99ceebee9717c97",
@@ -37,7 +40,8 @@
       "Type": "number",
       "Value": "3",
       "NumberType": "Double",
-      "Description": "Creates a number."
+      "Description": "Creates a number.",
+      "SelectedIndex": 0
     }
   ],
   "Outputs": [],
@@ -179,7 +183,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -190,7 +194,7 @@
         {
           "Id": "e5312c8a601d4bab8f283f7a7f34aadf",
           "Name": "list",
-          "Description": "List to get the last item of.\n\nvar[]..[]",
+          "Description": "List to get the last item of\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -200,8 +204,8 @@
       "Outputs": [
         {
           "Id": "35d4f5285da648a58b910b484285cfc9",
-          "Name": "last",
-          "Description": "Last item in the list.",
+          "Name": "item",
+          "Description": "Last item in the list",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -238,7 +242,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -267,7 +271,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -334,57 +338,84 @@
     {
       "Start": "d792b293051748d0b5417adc1f778287",
       "End": "5d7c47a3b87244f0b7dd4a71ea74bede",
-      "Id": "c3eb21501e0847fa944b48cb74af547f"
+      "Id": "c3eb21501e0847fa944b48cb74af547f",
+      "IsHidden": "False"
     },
     {
       "Start": "ddf0be2ce71245cba4c3099524e50f53",
       "End": "5aaeafaeeeda4845bf0f822a9101ea5c",
-      "Id": "6c3b01a8fd234801b261f69c74cbc37e"
+      "Id": "6c3b01a8fd234801b261f69c74cbc37e",
+      "IsHidden": "False"
     },
     {
       "Start": "f3c0e2a813c54dbd8ec936f442a35513",
       "End": "0fd39ec4caf64e1298052c71d2b639f6",
-      "Id": "89afe7054b7b4c3bbd1472336d2048cf"
+      "Id": "89afe7054b7b4c3bbd1472336d2048cf",
+      "IsHidden": "False"
     },
     {
       "Start": "f3c0e2a813c54dbd8ec936f442a35513",
       "End": "769672acc009464c8f96a2e5c88488a0",
-      "Id": "b37dfbefaf74451bba0bc279ea27aac6"
+      "Id": "b37dfbefaf74451bba0bc279ea27aac6",
+      "IsHidden": "False"
     },
     {
       "Start": "f3c0e2a813c54dbd8ec936f442a35513",
       "End": "e5312c8a601d4bab8f283f7a7f34aadf",
-      "Id": "322237d7cc494443b513dd5d194c0ab0"
+      "Id": "322237d7cc494443b513dd5d194c0ab0",
+      "IsHidden": "False"
     },
     {
       "Start": "3c086d56eeb44a1aa2a9f1cf2b1ca252",
       "End": "5cb35a794f4f4540b4e45b078215e487",
-      "Id": "29c08447866e4ee49a268052ffbd9bc2"
+      "Id": "29c08447866e4ee49a268052ffbd9bc2",
+      "IsHidden": "False"
     },
     {
       "Start": "35d4f5285da648a58b910b484285cfc9",
       "End": "b04fd9704f6941dd9937ae6f7ea7de10",
-      "Id": "347543042be44384823c75f5c7e2304f"
+      "Id": "347543042be44384823c75f5c7e2304f",
+      "IsHidden": "False"
     },
     {
       "Start": "c2db79e1e836420ab5db50673ddbe308",
       "End": "ee3d384fe01a4f0dbf107ad6f61763cd",
-      "Id": "d13b4a077b3049a995edc0c8ffe4f1f2"
+      "Id": "d13b4a077b3049a995edc0c8ffe4f1f2",
+      "IsHidden": "False"
     },
     {
       "Start": "a10f4330c1a8432790facfa96c9d3283",
       "End": "212c46b039b64d318b4508ff12e1e79f",
-      "Id": "4608002b8d9446fc9e56642a343248e3"
+      "Id": "4608002b8d9446fc9e56642a343248e3",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2821",
+      "Version": "2.13.0.3265",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -400,6 +431,7 @@
       "UpY": 0.9205048680305481,
       "UpZ": 0.3821927011013031
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -408,8 +440,8 @@
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2995.5079354474747,
-        "Y": 801.12417662913265
+        "X": 2922.1817166845826,
+        "Y": 821.84103513165849
       },
       {
         "ShowGeometry": true,
@@ -418,8 +450,8 @@
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2995.8497576370946,
-        "Y": 871.33673813843461
+        "X": 2922.5235388742026,
+        "Y": 949.85591511407642
       },
       {
         "ShowGeometry": true,
@@ -438,8 +470,8 @@
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2994.2574608959649,
-        "Y": 936.6856035837767
+        "X": 2923.5002340652113,
+        "Y": 1074.2915949986036
       },
       {
         "ShowGeometry": true,
@@ -448,8 +480,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3472.3793697066926,
-        "Y": 570.53268103974085
+        "X": 3435.757491086601,
+        "Y": 540.96178664591184
       },
       {
         "ShowGeometry": true,
@@ -458,8 +490,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3469.0578479627893,
-        "Y": 844.521973434537
+        "X": 3473.4033295386116,
+        "Y": 872.04335674807828
       },
       {
         "ShowGeometry": true,
@@ -468,8 +500,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3661.2057170125595,
-        "Y": 940.623246148274
+        "X": 3846.6129309143116,
+        "Y": 956.5566785929559
       },
       {
         "ShowGeometry": true,
@@ -478,8 +510,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3677.4990207652722,
-        "Y": 841.769567544287
+        "X": 3839.345512489997,
+        "Y": 645.24168473569273
       },
       {
         "ShowGeometry": true,
@@ -488,8 +520,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3461.3697461456895,
-        "Y": 941.392056329984
+        "X": 3471.5092031559416,
+        "Y": 1009.4712676845338
       },
       {
         "ShowGeometry": true,
@@ -498,17 +530,45 @@
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3337.2326193363847,
-        "Y": 967.84810463367774
+        "X": 3264.8079264060125,
+        "Y": 1076.4851440292357
       }
     ],
     "Annotations": [
       {
+        "Id": "255b739edc4d475cb672faa53fbeb397",
+        "Title": "Inputs",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "a8d28be45b934b68a1826e7d09b6147e",
+          "52048c4773fb4d5f9221e4c6b2b41126",
+          "e6d6a43f59af48b3a87fb578db52c908"
+        ],
+        "HasNestedGroups": false,
+        "Left": 2912.1817166845826,
+        "Top": 748.84103513165849,
+        "Width": 153.31851738062869,
+        "Height": 457.45055986694513,
+        "FontSize": 36.0,
+        "InitialTop": 821.84103513165849,
+        "InitialHeight": 397.45055986694513,
+        "TextblockHeight": 63.0,
+        "Background": "#FFC1D676"
+      },
+      {
         "Id": "26b06ec46c7341c0867abcf02849ac39",
         "Title": "Lists of Data can be generated with sequences and ranges.  These lists can be reorganized with many other nodes for specific purposes",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2916.7642640456,
-        "Top": 727.935868769841,
+        "HasNestedGroups": false,
+        "Left": 2854.0145216221026,
+        "Top": 671.60953132956877,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -518,8 +578,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": -2362.6721091544432,
-    "Y": -460.98253916269573,
-    "Zoom": 0.95461118827580527
+    "X": -1892.3460824905492,
+    "Y": -334.43538426197529,
+    "Zoom": 0.69037227466147844
   }
 }

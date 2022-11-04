@@ -432,10 +432,92 @@ namespace ProtoCore.SyntaxAnalysis
         }
     }
 
+    internal class AssociativeIdentifierInPlaceMapper : AssociativeAstReplacer
+    {
+        private Core core;
+        private Func<string, bool> cond;
+        private Func<string, string> mapper;
+
+        public AssociativeIdentifierInPlaceMapper(Core core, Func<string, bool> cond, Func<string, string> mapper)
+        {
+            this.core = core;
+            this.cond = cond;
+            this.mapper = mapper;
+        }
+
+        public override AssociativeNode VisitLanguageBlockNode(LanguageBlockNode node)
+        {
+            var cbn = node.CodeBlockNode as CodeBlockNode;
+            if (cbn == null)
+            {
+                var imperative_cbn = node.CodeBlockNode as AST.ImperativeAST.CodeBlockNode;
+                if (imperative_cbn != null)
+                {
+                    var replacer = new ImperativeIdentifierInPlaceMapper(core, cond, mapper);
+                    imperative_cbn = imperative_cbn.Accept(replacer) as AST.ImperativeAST.CodeBlockNode;
+                    return node;
+                }
+                else
+                {
+                    return base.VisitLanguageBlockNode(node);
+                }
+            }
+
+            var nodeList = cbn.Body.Select(astNode => astNode.Accept(this)).ToList();
+            cbn.Body = nodeList;
+            return node;
+        }
+
+        public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
+        {
+            var variable = node.Value;
+            if (cond(variable))
+                node.Value = node.Name = mapper(variable);
+
+            return base.VisitIdentifierNode(node);
+        }
+
+        public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
+        {
+            node.LeftNode = node.LeftNode.Accept(this);
+
+            var rightNode = node.RightNode;
+            while (rightNode != null)
+            {
+                if (rightNode is FunctionCallNode)
+                {
+                    var funcCall = rightNode as FunctionCallNode;
+                    funcCall.FormalArguments = VisitNodeList(funcCall.FormalArguments);
+                    if (funcCall.ArrayDimensions != null)
+                    {
+                        funcCall.ArrayDimensions = funcCall.ArrayDimensions.Accept(this) as ArrayNode;
+                    }
+                    break;
+                }
+                else if (rightNode is IdentifierListNode)
+                {
+                    rightNode = (rightNode as IdentifierListNode).RightNode;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return node;
+        }
+    }
+
     public class AssociativeAstReplacer : AssociativeAstVisitor<AssociativeNode>
     {
         public override AssociativeNode DefaultVisit(AssociativeNode node)
         {
+            return node;
+        }
+
+        public override AssociativeNode VisitCodeBlockNode(CodeBlockNode node)
+        {
+            node.Body = VisitNodeList(node.Body);
             return node;
         }
 

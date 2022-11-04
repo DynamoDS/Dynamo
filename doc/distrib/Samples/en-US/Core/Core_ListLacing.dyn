@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Dynamo Core Sample",
   "Name": "Core_ListLacing",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -58,7 +58,7 @@
         {
           "Id": "09067c775bec48fe820c306a63405889",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -67,7 +67,7 @@
         {
           "Id": "eef6dafd12084b6a870400cd9fd7e233",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -76,7 +76,7 @@
         {
           "Id": "0ead6c6bdc8b42ffbf300e44a6c614d3",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -87,7 +87,7 @@
         {
           "Id": "eb9a6360dc614e3992de3cda1bb36bb5",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -106,7 +106,7 @@
         {
           "Id": "26a7850a28dc4b7f931dab7db64cf430",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -115,7 +115,7 @@
         {
           "Id": "7518168025d74c2fb7e889629a1effca",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -124,7 +124,7 @@
         {
           "Id": "4a41abf13c0b4706a664642db0f9cabc",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -135,7 +135,7 @@
         {
           "Id": "654320dc542048a1a5ba996edba5577d",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -174,7 +174,7 @@
         {
           "Id": "3dba4062378742e1828ff532128afcb7",
           "Name": "startPoint",
-          "Description": "Point",
+          "Description": "Line start point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -183,7 +183,7 @@
         {
           "Id": "dc8f2c724c354b10975b52211bcfd68f",
           "Name": "endPoint",
-          "Description": "Point",
+          "Description": "Line end point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -194,7 +194,7 @@
         {
           "Id": "388ca1fe1c8f422490a98bcd0974f77e",
           "Name": "Line",
-          "Description": "Line",
+          "Description": "Line from start and end point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -213,7 +213,7 @@
         {
           "Id": "953c290517a24deeac75d8baf8c6d702",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -222,7 +222,7 @@
         {
           "Id": "cfb602a4f86c484eb72e66994da74f1e",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -231,7 +231,7 @@
         {
           "Id": "3ec2c57cf15b4c3f9402a2da1fead72e",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -242,7 +242,7 @@
         {
           "Id": "4d162230c27c410ea49a3c407eeb337a",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -261,7 +261,7 @@
         {
           "Id": "2c221778cf38415d9133fcbac4a91dbb",
           "Name": "startPoint",
-          "Description": "Point",
+          "Description": "Line start point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -270,7 +270,7 @@
         {
           "Id": "3fff248546f24b8fa47e82367f306949",
           "Name": "endPoint",
-          "Description": "Point",
+          "Description": "Line end point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -281,7 +281,7 @@
         {
           "Id": "b1d9b768dd4f4419acc43c66977c7391",
           "Name": "Line",
-          "Description": "Line",
+          "Description": "Line from start and end point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -300,7 +300,7 @@
         {
           "Id": "873c70bad74549ed9dc2f4cff32006eb",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -309,7 +309,7 @@
         {
           "Id": "e33b4fc81782481aa6be040f6ab1e28b",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -318,7 +318,7 @@
         {
           "Id": "c2f019c2f56346a69ae5f73168176261",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -329,7 +329,7 @@
         {
           "Id": "87980ede90d94cf6b73bd448ca4ba306",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -417,7 +417,7 @@
         {
           "Id": "d37aa5d461404dffb85c5666c3506e68",
           "Name": "startPoint",
-          "Description": "Point",
+          "Description": "Line start point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -426,7 +426,7 @@
         {
           "Id": "8669f9c0e1f54f3598059edc4ee4f3a3",
           "Name": "endPoint",
-          "Description": "Point",
+          "Description": "Line end point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -437,7 +437,7 @@
         {
           "Id": "78141e6762b544648b52452db899d791",
           "Name": "Line",
-          "Description": "Line",
+          "Description": "Line from start and end point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -456,7 +456,7 @@
         {
           "Id": "6651f3ba3b9142fba4306e468fc1b7cd",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -465,7 +465,7 @@
         {
           "Id": "25486dd152eb42f6b9c31a7ada172572",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -474,7 +474,7 @@
         {
           "Id": "5f83be71410e4c94a9dda13ee3a74b65",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -485,7 +485,7 @@
         {
           "Id": "329c543840b44d72ad8d8fe9ac43b983",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -504,7 +504,7 @@
         {
           "Id": "92f26e6e075749209f85d466d132a333",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -513,7 +513,7 @@
         {
           "Id": "c7a99ab8d13c456ea1e8e6b14b0a7ccd",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -522,7 +522,7 @@
         {
           "Id": "e9a20fcd7de74ac8a5e6d14101ef12a8",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -533,7 +533,7 @@
         {
           "Id": "2ff5c8809a0e47d3847275173ed37865",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -639,119 +639,157 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     }
   ],
   "Connectors": [
     {
       "Start": "e8c7111c0894407abb484e471c3bc921",
       "End": "26a7850a28dc4b7f931dab7db64cf430",
-      "Id": "341229fc6ae84ac8a9fa40fdd44a4aa0"
+      "Id": "341229fc6ae84ac8a9fa40fdd44a4aa0",
+      "IsHidden": "False"
     },
     {
       "Start": "aa220fb8b7114aa08a0f5c1141b0c5c3",
       "End": "09067c775bec48fe820c306a63405889",
-      "Id": "2e8881d7270d43ab94812ac68eebb971"
+      "Id": "2e8881d7270d43ab94812ac68eebb971",
+      "IsHidden": "False"
     },
     {
       "Start": "eb9a6360dc614e3992de3cda1bb36bb5",
       "End": "dc8f2c724c354b10975b52211bcfd68f",
-      "Id": "24cab5e60fce4ba088e8973cf62ea1ed"
+      "Id": "24cab5e60fce4ba088e8973cf62ea1ed",
+      "IsHidden": "False"
     },
     {
       "Start": "654320dc542048a1a5ba996edba5577d",
       "End": "3dba4062378742e1828ff532128afcb7",
-      "Id": "0832bcdd005e4787a1596f3e097d404c"
+      "Id": "0832bcdd005e4787a1596f3e097d404c",
+      "IsHidden": "False"
     },
     {
       "Start": "98421f1404014129bab78a37b354d25a",
       "End": "4a41abf13c0b4706a664642db0f9cabc",
-      "Id": "d782981f9b814aa794d6006d539176e4"
+      "Id": "d782981f9b814aa794d6006d539176e4",
+      "IsHidden": "False"
     },
     {
       "Start": "4d162230c27c410ea49a3c407eeb337a",
       "End": "3fff248546f24b8fa47e82367f306949",
-      "Id": "9891da55d79a402a9353736d9527b86e"
+      "Id": "9891da55d79a402a9353736d9527b86e",
+      "IsHidden": "False"
     },
     {
       "Start": "87980ede90d94cf6b73bd448ca4ba306",
       "End": "2c221778cf38415d9133fcbac4a91dbb",
-      "Id": "e14be48d045e47aa91ba88f2de6319c1"
+      "Id": "e14be48d045e47aa91ba88f2de6319c1",
+      "IsHidden": "False"
     },
     {
       "Start": "e3920ab5073f43759e6d24dc8df56e94",
       "End": "e33b4fc81782481aa6be040f6ab1e28b",
-      "Id": "189e37dda2834c7da7ac92d4657aebf5"
+      "Id": "189e37dda2834c7da7ac92d4657aebf5",
+      "IsHidden": "False"
     },
     {
       "Start": "e3920ab5073f43759e6d24dc8df56e94",
       "End": "cfb602a4f86c484eb72e66994da74f1e",
-      "Id": "5b5e97b84d474c8b8c10803122856350"
+      "Id": "5b5e97b84d474c8b8c10803122856350",
+      "IsHidden": "False"
     },
     {
       "Start": "a3efa88ad8cb4f2d991b8b69f07c2c23",
       "End": "c2f019c2f56346a69ae5f73168176261",
-      "Id": "a3e80b3187734599b855988bc8ac2e87"
+      "Id": "a3e80b3187734599b855988bc8ac2e87",
+      "IsHidden": "False"
     },
     {
       "Start": "b011bd6c4c754337886f1bfeed057d26",
       "End": "873c70bad74549ed9dc2f4cff32006eb",
-      "Id": "c80bf506ea124a05ad5ce10dc35aef28"
+      "Id": "c80bf506ea124a05ad5ce10dc35aef28",
+      "IsHidden": "False"
     },
     {
       "Start": "0bb0ebcb730c4785b16753f63e6d0a90",
       "End": "953c290517a24deeac75d8baf8c6d702",
-      "Id": "e73997e77dfb4f8c8e17cc8855bf2831"
+      "Id": "e73997e77dfb4f8c8e17cc8855bf2831",
+      "IsHidden": "False"
     },
     {
       "Start": "78141e6762b544648b52452db899d791",
       "End": "aad758aa3f8942eca258ae8389d89609",
-      "Id": "19a3dc3ae1b749d0a1c808e7095f3e35"
+      "Id": "19a3dc3ae1b749d0a1c808e7095f3e35",
+      "IsHidden": "False"
     },
     {
       "Start": "329c543840b44d72ad8d8fe9ac43b983",
       "End": "d37aa5d461404dffb85c5666c3506e68",
-      "Id": "d4eca02b60124f2d9d3d569639e42735"
+      "Id": "d4eca02b60124f2d9d3d569639e42735",
+      "IsHidden": "False"
     },
     {
       "Start": "2ff5c8809a0e47d3847275173ed37865",
       "End": "8669f9c0e1f54f3598059edc4ee4f3a3",
-      "Id": "05dc217f3dbe4afb8031320558b28ad8"
+      "Id": "05dc217f3dbe4afb8031320558b28ad8",
+      "IsHidden": "False"
     },
     {
       "Start": "1446ab3474ca4fd196b3172491555724",
       "End": "25486dd152eb42f6b9c31a7ada172572",
-      "Id": "e416d2755622410db6be9baf74d9d549"
+      "Id": "e416d2755622410db6be9baf74d9d549",
+      "IsHidden": "False"
     },
     {
       "Start": "1446ab3474ca4fd196b3172491555724",
       "End": "c7a99ab8d13c456ea1e8e6b14b0a7ccd",
-      "Id": "ce87be5d618743dbb578d96f4b34163d"
+      "Id": "ce87be5d618743dbb578d96f4b34163d",
+      "IsHidden": "False"
     },
     {
       "Start": "23fb90fe682d4263ac983684b11c5f56",
       "End": "5f83be71410e4c94a9dda13ee3a74b65",
-      "Id": "a35fbcc9535d428687ba7d9616243d90"
+      "Id": "a35fbcc9535d428687ba7d9616243d90",
+      "IsHidden": "False"
     },
     {
       "Start": "03ffeceba1a04629b4534293928b40b6",
       "End": "6651f3ba3b9142fba4306e468fc1b7cd",
-      "Id": "0dd104961b8148118a36297f92370921"
+      "Id": "0dd104961b8148118a36297f92370921",
+      "IsHidden": "False"
     },
     {
       "Start": "f35f3ebb4c6f4e84afc18c1c18006ad7",
       "End": "92f26e6e075749209f85d466d132a333",
-      "Id": "6f242253e85d4b9cb868789a3485743b"
+      "Id": "6f242253e85d4b9cb868789a3485743b",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2821",
+      "Version": "2.13.0.3265",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -767,6 +805,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -775,8 +814,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 225.0,
-        "Y": 210.0
+        "X": 135.23436211481095,
+        "Y": 229.13038184438454
       },
       {
         "ShowGeometry": true,
@@ -785,8 +824,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 221.407676812715,
-        "Y": 371.0
+        "X": 133.14039343251096,
+        "Y": 531.66876063400855
       },
       {
         "ShowGeometry": true,
@@ -795,8 +834,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 474.728622766883,
-        "Y": 367.479251117938
+        "X": 471.73191375691334,
+        "Y": 380.96444166280236
       },
       {
         "ShowGeometry": true,
@@ -815,8 +854,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 357.000177470776,
-        "Y": 237.575282507569
+        "X": 134.79343450907845,
+        "Y": 350.88600573969291
       },
       {
         "ShowGeometry": true,
@@ -825,8 +864,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 682.049926638718,
-        "Y": 256.865750576563
+        "X": 833.621413559611,
+        "Y": 306.89905693879945
       },
       {
         "ShowGeometry": true,
@@ -845,8 +884,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 672.007715536666,
-        "Y": -200.919441815219
+        "X": 838.29488079939347,
+        "Y": -206.80571315195266
       },
       {
         "ShowGeometry": true,
@@ -865,8 +904,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 342.494404205142,
-        "Y": -190.452828793663
+        "X": 170.32096760568095,
+        "Y": -155.13520077326075
       },
       {
         "ShowGeometry": true,
@@ -875,8 +914,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 214.957788897948,
-        "Y": -247.785192391781
+        "X": 170.81075387244513,
+        "Y": -278.6881169096331
       },
       {
         "ShowGeometry": true,
@@ -885,8 +924,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 211.365465710663,
-        "Y": -86.7851923917814
+        "X": 158.38902368005961,
+        "Y": 44.184344850543752
       },
       {
         "ShowGeometry": true,
@@ -895,8 +934,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 674.870381867944,
-        "Y": 718.993123419944
+        "X": 845.682795436226,
+        "Y": 859.83844688852719
       },
       {
         "ShowGeometry": true,
@@ -905,8 +944,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 466.284923704208,
-        "Y": 633.030631570647
+        "X": 457.29479667429831,
+        "Y": 698.95822978998376
       },
       {
         "ShowGeometry": true,
@@ -915,8 +954,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 467.54907799611,
-        "Y": 829.606623961319
+        "X": 464.55236898613992,
+        "Y": 995.923974014646
       },
       {
         "ShowGeometry": true,
@@ -925,8 +964,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 349.820632700002,
-        "Y": 699.70265535095
+        "X": 147.54277452703678,
+        "Y": 860.02658738433729
       },
       {
         "ShowGeometry": true,
@@ -935,8 +974,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 217.820455229226,
-        "Y": 672.127372843381
+        "X": 145.89943898994954,
+        "Y": 724.56978051785336
       },
       {
         "ShowGeometry": true,
@@ -945,8 +984,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 214.228132041941,
-        "Y": 833.127372843381
+        "X": 146.80217931761925,
+        "Y": 1069.8673846309996
       },
       {
         "ShowGeometry": true,
@@ -955,101 +994,142 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1020.15827939878,
-        "Y": 719.364388718384
+        "X": 1234.4229736116247,
+        "Y": 851.21958515705774
       }
     ],
     "Annotations": [
       {
         "Id": "f90f0c73c643471eb01815d1c9a7cf71",
         "Title": "Longer series (10 elements)",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 32.0040965350398,
-        "Top": 237.229031083646,
+        "HasNestedGroups": false,
+        "Left": 127.73436211481095,
+        "Top": 179.13038184438454,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "cb7a219035514a0ab484b546a7387e46"
       },
       {
         "Id": "b15f9f3f20004d3eb5f4f5b072d203fa",
         "Title": "Shorter series (6 elements)",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 29.7463120175797,
-        "Top": 399.715185561424,
+        "HasNestedGroups": false,
+        "Left": 128.14039343251096,
+        "Top": 481.66876063400855,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "166ba32dff5149929f3fd45c16ee7a7c"
       },
       {
         "Id": "47f6f8a75b034d9f92db233555d78524",
         "Title": "Longer series (10 elements)",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 28.571173458367,
-        "Top": -214.358545834396,
+        "HasNestedGroups": false,
+        "Left": 163.31075387244513,
+        "Top": -328.6881169096331,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "942ecaa87557469e8f1dfea057446cad"
       },
       {
         "Id": "7d1589bb407b4784bd4365ec0f2f7f5d",
         "Title": "Shorter series (6 elements)",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 26.3133889409068,
-        "Top": -51.8723913566174,
+        "HasNestedGroups": false,
+        "Left": 153.38902368005961,
+        "Top": -5.8156551494562478,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "2e504b578c994f5294427a2bcfd63c8d"
       },
       {
         "Id": "81bd0c9d77aa43b0ab34b6f18935965c",
         "Title": "Longer series (10 elements)",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 23.6736926894021,
-        "Top": 697.557088771466,
+        "HasNestedGroups": false,
+        "Left": 138.39943898994954,
+        "Top": 674.56978051785336,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "da57af46b2314206a0c45704695acfd9"
       },
       {
         "Id": "43a08daf178241c49e855c9a95d9ae93",
         "Title": "Shorter series (6 elements)",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 21.4159081719419,
-        "Top": 860.043243249244,
+        "HasNestedGroups": false,
+        "Left": 141.80217931761925,
+        "Top": 1019.8673846309996,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "b4ad929027034530ab37f241310a4616"
       },
       {
         "Id": "b1bea0e3730d460eade12c1d1c24af6d",
         "Title": "LIST LACING\r\n\r\nLacing is the logic a Dynamo node uses to match together items from different lists.  Most nodes in Dynamo allow you to choose how to combine lists of information by setting the \"lacing behavior.\"\r\n\r\nIn each of theses examples, there are two lists of points that are being passed into the Line.ByStartPointEndPoint node.  The node that makes the line must decide how many lines to draw and between which sets of points.\r\n\r\nSet the lacing behavior by right-clicking on a node that has two or more input ports and choosing \"Lacing.\"",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 47.5186028994609,
-        "Top": -648.003239929893,
+        "HasNestedGroups": false,
+        "Left": 83.198044816272613,
+        "Top": -618.81096927068336,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -1061,9 +1141,14 @@
       {
         "Id": "4b10f14c47a64c0ca1c2345cda74e148",
         "Title": "Tip: Show the item index as a label in the background preview for any node that makes geometry.  Right-click and choose \"Show Labels.\"",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 612.88169698375,
-        "Top": -19.8168350212986,
+        "HasNestedGroups": false,
+        "Left": 832.47939814137237,
+        "Top": -46.2150724220501,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -1075,37 +1160,54 @@
       {
         "Id": "3d07de98ebf7440591e21bb17faab84f",
         "Title": "Shortest Lacing\r\n\r\nOnly as many lines are drawn as there are items in the shortest input list.  Points \"left over\" in the longer list are disregarded.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 670.822320396164,
-        "Top": -297.008454261481,
+        "HasNestedGroups": false,
+        "Left": 829.29488079939347,
+        "Top": -314.80571315195266,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "e93fee37190141628f736b5e98c1167f"
       },
       {
         "Id": "ff24ee709d784757a5a36e2d08ef56fa",
         "Title": "Longest Lacing\r\n\r\nAs many lines are drawn as there are items in the longer list of input points.  When the node runs out of points in the shorter list, it will make as many copies of the last item as it needs to match with the ending items in the longest list.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 684.099415320313,
-        "Top": 131.171155811897,
+        "HasNestedGroups": false,
+        "Left": 820.621413559611,
+        "Top": 169.89905693879945,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "de2b139195e04b3db7f043d03d5c5b5a"
       },
       {
         "Id": "767e91439c2d450bb21e2cc3423733af",
         "Title": "Tip: A node's lacing behavior is notated on the node with the small glyph at the bottom right corner.  If you don't see any glyph, the node does not lace.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 865.460266029522,
-        "Top": 304.514984536469,
+        "HasNestedGroups": false,
+        "Left": 823.469251554012,
+        "Top": 468.91018973956159,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -1117,34 +1219,46 @@
       {
         "Id": "a61a39ce000d45c3bf46795b5fa195aa",
         "Title": "Cross Product Lacing\r\n\r\nAll possible combinations of pairings are made.  For 10 points in the longer list and 6 in the shorter list, there will be 10 x 6 = 60 lines that result.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 676.6686039201,
-        "Top": 620.941198918966,
+        "HasNestedGroups": false,
+        "Left": 832.182795436226,
+        "Top": 751.83844688852719,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "c16658b342dc4a45b58a10e3f6bb2f67"
       },
       {
         "Id": "ed91f1d2337e43d486625a9e59e1fd82",
         "Title": "Resulting lines will be stored in a nested list, either 6 lists of 10 lines or 10 lists of 6 lines, depending on which list is specified first.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 1021.61492766997,
-        "Top": 648.443566709749,
+        "HasNestedGroups": false,
+        "Left": 1220.4229736116247,
+        "Top": 772.21958515705774,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "0b1651320c5a4198b9808a66503c3cbc"
       }
     ],
-    "X": 472.857418923621,
-    "Y": 340.98197339453509,
-    "Zoom": 0.42681287166486392
+    "X": 317.99133876766155,
+    "Y": 311.70167496408823,
+    "Zoom": 0.45523057759641117
   }
 }

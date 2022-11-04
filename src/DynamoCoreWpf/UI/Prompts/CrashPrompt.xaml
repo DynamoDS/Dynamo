@@ -4,102 +4,176 @@
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         Width="660"
-        SizeToContent="Height"
+        Height="270"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        Style="{DynamicResource DynamoWindowStyle}">
+        Style="{DynamicResource DynamoWindowStyle}"
+        AllowsTransparency="True"
+        WindowStyle="None">
+
+    <Window.Background>
+        <SolidColorBrush Opacity="0" />
+    </Window.Background>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <StackPanel>
-        <Grid Background="#444444">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <Image Name="imgIcon"
-                   Width="98" Height="85"
-                   Margin="30,20,30,20"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   Source="/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png"></Image>
-            
-            <StackPanel Grid.Row="0" Grid.Column="1"
-                        Margin="0, 30, 30, 30">
-                <TextBlock Name="txtOverridingText"
-                           FontSize="13"
-                           Foreground="#aaaaaa"
-                           HorizontalAlignment="Stretch"
-                           TextWrapping="Wrap"/>
-            </StackPanel>
+    <Window.CommandBindings>
+        <CommandBinding Command="Close" Executed="OnCloseExecuted" />
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Command="Close" Key="Esc"/>
+    </Window.InputBindings>
 
-            <StackPanel Grid.Row="1"
-                        Grid.ColumnSpan="2"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Left"
-                        Margin="10,0,10,10">
 
-                <Button Name="btnDetails"
-                        Content="{x:Static p:Resources.CrashPromptDialogDetailButton}"
-                        Style="{DynamicResource ResourceKey=STextButton}"
-                        Visibility="Collapsed"
-                        Click="Details_Click"/>
+    <Grid Background="Transparent" MouseDown="UIElement_OnMouseDown">
+        <Border Name="MainBorder" Style="{StaticResource NoStyleWindowBorderStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
 
-                <Button Name="btnCopy"
-                        Content="{x:Static p:Resources.CrashPromptDialogCopyButton}"
-                        Style="{DynamicResource ResourceKey=STextButton}"
-                        Visibility="Collapsed"
-                        Click="Copy_Click" />
+                <!--  Title Bar + Close Button  -->
+                <DockPanel Grid.Row="0"
+                           Margin="18 20 18 35"
+                           HorizontalAlignment="Stretch">
+                    <Image Name="MessageBoxImageIcon"
+                           Width="24"
+                           Height="24"
+                           Margin="0,0,5,0"
+                           Source="/DynamoCoreWpf;component/UI/Images/dynamonotext.png"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           DockPanel.Dock="Left">
+                    </Image>
 
-            </StackPanel>
-            
-            <StackPanel Grid.Row="1" Grid.ColumnSpan="2"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Margin="10,0,10,10">
-                
-                <Button Name="btnOpenFolder"
-                        Content="{x:Static p:Resources.CrashPromptDialogOpenFolderButton}"
-                        Style="{DynamicResource ResourceKey=STextButton}"
-                        Visibility="Collapsed"
-                        Click="OpenFolder_Click"/>
+                    <Button Name="CloseButton"
+                            Click="CloseButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Margin="25 0 -5 0"
+                            Style="{StaticResource CloseButtonStyle}" />
 
-                <Button Content="{x:Static p:Resources.CrashPromptDialogSubmitBugButton}"
-                        Style="{DynamicResource ResourceKey=STextButton}"
-                        Margin="10,0,0,0"
-                        Click="PostOnGithub_Click" />
+                    <TextBlock Name="TitleTextBlock"
+                               VerticalAlignment="Center"
+                               DockPanel.Dock="Left"
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               FontSize="20px"
+                               Foreground="#3C3C3C"
+                               TextWrapping="Wrap" />
+                </DockPanel>
 
-                <Button Content="{x:Static p:Resources.ContinueButton}"
-                        Style="{DynamicResource ResourceKey=STextButton}"
-                        Margin="10,0,0,0"
-                        Click="Continue_Click"
-                        IsDefault="True" />
-                
-            </StackPanel>
+                <Rectangle Style="{StaticResource DividerRectangleStyle}" Grid.Row="0" />
 
-            <TextBox x:FieldModifier="public"
-                     Style="{DynamicResource ResourceKey=SDarkTextBox}"
-                     HorizontalAlignment="Stretch"
-                     VerticalAlignment="Stretch"
-                     Name="CrashDetailsContent"
-                     Margin="10,0,10,10"
-                     CaretBrush="White"
-                     BorderThickness="0"
-                     Height="200"
-                     IsReadOnly="True"
-                     HorizontalScrollBarVisibility="Auto"
-                     VerticalScrollBarVisibility="Auto"
-                     Visibility="Collapsed"
-                     Grid.Row="3" Grid.ColumnSpan="2"/>
-        </Grid>
-    </StackPanel>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Image Name="imgIcon"
+                               Width="98" Height="85"
+                               Margin="30,20,30,20"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Source="/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png"></Image>
+
+                    <StackPanel Grid.Row="0" Grid.Column="1"
+                                    Margin="0, 30, 30, 30">
+                        <TextBlock Name="txtOverridingText"
+                                       FontSize="13"
+                                       Foreground="{StaticResource DarkThemeInputBoxBackgroundBrush}"
+                                       HorizontalAlignment="Stretch"
+                                       TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Left"
+                                    Margin="10,0,10,10">
+
+                        <Button Name="btnDetails"
+                                    Content="{x:Static p:Resources.CrashPromptDialogDetailButton}"
+                                    Margin="-1 0 0 0"
+                                    Background="White"
+                                    BorderBrush="#BFBFBF"
+                                    Foreground="#3C3C3C"
+                                    Style="{StaticResource CtaButtonStyle}"
+                                    Visibility="Collapsed"
+                                    Click="Details_Click"/>
+
+                        <Button Name="btnCopy"
+                                    Content="{x:Static p:Resources.CrashPromptDialogCopyButton}"
+                                    Margin="-1 0 0 0"
+                                    Background="White"
+                                    BorderBrush="#BFBFBF"
+                                    Foreground="#3C3C3C"
+                                    Style="{StaticResource CtaButtonStyle}"
+                                    Visibility="Collapsed"
+                                    Click="Copy_Click" />
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Margin="10,0,10,10">
+
+                        <Button Name="btnOpenFolder"
+                                    Content="{x:Static p:Resources.CrashPromptDialogOpenFolderButton}"
+                                    Background="White"
+                                    BorderBrush="#BFBFBF"
+                                    Foreground="#3C3C3C"
+                                    Style="{StaticResource CtaButtonStyle}"
+                                    Visibility="Collapsed"
+                                    Click="OpenFolder_Click"/>
+
+                        <Button Content="{x:Static p:Resources.CrashPromptDialogSubmitBugButton}"
+                                    Background="White"
+                                    BorderBrush="#BFBFBF"
+                                    Foreground="#3C3C3C"
+                                    Style="{StaticResource CtaButtonStyle}"
+                                    Margin="10,0,0,0"
+                                    Click="PostOnGithub_Click" />
+
+                        <Button Content="{x:Static p:Resources.ContinueButton}"
+                                    BorderBrush="#0696D7"
+                                    Foreground="White"
+                                    Background="#0696D7"
+                                    Style="{StaticResource CtaButtonStyle}"
+                                    Margin="10,0,0,0"
+                                    Click="Continue_Click"
+                                    IsDefault="True" />
+
+                    </StackPanel>
+
+                    <TextBox x:FieldModifier="public"
+                                 Style="{DynamicResource ResourceKey=SLightTextBox}"
+                                 Foreground="{StaticResource DarkThemeInputBoxBackgroundBrush}"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalAlignment="Stretch"
+                                 Name="CrashDetailsContent"
+                                 Margin="12,0,12,12"
+                                 BorderThickness="0"
+                                 IsReadOnly="True"
+                                 HorizontalScrollBarVisibility="Auto"
+                                 VerticalScrollBarVisibility="Auto"
+                                 Visibility="Collapsed"
+                                 Grid.Row="3" Grid.ColumnSpan="2"/>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>

@@ -39,39 +39,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs an embedded IronPython script."
-    },
-    {
-      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
-      "NodeType": "PythonScriptNode",
-      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nprint 'Hello from Python' + str(sys.version_info.major) + '!!!'\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
-      "Engine": "IronPython2",
-      "VariableInputPorts": true,
-      "Id": "b518fc1118b745898bf5b840e3ea1c35",
-      "Inputs": [
-        {
-          "Id": "1b76bf9b56f943718514b62adb561e28",
-          "Name": "IN[0]",
-          "Description": "Input #0",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "e85535a49d2b4850ab95e6950405d015",
-          "Name": "OUT",
-          "Description": "Result of the python script",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Runs an embedded IronPython script."
+      "Description": "Runs an embedded Python script."
     },
     {
       "ConcreteType": "PythonNodeModels.PythonStringNode, PythonNodeModels",
@@ -111,7 +79,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs a IronPython script from a string."
+      "Description": "Runs a Python script from a string."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -135,7 +103,7 @@
     },
     {
       "ConcreteType": "PythonNodeModels.PythonStringNode, PythonNodeModels",
-      "Engine": "IronPython2",
+      "Engine": "CPython3",
       "VariableInputPorts": true,
       "NodeType": "ExtensionNode",
       "Id": "f18a8dde5074415da6ac87614b7d53a3",
@@ -171,7 +139,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs a IronPython script from a string."
+      "Description": "Runs a Python script from a string."
     },
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
@@ -203,7 +171,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs an embedded IronPython script."
+      "Description": "Runs an embedded Python script."
     },
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
@@ -235,7 +203,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs an embedded IronPython script."
+      "Description": "Runs an embedded Python script."
     },
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
@@ -267,60 +235,79 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs an embedded IronPython script."
+      "Description": "Runs an embedded Python script."
     }
   ],
   "Connectors": [
     {
       "Start": "6138bc73890041e5837b37cbd69f47ea",
-      "End": "1b76bf9b56f943718514b62adb561e28",
-      "Id": "97c3927b7c7e463db28e68e12419421c"
-    },
-    {
-      "Start": "e85535a49d2b4850ab95e6950405d015",
       "End": "885b416f700c45f3a1528e5d3ceb1c28",
-      "Id": "094dc52bc61b487a9b4cd5eafda72120"
+      "Id": "93238784a0e040d39a30fba5cf702bc0",
+      "IsHidden": "False"
     },
     {
       "Start": "8a5143690b1345f9a9a77057a4a60a0f",
       "End": "49a744a183dc4f0daf079c5dbb959849",
-      "Id": "d67fd627a8c64f51a36a0eb819d533ae"
+      "Id": "d67fd627a8c64f51a36a0eb819d533ae",
+      "IsHidden": "False"
     },
     {
       "Start": "b9b37c561566490cb54e6ad8236b71be",
       "End": "a5e1640b724f48d6b45f5fdc99685b80",
-      "Id": "77aa15954970471fbf4083faa78db2d5"
+      "Id": "77aa15954970471fbf4083faa78db2d5",
+      "IsHidden": "False"
     },
     {
       "Start": "b9b37c561566490cb54e6ad8236b71be",
       "End": "be1ffa19bc9d4c53a84d8215f262361c",
-      "Id": "a15b8a556aae4200902e7a59642eb01d"
+      "Id": "a15b8a556aae4200902e7a59642eb01d",
+      "IsHidden": "False"
     },
     {
       "Start": "cf0b0de0487f440fb84ecda9e67bc7d7",
       "End": "7e135cf5addc4484826327bb1948da14",
-      "Id": "a45af6eca064459ba72a26096229dac0"
+      "Id": "a45af6eca064459ba72a26096229dac0",
+      "IsHidden": "False"
     },
     {
       "Start": "b09875a66b2c4da994f656e87f8e50e6",
       "End": "9b0e261a32e6481a91b86dc5b1239cf8",
-      "Id": "d5b795956d5e47e2a43041c477c857cb"
+      "Id": "d5b795956d5e47e2a43041c477c857cb",
+      "IsHidden": "False"
     },
     {
       "Start": "4f2809c8e8284c95ba50cfbc38a899bb",
       "End": "23cdb52bf14346a182789f3ffa4eb617",
-      "Id": "8e8ca8e26731478485fd70ec66a8f32f"
+      "Id": "8e8ca8e26731478485fd70ec66a8f32f",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.9.0.2264",
+      "Version": "2.13.0.2944",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -336,6 +323,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -346,16 +334,6 @@
         "Excluded": false,
         "X": 15.199999999999989,
         "Y": 27.600000000000037
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Greeting IronPython node",
-        "Id": "b518fc1118b745898bf5b840e3ea1c35",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 279.6,
-        "Y": 28.400000000000077
       },
       {
         "ShowGeometry": true,
@@ -379,7 +357,7 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "Greeting IronPython String node",
+        "Name": "Greeting CPython String node",
         "Id": "f18a8dde5074415da6ac87614b7d53a3",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -419,8 +397,8 @@
       }
     ],
     "Annotations": [],
-    "X": -1400.6301500749578,
-    "Y": -137.92920539995117,
-    "Zoom": 1.1994243414922066
+    "X": 258.31817503509558,
+    "Y": 145.65196343413447,
+    "Zoom": 0.50279355667739012
   }
 }

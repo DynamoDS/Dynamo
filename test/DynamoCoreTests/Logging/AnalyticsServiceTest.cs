@@ -1,18 +1,19 @@
-﻿using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
-using DynamoShapeManager;
+using Microsoft.Diagnostics.Runtime;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using SystemTestServices;
-using TestServices;
+using System.Threading;
+using System.Xml.Linq;
 
 namespace Dynamo.Tests.Loggings
 {
@@ -79,7 +80,66 @@ namespace Dynamo.Tests.Loggings
             //Assert
             //At the begining the CurrentWorkspace.Nodes has 4 nodes but two new nodes were added, then verify we have 5 nodes.
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), InitialNodesCount + 2);
+        }
+    }
 
-        }     
+    public class DynamoAnalyticsDisableTest
+    {
+        [Test]
+        public void DisableAnalytics()
+        {
+            var versions = new List<Version>(){
+
+                    new Version(229, 0,0),
+                    new Version(228, 6, 0)
+            };
+
+            var directory = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
+            var testDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
+            string openPath = Path.Combine(testDirectory, @"core\Angle.dyn");
+            //go get a valid asm path.
+            var locatedPath = string.Empty;
+            var coreDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Process dynamoCLI = null;
+
+            DynamoShapeManager.Utilities.GetInstalledAsmVersion2(versions, ref locatedPath, coreDirectory);
+            try
+            {
+                Assert.DoesNotThrow(() =>
+                {
+                    dynamoCLI = Process.Start(Path.Combine(coreDirectory, "DynamoCLI.exe"), $"-gp \"{locatedPath}\" -k -da -o \"{openPath}\" ");
+
+                    Thread.Sleep(5000);// Wait 5 seconds to open the dyn
+
+                    var dt = DataTarget.AttachToProcess(dynamoCLI.Id, false);
+                    var assemblies = dt
+                          .ClrVersions
+                          .Select(dtClrVersion => dtClrVersion.CreateRuntime())
+                          .SelectMany(runtime => runtime.AppDomains.SelectMany(runtimeAppDomain => runtimeAppDomain.Modules))
+                          .Select(clrModule => clrModule.AssemblyName)
+                          .Distinct()
+                          .Where(x => x != null)
+                          .ToList();
+
+                    var firstASMmodulePath = string.Empty;
+                    foreach (string module in assemblies)
+                    {
+                        if (module.IndexOf("Analytics", StringComparison.OrdinalIgnoreCase) != -1)
+                        {
+                            Assert.Fail("Analytics module was loaded");
+                        }
+                        if (module.IndexOf("AdpSDKCSharpWrapper", StringComparison.OrdinalIgnoreCase) != -1)
+                        {
+                            Assert.Fail("ADP module was loaded");
+                        }
+                    }
+                });
+            }
+            finally
+            {
+
+                dynamoCLI?.Kill();
+            }
+        }
     }
 }

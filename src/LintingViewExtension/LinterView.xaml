@@ -139,7 +139,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <HeaderedContentControl Header="Graph Type"
+        <HeaderedContentControl Header="{x:Static props:Resources.GraphType}"
                                 HeaderTemplate="{StaticResource HeaderItemControlHeaderTemplate}"
                                 Margin="16 10">
             <Grid>
@@ -170,8 +170,10 @@
                         BorderBrush="Transparent"
                         Command="{Binding OpenDocumentationBrowserCommand}"
                         Grid.Column="1"
-                        Style="{StaticResource SomeButtonStyle}"
-                        ToolTip="{x:Static props:Resources.GraphTypeHelpTooltip }">
+                        Style="{StaticResource SomeButtonStyle}">
+                    <Button.ToolTip>
+                        <ToolTip Content="{x:Static props:Resources.GraphTypeHelpTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                    </Button.ToolTip>
                     <fa:ImageAwesome Icon="InfoCircle"
                                      Foreground="#808080"
                                      Width="20"
@@ -191,7 +193,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Expander Grid.Row="0"
-                          Header="Node Issues"
+                          Header="{x:Static props:Resources.NodeIssues}"
                           HeaderTemplate="{StaticResource HeaderItemControlHeaderTemplate}"
                           IsExpanded="True"
                           Template="{StaticResource issueExpander}"
@@ -205,7 +207,7 @@
                 </Expander>
 
                 <Expander Grid.Row="1"
-                          Header="Graph Issues"
+                          Header="{x:Static props:Resources.GraphIssues}"
                           HeaderTemplate="{StaticResource HeaderItemControlHeaderTemplate}"
                           IsExpanded="True"
                           Template="{StaticResource issueExpander}">

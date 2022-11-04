@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -20,6 +20,7 @@ namespace Dynamo.Wpf.ViewModels
     public class RunTypeItem : NotificationObject
     {
         private bool enabled;
+        private bool isSelected;
 
         /// <summary>
         /// The enabled flag sets whether the RunType is selectablable
@@ -33,6 +34,19 @@ namespace Dynamo.Wpf.ViewModels
                 enabled = value;
                 RaisePropertyChanged("Enabled");
                 RaisePropertyChanged("ToolTipText");
+            }
+        }
+
+        /// <summary>
+        /// If this RunTypeItem is selected
+        /// </summary>
+        public bool IsSelected
+        {
+            get => isSelected;
+            internal set
+            {
+                isSelected = value;
+                RaisePropertyChanged(nameof(IsSelected));
             }
         }
 
@@ -141,12 +155,39 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// This value will enable/disable the RunType ComboBox located in RunSettingsControl.xaml
+        /// </summary>
+        public bool RunTypesEnabled
+        {
+            get
+            {
+                return Model.RunTypesEnabled;
+            }
+        }
+
+
         public string RunButtonToolTip
         {
             get
             {
-                return RunButtonEnabled
+                if (RunButtonEnabled == false && RunTypesEnabled == false)
+                    return Resources.DynamoViewRunButtonToolTipDisabledFileTrust;
+                else
+                {
+                    return RunButtonEnabled
                     ? Resources.DynamoViewRunButtonTooltip
+                    : Resources.DynamoViewRunButtonToolTipDisabled;
+                }              
+            }
+        }
+
+        public string RunTypesComboBoxToolTip
+        {
+            get
+            {
+                return RunTypesEnabled
+                    ? Resources.DynamoViewRunTypesComboBoxToolTipEnabled.Replace("\\n", System.Environment.NewLine)
                     : Resources.DynamoViewRunButtonToolTipDisabled;
             }
         }
@@ -182,6 +223,8 @@ namespace Dynamo.Wpf.ViewModels
             {
                 selectedRunTypeItem = value;
                 Model.RunType = selectedRunTypeItem.RunType;
+                RunTypeItems.ToList().ForEach(x => x.IsSelected = false);
+                selectedRunTypeItem.IsSelected = true;
             }
         }
 
@@ -198,7 +241,7 @@ namespace Dynamo.Wpf.ViewModels
 #if DEBUG
                 return Visibility.Visible;
 #else
-                return Visibility.Hidden;
+                return Visibility.Collapsed;
 #endif
             }
         }
@@ -285,6 +328,12 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("SelectedRunTypeItem");
                     RaisePropertyChanged("RunButtonVisibility");
                     RunTypeChangedRun(null);
+                    break;
+                case "RunTypesEnabled":
+                    RaisePropertyChanged("RunTypesEnabled");
+                    break;
+                case "RunTypesComboBoxToolTipIsEnabled":
+                    RaisePropertyChanged("RunTypesComboBoxToolTip");
                     break;
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -508,6 +509,44 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(WithoutRenderPrecision.RenderPrecision, 128);
         }
 
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void PreferenceSetting_GroupStyles()
+        {
+            // Test that the group style list is being initialized with a non-empty list                       
+            Assert.NotNull(ViewModel.PreferenceSettings.GroupStyleItemsList);
+
+            //Now by default we will have always 4 GroupStyles added by Dynamo
+            Assert.AreEqual(4, ViewModel.PreferenceSettings.GroupStyleItemsList.Count);
+
+            // Test serialization of GroupStyles 
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "userPreference.xml");
+
+            PreferenceSettings initalSetting = new PreferenceSettings();
+            PreferenceSettings resultSetting;
+
+            initalSetting.GroupStyleItemsList.Add(new GroupStyleItem { 
+                HexColorString = "000000",
+                Name = "GroupName"
+            });
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            // Test if the customized group styles can be loaded
+            Assert.AreEqual(1, initalSetting.GroupStyleItemsList.Count);
+            Assert.AreEqual(resultSetting.GroupStyleItemsList[0].Name, initalSetting.GroupStyleItemsList[0].Name);
+            Assert.AreEqual(resultSetting.GroupStyleItemsList[0].HexColorString, initalSetting.GroupStyleItemsList[0].HexColorString);
+
+            // Test loading the settings defined in the xml configuration file
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-OneGroupStyle.xml");
+            PreferenceSettings OneGroupStyle = PreferenceSettings.Load(filePath);
+            Assert.AreEqual(1, OneGroupStyle.GroupStyleItemsList.Count);
+            Assert.AreEqual(OneGroupStyle.GroupStyleItemsList[0].Name, initalSetting.GroupStyleItemsList[0].Name);
+            Assert.AreEqual(OneGroupStyle.GroupStyleItemsList[0].HexColorString, initalSetting.GroupStyleItemsList[0].HexColorString);
+        }
+
         [Test]
         [Category("DynamoUI")]
         public void PreferenceSetting_NotAgreeAnalyticsSharing()
@@ -925,10 +964,12 @@ namespace DynamoCoreWpfTests
 
             // show in-canvas search
             ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+            DispatcherUtil.DoEvents();
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
 
             // open context menu
             RightClick(currentWs.zoomBorder);
+            DispatcherUtil.DoEvents();
 
             Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
             Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
@@ -949,10 +990,12 @@ namespace DynamoCoreWpfTests
             var searchControl = currentWs.ChildrenOfType<Popup>().Select(x => (x as Popup)?.Child as InCanvasSearchControl).Where(c => c != null).FirstOrDefault();
             Assert.IsNotNull(searchControl);
 
+            DispatcherUtil.DoEvents();
+
             int count = 0;
             (searchControl.DataContext as SearchViewModel).SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
             searchControl.SearchTextBox.Text = "dsfdf";
-            
+            DispatcherUtil.DoEvents();
 
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
             Assert.AreEqual(count, 1);
@@ -969,11 +1012,13 @@ namespace DynamoCoreWpfTests
 
             // set dummy content for search text
             currentWs.ViewModel.InCanvasSearchViewModel.SearchText = "dummy";
+            DispatcherUtil.DoEvents();
             Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
             Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
 
             // show in-canvas search
             ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+            DispatcherUtil.DoEvents();
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
 
             // check if search text is still empty
@@ -1012,9 +1057,7 @@ namespace DynamoCoreWpfTests
             Mock<LinterExtensionBase> mockLinter = new Mock<LinterExtensionBase>() { CallBase = true };
             SetupMockLinter(mockLinter);
 
-            var startupParams = new StartupParams(Model.AuthenticationManager.AuthProvider,
-                Model.PathManager, new ExtensionLibraryLoader(Model), Model.CustomNodeManager,
-                Model.GetType().Assembly.GetName().Version, Model.PreferenceSettings, Model.LinterManager);
+            var startupParams = new StartupParams(Model);
 
             mockLinter.Object.InitializeBase(Model.LinterManager);
             mockLinter.Object.Startup(startupParams);

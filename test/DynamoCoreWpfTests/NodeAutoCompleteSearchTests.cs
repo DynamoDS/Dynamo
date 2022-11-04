@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Controls;
@@ -88,6 +88,7 @@ namespace DynamoCoreWpfTests
 
             // Show Node AutoCompleteSearchBar in custom node workspace
             ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            DispatcherUtil.DoEvents();
             var currentWs = View.ChildOfType<WorkspaceView>();
             Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
         }
@@ -109,6 +110,9 @@ namespace DynamoCoreWpfTests
 
             var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = inPorts[1];
+
+            // Set the suggestion to ObjectType
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // The initial list will fill the FilteredResults with a few options - all basic input types
             searchViewModel.PopulateAutoCompleteCandidates();
@@ -132,6 +136,9 @@ namespace DynamoCoreWpfTests
 
             var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = outPorts[1];
+
+            // Set the suggestion to ObjectType
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // The initial list will fill the FilteredResults with a few options - all basic input types
             searchViewModel.PopulateAutoCompleteCandidates();
@@ -173,6 +180,7 @@ namespace DynamoCoreWpfTests
 
             // Show Node AutoCompleteSearchBar
             ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            DispatcherUtil.DoEvents();
             var currentWs = View.ChildOfType<WorkspaceView>();
             Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
 
@@ -274,6 +282,29 @@ namespace DynamoCoreWpfTests
             searchViewModel.PortViewModel = outPorts[0];
             var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(29, suggestions.Count());
+        }
+
+        [Test]
+        public void NodeSuggestions_MultipleOutputPortCBN_AreCorrect()
+        {
+            Open(@"UI\builtin_outputport_CBNsuggestion.dyn");
+
+            // Get the output port type for the node. 
+            var outPorts = ViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault().OutPorts;
+            Assert.AreEqual(3, outPorts.Count());
+
+            // Setup
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
+            searchViewModel.PortViewModel = outPorts[2];
+            searchViewModel.PopulateDefaultAutoCompleteCandidates();
+            Assert.AreEqual(3, searchViewModel.FilteredResults.Count());
+
+            // Trigger node autocomplete on the 3rd output port and verify the start port of final connector is expected
+            searchViewModel.FilteredResults.FirstOrDefault().CreateAndConnectCommand.Execute(outPorts[2].PortModel);
+
+            // The connector should be from the same index of the original port which triggered node autocomplete
+            var connector = ViewModel.CurrentSpaceViewModel.Connectors.FirstOrDefault();
+            Assert.AreEqual(outPorts[2].PortModel.Index, connector.ConnectorModel.Start.Index);
         }
 
         [Test]
@@ -389,6 +420,9 @@ namespace DynamoCoreWpfTests
             var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(0, suggestions.Count());
 
+            // Set the suggestion to ObjectType
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+
             // The initial list will fill the FilteredResults with a few options - all basic input types
             searchViewModel.PopulateAutoCompleteCandidates();
             Assert.AreEqual(5, searchViewModel.FilteredResults.Count());
@@ -411,6 +445,7 @@ namespace DynamoCoreWpfTests
 
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = inPorts[0];
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // Get the matching node elements for the specific node port.
             searchViewModel.PopulateAutoCompleteCandidates();
@@ -440,6 +475,9 @@ namespace DynamoCoreWpfTests
             // Running the algorithm against skipped nodes should return no suggestions
             var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(0, suggestions.Count());
+
+            // Set the suggestion to ObjectType
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // The initial list will fill the FilteredResults with a list of default options
             searchViewModel.PopulateAutoCompleteCandidates();

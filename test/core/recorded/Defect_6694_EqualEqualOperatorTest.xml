@@ -52,6 +52,8 @@
   <UndoRedoCommand CmdOperation="0" />
   <UndoRedoCommand CmdOperation="0" />
   <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
   <PausePlaybackCommand Tag="FifthRun" PauseDurationInMs="20" />
   <UndoRedoCommand CmdOperation="1" />
   <UndoRedoCommand CmdOperation="1" />

@@ -18,7 +18,7 @@
         {
           "Id": "38164badfeac4a00b37992ce48c9b94b",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -27,7 +27,7 @@
         {
           "Id": "234060568bab4ed18e6e785c5aed8dc2",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -36,7 +36,7 @@
         {
           "Id": "7721e50f27af4caaafa1f1f42b6e4ab3",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -47,7 +47,7 @@
         {
           "Id": "1bbd4aba24934948a95fb28a5919ebeb",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -66,7 +66,7 @@
         {
           "Id": "08edf5a93bab4ff2a77e4c3ed861375a",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -75,7 +75,7 @@
         {
           "Id": "4719c97b1932494892dfefe03a7796cf",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -84,7 +84,7 @@
         {
           "Id": "42e70bfdd91246e4b57bccb85cf33de8",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -95,7 +95,7 @@
         {
           "Id": "aef6eaa7e1984fb98265607bf012615d",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -114,7 +114,7 @@
         {
           "Id": "127428911b814f12b63682ab414c3e5e",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -123,7 +123,7 @@
         {
           "Id": "ea5c6ded0abd47fabdc57f0c8e114751",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -132,7 +132,7 @@
         {
           "Id": "0cb7c202a9ef43b3b53ecd487a267b88",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -143,7 +143,7 @@
         {
           "Id": "6467add41a094c519eb2e111815b68a6",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -204,7 +204,7 @@
         {
           "Id": "c60c574ac65c49d2a9f00f2b539dad43",
           "Name": "firstPoint",
-          "Description": "First point along the curve\n\nPoint",
+          "Description": "1st point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -213,7 +213,7 @@
         {
           "Id": "3717b4e1226647efbde27ea7375f4254",
           "Name": "secondPoint",
-          "Description": "Second point along the curve\n\nPoint",
+          "Description": "2nd point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -222,7 +222,7 @@
         {
           "Id": "953fae8999294f12b7e2d5f41229e83d",
           "Name": "thirdPoint",
-          "Description": "Third point along the curve\n\nPoint",
+          "Description": "3rd point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -233,7 +233,7 @@
         {
           "Id": "f2195a6b254b4258803f2ddd7f8da0e0",
           "Name": "Arc",
-          "Description": "An Arc",
+          "Description": "Arc created from three points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -252,7 +252,7 @@
         {
           "Id": "6e6191a1257d49f9a794c86613b831b4",
           "Name": "controlVertices",
-          "Description": "Point[][]",
+          "Description": "Grid of control points for nurbs surface\n\nPoint[][]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -261,7 +261,7 @@
         {
           "Id": "fc3f6b4befe344f2a20715a489a30680",
           "Name": "uDegree",
-          "Description": "int\nDefault value : 3",
+          "Description": "Degree in u direction\n\nint\nDefault value : 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -270,7 +270,7 @@
         {
           "Id": "4aa81e8635644783b06d3f9d819a14f0",
           "Name": "vDegree",
-          "Description": "int\nDefault value : 3",
+          "Description": "Degree in v direction\n\nint\nDefault value : 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -281,7 +281,7 @@
         {
           "Id": "f3c71042517f4f008e4e8c2971c012f7",
           "Name": "NurbsSurface",
-          "Description": "NurbsSurface",
+          "Description": "Nurbs surface created by control points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -614,7 +614,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -643,7 +643,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -672,7 +672,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -712,7 +712,7 @@
         {
           "Id": "aeb7d8a8392b41cc9a4eeefd7bb24a35",
           "Name": "Surface",
-          "Description": "Surface",
+          "Description": "Surface created by sweeping two rails",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -724,8 +724,8 @@
     },
     {
       "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
-      "WatchWidth": 320.0,
-      "WatchHeight": 457.0,
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
       "WasExecuted": true,
       "Camera": {
         "Name": "a6ea80d1-292f-4754-af60-4f40882d0c98 Preview",
@@ -775,7 +775,7 @@
         {
           "Id": "b87152331b34461eac5b8d248ff94a74",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -784,7 +784,7 @@
         {
           "Id": "3db0657e803f4c4b84f2da2365910bfe",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -793,7 +793,7 @@
         {
           "Id": "8eb1a6c6ccfc4213b88c38049d146cc3",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -804,7 +804,7 @@
         {
           "Id": "307ec73cc9934dcd971c6c027a9d13e2",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -844,7 +844,7 @@
         {
           "Id": "16e97c4f38aa428690885d2067a33c46",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -853,7 +853,7 @@
         {
           "Id": "26cce09b9c1b42eeb991fb4e360a2e1b",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -862,7 +862,7 @@
         {
           "Id": "b8b28e33b4fc4eebb6bb8909c5aed117",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -873,7 +873,7 @@
         {
           "Id": "cc52357512f44917b36068d0ba36d357",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -892,7 +892,7 @@
         {
           "Id": "c27809e51bae42d795645e45051d6159",
           "Name": "firstPoint",
-          "Description": "First point along the curve\n\nPoint",
+          "Description": "1st point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -901,7 +901,7 @@
         {
           "Id": "27cffbf1060c425381b1b2d0a8457214",
           "Name": "secondPoint",
-          "Description": "Second point along the curve\n\nPoint",
+          "Description": "2nd point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -910,7 +910,7 @@
         {
           "Id": "e83b57bdebee43218623525e8eac5007",
           "Name": "thirdPoint",
-          "Description": "Third point along the curve\n\nPoint",
+          "Description": "3rd point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -921,7 +921,7 @@
         {
           "Id": "83ea58b2af084ef3b22f8d77deb34c4d",
           "Name": "Arc",
-          "Description": "An Arc",
+          "Description": "Arc created from three points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -940,7 +940,7 @@
         {
           "Id": "b3a9ac379a59411380aab6353252edfc",
           "Name": "crossSections",
-          "Description": "Curve[]",
+          "Description": "Curves to loft through\n\nCurve[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -951,7 +951,7 @@
         {
           "Id": "39b8f4ed15354750aa4d5e57c2e85f88",
           "Name": "Surface",
-          "Description": "Surface",
+          "Description": "Surface created by loft",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1050,7 +1050,7 @@
         {
           "Id": "8fe3040390dd42448feabd2d5c8dc824",
           "Name": "firstPoint",
-          "Description": "First point along the curve\n\nPoint",
+          "Description": "1st point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1059,7 +1059,7 @@
         {
           "Id": "677c1ee4d34d4ee190f3e556c6188adc",
           "Name": "secondPoint",
-          "Description": "Second point along the curve\n\nPoint",
+          "Description": "2nd point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1068,7 +1068,7 @@
         {
           "Id": "ae121b23a7cf493a8bbdc7653020e3fa",
           "Name": "thirdPoint",
-          "Description": "Third point along the curve\n\nPoint",
+          "Description": "3rd point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1079,7 +1079,7 @@
         {
           "Id": "4514e981418e4a3ab83ca452c609c1a0",
           "Name": "Arc",
-          "Description": "An Arc",
+          "Description": "Arc created from three points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1098,7 +1098,7 @@
         {
           "Id": "a478007887f84e28bee64451396b556c",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1107,7 +1107,7 @@
         {
           "Id": "2f053e28c72948afb80dc44cf6cf8dc8",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1116,7 +1116,7 @@
         {
           "Id": "08874e2d23124fa5ab2e1665fcd1c3d7",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1127,7 +1127,7 @@
         {
           "Id": "690a600b03324f64bcb86fa5200f83bd",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1209,7 +1209,7 @@
         {
           "Id": "bf4c3fb20b8b46668a1ef08739f14245",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1218,7 +1218,7 @@
         {
           "Id": "a52456212acc406485e7a402e830fa87",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1227,7 +1227,7 @@
         {
           "Id": "e6241f007a054d99ac456b618b383490",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1238,7 +1238,7 @@
         {
           "Id": "2757d1051f424e55bd52a507f30aea32",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1257,7 +1257,7 @@
         {
           "Id": "f40bf67c57c8439cbf60cf760a804c2e",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1266,7 +1266,7 @@
         {
           "Id": "6a1e9e2e40e8483ca0740f467f72ed83",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1275,7 +1275,7 @@
         {
           "Id": "3138bf93e1bd49e38e403b26300f36de",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1286,7 +1286,7 @@
         {
           "Id": "f6d1656097fa45aaaf45b2fcb128a1e9",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1326,7 +1326,7 @@
         {
           "Id": "83a6cea386424af5ae5431c641ac6f98",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1335,7 +1335,7 @@
         {
           "Id": "768edc6e60d34cadaa901c498238f749",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1344,7 +1344,7 @@
         {
           "Id": "b297f5ce25fa44bda8b29a6aa99b8bdd",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1355,7 +1355,7 @@
         {
           "Id": "f8ac966bd3a140b08ce2fff56fa9c04c",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1374,7 +1374,7 @@
         {
           "Id": "c5ce7e45d8d449bb97b03d7d4693284d",
           "Name": "startPoint",
-          "Description": "Point",
+          "Description": "Line start point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1383,7 +1383,7 @@
         {
           "Id": "99b48f814630451bb8a61956a505367b",
           "Name": "endPoint",
-          "Description": "Point",
+          "Description": "Line end point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1394,7 +1394,7 @@
         {
           "Id": "b33e32b9e7434189a2c636a26f1b3df4",
           "Name": "Line",
-          "Description": "Line",
+          "Description": "Line from start and end point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1428,13 +1428,13 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Revit.Elements.Form.ByLoftCrossSections@Revit.GeometryReferences.ElementCurveReference[],bool",
+      "FunctionSignature": "Revit.Elements.Form.ByLoftCrossSections@Revit.GeometryReferences.ElementCurveReference[][],bool",
       "Id": "ae4bfdfe524a4a5cbd6475fd56be89af",
       "Inputs": [
         {
           "Id": "79f855eee1334f3e9abe8d5631706280",
           "Name": "curves",
-          "Description": "ElementCurveReference[]",
+          "Description": "ElementCurveReference[][]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1462,7 +1462,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Creates a Form by lofting a list of curves\n\nForm.ByLoftCrossSections (curves: ElementCurveReference[], isSolid: bool = true): Form"
+      "Description": "Creates a Form by lofting a nested list of curves\n\nForm.ByLoftCrossSections (curves: ElementCurveReference[][], isSolid: bool = true): Form"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1499,255 +1499,322 @@
     {
       "Start": "1bbd4aba24934948a95fb28a5919ebeb",
       "End": "c60c574ac65c49d2a9f00f2b539dad43",
-      "Id": "b8ea02782672461bb82929f1cc0d4860"
+      "Id": "b8ea02782672461bb82929f1cc0d4860",
+      "IsHidden": "False"
     },
     {
       "Start": "1bbd4aba24934948a95fb28a5919ebeb",
       "End": "c27809e51bae42d795645e45051d6159",
-      "Id": "9d169e18857c4fb1b7b48851a137d0ef"
+      "Id": "9d169e18857c4fb1b7b48851a137d0ef",
+      "IsHidden": "False"
     },
     {
       "Start": "aef6eaa7e1984fb98265607bf012615d",
       "End": "953fae8999294f12b7e2d5f41229e83d",
-      "Id": "59359e3037db439c803ad71ef343f681"
+      "Id": "59359e3037db439c803ad71ef343f681",
+      "IsHidden": "False"
     },
     {
       "Start": "6467add41a094c519eb2e111815b68a6",
       "End": "3717b4e1226647efbde27ea7375f4254",
-      "Id": "3bee674c6f164e5690a839be3fe37234"
+      "Id": "3bee674c6f164e5690a839be3fe37234",
+      "IsHidden": "False"
     },
     {
       "Start": "37fc837d889646269b9e235be1a40e90",
       "End": "08edf5a93bab4ff2a77e4c3ed861375a",
-      "Id": "f8adf2f477d349cb9fe614efd5cfc9e3"
+      "Id": "f8adf2f477d349cb9fe614efd5cfc9e3",
+      "IsHidden": "False"
     },
     {
       "Start": "37fc837d889646269b9e235be1a40e90",
       "End": "3db0657e803f4c4b84f2da2365910bfe",
-      "Id": "e6db03af41bb4e779d32ee7c1fdd48af"
+      "Id": "e6db03af41bb4e779d32ee7c1fdd48af",
+      "IsHidden": "False"
     },
     {
       "Start": "38953ef23da44d888929d6637fb25512",
       "End": "0cb7c202a9ef43b3b53ecd487a267b88",
-      "Id": "37bbaa860b894e2cb9ec849d0d675d19"
+      "Id": "37bbaa860b894e2cb9ec849d0d675d19",
+      "IsHidden": "False"
     },
     {
       "Start": "f2195a6b254b4258803f2ddd7f8da0e0",
       "End": "2d9538bf09be498f92873f2c0dc5d391",
-      "Id": "6b87061e96b748aabe4859c08613a804"
+      "Id": "6b87061e96b748aabe4859c08613a804",
+      "IsHidden": "False"
     },
     {
       "Start": "f2195a6b254b4258803f2ddd7f8da0e0",
       "End": "d24a4a5dd4554545b8dd5f8ba2ce831f",
-      "Id": "115356e4f141479498979288a2985a5c"
+      "Id": "115356e4f141479498979288a2985a5c",
+      "IsHidden": "False"
     },
     {
       "Start": "f3c71042517f4f008e4e8c2971c012f7",
       "End": "7a6383d4b253403f8d7eb01b9cbece39",
-      "Id": "94064ea11b54483795bd2b2032cd0c76"
+      "Id": "94064ea11b54483795bd2b2032cd0c76",
+      "IsHidden": "False"
     },
     {
       "Start": "b60dd6cbbf2a4d07a339d004cc4f0e99",
       "End": "b3a9ac379a59411380aab6353252edfc",
-      "Id": "171dd6a495424b7286a134ed622f87c3"
+      "Id": "171dd6a495424b7286a134ed622f87c3",
+      "IsHidden": "False"
     },
     {
       "Start": "b60dd6cbbf2a4d07a339d004cc4f0e99",
       "End": "6fdc5a96623047d0b200066a5ad847a8",
-      "Id": "3907433717e3486fb3cdd3f5ea3a62fe"
+      "Id": "3907433717e3486fb3cdd3f5ea3a62fe",
+      "IsHidden": "False"
     },
     {
       "Start": "07778759d60445fe99b4295b34539c1b",
       "End": "fbc9a295d4ac48ea997fd5e935202205",
-      "Id": "8d1e21b04014433cb558540e27f7ba9b"
+      "Id": "8d1e21b04014433cb558540e27f7ba9b",
+      "IsHidden": "False"
     },
     {
       "Start": "d7af59054b3b4676821e930af412857a",
       "End": "6e6191a1257d49f9a794c86613b831b4",
-      "Id": "e8c5395ecaa848af972525827ace00de"
+      "Id": "e8c5395ecaa848af972525827ace00de",
+      "IsHidden": "False"
     },
     {
       "Start": "2b35b3cacd3e40ad8ae826a0be6313a1",
       "End": "7fe7bf608ec74e6489e8e8ddd854ffb8",
-      "Id": "a1d73097471a4c30b6af045829ea6fe7"
+      "Id": "a1d73097471a4c30b6af045829ea6fe7",
+      "IsHidden": "False"
     },
     {
       "Start": "2b35b3cacd3e40ad8ae826a0be6313a1",
       "End": "ad7a7d94bfe04c0c94587e5ab8d33684",
-      "Id": "996854dcd3f84ee8ac96b01ab51e11b9"
+      "Id": "996854dcd3f84ee8ac96b01ab51e11b9",
+      "IsHidden": "False"
     },
     {
       "Start": "92e5b85c501947fe92f40290aab4e04b",
       "End": "fd07036c38b249ff9578258de4c59caf",
-      "Id": "7ef062409a2f46e8868d9da1c440f990"
+      "Id": "7ef062409a2f46e8868d9da1c440f990",
+      "IsHidden": "False"
     },
     {
       "Start": "4c73b769a0094c45954aa389a1aa7edd",
       "End": "b8cdf7229b1440789979f99513a2f682",
-      "Id": "b1da5879a2a44a818807f0da42489c7c"
+      "Id": "b1da5879a2a44a818807f0da42489c7c",
+      "IsHidden": "False"
     },
     {
       "Start": "95904cde4f4a4d4dbe84764e6720fe8a",
       "End": "a8be6a1cb3324444a15517a2c1135e3b",
-      "Id": "4b052337bc5d4267b124de12144aa865"
+      "Id": "4b052337bc5d4267b124de12144aa865",
+      "IsHidden": "False"
     },
     {
       "Start": "9b566af24ff44388af0f0f0b8bb1f807",
       "End": "e09b814f871447f497b61bdbdcfbddd3",
-      "Id": "83ce0ae4416b42b786facd9668656d10"
+      "Id": "83ce0ae4416b42b786facd9668656d10",
+      "IsHidden": "False"
     },
     {
       "Start": "aeb7d8a8392b41cc9a4eeefd7bb24a35",
       "End": "67e7e07ad4ed4504860d2ea77383bc55",
-      "Id": "450603c94d5745ffb1ee2dc9f7efe94b"
+      "Id": "450603c94d5745ffb1ee2dc9f7efe94b",
+      "IsHidden": "False"
     },
     {
       "Start": "aeb7d8a8392b41cc9a4eeefd7bb24a35",
       "End": "bface0f6691946af9944f7e9fc7c8b6c",
-      "Id": "c80ff8e55278480aba6f7e3dba93be69"
+      "Id": "c80ff8e55278480aba6f7e3dba93be69",
+      "IsHidden": "False"
     },
     {
       "Start": "aeb7d8a8392b41cc9a4eeefd7bb24a35",
       "End": "7a761fa3ead848d2a3af43fee7cb2e3d",
-      "Id": "90d32923e06349a6b63eaf26ae8c07af"
+      "Id": "90d32923e06349a6b63eaf26ae8c07af",
+      "IsHidden": "False"
     },
     {
       "Start": "aeb7d8a8392b41cc9a4eeefd7bb24a35",
       "End": "89ffa253dd62486eab0d0d31927794fa",
-      "Id": "aea09f0aed85470c9bd645fc019f951f"
+      "Id": "aea09f0aed85470c9bd645fc019f951f",
+      "IsHidden": "False"
     },
     {
       "Start": "307ec73cc9934dcd971c6c027a9d13e2",
       "End": "e83b57bdebee43218623525e8eac5007",
-      "Id": "5fd784b6fe094797b4a496cb360f21af"
+      "Id": "5fd784b6fe094797b4a496cb360f21af",
+      "IsHidden": "False"
     },
     {
       "Start": "307ec73cc9934dcd971c6c027a9d13e2",
       "End": "8fe3040390dd42448feabd2d5c8dc824",
-      "Id": "6d925908407d46319c62625059554df2"
+      "Id": "6d925908407d46319c62625059554df2",
+      "IsHidden": "False"
     },
     {
       "Start": "015fd19150f54becbbd479e1664e2955",
       "End": "16e97c4f38aa428690885d2067a33c46",
-      "Id": "324b31ec6c824e6391021238c5eb0cc0"
+      "Id": "324b31ec6c824e6391021238c5eb0cc0",
+      "IsHidden": "False"
     },
     {
       "Start": "cc52357512f44917b36068d0ba36d357",
       "End": "27cffbf1060c425381b1b2d0a8457214",
-      "Id": "ab9e19e633fd468f92e606c5c30b24d1"
+      "Id": "ab9e19e633fd468f92e606c5c30b24d1",
+      "IsHidden": "False"
     },
     {
       "Start": "83ea58b2af084ef3b22f8d77deb34c4d",
       "End": "8c9a4811fc7c4bba8c932def304ce5b9",
-      "Id": "70f2369c6bf84ebb9e3ccd1584bb66e3"
+      "Id": "70f2369c6bf84ebb9e3ccd1584bb66e3",
+      "IsHidden": "False"
     },
     {
       "Start": "39b8f4ed15354750aa4d5e57c2e85f88",
       "End": "3335d9c2ec6f4cf8bc02122b6e09d10b",
-      "Id": "8f28366346154acfacc1969c7dbb91fe"
+      "Id": "8f28366346154acfacc1969c7dbb91fe",
+      "IsHidden": "False"
     },
     {
       "Start": "39b8f4ed15354750aa4d5e57c2e85f88",
       "End": "bc5126f993324dfe84ecd74dee923cbc",
-      "Id": "87ab203921bb43bda3f02bdb60df801e"
+      "Id": "87ab203921bb43bda3f02bdb60df801e",
+      "IsHidden": "False"
     },
     {
       "Start": "d3e3a2e977af4d8ea2069e88d4ffa84d",
       "End": "26cce09b9c1b42eeb991fb4e360a2e1b",
-      "Id": "146f2dfd59a04a2994ce6f292b992bb8"
+      "Id": "146f2dfd59a04a2994ce6f292b992bb8",
+      "IsHidden": "False"
     },
     {
       "Start": "09e41ceb42354a5ca3f505b4b8ad724a",
       "End": "581bdb3f82e243728bd4db7a69991857",
-      "Id": "e5c9c84f1e1a404b8060739b44df8d4c"
+      "Id": "e5c9c84f1e1a404b8060739b44df8d4c",
+      "IsHidden": "False"
     },
     {
       "Start": "4514e981418e4a3ab83ca452c609c1a0",
       "End": "7f2c5265741f463cacc1b825365e6725",
-      "Id": "7accaa7515a146cd9133a04c3f0a3de1"
+      "Id": "7accaa7515a146cd9133a04c3f0a3de1",
+      "IsHidden": "False"
     },
     {
       "Start": "4514e981418e4a3ab83ca452c609c1a0",
       "End": "3b4270266bbb4da785f52924ee6f80f9",
-      "Id": "2755cfb40fee40c9bd3d2dce4b51134b"
+      "Id": "2755cfb40fee40c9bd3d2dce4b51134b",
+      "IsHidden": "False"
     },
     {
       "Start": "690a600b03324f64bcb86fa5200f83bd",
       "End": "677c1ee4d34d4ee190f3e556c6188adc",
-      "Id": "817a12b5297e4ae78e1097e9217051e6"
+      "Id": "817a12b5297e4ae78e1097e9217051e6",
+      "IsHidden": "False"
     },
     {
       "Start": "b3aacfc6c7014ea797a04022a6e5432e",
       "End": "a478007887f84e28bee64451396b556c",
-      "Id": "13f464bbafd44df6a83d856ac491d85f"
+      "Id": "13f464bbafd44df6a83d856ac491d85f",
+      "IsHidden": "False"
     },
     {
       "Start": "babd95e627964205b4b27b303cf2b36e",
       "End": "2f053e28c72948afb80dc44cf6cf8dc8",
-      "Id": "b8d515176e284b5ea31e9093894da0dc"
+      "Id": "b8d515176e284b5ea31e9093894da0dc",
+      "IsHidden": "False"
     },
     {
       "Start": "babd95e627964205b4b27b303cf2b36e",
       "End": "08874e2d23124fa5ab2e1665fcd1c3d7",
-      "Id": "1fccf5d857b2471490b68851d24cf173"
+      "Id": "1fccf5d857b2471490b68851d24cf173",
+      "IsHidden": "False"
     },
     {
       "Start": "8c19662c8e324893a6756ac32437400a",
       "End": "bf4c3fb20b8b46668a1ef08739f14245",
-      "Id": "2192511318db4088a1ca02c6d812b2b4"
+      "Id": "2192511318db4088a1ca02c6d812b2b4",
+      "IsHidden": "False"
     },
     {
       "Start": "8c19662c8e324893a6756ac32437400a",
       "End": "a52456212acc406485e7a402e830fa87",
-      "Id": "488ca69a33f64096a3860400f2085963"
+      "Id": "488ca69a33f64096a3860400f2085963",
+      "IsHidden": "False"
     },
     {
       "Start": "2757d1051f424e55bd52a507f30aea32",
       "End": "ae121b23a7cf493a8bbdc7653020e3fa",
-      "Id": "c7b7acad72ed470f8c34345b820514ab"
+      "Id": "c7b7acad72ed470f8c34345b820514ab",
+      "IsHidden": "False"
     },
     {
       "Start": "f6d1656097fa45aaaf45b2fcb128a1e9",
       "End": "c5ce7e45d8d449bb97b03d7d4693284d",
-      "Id": "4d81c0e778aa418daaf50f897eba2d7d"
+      "Id": "4d81c0e778aa418daaf50f897eba2d7d",
+      "IsHidden": "False"
     },
     {
       "Start": "6cd0f343b6804dafad7d7f9b2fb011e5",
       "End": "768edc6e60d34cadaa901c498238f749",
-      "Id": "55e6e00498c440649702fe5845227e27"
+      "Id": "55e6e00498c440649702fe5845227e27",
+      "IsHidden": "False"
     },
     {
       "Start": "6cd0f343b6804dafad7d7f9b2fb011e5",
       "End": "6a1e9e2e40e8483ca0740f467f72ed83",
-      "Id": "fbae9314b1a94efea2583f83d5077457"
+      "Id": "fbae9314b1a94efea2583f83d5077457",
+      "IsHidden": "False"
     },
     {
       "Start": "f8ac966bd3a140b08ce2fff56fa9c04c",
       "End": "99b48f814630451bb8a61956a505367b",
-      "Id": "2953546a474047c79481f630fba1b5f2"
+      "Id": "2953546a474047c79481f630fba1b5f2",
+      "IsHidden": "False"
     },
     {
       "Start": "b33e32b9e7434189a2c636a26f1b3df4",
       "End": "a431cdcf129c40798c6f987afbddc794",
-      "Id": "2663136276f04ffe9922d0e18080a550"
+      "Id": "2663136276f04ffe9922d0e18080a550",
+      "IsHidden": "False"
     },
     {
       "Start": "e6553ea5f0964a6199f637c530cb2a53",
       "End": "f40bf67c57c8439cbf60cf760a804c2e",
-      "Id": "9d1122d54ad740eeaf9a6ce186cc0e2e"
+      "Id": "9d1122d54ad740eeaf9a6ce186cc0e2e",
+      "IsHidden": "False"
     },
     {
       "Start": "a211cca00c174041b00668c671db1510",
       "End": "79f855eee1334f3e9abe8d5631706280",
-      "Id": "849815bb658f4ff8a513a5cdd13b0f1a"
+      "Id": "849815bb658f4ff8a513a5cdd13b0f1a",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [
     {
       "NodeId": "c1e10fd1-974e-4374-b6ec-0766615d3df4",
       "Binding": {
-        "ByGeometries_InClassDecl-1_InFunctionScope-1_Instance0_c1e10fd1-974e-4374-b6ec-0766615d3df4": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMC4xLjQzNTclMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPnRydWU8L0Jhc2UtMF9IYXNEYXRhPg0KPEJhc2UtMF9EYXRhIGlkPSJyZWYtMyI+UEZOUFFWQXRSVTVXT2tWdWRtVnNiM0JsSUhodGJHNXpPbmh6YVQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0V0YVc1emRHRnVZMlVpSUhodGJHNXpPbmh6WkQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0VpSUhodGJHNXpPbE5QUVZBdFJVNURQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SWdlRzFzYm5NNlUwOUJVQzFGVGxZOUltaDBkSEE2THk5elkyaGxiV0Z6TG5odGJITnZZWEF1YjNKbkwzTnZZWEF2Wlc1MlpXeHZjR1V2SWlCNGJXeHVjenBqYkhJOUltaDBkSEE2THk5elkyaGxiV0Z6TG0xcFkzSnZjMjltZEM1amIyMHZjMjloY0M5bGJtTnZaR2x1Wnk5amJISXZNUzR3SWlCVFQwRlFMVVZPVmpwbGJtTnZaR2x1WjFOMGVXeGxQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SStEUW84VTA5QlVDMUZUbFk2UW05a2VUNE5DanhoTVRwVFpYSnBZV3hwZW1GaWJHVkpaQ0JwWkQwaWNtVm1MVEVpSUhodGJHNXpPbUV4UFNKb2RIUndPaTh2YzJOb1pXMWhjeTV0YVdOeWIzTnZablF1WTI5dEwyTnNjaTl1YzJGemMyVnRMMUpsZG1sMFUyVnlkbWxqWlhNdVVHVnljMmx6ZEdWdVkyVXZVbVYyYVhSVFpYSjJhV05sY3lVeVF5VXlNRlpsY25OcGIyNGxNMFF5TGpBdU1DNDBNell3SlRKREpUSXdRM1ZzZEhWeVpTVXpSRzVsZFhSeVlXd2xNa01sTWpCUWRXSnNhV05MWlhsVWIydGxiaVV6Ukc1MWJHd2lQZzBLUEhOMGNtbHVaMGxFSUdsa1BTSnlaV1l0TXlJK09ETTVZV0kyT0dNdE5EWTNNQzAwTUdWaUxUbGpZMll0WkRReVpXTmxaVFZsT1RVMkxUQXdNREF3T1RoaFBDOXpkSEpwYm1kSlJENE5DanhwYm5SSlJENHlORFF5UEM5cGJuUkpSRDROQ2p3dllURTZVMlZ5YVdGc2FYcGhZbXhsU1dRK0RRbzhMMU5QUVZBdFJVNVdPa0p2WkhrK0RRbzhMMU5QUVZBdFJVNVdPa1Z1ZG1Wc2IzQmxQZzBLPC9CYXNlLTBfRGF0YT4NCjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+DQo8L2ExOkNhbGxTaXRlX3gwMDJCX1RyYWNlU2VyaWFsaXNlckhlbHBlcj4NCjwvU09BUC1FTlY6Qm9keT4NCjwvU09BUC1FTlY6RW52ZWxvcGU+DQo="
+        "ByGeometries_InClassDecl-1_InFunctionScope-1_Instance0_c1e10fd1-974e-4374-b6ec-0766615d3df4": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMTMuMC4zMjcwJTJDJTIwQ3VsdHVyZSUzRG5ldXRyYWwlMkMlMjBQdWJsaWNLZXlUb2tlbiUzRG51bGwiPg0KPE51bWJlck9mRWxlbWVudHM+MTwvTnVtYmVyT2ZFbGVtZW50cz4NCjxCYXNlLTBfSGFzRGF0YT50cnVlPC9CYXNlLTBfSGFzRGF0YT4NCjxCYXNlLTBfRGF0YSBpZD0icmVmLTMiPlBGTlBRVkF0UlU1V09rVnVkbVZzYjNCbElIaHRiRzV6T25oemFUMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFdGFXNXpkR0Z1WTJVaUlIaHRiRzV6T25oelpEMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFaUlIaHRiRzV6T2xOUFFWQXRSVTVEUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUlnZUcxc2JuTTZVMDlCVUMxRlRsWTlJbWgwZEhBNkx5OXpZMmhsYldGekxuaHRiSE52WVhBdWIzSm5MM052WVhBdlpXNTJaV3h2Y0dVdklpQjRiV3h1Y3pwamJISTlJbWgwZEhBNkx5OXpZMmhsYldGekxtMXBZM0p2YzI5bWRDNWpiMjB2YzI5aGNDOWxibU52WkdsdVp5OWpiSEl2TVM0d0lpQlRUMEZRTFVWT1ZqcGxibU52WkdsdVoxTjBlV3hsUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUkrRFFvOFUwOUJVQzFGVGxZNlFtOWtlVDROQ2p4aE1UcFRaWEpwWVd4cGVtRmliR1ZKWkNCcFpEMGljbVZtTFRFaUlIaHRiRzV6T21FeFBTSm9kSFJ3T2k4dmMyTm9aVzFoY3k1dGFXTnliM052Wm5RdVkyOXRMMk5zY2k5dWMyRnpjMlZ0TDFKbGRtbDBVMlZ5ZG1salpYTXVVR1Z5YzJsemRHVnVZMlV2VW1WMmFYUlRaWEoyYVdObGN5VXlReVV5TUZabGNuTnBiMjRsTTBReUxqRXpMakF1TXpJM01TVXlReVV5TUVOMWJIUjFjbVVsTTBSdVpYVjBjbUZzSlRKREpUSXdVSFZpYkdsalMyVjVWRzlyWlc0bE0wUnVkV3hzSWo0TkNqeHpkSEpwYm1kSlJDQnBaRDBpY21WbUxUTWlQakkzTW1OallXRmtMVEV4TWpBdE5HSTBNUzA0WXpnd0xUVTFNMkk0T0RZNU1ERXpOQzB3TURFd01qaGhZVHd2YzNSeWFXNW5TVVErRFFvOGFXNTBTVVErTVRBMU9EazROand2YVc1MFNVUStEUW84TDJFeE9sTmxjbWxoYkdsNllXSnNaVWxrUGcwS1BDOVRUMEZRTFVWT1ZqcENiMlI1UGcwS1BDOVRUMEZRTFVWT1ZqcEZiblpsYkc5d1pUNE5DZz09PC9CYXNlLTBfRGF0YT4NCjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+DQo8L2ExOkNhbGxTaXRlX3gwMDJCX1RyYWNlU2VyaWFsaXNlckhlbHBlcj4NCjwvU09BUC1FTlY6Qm9keT4NCjwvU09BUC1FTlY6RW52ZWxvcGU+DQo="
       }
     }
   ],
@@ -1756,7 +1823,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.1.4357",
+      "Version": "2.13.0.3270",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -1772,6 +1839,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -2198,7 +2266,12 @@
       {
         "Id": "295d1894ae1f4150a782003d9badc7d9",
         "Title": "Multiple creation methods exist for most Surfaces.  Surfaces, Polysurfaces (collections of Surfaces), and Nurbs Surfaces can be create by Points, Curves, and derived from other surfaces and solids",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": -23796.3802771348,
         "Top": -19714.316527622,
         "Width": 0.0,
@@ -2212,7 +2285,12 @@
       {
         "Id": "1489336e40ab479baf26b60ff24b17db",
         "Title": "Tip:  Uncheck \"Preview Upstream\" in Right Click Menu to isolate Geometry in the node",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": -22419.3947083877,
         "Top": -19256.2494145129,
         "Width": 0.0,
@@ -2226,7 +2304,12 @@
       {
         "Id": "cf263e4415014ac998550a75af5c7406",
         "Title": "Surfaces Joined as Polysurfaces can be evalued as a single entity",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": -22858.069373244,
         "Top": -19993.9113627357,
         "Width": 0.0,
@@ -2240,7 +2323,12 @@
       {
         "Id": "690220821a204984bcfb78583354d477",
         "Title": "Geometry is not the same as a Revit Element:\r\nUse Import Instance To create Revit Imports from Surfaces and Solids in any Revit Environment, use Points and Curves to place Family Instances, or create Form in Mass and Generic Model By Point (Adaptive Component) Families",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": -22889.9191441972,
         "Top": -20411.205823341,
         "Width": 0.0,
@@ -2254,7 +2342,12 @@
       {
         "Id": "283a0dbdc0684cbdbcac0503752aca10",
         "Title": "Edges, Points and other features can be derived from Surfaces using \"Actions\" appropriate to those geometries",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": -22841.8217572991,
         "Top": -19269.2985681732,
         "Width": 0.0,

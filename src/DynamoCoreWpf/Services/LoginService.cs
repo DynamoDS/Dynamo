@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Windows;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.Utilities;
 
 namespace Dynamo.Wpf.Authentication
 {
@@ -25,7 +26,7 @@ namespace Dynamo.Wpf.Authentication
             // This a known bug, described here: https://github.com/DynamoDS/Dynamo/pull/6112
             if (o.ToString().Length == 0)
             {
-                MessageBox.Show(Resources.InvalidTimeZoneMessage,
+                MessageBoxService.Show(Resources.InvalidTimeZoneMessage,
                                 Resources.InvalidLoginUrl,
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Error);

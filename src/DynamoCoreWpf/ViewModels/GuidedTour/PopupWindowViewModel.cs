@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using Dynamo.Wpf.UI.GuidedTour;
+using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Wpf.ViewModels.GuidedTour
 {
@@ -39,6 +39,21 @@ namespace Dynamo.Wpf.ViewModels.GuidedTour
             {
                 Step.TooltipPointerPoints = value;
             }
+        }
+
+        /// <summary>
+        /// This will contains the shadow direction in degrees that will be shown in the pointer
+        /// </summary>
+        public double ShadowTooltipDirection
+        { 
+            get
+            {
+                return Step.ShadowTooltipDirection;
+            }
+            set
+            {
+                Step.ShadowTooltipDirection = value;
+            } 
         }
 
         /// <summary>
@@ -108,7 +123,7 @@ namespace Dynamo.Wpf.ViewModels.GuidedTour
         {
             get
             {
-                tourLabelProgress = string.Format("{0} of {1}", Step.Sequence, Step.TotalTooltips);
+                tourLabelProgress = string.Format("{0} {1} {2}", Step.Sequence,Res.TourLabelProgressText, Step.TotalTooltips);
                 return tourLabelProgress;
             }
         }

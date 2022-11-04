@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Dynamo.PackageManager.Interfaces;
 using Dynamo.Utilities;
-using RestSharp.Serializers;
+using RestSharp.Serialization.Json;
 
 namespace Dynamo.PackageManager
 {

@@ -6,6 +6,7 @@
              xmlns:l="clr-namespace:Dynamo.UI.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
              mc:Ignorable="d"
              d:DesignWidth="640"
              d:DesignHeight="480"
@@ -24,35 +25,31 @@
           Drop="StartPage_OnDrop">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="21"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
         <!-- Begin top part (i.e. the "Start" tab) -->
-
-        <Border Background="#232323"
-                BorderThickness="0,1,0,1"
-                BorderBrush="#404040" />
-        <Border Background="#353535"
-                BorderThickness="1,0,1,1"
-                BorderBrush="#404040"
-                Width="200"
-                HorizontalAlignment="Left" />
-
-        <StackPanel Orientation="Horizontal">
-
-            <TextBlock Margin="8,0,0,0"
-                       FontSize="11"
-                       Width="172"
-                       FontFamily="{StaticResource OpenSansRegular}"
-                       Text="{x:Static p:Resources.StartPageStart}"
-                       Foreground="#888888"
-                       VerticalAlignment="Center" />
-
-            <Image Width="16"
-                   Height="16"
-                   MouseLeftButtonUp="OnCloseStartPageClicked">
+        <Border HorizontalAlignment="Stretch" Background="#3C3C3C" Margin="220,-40,0,49"></Border>
+        
+        <Border Margin="218,-39,0,49"
+            HorizontalAlignment="Left"
+            Background="#2A2A2A"
+            BorderThickness="0,0,0,5"
+            BorderBrush="#ADE4DE">
+            <Grid Margin="10" Width="212">
+                <TextBlock Margin="3,2,0,-2"
+                           FontSize="16px"
+                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                           Text="{x:Static p:Resources.StartPageStart}"
+                           Foreground="#EEEEEE"
+                           VerticalAlignment="Center" />
+                <Image Width="16px"
+                       Height="16px"
+                       Margin="0,1,0,0"
+                       HorizontalAlignment="Right"
+                       MouseLeftButtonUp="OnCloseStartPageClicked">
                 <Image.Style>
                     <Style TargetType="{x:Type Image}">
                         <Style.Triggers>
@@ -70,8 +67,8 @@
                     </Style>
                 </Image.Style>
             </Image>
-
-        </StackPanel>
+            </Grid>
+        </Border>
 
         <!-- Begin Dynamo logo -->
 
@@ -104,8 +101,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{x:Static p:Resources.StartPageFiles}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#3395a2"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -120,8 +117,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{x:Static p:Resources.StartPageRecent}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#62895b"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -138,8 +135,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{Binding Path=BackupTitle}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#ad5446"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -156,22 +153,9 @@
                           Background="White"
                           HorizontalAlignment="Stretch">
 
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"></ColumnDefinition>
-                            <ColumnDefinition Width="1*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-
                         <Label Grid.Column="0"
-                           Name ="openAll"
-                           FontFamily="{StaticResource OpenSansRegular}"
-                           Margin="0,0,0,0"
-                           HorizontalAlignment="Left"
-                           Style="{StaticResource StartPageLabel}"
-                           Content="{x:Static p:Resources.StartPageOpenAll}"
-                           MouseLeftButtonUp="OpenAllFilesOnCrash" />
-                        <Label Grid.Column="1"
                            Name ="backupLocation"
-                           FontFamily="{StaticResource OpenSansRegular}"
+                           FontFamily="{StaticResource ArtifaktElementRegular}"
                            Margin="0,0,0,0"
                            HorizontalAlignment="Right"
                            Style="{StaticResource StartPageLabel}"
@@ -190,8 +174,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{x:Static p:Resources.StartPageAsk}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#a55553"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -206,8 +190,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{x:Static p:Resources.StartPageReference}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#6f4c76"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -222,8 +206,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{x:Static p:Resources.StartPageCode}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#4b9dbf"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -238,8 +222,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{x:Static p:Resources.StartPageSamples}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#5e8f80"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -250,7 +234,7 @@
                               Grid.Row="3"
                               Grid.ColumnSpan="2"
                               BorderThickness="0"
-                              FontSize="15"
+                              FontSize="16"
                               ItemContainerStyle="{StaticResource StartPageTreeViewItem}"
                               Style="{StaticResource StartPageTreeView}">
                         <TreeView.ItemTemplate>
@@ -263,7 +247,7 @@
                         </TreeView.ItemTemplate>
                     </TreeView>
 
-                    <Label FontFamily="{StaticResource OpenSansRegular}"
+                    <Label FontFamily="{StaticResource ArtifaktElementBold}"
                            Margin="0,0,12,0"
                            HorizontalAlignment="Left"
                            Style="{StaticResource StartPageLabel}"

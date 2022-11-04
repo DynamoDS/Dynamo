@@ -3,12 +3,14 @@ using System.ComponentModel;
 
 namespace Dynamo.Core
 {
+
     /// <summary>
     /// This class notifies the View when there is a change.    
     /// </summary>
     [Serializable]
     public abstract class NotificationObject : INotifyPropertyChanged
     {
+        internal PropertyChangeManager PropertyChangeManager { get; } = new PropertyChangeManager();
         /// <summary>
         /// Raised when a property on this object has a new value.
         /// </summary>        
@@ -20,6 +22,11 @@ namespace Dynamo.Core
         /// <param name="propertyName">The property that has a new value.</param>
         protected virtual void RaisePropertyChanged(string propertyName)
         {
+            //TODO profile this?
+            if (!PropertyChangeManager.ShouldRaiseNotification(propertyName))
+            {
+                return;
+            }
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null)
             {

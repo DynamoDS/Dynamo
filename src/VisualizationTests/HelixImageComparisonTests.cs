@@ -278,12 +278,59 @@ namespace WpfVisualizationTests
             DynamoSelection.Instance.Selection.Add(node1);
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+        [Test]
+        public void ZFightTsplines_Selected()
+        {
+            OpenVisualizationTest(@"imageComparison\tsplineTest_fast.dyn");
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("tspline_select")).FirstOrDefault();
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node1);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
 
         [Test]
         public void RenderCoordinateSystemWithGeometryScaling()
         {
             // This DYN has the Geometry Scaling set to the "Extra Large" setting.
             OpenVisualizationTest(@"imageComparison\CoordinateSystems.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+
+        [Test]
+        public void RenderMeshInstances()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            //This DYN renders a class in FFITarget that implements instancing.
+            OpenVisualizationTest("instancing_pyramids.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void RenderLineInstances()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            //This DYN renders a class in FFITarget that implements instancing.
+            OpenVisualizationTest("instancing_lines.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void RenderMeshInstancingAndITransformable()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            //This DYN renders a class in FFITarget that implements instancing.
+            OpenVisualizationTest("instancing_transformables.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void RenderMeshInstances_noInstanceData()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            //This DYN renders a class in FFITarget that implements instancing.
+            OpenVisualizationTest("instancing_no_instance_data.dyn");
             RunCurrentModel();
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
@@ -371,6 +418,26 @@ namespace WpfVisualizationTests
             var node2 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("regularLines")).FirstOrDefault();
             node1.IsFrozen = true;
             node2.IsFrozen = true;
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void PointsZFightOnTsplines_Selected()
+        {
+            OpenVisualizationTest(@"imageComparison\tsplineTest_fast.dyn");
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("points_select")).FirstOrDefault();
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node1);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void CurvesZFightOnTsplines_Selected()
+        {
+            OpenVisualizationTest(@"imageComparison\tsplineTest_fast.dyn");
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("curves_select")).FirstOrDefault();
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node1);
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 

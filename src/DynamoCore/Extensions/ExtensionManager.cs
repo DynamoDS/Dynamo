@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Dynamo.Logging;
+using Dynamo.Wpf.Interfaces;
+using System;
 using System.Collections.Generic;
-using Dynamo.Logging;
+using System.Threading.Tasks;
 
 namespace Dynamo.Extensions
 {
-
     /// <summary>
     /// An object which may request extensions to be loaded and added to the extensionsManager.
     /// </summary>
@@ -91,7 +92,6 @@ namespace Dynamo.Extensions
                 (obj as IExtensionSource).RequestLoadExtension += RequestLoadExtensionHandler;
                 (obj as IExtensionSource).RequestAddExtension += RequestAddExtensionHandler;
             }
-
         }
 
         /// <summary>

@@ -44,12 +44,17 @@ using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
-using Dynamo.Wpf.Views.Gallery;
+using Dynamo.Wpf.Views.FileTrust;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
-using Res = Dynamo.Wpf.Properties.Resources;
+using Brush = System.Windows.Media.Brush;
+using Exception = System.Exception;
+using Image = System.Windows.Controls.Image;
+using Point = System.Windows.Point;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
+using Size = System.Windows.Size;
 using String = System.String;
+using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Controls
 {
@@ -59,17 +64,16 @@ namespace Dynamo.Controls
     public partial class DynamoView : Window, IDisposable
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
-
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
         // internal for testing.
         internal readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
+        private double restoreWidth = 0;
         private DynamoViewModel dynamoViewModel;
         private readonly Stopwatch _timer;
         private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
-        private GalleryView galleryView;
         private readonly LoginService loginService;
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
@@ -91,6 +95,10 @@ namespace Dynamo.Controls
         internal ViewExtensionManager viewExtensionManager;
         internal Watch3DView BackgroundPreview { get; private set; }
 
+        private FileTrustWarning fileTrustWarningPopup = null;
+
+        internal ShortcutToolbar ShortcutBar { get { return shortcutBar; } }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -100,7 +108,7 @@ namespace Dynamo.Controls
             // The user's choice to enable hardware acceleration is now saved in
             // the Dynamo preferences. It is set to true by default. 
             // When the view is constructed, we enable or disable hardware acceleration based on that preference. 
-            //This preference is not exposed in the UI and can be used to debug hardware issues only
+            // This preference is not exposed in the UI and can be used to debug hardware issues only
             // by modifying the preferences xml.
             RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ?
                 RenderMode.Default : RenderMode.SoftwareOnly;
@@ -115,7 +123,7 @@ namespace Dynamo.Controls
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;
 
             //Initialize the ViewExtensionManager with the CommonDataDirectory so that view extensions found here are checked first for dll's with signed certificates
-            viewExtensionManager = new ViewExtensionManager(new[] {dynamoViewModel.Model.PathManager.CommonDataDirectory });
+            viewExtensionManager = new ViewExtensionManager(dynamoViewModel.Model.ExtensionManager, new[] { dynamoViewModel.Model.PathManager.CommonDataDirectory });
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -156,6 +164,7 @@ namespace Dynamo.Controls
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
             }
 
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Res.SplashScreenViewExtensions, 100));
             var viewExtensions = new List<IViewExtension>();
             foreach (var dir in dynamoViewModel.Model.PathManager.ViewExtensionsDirectories)
             {
@@ -170,9 +179,15 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    var logSource = ext as ILogSource;
-                    if (logSource != null)
+                    if (ext is ILogSource logSource)
+                    {
                         logSource.MessageLogged += Log;
+                    }
+
+                    if (ext is INotificationSource notificationSource)
+                    {
+                        notificationSource.NotificationLogged += LogNotification;
+                    }
 
                     ext.Startup(startupParams);
                     // if we are starting ViewExtension (A) which is a source of other extensions (like packageManager)
@@ -214,6 +229,15 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
             FocusableGrid.InputBindings.Clear();
+
+            if (fileTrustWarningPopup == null)
+            {
+                fileTrustWarningPopup = new FileTrustWarning(this);
+            }
+            if (!DynamoModel.IsTestMode && Application.Current != null)
+            {
+                Application.Current.MainWindow = this;
+            }
         }
 
         private void OnWorkspaceOpened(WorkspaceModel workspace)
@@ -738,6 +762,11 @@ namespace Dynamo.Controls
             //When the Dynamo window is moved to another place we need to update the Steps location
             if(dynamoViewModel.MainGuideManager != null)
                 dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
+
+            if (fileTrustWarningPopup != null && fileTrustWarningPopup.IsOpen)
+            {
+                fileTrustWarningPopup.UpdatePopupLocation();
+            }
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -747,7 +776,14 @@ namespace Dynamo.Controls
 
             //When the Dynamo window size is changed then we need to update the Steps location
             if (dynamoViewModel.MainGuideManager != null)
+            {
                 dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
+            }
+
+            if (fileTrustWarningPopup != null && fileTrustWarningPopup.IsOpen)
+            {
+                fileTrustWarningPopup.UpdatePopupLocation();
+            }
         }
 
         private void InitializeLogin()
@@ -770,7 +806,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/new_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png"
             };
 
             var openScriptButton = new ShortcutBarItem
@@ -780,7 +816,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/open_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png"
             };
 
             var saveButton = new ShortcutBarItem
@@ -790,16 +826,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/save_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_hover.png"
-            };
-
-            var screenShotButton = new ImageExportShortcutBarItem(dynamoViewModel)
-            {
-                ShortcutCommand = dynamoViewModel.ShowSaveImageDialogAndSaveResultCommand,
-                ShortcutCommandParameter = Wpf.Properties.Resources.ScreenShotFrom3DShortcutParameter,
-                ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/screenshot_normal.png",
-                ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/screenshot_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/screenshot_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png"
             };
 
             var undoButton = new ShortcutBarItem
@@ -809,7 +836,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/undo_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png"
             };
 
             var redoButton = new ShortcutBarItem
@@ -819,7 +846,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/redo_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/redo_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png"
             };
 
             shortcutBar.ShortcutBarItems.Add(newScriptButton);
@@ -827,8 +854,6 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
-
-            shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
 
             shortcutBarGrid.Children.Add(shortcutBar);
         }
@@ -844,7 +869,6 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="isFirstRun">
         /// Indicates if it is the first time new Dynamo version runs.
-        /// It is used to decide whether the Gallery need to be shown on the StartPage.
         /// </param>
         private void InitializeStartPage(bool isFirstRun)
         {
@@ -915,7 +939,7 @@ namespace Dynamo.Controls
             // Do an initial load of the cursor collection
             CursorLibrary.GetCursor(CursorSet.ArcSelect);
 
-            //Backing up IsFirstRun to determine whether to show Gallery
+            //Backing up IsFirstRun to determine whether to do certain action
             var isFirstRun = dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
 
             // If first run, Collect Info Prompt will appear
@@ -931,7 +955,7 @@ namespace Dynamo.Controls
             // Initialize Guide Manager as a member on Dynamo ViewModel so other than guided tour,
             // other part of application can also leverage it.
             dynamoViewModel.MainGuideManager = new GuidesManager(_this, dynamoViewModel);
-
+            GuideFlowEvents.GuidedTourStart += GuideFlowEvents_GuidedTourStart;
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
                                                                      _timer.Elapsed, dynamoViewModel.BrandingResourceProvider.ProductName));
@@ -982,9 +1006,6 @@ namespace Dynamo.Controls
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow += DynamoViewModelRequestAboutWindow;
 
-            //SHOW or HIDE GALLERY
-            dynamoViewModel.RequestShowHideGallery += DynamoViewModelRequestShowHideGallery;
-
             LoadNodeViewCustomizations();
             SubscribeNodeViewCustomizationEvents();
 
@@ -1006,26 +1027,77 @@ namespace Dynamo.Controls
                 Converter = new BooleanToVisibilityConverter()
             };
             BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
+
             TrackStartupAnalytics();
 
             // In native host scenario (e.g. Revit), the "Application.Current" will be "null". Therefore, the InCanvasSearchControl.OnRequestShowInCanvasSearch
             // will not work. Instead, we have to check if the Owner Window (DynamoView) is deactivated or not.  
             if (Application.Current == null)
             {
-                this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(); };
+                this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(null); };
             }
             loaded = true;
+
+
+            //The following code illustrates use of FeatureFlagsManager.
+            //safe to remove.
+            if (DynamoModel.FeatureFlags != null)
+            {
+                CheckTestFlags();
+            }
+            //if feature flags is not yet initialized, subscribe to the event and wait.
+            else
+            {
+                DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckTestFlags;
+            }
+        }
+
+        private void GuideFlowEvents_GuidedTourStart(GuidedTourStateEventArgs args)
+        {
+            if(sidebarGrid.Visibility != Visibility.Visible || sidebarGrid.ActualWidth < 2)
+            {
+                OnCollapsedLeftSidebarClick(null, null);
+            }
         }
 
         /// <summary>
         /// Close Popup when the Dynamo window is not in the foreground.
         /// </summary>
 
-        private void HidePopupWhenWindowDeactivated()
+        private void HidePopupWhenWindowDeactivated(object obj)
         {
             var workspace = this.ChildOfType<WorkspaceView>();
             if (workspace != null)
-                workspace.HidePopUp();
+                workspace.HideAllPopUp(obj);
+        }
+        /// <summary>
+        /// check some test flags from launch darkly.
+        /// code is safe to remove at any time.
+        /// </summary>
+        private void CheckTestFlags()
+        {
+            if (!DynamoModel.IsTestMode)
+            {
+                //feature flag test.
+                if (DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("EasterEggIcon1", false) == true)
+                {
+                    dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true from view");
+                }
+                else
+                {
+                    dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is false from view");
+                }
+
+                if (DynamoModel.FeatureFlags?.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is string ffs && ffs != "NA")
+                {
+                    dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is enabled from view");
+                    MessageBoxService.Show(this, ffs, "EasterEggMessage1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                }
+                else
+                {
+                    dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is disabled from view");
+                }
+            }
         }
 
         private void TrackStartupAnalytics()
@@ -1058,7 +1130,11 @@ namespace Dynamo.Controls
             if (prefSettings.PackageDownloadTouAccepted)
                 return true; // User accepts the terms of use.
 
-            var acceptedTermsOfUse = TermsOfUseHelper.ShowTermsOfUseDialog(false, null);
+            Window packageManParent = null;
+            //If any Guide is being executed then the ShowTermsOfUse Window WON'T be modal otherwise will be modal (as in the normal behavior)
+            if (dynamoViewModel.MainGuideManager != null && GuideFlowEvents.IsAnyGuideActive)
+                packageManParent = _this;
+            var acceptedTermsOfUse = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, packageManParent);
             prefSettings.PackageDownloadTouAccepted = acceptedTermsOfUse;
 
             // User may or may not accept the terms.
@@ -1076,44 +1152,6 @@ namespace Dynamo.Controls
             aboutWindow.Owner = this;
             aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             aboutWindow.ShowDialog();
-        }
-
-        private void OnGalleryBackgroundMouseClick(object sender, MouseButtonEventArgs e)
-        {
-            dynamoViewModel.CloseGalleryCommand.Execute(null);
-            e.Handled = true;
-        }
-
-        private void DynamoViewModelRequestShowHideGallery(bool showGallery)
-        {
-            if (showGallery)
-            {
-                if (galleryView == null) //On-demand instantiation
-                {
-                    galleryView = new GalleryView(new GalleryViewModel(dynamoViewModel));
-                    Grid.SetColumnSpan(galleryBackground, mainGrid.ColumnDefinitions.Count);
-                    Grid.SetRowSpan(galleryBackground, mainGrid.RowDefinitions.Count);
-                }
-
-                if (galleryView.ViewModel.HasContents)
-                {
-                    galleryBackground.Children.Clear();
-                    galleryBackground.Children.Add(galleryView);
-                    galleryBackground.Visibility = Visibility.Visible;
-                    galleryView.Focus(); //get keyboard focus
-                }
-            }
-            //hide gallery
-            else
-            {
-                if (galleryBackground != null)
-                {
-                    if (galleryView != null && galleryBackground.Children.Contains(galleryView))
-                        galleryBackground.Children.Remove(galleryView);
-
-                    galleryBackground.Visibility = Visibility.Hidden;
-                }
-            }
         }
 
         private PublishPackageView _pubPkgView;
@@ -1139,7 +1177,7 @@ namespace Dynamo.Controls
 
         private PackageManagerSearchView _searchPkgsView;
         private PackageManagerSearchViewModel _pkgSearchVM;
-
+        
         private void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
             if (!DisplayTermsOfUseForAcceptance())
@@ -1203,8 +1241,8 @@ namespace Dynamo.Controls
             }
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
-            var result = System.Windows.MessageBox.Show(this, dialogText,
-                Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle,
+            var result = MessageBoxService.Show(this, dialogText,
+                Dynamo.Wpf.Properties.Resources.UnsavedChangesMessageBoxTitle,
                 buttons, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
@@ -1215,14 +1253,14 @@ namespace Dynamo.Controls
                 else
                     e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
             }
-            else if (result == MessageBoxResult.Cancel)
+            else if (result == MessageBoxResult.No)
             {
-                //return false;
-                e.Success = false;
+                //return true;
+                e.Success = true;
             }
             else
             {
-                e.Success = true;
+                e.Success = false;
             }
         }
 
@@ -1235,6 +1273,13 @@ namespace Dynamo.Controls
 
         private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
+            if (CrashReportTool.ShowCrashErrorReportWindow(dynamoViewModel,
+                (args is CrashErrorReportArgs cerArgs) ? cerArgs : 
+                new CrashErrorReportArgs(args.Details)))
+            {
+                return;
+            }
+            // Backup crash reporting dialog (in case ADSK CER is not found)
             var prompt = new CrashPrompt(args, dynamoViewModel);
             prompt.ShowDialog();
         }
@@ -1253,10 +1298,27 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestSave3DImage(object sender, ImageSaveEventArgs e)
         {
-            var bitmapSource =BackgroundPreview.View.RenderBitmap();
-            //this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
-            var rtBitmap = new RenderTargetBitmap(bitmapSource.PixelWidth, bitmapSource.PixelHeight, 96, 96,
-     PixelFormats.Pbgra32);
+            var dpiX = 0.0;
+            var dpiY = 0.0;
+
+            // dpi aware, otherwise incorrect images are created
+            try
+            {
+                var scale = VisualTreeHelper.GetDpi(this);
+                dpiX = scale.PixelsPerInchX;
+                dpiY = scale.PixelsPerInchY;
+            }
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
+
+                dpiX = 96;
+                dpiY = 96;
+            }
+            
+            var bitmapSource = BackgroundPreview.View.RenderBitmap();
+            // this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
+            var rtBitmap = new RenderTargetBitmap(bitmapSource.PixelWidth, bitmapSource.PixelHeight, dpiX, dpiY, PixelFormats.Pbgra32);
             rtBitmap.Render(BackgroundPreview.View);
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(rtBitmap));
@@ -1310,9 +1372,7 @@ namespace Dynamo.Controls
             {
                 categoryBox = { Text = e.Category },
                 DescriptionInput = { Text = e.Description },
-                nameView = { Text = e.Name },
                 nameBox = { Text = e.Name },
-                // center the prompt
                 Owner = this,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
@@ -1320,11 +1380,9 @@ namespace Dynamo.Controls
             if (e.CanEditName)
             {
                 dialog.nameBox.Visibility = Visibility.Visible;
-                dialog.nameView.Visibility = Visibility.Collapsed;
             }
             else
             {
-                dialog.nameView.Visibility = Visibility.Visible;
                 dialog.nameBox.Visibility = Visibility.Collapsed;
             }
 
@@ -1479,7 +1537,7 @@ namespace Dynamo.Controls
             }
             else
             {
-                //Shutdown was cancelled
+                //Shutdown was canceled
                 return false;
             }
         }
@@ -1542,6 +1600,7 @@ namespace Dynamo.Controls
             DynamoSelection.Instance.Selection.CollectionChanged -= Selection_CollectionChanged;
 
             dynamoViewModel.RequestUserSaveWorkflow -= DynamoViewModelRequestUserSaveWorkflow;
+            GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
 
             if (dynamoViewModel.Model != null)
             {
@@ -1553,13 +1612,20 @@ namespace Dynamo.Controls
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow -= DynamoViewModelRequestAboutWindow;
 
-            //SHOW or HIDE GALLERY
-            dynamoViewModel.RequestShowHideGallery -= DynamoViewModelRequestShowHideGallery;
-
             //first all view extensions have their shutdown methods called
             //when this view is finally disposed, dispose will be called on them.
             foreach (var ext in viewExtensionManager.ViewExtensions)
             {
+                if (ext is ILogSource logSource)
+                {
+                    logSource.MessageLogged -= Log;
+                }
+
+                if (ext is INotificationSource notificationSource)
+                {
+                    notificationSource.NotificationLogged -= LogNotification;
+                }
+
                 try
                 {
                     ext.Shutdown();
@@ -1580,6 +1646,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
+            DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckTestFlags;
 
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
@@ -2212,8 +2279,6 @@ namespace Dynamo.Controls
             UpdateHandleUnhoveredStyle(tb, collapseIcon);
         }
 
-        private double restoreWidth = 0;
-
         private void LibraryClicked(object sender, EventArgs e)
         {
             restoreWidth = sidebarGrid.ActualWidth;
@@ -2285,15 +2350,55 @@ namespace Dynamo.Controls
         private void WorkspaceTabs_TargetUpdated(object sender, DataTransferEventArgs e)
         {
             if (WorkspaceTabs.SelectedIndex >= 0)
-                ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+            ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+            UpdateWorkspaceTabSizes();
         }
 
         private void WorkspaceTabs_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
 
+            UpdateWorkspaceTabSizes();
+
             // When workspace is resized apply appropriate library expand/collapse icon
             UpdateLibraryCollapseIcon();
+        }
+
+        /// <summary>
+        /// Updates the workspace TabItems to have the correct margins in response to events
+        /// such as the library being stretched or a Custom Node workspace being created.
+        /// </summary>
+        private void UpdateWorkspaceTabSizes()
+        {
+            // The Workspace TabItems must appear to the right of icon buttons (New File, Open, Save, Undo, Redo)
+            // but never overlap them. 230 is the minimum offset required to achieve this. 
+            // If the library panel is stretched greater than 230, they must align with its width instead.
+            const int FirstTabItemMinimumLeftMarginOffset = 230;
+            const int LibraryScrollBarWidth = 15;
+            
+            // We measure the full library width at runtime.
+            int fullLibraryWidth = dynamoViewModel.LibraryWidth + LibraryScrollBarWidth;
+            
+            // Difference between the full library width (at runtime) and the minimum offset required
+            // by the TabItems to not overlap the 5 icon buttons.
+            int difference = fullLibraryWidth - FirstTabItemMinimumLeftMarginOffset;
+
+            // If the library is narrower than the minimum width, we set the TabItems' left margin
+            // to be the minimum offset required to not overlap the 5 icon buttons. 
+            // If it's equal to or greater, we set the TabItems' left margin to be the difference
+            // i.e. to align with the library panel.
+            int leftMargin = fullLibraryWidth < FirstTabItemMinimumLeftMarginOffset ? difference : 0;
+
+            List<TabItem> tabItems = WpfUtilities.ChildrenOfType<TabItem>(WorkspaceTabs).ToList();
+            if (tabItems.Count < 1) return;
+
+            // We iterate through each TabItem in the WorkspaceTabs TabControl and set its left and 
+            // right margins, thereby offsetting the TabItem horizontally from the left edge
+            // of the TabControl (AKA the left edge of the workspace).
+            foreach (TabItem tabItem in tabItems)
+            {
+                tabItem.Margin = new System.Windows.Thickness(-leftMargin, 0, leftMargin, 0);
+            }
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)
@@ -2329,13 +2434,17 @@ namespace Dynamo.Controls
         {
             Log(LogMessage.Info(message));
         }
+        private void LogNotification(NotificationMessage notification)
+        {
+            dynamoViewModel.Model.Logger.LogNotification(notification.Sender, notification.Title,notification.ShortMessage, notification.DetailedMessage);
+        }
 
         private void Window_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             //if original sender was scroll bar(i.e Thumb) don't close the popup.
-            if(!(e.OriginalSource is Thumb))
+            if(!(e.OriginalSource is Thumb) && !(e.OriginalSource is TextBox))
             {
-                HidePopupWhenWindowDeactivated();
+                HidePopupWhenWindowDeactivated(sender);
             }
         }
 
@@ -2353,9 +2462,9 @@ namespace Dynamo.Controls
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
             {
-                dynamoViewModel.MainGuideManager.LaunchTour(Res.GetStartedGuide);
+                dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.GetStartedGuideName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 sidebarGrid.Visibility = Visibility.Visible;
             }
@@ -2371,12 +2480,33 @@ namespace Dynamo.Controls
         {
             try
             {
-                dynamoViewModel.MainGuideManager.LaunchTour(Res.PackagesGuide);
+                dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.PackagesGuideName);
             }
             catch (Exception)
             {
                 sidebarGrid.Visibility = Visibility.Visible;
             }
+        }
+
+        private void FileTrustWarning_Click(object sender, RoutedEventArgs e)
+        {
+            var dynViewModel = DataContext as DynamoViewModel;
+            if (dynViewModel.FileTrustViewModel == null) return;
+            dynViewModel.FileTrustViewModel.ShowWarningPopup = true;
+        }
+
+        private void DynamoView_Activated(object sender, EventArgs e)
+        {            
+            if (fileTrustWarningPopup != null && dynamoViewModel.ViewingHomespace)
+            {
+                fileTrustWarningPopup.ManagePopupActivation(true);
+            }
+        }
+
+        private void DynamoView_Deactivated(object sender, EventArgs e)
+        {
+            if(fileTrustWarningPopup != null)
+                fileTrustWarningPopup.ManagePopupActivation(false);
         }
 
         public void Dispose()
@@ -2389,6 +2519,9 @@ namespace Dynamo.Controls
 
             // Removing the tab items list handler
             ExtensionTabItems.CollectionChanged -= this.OnCollectionChanged;
+
+            if (fileTrustWarningPopup != null)
+                fileTrustWarningPopup.CleanPopup();
         }
     }
 }

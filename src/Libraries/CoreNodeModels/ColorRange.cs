@@ -86,7 +86,7 @@ namespace CoreNodeModels
 
             // If either of the first two inputs does not have a connector
             // then build a default color range.
-            if (!InPorts[1].IsConnected || !InPorts[1].IsConnected)
+            if (!InPorts[0].IsConnected || !InPorts[1].IsConnected)
             {
                 buildColorRangeNode =
                     AstFactory.BuildFunctionCall(

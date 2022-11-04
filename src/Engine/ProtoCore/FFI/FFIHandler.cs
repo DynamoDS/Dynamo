@@ -157,7 +157,12 @@ namespace ProtoFFI
                 {
                     Modules.Add(moduleFileName, helpers[FFILanguage.CSharp].getModule(dllModuleName));
                 }
-                catch
+                catch (DynamoServices.AssemblyBlockedException exception)
+                {
+                    // this exception is caught upstream after displaying a failed load library warning to the user.
+                    throw exception;
+                }
+                catch (Exception)
                 {
                     //try loading c++
                     try
@@ -176,8 +181,5 @@ namespace ProtoFFI
         }
     }
 
-    //public class PYthonFFIHandler
-    //{
-    //}
 }
 

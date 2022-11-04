@@ -5,11 +5,13 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using System.Xml.Serialization;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.PythonServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using ProtoCore.AST.AssociativeAST;
@@ -32,20 +34,50 @@ namespace PythonNodeModels
 
     public abstract class PythonNodeBase : VariableInputNode
     {
-        private PythonEngineVersion engine = PythonEngineVersion.Unspecified;
+        private string engine = string.Empty;
 
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        [DefaultValue(nameof(PythonEngineVersion.IronPython2))]
+        // Set the default EngineName value to IronPython2 so that older graphs can show the migration warnings.
+        [DefaultValue("IronPython2")]
+
+        // When removing this property also replace the serialized property in EngineName
+        // (i.e remove XmlIgnore and add [JsonProperty("Engine", DefaultValueHandling = DefaultValueHandling.Populate)]
         /// <summary>
         /// Return the user selected python engine enum.
         /// </summary>
+        [Obsolete("This property will be deprecated in Dynamo 3.0. Please use EngineName instead")]
         public PythonEngineVersion Engine
         {
             get
             {
+                if (!Enum.TryParse(engine, out PythonEngineVersion engineVersion) ||
+                    engineVersion == PythonEngineVersion.Unspecified)
+                {
+                    // This is a first-time case for newly created nodes only
+                    SetEngineByDefault();
+                }
+                return engineVersion;
+            }
+            set
+            {
+                engine = value.ToString();
+                RaisePropertyChanged(nameof(EngineName));
+            }
+        }
+
+        [XmlIgnore]
+        // Set the default EngineName value to IronPython2 so that older graphs can show the migration warnings.
+        [DefaultValue("IronPython2")]
+        /// <summary>
+        /// Return the user selected python engine enum.
+        /// </summary>
+        public string EngineName
+        {
+            get
+            {
                 // This is a first-time case for newly created nodes only
-                if (engine == PythonEngineVersion.Unspecified)
+                if (string.IsNullOrEmpty(engine))
                 {
                     SetEngineByDefault();
                 }
@@ -56,26 +88,22 @@ namespace PythonNodeModels
                 if (engine != value)
                 {
                     engine = value;
-                    RaisePropertyChanged(nameof(Engine));
+                    RaisePropertyChanged(nameof(EngineName));
                 }
             }
         }
 
-        private static ObservableCollection<PythonEngineVersion> availableEngines;
         /// <summary>
         /// Available Python engines.
         /// </summary>
+        [Obsolete(@"This method will be removed in future versions of Dynamo.
+        Please use PythonEngineManager.Instance.AvailableEngines instead")]
         public static ObservableCollection<PythonEngineVersion> AvailableEngines
         {
             get
             {
-                if (availableEngines == null)
-                {
-                    availableEngines = new ObservableCollection<PythonEngineVersion>();
-                    availableEngines.Add(PythonEngineVersion.IronPython2);
-                    availableEngines.Add(PythonEngineVersion.CPython3);
-                }
-                return availableEngines;
+                return new ObservableCollection<PythonEngineVersion>(PythonEngineManager.Instance.AvailableEngines.
+                    Select(x => Enum.TryParse(x.Name, out PythonEngineVersion version) ? version : PythonEngineVersion.Unspecified));
             }
         }
 
@@ -84,21 +112,20 @@ namespace PythonNodeModels
         /// </summary>
         private void SetEngineByDefault()
         {
-            PythonEngineVersion version;
-            var setting = PreferenceSettings.GetDefaultPythonEngine();
+            var version = PreferenceSettings.GetDefaultPythonEngine();
             var systemDefault = DynamoModel.DefaultPythonEngine;
-            if (!string.IsNullOrEmpty(setting) && Enum.TryParse(setting, out version))
+            if (!string.IsNullOrEmpty(version))
             {
                 engine = version;
             }
-            else if (!string.IsNullOrEmpty(systemDefault) && Enum.TryParse(systemDefault, out version))
+            else if (!string.IsNullOrEmpty(systemDefault))
             {
-                engine = version;
+                engine = systemDefault;
             }
             else
             {
-                // In the absence of both a setting and system default, default to deserialization default.
-                engine = PythonEngineVersion.IronPython2;
+                // Use CPython as default
+                engine = PythonEngineManager.CPython3EngineName;
             }
         }
 
@@ -140,17 +167,14 @@ namespace PythonNodeModels
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
-            // Here we switched to use the AstFactory.BuildFunctionCall version that accept
-            // class name and function name. They will be set by PythonEngineSelector by the engine value. 
-            PythonEngineSelector.Instance.GetEvaluatorInfo(Engine, out string evaluatorClass, out string evaluationMethod);
-
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    evaluatorClass,
-                    evaluationMethod,
+                    "PythonEvaluator",
+                    "Evaluate",
                     new List<AssociativeNode>
                     {
+                        AstFactory.BuildStringNode(EngineName),
                         codeInputNode,
                         AstFactory.BuildExprList(names),
                         AstFactory.BuildExprList(vals)
@@ -168,14 +192,10 @@ namespace PythonNodeModels
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            if (name == nameof(Engine))
+            if (name == nameof(EngineName))
             {
-                PythonEngineVersion result;
-                if (Enum.TryParse<PythonEngineVersion>(value, out result))
-                {
-                    Engine = result;
-                    return true;
-                }
+                EngineName = value;
+                return true;
 
             }
             return base.UpdateValueCore(updateValueParams);
@@ -324,8 +344,8 @@ namespace PythonNodeModels
             XmlElement script = element.OwnerDocument.CreateElement("Script");
             script.InnerText = this.script;
             element.AppendChild(script);
-            XmlElement engine = element.OwnerDocument.CreateElement(nameof(Engine));
-            engine.InnerText = Enum.GetName(typeof(PythonEngineVersion), Engine);
+            XmlElement engine = element.OwnerDocument.CreateElement(nameof(EngineName));
+            engine.InnerText = EngineName;
             element.AppendChild(engine);
 
         }
@@ -343,13 +363,13 @@ namespace PythonNodeModels
                 script = scriptNode.InnerText;
             }
             var engineNode =
-              nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == nameof(Engine));
+              nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == nameof(EngineName));
 
             if (engineNode != null)
             {
-                var oldEngine = Engine;
-                Engine = (PythonEngineVersion)Enum.Parse(typeof(PythonEngineVersion), engineNode.InnerText);
-                if (context == SaveContext.Undo && oldEngine != this.Engine)
+                string oldEngine = EngineName;
+                EngineName = engineNode.InnerText;
+                if (context == SaveContext.Undo && oldEngine != this.EngineName)
                 {
                     // For Python nodes, changing the Engine property does not set the node Modified flag.
                     // This is done externally in all event handlers, so for Undo we do it here.

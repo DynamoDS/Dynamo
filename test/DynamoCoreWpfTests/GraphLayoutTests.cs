@@ -361,6 +361,7 @@ namespace Dynamo.Tests
         {
             OpenModel(GetDynPath("GraphLayoutComplex.dyn"));
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
+            nodes.ToList().ForEach(node => node.ReportPosition());
             var subgraphs = ViewModel.CurrentSpace.DoGraphAutoLayout();
 
             Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 82);

@@ -1,8 +1,12 @@
-﻿using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Controls;
 using Dynamo.Selection;
 using NUnit.Framework;
 using static Dynamo.Models.DynamoModel;
 using Dynamo.Utilities;
+using Dynamo.Views;
 
 namespace DynamoCoreWpfTests
 {
@@ -89,6 +93,88 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(connectorViewModel.IsHidden, !initialVisibility);
         }
 
-  
+
+        [Test]
+        public void AreNodeConnectionsInMenu()
+        {
+            // Mock a WorkspaceView
+            var workspaceView = new WorkspaceView();
+
+            // Search the associated context menu for the lacing sub-menu
+            var contextMenu = workspaceView.FindName("NodeConnectionsMenu") as MenuItem;
+
+            // Show All Wires, Hide All Wires
+            Assert.AreEqual(contextMenu.Items.Count, 2);
+        }
+
+        [Test]
+        public void ShowAllConnectorFromWorkspaceContextMenuTest()
+        {
+            Open(@"UI/ConnectorShowHideAllWires.dyn");
+
+            var visibleConnectors = this.ViewModel.CurrentSpaceViewModel.Connectors.Where(x => !x.IsHidden);
+            var hiddenConnectors = this.ViewModel.CurrentSpaceViewModel.Connectors.Where(x => x.IsHidden);
+
+            // Default definition values
+            Assert.AreEqual(3, visibleConnectors.Count());
+            Assert.AreEqual(1, hiddenConnectors.Count());
+
+            SelectAllNodes();
+
+            this.ViewModel.CurrentSpaceViewModel.ShowAllWiresCommand.Execute(null);
+
+            // Values after Show All Wires is run
+            Assert.AreEqual(4, visibleConnectors.Count());
+            Assert.AreEqual(0, hiddenConnectors.Count());
+
+            this.ViewModel.CurrentSpaceViewModel.HideAllWiresCommand.Execute(null);
+
+            // Values after Hide All Wires is run
+            Assert.AreEqual(0, visibleConnectors.Count());
+            Assert.AreEqual(4, hiddenConnectors.Count());
+        }
+
+        [Test]
+        public void GoToStartNodeTest()
+        {
+            Open(@"UI/ConnectorContextMenuTestFile.dyn");
+
+            var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
+            Assert.AreEqual(connectorViewModel.ConnectorModel.Start.Owner.IsSelected, false);
+
+            connectorViewModel.InstantiateContextMenuCommand.Execute(null);
+            var contextMenuViewModel = connectorViewModel.ConnectorContextMenuViewModel;
+            contextMenuViewModel.GoToStartNodeCommand.Execute(null);
+
+            Assert.AreEqual(connectorViewModel.ConnectorModel.Start.Owner.IsSelected, true);
+        }
+
+        [Test]
+        public void GoToEndNodeTest()
+        {
+            Open(@"UI/ConnectorContextMenuTestFile.dyn");
+
+            var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
+            Assert.AreEqual(connectorViewModel.ConnectorModel.End.Owner.IsSelected, false);
+
+            connectorViewModel.InstantiateContextMenuCommand.Execute(null);
+            var contextMenuViewModel = connectorViewModel.ConnectorContextMenuViewModel;
+            contextMenuViewModel.GoToEndNodeCommand.Execute(null);
+
+            Assert.AreEqual(connectorViewModel.ConnectorModel.End.Owner.IsSelected, true);
+        }
+
+        /// <summary>
+        /// Helper method to select all (nodes) in the current Workspace
+        /// </summary>
+        /// <param name="nodes"></param>
+        private void SelectAllNodes()
+        {
+            DynamoSelection.Instance.ClearSelection();
+            foreach (var node in this.Model.CurrentWorkspace.Nodes)
+            {
+                DynamoSelection.Instance.Selection.Add(node);
+            }
+        }
     }
 }

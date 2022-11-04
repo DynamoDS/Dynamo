@@ -53,11 +53,13 @@ namespace WpfVisualizationTests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
-            libraries.Add("DSIronPython.dll");
+            libraries.Add("DSCPython.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("GeometryColor.dll");
             libraries.Add("VMDataBridge.dll");
+            //don't import FFITarget for all tests, it currently causes a conflict with many geometry nodes.
+            //libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -368,30 +370,6 @@ namespace WpfVisualizationTests
             Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisiblePoints(), 0);
         }
 
-        [Test]
-        public void ColorCache_Updated_OnNode_Removed()
-        {
-            var model = ViewModel.Model;
-            OpenVisualizationTest("Display.ByGeometryColorPoints_Selection.dyn");
-            var ws = model.CurrentWorkspace;
-            RunCurrentModel();
-            DispatcherUtil.DoEvents();
-
-            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(1547, 0, 0));
-            //should have 2 entires, one for each point node.
-            Assert.AreEqual(2, (ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel).colorCache.Keys.Count);
-            //remove one of the points and assert cache has one less key
-            var redPtsNode = ws.Nodes.Where(x => x.Name == "red").FirstOrDefault();
-            var greenPtsNode = ws.Nodes.Where(x => x.Name == "green").FirstOrDefault();
-            ws.RemoveAndDisposeNode(redPtsNode);
-
-            //assert less points are drawn.
-            DispatcherUtil.DoEvents();
-            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(1331, 0, 0));
-            Assert.AreEqual(1, (ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel).colorCache.Keys.Count);
-
-        }
-
         #endregion
 
         #region workspace tests
@@ -626,7 +604,7 @@ namespace WpfVisualizationTests
             var view = FindFirstWatch3DNodeView();
             var vm = view.ViewModel as HelixWatch3DNodeViewModel;
 
-            Assert.AreEqual(vm.SceneItems.Count(), 4);
+            Assert.AreEqual(4, vm.SceneItems.Count());
         }
 
         [Test]
@@ -743,6 +721,25 @@ namespace WpfVisualizationTests
             Assert.AreEqual(Visibility.Visible, currentWorkspace.statusBarPanel.Visibility, "Navigation buttons did not appear");
         }
 
+
+        [Test]
+        public void HelixWatch3DViewModel_HasRenderedGeometryTest()
+        {
+            var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(bPreviewVm, "HelixWatch3D has not been loaded");
+            Assert.False(bPreviewVm.HasRenderedGeometry);
+
+            OpenVisualizationTest("ASM_points.dyn");
+
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            Assert.True(bPreviewVm.HasRenderedGeometry);
+        }
         #endregion
 
         #region dynamo view tests
@@ -774,7 +771,9 @@ namespace WpfVisualizationTests
             //total points are the two strips of points at the top and
             //bottom of the mesh, duplicated 11x2x2 plus the one mesh
             Assert.AreEqual(1000, BackgroundPreviewGeometry.TotalPoints());
-            Assert.AreEqual(1000 * 36, BackgroundPreviewGeometry.TotalMeshVerticesToRender());
+            //because verts for cuboids are instanced, we only need to render 36 verts.
+            Assert.AreEqual(36, BackgroundPreviewGeometry.TotalMeshVerticesToRender());
+            Assert.AreEqual(1000, BackgroundPreviewGeometry.TotalMeshInstancesToRender());
         }
 
         [Test]
@@ -1272,6 +1271,99 @@ namespace WpfVisualizationTests
             Assert.IsTrue(AttachedProperties.GetShowSelected(otherNode));
         }
 
+        [Test]
+        public void InstancesAreAddedToBackGroundPreviewForEachMatrix()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            OpenVisualizationTest("instancing_pyramids.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            //this graph displays a plane and the instances
+            Assert.AreEqual(2, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
+            //6x6x6 instances
+            Assert.AreEqual(6 * 6 * 6, BackgroundPreviewGeometry.TotalMeshInstancesToRender());
+
+        }
+        [Test]
+        public void InstancedLinesAreAddedToBackGroundPreviewForEachMatrix()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            OpenVisualizationTest("instancing_lines.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            //this graph displays a grid and the instances
+            Assert.AreEqual(2, BackgroundPreviewGeometry.NumberOfVisibleCurves());
+            //6x6x6 instances
+            Assert.AreEqual(6 * 6 * 6, BackgroundPreviewGeometry.TotalLineInstancesToRender());
+
+        }
+        [Test]
+        public void InstancedMeshesAndLinesAreAddedToBackGroundPreviewForEachMatrixWhenShowEdgesEnabled()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            OpenVisualizationTest("instancing_cubes_cones_edges.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(0, BackgroundPreviewGeometry.NumberOfVisibleCurves());
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
+            //this graph displays a grid, cones, cone edges, cube instances, cube edge instances.
+            Assert.AreEqual(3, BackgroundPreviewGeometry.NumberOfVisibleCurves());
+            //cone and mesh
+            Assert.AreEqual(2, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
+            
+           // cube instance edges
+            Assert.AreEqual(5 * 5 * 5, BackgroundPreviewGeometry.TotalLineInstancesToRender());
+            // cube instance meshes
+            Assert.AreEqual(5 * 5 * 5, BackgroundPreviewGeometry.TotalMeshInstancesToRender());
+
+        }
+        [Test]
+        public void InstancedShowEdgesAreCorrect()
+        {
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            OpenVisualizationTest("instancing_cubes_edges.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            //assert cube is created not at origin.
+            var result = GetPreviewValue("2264fad6b59640d0b753ba81c1f53f43").ToString();
+            Assert.AreEqual("Point(X = 2.000, Y = 2.000, Z = 2.000)",result);
+           
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
+
+            // assert that the cube edges have been tessellated back at origin.
+            // not at the location of the first cube.
+            var edgeVerts = BackgroundPreviewGeometry.Curves().SelectMany(x => x.Geometry.Positions);
+            edgeVerts.ToList().ForEach(x => Console.WriteLine(x));
+
+        Assert.AreEqual(@"X:0.5 Y:0.5 Z:0.5
+X: 0.5 Y: 0.5 Z: -0.5
+X: 0.5 Y: 0.5 Z: -0.5
+X: -0.5 Y: 0.5 Z: -0.5
+X: -0.5 Y: 0.5 Z: -0.5
+X: -0.5 Y: 0.5 Z: 0.5
+X: -0.5 Y: 0.5 Z: 0.5
+X: 0.5 Y: 0.5 Z: 0.5
+X: 0.5 Y: -0.5 Z: -0.5
+X: 0.5 Y: -0.5 Z: 0.5
+X: 0.5 Y: -0.5 Z: 0.5
+X: -0.5 Y: -0.5 Z: 0.5
+X: -0.5 Y: -0.5 Z: 0.5
+X: -0.5 Y: -0.5 Z: -0.5
+X: -0.5 Y: -0.5 Z: -0.5
+X: 0.5 Y: -0.5 Z: -0.5
+X: -0.5 Y: 0.5 Z: 0.5
+X: -0.5 Y: -0.5 Z: 0.5
+X: 0.5 Y: 0.5 Z: 0.5
+X: 0.5 Y: -0.5 Z: 0.5
+X: -0.5 Y: 0.5 Z: -0.5
+X: -0.5 Y: -0.5 Z: -0.5
+X: 0.5 Y: 0.5 Z: -0.5
+X: 0.5 Y: -0.5 Z: -0.5".Replace(" ",string.Empty),
+                System.String.Join(Environment.NewLine, edgeVerts.Select(x=>x.ToString())).Replace(" ",string.Empty));
+        }
+
+
     }
 
     internal static class GeometryDictionaryExtensions
@@ -1455,6 +1547,18 @@ namespace WpfVisualizationTests
             var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
 
             return geoms.Any()? geoms.SelectMany(g=>g.Geometry.Positions).Count() : 0;
+        }
+        public static int TotalMeshInstancesToRender(this IEnumerable<Element3D> dictionary)
+        {
+            var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
+
+            return geoms.Any() ? geoms.Where(g => g.Instances!=null &&g.Instances.Any()).SelectMany(g=>g.Instances).Count() : 0;
+        }
+        public static int TotalLineInstancesToRender(this IEnumerable<Element3D> dictionary)
+        {
+            var geoms = dictionary.Where(g => g is DynamoLineGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoLineGeometryModel3D>();
+
+            return geoms.Any() ? geoms.Where(g => g.Instances != null && g.Instances.Any()).SelectMany(g => g.Instances).Count() : 0;
         }
 
         public static bool HasAnyMeshVerticesOfColor(this IEnumerable<Element3D> dictionary, Color4 color)

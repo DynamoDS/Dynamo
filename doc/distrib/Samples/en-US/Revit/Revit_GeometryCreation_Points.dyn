@@ -13,7 +13,8 @@
       "Type": "number",
       "Value": "2",
       "NumberType": "Double",
-      "Description": "Creates a number."
+      "Description": "Creates a number.",
+      "SelectedIndex": 0
     },
     {
       "Id": "07b702282be848b2a8f7f7d66eb0ed16",
@@ -24,7 +25,8 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "A slider that produces numeric values."
+      "Description": "A slider that produces numeric values.",
+      "SelectedIndex": 0
     }
   ],
   "Outputs": [],
@@ -59,7 +61,7 @@
         {
           "Id": "41c1b67f4cae42c1870e8067222198ec",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -68,7 +70,7 @@
         {
           "Id": "6cbfc4f53c594e3198398a1eacc2c904",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -77,7 +79,7 @@
         {
           "Id": "2838b00ffa0e463bbe0eacaf548f6687",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -88,7 +90,7 @@
         {
           "Id": "c28c4e4b0ff14ea6875ab92a2c5a7430",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -149,12 +151,12 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
-      "WatchWidth": 220.0,
-      "WatchHeight": 352.0,
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
       "WasExecuted": true,
       "Camera": {
         "Name": "751b37a0-8c55-46b3-90a9-f6b644af185b Preview",
@@ -204,7 +206,7 @@
         {
           "Id": "b20a4566cb77456b99433ca54bdee33e",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -213,7 +215,7 @@
         {
           "Id": "651a5cb660d0480d8adbaaabeb2fb137",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -222,7 +224,7 @@
         {
           "Id": "e148b06564cd45eba7b392e7d044e9e7",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -233,7 +235,7 @@
         {
           "Id": "801cc949e08f47abb8050552a053d445",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -252,7 +254,7 @@
         {
           "Id": "ca7dcb578ad642088e0b5b4c383f9d46",
           "Name": "startPoint",
-          "Description": "Point",
+          "Description": "Line start point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -261,7 +263,7 @@
         {
           "Id": "b587d6b05d3a41e28ebc7e7ec92f91cc",
           "Name": "endPoint",
-          "Description": "Point",
+          "Description": "Line end point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -272,7 +274,7 @@
         {
           "Id": "e7dd2b37cda04f239b3dcd22561316e1",
           "Name": "Line",
-          "Description": "Line",
+          "Description": "Line from start and end point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -347,50 +349,76 @@
     {
       "Start": "6c7b08d863dd4613bbb08bf12ccae37b",
       "End": "41c1b67f4cae42c1870e8067222198ec",
-      "Id": "7b890e7e306742c18e8a5390fb078914"
+      "Id": "7b890e7e306742c18e8a5390fb078914",
+      "IsHidden": "False"
     },
     {
       "Start": "c28c4e4b0ff14ea6875ab92a2c5a7430",
       "End": "ca7dcb578ad642088e0b5b4c383f9d46",
-      "Id": "6f755328683b44538dd95f958a0d5a86"
+      "Id": "6f755328683b44538dd95f958a0d5a86",
+      "IsHidden": "False"
     },
     {
       "Start": "c28c4e4b0ff14ea6875ab92a2c5a7430",
       "End": "ce6eaf70fa194d02b72a2cae6ffa10ed",
-      "Id": "a6247a4015004066849107f5ace5c405"
+      "Id": "a6247a4015004066849107f5ace5c405",
+      "IsHidden": "False"
     },
     {
       "Start": "89353ce28afb42858938fa6b02ec8c3b",
       "End": "2838b00ffa0e463bbe0eacaf548f6687",
-      "Id": "3837bfa66c1649cba430dda5e9a41533"
+      "Id": "3837bfa66c1649cba430dda5e9a41533",
+      "IsHidden": "False"
     },
     {
       "Start": "801cc949e08f47abb8050552a053d445",
       "End": "b587d6b05d3a41e28ebc7e7ec92f91cc",
-      "Id": "89543b7ed04b499c8dc846fb34f68d68"
+      "Id": "89543b7ed04b499c8dc846fb34f68d68",
+      "IsHidden": "False"
     },
     {
       "Start": "801cc949e08f47abb8050552a053d445",
       "End": "debf79aebc1e4347bb91586ea619e5fd",
-      "Id": "b764093764404c6398c535a570d7c73e"
+      "Id": "b764093764404c6398c535a570d7c73e",
+      "IsHidden": "False"
     },
     {
       "Start": "e7dd2b37cda04f239b3dcd22561316e1",
       "End": "0562171b3ea441739fd8bcbb8b1ce264",
-      "Id": "23392ea01c76432cbdd5cdc0b448f786"
+      "Id": "23392ea01c76432cbdd5cdc0b448f786",
+      "IsHidden": "False"
     },
     {
       "Start": "e7dd2b37cda04f239b3dcd22561316e1",
       "End": "dd28d907f0234c2db53439cbb991420a",
-      "Id": "809d16a764424efc8fd52406a81cfc4a"
+      "Id": "809d16a764424efc8fd52406a81cfc4a",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [
     {
       "NodeId": "859b30ae-f9f0-4226-8e08-96b5066e31c7",
       "Binding": {
-        "ByCurve_InClassDecl-1_InFunctionScope-1_Instance0_859b30ae-f9f0-4226-8e08-96b5066e31c7": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMC4xLjQzNTclMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPnRydWU8L0Jhc2UtMF9IYXNEYXRhPg0KPEJhc2UtMF9EYXRhIGlkPSJyZWYtMyI+UEZOUFFWQXRSVTVXT2tWdWRtVnNiM0JsSUhodGJHNXpPbmh6YVQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0V0YVc1emRHRnVZMlVpSUhodGJHNXpPbmh6WkQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0VpSUhodGJHNXpPbE5QUVZBdFJVNURQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SWdlRzFzYm5NNlUwOUJVQzFGVGxZOUltaDBkSEE2THk5elkyaGxiV0Z6TG5odGJITnZZWEF1YjNKbkwzTnZZWEF2Wlc1MlpXeHZjR1V2SWlCNGJXeHVjenBqYkhJOUltaDBkSEE2THk5elkyaGxiV0Z6TG0xcFkzSnZjMjltZEM1amIyMHZjMjloY0M5bGJtTnZaR2x1Wnk5amJISXZNUzR3SWlCVFQwRlFMVVZPVmpwbGJtTnZaR2x1WjFOMGVXeGxQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SStEUW84VTA5QlVDMUZUbFk2UW05a2VUNE5DanhoTVRwVFpYSnBZV3hwZW1GaWJHVkpaQ0JwWkQwaWNtVm1MVEVpSUhodGJHNXpPbUV4UFNKb2RIUndPaTh2YzJOb1pXMWhjeTV0YVdOeWIzTnZablF1WTI5dEwyTnNjaTl1YzJGemMyVnRMMUpsZG1sMFUyVnlkbWxqWlhNdVVHVnljMmx6ZEdWdVkyVXZVbVYyYVhSVFpYSjJhV05sY3lVeVF5VXlNRlpsY25OcGIyNGxNMFF5TGpBdU1DNDBNell3SlRKREpUSXdRM1ZzZEhWeVpTVXpSRzVsZFhSeVlXd2xNa01sTWpCUWRXSnNhV05MWlhsVWIydGxiaVV6Ukc1MWJHd2lQZzBLUEhOMGNtbHVaMGxFSUdsa1BTSnlaV1l0TXlJK09ETTVZV0kyT0dNdE5EWTNNQzAwTUdWaUxUbGpZMll0WkRReVpXTmxaVFZsT1RVMkxUQXdNREF3T1RjMFBDOXpkSEpwYm1kSlJENE5DanhwYm5SSlJENHlOREl3UEM5cGJuUkpSRDROQ2p3dllURTZVMlZ5YVdGc2FYcGhZbXhsU1dRK0RRbzhMMU5QUVZBdFJVNVdPa0p2WkhrK0RRbzhMMU5QUVZBdFJVNVdPa1Z1ZG1Wc2IzQmxQZzBLPC9CYXNlLTBfRGF0YT4NCjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+DQo8L2ExOkNhbGxTaXRlX3gwMDJCX1RyYWNlU2VyaWFsaXNlckhlbHBlcj4NCjwvU09BUC1FTlY6Qm9keT4NCjwvU09BUC1FTlY6RW52ZWxvcGU+DQo="
+        "ByCurve_InClassDecl-1_InFunctionScope-1_Instance0_859b30ae-f9f0-4226-8e08-96b5066e31c7": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMTMuMC4zMjcwJTJDJTIwQ3VsdHVyZSUzRG5ldXRyYWwlMkMlMjBQdWJsaWNLZXlUb2tlbiUzRG51bGwiPg0KPE51bWJlck9mRWxlbWVudHM+MTwvTnVtYmVyT2ZFbGVtZW50cz4NCjxCYXNlLTBfSGFzRGF0YT50cnVlPC9CYXNlLTBfSGFzRGF0YT4NCjxCYXNlLTBfRGF0YSBpZD0icmVmLTMiPlBGTlBRVkF0UlU1V09rVnVkbVZzYjNCbElIaHRiRzV6T25oemFUMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFdGFXNXpkR0Z1WTJVaUlIaHRiRzV6T25oelpEMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFaUlIaHRiRzV6T2xOUFFWQXRSVTVEUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUlnZUcxc2JuTTZVMDlCVUMxRlRsWTlJbWgwZEhBNkx5OXpZMmhsYldGekxuaHRiSE52WVhBdWIzSm5MM052WVhBdlpXNTJaV3h2Y0dVdklpQjRiV3h1Y3pwamJISTlJbWgwZEhBNkx5OXpZMmhsYldGekxtMXBZM0p2YzI5bWRDNWpiMjB2YzI5aGNDOWxibU52WkdsdVp5OWpiSEl2TVM0d0lpQlRUMEZRTFVWT1ZqcGxibU52WkdsdVoxTjBlV3hsUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUkrRFFvOFUwOUJVQzFGVGxZNlFtOWtlVDROQ2p4aE1UcFRaWEpwWVd4cGVtRmliR1ZKWkNCcFpEMGljbVZtTFRFaUlIaHRiRzV6T21FeFBTSm9kSFJ3T2k4dmMyTm9aVzFoY3k1dGFXTnliM052Wm5RdVkyOXRMMk5zY2k5dWMyRnpjMlZ0TDFKbGRtbDBVMlZ5ZG1salpYTXVVR1Z5YzJsemRHVnVZMlV2VW1WMmFYUlRaWEoyYVdObGN5VXlReVV5TUZabGNuTnBiMjRsTTBReUxqRXpMakF1TXpJM01TVXlReVV5TUVOMWJIUjFjbVVsTTBSdVpYVjBjbUZzSlRKREpUSXdVSFZpYkdsalMyVjVWRzlyWlc0bE0wUnVkV3hzSWo0TkNqeHpkSEpwYm1kSlJDQnBaRDBpY21WbUxUTWlQakkzTW1OallXRmtMVEV4TWpBdE5HSTBNUzA0WXpnd0xUVTFNMkk0T0RZNU1ERXpOQzB3TURFd01qZzVaVHd2YzNSeWFXNW5TVVErRFFvOGFXNTBTVVErTVRBMU9EazNORHd2YVc1MFNVUStEUW84TDJFeE9sTmxjbWxoYkdsNllXSnNaVWxrUGcwS1BDOVRUMEZRTFVWT1ZqcENiMlI1UGcwS1BDOVRUMEZRTFVWT1ZqcEZiblpsYkc5d1pUNE5DZz09PC9CYXNlLTBfRGF0YT4NCjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+DQo8L2ExOkNhbGxTaXRlX3gwMDJCX1RyYWNlU2VyaWFsaXNlckhlbHBlcj4NCjwvU09BUC1FTlY6Qm9keT4NCjwvU09BUC1FTlY6RW52ZWxvcGU+DQo="
       }
     }
   ],
@@ -399,7 +427,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.1.4357",
+      "Version": "2.13.0.3270",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -415,6 +443,7 @@
       "UpY": 0.9205048680305481,
       "UpZ": 0.3821927011013031
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -511,7 +540,12 @@
       {
         "Id": "cf9b8b8561ac4de3b503117cefdbe6d4",
         "Title": "Geometric Data can be visualized as either textual information or in 3d space",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 3506.47639668914,
         "Top": 1061.24282336897,
         "Width": 0.0,
@@ -525,7 +559,12 @@
       {
         "Id": "0509d30fc04240b590de0da5b395bb04",
         "Title": "You can toggle between 3d navigation and node navigation with the Geom/Node Butttons in the lower right of the screen.  Background Preview can also be turned on and off in the View Menu",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 2906.12249671052,
         "Top": 741.787811444411,
         "Width": 0.0,
@@ -539,7 +578,12 @@
       {
         "Id": "201c6ba8057b456e94ed7a3c5211403e",
         "Title": "Dynamo interacts with Revit with special Revit nodes.  \r\n\r\nDynamo can only create and modify elements that are appropriate to the file that Dynamo is associated with.  For instance, Reference Points can only be made in certain Family environments, while Model Lines can be created almost anywhere. Pass any curve element to Revit Elements that are driven by Lines or other Curves to create them.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 4227.2898831632529,
         "Top": 842.0087651548198,
         "Width": 0.0,
@@ -551,8 +595,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": -1767.7522389667902,
-    "Y": -432.417247054431,
-    "Zoom": 0.771050629974184
+    "X": -4660.3198243495235,
+    "Y": -817.330533815553,
+    "Zoom": 1.1996829446574735
   }
 }

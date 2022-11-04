@@ -246,6 +246,14 @@ namespace ProtoCore
 
             private LibraryMirror libraryMirror = null;
 
+            internal LibraryMirror LibraryMirror
+            {
+                get
+                {
+                    return libraryMirror;
+                }
+            }
+
             private ClassNode classNode = null;
             private ClassNode ClassNode
             {

@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="UnitsUI.Controls.DynamoUnitConverterControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:UnitsUI.Converters"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             mc:Ignorable="d" Width="400" Height="Auto">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:ForgeUnitToTextConverter x:Key="ForgeUnitToTextConverter" />
+            <converters:ForgeQuantityToTextConverter x:Key="ForgeQuantityToTextConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+
+
+    <Grid Width="400" Height="Auto">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <ComboBox Name="SelectConversionQuantity"                
+                ItemsSource="{Binding QuantityConversionSource}"   
+                Grid.Row="0"
+                Height ="29"
+                Width="400"
+                Margin="0,0,0, 3"
+                SelectedItem="{Binding SelectedQuantityConversion}"
+                Style="{StaticResource ResourceKey=RefreshComboBox}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource ForgeQuantityToTextConverter}}"></TextBlock>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <Grid Grid.Row="1">
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="180"/>
+            </Grid.ColumnDefinitions>
+            
+            <ComboBox Name="SelectConversionFrom" 
+                Grid.Column="0"
+                ItemsSource="{Binding SelectedFromConversionSource}"
+                Height ="29" 
+                MinWidth="180"
+                Margin="0,0,0, 3"
+                SelectedItem="{Binding SelectedFromConversion, Mode=TwoWay}"
+                Style="{StaticResource ResourceKey=RefreshComboBox}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource ForgeUnitToTextConverter}}"></TextBlock>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <Button Name="DirectionButton"
+                Grid.Column="1"
+                Content="⇄"  
+                FontWeight="Bold"
+                FontSize="13"
+                Height ="29"
+                Margin="3,0,3, 3"
+                Background="#666666"
+                Width="34" Command="{Binding SwitchUnitsButtonClick}"/>
+
+            <ComboBox x:Name="SelectConversionTo"   
+                Grid.Column="2"
+        	    ItemsSource="{Binding SelectedToConversionSource}"
+                Height ="29"   
+                Margin="0,0,0, 3"
+                MinWidth="180"
+        	    SelectedItem="{Binding SelectedToConversion, Mode=TwoWay}"
+                Style="{StaticResource ResourceKey=RefreshComboBox}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource ForgeUnitToTextConverter}}"></TextBlock>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+        </Grid>
+
+    </Grid>
+</UserControl>

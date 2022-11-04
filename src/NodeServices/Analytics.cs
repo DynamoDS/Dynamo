@@ -8,6 +8,12 @@ namespace Dynamo.Logging
     public static class Analytics
     {
         /// <summary>
+        /// Disables all analytics collection (Google, ADP, etc.) for the lifetime of the process.
+        /// To ensure that no analytics get through, please set set this flag to false before the DynamoModel is constructed.
+        /// </summary>
+        public static bool DisableAnalytics;
+
+        /// <summary>
         /// A dummy IDisposable class
         /// </summary>
         class Dummy : IDisposable
@@ -15,7 +21,7 @@ namespace Dynamo.Logging
             public void Dispose() { }
         }
 
-        private static IAnalyticsClient client = null;
+        internal static IAnalyticsClient client = null;
         
         /// <summary>
         /// Starts analytics client
@@ -51,6 +57,7 @@ namespace Dynamo.Logging
         /// Returns if any analytics reporting is ON (Google, ADP etc.)
         /// </summary>
         public static bool ReportingAnalytics { get { return client != null && client.ReportingAnalytics; } }
+
 
         /// <summary>
         /// Tracks application startup time

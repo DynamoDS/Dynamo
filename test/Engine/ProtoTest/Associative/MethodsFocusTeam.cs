@@ -525,7 +525,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
             String code =
 @"def A(x:var){    return = bar(x);}def bar(x:bool){    return = x;}a = A([0,1.1,null]);r = a;";
             thisTest.RunScriptSource(code);
-            Object r = new Object[]             {                false,                true,                null            }
+            Object r = new Object[]             {                false,                true,                false            }
             ;
             thisTest.Verify("r", r);
         }

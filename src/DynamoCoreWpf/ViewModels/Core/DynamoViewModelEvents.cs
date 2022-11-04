@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 
@@ -109,15 +109,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public event RequestShowHideGalleryHandler RequestShowHideGallery;
-        public virtual void OnRequestShowHideGallery(bool showGallery)
-        {
-            if (RequestShowHideGallery != null)
-            {
-                RequestShowHideGallery(showGallery);
-            }
-        }
-
         public event RequestOpenDocumentationLinkHandler RequestOpenDocumentationLink;
         public virtual void OnRequestOpenDocumentationLink(OpenDocumentationLinkEventArgs e)
         {
@@ -185,6 +176,15 @@ namespace Dynamo.ViewModels
         internal void OnViewExtensionOpenRequest(string extensionName)
         {
             ViewExtensionOpenRequest?.Invoke(extensionName);
+        }
+
+        /// <summary>
+        /// Event raised when there's a request to open the view extension in the side panel.
+        /// </summary>
+        internal event Action<string, object> ViewExtensionOpenWithParameterRequest;
+        internal void OnViewExtensionOpenWithParameterRequest(string extensionIdentification, object obj)
+        {
+            ViewExtensionOpenWithParameterRequest?.Invoke(extensionIdentification, obj);
         }
     }
 }

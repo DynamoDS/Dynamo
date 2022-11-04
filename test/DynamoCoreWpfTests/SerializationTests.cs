@@ -23,6 +23,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using TestUINodes;
 using DoubleSlider = CoreNodeModels.Input.DoubleSlider;
 
 namespace DynamoCoreWpfTests
@@ -1004,21 +1005,22 @@ namespace DynamoCoreWpfTests
         [Test]
         public void NewCustomNodeSaveAndLoadPt2()
         {
-            this.ViewModel.Model.PreferenceSettings.CustomPackageFolders = new List<string>() { Path.Combine(Path.GetTempPath(), "NewCustomNodeSaveAndLoad") };
+            var newPaths = new List<string> { Path.Combine(Path.GetTempPath(), "NewCustomNodeSaveAndLoad") };
+            ViewModel.Model.PreferenceSettings.CustomPackageFolders = newPaths;
 
-            var loader = this.ViewModel.Model.GetPackageManagerExtension().PackageLoader;
-            loader.LoadCustomNodesAndPackages(new List<string>(), ViewModel.Model.PreferenceSettings, this.ViewModel.Model.CustomNodeManager);
+            var loader = ViewModel.Model.GetPackageManagerExtension().PackageLoader;
+            loader.LoadNewCustomNodesAndPackages(newPaths, ViewModel.Model.CustomNodeManager);
             // This unit test is a follow-up of NewCustomNodeSaveAndLoadPt1 test to make sure the newly created
             // custom node will be loaded once DynamoCore restarted
             var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
             var functionnode =
-                this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(funcguid, "testnode", true);
+                ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(funcguid, "testnode", true);
             Assert.IsTrue(functionnode.IsCustomFunction);
             Assert.IsFalse(functionnode.IsInErrorState);
             Assert.AreEqual(functionnode.OutPorts.Count, 2);
 
-            this.ViewModel.CurrentSpace.AddAndRegisterNode(functionnode);
-            var nodeingraph = this.ViewModel.CurrentSpace.Nodes.FirstOrDefault();
+            ViewModel.CurrentSpace.AddAndRegisterNode(functionnode);
+            var nodeingraph = ViewModel.CurrentSpace.Nodes.FirstOrDefault();
             Assert.NotNull(nodeingraph);
             Assert.IsTrue(nodeingraph.State == ElementState.Active);
             //remove custom node from definitions folder
@@ -1054,6 +1056,23 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(numXMLNotes, 0);
             Assert.AreEqual(numXMLAnnotations, numJsonAnnotations);
+        }
+
+        [Test]
+        public void DropDownsHaveCorrectInputDataTypes()
+        {
+            var dropnode = new EnumAsStringConcrete();
+            var data = dropnode.InputData;
+            Assert.AreEqual(NodeInputTypes.selectionInput, data.Type);
+            Assert.AreEqual(NodeInputTypes.dropdownSelection, data.Type2);
+        }
+        [Test]
+        public void SelectionNodesHaveCorrectInputDataTypes()
+        {
+            var selectNode = new SelectionConcrete(SelectionType.One, SelectionObjectType.None, "", "");
+            var data = selectNode.InputData;
+            Assert.AreEqual(NodeInputTypes.selectionInput, data.Type);
+            Assert.AreEqual(NodeInputTypes.hostSelection, data.Type2);
         }
 
         public object[] FindWorkspaces()

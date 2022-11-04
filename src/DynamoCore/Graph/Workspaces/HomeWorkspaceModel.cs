@@ -665,12 +665,12 @@ namespace Dynamo.Graph.Workspaces
             EngineController = controller;
             controller.MessageLogged += Log;
             controller.LibraryServices.LibraryLoaded += LibraryLoaded;
-            
+
             if (markNodesAsDirty)
             {
                 // Mark all nodes as dirty so that AST for the whole graph will be
                 // regenerated.
-                MarkNodesAsModifiedAndRequestRun(Nodes); 
+                MarkNodesAsModifiedAndRequestRun(Nodes);
             }
 
             if (RunSettings.RunEnabled && RunSettings.RunType == RunType.Automatic)
@@ -711,7 +711,7 @@ namespace Dynamo.Graph.Workspaces
             // Runtime warnings take precedence over build warnings.
             foreach (var warning in updateTask.RuntimeWarnings)
             {
-                var message = string.Join("\n", warning.Value.Select(w => w.Message));
+                var message = string.Join(Environment.NewLine, warning.Value.Select(w => w.Message));
                 messages.Add(warning.Key, message);
             }
 
@@ -750,12 +750,15 @@ namespace Dynamo.Graph.Workspaces
                 var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node == null)
                     continue;
-
-                node.Warning(message.Value); // Update node warning message.
+                using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                {
+                    node.Warning(message.Value); // Update node warning message.
+                }
             }
 
             // Notify listeners (optional) of completion.
             RunSettings.RunEnabled = true; // Re-enable 'Run' button.
+            RunSettings.RunTypesEnabled = true; //Re-enable Run Type ComboBox
 
             executingTask = false; // setting back to false
 
@@ -767,8 +770,8 @@ namespace Dynamo.Graph.Workspaces
             // Dispatch the failure message display for execution on UI thread.
             // 
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
-                ? new EvaluationCompletedEventArgs(true)
-                : new EvaluationCompletedEventArgs(true, task.Exception);
+                ? new EvaluationCompletedEventArgs(true,messages.Keys,null)
+                : new EvaluationCompletedEventArgs(true, messages.Keys, task.Exception);
 
             EvaluationCount ++;
 
@@ -801,6 +804,8 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public void Run()
         {
+            if (RunSettings.ForceBlockRun) return;
+
             graphExecuted = true;
 
             // When Dynamo is shut down, the workspace is cleared, which results
@@ -863,18 +868,18 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="showRunPreview">This parameter controls the delta state computation </param>
         internal void GetExecutingNodes(bool showRunPreview)
         {
-            var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
-                        
             //The Graph is executed and Show node execution is checked on the Settings menu
             if (graphExecuted && showRunPreview)
             {
+                var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
+
                 if (task.Initialize(EngineController, this) != null)
                 {
                     task.Completed += OnPreviewGraphCompleted;
                     scheduler.ScheduleForExecution(task);
                 }
             }
-            //Show node exection is checked but the graph has not RUN
+            //Show node execution is checked but the graph has not RUN
             else
             {
                 var deltaComputeStateArgs = new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted);
@@ -884,14 +889,15 @@ namespace Dynamo.Graph.Workspaces
 
         private void OnPreviewGraphCompleted(AsyncTask asyncTask)
         {
-            var updateTask = asyncTask as PreviewGraphAsyncTask;
-            if (updateTask != null)
+            if (asyncTask is PreviewGraphAsyncTask updateTask)
             {
                 var nodeGuids = updateTask.previewGraphData;
-                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(nodeGuids,graphExecuted);
-                OnSetNodeDeltaState(deltaComputeStateArgs);               
-            }            
+                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(nodeGuids, graphExecuted);
+                OnSetNodeDeltaState(deltaComputeStateArgs);
+            }
         }
+
+
        
         #endregion
 

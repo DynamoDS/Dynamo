@@ -42,7 +42,7 @@ namespace DynamoCoreWpfTests
         {
          
             Assert.That(this.Model.ExtensionManager.Extensions.Select(x => x.Name),
-                Is.EquivalentTo (new List<string> { "DynamoPackageManager", "IronPythonExtension", "testExtension" }));
+                Is.EquivalentTo (new List<string> { "DynamoPackageManager", "testExtension" }));
         }
         [Test]
         public void PackageManagerLoadsExtensionAndItWorks()
@@ -57,20 +57,22 @@ namespace DynamoCoreWpfTests
         [Test]
         public void PackageManagerLoadsAndAddsViewExtension()
         {
-            Assert.That(this.View.viewExtensionManager.ViewExtensions.Select(x => x.Name),
+            Assert.That(this.View.viewExtensionManager.ViewExtensions.OrderBy(x => x.Name).Select(x => x.Name),
                 Is.EquivalentTo(
                     (new List<string>
                     {
                         "Documentation Browser", 
                         "DynamoManipulationExtension",
-                        "LibraryUI - MSWebBrowser", 
+                        "Graph Node Manager",
+                        "Graph Status",
+                        "LibraryUI - WebView2", 
                         "Notifications", 
-                        "Workspace References", 
-                        "Sample View Extension",
-                        "PackageManagerViewExtension", 
+                        "Package Details",
+                        "PackageManagerViewExtension",
+                        "Properties",
                         "Python Migration",
-                        GraphMetadataViewExtension.extensionName,
-                        "Graph Status"
+                        "Sample View Extension",
+                        "Workspace References",
                     })
                 )
             );

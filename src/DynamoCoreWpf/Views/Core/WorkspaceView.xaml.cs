@@ -124,15 +124,17 @@ namespace Dynamo.Views
         private void RemoveViewModelsubscriptions(WorkspaceViewModel ViewModel)
         {
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
+            ViewModel.RequestHideAllPopup -= HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
-           
+
             ViewModel.ZoomChanged -= vm_ZoomChanged;
             ViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
             ViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
             ViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
             ViewModel.RequestCenterViewOnElement -= CenterViewOnElement;
-         
+
             ViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
@@ -150,7 +152,9 @@ namespace Dynamo.Views
         private void AttachViewModelsubscriptions(WorkspaceViewModel ViewModel)
         {
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
+            ViewModel.RequestHideAllPopup += HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             ViewModel.ZoomChanged += vm_ZoomChanged;
@@ -170,8 +174,14 @@ namespace Dynamo.Views
         }
 
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
-        {            
+        {
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
+        }
+
+        private void ShowHidePortContextMenu(ShowHideFlags flag, PortViewModel portViewModel)
+        {
+            PortContextMenu.DataContext = portViewModel;
+            ShowHidePopup(flag, PortContextMenu);
         }
 
         private void ShowHideInCanvasControl(ShowHideFlags flag)
@@ -195,19 +205,48 @@ namespace Dynamo.Views
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
                     var displayPopup = DynamoModel.IsTestMode || IsMouseOver;
-                    if (displayPopup && popup == NodeAutoCompleteSearchBar)
+
+                    if (displayPopup)
                     {
-                        if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
-                        // Force the Child visibility to change here because
-                        // 1. Popup isOpen change does not necessarily update the child control before it take effect
-                        // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
-                        // 3. This should not be set to in canvas search control
-                        popup.Child.Visibility = Visibility.Collapsed;
-                        ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
+                        if (popup == NodeAutoCompleteSearchBar)
+                        {
+                            if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
+                            // Force the Child visibility to change here because
+                            // 1. Popup isOpen change does not necessarily update the child control before it take effect
+                            // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
+                            // 3. This should not be set to in canvas search control
+                            popup.Child.Visibility = Visibility.Collapsed;
+                            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
+                        }
+
+                        else if (popup == PortContextMenu)
+                        {
+                            popup.Child.Visibility = Visibility.Hidden;
+                            if (!(PortContextMenu.DataContext is PortViewModel portViewModel)) return;
+
+                            if (portViewModel is OutPortViewModel outPortViewModel)
+                            {
+                                outPortViewModel.RefreshHideWiresState();
+                            }
+
+                            portViewModel.SetupPortContextMenuPlacement(popup);
+                        }
                     }
-                    popup.Child.Visibility = Visibility.Visible;
-                    popup.IsOpen = displayPopup;
-                    popup.CustomPopupPlacementCallback = null;
+
+                    // We need to use the dispatcher here to make sure that
+                    // the popup is fully updated before we show it.
+                    // This was mainly an issue with the PortContextMenu as
+                    // it uses a DataTemplate bound to the WorkspaceViewModel
+                    // to display the correct content.
+                    // If the dispatcher is not used in this scenario when switching
+                    // from inputPort context menu to Output port context menu,
+                    // the popup will display before the new content is fully rendered
+                    this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() => {
+                        popup.Child.Visibility = Visibility.Visible;
+                        popup.Child.UpdateLayout();
+                        popup.IsOpen = displayPopup;
+                        popup.CustomPopupPlacementCallback = null;
+                    }));
 
                     ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
                     ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
@@ -216,14 +255,22 @@ namespace Dynamo.Views
         }
 
         /// <summary>
-        /// Hides Context Menu as well as InCanvasControl (Right Click PopUp)
+        /// Hides all popups in the view, the amount of popup hidden will be different depending on
+        /// if the hide view command is triggered on node level or workspace level
         /// </summary>
-        public void HidePopUp()
+        public void HideAllPopUp(object sender)
         {
+            // First make sure workspace level popups are hidden
             if (InCanvasSearchBar.IsOpen || ContextMenuPopup.IsOpen)
             {
                 ShowHideContextMenu(ShowHideFlags.Hide);
                 ShowHideInCanvasControl(ShowHideFlags.Hide);
+            }
+            // If triggered on node level, make sure node popups are also hidden
+            if(sender is NodeView && (PortContextMenu.IsOpen || NodeAutoCompleteSearchBar.IsOpen) )
+            {
+                ShowHidePopup(ShowHideFlags.Hide, PortContextMenu);
+                ShowHidePopup(ShowHideFlags.Hide, NodeAutoCompleteSearchBar);
             }
         }
 
@@ -254,8 +301,10 @@ namespace Dynamo.Views
             var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
             for (int index = 0; index < childrenCount; ++index)
             {
-                var child = VisualTreeHelper.GetChild(dragCanvas, index);
-                var firstChild = VisualTreeHelper.GetChild(child, 0);
+                ContentPresenter contentPresenter = VisualTreeHelper.GetChild(dragCanvas, index) as ContentPresenter;
+                if (contentPresenter.Children().Count() < 1) continue;
+                
+                var firstChild = VisualTreeHelper.GetChild(contentPresenter, 0);
 
                 switch (firstChild.GetType().Name)
                 {
@@ -288,11 +337,11 @@ namespace Dynamo.Views
                 // graph. This smallest top-left corner value will be useful in making 
                 // the offset later on.
                 // 
-                var childBounds = VisualTreeHelper.GetDescendantBounds(child as Visual);
+                var childBounds = VisualTreeHelper.GetDescendantBounds(contentPresenter as Visual);
                 minX = childBounds.X < minX ? childBounds.X : minX;
                 minY = childBounds.Y < minY ? childBounds.Y : minY;
-                childBounds.X = (double)(child as Visual).GetValue(Canvas.LeftProperty);
-                childBounds.Y = (double)(child as Visual).GetValue(Canvas.TopProperty);
+                childBounds.X = (double)(contentPresenter as Visual).GetValue(Canvas.LeftProperty);
+                childBounds.Y = (double)(contentPresenter as Visual).GetValue(Canvas.TopProperty);
 
                 if (initialized)
                 {
@@ -512,6 +561,7 @@ namespace Dynamo.Views
         void vm_ZoomChanged(object sender, EventArgs e)
         {
             zoomBorder.SetZoom((e as ZoomEventArgs).Zoom);
+            if (PortContextMenu.IsOpen) DestroyPortContextMenu();
         }
 
         void vm_ZoomAtViewportCenter(object sender, EventArgs e)
@@ -660,8 +710,15 @@ namespace Dynamo.Views
         {
             ContextMenuPopup.IsOpen = false;
             InCanvasSearchBar.IsOpen = false;
+            
+            if(PortContextMenu.IsOpen) DestroyPortContextMenu();
         }
 
+        /// <summary>
+        /// Closes the port's context menu and sets its references to null.
+        /// </summary>
+        private void DestroyPortContextMenu() => PortContextMenu.IsOpen = false;
+        
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
             if (e == null) return; // in certain bizarre cases, e can be null

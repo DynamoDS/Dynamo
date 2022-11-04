@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -206,6 +206,10 @@ namespace Dynamo.ViewModels
         /// Collection of the nodes outputs description.
         /// </summary>
         public IEnumerable<string> OutputDescriptions { get; private set; }
+        /// <summary>
+        /// Collection of the nodes collection of warnings/errors/infos.
+        /// </summary>
+        public IEnumerable<Info> NodeInfos { get; private set; }
 
         /// <summary>
         /// Creates a new instance of OpenNodeAnnotationEventArgs, which contains data used
@@ -223,6 +227,7 @@ namespace Dynamo.ViewModels
             Type = model.Name;
             Description = model.Description;
             Category = model.Category;
+            NodeInfos = model.NodeInfos;
             SetInputs(model);
             SetOutputs(model);
 
@@ -341,7 +346,8 @@ namespace Dynamo.ViewModels
         private static string GetInputNames(NodeModel node)
         {
             var inputNames = node.InPorts.Select(x => x.Name).ToArray();
-            return string.Join(",", inputNames);
+            // Match https://github.com/DynamoDS/Dynamo/blame/master/src/DynamoCore/Search/SearchElements/ZeroTouchSearchElement.cs#L51 
+            return string.Join(", ", inputNames);
         }
     }
 

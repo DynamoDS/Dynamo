@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Dynamo Import Export Sample",
   "Name": "ImportExport_CSV to Stuff",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -11,7 +11,7 @@
   "Nodes": [
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Users\\alfarok\\Documents\\Dynamo_alfarok\\bin\\AnyCPU\\Debug\\samples\\Data\\helix.csv",
+      "HintPath": "C:\\Users\\tanga\\Documents\\GitHub\\Dynamo\\doc\\distrib\\Samples\\Data\\helix.csv",
       "InputValue": "..\\..\\Data\\helix.csv",
       "NodeType": "ExtensionNode",
       "Id": "f338c699a0d34edf8bc9b48d08d90217",
@@ -28,7 +28,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows you to select a file on the system to get its filename"
+      "Description": "Allows you to select a file on the system to get its file path."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -122,8 +122,8 @@
       "Inputs": [
         {
           "Id": "bc676d6552404865baf65d6ba473c652",
-          "Name": "str",
-          "Description": "String to split up.\n\nstring",
+          "Name": "string",
+          "Description": "String to split up\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -131,7 +131,7 @@
         },
         {
           "Id": "f52cf3e545054c11bc28782b54271a36",
-          "Name": "separater0",
+          "Name": "separator0",
           "Description": "Strings that, if present, determine the end and start of a split.\n\nstring[]",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -143,7 +143,7 @@
         {
           "Id": "4ae7e1602a2e4997829ecade3bd99227",
           "Name": "strings",
-          "Description": "List of strings made from the input string.",
+          "Description": "List of strings made from the input string",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -151,7 +151,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Divides a single string into a list of strings, with divisions determined by the given separater strings.\n\nString.Split (str: string, separaters: string[]): string[]"
+      "Description": "Divides a single string into a list of strings, with divisions determined by the given separator strings.\n\nString.Split (string: string, separators: string[]): string[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction, DynamoCore",
@@ -162,8 +162,8 @@
       "Inputs": [
         {
           "Id": "2a79f9e7594a4e7980ab6931d5dfcec5",
-          "Name": "str",
-          "Description": "String to split up.\n\nstring",
+          "Name": "string",
+          "Description": "String to split up\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -171,7 +171,7 @@
         },
         {
           "Id": "752dc7bb81fc402380adb9107880d656",
-          "Name": "separater0",
+          "Name": "separator0",
           "Description": "Strings that, if present, determine the end and start of a split.\n\nstring[]",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -183,7 +183,7 @@
         {
           "Id": "312bf66c674440098079cdf8733ba085",
           "Name": "strings",
-          "Description": "List of strings made from the input string.",
+          "Description": "List of strings made from the input string",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -191,7 +191,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Divides a single string into a list of strings, with divisions determined by the given separater strings.\n\nString.Split (str: string, separaters: string[]): string[]"
+      "Description": "Divides a single string into a list of strings, with divisions determined by the given separator strings.\n\nString.Split (string: string, separators: string[]): string[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -221,8 +221,8 @@
       "Inputs": [
         {
           "Id": "6fd2a1e64f674a8d93b2014e61a2eaa6",
-          "Name": "str",
-          "Description": "String to be converted.\n\nstring",
+          "Name": "string",
+          "Description": "String to be converted\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -233,7 +233,7 @@
         {
           "Id": "e610bbf4a1de4d7aa810fc05bc769857",
           "Name": "number",
-          "Description": "Integer or double-type number.",
+          "Description": "Integer or double-type number",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -241,7 +241,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Converts a string to an integer or a double.\n\nString.ToNumber (str: string): var[]..[]"
+      "Description": "Converts a string to an integer or a double.\n\nString.ToNumber (string: string): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -252,7 +252,7 @@
         {
           "Id": "7fa53f3f7e0242688d25b3d1af358325",
           "Name": "lists",
-          "Description": "A list of lists to be transposed.\n\nvar[]..[]",
+          "Description": "List of lists to be transposed\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -263,7 +263,7 @@
         {
           "Id": "6e554994fbf64bda830deb1be12fc7aa",
           "Name": "lists",
-          "Description": "A list of transposed lists.",
+          "Description": "List of transposed lists",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -351,7 +351,7 @@
         {
           "Id": "dbbf3ebd1d0441c9934c149bf1253951",
           "Name": "list",
-          "Description": "List to get the last item of.\n\nvar[]..[]",
+          "Description": "List to get the last item of\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -361,8 +361,8 @@
       "Outputs": [
         {
           "Id": "a7e9b62f6c384482b55bf5241a3d8804",
-          "Name": "last",
-          "Description": "Last item in the list.",
+          "Name": "item",
+          "Description": "Last item in the list",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -401,7 +401,7 @@
         {
           "Id": "0c5d2508c1604d8d833b097605bf1d84",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -410,7 +410,7 @@
         {
           "Id": "9a273a08493044339aa38ac7d4667b5b",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -419,7 +419,7 @@
         {
           "Id": "5d80888261314df1870575f2976aa6bc",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -430,7 +430,7 @@
         {
           "Id": "95f27a8d29994ece9003dc7d9154a34a",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -478,7 +478,7 @@
         {
           "Id": "f792a14632674013bcc64b1e4dc26ecc",
           "Name": "file",
-          "Description": "var",
+          "Description": "File object to read text from\n\nvar",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -488,7 +488,7 @@
       "Outputs": [
         {
           "Id": "0202fc5fa6684452a9a5dbf129696656",
-          "Name": "str",
+          "Name": "string",
           "Description": "Contents of the text file.",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -504,97 +504,140 @@
     {
       "Start": "2a4822274b2a4ba5a1408e6374bbe966",
       "End": "88caafe3fd024826859fbf97883b89be",
-      "Id": "b648ee9ee17440e88d4e6550e05139c5"
+      "Id": "b648ee9ee17440e88d4e6550e05139c5",
+      "IsHidden": "False"
     },
     {
       "Start": "64059f86411f42cb8c6b557182723fb3",
       "End": "f52cf3e545054c11bc28782b54271a36",
-      "Id": "d3d04d9746234daa93397362194af99e"
+      "Id": "d3d04d9746234daa93397362194af99e",
+      "IsHidden": "False"
     },
     {
       "Start": "8e9cff24baf2456a9fab0656a3485738",
       "End": "37b5d13e700144a5856e79c707bc4d7c",
-      "Id": "8eb80af71dbb4958a2531cd1a4b97a28"
+      "Id": "8eb80af71dbb4958a2531cd1a4b97a28",
+      "IsHidden": "False"
     },
     {
       "Start": "4ae7e1602a2e4997829ecade3bd99227",
       "End": "2a79f9e7594a4e7980ab6931d5dfcec5",
-      "Id": "c0f527308fdf429daef685c30c87dddf"
+      "Id": "c0f527308fdf429daef685c30c87dddf",
+      "IsHidden": "False"
     },
     {
       "Start": "312bf66c674440098079cdf8733ba085",
       "End": "6fd2a1e64f674a8d93b2014e61a2eaa6",
-      "Id": "1e373b81623d449e8221eac541b4f136"
+      "Id": "1e373b81623d449e8221eac541b4f136",
+      "IsHidden": "False"
     },
     {
       "Start": "662225c521834b96b173d56e32b490f5",
       "End": "752dc7bb81fc402380adb9107880d656",
-      "Id": "1974f236b3294ed28c54e994c42a41a8"
+      "Id": "1974f236b3294ed28c54e994c42a41a8",
+      "IsHidden": "False"
     },
     {
       "Start": "e610bbf4a1de4d7aa810fc05bc769857",
       "End": "7fa53f3f7e0242688d25b3d1af358325",
-      "Id": "297ba107b7754d6d8d98151056b0de21"
+      "Id": "297ba107b7754d6d8d98151056b0de21",
+      "IsHidden": "False"
     },
     {
       "Start": "6e554994fbf64bda830deb1be12fc7aa",
       "End": "ee58681d2dbb44af8515f9b2c932db76",
-      "Id": "2bca4cf6f0754313b623261814b175ce"
+      "Id": "2bca4cf6f0754313b623261814b175ce",
+      "IsHidden": "False"
     },
     {
       "Start": "6e554994fbf64bda830deb1be12fc7aa",
       "End": "8774c0f1502e4c518a3e02f7778f6086",
-      "Id": "ef6043a829cc4fa39201ec920af9087a"
+      "Id": "ef6043a829cc4fa39201ec920af9087a",
+      "IsHidden": "False"
     },
     {
       "Start": "6e554994fbf64bda830deb1be12fc7aa",
       "End": "dbbf3ebd1d0441c9934c149bf1253951",
-      "Id": "024eb5064c5847838f6a6a53650c9828"
+      "Id": "024eb5064c5847838f6a6a53650c9828",
+      "IsHidden": "False"
     },
     {
       "Start": "9b3acd9a28d64dfe9c50fa6ec184925b",
       "End": "9a273a08493044339aa38ac7d4667b5b",
-      "Id": "eae97b4d5dc44777be528303decbb36d"
+      "Id": "eae97b4d5dc44777be528303decbb36d",
+      "IsHidden": "False"
     },
     {
       "Start": "716caeed47f54654a8c2761ff5ace94a",
       "End": "0c5d2508c1604d8d833b097605bf1d84",
-      "Id": "af6284af430d43b58b55aaa503b1e5bb"
+      "Id": "af6284af430d43b58b55aaa503b1e5bb",
+      "IsHidden": "False"
     },
     {
       "Start": "a7e9b62f6c384482b55bf5241a3d8804",
       "End": "5d80888261314df1870575f2976aa6bc",
-      "Id": "a68928c375904e7bad51c4dd43a2fca4"
+      "Id": "a68928c375904e7bad51c4dd43a2fca4",
+      "IsHidden": "False"
     },
     {
       "Start": "3c0876193e76467c9869a6e357306215",
       "End": "20fbd1a9f8fb47e28ffb0dc790776648",
-      "Id": "601bf6c3547a42888b8c5082da21ca95"
+      "Id": "601bf6c3547a42888b8c5082da21ca95",
+      "IsHidden": "False"
     },
     {
       "Start": "95f27a8d29994ece9003dc7d9154a34a",
       "End": "73d7f8d0da1545bfb5fd2be100f87873",
-      "Id": "9e5a28c37e23482e9d0c7acda37a727a"
+      "Id": "9e5a28c37e23482e9d0c7acda37a727a",
+      "IsHidden": "False"
     },
     {
       "Start": "9cda3e5db3d842d9840ccaab485a0aae",
       "End": "f792a14632674013bcc64b1e4dc26ecc",
-      "Id": "12a6e8230348461eb6cfe09e03c7409a"
+      "Id": "12a6e8230348461eb6cfe09e03c7409a",
+      "IsHidden": "False"
     },
     {
       "Start": "0202fc5fa6684452a9a5dbf129696656",
       "End": "bc676d6552404865baf65d6ba473c652",
-      "Id": "d609badaf17f4101a54b7bd1c85fa4aa"
+      "Id": "d609badaf17f4101a54b7bd1c85fa4aa",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "helix.csv",
+      "ReferenceType": "External",
+      "Nodes": [
+        "f338c699a0d34edf8bc9b48d08d90217"
+      ]
+    }
+  ],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2821",
+      "Version": "2.13.0.3265",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -610,6 +653,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -628,8 +672,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 392.962294416208,
-        "Y": 117.389184962712
+        "X": 165.44139056343394,
+        "Y": 146.7180514749837
       },
       {
         "ShowGeometry": true,
@@ -638,8 +682,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1997.38156369372,
-        "Y": -22.1013010079409
+        "X": 2122.5085045747792,
+        "Y": -17.632481690760258
       },
       {
         "ShowGeometry": true,
@@ -648,8 +692,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1631.20906593889,
-        "Y": 122.81339098985
+        "X": 1808.4722321870568,
+        "Y": 197.29371294286119
       },
       {
         "ShowGeometry": true,
@@ -658,8 +702,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 495.329758657331,
-        "Y": -17.5611547424787
+        "X": 574.428822887397,
+        "Y": -16.672401211803823
       },
       {
         "ShowGeometry": true,
@@ -668,8 +712,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 739.598046703496,
-        "Y": -11.8479498324055
+        "X": 812.588762217447,
+        "Y": -16.31676914958615
       },
       {
         "ShowGeometry": true,
@@ -678,8 +722,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 639.313409829637,
-        "Y": 96.0256340983587
+        "X": 541.5505214553981,
+        "Y": 186.67849422719831
       },
       {
         "ShowGeometry": true,
@@ -688,8 +732,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 998.065812242039,
-        "Y": -10.7489680733874
+        "X": 1041.2643989747855,
+        "Y": -18.197000268688555
       },
       {
         "ShowGeometry": true,
@@ -708,8 +752,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1460.88930661204,
-        "Y": -10.7489680733874
+        "X": 1524.9423834916297,
+        "Y": 1.1678834390942825
       },
       {
         "ShowGeometry": true,
@@ -718,8 +762,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1467.68890164336,
-        "Y": -97.6943252019653
+        "X": 1551.1068622307325,
+        "Y": -210.9044145705422
       },
       {
         "ShowGeometry": true,
@@ -728,8 +772,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1464.96572557473,
-        "Y": 106.543879945254
+        "X": 1546.8940797230423,
+        "Y": 170.59695682484352
       },
       {
         "ShowGeometry": true,
@@ -738,8 +782,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1311.53367752036,
-        "Y": 88.2569327515367
+        "X": 1217.6884718595659,
+        "Y": 180.61253197327045
       },
       {
         "ShowGeometry": true,
@@ -748,8 +792,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1665.11916661901,
-        "Y": -26.8917474175959
+        "X": 1828.9758749156347,
+        "Y": -32.850173173836914
       },
       {
         "ShowGeometry": true,
@@ -758,8 +802,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 178.046959337216,
-        "Y": -17.5611547424787
+        "X": 114.94545865929823,
+        "Y": -18.449908273153575
       },
       {
         "ShowGeometry": true,
@@ -776,90 +820,126 @@
       {
         "Id": "689b965e151a46a59ecc29133a0db0ba",
         "Title": "Adjust the overall distribution\r\nof the coordinate points",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 1992.49667197426,
-        "Top": -80.0317646843745,
+        "HasNestedGroups": false,
+        "Left": 2150.5085045747792,
+        "Top": -82.632481690760258,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "0cde47c6106f4a0a9566872fd23a0a20"
       },
       {
         "Id": "df06e6b9f64046e2bde6b7da6b2c3d24",
         "Title": "Browse a CSV file that has numbers \r\nin x, y, and z coordinate space",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": -86.1615525143213,
-        "Top": 90.2776890227735,
+        "HasNestedGroups": false,
+        "Left": -121.661552514321,
+        "Top": -82.561154742478692,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "f338c699a0d34edf8bc9b48d08d90217"
       },
       {
         "Id": "4985c370185d4431b845474713ad3223",
         "Title": "Split the String on \r\nA carriage return <enter>",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 459.365889553434,
-        "Top": -67.9357047254215,
+        "HasNestedGroups": false,
+        "Left": 597.428822887397,
+        "Top": -81.672401211803816,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "6c3bf3e38da54892969ca58d3caa1129"
       },
       {
         "Id": "016b58f41ee541e6a92a624cc2e4d1f4",
         "Title": "Split the String on Comma",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 726.603754120277,
-        "Top": -56.1055100214671,
+        "HasNestedGroups": false,
+        "Left": 833.588762217447,
+        "Top": -66.31676914958615,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "7b9d9ec2c7b64c65847b487c9b5fbf2c"
       },
       {
         "Id": "c1928f93b7144818837c2f1898586595",
         "Title": "Group X, Y, & Z components",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 1253.37976685541,
-        "Top": -50.0503474346067,
+        "HasNestedGroups": false,
+        "Left": 1280.07129747803,
+        "Top": -60.7489680733874,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "d0dc0a4b3ccc4717a930e4da7d8c68c4"
       },
       {
         "Id": "a72f58daf16a447fbff710f4d0c7512a",
         "Title": "CSV files supply Strings, not numbers",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 950.286195984002,
-        "Top": -52.002676215709,
+        "HasNestedGroups": false,
+        "Left": 1034.2643989747855,
+        "Top": -68.197000268688555,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "4296714ccaa948338bb51aca8168bccc"
       }
     ],
-    "X": 185.726148544333,
-    "Y": 392.897269907311,
-    "Zoom": 0.531808471379063
+    "X": 94.038330274754472,
+    "Y": 413.78976842226984,
+    "Zoom": 0.5263645658904148
   }
 }

@@ -44,6 +44,12 @@ using System.Windows;
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("LintingViewExtension")]
 [assembly: InternalsVisibleTo("GraphMetadataViewExtension")]
+[assembly: InternalsVisibleTo("PackageDetailsViewExtension")]
+[assembly: InternalsVisibleTo("Notifications")]
+[assembly: InternalsVisibleTo("IronPythonTests")]
+[assembly: InternalsVisibleTo("DynamoPackagesWPF")]
+[assembly: InternalsVisibleTo("DynamoPlayerExtension")]
+
 
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSpecification))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSection))]

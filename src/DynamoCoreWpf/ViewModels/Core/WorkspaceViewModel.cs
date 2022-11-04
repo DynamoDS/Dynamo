@@ -25,6 +25,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using DynamoUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
@@ -162,11 +163,23 @@ namespace Dynamo.ViewModels
             RequestShowInCanvasSearch?.Invoke(flag);
         }
 
+        internal event Action<object> RequestHideAllPopup;
+        private void OnRequestHideAllPopup(object param)
+        {
+            RequestHideAllPopup?.Invoke(param);
+        }
+
         internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
+        internal event Action<ShowHideFlags, PortViewModel> RequestPortContextMenu;
 
         internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag)
         {
             RequestNodeAutoCompleteSearch?.Invoke(flag);
+        }
+
+        internal void OnRequestPortContextMenu(ShowHideFlags flag, PortViewModel viewModel)
+        {
+            RequestPortContextMenu?.Invoke(flag, viewModel);
         }
 
         #endregion
@@ -334,6 +347,9 @@ namespace Dynamo.ViewModels
             get { return Model == DynamoViewModel.CurrentSpace; }
         }
 
+        /// <summary>
+        /// Boolean indicating if the target workspace is home workspace (true), or custom node workspace (false)
+        /// </summary>
         [JsonIgnore]
         public bool IsHomeSpace
         {
@@ -415,6 +431,8 @@ namespace Dynamo.ViewModels
 
         [JsonIgnore]
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
+
+        
 
         #endregion
 
@@ -756,8 +774,7 @@ namespace Dynamo.ViewModels
                 Nodes.Add(nodeViewModel);
             }
             Errors.Add(nodeViewModel.ErrorBubble);
-            nodeViewModel.UpdateBubbleContent();
-
+            
             PostNodeChangeActions();
         }
 
@@ -854,6 +871,7 @@ namespace Dynamo.ViewModels
             DynamoSelection.Instance.ClearSelection();
             Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
             Notes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.Model));
+            Annotations.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.AnnotationModel));
         }
 
         internal bool CanSelectAll(object parameter)
@@ -885,7 +903,12 @@ namespace Dynamo.ViewModels
 
         internal bool CanNodeToCode(object parameters)
         {
-            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
+            var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>();
+            if (!nodeModels.Any() || nodeModels.Any(x => x.IsInErrorState))
+            {
+                return false;
+            }
+            return true;
         }
 
         internal void SelectInRegion(Rect2D region, bool isCrossSelect)
@@ -898,7 +921,8 @@ namespace Dynamo.ViewModels
 
             foreach (var n in childlessModels)
             {
-                if (IsInRegion(region, n, fullyEnclosed))
+                // if target is within selection area but does not belong to a collapsed group
+                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed && !IsModelInCollapsedGroup(n))
                 {
                     selection.AddUnique(n);
                 }
@@ -910,7 +934,8 @@ namespace Dynamo.ViewModels
 
             foreach (var n in Model.Annotations)
             {
-                if (IsInRegion(region, n, fullyEnclosed))
+                // if target is within selection area but does not belong to a collapsed group
+                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed && !IsModelInCollapsedGroup(n))
                 {
                     selection.AddUnique(n);
                     // if annotation is selected its children should be added to selection too
@@ -926,12 +951,42 @@ namespace Dynamo.ViewModels
                         selection.AddUnique(m);
                     }
                 }
-                else if (n.IsSelected &&
-                    !Model.Annotations.ContainsModel(n))
+                // only remove current selection if ClearSelectionDisabled flag is false
+                // This prevents group getting removed when user press shift to add more groups
+                else if (n.IsSelected && !Model.Annotations.ContainsModel(n)
+                    && !DynamoSelection.Instance.ClearSelectionDisabled)
                 {
                     selection.Remove(n);
                 }
             }
+        }
+
+        /// <summary>
+        /// Determine if a Dynamo element belongs to a collapsed group or sub group of a collapsed group
+        /// </summary>
+        /// <param name="model">Target node, note, annotation</param>
+        /// <returns></returns>
+        private bool IsModelInCollapsedGroup(ModelBase model)
+        {
+            bool IsInCollapsedGroup = false;
+            // Check all the collapsed groups and their sub groups
+            foreach (var group in Model.Annotations.Where(x => !x.IsExpanded))
+            {
+                if (group.Nodes.Contains(model))
+                {
+                    IsInCollapsedGroup = true;
+                    break;
+                }
+                foreach (var nestGroup in group.Nodes.OfType<AnnotationModel>())
+                {
+                    if (nestGroup.Nodes.Contains(model))
+                    {
+                        IsInCollapsedGroup = true;
+                        break;
+                    }
+                }
+            }
+            return IsInCollapsedGroup;
         }
 
         private static bool IsInRegion(Rect2D region, ILocatable locatable, bool fullyEnclosed)
@@ -952,7 +1007,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionAverageX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.CenterX)
                            .Average();
@@ -960,7 +1015,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionAverageY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.CenterY)
                            .Average();
@@ -968,7 +1023,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMinX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X)
                            .Min();
@@ -976,7 +1031,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMinY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y)
                            .Min();
@@ -984,7 +1039,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X + x.Width)
                            .Max();
@@ -992,7 +1047,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxLeftX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X)
                            .Max();
@@ -1000,7 +1055,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y + x.Height)
                            .Max();
@@ -1008,7 +1063,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxTopY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y)
                            .Max();
@@ -1022,11 +1077,11 @@ namespace Dynamo.ViewModels
 
             // All the models in the selection will be modified, 
             // record their current states before anything gets changed.
-            SmartCollection<ISelectable> selection = DynamoSelection.Instance.Selection;
+            SmartObservableCollection<ISelectable> selection = DynamoSelection.Instance.Selection;
             IEnumerable<ModelBase> models = selection.OfType<ModelBase>();
             WorkspaceModel.RecordModelsForModification(models.ToList(), Model.UndoRecorder);
 
-            var toAlign = DynamoSelection.Instance.Selection.OfType<ILocatable>().ToList();
+            var toAlign = DynamoSelection.Instance.Selection.OfType<ILocatable>().Where(node => !(node is AnnotationModel)).ToList();
 
             switch (alignType)
             {
@@ -1108,7 +1163,8 @@ namespace Dynamo.ViewModels
                     break;
                 case "VerticalDistribute":
                 {
-                    if (DynamoSelection.Instance.Selection.Count <= 2) return;
+                    var nodesSelected = DynamoSelection.Instance.Selection.Where(node => !(node is AnnotationModel) && node is ILocatable);
+                    if (nodesSelected.Count() <= 2) return;
 
                     var yMin = GetSelectionMinY();
                     var yMax = GetSelectionMaxY();
@@ -1117,14 +1173,14 @@ namespace Dynamo.ViewModels
                     var span = yMax - yMin;
 
                     var nodeHeightSum =
-                        DynamoSelection.Instance.Selection.Where(y => y is ILocatable)
+                        nodesSelected.Where(y => y is ILocatable)
                             .Cast<ILocatable>()
                             .Sum((y) => y.Height);
 
                     if (span > nodeHeightSum)
                     {
                         spacing = (span - nodeHeightSum)
-                            /(DynamoSelection.Instance.Selection.Count - 1);
+                            /(nodesSelected.Count() - 1);
                     }
 
                     var cursor = yMin;
@@ -1137,7 +1193,8 @@ namespace Dynamo.ViewModels
                     break;
                 case "HorizontalDistribute":
                 {
-                    if (DynamoSelection.Instance.Selection.Count <= 2) return;
+                    var nodesSelected = DynamoSelection.Instance.Selection.Where(node => !(node is AnnotationModel) && node is ILocatable);
+                    if (nodesSelected.Count() <= 2) return;
 
                     var xMin = GetSelectionMinX();
                     var xMax = GetSelectionMaxX();
@@ -1145,7 +1202,7 @@ namespace Dynamo.ViewModels
                     var spacing = 0.0;
                     var span = xMax - xMin;
                     var nodeWidthSum =
-                        DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                        nodesSelected.Where((x) => x is ILocatable)
                             .Cast<ILocatable>()
                             .Sum((x) => x.Width);
 
@@ -1156,7 +1213,7 @@ namespace Dynamo.ViewModels
                     if (span > nodeWidthSum)
                     {
                         spacing = (span - nodeWidthSum)
-                            /(DynamoSelection.Instance.Selection.Count - 1);
+                            /(nodesSelected.Count() - 1);
                     }
 
                     var cursor = xMin;
@@ -1226,7 +1283,7 @@ namespace Dynamo.ViewModels
             // if there are no other custom workspace that is opened.
             // 
 
-            if (this.IsHomeSpace)
+            if (IsHomeSpace)
             {
                 if (DynamoViewModel.CloseHomeWorkspaceCommand.CanExecute(null))
                     DynamoViewModel.CloseHomeWorkspaceCommand.Execute(null);
@@ -1255,7 +1312,7 @@ namespace Dynamo.ViewModels
 
             //set the current offset without triggering
             //any property change notices.
-            if (Model.X != p.X && Model.Y != p.Y)
+            if (Model.X != p.X || Model.Y != p.Y)
             {
                 Model.X = p.X;
                 Model.Y = p.Y;
@@ -1355,7 +1412,7 @@ namespace Dynamo.ViewModels
             OnRequestZoomToFitView(this, zoomArgs);
         }
 
-        private void ResetFitViewToggle(object o)
+        internal void ResetFitViewToggle(object o)
         {
             _fitViewActualZoomToggle = false;
         }
@@ -1363,6 +1420,33 @@ namespace Dynamo.ViewModels
         private static bool CanResetFitViewToggle(object o)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Selects an Element by ID and focuses the view around it
+        /// </summary>
+        /// <param name="id"></param>
+        private void FocusNode(object id)
+        {
+            try
+            {
+                var node = DynamoViewModel.Model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == id.ToString());
+              
+                //select the element
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
+
+                DynamoViewModel.ShowElement(node, false);
+            }
+            catch
+            {
+                DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindNodeById);
+            }
+        }
+
+        private static bool CanFocusNode(object id)
+        {
+            return !string.IsNullOrEmpty(id.ToString());
         }
 
         private void FindById(object id)
@@ -1436,6 +1520,52 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void ShowAllWires(object o)
+        {
+            var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.AllConnectors.Any(x => x.IsHidden)).ToList();
+            ShowHideAllWires(nodeModels, false);
+        }
+
+        private bool CanShowAllWires(object o)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>()
+                .Any(n => n.AllConnectors.Any(x => x.IsHidden));
+        }
+
+        private void HideAllWires(object o)
+        {
+            var nodeModels = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.AllConnectors.Any(x => !x.IsHidden)).ToList();
+            ShowHideAllWires(nodeModels, true);
+
+        }
+
+        private bool CanHideAllWires(object o)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>()
+                .Any(n => n.AllConnectors.Any(x => !x.IsHidden));
+        }
+
+        /// <summary>
+        /// Shows or Hides all wires of a list of nodeModels
+        /// </summary>
+        /// <param name="nodeModels"></param>
+        /// <param name="isHidden"></param>
+        private void ShowHideAllWires(List<NodeModel> nodeModels, bool isHidden)
+        {
+            if (!nodeModels.Any()) return;
+
+            foreach (var nodeModel in nodeModels)
+            {
+                var connectors = nodeModel.AllConnectors;
+                foreach (var connector in connectors)
+                {
+                    if (connector != null)
+                        connector.IsHidden = isHidden;
+
+                }
+            }
+        }
+
         /// <summary>
         /// Collapse a set of nodes and notes currently selected in workspace
         /// </summary>
@@ -1471,7 +1601,9 @@ namespace Dynamo.ViewModels
         {
             AlignSelectedCommand.RaiseCanExecuteChanged();
             ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
-            SetArgumentLacingCommand.RaiseCanExecuteChanged();           
+            SetArgumentLacingCommand.RaiseCanExecuteChanged();     
+            ShowAllWiresCommand.RaiseCanExecuteChanged();
+            HideAllWiresCommand.RaiseCanExecuteChanged();
             RaisePropertyChanged("HasSelection");
             RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");
@@ -1512,6 +1644,7 @@ namespace Dynamo.ViewModels
             return foundModels;
         }
 
+        
     }
 
     public class ViewModelEventArgs : EventArgs

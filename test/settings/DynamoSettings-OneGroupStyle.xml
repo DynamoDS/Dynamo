@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<PreferenceSettings>
+  <IsFirstRun>true</IsFirstRun>
+  <IsAnalyticsReportingApproved>true</IsAnalyticsReportingApproved>
+  <LibraryWidth>304</LibraryWidth>
+  <ConsoleHeight>0</ConsoleHeight>
+  <ShowPreviewBubbles>true</ShowPreviewBubbles>
+  <ShowCodeBlockLineNumber>true</ShowCodeBlockLineNumber>
+  <ShowConnector>true</ShowConnector>
+  <ShowConnectorToolTip>true</ShowConnectorToolTip>
+  <ConnectorType>BEZIER</ConnectorType>
+  <BackgroundPreviews />
+  <IsBackgroundGridVisible>true</IsBackgroundGridVisible>
+  <RenderPrecision>128</RenderPrecision>
+  <ShowEdges>false</ShowEdges>
+  <ShowDetailedLayout>true</ShowDetailedLayout>
+  <WindowX>0</WindowX>
+  <WindowY>0</WindowY>
+  <WindowW>1024</WindowW>
+  <WindowH>768</WindowH>
+  <UseHardwareAcceleration>true</UseHardwareAcceleration>
+  <NumberFormat>f3</NumberFormat>
+  <MaxNumRecentFiles>10</MaxNumRecentFiles>
+  <RecentFiles />
+  <BackupFiles />
+  <CustomPackageFolders />
+  <PackageDirectoriesToUninstall />
+  <PythonTemplateFilePath />
+  <BackupInterval>60000</BackupInterval>
+  <BackupFilesCount>1</BackupFilesCount>
+  <PackageDownloadTouAccepted>false</PackageDownloadTouAccepted>
+  <OpenFileInManualExecutionMode>false</OpenFileInManualExecutionMode>
+  <IsIronPythonDialogDisabled>false</IsIronPythonDialogDisabled>
+  <ShowTabsAndSpacesInScriptEditor>false</ShowTabsAndSpacesInScriptEditor>
+  <EnableNodeAutoComplete>true</EnableNodeAutoComplete>
+  <DefaultPythonEngine />
+  <ViewExtensionSettings />
+  <DisableBuiltinPackages>false</DisableBuiltinPackages>
+  <DisableCustomPackageLocations>false</DisableCustomPackageLocations>
+  <DefaultRunType>Automatic</DefaultRunType>
+  <ShowRunPreview>false</ShowRunPreview>
+  <GroupStyleItemsList>
+    <GroupStyleItem>
+      <Name>GroupName</Name>
+      <HexColorString>000000</HexColorString>
+    </GroupStyleItem>
+  </GroupStyleItemsList>
+  <NodeSearchTagSizeLimit>300</NodeSearchTagSizeLimit>
+  <IronPythonResolveTargetVersion>2.4.0</IronPythonResolveTargetVersion>
+</PreferenceSettings>

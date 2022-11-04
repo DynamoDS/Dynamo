@@ -1,0 +1,256 @@
+{
+  "Uuid": "027298f0-9572-4770-98bf-25ccec5e5669",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "default_unit_dropdowns",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "UnitsUI.Symbols, UnitsUI",
+      "SelectedIndex": -1,
+      "SelectedString": "",
+      "NodeType": "ExtensionNode",
+      "Id": "97be2ea4af6141b8837166b938449ad8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "81bbc31e91914f0e8b4d6fb752e04c84",
+          "Name": "Symbol",
+          "Description": "The selected Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Symbol type"
+    },
+    {
+      "ConcreteType": "UnitsUI.Units, UnitsUI",
+      "SelectedIndex": -1,
+      "SelectedString": "",
+      "NodeType": "ExtensionNode",
+      "Id": "2cc49d25d3b447b281a81efd6173c6cf",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c5c2142d1e6b40b5b2f73fb244daf099",
+          "Name": "Unit",
+          "Description": "The selected Unit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Unit type"
+    },
+    {
+      "ConcreteType": "UnitsUI.Quantities, UnitsUI",
+      "SelectedIndex": -1,
+      "SelectedString": "",
+      "NodeType": "ExtensionNode",
+      "Id": "826e97769d8140a7a14dba145a5f9712",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e0d41bc2c9274a20bd23ffa403ac3923",
+          "Name": "Quantity",
+          "Description": "The selected Quantity",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Quantity type"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DynamoUnits.Utilities.ConvertByUnits@double,DynamoUnits.Unit,DynamoUnits.Unit",
+      "Id": "19ab38f624084dec9e7ee2ee56b69f79",
+      "Inputs": [
+        {
+          "Id": "b098a850a7724e4f9ec91034bced140a",
+          "Name": "value",
+          "Description": "Value to convert\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "50ad325752504fb8aca80dfa575557a8",
+          "Name": "fromUnit",
+          "Description": "Unit object\n\nUnit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "00eb3173ead540ee87904b62c586cc92",
+          "Name": "toUnit",
+          "Description": "Unit object\n\nUnit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0ddf079a395e4edeb644be4086032692",
+          "Name": "double",
+          "Description": "Converted value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Converts a value from one Unit System to another Unit System\n\nUtilities.ConvertByUnits (value: double, fromUnit: Unit, toUnit: Unit): double"
+    },
+    {
+      "ConcreteType": "UnitsUI.DynamoUnitConvert, UnitsUI",
+      "MeasurementType": "autodesk.unit.quantity:length-1.0.4",
+      "FromConversion": "autodesk.unit.unit:centimeters-1.0.1",
+      "ToConversion": "autodesk.unit.unit:centimeters-1.0.1",
+      "NodeType": "ExtensionNode",
+      "Id": "f84587c6af6448ca9f722047fdd00c14",
+      "Inputs": [
+        {
+          "Id": "3ad96881af6c4f9586830e1095ea287a",
+          "Name": "",
+          "Description": "A value to convert",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b6dd2a3aa60a4348a72dfb2d6d6cfee1",
+          "Name": "",
+          "Description": "Converted value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Convert a value between selected Unit systems."
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.0.3196",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "4",
+        "Id": "97be2ea4af6141b8837166b938449ad8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 441.0,
+        "Y": 530.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "5",
+        "Id": "2cc49d25d3b447b281a81efd6173c6cf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 445.0,
+        "Y": 675.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "3",
+        "Id": "826e97769d8140a7a14dba145a5f9712",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 449.0,
+        "Y": 372.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "2",
+        "Id": "19ab38f624084dec9e7ee2ee56b69f79",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 114.0,
+        "Y": 444.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "1",
+        "Id": "f84587c6af6448ca9f722047fdd00c14",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 125.0,
+        "Y": 169.5
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

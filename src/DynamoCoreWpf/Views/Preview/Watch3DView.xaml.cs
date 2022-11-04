@@ -171,7 +171,16 @@ namespace Dynamo.Controls
 
         private void ViewModel_RequestZoomToFit(BoundingBox bounds)
         {
-            watch_view.ZoomExtents(bounds.ToRect3D());
+            var prevcamDir = watch_view.Camera.LookDirection;
+            watch_view.ZoomExtents(bounds.ToRect3D(.05));
+            //if after a zoom the camera is in an undefined position or view direction, reset it.
+            if(watch_view.Camera.Position.ToVector3().IsUndefined() || 
+                watch_view.Camera.LookDirection.ToVector3().IsUndefined() || 
+                watch_view.Camera.LookDirection.Length == 0)
+            {
+                watch_view.Camera.Position = prevCamera;
+                watch_view.Camera.LookDirection = prevcamDir;
+            }
         }
 
         private void RequestViewRefreshHandler()

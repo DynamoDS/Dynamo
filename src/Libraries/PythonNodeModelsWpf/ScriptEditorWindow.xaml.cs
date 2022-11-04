@@ -1,4 +1,6 @@
-﻿using System;
+using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
@@ -12,6 +14,8 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
+using System.Linq;
+using Dynamo.PythonServices;
 
 namespace PythonNodeModelsWpf
 {
@@ -29,7 +33,20 @@ namespace PythonNodeModelsWpf
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
         private string originalScript;
-        public PythonEngineVersion CachedEngine { get; set; }
+
+        // Reasonable max and min font size values for zooming limits
+        private const double FONT_MAX_SIZE = 60d;
+        private const double FONT_MIN_SIZE = 5d;
+
+        public string CachedEngine { get; set; }
+
+        /// <summary>
+        /// Available Python engines.
+        /// </summary>
+        public ObservableCollection<string> AvailableEngines
+        {
+            get; private set;
+        }
 
         public ScriptEditorWindow(
             DynamoViewModel dynamoViewModel,
@@ -42,7 +59,7 @@ namespace PythonNodeModelsWpf
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
-            completionProvider = new SharedCompletionProvider(nodeModel.Engine, dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
+            completionProvider = new SharedCompletionProvider(nodeModel.EngineName, dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
             nodeModel.CodeMigrated += OnNodeModelCodeMigrated;
 
@@ -51,7 +68,7 @@ namespace PythonNodeModelsWpf
 
             EngineSelectorComboBox.Visibility = Visibility.Visible;
 
-            Dynamo.Logging.Analytics.TrackScreenView("Python");
+            Analytics.TrackScreenView("Python");
         }
 
         internal void Initialize(Guid workspaceGuid, Guid nodeGuid, string propName, string propValue)
@@ -78,13 +95,80 @@ namespace PythonNodeModelsWpf
             editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
 
+            AvailableEngines = new ObservableCollection<string>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name));
+            // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
+            if (!AvailableEngines.Contains(nodeModel.EngineName))
+            {
+                AvailableEngines.Add(nodeModel.EngineName);
+            }
+
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged += UpdateAvailableEngines;
+
             editText.Text = propValue;
             originalScript = propValue;
-            CachedEngine = nodeModel.Engine;
+            CachedEngine = nodeModel.EngineName;
             EngineSelectorComboBox.SelectedItem = CachedEngine;
         }
 
+        #region Text Zoom in Python Editor
+        /// <summary>
+        /// PreviewMouseWheel event handler to zoom in and out
+        /// Additional check to make sure reacting to ctrl + mouse wheel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EditorBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            bool ctrl = Keyboard.Modifiers == ModifierKeys.Control;
+            if (ctrl)
+            {
+                this.UpdateFontSize(e.Delta > 0);
+                e.Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// Function to increases/decreases font size in avalon editor by a specific increment
+        /// </summary>
+        /// <param name="increase"></param>
+        private void UpdateFontSize(bool increase)
+        {
+            double currentSize = editText.FontSize;
+
+            if (increase)
+            {
+                if (currentSize < FONT_MAX_SIZE)
+                {
+                    double newSize = Math.Min(FONT_MAX_SIZE, currentSize + 1);
+                    editText.FontSize = newSize;
+                }
+            }
+            else
+            {
+                if (currentSize > FONT_MIN_SIZE)
+                {
+                    double newSize = Math.Max(FONT_MIN_SIZE, currentSize - 1);
+                    editText.FontSize = newSize;
+                }
+            }
+        }
+        #endregion
+
         #region Autocomplete Event Handlers
+
+        private void UpdateAvailableEngines(object sender = null, NotifyCollectionChangedEventArgs e = null)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    if (!AvailableEngines.Contains((string)item))
+                    {
+                        AvailableEngines.Add((string)item);
+                    }
+                }
+            }
+        }
 
         private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)
         {
@@ -113,8 +197,10 @@ namespace PythonNodeModelsWpf
                     var subString = editText.Text.Substring(0, editText.CaretOffset);
                     var completions = completionProvider.GetCompletionData(subString, false);
 
-                    if (completions.Length == 0)
+                    if (completions == null || completions.Length == 0)
+                    {
                         return;
+                    }
 
                     completionWindow = new CompletionWindow(editText.TextArea);
                     var data = completionWindow.CompletionList.CompletionData;
@@ -145,17 +231,17 @@ namespace PythonNodeModelsWpf
         {
             originalScript = e.OldCode;
             editText.Text = e.NewCode;
-            if (CachedEngine != PythonEngineVersion.CPython3)
+            if (CachedEngine != PythonEngineManager.CPython3EngineName)
             {
-                CachedEngine = PythonEngineVersion.CPython3;
-                EngineSelectorComboBox.SelectedItem = CachedEngine;
+                CachedEngine = PythonEngineManager.CPython3EngineName;
+                EngineSelectorComboBox.SelectedItem = PythonEngineManager.CPython3EngineName;
             }
         }
 
         private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
             originalScript = editText.Text;
-            nodeModel.Engine = CachedEngine;
+            nodeModel.EngineName = CachedEngine;
             UpdateScript(editText.Text);
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Save,
@@ -167,7 +253,7 @@ namespace PythonNodeModelsWpf
             if (nodeWasModified)
             {
                 editText.Text = originalScript;
-                CachedEngine = nodeModel.Engine;
+                CachedEngine = nodeModel.EngineName;
                 EngineSelectorComboBox.SelectedItem = CachedEngine;
                 UpdateScript(originalScript);
             }
@@ -215,22 +301,25 @@ namespace PythonNodeModelsWpf
 
         private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (CachedEngine != nodeModel.Engine)
+            if (CachedEngine != nodeModel.EngineName)
             {
                 nodeWasModified = true;
                 // Cover what switch did user make. Only track when the new engine option is different with the previous one.
                 Analytics.TrackEvent(
-                    Dynamo.Logging.Actions.Switch,
-                    Dynamo.Logging.Categories.PythonOperations,
-                    CachedEngine.ToString());
+                    Actions.Switch,
+                    Categories.PythonOperations,
+                    CachedEngine);
             }
-            editText.Options.ConvertTabsToSpaces = CachedEngine != PythonEngineVersion.IronPython2;
+            editText.Options.ConvertTabsToSpaces = CachedEngine != PythonEngineManager.IronPython2EngineName;
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
         {
+            completionProvider?.Dispose();
             nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
             this.Closed -= OnScriptEditorWindowClosed;
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
+
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Close,
                 Dynamo.Logging.Categories.PythonOperations);

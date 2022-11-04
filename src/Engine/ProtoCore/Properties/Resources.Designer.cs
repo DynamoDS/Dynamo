@@ -251,7 +251,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;)&apos; expected - Imcomplete Closure.
+        ///   Looks up a localized string similar to &apos;)&apos; expected - Incomplete Closure.
         /// </summary>
         public static string CloseBracketExpected {
             get {
@@ -1160,11 +1160,11 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Internal error, please report: Dereferencing a non-pointer. href=DeferencingNonPointer.html.
+        ///   Looks up a localized string similar to Internal error, please report: Dereferencing a non-pointer. href=DereferencingNonPointer.html.
         /// </summary>
-        public static string kDeferencingNonPointer {
+        public static string kDereferencingNonPointer {
             get {
-                return ResourceManager.GetString("kDeferencingNonPointer", resourceCulture);
+                return ResourceManager.GetString("kDereferencingNonPointer", resourceCulture);
             }
         }
         
@@ -1457,7 +1457,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is no version of {0} that accepts argument type(s) ({1})..
+        ///   Looks up a localized string similar to There is no version of {0} that accepts argument type(s) ({1}). href=NonOverloadMethodResolutionError.html.
         /// </summary>
         public static string kMethodResolutionFailureWithTypes {
             get {

@@ -1,0 +1,149 @@
+{
+  "Uuid": "96b9c6c7-b3fb-43b5-b93d-403331402a45",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "obsolete_zero_touch_node",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.TestCSharpAttribute.Test2",
+      "Id": "cb146e7e22ad4e96bfe45e506d3669d1",
+      "Inputs": [
+        {
+          "Id": "75b48c635f5d4ca3a2ce0a5cd5217eb8",
+          "Name": "testCSharpAttribute",
+          "Description": "FFITarget.TestCSharpAttribute",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ecd0db6179284d8fb3c229c29b4c4fe9",
+          "Name": "string",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "TestCSharpAttribute.Test2 ( ): string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.TestCSharpAttribute.TestCSharpAttribute",
+      "Id": "7f095b0ef2b1456ea0d45ae31c432018",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "11a5739e8f9d4772abe39326040b6d21",
+          "Name": "TestCSharpAttribute",
+          "Description": "TestCSharpAttribute",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "TestCSharpAttribute.TestCSharpAttribute ( ): TestCSharpAttribute"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "11a5739e8f9d4772abe39326040b6d21",
+      "End": "75b48c635f5d4ca3a2ce0a5cd5217eb8",
+      "Id": "65601d14a9444461b22a76a1b3f436ad",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "FFITarget.dll",
+      "ReferenceType": "ZeroTouch",
+      "Nodes": [
+        "cb146e7e22ad4e96bfe45e506d3669d1",
+        "7f095b0ef2b1456ea0d45ae31c432018"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.14.0.4472",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "TestCSharpAttribute.Test2",
+        "ShowGeometry": true,
+        "Id": "cb146e7e22ad4e96bfe45e506d3669d1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 336.0,
+        "Y": 300.80000000000007
+      },
+      {
+        "Name": "TestCSharpAttribute.TestCSharpAttribute",
+        "ShowGeometry": true,
+        "Id": "7f095b0ef2b1456ea0d45ae31c432018",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 132.80000000000007,
+        "Y": 47.999999999999986
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

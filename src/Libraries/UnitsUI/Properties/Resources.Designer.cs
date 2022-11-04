@@ -19,7 +19,7 @@ namespace UnitsUI.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -88,11 +88,56 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Converts a value between selected unit systems.
+        /// </summary>
+        internal static string ConvertUnitsDescription {
+            get {
+                return ResourceManager.GetString("ConvertUnitsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string ConvertUnitsSearchTags {
+            get {
+                return ResourceManager.GetString("ConvertUnitsSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A value to convert.
+        /// </summary>
+        internal static string CovertUnitInputTooltip {
+            get {
+                return ResourceManager.GetString("CovertUnitInputTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Converted value.
+        /// </summary>
+        internal static string CovertUnitOutputTooltip {
+            get {
+                return ResourceManager.GetString("CovertUnitOutputTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit....
         /// </summary>
         internal static string EditHeader {
             get {
                 return ResourceManager.GetString("EditHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is obsolete, please use the Parse Unit Input node..
+        /// </summary>
+        internal static string LegthFromStringObsoleteMessage {
+            get {
+                return ResourceManager.GetString("LegthFromStringObsoleteMessage", resourceCulture);
             }
         }
         
@@ -124,11 +169,119 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Converts an input string with unit values into the equivalent value of the expression.
+        /// </summary>
+        internal static string ParseUnitInputDescription {
+            get {
+                return ResourceManager.GetString("ParseUnitInputDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string ParseUnitInputSearchTags {
+            get {
+                return ResourceManager.GetString("ParseUnitInputSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected Unit.
+        /// </summary>
+        internal static string ParseUnitInputUnitTooltip {
+            get {
+                return ResourceManager.GetString("ParseUnitInputUnitTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Converted value of expresion.
+        /// </summary>
+        internal static string ParseUnitInputValueTooltip {
+            get {
+                return ResourceManager.GetString("ParseUnitInputValueTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a Quantity type.
+        /// </summary>
+        internal static string QuantitiesUIDescription {
+            get {
+                return ResourceManager.GetString("QuantitiesUIDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string QuantitiesUISearchTags {
+            get {
+                return ResourceManager.GetString("QuantitiesUISearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an issue loading Unit Schemas from the specified path:.
+        /// </summary>
+        internal static string SchemaLoadWarning {
+            get {
+                return ResourceManager.GetString("SchemaLoadWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a Symbol type.
+        /// </summary>
+        internal static string SymbolsUIDescription {
+            get {
+                return ResourceManager.GetString("SymbolsUIDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SymbolsUISearchTags {
+            get {
+                return ResourceManager.GetString("SymbolsUISearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a Unit type.
+        /// </summary>
+        internal static string UnitsUIDescription {
+            get {
+                return ResourceManager.GetString("UnitsUIDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string UnitsUISearchTags {
+            get {
+                return ResourceManager.GetString("UnitsUISearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select a unit of measurement..
         /// </summary>
         internal static string UnitTypesDescription {
             get {
                 return ResourceManager.GetString("UnitTypesDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is obsolete, please use the Units dropdown node..
+        /// </summary>
+        internal static string UnitTypesObsoleteMessage {
+            get {
+                return ResourceManager.GetString("UnitTypesObsoleteMessage", resourceCulture);
             }
         }
         

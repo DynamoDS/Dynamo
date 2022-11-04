@@ -1,6 +1,7 @@
 ﻿using System;
 using Dynamo.Configuration;
 using Dynamo.Graph;
+using Dynamo.Logging;
 using Dynamo.UI.Commands;
 using Newtonsoft.Json;
 
@@ -47,8 +48,7 @@ namespace Dynamo.ViewModels
 
         #region Properties
 
-        [JsonIgnore]
-        private readonly WorkspaceViewModel WorkspaceViewModel;
+        internal readonly WorkspaceViewModel WorkspaceViewModel;
         /// initialize the start Z-Index of a pin to a default
         /// zIndex is mutable depending on mouse behaviour
         private int zIndex = Configurations.NodeStartZIndex; 
@@ -233,6 +233,9 @@ namespace Dynamo.ViewModels
         private void UnpinWireCommandExecute(object parameter)
         {
             OnRequestRemove(this, EventArgs.Empty);
+            Logging.Analytics.TrackEvent(
+                Actions.Unpin,
+                Categories.ConnectorOperations);
             WorkspaceViewModel.Model.HasUnsavedChanges = true;
         }
 
@@ -243,23 +246,28 @@ namespace Dynamo.ViewModels
 
         #endregion
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="workspaceViewModel"></param>
+        /// <param name="model"></param>
         public ConnectorPinViewModel(WorkspaceViewModel workspaceViewModel, ConnectorPinModel model)
         {
             this.WorkspaceViewModel = workspaceViewModel;
             this.model = model;
             InitializeCommands();
-            model.PropertyChanged += pin_PropertyChanged;
+            model.PropertyChanged += OnPinPropertyChanged;
             ZIndex = ++StaticZIndex; // places the pin on top of all nodes/notes
         }
 
         public override void Dispose()
         {
-            model.PropertyChanged -= pin_PropertyChanged;
+            model.PropertyChanged -= OnPinPropertyChanged;
             base.Dispose();
         }
 
         //respond to changes on the model's properties
-        void pin_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void OnPinPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {

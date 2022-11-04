@@ -30,7 +30,6 @@ namespace ProtoCore.DSASM.Mirror
         private readonly ProtoCore.RuntimeCore runtimeCore;
         public Executive MirrorTarget { get; private set; }
         private OutputFormatParameters formatParams;
-        private Dictionary<string, List<string>> propertyFilter;
 
         /// <summary>
         /// Create a mirror for a given executive
@@ -296,9 +295,9 @@ namespace ProtoCore.DSASM.Mirror
 
             if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
-                ci = runtimeCore.watchClassScope = rmem.CurrentStackFrame.ClassScope;
-                functionIndex = rmem.CurrentStackFrame.FunctionScope;
-                functionBlock = rmem.CurrentStackFrame.FunctionBlock;
+                ci = runtimeCore.watchClassScope = rmem.CurrentStackFrameClassScope;
+                functionIndex = rmem.CurrentStackFrameFunctionScope;
+                functionBlock = rmem.CurrentStackFrameFunctionBlock;
             }
 
             // TODO Jun: 'block' is incremented only if there was no other block provided by the programmer

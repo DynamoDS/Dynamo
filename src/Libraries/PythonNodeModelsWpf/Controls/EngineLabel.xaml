@@ -29,6 +29,6 @@
             Grid.Row="1"
             FontSize="8"
             Foreground="{StaticResource PrimaryCharcoal100Brush}"
-            Text="{Binding NodeModel.Engine}" />
+            Text="{Binding NodeModel.EngineName}" />
     </Grid>
 </UserControl>

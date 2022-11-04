@@ -1,0 +1,19 @@
+{
+    "license": "",
+    "file_hash": null,
+    "name": "DynamoIronPython2.7",
+    "version": "2.5.0",
+    "description": "*** This is the official version of the IronPython Extension which will load the IronPython2 evaluation engine for Dynamo. *** \r\n\r\nIf you see the following warning 'The configured Python engine could not be found' when you try to run a Python Script node which is set to use IronPython2, the host application for Dynamo (Such as Revit or Civil 3d) will have chosen to exclude IronPython2 as default installed content and you will need to download this extension in order to enable IronPython2 again.\r\n\r\nYou have the ability to either download this IronPython2 Extension or use the alternative out-of-the-box CPython3 engine and migrate your legacy IronPython2 code to CPython3. While there are differences in language the Python basis is the same and we have provided a Migration Assistant to help you migrate your code to Python3.",
+    "group": "",
+    "keywords": [ "python", "ironpython" ],
+    "dependencies": [],
+    "host_dependencies": [ "Revit", "Civil 3D", "Alias", "Advance Steel", "FormIt" ],
+    "contents": "",
+    "engine_version": "2.13.0",
+    "engine": "dynamo",
+    "engine_metadata": "This pacakge is compatible with Dynamo2.13.0 release or newer",
+    "site_url": "https://dynamobim.org/",
+    "repository_url": "https://github.com/DynamoDS/Dynamo",
+    "contains_binaries": true,
+    "node_libraries": []
+}

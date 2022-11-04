@@ -1,76 +1,167 @@
 <?xml version="1.0"?>
--
-<PreferenceSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-	<IsFirstRun>
-		true
-	</IsFirstRun>
-	<IsUsageReportingApproved>
-		false
-	</IsUsageReportingApproved>
-	<IsAnalyticsReportingApproved>
-		false
-	</IsAnalyticsReportingApproved>
-	<LibraryWidth>
-		304
-	</LibraryWidth>
-	<ConsoleHeight>
-		0
-	</ConsoleHeight>
-	<ShowPreviewBubbles>
-		true
-	</ShowPreviewBubbles>
-	<ShowConnector>
-		true
-	</ShowConnector>
-	<ConnectorType>
-		BEZIER
-	</ConnectorType>
-	<BackgroundPreviews />
-	<IsBackgroundGridVisible>
-		true
-	</IsBackgroundGridVisible>
-	<ShowEdges>
-		false
-	</ShowEdges>
-	<ShowDetailedLayout>
-		true
-	</ShowDetailedLayout>
-	<WindowX>
-		0
-	</WindowX>
-	<WindowY>
-		0
-	</WindowY>
-	<WindowW>
-		1024
-	</WindowW>
-	<WindowH>
-		768
-	</WindowH>
-	<UseHardwareAcceleration>
-		true
-	</UseHardwareAcceleration>
-	<NumberFormat>
-		f3
-	</NumberFormat>
-	<MaxNumRecentFiles>
-		10
-	</MaxNumRecentFiles>
-	<RecentFiles />
-	<BackupFiles />
-	<CustomPackageFolders />
-	<PackageDirectoriesToUninstall />
-	<PythonTemplateFilePath />
-	<BackupInterval>
-		60000
-	</BackupInterval>
-	<BackupFilesCount>
-		1
-	</BackupFilesCount>
-	<PackageDownloadTouAccepted>
-		false
-	</PackageDownloadTouAccepted>
-	<OpenFileInManualExecutionMode>
-		false
-	</OpenFileInManualExecutionMode>
+<PreferenceSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsFirstRun>false</IsFirstRun>
+  <IsAnalyticsReportingApproved>false</IsAnalyticsReportingApproved>
+  <LibraryWidth>1</LibraryWidth>
+  <ConsoleHeight>0</ConsoleHeight>
+  <ShowPreviewBubbles>true</ShowPreviewBubbles>
+  <ShowCodeBlockLineNumber>true</ShowCodeBlockLineNumber>
+  <ShowConnector>false</ShowConnector>
+  <ShowConnectorToolTip>true</ShowConnectorToolTip>
+  <ConnectorType>BEZIER</ConnectorType>
+  <BackgroundPreviews>
+    <BackgroundPreviewActiveState>
+      <Name>IsBackgroundPreviewActive</Name>
+      <IsActive>false</IsActive>
+    </BackgroundPreviewActiveState>
+  </BackgroundPreviews>
+  <IsBackgroundGridVisible>false</IsBackgroundGridVisible>
+  <ShowEdges>false</ShowEdges>
+  <ShowDetailedLayout>true</ShowDetailedLayout>
+  <WindowX>345</WindowX>
+  <WindowY>76</WindowY>
+  <WindowW>1024</WindowW>
+  <WindowH>768</WindowH>
+  <UseHardwareAcceleration>true</UseHardwareAcceleration>
+  <NumberFormat>f3</NumberFormat>
+  <MaxNumRecentFiles>10</MaxNumRecentFiles>
+  <RecentFiles>
+    <string>C:\Users\tanga\Desktop\Home.dyn</string>
+    <string>C:\Users\tanga\Downloads\20220217 Dynamo group bugs.dyn</string>
+    <string>C:\ProgramData\Dynamo\Dynamo Core\samples\en-US\Revit\Revit_Color.dyn</string>
+    <string>C:\Users\tanga\Downloads\error_warning_bubble.dyn</string>
+    <string>C:\Users\tanga\Downloads\Workspace Layout\Workspace Layout.dyn</string>
+    <string>C:\Users\tanga\Downloads\Three Box Massing.dyn</string>
+    <string>C:\Users\tanga\Documents\GitHub\Dynamo\test\core\annotationViewModelTests\groupsTestFile.dyn</string>
+    <string>C:\ProgramData\Dynamo\Dynamo Core\samples\en-US\Geometry\Geometry_Solids.dyn</string>
+    <string>C:\ProgramData\Dynamo\Dynamo Core\samples\en-US\Geometry\Geometry_Surfaces.dyn</string>
+    <string>C:\ProgramData\Dynamo\Dynamo Core\samples\en-US\Basics\Basics_Basic01.dyn</string>
+  </RecentFiles>
+  <BackupFiles>
+    <string>C:\Users\tanga\AppData\Roaming\Dynamo\Dynamo Core\backup\backup.DYN</string>
+  </BackupFiles>
+  <CustomPackageFolders>
+    <string>C:\Users\tanga\AppData\Roaming\Dynamo\Dynamo Core\2.14</string>
+    <string>%BuiltInPackages%</string>
+    <string>C:\ProgramData\Dynamo\Dynamo Core\2.14\packages</string>
+  </CustomPackageFolders>
+  <PackageDirectoriesToUninstall>
+    <string>C:\Users\tanga\AppData\Roaming\Dynamo\Dynamo Core\2.11\packages\TuneUp</string>
+  </PackageDirectoriesToUninstall>
+  <PythonTemplateFilePath />
+  <BackupInterval>60000</BackupInterval>
+  <BackupFilesCount>1</BackupFilesCount>
+  <PackageDownloadTouAccepted>true</PackageDownloadTouAccepted>
+  <OpenFileInManualExecutionMode>false</OpenFileInManualExecutionMode>
+  <IsIronPythonDialogDisabled>true</IsIronPythonDialogDisabled>
+  <ShowTabsAndSpacesInScriptEditor>false</ShowTabsAndSpacesInScriptEditor>
+  <EnableNodeAutoComplete>true</EnableNodeAutoComplete>
+  <DefaultPythonEngine />
+  <SelectedPackagePathForInstall>C:\Users\tanga\AppData\Roaming\Dynamo\Dynamo Core\2.14</SelectedPackagePathForInstall>
+  <NamespacesToExcludeFromLibrary>
+    <string>ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline</string>
+  </NamespacesToExcludeFromLibrary>
+  <ViewExtensionSettings>
+    <ViewExtensionSettings>
+      <Name>Documentation Browser</Name>
+      <UniqueId>68B45FC0-0BD1-435C-BF28-B97CB03C71C8</UniqueId>
+      <DisplayMode>DockRight</DisplayMode>
+      <WindowSettings>
+        <Status>Normal</Status>
+        <Left>1060</Left>
+        <Top>416</Top>
+        <Width>160</Width>
+        <Height>32</Height>
+      </WindowSettings>
+    </ViewExtensionSettings>
+    <ViewExtensionSettings>
+      <Name>TuneUp</Name>
+      <UniqueId>b318f80b-b1d0-4935-b80e-7ab1be7742b4</UniqueId>
+      <DisplayMode>FloatingWindow</DisplayMode>
+      <WindowSettings>
+        <Status>Normal</Status>
+        <Left>94</Left>
+        <Top>193</Top>
+        <Width>347</Width>
+        <Height>727</Height>
+      </WindowSettings>
+    </ViewExtensionSettings>
+    <ViewExtensionSettings>
+      <Name>Workspace References</Name>
+      <UniqueId>A6706BF5-11C2-458F-B7C8-B745A77EF7FD</UniqueId>
+      <DisplayMode>DockRight</DisplayMode>
+      <WindowSettings>
+        <Status>Normal</Status>
+        <Left>234</Left>
+        <Top>194</Top>
+        <Width>1440</Width>
+        <Height>759</Height>
+      </WindowSettings>
+    </ViewExtensionSettings>
+    <ViewExtensionSettings>
+      <Name>Workspace References</Name>
+      <UniqueId>85c3fb83-a886-482f-9ed6-6eb9994e20d3</UniqueId>
+      <DisplayMode>DockRight</DisplayMode>
+    </ViewExtensionSettings>
+    <ViewExtensionSettings>
+      <Name>Properties</Name>
+      <UniqueId>28992e1d-abb9-417f-8b1b-05e053bee670</UniqueId>
+      <DisplayMode>DockRight</DisplayMode>
+    </ViewExtensionSettings>
+    <ViewExtensionSettings>
+      <Name>Package Details</Name>
+      <UniqueId>C71CA1B9-BF9F-425A-A12C-53DF56770406</UniqueId>
+      <DisplayMode>DockRight</DisplayMode>
+      <WindowSettings>
+        <Status>Normal</Status>
+        <Left>240</Left>
+        <Top>141</Top>
+        <Width>1440</Width>
+        <Height>759</Height>
+      </WindowSettings>
+    </ViewExtensionSettings>
+    <ViewExtensionSettings>
+      <Name>Voice Control</Name>
+      <UniqueId>F884D20E-3B9A-4DCD-890C-D786B4A5DB9D</UniqueId>
+      <DisplayMode>DockRight</DisplayMode>
+    </ViewExtensionSettings>
+  </ViewExtensionSettings>
+  <DisableBuiltinPackages>false</DisableBuiltinPackages>
+  <DisableCustomPackageLocations>false</DisableCustomPackageLocations>
+  <DefaultRunType>Automatic</DefaultRunType>
+  <ShowRunPreview>false</ShowRunPreview>
+  <GroupStyleItemsList>
+    <GroupStyleItem>
+      <Name>Actions</Name>
+      <HexColorString>B9F9E1</HexColorString>
+      <IsDefault>true</IsDefault>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Inputs</Name>
+      <HexColorString>FFB8D8</HexColorString>
+      <IsDefault>true</IsDefault>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Outputs</Name>
+      <HexColorString>FFC999</HexColorString>
+      <IsDefault>true</IsDefault>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Review</Name>
+      <HexColorString>A4E1FF</HexColorString>
+      <IsDefault>true</IsDefault>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>My way too long style</Name>
+      <HexColorString>0E7033</HexColorString>
+      <IsDefault>false</IsDefault>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Sample Style 01</Name>
+      <HexColorString>6C9C9B</HexColorString>
+      <IsDefault>false</IsDefault>
+    </GroupStyleItem>
+  </GroupStyleItemsList>
+  <NodeSearchTagSizeLimit>300</NodeSearchTagSizeLimit>
+  <IronPythonResolveTargetVersion>2.1.0</IronPythonResolveTargetVersion>
 </PreferenceSettings>

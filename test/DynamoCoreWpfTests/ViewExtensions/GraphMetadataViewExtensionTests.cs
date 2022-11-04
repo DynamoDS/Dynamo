@@ -29,7 +29,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
             var extensionManager = View.viewExtensionManager;
 
             var propertiesExt = extensionManager.ViewExtensions
-                .FirstOrDefault(x => x.Name == GraphMetadataViewExtension.extensionName)
+                .FirstOrDefault(x => x as GraphMetadataViewExtension != null )
                 as GraphMetadataViewExtension;
 
             var hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
@@ -77,7 +77,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
             var extensionManager = View.viewExtensionManager;
 
             var propertiesExt = extensionManager.ViewExtensions
-                .FirstOrDefault(x => x.Name == GraphMetadataViewExtension.extensionName)
+                .FirstOrDefault(x => x as GraphMetadataViewExtension != null)
                 as GraphMetadataViewExtension;
 
             // Act
@@ -116,7 +116,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
             // Act
             var extensionManager = View.viewExtensionManager;
             var propertiesExt = extensionManager.ViewExtensions
-                .FirstOrDefault(x => x.Name == GraphMetadataViewExtension.extensionName)
+                .FirstOrDefault(x => x as GraphMetadataViewExtension != null)
                 as GraphMetadataViewExtension;
 
             var customPropertiesBeforeOpen = propertiesExt.viewModel.CustomProperties.Count;
@@ -139,7 +139,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
         {
             var extensionManager = View.viewExtensionManager;
             var propertiesExt = extensionManager.ViewExtensions
-                    .FirstOrDefault(x => x.Name == GraphMetadataViewExtension.extensionName)
+                    .FirstOrDefault(x => x as GraphMetadataViewExtension != null)
                 as GraphMetadataViewExtension;
 
             var customPropertiesBeforeOpen = propertiesExt.viewModel.CustomProperties.Count;

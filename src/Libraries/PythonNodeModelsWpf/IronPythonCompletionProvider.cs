@@ -4,16 +4,12 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Logging;
+using Dynamo.PythonServices;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using IronPython.Runtime;
-using Microsoft.Scripting.Actions;
-using Microsoft.Scripting.Hosting;
 using PythonNodeModels;
 
 namespace Dynamo.Python
 {
-
-
     //This class needs to stay here with a reference to IronPython for now, its use will be
     //completely removed from Dynamo though - so the dependencey on Ironpython will ONLY be at compile time.
     [Obsolete("Do Not Use! This class will be removed in a future version of Dynamo," +
@@ -25,7 +21,7 @@ namespace Dynamo.Python
     public class IronPythonCompletionProvider : LogSourceBase
     {
         private readonly IExternalCodeCompletionProviderCore providerImplementation;
-        private const string providerTypeName = "DSIronPython.IronPythonCodeCompletionProviderCore, DSIronPython";
+        private const string providerTypeName = "Dynamo.PythonServices.PythonCodeCompletionProviderCommon, DynamoServices";
 
         #region Properties and fields
 
@@ -34,9 +30,9 @@ namespace Dynamo.Python
         /// track of the state of the editor, allowing access to variable types and
         /// imported symbols.
         /// </summary>
-        public ScriptEngine Engine
+        public object Engine
         {
-            get { return (ScriptEngine)(providerImplementation as ILegacyPythonCompletionCore).Engine; }
+            get { return (providerImplementation as ILegacyPythonCompletionCore).Engine; }
             set { (providerImplementation as ILegacyPythonCompletionCore).Engine = value; }
         }
 
@@ -44,9 +40,9 @@ namespace Dynamo.Python
         /// The scope used by the engine.  This is where all the loaded symbols
         /// are stored.  It's essentially an environment dictionary.
         /// </summary>
-        public ScriptScope Scope
+        public object Scope
         {
-            get { return (ScriptScope)(providerImplementation as ILegacyPythonCompletionCore).Scope; }
+            get { return (providerImplementation as ILegacyPythonCompletionCore).Scope; }
             set { (providerImplementation as ILegacyPythonCompletionCore).Scope = value; }
         }
 
@@ -75,24 +71,6 @@ namespace Dynamo.Python
         /// </summary>
         public Dictionary<string, Type> RegexToType = new Dictionary<string, Type>();
 
-
-        /// <summary>
-        /// Maps a basic variable regex to a basic python type.
-        /// </summary>      
-        public static string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s?)+)";
-        public static string variableName = @"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";
-        public static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
-        public static string singleQuoteStringRegex = "(\'[^\']*\')"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
-        public static string arrayRegex = "(\\[.*\\])";
-        public static string spacesOrNone = @"(\s*)";
-        public static string atLeastOneSpaceRegex = @"(\s+)";
-        public static string equals = @"(=)"; // Not CLS compliant - replaced with equalsRegex - Remove in Dynamo 3.0
-        public static string dictRegex = "({.*})";
-        public static string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
-        public static string intRegex = @"([-+]?\d+)[\s\n]*$";
-        public static string basicImportRegex = @"(import)";
-        public static string fromImportRegex = @"^(from)";
-
         #endregion
 
         #region Constructors
@@ -108,7 +86,7 @@ namespace Dynamo.Python
         /// </summary>
         public IronPythonCompletionProvider(string dynamoCoreDir)
         {
-            var versionName = Enum.GetName(typeof(PythonEngineVersion), PythonEngineVersion.IronPython2);
+            var versionName = PythonEngineManager.IronPython2EngineName;
             var matchingCore = SharedCompletionProvider.FindMatchingCodeCompletionCore(versionName, this.AsLogger());
             if (matchingCore != null)
             {
@@ -150,7 +128,7 @@ namespace Dynamo.Python
         /// <param name="module">A reference to the module</param>
         /// <param name="name">The name of the module</param>
         /// <returns>A list of completion data for the module</returns>
-        public List<IronPythonCompletionData> EnumerateMembers(PythonModule module, string name)
+        public List<IronPythonCompletionData> EnumerateMembers(object module, string name)
         {
             var items = new List<IronPythonCompletionData>();
             foreach (var completion in (providerImplementation as ILegacyPythonCompletionCore).EnumerateMembers(module, name))
@@ -168,7 +146,7 @@ namespace Dynamo.Python
         /// <param name="ns">A reference to the module</param>
         /// <param name="name">The name of the module</param>
         /// <returns>A list of completion data for the namespace</returns>
-        public List<IronPythonCompletionData> EnumerateMembers(NamespaceTracker ns, string name)
+        public List<IronPythonCompletionData> EnumerateMembersFromTracker(object ns, string name)
         {
             var items = new List<IronPythonCompletionData>();
             foreach (var completion in (providerImplementation as ILegacyPythonCompletionCore).EnumerateMembersFromTracker(ns, name))
@@ -206,7 +184,7 @@ namespace Dynamo.Python
         /// <param name="name">A name for a type, possibly delimited by periods.</param>
         /// <param name="n">The namespace</param>
         /// <returns>The type as an object</returns>
-        public object LookupMember(string name, NamespaceTracker n)
+        public object LookupMember(string name, object n)
         {
             return (this.providerImplementation as ILegacyPythonCompletionCore).LookupMember(name, n);
         }

@@ -120,13 +120,12 @@
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="CSVIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAEISURBVEhL5ZMxCsIwFIY9gkconsAjeBtXj1BwcXDoJHTr
-        BbyDiyDUwVOIk4iidYv/X17LS9DSpKigw8fLS176NS9tzxjzVqwkz/MY7MCqJTeQ6We4WAmKKRjpuSZE
-        kjVJrCREIPGlxEpCBTJ+KrGSEIHsqeD9zXSNu8FXMGS9YgJiXeNu8BK4iOS7ggTwsqqe+sK9iX6mK2DR
-        51qE8RTcQQHm4Cr5GqRSg1DXewsQ6jE/wYWMWbcFY3BQNe0FiANwVGvMeYKN5AYsQXkSmQs/geR9sAeU
-        XbgOIrUedAfs/wmw92dQtgQxBUVVK3N+Al/aCH7sP/DlfwRdL7lREAG+RRfqH88Y03sAmXOkqjDnxZ4A
-        AAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAAQhJREFUSEvlkzEKwjAUhj2CRyiewCN4G1ePUHBxcOgkdOsFvIOLINTBU4iTiKJ1
+        i/9fXstL0NKkqKDDx8tLXvo1L23PGPNWrCTP8xjswKolN5DpZ7hYCYopGOm5JkSSNUmsJEQg8aXESkIF
+        Mn4qsZIQgeyp4P3NdI27wVcwZL1iAmJd427wEriI5LuCBPCyqp76wr2JfqYrYNHnWoTxFNxBAebgKvka
+        pFKDUNd7CxDqMT/BhYxZtwVjcFA17QWIA3BUa8x5go3kBixBeRKZCz+B5H2wB5RduA4itR50B+z/CbD3
+        Z1C2BDEFRVUrc34CX9oIfuw/8OV/BF0vuVEQAb5FF+ofzxjTewCZc6SqMOfFngAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="CustomNodeReferenceIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -177,24 +176,23 @@
   </data>
   <data name="DWGIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAEaSURBVEhL5ZO9DcIwEEYzAmwQZQJGYAEmYAAkKkaIRENB
-        kZYuC1AxADRUaWgoKGkoERU/lfm+6Ay2BZEdFCFB8XQ553zvYiuRUqpRrKQoihRswMqTM8jNHi5WgmIK
-        uuZaFSLJqyRWUkcg8a3ESuoK5PmlxErqCGSPhvc3MWvcDaGCDusNRiA1a9wNQQIXkXxXkAFelj7TULg3
-        M3u6AhY1f0RgCy5AgRmjvGc+AGswBWNwAld57y04gkTW2JT0JZZC0GJ09tcS8HkJ9uAAdoBflwC+GwKu
-        t0GYAJRTAj01j4dxIfUIjyFY7y3glGzESXnOPeZScwNlE8Q50Hfl/wXmWgg+gh/5D8y1EP5H8OklVwpi
-        wCk+IX72VNEdolSmDMraEJQAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAARpJREFUSEvlk70NwjAQRjMCbBBlAkZgASZgACQqRohEQ0GRli4LUDEANFRpaCgo
+        aSgRFT+V+b7oDLYFkR0UIUHxdDnnfO9iK5FSqlGspCiKFGzAypMzyM0eLlaCYgq65loVIsmrJFZSRyDx
+        rcRK6grk+aXESuoIZI+G9zcxa9wNoYIO6w1GIDVr3A1BAheRfFeQAV6WPtNQuDcze7oCFjV/RGALLkCB
+        GaO8Zz4AazAFY3ACV3nvLTiCRNbYlPQllkLQYnT21xLweQn24AB2gF+XAL4bAq63QZgAlFMCPTWPh3Eh
+        9QiPIVjvLeCUbMRJec495lJzA2UTxDnQd+X/BeZaCD6CH/kPzLUQ/kfw6SVXCmLAKT4hfvZU0R2iVKYM
+        ytoQlAAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="ExcelIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAECSURBVEhL5ZOxDcIwEEUzAiMgJmAE9mAAWkZISZkKiS6j
-        UCKlYQDqCFGkQAJBZf5HZ3G2IMo5AiQonuxz7u7hHMmcc28lCKqqysEWrDtyBqXuERMESKZgos/aEEnZ
-        JgmCFIGsLyVBkCqQ/VNJEKQIpMbD+S10TlxgFYyZr5iDXOfEBSZBjEi+KygAh+XfqRXWFrpnLGDSZ14R
-        1ik4AQ7SgRGo5RmHyWeXqN42A+z5t2PzFaCgUedLn6fyzQLG2N73WsA9b7DxuXJuFuzAAQQ3kGcDUPNc
-        nZlmMANszkZ+BlwbcAVHsI/qbTew0kXwQ99BCv8j6DvkVsEQ8Ff0Yfjo6bIbb8qh+i5L+pUAAAAASUVO
-        RK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAAQJJREFUSEvlk7ENwjAQRTMCIyAmYAT2YABaRkhJmQqJLqNQIqVhAOoIUaRAAkFl
+        /kdncbYgyjkCJCie7HPu7uEcyZxzbyUIqqrKwRasO3IGpe4REwRIpmCiz9oQSdkmCYIUgawvJUGQKpD9
+        U0kQpAikxsP5LXROXGAVjJmvmINc58QFJkGMSL4rKACH5d+pFdYWumcsYNJnXhHWKTgBDtKBEajlGYfJ
+        Z5eo3jYD7Pm3Y/MVoKBR50ufp/LNAsbY3vdawD1vsPG5cm4W7MABBDeQZwNQ81ydmWYwA2zORn4GXBtw
+        BUewj+ptN7DSRfBD30EK/yPoO+RWwRDwV/Rh+OjpshtvyqH6Lkv6lQAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="ExtensionName" xml:space="preserve">
@@ -202,24 +200,26 @@
   </data>
   <data name="ExternalFileIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAACSSURBVEhL7ZXBDYAgDEUZhREcwZEcgaNjMIp3Lk7jFVtT
-        Y9sICMaTHF7gk7aPhAMmxvgpIoQQHLACy0M2wPMZGhGgGAUjP8tBEp+TiNAioDUpEaFVQPtbiQgtAuo5
-        wfebeY1uqBUMWM+YAMdrdEOVQEOSLkjTBUW6oEgXFPmPAH8mXFs4evlMLbAA3uIN9poZzQ5RdqFNzHBa
-        QQAAAABJRU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAAJJJREFUSEvtlcENgCAMRRmFERzBkRyBo2MwincuTuMVW1Nj2wgIxpMcXuCTto+E
+        AybG+CkihBAcsALLQzbA8xkaEaAYBSM/y0ESn5OI0CKgNSkRoVVA+1uJCC0C6jnB95t5jW6oFQxYz5gA
+        x2t0Q5VAQ5IuSNMFRbqgSBcU+Y8AfyZcWzh6+UwtsADe4g32mhnNDlF2oU3McFpBAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="ExternalFilesHeaderText" xml:space="preserve">
     <value>External Files</value>
   </data>
+  <data name="ExternalFilesToolTip" xml:space="preserve">
+    <value>External files are external documents in the graph space, such as images or text files. These are computed when the graph is run or by clicking the refresh icon incase the graph is already executed.</value>
+  </data>
   <data name="ImageIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAD5SURBVEhL5ZM/DoIwFMY5gkcgnsDEC3gkE+PO6ODAyka8
-        iM6yuHgF4mDc/LPV7yOP+NpoQ0vURIdf2le+vh9QSIwxb8UqqqrKwA5sOnIBpe7hYhUIUzDRaz5EUvok
-        VhEjkPGlxCpiBTJ/KrGKGIHsaeH5LXTG3RAqGDGvmIJMZ9wNQQIXkXxXkAMeVvtOQ+HeXPd0BQx99hWh
-        rsEYGHAGc+EErmClslECNhrKOAP8FCkb6JxkewuWYM25ulaobJTgBijgXe8Bv/3mCUAjVtkwAeZHcABs
-        VKv1AlBC+Vathz9BCF0EP/gfhPA/gr6H7BWkgHfRh/TR0yR3l+SjAG1PoicAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAAPlJREFUSEvlkz8OgjAUxjmCRyCewMQLeCQT487o4MDKRryIzrK4eAXiYNz8s9Xv
+        I4/42mhDS9REh1/aV76+H1BIjDFvxSqqqsrADmw6cgGl7uFiFQhTMNFrPkRS+iRWESOQ8aXEKmIFMn8q
+        sYoYgexp4fktdMbdECoYMa+Ygkxn3A1BAheRfFeQAx5W+05D4d5c93QFDH32FaGuwRgYcAZz4QSuYKWy
+        UQI2Gso4A/wUKRvonGR7C5Zgzbm6VqhslOAGKOBd7wG//eYJQCNW2TAB5kdwAGxUq/UCUEL5Vq2HP0EI
+        XQQ/+B+E8D+CvofsFaSAd9GH9NHTJHeX5KMAbU+iJwAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="InstallButtonText" xml:space="preserve">
@@ -227,13 +227,13 @@
   </data>
   <data name="JsonIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAEbSURBVEhL5ZMxCsIwFIZ7BI8gnsATiNfwFh6h4OLg0Elw
-        6wWcvICjUEEPILgVB+kgqHWK/19eMQlamhQVdPhIXt7L+0xiA6XUWzGCJElCsAXLmlxArPewMQIUU9DX
-        16oQSVwlMQIfgYwvJUbgK5D5U4kR+AhkTwnfb6zX2BtcBV3WawxBqNfYG5wENiL5riACfKzyTl3h3kjv
-        aQtY9JkrwpgCPtoZ5LI2AjfAXA8owIfuyJqTIAP82021PIZinIA1Y8AaCljvLOBGnmAl80xyA8DmrNmB
-        hcydBDlg0xbg8TlHqsiVJ2DT8qrqC8ARHMAGnDiX/AxcAfOsS2V9DvayVu8EPtQR/NB34MP/CJo+cqWg
-        DfgrmtB+9FTBHaFNpjbhAHGkAAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAARtJREFUSEvlkzEKwjAUhnsEjyCewBOI1/AWHqHg4uDQSXDrBZy8gKNQQQ8guBUH
+        6SCodYr/X14xCVqaFBV0+Ehe3sv7TGIDpdRbMYIkSUKwBcuaXECs97AxAhRT0NfXqhBJXCUxAh+BjC8l
+        RuArkPlTiRH4CGRPCd9vrNfYG1wFXdZrDEGo19gbnAQ2IvmuIAJ8rPJOXeHeSO9pC1j0mSvCmAI+2hnk
+        sjYCN8BcDyjAh+7ImpMgA/zbTbU8hmKcgDVjwBoKWO8s4EaeYCXzTHIDwOas2YGFzJ0EOWDTFuDxOUeq
+        yJUnYNPyquoLwBEcwAacOJf8DFwB86xLZX0O9rJW7wQ+1BH80Hfgw/8Imj5ypaAN+Cua0H70VMEdoU2m
+        NuEAcaQAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="KeepLocalButtonText" xml:space="preserve">
@@ -242,8 +242,11 @@
   <data name="LocalDefinitionsHeaderText" xml:space="preserve">
     <value>Local Definitions</value>
   </data>
+  <data name="LocalDefinitionsToolTip" xml:space="preserve">
+    <value>Local definitions are Dynamo-specific files corresponding to local custom nodes and local packages. These are computed when the graph is saved or by clicking the refresh icon.</value>
+  </data>
   <data name="MenuItemString" xml:space="preserve">
-    <value>Show Workspace References</value>
+    <value>Show _Workspace References</value>
   </data>
   <data name="NameHeader" xml:space="preserve">
     <value>Name</value>
@@ -465,17 +468,20 @@
   <data name="PackageHeaderText" xml:space="preserve">
     <value>Packages</value>
   </data>
+  <data name="PackagesToolTip" xml:space="preserve">
+    <value>Packages extend Dynamo's core functionality and are available in the Package Manager. These are computed when the graph is saved or by clicking the refresh icon.</value>
+  </data>
   <data name="PathHeader" xml:space="preserve">
     <value>Path</value>
   </data>
   <data name="PDFIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAD9SURBVEhL5ZM9DoJAEEY5gt6AcAKP4AW8i4mhJ7GxsKCl
-        4yba09hYeAFLO7Vcv4/MxtmNEnbxJ9HihZ3dmXnAQGKMeStO0DRNAXZg25MLqHUPHydAMgVTvdeFSOou
-        iRPECOT6VOIEsQJZP5Q4QYxAaiyc30rn+AWhggnzFXNQ6By/IEjgI5LvCkrAYdl3GgprS93TFzDpM68I
-        1zEw4AxycABX2atAJusTyKUmSMAGLF4Afn5cZ3LGxu25Vx8lWIONrK2gXQP7BDPZDxawwR7we7dNR+Bl
-        T3BUZ5wBG3MOS+CcS05/QQx9BD/0H8TwP4KhQ+4UpIB3MYT03tMkN4b9oMkfCfI2AAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAAP1JREFUSEvlkz0OgkAQRjmC3oBwAo/gBbyLiaEnsbGwoKXjJtrT2Fh4AUs7tVy/
+        j8zG2Y0SdvEn0eKFnd2ZecBAYox5K07QNE0BdmDbkwuodQ8fJ0AyBVO914VI6i6JE8QI5PpU4gSxAlk/
+        lDhBjEBqLJzfSuf4BaGCCfMVc1DoHL8gSOAjku8KSsBh2XcaCmtL3dMXMOkzrwjXMTDgDHJwAFfZq0Am
+        6xPIpSZIwAYsXgB+flxncsbG7blXHyVYg42sraBdA/sEM9kPFrDBHvB7t01H4GVPcFRnnAEbcw5L4JxL
+        Tn9BDH0EP/QfxPA/gqFD7hSkgHcxhPTe0yQ3hv2gyR8J8jYAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="ProvideFeedbackButton" xml:space="preserve">

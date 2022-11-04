@@ -20,7 +20,7 @@ namespace Dynamo.Tests
         DynamoModel model;
         ICommandExecutive executive;
         int cmdExecutionState = -1;
-        private  Logging.NotificationMessage message;
+        private  NotificationMessage message;
 
         [SetUp]
         public void Init()
@@ -89,7 +89,7 @@ namespace Dynamo.Tests
             executive = ready.CommandExecutive;
             Assert.IsTrue(ready.WorkspaceModels.Any());
             Assert.IsNotNull(ready.CurrentWorkspaceModel);
-            ready.NotificationRecieved += (Logging.NotificationMessage obj) => message = obj;
+            ready.NotificationRecieved += (NotificationMessage obj) => message = obj;
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace Dynamo.Tests
             var cmd = new ThrowExceptionCommand();
             Assert.Throws<System.NotImplementedException>(() => cmd.Execute(model));
             Assert.DoesNotThrow(() => executive.ExecuteCommand(cmd, "TestRecordable", "ExtensionTests"));
-            Assert.AreEqual(Logging.WarningLevel.Error, model.Logger.WarningLevel);
+            Assert.AreEqual(WarningLevel.Error, model.Logger.WarningLevel);
         }
 
         void OnCommandCompleted(DynamoModel.RecordableCommand command)

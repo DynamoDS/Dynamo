@@ -1,6 +1,8 @@
-﻿using Dynamo.Graph.Nodes;
+﻿using Dynamo.Configuration;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.PythonServices;
 using PythonNodeModels;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,7 @@ namespace Dynamo.PythonMigration
     public class GraphPythonDependencies
     {
         internal static readonly string PythonPackage = "DynamoIronPython2.7";
-        internal static readonly Version PythonPackageVersion = new Version(1, 0, 0);
+        internal static readonly Version PythonPackageVersion = PreferenceSettings.ironPythonResolveTargetVersion;
         private IWorkspaceModel workspace;
         private readonly ICustomNodeManager customNodeManager;
 
@@ -44,13 +46,7 @@ namespace Dynamo.PythonMigration
 
         private static bool IsIronPythonPackageLoaded()
         {
-            PythonEngineSelector.Instance.GetEvaluatorInfo(
-                PythonEngineVersion.IronPython2,
-                out string evaluatorClass,
-                out string evaluationMethod);
-
-            return evaluatorClass == PythonEngineSelector.Instance.IronPythonEvaluatorClass
-                && evaluationMethod == PythonEngineSelector.Instance.IronPythonEvaluationMethod;
+            return PythonEngineManager.Instance.AvailableEngines.Any(x => x.Name == PythonEngineManager.IronPython2EngineName);
         }
 
         /// <summary>
@@ -163,7 +159,7 @@ namespace Dynamo.PythonMigration
             if (!(obj is PythonNodeBase pythonNode))
                 return false;
 
-            return pythonNode.Engine == PythonEngineVersion.IronPython2;
+            return pythonNode.EngineName == PythonEngineManager.IronPython2EngineName;
         }
 
         internal static bool IsCPythonNode(NodeModel obj)
@@ -171,7 +167,7 @@ namespace Dynamo.PythonMigration
             if (!(obj is PythonNodeBase pythonNode))
                 return false;
 
-            return pythonNode.Engine == PythonEngineVersion.CPython3;
+            return pythonNode.EngineName == PythonEngineManager.CPython3EngineName;
         }
     }
 }

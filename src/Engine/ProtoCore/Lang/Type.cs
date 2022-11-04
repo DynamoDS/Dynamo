@@ -121,6 +121,15 @@ namespace ProtoCore
         public Dictionary<ProtoCore.DSASM.AddressType, int> addressTypeClassMap { get; set; }
         private static Dictionary<PrimitiveType, string> primitiveTypeNames;
 
+        private static readonly Dictionary<string, string> clrToDSTypeMap = new Dictionary<string, string>
+        {
+            { typeof(string).FullName, "string" },
+            { typeof(long).FullName, "int" },
+            { typeof(double).FullName, "double" },
+            { typeof(bool).FullName, "bool" },
+            { typeof(char).FullName, "char" }
+        };
+
         public TypeSystem()
         {
             SetTypeSystem();
@@ -314,7 +323,13 @@ namespace ProtoCore
         public int GetType(string ident)
         {
             Validity.Assert(null != classTable);
-            return classTable.IndexOf(ident);
+            var index = classTable.IndexOf(ident);
+            if (index != Constants.kInvalidIndex) return index;
+
+            if(clrToDSTypeMap.TryGetValue(ident, out string dsType))
+                return classTable.IndexOf(dsType);
+
+            return Constants.kInvalidIndex;
         }
 
         public int GetType(StackValue sv)
@@ -417,7 +432,9 @@ namespace ProtoCore
                 return array.CopyArray(newTargetType, runtimeCore);
             }
 
-            if (!sv.IsArray && !sv.IsNull &&
+            // Null can be converted to Boolean so we will allow it in the case of indexable types
+            bool nullAsBool = sv.IsNull && (targetType.UID == (int)PrimitiveType.Bool);
+            if (!sv.IsArray && (!sv.IsNull || nullAsBool) &&
                 targetType.IsIndexable &&
                 targetType.rank != DSASM.Constants.kArbitraryRank)
             {

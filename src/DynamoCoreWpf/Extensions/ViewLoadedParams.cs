@@ -235,6 +235,18 @@ namespace Dynamo.Wpf.Extensions
             remove => dynamoViewModel.ViewExtensionOpenRequest -= value;
         }
 
+        /// <summary>
+        /// Event raised when a component inside Dynamo raises a request to open a view extension
+        /// providing extension name or GUID while being passed a parameter object.
+        /// </summary>
+        public event Action<string, object> ViewExtensionOpenRequestWithParameter
+        {
+            // we provide a transparent passthrough to underlying event
+            // so that the ViewLoadedParams class itself doesn't appear as a subscriber to the event
+            add => dynamoViewModel.ViewExtensionOpenWithParameterRequest += value;
+            remove => dynamoViewModel.ViewExtensionOpenWithParameterRequest -= value;
+        }
+
     }
     /// <summary>
     /// An enum that represents the different possible 

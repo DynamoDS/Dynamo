@@ -160,5 +160,23 @@ namespace CoreNodeModels.Input
             }
             return result;
         }
+
+        /// <summary>
+        /// check if the value is within int64 range
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        protected static bool IsValueInt64(string value)
+        {
+            try
+            {
+                var result = Convert.ToInt64(value);
+                return true;
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+        }
     }
 }

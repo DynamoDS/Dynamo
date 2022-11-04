@@ -668,7 +668,7 @@ i = [Imperative]
                         }
                         ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("i", new[] {0, 0, 0, 0});
+            thisTest.Verify("i", new[] {0, 0, 0, 4});
         }
 
         [Test]

@@ -6,6 +6,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
+using Dynamo.Models;
 using Dynamo.Visualization;
 using ProtoCore.Mirror;
 
@@ -216,6 +217,8 @@ namespace Dynamo.Scheduler
         private void GetTessellationDataFromGraphicItem(Guid outputPortId, IGraphicItem graphicItem, string labelKey, ref IRenderPackage package)
         {
             var packageWithTransform = package as ITransformable;
+            var packageWithInstances = package as IInstancingRenderPackage;
+            var packageWithLabelInstances = package as IRenderInstancedLabels;
 
             try
             {
@@ -224,9 +227,77 @@ namespace Dynamo.Scheduler
                 var previousMeshVertexCount = package.MeshVertexCount;
 
                 //Todo Plane tessellation needs to be handled here vs in LibG currently
+                bool instancingEnabled = DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("graphics-primitive-instancing", false);
                 if (graphicItem is Plane plane)
                 {
                     CreatePlaneTessellation(package, plane);
+                }
+                else if (graphicItem is IInstanceableGraphicItem instanceableItem &&
+                    instanceableItem.InstanceInfoAvailable 
+                    && packageWithInstances != null
+                    && instancingEnabled)
+                {
+                    //if we have not generated the base tessellation for this type yet, generate it
+                    if (!packageWithInstances.ContainsTessellationId(instanceableItem.BaseTessellationGuid))
+                  
+                    {
+                        instanceableItem.AddBaseTessellation(packageWithInstances, factory.TessellationParameters);
+                        var prevLineIndex = package.LineVertexCount;
+                        //if edges is on, then also add edges to base tessellation.
+                        if (factory.TessellationParameters.ShowEdges)
+                        {
+                            //TODO if we start to instance more types, expand this edge generation.
+                            //and the swtich case below.
+                            if (graphicItem is Topology topology)
+                            {
+                                Topology topologyInIdentityCS = null;
+                                switch (topology)
+                                {
+                                    case Cuboid _:
+                                        topologyInIdentityCS = Cuboid.ByLengths();
+                                        break;
+                                }
+                                //if topologyInIdentityCS is still null or Edges is null 
+                                //don't attempt to add any graphic edges.
+                                var edges = topologyInIdentityCS?.Edges;
+                                if (edges != null)
+                                {
+                                    foreach (var geom in edges.Select(edge => edge.CurveGeometry))
+                                    {
+                                        geom.Tessellate(package, factory.TessellationParameters);
+                                        geom.Dispose();
+                                    }
+
+                                    edges.ForEach(x => x.Dispose());
+                                    packageWithInstances.AddInstanceGuidForLineVertexRange(prevLineIndex, package.LineVertexCount - 1, instanceableItem.BaseTessellationGuid);
+                                }
+                                topologyInIdentityCS?.Dispose();
+                            }
+                        }
+                    }
+
+                    instanceableItem.AddInstance(packageWithInstances, factory.TessellationParameters, labelKey);
+                    //for the instance we just added we need to add labels if autogen labels is true.
+                    if (package is IRenderLabels labelPackage && labelPackage.AutoGenerateLabels && packageWithLabelInstances != null)
+                    {
+                        if (package.MeshVertexCount > 0)
+                        {
+                            packageWithLabelInstances.AddInstancedLabel(labelKey,
+                                VertexType.MeshInstance,
+                                package.MeshVertexCount, 
+                                packageWithLabelInstances.InstanceCount(instanceableItem.BaseTessellationGuid),
+                                instanceableItem.BaseTessellationGuid) ;
+                        }
+                        else if (package.LineVertexCount > 0)
+                        {
+                            packageWithLabelInstances.AddInstancedLabel(labelKey, 
+                                VertexType.LineInstance,
+                                package.LineVertexCount,
+                                packageWithLabelInstances.InstanceCount(instanceableItem.BaseTessellationGuid),
+                                instanceableItem.BaseTessellationGuid);
+                        }
+                    }
+                    return;
                 }
                 else
                 {

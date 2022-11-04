@@ -8,13 +8,51 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Selection;
 using NUnit.Framework;
-
+using static Dynamo.Models.DynamoModel;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
     internal class AnnotationModelTest : DynamoModelTestBase
     {
+        [Test]
+        [Category("UnitTests")]
+        public void CanDeleteAnnotation()
+        {
+            //Add a Node
+            var model = CurrentDynamoModel;
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", Guid.NewGuid());
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 1);
+
+            // Select the group and try to call API again, this should create a parent group on top of it
+            DynamoSelection.Instance.Selection.Add(annotation);
+            var parentAnnotation = model.CurrentWorkspace.AddAnnotation("This is a parent test group", Guid.NewGuid());
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 2);
+
+            DynamoSelection.Instance.Selection.Clear();
+            DynamoSelection.Instance.Selection.Add(parentAnnotation);
+            Assert.IsTrue(addNode.IsSelected);
+            // Delete the parent group, what's left should be child elements all de-selected
+            CurrentDynamoModel.ExecuteCommand(new DeleteModelCommand(parentAnnotation.GUID));
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 1);
+            Assert.AreEqual(DynamoSelection.Instance.Selection.Count(), 0);
+            Assert.IsFalse(addNode.IsSelected);
+        }
+
         [Test]
         [Category("UnitTests")]
         public void CanAddAnnotation()
@@ -43,6 +81,41 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void CanAddAnnotationWithAnnotationSelected()
+        {
+            //Add a Node
+            var model = CurrentDynamoModel;
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", Guid.NewGuid());
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 1);
+
+            // Select the group and try to call API again, this should create a parent group on top of it
+            DynamoSelection.Instance.Selection.Add(annotation);
+            var parentAnnotation = model.CurrentWorkspace.AddAnnotation("This is a parent test group", Guid.NewGuid());
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 2);
+
+            // Select the parent group and try to call API again, the creation should fail
+            DynamoSelection.Instance.Selection.Add(parentAnnotation);
+            var newParentAnnotation = model.CurrentWorkspace.AddAnnotation("This is another parent test group", Guid.NewGuid());
+            Assert.AreEqual(newParentAnnotation, null);
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 2);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void UndoAnnotationText()
         {
             //Add a Node
@@ -65,6 +138,7 @@ namespace Dynamo.Tests
             var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
             Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 1);
             Assert.AreNotEqual(0, annotation.Width);
+            Assert.AreEqual(string.Empty, annotation.AnnotationText);
 
             //Update the Annotation Text
             model.ExecuteCommand(
@@ -77,7 +151,59 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.Undo();
             
             //Title should be changed now.
-            Assert.AreEqual("This is a test group", annotation.AnnotationText);
+            Assert.AreEqual(string.Empty, annotation.AnnotationText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UndoEdditedTitleGroup()
+        {
+            //Add a Node
+            var model = CurrentDynamoModel;
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            Guid groupid = Guid.NewGuid();
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 1);
+            Assert.AreNotEqual(0, annotation.Width);
+            Assert.AreEqual(string.Empty, annotation.AnnotationText);
+
+            DynamoSelection.Instance.Selection.Add(annotation);
+
+            //Update the Annotation Text
+            model.ExecuteCommand(
+                    new DynCmd.UpdateModelValueCommand(
+                        Guid.Empty, annotation.GUID, "TextBlockText",
+                        "This is a unit test"));
+
+            Assert.AreEqual("This is a unit test", annotation.AnnotationText);
+            Assert.AreEqual(3, DynamoSelection.Instance.Selection.Count());
+
+            //Deselects the group
+            model.ExecuteCommand(
+                    new DynCmd.SelectModelCommand(Guid.Empty, Utilities.ModifierKeys.None));
+
+            //Undo Deselection
+            model.CurrentWorkspace.Undo();
+            Assert.IsTrue(DynamoSelection.Instance.Selection.Any());
+            Assert.AreEqual("This is a unit test", annotation.AnnotationText);
+
+            //Undo Title text
+            model.CurrentWorkspace.Undo();
+            Assert.AreEqual(string.Empty, annotation.AnnotationText);
+
         }
 
         [Test]

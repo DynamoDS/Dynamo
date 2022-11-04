@@ -350,7 +350,7 @@ namespace Dynamo.Core
             XmlElement newGroup = document.CreateElement(ActionGroup);
 
             // As we iterate through each child node under "actionGroup", 
-            // occassionally we may want to appand that child node under 
+            // occasionally we may want to append that child node under 
             // "newGroup". This action causes the child node to be removed, and 
             // "actionGroup.ChildNodes" to drop by one. This means that 
             // "actionGroup.ChildNodes" to be non-constant, something the loop 
@@ -389,7 +389,6 @@ namespace Dynamo.Core
                         ModelBase toBeUpdated = undoClient.GetModelForElement(element);
                         if (toBeUpdated != null)
                         {
-
                             RecordActionInternal(newGroup, toBeUpdated, modelActionType);
                             undoClient.ReloadModel(element);
                         }

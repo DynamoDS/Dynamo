@@ -89,7 +89,8 @@ namespace DynamoCoreWpfTests
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
             Assert.IsNotNull(node);
             Assert.AreEqual(ElementState.PersistentWarning, node.State);
-            Assert.AreEqual("This node is deprecated", node.ToolTipText);
+            Assert.IsTrue(node.Infos.Count == 1);
+            Assert.IsTrue(node.Infos.Any(x => x.Message.Equals("This node is deprecated") && x.State == ElementState.PersistentWarning));
         }
 
         [TearDown]

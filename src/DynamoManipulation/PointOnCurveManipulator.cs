@@ -134,16 +134,16 @@ namespace Dynamo.Manipulation
                     param = curve.ParameterAtPoint(closestPosition);
                 }
             }
-            param = Math.Round(param, 3);
-            
+            param = Math.Round(param, ROUND_UP_PARAM);
+
             tangent = curve.TangentAtParameter(param);
             pointOnCurve = curve.PointAtParameter(param);
+        }
 
-            if (inputNode != null)
-            {
-                dynamic uinode = inputNode;
-                uinode.Value = param;
-            }
+        protected override List<(NodeModel inputNode, double amount)> InputNodesToUpdateAfterMove(Vector offset)
+        {
+            double param = curve.ParameterAtPoint(pointOnCurve);
+            return new List<(NodeModel, double)>() { (inputNode, param) };
         }
 
         protected override void Dispose(bool disposing)

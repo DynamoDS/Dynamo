@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -8,3 +9,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("47d2166c-5261-4093-9660-e72b7035e666")]
+
+[assembly: InternalsVisibleTo("DynamoCoreWpfTests")] 

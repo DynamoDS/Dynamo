@@ -120,6 +120,9 @@
   <data name="ButtonDetails" xml:space="preserve">
     <value>Show Details</value>
   </data>
+  <data name="ButtonHideDetails" xml:space="preserve">
+    <value>Hide Details</value>
+  </data>
   <data name="ButtonOK" xml:space="preserve">
     <value>OK</value>
   </data>
@@ -131,5 +134,8 @@
   </data>
   <data name="ExtensionName" xml:space="preserve">
     <value>Notifications</value>
+  </data>
+  <data name="NotificationCenterDisabledMsg" xml:space="preserve">
+    <value>Notification Center feature is disabled. Enable it in preference panel to see latest news.</value>
   </data>
 </root>

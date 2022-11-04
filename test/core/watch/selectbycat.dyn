@@ -1,0 +1,223 @@
+{
+  "Uuid": "10624e95-988b-42eb-9773-a14ff6518e2c",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "selectbycat",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.ComboNodes.DSModelElementByCategorySelection, DSRevitNodesUI",
+      "SelectedIndex": 307,
+      "SelectedString": "OST_Levels",
+      "NodeType": "ExtensionNode",
+      "InstanceId": [],
+      "Id": "74018f127ada41608cff93af2c8c960f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "822e017d0250493e97a0935e3505c123",
+          "Name": "Element",
+          "Description": "Die ausgewählten Elemente",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.SpecTypes, DSRevitNodesUI",
+      "SelectedIndex": 66,
+      "SelectedString": "autodesk.spec.aec:length",
+      "NodeType": "ExtensionNode",
+      "Id": "6b7a6d2cfd8c4459bafc6783eb8ff485",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "59d22dead2844a099858cd0b54241cd7",
+          "Name": "SpecType",
+          "Description": "SpecType sélectionné",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Spec type."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Application.Document.UnitTypeBySpecType@Revit.Elements.ForgeType",
+      "Id": "baee542fbccb404c97880afa766d0cb8",
+      "Inputs": [
+        {
+          "Id": "2e9406f83bc34897ba102ad37efa48ae",
+          "Name": "document",
+          "Description": "Revit.Application.Document",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f92c885285354088abf797c95dbf755e",
+          "Name": "specType",
+          "Description": "ForgeType",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "16afe15ad38a45d9984d2d3aeeb66ed4",
+          "Name": "Unit",
+          "Description": "Unit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Provide the Unit type from the associated with the SpecType in the Revit Document.\n\nDocument.UnitTypeBySpecType (specType: ForgeType): Unit"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Application.Document.Current",
+      "Id": "14a5422153be4a609dfbbe1283c5771c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5ad87824b29d4dbaa711701ee6407d45",
+          "Name": "Document",
+          "Description": "Document",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the current document\n\nDocument.Current: Document"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "59d22dead2844a099858cd0b54241cd7",
+      "End": "f92c885285354088abf797c95dbf755e",
+      "Id": "b782e7bc092c4c8ba695cbeba30d6c51",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5ad87824b29d4dbaa711701ee6407d45",
+      "End": "2e9406f83bc34897ba102ad37efa48ae",
+      "Id": "d12af19bd5fc421d8a65686df7394cab",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.1.3887",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Select Model Element By Category",
+        "ShowGeometry": true,
+        "Id": "74018f127ada41608cff93af2c8c960f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 327.99999999999966,
+        "Y": 29.600000000000009
+      },
+      {
+        "Name": "Spec Types",
+        "ShowGeometry": true,
+        "Id": "6b7a6d2cfd8c4459bafc6783eb8ff485",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 37.599999999999966,
+        "Y": 213.60000000000002
+      },
+      {
+        "Name": "Document.UnitTypeBySpecType",
+        "ShowGeometry": true,
+        "Id": "baee542fbccb404c97880afa766d0cb8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 304.00000000000006,
+        "Y": 325.6
+      },
+      {
+        "Name": "Document.Current",
+        "ShowGeometry": true,
+        "Id": "14a5422153be4a609dfbbe1283c5771c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 21.599999999999966,
+        "Y": 418.40000000000003
+      }
+    ],
+    "Annotations": [],
+    "X": 225.96499999999992,
+    "Y": 68.839999999999947,
+    "Zoom": 0.8425
+  }
+}

@@ -47,18 +47,40 @@ namespace DynamoCoreWpfTests.ViewExtensions
 
             pntNode.Warning("TestPersistentWarning", true);
             Assert.AreEqual(ElementState.PersistentWarning, pntNode.State);
-            Assert.AreEqual("TestPersistentWarning", pntNode.ToolTipText);
+            Assert.IsTrue(pntNode.Infos.Any(x => x.Message.Equals("TestPersistentWarning") && x.State == ElementState.PersistentWarning));
 
             using (new MousePointManipulatorTest(pntNode, dme))
             {
                 Assert.AreEqual(ElementState.Warning, pntNode.State);
-                Assert.AreEqual("TestPersistentWarning" + "\n" + 
-                    "Failed to create manipulator for Direct Manipulation of geometry: Exception of type 'System.Exception' was thrown.", 
-                    pntNode.ToolTipText);
+                Assert.AreEqual(2, pntNode.Infos.Count);
+                Assert.IsTrue(pntNode.Infos.Any(x => x.Message.Equals("TestPersistentWarning") && x.State == ElementState.PersistentWarning));
+                Assert.IsTrue(pntNode.Infos.Any(x => x.Message.Equals(
+                    "Failed to create manipulator for Direct Manipulation of geometry: Exception of type 'System.Exception' was thrown.") &&
+                    x.State == ElementState.Warning));
             }
-
             Assert.AreEqual(ElementState.PersistentWarning, pntNode.State);
-            Assert.AreEqual("TestPersistentWarning", pntNode.ToolTipText);
+            Assert.IsTrue(pntNode.Infos.Any(x => x.Message.Equals("TestPersistentWarning") && x.State == ElementState.PersistentWarning));
+        }
+
+        [Test]
+        public void NodeManipulatorUnselectedNodeTest()
+        {
+            RaiseLoadedEvent(this.View);
+
+            var pntNode = new DSFunction(Model.LibraryServices.GetFunctionDescriptor("Autodesk.DesignScript.Geometry.Point.ByCoordinates"));
+            Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(pntNode, 0, 0, true, false));
+
+            pntNode.IsSelected = false;
+
+            var dme = View.viewExtensionManager.ViewExtensions.OfType<DynamoManipulationExtension>().FirstOrDefault();
+            var manipulator = new MousePointManipulator(pntNode, dme);
+            Assert.IsNotNull(manipulator);
+
+            var manipulatorType = typeof(MousePointManipulator);
+            var method = manipulatorType.GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            Assert.IsNotNull(method);
+
+            method.Invoke(manipulator, new object[] { });
         }
     }
 }

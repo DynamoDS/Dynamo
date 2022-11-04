@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -38,6 +38,7 @@ using SharpDX;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+using Matrix = SharpDX.Matrix;
 using MeshBuilder = HelixToolkit.Wpf.SharpDX.MeshBuilder;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
@@ -182,14 +183,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private int currentFrameSkipCount;
 
         private const double EqualityTolerance = 0.000001;
-        private double nearPlaneDistanceFactor = 0.001;
+        //near plane distance also affects depth precision.
+        //https://developer.nvidia.com/content/depth-precision-visualized
+        private double nearPlaneDistanceFactor = 0.01;
         internal const double DefaultNearClipDistance = 0.1f;
         internal const double DefaultFarClipDistance = 100000;
 
         //see https://docs.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-output-merger-stage-depth-bias
-        private const int DepthBiasVertexColors = 10;
-        private const int DepthBiasNormalMesh = 100;
-        private const int DepthBiasSelectedMesh = 0;
+        private const int DepthBiasSelectedOffset = 100;
+        private const int DepthBiasPoint = 0;
+        private const int DepthBiasLine = 200;
+        private const int DepthBiasMesh = 400;
+
         internal static BoundingBox DefaultBounds = new BoundingBox(new Vector3(-25f, -25f, -25f), new Vector3(25f,25f,25f));
 
         private ObservableElement3DCollection sceneItems;
@@ -200,9 +205,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private Dictionary<string, Element3D> element3DDictionary = new Dictionary<string, Element3D>();
 
-        //internal only for testing.
-        //used to cache point and curve color collections so colors can be efficiently switched between selected and non selected. (freeze, isolate etc)
-        internal Dictionary<string, Color4Collection> colorCache = new Dictionary<string, Color4Collection>();
         // Dictionary<nodeId, List<Tuple<nodeArrayItemId, labelPosition>>>
         private readonly Dictionary<string, List<Tuple<string, Vector3>>> labelPlaces
             = new Dictionary<string, List<Tuple<string, Vector3>>>();
@@ -407,6 +409,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 base.IsGridVisible = value;
                 SetGridVisibility();
+            }
+        }
+        
+        /// <summary>
+        /// Identifies if the Graph yields any rendered, visible or hidden, geometry
+        /// Any graph would always render at least 3 elements:
+        /// Headlight, Grid, and Axis
+        /// Should be used after all Tasks have been processed by the Dispatcher
+        /// </summary>
+        public bool HasRenderedGeometry
+        {
+            get
+            {
+                return Element3DDictionary.Count() > 3;
             }
         }
 
@@ -641,7 +657,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     var model = Element3DDictionary[key] as GeometryModel3D;
                     Element3DDictionary.Remove(key);
-                    colorCache.Remove(key);
 
                     model.Dispose();
                 }
@@ -893,7 +908,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (frozenModel) continue;
 
                     Element3DDictionary.Remove(kvp.Key);
-                    colorCache.Remove(kvp.Key);
                     model3D.Dispose();
 
                     var nodePath = kvp.Key.Split(':')[0];
@@ -1162,26 +1176,35 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private static void SetDepthBiasBasedOnSelection(bool isSelected, IEnumerable<Element3D> element3Ds)
         {
-            //selected should be lowest depth
-            var newDepth = DepthBiasSelectedMesh;
             foreach (var element in element3Ds)
             {
-                if (element is DynamoGeometryModel3D geom)
+                //selected should be lowest depth
+                var stdbias = 0;
+                var newDepth = 0;
+                switch (element)
                 {
-                    
-                    if (!isSelected)
-                    {
-                        //reset depth to default
-                        if (geom.RequiresPerVertexColoration)
-                        {
-                            newDepth = DepthBiasVertexColors;
-                        }
-                        else
-                        {
-                            newDepth = DepthBiasNormalMesh;
-                        }
-                    }
-
+                    case DynamoGeometryModel3D t1:
+                        stdbias = DepthBiasMesh;
+                        break;
+                    case DynamoLineGeometryModel3D t1:
+                        stdbias = DepthBiasLine;
+                        break;
+                    case DynamoPointGeometryModel3D t1:
+                        stdbias = DepthBiasPoint;
+                        break;
+                    // if this is an unknown type, don't modify depth bias.
+                    default:
+                        return;
+                }
+                //selected bias
+                newDepth = stdbias - DepthBiasSelectedOffset;
+                if (!isSelected)
+                {
+                    //reset depth to default for geom type.
+                    newDepth = stdbias;
+                }
+                if (element is GeometryModel3D geom)
+                {
                     geom.DepthBias = newDepth;
                 }
             }
@@ -1673,6 +1696,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             lock (element3DDictionaryMutex)
             {
+                //TODO add try/catch
                 foreach (var rp in packages)
                 {
                     // Each node can produce multiple render packages. We want all the geometry of the
@@ -1738,10 +1762,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             points.Indices.AddRange(p.Indices.Select(i => i + startIdx));
                         }
 
-                        //always update the color cache if we're aggregating render packages.
-                        //(ie updating colors from this method).
-                        colorCache[id] = points.Colors;
-                      
                         if (pointGeometry3D.Geometry == null)
                         {
                             pointGeometry3D.Geometry = points;
@@ -1759,52 +1779,48 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         id = baseId + LinesKey;
 
-                        LineGeometryModel3D lineGeometry3D;
-
-                        if (Element3DDictionary.ContainsKey(id))
+                        //If we are using IInstancingRenderPackage data then we need to create a unique Geometry3D object
+                        //for each instancable item and add instance transforms.
+                        //If we have any line geometry that was not associated with an instance,
+                        //remove the previously added line data from the render package so the remaining lines can be added to the scene.
+                        if (rp.LineVertexRangesAssociatedWithInstancing.Any() 
+                            && DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("graphics-primitive-instancing", false))
                         {
-                            lineGeometry3D = Element3DDictionary[id] as LineGeometryModel3D;
-                        }
-                        else
-                        {
-                            // If the package contains mesh vertices, then the lines represent the 
-                            // edges of meshes. Draw them with a different thickness.
-                            lineGeometry3D = CreateLineGeometryModel3D(rp, rp.MeshVertices.Any()?0.5:1.0);
-                            Element3DDictionary.Add(id, lineGeometry3D);
+                            //For each range of line vertices add the line data and instances to the scene
+                            var lineVertexCountTotal = 0;
+                            var j = 0;
+                            foreach (var item in rp.LineVertexRangesAssociatedWithInstancing)
+                            {
+                                var range = item.Value;
+                                var startIndex = range.Item1; //Start line vertex index
+                                var count = range.Item2 - range.Item1 + 1; //Count of line vertices
+                                var uniqueId = baseId + ":" + j + LinesKey;
+
+                                List<Matrix> instances;
+                                if (rp.instanceTransforms.TryGetValue(item.Key, out instances))
+                                {
+                                    AddLineData(uniqueId, rp, startIndex, count, drawDead, baseId, instances);
+                                }
+
+                                //Track cumulative total of line vertices added.
+                                lineVertexCountTotal += count;
+                                j++;
+                            }
+
+                            //If all the line regions had instancing data then we are done with the line data.
+                            if (lineVertexCountTotal == l.Positions.Count  && !rp.Mesh.Positions.Any())
+                            {
+                                continue;
+                            }
+
+                            //Otherwise, clean up the remaining line geometry data in the render package to exclude the regions already generated.
+                            var vertexRanges =
+                                new List<(int start, int end)>(rp.LineVertexRangesAssociatedWithInstancing.Values.ToList());
+
+                            RemoveLineGeometryByRange(vertexRanges, l);
                         }
 
-                        var lineSet = lineGeometry3D.Geometry == null ? HelixRenderPackage.InitLineGeometry()
-                        : lineGeometry3D.Geometry as LineGeometry3D;
-                        var startIdx = lineSet.Positions.Count;
-
-                        lineSet.Positions.AddRange(l.Positions);
-                        if (drawDead)
-                        {
-                            lineSet.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, l.Positions.Count));
-                        }
-                        else
-                        {
-                            lineSet.Colors.AddRange(l.Colors.Any()
-                             ? l.Colors
-                             : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
-                        }
-
-                        //always update the color cache if we're aggregating render packages.
-                        //(ie updating colors from this method).
-                        colorCache[id] = lineSet.Colors;
-
-                        lineSet.Indices.AddRange(l.Indices.Any()
-                            ? l.Indices.Select(i => i + startIdx)
-                            : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
-
-                        if(lineGeometry3D.Geometry == null)
-                        {
-                            lineGeometry3D.Geometry = lineSet;
-                        }
-                        //while the Name of the geometry is the node which created it
-                        //we tag it with the id of the graphicModel we store in the scene/viewport for fast lookup.
-                        lineGeometry3D.Name = baseId;
-                        lineGeometry3D.Tag = id;
+                        AddLineData(id, rp, 0, l.Positions.Count, drawDead, baseId);
                     }
 
                     var m = rp.Mesh;
@@ -1813,8 +1829,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     //If we are using the legacy colors array for texture map we need to create a new Geometry3d object with a unique key.
                     id = (rp.Colors != null ? rp.Description : baseId) + MeshKey;
 
-                    //If we are using IRenderPackageSupplement texture map data then we need to create a unique Geometry3D object for each texture map and associated mesh geometry.  
-                    //If we any mesh geometry was not associated with a texture map, remove the previously added mesh data from the render package so the remaining mesh can be added to the scene.
+                    //If we are using IRenderPackageSupplement texture map data then we need to create a unique Geometry3D
+                    //object for each texture map and associated mesh geometry.  
+                    //If we have any mesh geometry that was not associated with a texture map, remove the previously
+                    //added mesh data from the render package so the remaining mesh can be added to the scene.
                     if (rp.MeshVerticesRangesAssociatedWithTextureMaps.Any())
                     {
                         //For each range of mesh vertices add the mesh data and texture map to the scene
@@ -1822,11 +1840,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         for (var j = 0; j < rp.MeshVerticesRangesAssociatedWithTextureMaps.Count; j++)
                         {
                             var range = rp.MeshVerticesRangesAssociatedWithTextureMaps[j];
-                            var index = range.Item1; //Start mesh vertex index
+                            var startIndex = range.Item1; //Start mesh vertex index
                             var count = range.Item2 - range.Item1 + 1; //Count of mesh vertices
                             var uniqueId = baseId + ":" + j + MeshKey;
                             
-                            AddMeshData(uniqueId, rp,index,count, drawDead, baseId, rp.TextureMapsList[j], rp.TextureMapsStrideList[j]);
+                            AddMeshData(uniqueId, rp,startIndex,count, drawDead, baseId, rp.TextureMapsList[j], rp.TextureMapsStrideList[j]);
 
                             //Track cumulative total of mesh vertices added.
                             meshVertexCountTotal+= count;
@@ -1837,27 +1855,52 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         { continue;}
 
                         //Otherwise, clean up the remaining mesh geometry data in the render package to exclude the regions already generated.
-                        //First sort the range data
-                        var sortedVerticesRange = new List<Tuple<int, int>>(rp.MeshVerticesRangesAssociatedWithTextureMaps);
-                        sortedVerticesRange.Sort();
-                        sortedVerticesRange.Reverse();
+                        var vertexRanges =
+                            rp.MeshVerticesRangesAssociatedWithTextureMaps.Select(x=>(x.Item1,x.Item2)).ToList();
                         
-                        //Remove already generated mesh geometry from render package
-                        foreach (var range in sortedVerticesRange)
+                        RemoveMeshGeometryByRange(vertexRanges, m);
+                    }
+
+                    //If we are using IInstancingRenderPackage data then we need to create a unique Geometry3D object
+                    //for each instancable item and add instance transforms.  
+                    //If we have any mesh geometry that was not associated with an instance, remove the previously added
+                    //mesh data from the render package so the remaining mesh can be added to the scene.
+                    if (rp.MeshVertexRangesAssociatedWithInstancing.Any() 
+                        && DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("graphics-primitive-instancing", false))
+                    {
+                        //For each range of mesh vertices add the mesh data and instances to the scene
+                        var meshVertexCountTotal = 0;
+                        var j = 0;
+                        foreach (var item in rp.MeshVertexRangesAssociatedWithInstancing)
                         {
-                            var i = range.Item1;
-                            var c = range.Item2 - range.Item1 + 1;
-                            m.Positions.RemoveRange(i,c);
-                            m.Colors.RemoveRange(i, c);
-                            m.Normals.RemoveRange(i, c);
-                            m.TextureCoordinates.RemoveRange(i, c);
+                            var range = item.Value;
+                            var startIndex = range.start; //Start mesh vertex index
+                            var count = range.end - range.start + 1; //Count of mesh vertices
+                            var uniqueId = baseId + ":" + j + MeshKey;
+
+                            List<Matrix> instances;
+                            if (rp.instanceTransforms.TryGetValue(item.Key, out instances))
+                            {
+                                AddMeshData(uniqueId, rp, startIndex, count, drawDead, baseId, rp.Colors,
+                                    rp.ColorsStride, instances);
+                            }
+
+                            //Track cumulative total of mesh vertices added.
+                            meshVertexCountTotal += count;
+                            j++;
                         }
 
-                        //Regenerate Indices data
-                        var sequence = Enumerable.Range(0, m.Positions.Count);
-                        var newIndices = new IntCollection();
-                        newIndices.AddRange(sequence);
-                        m.Indices = newIndices;
+                        //If all the mesh regions had instance data then we are done with mesh data.
+                        if (meshVertexCountTotal == m.Positions.Count)
+                        {
+                            continue;
+                        }
+
+                        //Otherwise, clean up the remaining mesh geometry data in the render package to exclude the regions already generated.
+                        var vertexRanges =
+                            new List<(int start, int end)>(rp.MeshVertexRangesAssociatedWithInstancing.Values.ToList());
+
+                        RemoveMeshGeometryByRange(vertexRanges, m);
                     }
 
                     AddMeshData(id, rp, 0, m.Positions.Count, drawDead, baseId, rp.Colors, rp.ColorsStride);
@@ -1865,7 +1908,61 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void AddMeshData(string id, HelixRenderPackage rp, int index, int count, bool drawDead, string baseId, IEnumerable<byte> colors, int stride)
+        private static void RemoveMeshGeometryByRange(List<(int start, int end)> vertexRanges, MeshGeometry3D m)
+        {
+            //First sort the range data
+            vertexRanges.Sort();
+            vertexRanges.Reverse();
+
+            //Remove already generated mesh geometry from render package
+            foreach (var range in vertexRanges)
+            {
+                var i = range.start;
+                var c = range.end - range.start + 1;
+                m.Positions.RemoveRange(i, c);
+                m.Colors.RemoveRange(i, c);
+                m.Normals.RemoveRange(i, c);
+                m.TextureCoordinates.RemoveRange(i, c);
+            }
+
+            //Regenerate Indices data
+            var sequence = Enumerable.Range(0, m.Positions.Count);
+            var newIndices = new IntCollection();
+            newIndices.AddRange(sequence);
+            m.Indices = newIndices;
+        }
+
+        private static void RemoveLineGeometryByRange(List<(int start, int end)> verticesRange, LineGeometry3D l)
+        {
+            //First sort the range data
+            verticesRange.Sort();
+            verticesRange.Reverse();
+
+            //track removed vertices to renumber indices index
+            var totalRemoved = 0;
+            
+            //Remove already generated line geometry from render package
+            foreach (var range in verticesRange)
+            {
+                var i = range.start;
+                var c = range.end - range.start + 1;
+                l.Positions.RemoveRange(i, c);
+                l.Colors.RemoveRange(i, c);
+                totalRemoved += c;
+
+                var firstIndicesIndex = l.Indices.IndexOf(range.start);
+                var indicesCount = l.Indices.IndexOf(range.end) - firstIndicesIndex + 1;
+                l.Indices.RemoveRange(firstIndicesIndex, indicesCount);
+            }
+
+            for (int i = 0; i < l.Indices.Count; i++)
+            {
+                l.Indices[i] -= totalRemoved;
+            }
+        }
+
+        private void AddMeshData(string id, HelixRenderPackage rp,
+            int index, int count, bool drawDead, string baseId, IEnumerable<byte> colors, int stride, List<Matrix> instances = null)
         {
             FastList<Vector3> mPositions;
             FastList<Color4> mColors;
@@ -1938,7 +2035,81 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             meshGeometry3D.Geometry = mesh;
             meshGeometry3D.Name = baseId;
+            meshGeometry3D.Tag = id;
+
+            if (instances != null)
+            {
+                meshGeometry3D.Instances = instances;
+            }
         }
+
+        private void AddLineData(string id, HelixRenderPackage rp, int index, int count, bool drawDead, string baseId, List<Matrix> instances = null)
+        {
+            FastList<Vector3> lPositions;
+            FastList<Color4> lColors;
+            FastList<int> lIndices;
+
+            var l = rp.Lines;
+            if (index == 0 && count == rp.Lines.Positions.Count)
+            {
+                lPositions = l.Positions;
+                lColors = l.Colors;
+                lIndices = l.Indices;
+            }
+            else
+            {
+                lPositions = l.Positions.GetRange(index, count);
+                lColors = l.Colors.GetRange(index, count);
+                var firstIndicesIndex = l.Indices.IndexOf(index);
+                var indicesCount = l.Indices.IndexOf(index + count - 1) - firstIndicesIndex + 1;
+                lIndices = l.Indices.GetRange(firstIndicesIndex, indicesCount);
+            }
+
+            LineGeometryModel3D lineGeometry3D;
+
+            if (Element3DDictionary.ContainsKey(id))
+            {
+                lineGeometry3D = Element3DDictionary[id] as LineGeometryModel3D;
+            }
+            else
+            {
+                // If the package contains mesh vertices, then the lines represent the 
+                // edges of meshes. Draw them with a different thickness.
+                lineGeometry3D = CreateLineGeometryModel3D(rp, rp.MeshVertices.Any() ? 0.5 : 1.0);
+                Element3DDictionary.Add(id, lineGeometry3D);
+            }
+
+            var lineSet = lineGeometry3D.Geometry == null ? HelixRenderPackage.InitLineGeometry()
+                        : lineGeometry3D.Geometry as LineGeometry3D;
+            var previousPositionCount = lineSet.Positions.Count;
+
+
+            lineSet.Positions.AddRange(lPositions);
+
+
+            if (drawDead)
+            {
+                lineSet.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, lPositions.Count));
+            }
+            else
+            {
+                lineSet.Colors.AddRange(lColors.Any()
+                 ? lColors
+                 : Enumerable.Repeat(defaultLineColor, lColors.Count));
+            }
+            var adjustment = previousPositionCount - lIndices[0];
+
+            lineSet.Indices.AddRange(lIndices.Select(i => i + adjustment));
+
+            lineGeometry3D.Geometry = lineSet;
+            lineGeometry3D.Name = baseId;
+
+            if (instances != null)
+            {
+                lineGeometry3D.Instances = instances;
+            }
+        }
+
 
         /// <summary>
         /// Filters out packages that are considered invalid by Helix. This includes any package
@@ -2177,7 +2348,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Material = WhiteMaterial,
                 IsHitTestVisible = isHitTestVisible,
                 RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
-                DepthBias = rp.RequiresPerVertexColoration ? DepthBiasVertexColors : DepthBiasNormalMesh
+                DepthBias = DepthBiasMesh
             };
 
             if (colors != null)
@@ -2220,7 +2391,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Color = Colors.White,
                 Thickness = thickness,
                 IsHitTestVisible = isHitTestVisible,
-                IsSelected = rp.IsSelected
+                IsSelected = rp.IsSelected,
+                DepthBias=DepthBiasLine,
             };
             return lineGeometry3D;
         }
@@ -2235,7 +2407,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Figure = PointFigure.Ellipse,
                 Size = defaultPointSize,
                 IsHitTestVisible = true,
-                IsSelected = rp.IsSelected
+                IsSelected = rp.IsSelected,
+                DepthBias = DepthBiasPoint,
             };
             return pointGeometry3D;
         }
@@ -2326,6 +2499,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Set the near clip plane to some fraction of the 
             // of the distance to the first point.
             var closest = distances.First(d => d >= 0);
+
+            //near plane distance disproportionately affects depth (zbuffer) precision.
+            //keep it as far away as possible.
+            //https://developer.nvidia.com/content/depth-precision-visualized
             near = closest.AlmostEqualTo(0, EqualityTolerance) ? DefaultNearClipDistance : Math.Max(DefaultNearClipDistance, closest * nearPlaneDistanceFactor);
             far = distances.Last() * 2;
 
@@ -2384,7 +2561,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             return
                 workspace.Nodes
-                    .SelectMany(n => n.OutPorts.Select(p => n.GetAstIdentifierForOutputIndex(p.Index).Value));
+                .Where(n => n.State != ElementState.Error)
+                .SelectMany(n => n.OutPorts.Select(p => n.GetAstIdentifierForOutputIndex(p.Index).Value));
         } 
 
         internal static IEnumerable<GeometryModel3D> FindGeometryForIdentifiers(IEnumerable<GeometryModel3D> geometry, IEnumerable<string> identifiers)
@@ -2605,12 +2783,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// Convert a <see cref="BoundingBox"/> to a <see cref="Rect3D"/>
         /// </summary>
         /// <param name="bounds">The <see cref="BoundingBox"/> to be converted.</param>
+        /// <param name="minRectSize"> No dimension of the resulting Rect3d will be smaller than this length.</param>
         /// <returns>A <see cref="Rect3D"/> object.</returns>
-        internal static Rect3D ToRect3D(this BoundingBox bounds)
+        internal static Rect3D ToRect3D(this BoundingBox bounds, double minRectSize = 0.0)
         {
             var min = bounds.Minimum;
             var max = bounds.Maximum;
-            var size = new Size3D((max.X - min.X), (max.Y - min.Y), (max.Z - min.Z));
+            var size = new Size3D(Math.Max(minRectSize, max.X - min.X), Math.Max(minRectSize, max.Y - min.Y), Math.Max(minRectSize, max.Z - min.Z));
             return new Rect3D(min.ToPoint3D(), size);
         }
 

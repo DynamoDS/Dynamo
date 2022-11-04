@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -24,6 +23,7 @@ namespace Dynamo.ViewModels
         private bool showUseLevelMenu;
         private const double autocompletePopupSpacing = 2.5;
         internal bool inputPortDisconnectedByConnectCommand = false;
+        protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(102, 102, 102));
         protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
@@ -264,8 +264,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal bool IsProxyPort { get; set; } = false;
-
         #endregion
 
         #region events
@@ -296,7 +294,8 @@ namespace Dynamo.ViewModels
 
         internal virtual PortViewModel CreateProxyPortViewModel(PortModel portModel)
         {
-            return new PortViewModel(node, portModel){IsProxyPort = true};
+            portModel.IsProxyPort = true;
+            return new PortViewModel(node, portModel);
         }
 
         /// <summary>
@@ -307,6 +306,16 @@ namespace Dynamo.ViewModels
         {
             node.OnRequestAutoCompletePopupPlacementTarget(popup);
             popup.CustomPopupPlacementCallback = PlaceAutocompletePopup;
+        }
+
+        /// <summary>
+        /// Sets up the PortContextMenu window to be placed relative to the port.
+        /// </summary>
+        /// <param name="popup">Node context menu popup.</param>
+        internal void SetupPortContextMenuPlacement(Popup popup)
+        {
+            node.OnRequestPortContextMenuPlacementTarget(popup);
+            popup.CustomPopupPlacementCallback = PlacePortContextMenu;
         }
 
         private CustomPopupPlacement[] PlaceAutocompletePopup(Size popupSize, Size targetSize, Point offset)
@@ -328,6 +337,34 @@ namespace Dynamo.ViewModels
             // Offset popup down from the upper edge of the node by the node header and corresponding to the respective port.
             // Scale the absolute heights by the target height (passed to the callback) and the actual height of the node.
             var scaledHeight = targetSize.Height / node.ActualHeight;
+            var absoluteHeight = NodeModel.HeaderHeight + (PortModel.Index * PortModel.Height);
+            var y = absoluteHeight * scaledHeight;
+
+            var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
+
+            return new[] { placement };
+        }
+
+        private CustomPopupPlacement[] PlacePortContextMenu(Size popupSize, Size targetSize, Point offset)
+        {
+            var zoom = node.WorkspaceViewModel.Zoom;
+
+            double x;
+            var scaledWidth = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
+            var scaledHeight = targetSize.Height / node.ActualHeight;
+
+            if (PortModel.PortType == PortType.Input)
+            {
+                // Offset popup to the left by its width from left edge of node and spacing.
+                x = -scaledWidth - popupSize.Width;
+            }
+            else
+            {
+                // Offset popup to the right by node width and spacing from left edge of node.
+                x = scaledWidth + targetSize.Width;
+            }
+            // Offset popup down from the upper edge of the node by the node header and corresponding to the respective port.
+            // Scale the absolute heights by the target height (passed to the callback) and the actual height of the node.
             var absoluteHeight = NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
             var y = absoluteHeight * scaledHeight;
 
@@ -357,9 +394,16 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(State):
                     RaisePropertyChanged(nameof(State));
+                    RefreshPortColors();
                     break;
                 case nameof(ToolTipContent):
                     RaisePropertyChanged(nameof(ToolTipContent));
+                    break;
+                case nameof(node.IsVisible):
+                    RefreshPortColors();
+                    break;
+                case nameof(node.NodeModel.CachedValue):
+                    RefreshPortColors();
                     break;
             }
         }
@@ -389,6 +433,9 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(MarginThickness):
                     RaisePropertyChanged(nameof(MarginThickness));
+                    break;
+                case nameof(UsingDefaultValue):
+                    RefreshPortColors();
                     break;
             }
         }
@@ -463,17 +510,31 @@ namespace Dynamo.ViewModels
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
         }
 
+        private void NodePortContextMenu(object obj)
+        {
+            // If this port does not display a Chevron button to open the context menu and it doesn't
+            // have a default value then using right-click to open the context menu should also do nothing.
+            if (obj is InPortViewModel inPortViewModel &&
+                inPortViewModel.UseLevelVisibility == Visibility.Collapsed &&
+                !inPortViewModel.DefaultValueEnabled) return;
+            
+            var wsViewModel = node.WorkspaceViewModel;
+            
+            wsViewModel.CancelActiveState();
+            wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Show, this);
+        }
+
         private bool CanAutoComplete(object parameter)
         {
             DynamoViewModel dynamoViewModel = node.DynamoViewModel;
             // If user trying to trigger Node AutoComplete from proxy ports, display notification
             // telling user it is not available that way
-            if (IsProxyPort)
+            if (port.IsProxyPort)
             {
                 dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups);
             }
             // If the feature is enabled from Dynamo experiment setting and if user interaction is not on proxy ports.
-            return dynamoViewModel.EnableNodeAutoComplete && !(IsProxyPort);
+            return dynamoViewModel.EnableNodeAutoComplete && !port.IsProxyPort;
         }
 
         /// <summary>

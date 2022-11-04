@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
 
@@ -233,9 +233,26 @@
         <StackPanel Name="ImageAndNodeName"
                     Orientation="Horizontal"
                     VerticalAlignment="Center">
+            <StackPanel Visibility="{Binding Path=Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Width="24"
+                    FontSize="10"
+                    Margin="5,12,0,0"
+                    Visibility="{Binding Path=Model.AutoCompletionNodeMachineLearningInfo.IsByRecommendation, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Text="{Binding Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore, StringFormat= {}{0} %, Mode=OneWay}" Foreground="{StaticResource DynamoStandardLabelTextBrush}">
+                </TextBlock>
+                <Image HorizontalAlignment="Center"
+                       Height="14"     
+                       VerticalAlignment="Center"
+                       Width="14"
+                       Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/clock-icon.png"
+                       Margin="7,10,8,0"
+                       Visibility="{Binding Path=Model.AutoCompletionNodeMachineLearningInfo.IsByUse, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </StackPanel>
             <Image HorizontalAlignment="Left"
                    Height="36"
-                   Margin="16,0,16,0"
+                   Margin="3,0,16,0"
                    VerticalAlignment="Center"
                    Width="24"
                    Source="{Binding SmallIcon}" />
@@ -392,5 +409,5 @@
     <!--EndRegion-->
 
     <!--EndRegion-->
-
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 </ResourceDictionary>

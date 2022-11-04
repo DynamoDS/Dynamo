@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
     public class MarkdownGeneratorCommandTests
     {
         private const string CORENODEMODELS_DLL_NAME = "CoreNodeModels.dll";
-        private const string LibraryViewExtension_DLL_NAME = "LibraryViewExtensionMSWebBrowser.dll";
+        private const string LibraryViewExtension_DLL_NAME = "LibraryViewExtensionWebView2.dll";
         private static readonly string DynamoCoreDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         private static readonly string DynamoCoreNodesDir = Path.Combine(DynamoCoreDir, "Nodes");
         private static string DynamoRepoRoot = new DirectoryInfo(DynamoCoreDir).Parent.Parent.Parent.FullName;
@@ -162,8 +162,8 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
             //assert count is correct.
-            //TODO this should be 653 - but 2 tsplines nodes have such long signatures the paths are too long for windows.
-            Assert.AreEqual(652, generatedFileNames.Count());
+            //TODO this should be 684 - but 2 tsplines nodes have such long signatures the paths are too long for windows.
+            Assert.AreEqual(682, generatedFileNames.Count());
         }
         [Test]
         public void ProducesCorrectOutputFromCoreDirectory_dsFiles()
@@ -512,7 +512,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
         protected static void SaveCoreLayoutSpecToPath(Assembly assembly, string savePath)
         {
-            var resource = "Dynamo.LibraryViewExtensionMSWebBrowser.web.library.layoutSpecs.json";
+            var resource = "Dynamo.LibraryViewExtensionWebView2.web.library.layoutSpecs.json";
             assembly = assembly == null ? Assembly.GetExecutingAssembly() : assembly;
             var stream = assembly.GetManifestResourceStream(resource);
             var fs = File.Create(savePath);

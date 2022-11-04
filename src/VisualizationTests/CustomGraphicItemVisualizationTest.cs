@@ -25,13 +25,15 @@ namespace WpfVisualizationTests
             // Nodes should be set to warning status with an appropriate message
             var nanNode = Model.CurrentWorkspace.Nodes.First(n => n.Name == "NaN");
             Assert.AreEqual(ElementState.Warning, nanNode.State);
-            StringAssert.Contains("'NaN' is being cast to 'Double'", nanNode.ToolTipText);
+            Assert.True(nanNode.Infos.Any(x => x.Message.Contains("'NaN' is being cast to 'Double'") && x.State == ElementState.Warning));
+
             var negInfNode = Model.CurrentWorkspace.Nodes.First(n => n.Name == "NegativeInfinity");
             Assert.AreEqual(ElementState.Warning, negInfNode.State);
-            StringAssert.Contains("'-∞' is being cast to 'Double'", negInfNode.ToolTipText);
+            Assert.True(negInfNode.Infos.Any(x => x.Message.Contains("'-∞' is being cast to 'Double'") && x.State == ElementState.Warning));
+
             var posInfNode = Model.CurrentWorkspace.Nodes.First(n => n.Name == "PositiveInfinity");
             Assert.AreEqual(ElementState.Warning, posInfNode.State);
-            StringAssert.Contains("'∞' is being cast to 'Double'", posInfNode.ToolTipText);
+            Assert.True(posInfNode.Infos.Any(x => x.Message.Contains("'∞' is being cast to 'Double'") && x.State == ElementState.Warning));
         }
     }
 }

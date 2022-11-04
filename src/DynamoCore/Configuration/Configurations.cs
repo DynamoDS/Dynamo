@@ -85,7 +85,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Link to Dynamo primer
         /// </summary>
-        public static string DynamoPrimer = "http://dynamoprimer.com/";
+        public static string DynamoPrimer = "http://primer2.dynamobim.org/";
 
         /// <summary>
         /// Link to Dynamo download page
@@ -116,6 +116,16 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly double ZoomIncrement = 0.05;
 
+        /// <summary>
+        /// Global zoom threshold level for node overlay to apply (zoom-in/out behavior) 
+        /// </summary>
+        public static readonly double ZoomThreshold = 0.4;
+
+        /// <summary>
+        /// Global zoom threshold for renaming Nodes and Notes 
+        /// </summary>
+        public static readonly double ZoomDirectEditThreshold = 0.5;
+
         #endregion
 
         #region Tab Bar Configurations
@@ -132,7 +142,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Default width of tab
         /// </summary>
-        public static readonly int TabDefaultWidth = 250;
+        public static readonly int TabDefaultWidth = 225;
 
         /// <summary>
         /// Minimum width of tab in the extensions side bar

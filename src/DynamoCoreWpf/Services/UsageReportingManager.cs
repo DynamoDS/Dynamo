@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Windows;
 using Dynamo.Core;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Prompts;
@@ -45,8 +46,10 @@ namespace Dynamo.Services
         /// </summary>
         public bool IsUsageReportingApproved
         {
-            get {
+            get
+            {
                 return !DynamoModel.IsTestMode
+                    && !Analytics.DisableAnalytics
                     && (dynamoViewModel != null
                         && dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved);
             }
@@ -93,6 +96,11 @@ namespace Dynamo.Services
                 if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
+                if (Analytics.DisableAnalytics)
+                {
+                    return false;
+                }
+
                 if (dynamoViewModel.Model != null)
                     return dynamoViewModel.Model.PreferenceSettings.IsAnalyticsReportingApproved;
 
@@ -101,6 +109,11 @@ namespace Dynamo.Services
 
             private set
             {
+                if (Analytics.DisableAnalytics)
+                {
+                    return;// Do not override anything when DisableAnalytics is on
+                }
+
                 dynamoViewModel.Model.PreferenceSettings.IsAnalyticsReportingApproved = value;
                 RaisePropertyChanged("IsAnalyticsReportingApproved");
                 var path = dynamoViewModel.Model.PathManager.PreferenceFilePath;
@@ -148,10 +161,11 @@ namespace Dynamo.Services
             // First run of Dynamo
             if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun
                 && !dynamoViewModel.HideReportOptions
+                && !Analytics.DisableAnalytics
                 && !DynamoModel.IsTestMode)
             {
                 //Prompt user for detailed reporting
-                    ShowUsageReportingPrompt(ownerWindow);
+                ShowUsageReportingPrompt(ownerWindow);
             }
             FirstRun = false;
         }
@@ -231,15 +245,7 @@ namespace Dynamo.Services
             {
                 Owner = ownerWindow
             };
-            usageReportingPrompt.Loaded += UsageReportingPromptLoaded;
             usageReportingPrompt.ShowDialog();
-            usageReportingPrompt.Loaded -= UsageReportingPromptLoaded;
-        }
-
-        void UsageReportingPromptLoaded(object sender, RoutedEventArgs e)
-        {
-                DynamoModel.OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                            SettingsMigrationEventArgs.EventStatusType.End));           
         }
     }
 }

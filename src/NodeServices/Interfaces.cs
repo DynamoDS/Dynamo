@@ -142,6 +142,21 @@ namespace Autodesk.DesignScript.Interfaces
     }
 
     /// <summary>
+    /// An options structure used when calling IExtensionApplication.Startup
+    /// </summary>
+    public struct ExtensionStartupParams
+    {
+        /// <summary>
+        /// Disables ADP data collection.
+        /// </summary>
+        public bool DisableADP
+        {
+            get;
+            set;
+        }
+    }
+
+    /// <summary>
     /// An FFI library can implement this interface to get some notifications
     /// from DesignScript application.
     /// </summary>
@@ -150,7 +165,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// <summary>
         /// Called when first time this application is loaded.
         /// </summary>
-        void StartUp();
+        void StartUp(ExtensionStartupParams startParams);
 
         /// <summary>
         /// Called when script execution starts.

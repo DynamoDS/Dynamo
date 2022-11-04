@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Threading;
 using CoreNodeModels;
 using Dynamo.Configuration;
@@ -38,12 +39,14 @@ namespace CoreNodeModelsWpf.Nodes
             this.watch = nodeModel;
             this.syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
 
-            var watchTree = new WatchTree();
-
-            watchTree.SetWatchNodeProperties();
-
             // make empty watchViewModel
             rootWatchViewModel = new WatchViewModel(dynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath);
+
+            var watchTree = new WatchTree(rootWatchViewModel);
+            watchTree.BorderThickness = new Thickness(1, 1, 1, 1);
+            watchTree.BorderBrush = new SolidColorBrush(Color.FromRgb(220,220,220));
+
+            watchTree.SetWatchNodeProperties();
 
             nodeView.PresentationGrid.Children.Add(watchTree);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
@@ -58,9 +61,6 @@ namespace CoreNodeModelsWpf.Nodes
 
         private void Bind(WatchTree watchTree, NodeView nodeView)
         {
-            // The WatchTree Control is bound to the WatchViewModel
-            watchTree.DataContext = rootWatchViewModel;
-
             // Add binding for TreeView
             var sourceBinding = new Binding("Children")
             {

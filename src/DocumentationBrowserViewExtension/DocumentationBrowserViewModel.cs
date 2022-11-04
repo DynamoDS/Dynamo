@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -6,10 +7,32 @@ using System.Reflection;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.DocumentationBrowser
 {
+    public class InsertDocumentationLinkEventArgs : EventArgs
+    {
+        private string data;
+        private string name;
+        public InsertDocumentationLinkEventArgs(string _Data, string _Name)
+        {
+            data = _Data;
+            name = _Name;
+        } 
+
+        public string Data
+        {
+            get { return data; }
+        }
+        public string Name
+        {
+            get { return name; }
+        }
+    } 
+
     public class DocumentationBrowserViewModel : NotificationObject, IDisposable
     {
         #region Constants
@@ -28,6 +51,13 @@ namespace Dynamo.DocumentationBrowser
         private readonly PackageDocumentationManager packageManagerDoc;
         private MarkdownHandler markdownHandler;
         private FileSystemWatcher markdownFileWatcher;
+
+        /// <summary>
+        /// Contains the resolvable node to library location breadcrumbs information
+        /// Key: Node Name
+        /// Value: Breadcrumbs " / " concatenated information
+        /// </summary>
+        internal Dictionary<string, string> BreadCrumbsDictionary { get; set; }
 
         /// <summary>
         /// The link to the documentation website or file to display.
@@ -54,7 +84,7 @@ namespace Dynamo.DocumentationBrowser
         }
 
         private Uri link;
-
+        private string graphPath;
         private string content;
 
         private MarkdownHandler MarkdownHandlerInstance => markdownHandler ?? (markdownHandler = new MarkdownHandler());
@@ -94,7 +124,7 @@ namespace Dynamo.DocumentationBrowser
                 }
             }
         }
-
+        
         internal Action<ILogMessage> MessageLogged;
         private OpenDocumentationLinkEventArgs openDocumentationLinkEventArgs;
 
@@ -153,6 +183,7 @@ namespace Dynamo.DocumentationBrowser
             try
             {
                 string targetContent;
+                string graph;
                 Uri link;
                 switch (e)
                 {
@@ -162,17 +193,20 @@ namespace Dynamo.DocumentationBrowser
                             openNodeAnnotationEventArgs.PackageName);
 
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
+                        graph = GetGraphLinkFromMDLocation(link);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
                         break;
 
                     case OpenDocumentationLinkEventArgs openDocumentationLink:
                         link = openDocumentationLink.Link;
-                        targetContent = LoadContentFromResources(openDocumentationLink.Link.ToString());
+                        graph = GetGraphLinkFromMDLocation(link);
+                        targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly);
                         break;
 
                     default:
                         // Navigate to unsupported 
                         targetContent = null;
+                        graph = null;
                         link = null;
                         break;
                 }
@@ -185,6 +219,7 @@ namespace Dynamo.DocumentationBrowser
                 {
                     this.content = targetContent;
                     this.Link = link;
+                    this.graphPath = graph;
                 }
             }
             catch (FileNotFoundException)
@@ -203,6 +238,20 @@ namespace Dynamo.DocumentationBrowser
                 return;
             }
             this.shouldLoadDefaultContent = false;
+        }
+
+        private string GetGraphLinkFromMDLocation(Uri link)
+        {
+            if (link == null || link.Equals(new Uri(String.Empty, UriKind.Relative))) return string.Empty;
+            try
+            {
+                string graphPath = link.AbsolutePath.Replace(".md", ".dyn");
+                return File.Exists(graphPath) ? graphPath : null;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
 
         private void WatchMdFile(string mdLink)
@@ -242,6 +291,7 @@ namespace Dynamo.DocumentationBrowser
             var nodeAnnotationArgs = openDocumentationLinkEventArgs as OpenNodeAnnotationEventArgs;
             this.content = CreateNodeAnnotationContent(nodeAnnotationArgs);
             this.Link = new Uri(e.FullPath);
+            this.graphPath = GetGraphLinkFromMDLocation(this.Link);
         }
 
         private string CreateNodeAnnotationContent(OpenNodeAnnotationEventArgs e)
@@ -251,12 +301,28 @@ namespace Dynamo.DocumentationBrowser
             {
                 writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
 
-                // Get the Node info section
-                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e);
-                writer.WriteLine(nodeDocumentation);
-
                 // Convert the markdown file to html
-                MarkdownHandlerInstance.ParseToHtml(ref writer, e.MinimumQualifiedName, e.PackageName);
+                var mkDown = MarkdownHandlerInstance.ParseToHtml(e.MinimumQualifiedName, e.PackageName);
+                string breadCrumbs = string.Empty;
+
+
+                if(BreadCrumbsDictionary != null && !BreadCrumbsDictionary.TryGetValue(e.Type, out breadCrumbs))
+                {
+                    foreach (var pair in BreadCrumbsDictionary)
+                    {
+                        if (pair.Key.Contains(e.Type))
+                        {
+                            breadCrumbs = pair.Value;
+                            break;
+                        }
+                    }
+                }
+
+                writer.WriteLine(NodeDocumentationHtmlGenerator.OpenDocument());
+                // Get the Node info section
+                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e, breadCrumbs, mkDown);
+                writer.WriteLine(nodeDocumentation);
+                writer.WriteLine(NodeDocumentationHtmlGenerator.CloseDocument());
 
                 writer.Flush();
                 var output = writer.ToString();
@@ -266,8 +332,9 @@ namespace Dynamo.DocumentationBrowser
                 {
                     LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
                 }
-
+                
                 // inject the syntax highlighting script at the bottom at the document.
+                output += DocumentationBrowserUtils.GetImageNavigationScript();
                 output += DocumentationBrowserUtils.GetDPIScript();
                 output += DocumentationBrowserUtils.GetSyntaxHighlighting();
 
@@ -279,13 +346,40 @@ namespace Dynamo.DocumentationBrowser
             }
         }
 
+        /// <summary>
+        /// Load the help graph associated with the node inside the current Dynamo workspace 
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        internal void InsertGraph()
+        {
+            var raiseInsertGraph = HandleInsertFile;
+
+            if (raiseInsertGraph != null)
+            {
+                if (graphPath != null)
+                {
+                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(graphPath, Path.GetFileNameWithoutExtension(graphPath)));
+                }
+                else
+                {
+                    // TODO: Remove test graph with appropriate resource, replace with Toast notification
+                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\Example.dyn",
+                        Path.GetFileNameWithoutExtension(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\Example.dyn")));
+                    //raiseInsertGraph(this, new MyEventArgs(@"C:\Users\dneno\OneDrive\Documents\Test\documentation browser\NormalGalleryContents.xml")); // Test with xml file
+                }
+            }
+        }
+
+        internal delegate void InsertDocumentationLinkEventHandler(object sender, InsertDocumentationLinkEventArgs e);
+        internal event InsertDocumentationLinkEventHandler HandleInsertFile;
+
         #endregion
 
         #region Navigation to built-in pages
 
         public void NavigateToInternalErrorPage(string errorDetails)
         {
-            this.content = LoadContentFromResources(BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME);
+            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME, GetType().Assembly);
 
             // if additional details about the error were passed in,
             // update the error page HTML with that content
@@ -299,13 +393,13 @@ namespace Dynamo.DocumentationBrowser
 
         public void NavigateToContentMissingPage()
         {
-            this.content = LoadContentFromResources(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME);
+            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME, GetType().Assembly);
             UpdateLinkSafely(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME);
         }
 
         public void NavigateToNoContentPage()
         {
-            this.content = LoadContentFromResources(BUILT_IN_CONTENT_NO_CONTENT_FILENAME);
+            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_NO_CONTENT_FILENAME, GetType().Assembly);
             UpdateLinkSafely(BUILT_IN_CONTENT_NO_CONTENT_FILENAME);
         }
 
@@ -338,171 +432,6 @@ namespace Dynamo.DocumentationBrowser
             return this.content;
         }
 
-        private string LoadContentFromResources(string name, bool injectDPI = true, bool removeScriptTags = true)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentNullException(nameof(name));
-
-            string result;
-            // If an assembly was specified in the uri, the resource will be searched there.
-            Assembly assembly;
-            var assemblyIndex = name.LastIndexOf(";");
-            if (assemblyIndex != -1)
-            {
-                var assemblyName = name.Substring(0, assemblyIndex);
-                // Ignore version and public key, in case they were specified.
-                var versionIndex = assemblyName.IndexOf(";");
-                if (versionIndex != -1)
-                {
-                    assemblyName = assemblyName.Substring(0, versionIndex);
-                }
-                assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == assemblyName);
-                if (assembly == null)
-                {
-                    // The specified assembly is not loaded
-                    return null;
-                }
-                name = name.Substring(assemblyIndex + 1);
-            }
-            else
-            {
-                // Default to documentation browser assembly if no assembly was specified.
-                assembly = GetType().Assembly;
-            }
-
-            Assembly resourceAssembly = GetResourceAssembly(assembly, name);
-
-            var availableResources = resourceAssembly.GetManifestResourceNames();
-
-            var matchingResource = availableResources
-                .FirstOrDefault(str => str.EndsWith(name));
-
-            if (string.IsNullOrEmpty(matchingResource))
-            {
-                // The resource might exist by a name that includes the culture name in it
-                var nameWithCulture = GetResourceNameWithCultureName(name, resourceAssembly.GetName().CultureInfo);
-                matchingResource = availableResources.FirstOrDefault(n => n.EndsWith(nameWithCulture));
-
-                if (string.IsNullOrEmpty(matchingResource)) return null;
-            }
-
-            Stream stream = null;
-            try
-            {
-                stream = resourceAssembly.GetManifestResourceStream(matchingResource);
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    result = reader.ReadToEnd();
-                    stream = null;
-                }
-            }
-            finally
-            {
-                if (stream != null)
-                    stream.Dispose();
-            }
-
-            // Clean up possible script tags from document
-            if (removeScriptTags &&
-                MarkdownHandlerInstance.SanitizeHtml(ref result))
-            {
-                LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
-            }
-
-            //inject our DPI functions:
-            if (injectDPI)
-                result += DocumentationBrowserUtils.GetDPIScript();
-
-            return result;
-        }
-
-        /// <summary>
-        /// Gets a satellite assembly for the specified culture of returns null if not found.
-        /// </summary>
-        /// <param name="assembly">The main assembly</param>
-        /// <param name="cultureInfo">The culture to search a satellite for</param>
-        /// <returns>Satellite assembly for requested culture or null</returns>
-        private static Assembly GetSatelliteAssembly(Assembly assembly, CultureInfo cultureInfo)
-        {
-            try
-            {
-                return assembly.GetSatelliteAssembly(cultureInfo);
-            }
-            catch (FileNotFoundException)
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Given a file resource name and a culture, it returns an alternate resource name that includes
-        /// the culture name before the file extension. Example: NoContent.html => NoContent.de-DE.html
-        /// </summary>
-        /// <param name="name">Resource name</param>
-        /// <returns>Resource name with the culture name appended before the extension</returns>
-        internal static string GetResourceNameWithCultureName(string name, CultureInfo culture)
-        {
-            var extension = Path.GetExtension(name);
-            if (string.IsNullOrEmpty(extension) || culture == null)
-            {
-                return name;
-            }
-
-            return $"{name.Substring(0, name.LastIndexOf(extension))}.{culture.Name}{extension}";
-        }
-
-        /// <summary>
-        /// Checks if the assembly contains a manifest resource that ends with the specified name.
-        /// </summary>
-        /// <param name="assembly">Assembly to search for resources</param>
-        /// <param name="name">Suffix to search</param>
-        /// <returns>If such a resource exists or not</returns>
-        private static bool ContainsResource(Assembly assembly, string name)
-        {
-            if (assembly != null)
-            {
-                var nameWithCulture = GetResourceNameWithCultureName(name, assembly.GetName().CultureInfo);
-                return assembly.GetManifestResourceNames().Any(resName => resName.EndsWith(name) || resName.EndsWith(nameWithCulture));
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Resolves the assembly where to look for embedded resources. If no satellite compatible
-        /// with the UI culture is found, it returns the provided main/invariant assembly.
-        /// </summary>
-        /// <param name="assembly">The main assembly</param>
-        /// <returns>The resource assembly</returns>
-        private static Assembly GetResourceAssembly(Assembly assembly, string name)
-        {
-            var culture = CultureInfo.CurrentUICulture;
-            var satelliteAssembly = GetSatelliteAssembly(assembly, culture);
-            // If there is no satellite for the exact culture, try a more specific/neutral one
-            // following .NET rules for culture matching.
-            if (satelliteAssembly == null || !ContainsResource(satelliteAssembly, name))
-            {
-                if (culture.IsNeutralCulture)
-                {
-                    var specificCulture = CultureInfo.CreateSpecificCulture(culture.Name);
-                    satelliteAssembly = GetSatelliteAssembly(assembly, specificCulture);
-                }
-                else if (culture.Parent != CultureInfo.InvariantCulture)
-                {
-                    satelliteAssembly = GetSatelliteAssembly(assembly, culture.Parent);
-                }
-            }
-
-            if (satelliteAssembly == null || !ContainsResource(satelliteAssembly, name))
-            {
-                // Default to main assembly when no compatible satellite assembly was found
-                return assembly;
-            }
-            else
-            {
-                return satelliteAssembly;
-            }
-        }
-
         private void LogWarning(string msg, WarningLevel level) => this.MessageLogged?.Invoke(LogMessage.Warning(msg, level));
 
         private string ReplaceTemplateInContentWithString(string content)
@@ -511,5 +440,6 @@ namespace Dynamo.DocumentationBrowser
         }
 
         #endregion
+
     }
 }

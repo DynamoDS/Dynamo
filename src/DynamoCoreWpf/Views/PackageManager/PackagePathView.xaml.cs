@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Forms;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 
 namespace Dynamo.Wpf.Views.PackageManager
@@ -72,7 +73,7 @@ namespace Dynamo.Wpf.Views.PackageManager
             else
             {
                 string errorMessage = string.Format(Wpf.Properties.Resources.PackageFolderNotAccessible, args.Path);
-                System.Windows.Forms.MessageBox.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxService.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         #endregion

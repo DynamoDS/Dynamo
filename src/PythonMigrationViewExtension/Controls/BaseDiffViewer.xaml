@@ -137,8 +137,10 @@
                          Visibility="{Binding Path=CurrentViewModel.DiffState, Converter={StaticResource DiffStateToVis}}"
                          Click="OnDiffButtonClick"
                          HorizontalAlignment="Right"
-                         ToolTip="{x:Static p:Resources.DiffButtonTooltip}"
                          Height="44">
+                    <Button.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.DiffButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                    </Button.ToolTip>
                     <Button.Resources>
                         <fa:ImageAwesome x:Key="Shape"
                                          Icon="Exchange"
@@ -155,8 +157,10 @@
                          Visibility="{Binding Path=CurrentViewModel.DiffState, Converter={StaticResource DiffStateToVis}}"
                          Click="OnAcceptButtonClicked"
                          HorizontalAlignment="Right"
-                         ToolTip="{x:Static p:Resources.AcceptButtonTooltip}"
                          Height="44">
+                    <Button.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.AcceptButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                    </Button.ToolTip>
                     <Button.Resources>
                         <fa:ImageAwesome x:Key="Shape"
                                          Icon="Check"
@@ -168,8 +172,10 @@
                 <Button  x:Name="RejectButton"
                          Click="OnRejectButtonClicked"
                          HorizontalAlignment="Right"
-                         ToolTip="{x:Static p:Resources.RejectButtonTooltip}"
                          Height="44">
+                    <Button.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.RejectButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                    </Button.ToolTip>
                     <Button.Resources>
                         <fa:ImageAwesome x:Key="Shape"
                                          Icon="Close"
