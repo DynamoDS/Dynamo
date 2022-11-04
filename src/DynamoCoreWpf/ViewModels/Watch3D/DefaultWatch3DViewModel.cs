@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Xml;
+using CoreNodeModels;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -610,7 +611,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // If there is no attached model update for all render packages
             if (watchModel == null)
             {
-                if(node.IsVisible == false)
+                //When Watch3D nodes are in canvis we need to ignore this even under certain situations. 
+                if (node.IsVisible == false || node is Watch || node is Watch3DNodeModels.Watch3D)
                 {
                     return;
                 }
