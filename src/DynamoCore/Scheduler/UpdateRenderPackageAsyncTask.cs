@@ -21,6 +21,9 @@ namespace Dynamo.Scheduler
         internal IEnumerable<KeyValuePair<Guid, string>> DrawableIdMap { get; set; }
 
         internal bool ForceUpdate { get; set; }
+        /// <summary>
+        /// Set to true to ignore the preview state of the node
+        /// </summary>
         internal bool IgnoreIsVisible { get; set; }
     }
 
