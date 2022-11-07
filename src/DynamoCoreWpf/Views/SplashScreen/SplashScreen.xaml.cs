@@ -92,7 +92,7 @@ namespace Dynamo.UI.Views
             loadingTimer.Stop();
             loadingTimer = null;
             await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
-            await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime('Total loading time: {totalLoadingTime}ms')");
+            await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime('{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms')");
         }
 
         internal async void SetImportStatus(ImportStatus importStatus, string importSettingsTitle, string errorDescription)

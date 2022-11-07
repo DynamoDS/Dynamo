@@ -3451,4 +3451,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="SplashScreenWelcomeToDynamo" xml:space="preserve">
     <value>Welcome to Dynamo!</value>
   </data>
+  <data name="SplashScreenTotalLoadingTimeLabel" xml:space="preserve">
+    <value>Total loading time:</value>
+  </data>
 </root>
