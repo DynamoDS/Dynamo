@@ -130,6 +130,13 @@ namespace Dynamo.Tests.Configuration
                 Folders = new List<DynamoPlayerFolder>()
                 {
                     new DynamoPlayerFolder()
+                    {
+                        Path = @"C:\MyGenerativeDesignFolder",
+                        DisplayName = "My Generative Design Folder",
+                        Id = "41B5B0F7-1B21-42A8-A938-E2C34521EF61",
+                        IsRemovable = true,
+                        Order = -1,
+                    }
                 }
             });
 
