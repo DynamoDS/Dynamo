@@ -3381,7 +3381,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your custom settings can be imported here. Settings will be applied once Dynamo and any host program restarts..
+        ///   Looks up a localized string similar to Your custom settings can be imported here. Settings not exposed via Preferences panel will be applied once Dynamo and any host program restarts..
         /// </summary>
         public static string ImportPreferencesInfo {
             get {
