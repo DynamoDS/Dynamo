@@ -1016,7 +1016,7 @@ namespace Dynamo.Controls
             this.DynamoLoadedViewExtensionHandler(sharedViewExtensionLoadedParams, viewExtensionManager.ViewExtensions);
 
             BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
-            background_grid.Children.Add(BackgroundPreview);
+            //background_grid.Children.Add(BackgroundPreview);
             BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
             BackgroundPreview.Margin = new System.Windows.Thickness(0, 20, 0, 0);
             var vizBinding = new Binding
