@@ -181,7 +181,7 @@
                     Height="14"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Style="{StaticResource QuestionIcon}"
+                    Style="{StaticResource InformationIcon}"
                     ToolTipService.ShowDuration="10000">
                     <Image.ToolTip>
                             <ToolTip Content="{x:Static resx:Resources.AutocompleteLowConfidenceTooltip}" Style="{StaticResource GenericToolTipLight}"/>
