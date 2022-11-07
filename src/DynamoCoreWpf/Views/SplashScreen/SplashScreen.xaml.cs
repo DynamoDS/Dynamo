@@ -22,6 +22,8 @@ namespace Dynamo.UI.Views
 
         private long totalLoadingTime;
 
+        private DirectoryInfo webBrowserUserDataFolder;
+
         internal Action<bool> RequestLaunchDynamo;
         internal Action<string> RequestImportSettings;
         internal Func<bool> RequestSignIn; 
@@ -31,12 +33,17 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// Constructor
         /// </summary>
-        public SplashScreen()
+        public SplashScreen(string userDataDirectory)
         {
             InitializeComponent();
 
             loadingTimer = new Stopwatch();
             loadingTimer.Start();
+
+            //When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+            var userDataDir = new DirectoryInfo(userDataDirectory);
+            webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
+
             webView = new WebView2();
             AddChild(webView);
         }
@@ -73,6 +80,11 @@ namespace Dynamo.UI.Views
             }
 
             htmlString = htmlString.Replace("mainJs", jsonString);
+
+            webView.CreationProperties = new CoreWebView2CreationProperties
+            {
+                UserDataFolder = webBrowserUserDataFolder.FullName
+            };
 
             webView.NavigateToString(htmlString);
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",

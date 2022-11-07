@@ -67,7 +67,7 @@ namespace DynamoSandbox
 
                 DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
 
-                splashScreen = new Dynamo.UI.Views.SplashScreen();
+                splashScreen = new Dynamo.UI.Views.SplashScreen(Program.DynamoCorePath);
                 splashScreen.webView.NavigationCompleted += WebView_NavigationCompleted;
                 splashScreen.RequestLaunchDynamo = LaunchDynamo;
                 splashScreen.RequestImportSettings = ImportSettings;
