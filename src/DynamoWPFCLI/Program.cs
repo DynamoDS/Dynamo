@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using Dynamo.Applications;
@@ -83,14 +83,10 @@ namespace DynamoWPFCLI
         private static DynamoViewModel StartupDaynamo(StartupUtils.CommandLineArguments cmdLineArgs)
         {
             DynamoModel model;
-            if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
-            {
-                model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath, cmdLineArgs.AnalyticsInfo);
-            }
-            else
-            {
-                model = Dynamo.Applications.StartupUtils.MakeModel(true, string.Empty, cmdLineArgs.AnalyticsInfo);
-            }
+            model = Dynamo.Applications.StartupUtils.MakeCLIModel(String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath,
+                cmdLineArgs.UserDataFolderCli,
+                cmdLineArgs.CommonDataFolderCli,
+                cmdLineArgs.AnalyticsInfo);
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {
