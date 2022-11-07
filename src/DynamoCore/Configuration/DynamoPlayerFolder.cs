@@ -8,29 +8,29 @@ namespace Dynamo.Configuration
     public class DynamoPlayerFolder
     {
         /// <summary>
-        /// The full path if the folder
+        /// The full path of the folder
         /// </summary>
-        public string Path;
+        public string Path { get; set; }
 
         /// <summary>
         /// The display name of the folder
         /// </summary>
-        public string DisplayName;
+        public string DisplayName { get; set; }
 
         /// <summary>
         /// The ID of the folder
         /// </summary>
-        public string Id;
+        public string Id { get; set; }
 
         /// <summary>
         /// Whether this folder is removable from the settings (Built-in folders are non-removable)
         /// </summary>
-        public bool IsRemovable = true;
+        public bool IsRemovable { get; set; } = true;
 
         /// <summary>
         /// The order of the folder
         /// </summary>
-        public int Order = -1;
+        public int Order { get; set; } = -1;
 
         /// <summary>
         /// Initialize a DynamoPlayerFolderItem
@@ -66,12 +66,12 @@ namespace Dynamo.Configuration
         /// <summary>
         /// The name of the Player entry point
         /// </summary>
-        public string EntryPoint;
+        public string EntryPoint { get; set; }
 
         /// <summary>
         /// The List of Folder Items for this group
         /// </summary>
-        public List<DynamoPlayerFolder> Folders;
+        public List<DynamoPlayerFolder> Folders { get; set; }
 
         /// <summary>
         /// Creates an empty DynamoPlayerFolderGroup
