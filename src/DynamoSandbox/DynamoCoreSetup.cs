@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -67,7 +68,8 @@ namespace DynamoSandbox
 
                 DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
 
-                splashScreen = new Dynamo.UI.Views.SplashScreen(Program.DynamoCorePath);
+
+                splashScreen = new Dynamo.UI.Views.SplashScreen(GetUserDirectory());
                 splashScreen.webView.NavigationCompleted += WebView_NavigationCompleted;
                 splashScreen.RequestLaunchDynamo = LaunchDynamo;
                 splashScreen.RequestImportSettings = ImportSettings;
@@ -141,6 +143,16 @@ namespace DynamoSandbox
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
             }
+        }
+
+        private string GetUserDirectory()
+        {
+            var majorFileVersion = 2;
+            var minorFileVersion = 17;
+
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            return Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
+                            String.Format("{0}.{1}", majorFileVersion, minorFileVersion));
         }
 
         /// <summary>
