@@ -33,7 +33,7 @@ namespace Dynamo.Tests.Configuration
 
         [Test]
         [Category("UnitTests")]
-        public void TestGetPythonTemplateFilePath()
+        public void TestGetPythonTemplateFilePath ()
         {
             string settingDirectory = Path.Combine(TestDirectory, "settings");
             string settingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-PythonTemplate-initial.xml");
@@ -72,6 +72,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.UseHardwareAcceleration, true);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
+            Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 0);
 
             // Save
             settings.Save(tempPath);
@@ -90,6 +91,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.UseHardwareAcceleration, true);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
+            Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 0);
 
             // Change setting values
             settings.SetIsBackgroundPreviewActive("MyBackgroundPreview", false);
@@ -117,11 +119,20 @@ namespace Dynamo.Tests.Configuration
                     Status = WindowStatus.Maximized
                 }
             });
-            settings.GroupStyleItemsList.Add(new GroupStyleItem 
+            settings.GroupStyleItemsList.Add(new GroupStyleItem
             {
-                Name = "TestGroup", 
-                HexColorString = "000000" 
+                Name = "TestGroup",
+                HexColorString = "000000"
             });
+            settings.DynamoPlayerFolderGroups.Add(new DynamoPlayerFolderGroup()
+            {
+                EntryPoint = "GenerativeDesign",
+                Folders = new List<DynamoPlayerFolder>()
+                {
+                    new DynamoPlayerFolder()
+                }
+            });
+
 
             // Save
             settings.Save(tempPath);
@@ -156,6 +167,8 @@ namespace Dynamo.Tests.Configuration
             var styleItemsList = settings.GroupStyleItemsList[0];
             Assert.AreEqual(styleItemsList.Name, "TestGroup");
             Assert.AreEqual(styleItemsList.HexColorString, "000000");
+            Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 1);
+            Assert.AreEqual(settings.DynamoPlayerFolderGroups[0].Folders.Count, 1);
         }
 
         [Test]
@@ -212,7 +225,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(1, settingsLoaded.TrustedLocations.Count);
 
             Assert.IsTrue(settingsLoaded.IsTrustedLocation(Path.GetTempPath()));
-        }        
+        }
 
         /// <summary>
         /// Struct to support the comparison between two PreferenceSettings instances
@@ -221,7 +234,7 @@ namespace Dynamo.Tests.Configuration
         {
             public List<string> Properties { get; set; }
             public List<String> SamePropertyValues { get; set; }
-            public List<String> DifferentPropertyValues { get; set; }          
+            public List<String> DifferentPropertyValues { get; set; }
         }
 
         /// <summary>
@@ -349,7 +362,7 @@ namespace Dynamo.Tests.Configuration
                     }
                 }
             }
-            
+
             result.SamePropertyValues = propertiesWithSameValue;
             result.DifferentPropertyValues = propertiesWithDifferentValue;
             result.Properties = evaluatedProperties;
@@ -392,7 +405,7 @@ namespace Dynamo.Tests.Configuration
             defaultSettings.SetTrustedLocations(newSettings.TrustedLocations);
 
             // checking if the default Setting instance has the same property values of the new one
-            var checkEquality = comparePrefenceSettings(defaultSettings, newSettings);            
+            var checkEquality = comparePrefenceSettings(defaultSettings, newSettings);
             Assert.IsTrue(checkEquality.SamePropertyValues.Count == checkEquality.Properties.Count);
         }
 
@@ -416,7 +429,7 @@ namespace Dynamo.Tests.Configuration
             bool isOpenedFile = true;
             bool isHomeSpace = true;
             bool isShowStartPage = false;
-            bool isFileInTrustedLocation = false;            
+            bool isFileInTrustedLocation = false;
             bool isDisableTrustWarnings = false;
 
             // getting result
@@ -427,7 +440,7 @@ namespace Dynamo.Tests.Configuration
                 isShowStartPage,
                 isDisableTrustWarnings);
 
-            // checking the result            
+            // checking the result
             Assert.IsTrue(result == PreferenceSettings.AskForTrustedLocationResult.Ask, $"Conditions info: is opened file : {isOpenedFile} | is file in trusted location : {isFileInTrustedLocation} | is home space : {isHomeSpace} | is show Start page : {isShowStartPage} | is disable trust warnings : {isDisableTrustWarnings}");
         }
     }
