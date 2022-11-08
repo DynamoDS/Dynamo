@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
+using DesignScript.Builtin;
 using Dynamo.Applications;
 using Dynamo.Controls;
 using Dynamo.Core;
@@ -229,7 +230,7 @@ namespace DynamoSandbox
             dynamoView = new DynamoView(viewModel);
             authManager = model.AuthenticationManager;
 
-            // If user lauching Dynamo first time or picked to always show splash screen, display it. Otherwise, display Dynamo view directly.
+            // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {
                 splashScreen.SetSignInStatus(authManager.IsLoggedIn());
