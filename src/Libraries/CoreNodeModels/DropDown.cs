@@ -97,6 +97,7 @@ namespace CoreNodeModels
                 //go out of range of the items collection
                 if (value > Items.Count - 1 || value < 0)
                 {
+                    Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
                     selectedIndex = -1;
                     selectedString = string.Empty;
                 }
