@@ -121,7 +121,6 @@ namespace Dynamo.UI.Views
             {
                 LaunchDynamo(true);
             }
-            DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
         }
 
         /// <summary>
@@ -173,6 +172,7 @@ namespace Dynamo.UI.Views
         {
             viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
             Close();
+            DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             Application.Current.MainWindow = dynamoView;
             dynamoView.Show();
             dynamoView.Activate();
