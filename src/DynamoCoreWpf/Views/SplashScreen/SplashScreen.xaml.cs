@@ -38,11 +38,15 @@ namespace Dynamo.UI.Views
         internal WebView2 webView;
         private DynamoView dynamoView;
         private AuthenticationManager authManager;
-        public DynamoViewModel viewModel = null;
         private readonly string ASMPath;
         private readonly string CERPath;
         private readonly string commandFilePath;
         private readonly HostAnalyticsInfo hostAnalyticsInfo;
+
+        /// <summary>
+        /// Dynamo View Model reference
+        /// </summary>
+        public DynamoViewModel viewModel;
 
         /// <summary>
         /// Constructor
@@ -54,10 +58,11 @@ namespace Dynamo.UI.Views
             commandFilePath = cmdFilePath;
             hostAnalyticsInfo = info;
             InitializeComponent();
+
             loadingTimer = new Stopwatch();
             loadingTimer.Start();
 
-            //When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+            // When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
             var userDataDir = new DirectoryInfo(GetUserDirectory());
             webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
 
@@ -65,6 +70,7 @@ namespace Dynamo.UI.Views
             AddChild(webView);
             webView.NavigationCompleted += WebView_NavigationCompleted;
             DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
+            // Bind event handlers
             RequestLaunchDynamo = LaunchDynamo;
             RequestImportSettings = ImportSettings;
             RequestSignIn = SignIn;
@@ -115,6 +121,7 @@ namespace Dynamo.UI.Views
             {
                 LaunchDynamo(true);
             }
+            DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
         }
 
         /// <summary>
@@ -126,11 +133,11 @@ namespace Dynamo.UI.Views
             bool isImported = viewModel.PreferencesViewModel.importSettingsContent(fileContent);
             if (isImported)
             {
-                SetImportStatus(ImportStatus.success, Dynamo.Wpf.Properties.Resources.SplashScreenSettingsImported, string.Empty);
+                SetImportStatus(ImportStatus.success);
             }
             else
             {
-                SetImportStatus(ImportStatus.error, Dynamo.Wpf.Properties.Resources.SplashScreenFailedImportSettings, Dynamo.Wpf.Properties.Resources.SplashScreenImportSettingsFailDescription);
+                SetImportStatus(ImportStatus.error);
             }
             Analytics.TrackEvent(Actions.ImportSettings, Categories.SplashScreenOperations, isImported.ToString());
         }
@@ -138,7 +145,6 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// Returns true if the user was successfully logged in, else false.
         /// </summary>
-        /// <param name="status">If set to false, it will only return the login status without performing the login function</param>
         private bool SignIn()
         {
             authManager.Login();
@@ -147,7 +153,10 @@ namespace Dynamo.UI.Views
             return ret;
         }
 
-        //Returns true if the user was successfully logged out, else false.
+        /// <summary>
+        /// Returns true if the user was successfully logged out, else false.
+        /// </summary>
+        /// <returns></returns>
         private bool SignOut()
         {
             authManager.Logout();
@@ -175,6 +184,10 @@ namespace Dynamo.UI.Views
                     args.LoadDescription, args.BarSize);
         }
 
+        /// <summary>
+        /// This is used before DynamoModel initialization specifically to get user data dir
+        /// </summary>
+        /// <returns></returns>
         private string GetUserDirectory()
         {
             var version = AssemblyHelper.GetDynamoVersion();
@@ -244,8 +257,25 @@ namespace Dynamo.UI.Views
             Analytics.TrackStartupTime("DynamoSandbox", TimeSpan.FromMilliseconds(totalLoadingTime));
         }
 
-        internal async void SetImportStatus(ImportStatus importStatus, string importSettingsTitle, string errorDescription)
+        /// <summary>
+        /// Set the import status on splash screen.
+        /// </summary>
+        /// <param name="importStatus"></param>
+        internal async void SetImportStatus(ImportStatus importStatus)
         {
+            string importSettingsTitle;
+            string errorDescription;
+            if (importStatus == ImportStatus.success)
+            {
+                importSettingsTitle = Wpf.Properties.Resources.SplashScreenSettingsImported;
+                errorDescription = string.Empty;
+            }
+            else
+            {
+                importSettingsTitle = Dynamo.Wpf.Properties.Resources.SplashScreenFailedImportSettings;
+                errorDescription = Dynamo.Wpf.Properties.Resources.SplashScreenImportSettingsFailDescription;
+            }
+            // Update UI
             await webView.CoreWebView2.ExecuteScriptAsync("window.setImportStatus({" +
                 $"status: {(int)importStatus}," +
                 $"importSettingsTitle: '{importSettingsTitle}'," +
@@ -263,7 +293,7 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
-        /// Setup the values for all lables on splash screen using resources
+        /// Setup the values for all labels on splash screen using resources
         /// </summary>
         internal async void SetLabels()
         {
