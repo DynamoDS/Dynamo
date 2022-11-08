@@ -4,32 +4,48 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Input;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 
-
-namespace Dynamo.DynamoSandbox
+namespace Dynamo.UI.Views
 {
     public partial class SplashScreen : Window
     {
         // These are hardcoded string and should only change when npm package structure changed or image path changed
-        private static readonly string htmlEmbeddedFile = "Dynamo.DynamoSandbox.node_modules._dynamods.splash_screen.build.index.html";
-        private static readonly string jsEmbeddedFile = "Dynamo.DynamoSandbox.node_modules._dynamods.splash_screen.build.index.bundle.js";
-        private static readonly string backgroundImage = "Dynamo.DynamoSandbox.WebApp.splashScreenBackground.png";
+        private static readonly string htmlEmbeddedFile = "Dynamo.Wpf.node_modules._dynamods.splash_screen.build.index.html";
+        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.node_modules._dynamods.splash_screen.build.index.bundle.js";
+        private static readonly string backgroundImage = "Dynamo.Wpf.Views.SplashScreen.WebApp.splashScreenBackground.png";
         private static readonly string imageFileExtension = "png";
 
         private Stopwatch loadingTimer;
+
+        private long totalLoadingTime;
+
+        private DirectoryInfo webBrowserUserDataFolder;
 
         internal Action<bool> RequestLaunchDynamo;
         internal Action<string> RequestImportSettings;
         internal Func<bool> RequestSignIn; 
         internal Func<bool> RequestSignOut;
+        internal WebView2 webView;
 
-        public SplashScreen()
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public SplashScreen(string userDataDirectory)
         {
             InitializeComponent();
 
             loadingTimer = new Stopwatch();
             loadingTimer.Start();
+
+            //When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+            var userDataDir = new DirectoryInfo(userDataDirectory);
+            webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
+
+            webView = new WebView2();
+            AddChild(webView);
         }
 
         protected override async void OnContentRendered(EventArgs e)
@@ -39,8 +55,7 @@ namespace Dynamo.DynamoSandbox
             string htmlString = string.Empty;
             string jsonString = string.Empty;
 
-            var webView2Environment = await CoreWebView2Environment.CreateAsync();
-            await webView.EnsureCoreWebView2Async(webView2Environment);
+            await webView.EnsureCoreWebView2Async();
             // Context menu disabled
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             var assembly = Assembly.GetExecutingAssembly();
@@ -66,16 +81,22 @@ namespace Dynamo.DynamoSandbox
 
             htmlString = htmlString.Replace("mainJs", jsonString);
 
+            webView.CreationProperties = new CoreWebView2CreationProperties
+            {
+                UserDataFolder = webBrowserUserDataFolder.FullName
+            };
+
             webView.NavigateToString(htmlString);
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
-               new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut));
+               new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut, CloseWindow));
         }
 
         internal async void SetBarProperties(string version, string loadingDescription, float barSize)
         {
             var elapsedTime = loadingTimer.ElapsedMilliseconds;
+            totalLoadingTime += elapsedTime;
             loadingTimer = Stopwatch.StartNew();
-            await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', '{Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms')");
+            await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', '{Wpf.Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms')");
         }
 
         internal async void SetLoadingDone()
@@ -83,6 +104,7 @@ namespace Dynamo.DynamoSandbox
             loadingTimer.Stop();
             loadingTimer = null;
             await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
+            await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime('{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms')");
         }
 
         internal async void SetImportStatus(ImportStatus importStatus, string importSettingsTitle, string errorDescription)
@@ -99,7 +121,7 @@ namespace Dynamo.DynamoSandbox
         internal async void SetSignInStatus(bool status)
         {
             await webView.CoreWebView2.ExecuteScriptAsync("window.setSignInStatus({" +
-                $"signInTitle: '" + (status ? Properties.Resources.SplashScreenSignOut : Properties.Resources.SplashScreenSignIn).ToString() + "'," +
+                $"signInTitle: '" + (status ? Wpf.Properties.Resources.SplashScreenSignOut : Wpf.Properties.Resources.SplashScreenSignIn).ToString() + "'," +
                 $"signInStatus: '" + status + "'})");
         }
 
@@ -109,9 +131,18 @@ namespace Dynamo.DynamoSandbox
         internal async void SetLabels()
         {
             await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
-               $"welcomeToDynamoTitle: '{Properties.Resources.SplashScreenWelcomeToDynamo}'," +
-               $"launchTitle: '{Properties.Resources.SplashScreenLaunchTitle}'," +
-               $"showScreenAgainLabel: '{Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
+               $"welcomeToDynamoTitle: '{Wpf.Properties.Resources.SplashScreenWelcomeToDynamo}'," +
+               $"launchTitle: '{Wpf.Properties.Resources.SplashScreenLaunchTitle}'," +
+               $"importSettingsTitle: '{Wpf.Properties.Resources.SplashScreenImportSettings}'," +
+               $"showScreenAgainLabel: '{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
+        }
+
+        /// <summary>
+        /// If the user wants to close the window, we shutdown the application and don't lanch Dynamo
+        /// </summary>
+        private void CloseWindow()
+        {
+           Application.Current.Shutdown();
         }
 
         protected override void OnClosed(EventArgs e)
@@ -140,13 +171,15 @@ namespace Dynamo.DynamoSandbox
         readonly Action<string> RequestImportSettings;
         readonly Func<bool> RequestSignIn;
         readonly Func<bool> RequestSignOut;
+        readonly Action RequestCloseWindow;
 
-        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut)
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut, Action requestCloseWindow)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
             RequestImportSettings = requestImportSettings;
             RequestSignIn = requestSignIn;
             RequestSignOut = requestSignOut;
+            RequestCloseWindow = requestCloseWindow;
         }
 
         public void LaunchDynamo(bool showScreenAgain)
@@ -165,6 +198,10 @@ namespace Dynamo.DynamoSandbox
         public bool SignOut()
         {
             return RequestSignOut();
+        }
+        public void CloseWindow()
+        {
+            RequestCloseWindow();
         }
     }
 }

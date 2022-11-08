@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -87,30 +87,6 @@ namespace Dynamo.Tests.ModelsTest
             //This will validate that the local handler was executed and set the flag in true
             Assert.IsTrue(dispatcherExecuted);
             Assert.IsTrue(evaluationCompleted);
-        }
-
-       
-
-        /// <summary>
-        /// This test method will execute the event OnRequestDispatcherBeginInvoke
-        /// </summary>
-        [Test]
-        [Category("UnitTests")]
-        public void TestOnRequestMigrationStatusDialog()
-        {
-            //Arrange
-            //This will subscribe our local method to the RequestMigrationStatusDialog event
-            DynCmd.RequestMigrationStatusDialog += DynamoModel_RequestMigrationStatusDialog;
-
-            //Act
-            //This will execute the OnRequestMigrationStatusDialog() in the DynamoModelEvents class
-            DynCmd.OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                SettingsMigrationEventArgs.EventStatusType.Begin));
-
-            //Assert
-            DynCmd.RequestMigrationStatusDialog -= DynamoModel_RequestMigrationStatusDialog;
-            //This will validate that the local handler was executed and set the flag in true
-            Assert.IsTrue(migrationStatusDialog);
         }
 
         /// <summary>
@@ -546,11 +522,6 @@ namespace Dynamo.Tests.ModelsTest
         private void Model_RequestLayoutUpdate(object sender, EventArgs e)
         {
             layoutUpdate = true;
-        }
-
-        private void DynamoModel_RequestMigrationStatusDialog(SettingsMigrationEventArgs args)
-        {
-            migrationStatusDialog = true;
         }
 
         private void DynamoModel_RequestDispatcherBeginInvoke(Action action)
