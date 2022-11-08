@@ -4,7 +4,7 @@
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="NoResize"      
-        AllowsTransparency="False"        
-        Width="545"
-        Height="377">
+        AllowsTransparency="False"
+        Width="654"
+        Height="452">
 </Window>

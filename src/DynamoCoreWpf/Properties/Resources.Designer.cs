@@ -8056,6 +8056,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Total loading time:.
+        /// </summary>
+        public static string SplashScreenTotalLoadingTimeLabel {
+            get {
+                return ResourceManager.GetString("SplashScreenTotalLoadingTimeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading View Extensions....
         /// </summary>
         public static string SplashScreenViewExtensions {
