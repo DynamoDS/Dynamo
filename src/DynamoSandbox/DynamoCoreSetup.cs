@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
-using DesignScript.Builtin;
 using Dynamo.Applications;
 using Dynamo.Controls;
 using Dynamo.Core;
