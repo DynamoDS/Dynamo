@@ -4,8 +4,14 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Input;
+using Dynamo.Applications;
+using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Logging;
+using Dynamo.Models;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
@@ -23,30 +29,159 @@ namespace Dynamo.UI.Views
 
         private long totalLoadingTime;
 
-        private DirectoryInfo webBrowserUserDataFolder;
+        private readonly DirectoryInfo webBrowserUserDataFolder;
 
         internal Action<bool> RequestLaunchDynamo;
         internal Action<string> RequestImportSettings;
         internal Func<bool> RequestSignIn; 
         internal Func<bool> RequestSignOut;
         internal WebView2 webView;
+        private DynamoView dynamoView;
+        private AuthenticationManager authManager;
+        public DynamoViewModel viewModel = null;
+        private readonly string ASMPath;
+        private readonly string CERPath;
+        private readonly string commandFilePath;
+        private readonly HostAnalyticsInfo hostAnalyticsInfo;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public SplashScreen(string userDataDirectory)
+        public SplashScreen(HostAnalyticsInfo info = new HostAnalyticsInfo(), string asmPath ="", string cerPath ="", string cmdFilePath ="")
         {
+            ASMPath = asmPath;
+            CERPath = cerPath;
+            commandFilePath = cmdFilePath;
+            hostAnalyticsInfo = info;
             InitializeComponent();
-
             loadingTimer = new Stopwatch();
             loadingTimer.Start();
 
             //When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
-            var userDataDir = new DirectoryInfo(userDataDirectory);
+            var userDataDir = new DirectoryInfo(GetUserDirectory());
             webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
 
             webView = new WebView2();
             AddChild(webView);
+            webView.NavigationCompleted += WebView_NavigationCompleted;
+            DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
+            RequestLaunchDynamo = LaunchDynamo;
+            RequestImportSettings = ImportSettings;
+            RequestSignIn = SignIn;
+            RequestSignOut = SignOut;
+        }
+
+        private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            SetLabels();
+            LoadDynamoView();
+            if (webView != null)
+            {
+                webView.NavigationCompleted -= WebView_NavigationCompleted;
+            }
+        }
+
+        private void LoadDynamoView()
+        {
+            DynamoModel model;
+            model = StartupUtils.MakeModel(false, ASMPath ?? string.Empty, hostAnalyticsInfo);
+
+            model.CERLocation = CERPath;
+
+            viewModel = DynamoViewModel.Start(
+                   new DynamoViewModel.StartConfiguration()
+                   {
+                       CommandFilePath = commandFilePath,
+                       DynamoModel = model,
+                       Watch3DViewModel =
+                           HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
+                               null,
+                               new Watch3DViewModelStartupParams(model),
+                               model.Logger),
+                       ShowLogin = true
+                   });
+
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Dynamo.Wpf.Properties.Resources.SplashScreenLaunchingDynamo, 70));
+            dynamoView = new DynamoView(viewModel);
+            authManager = model.AuthenticationManager;
+
+            // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
+            if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
+            {
+                SetSignInStatus(authManager.IsLoggedIn());
+                SetLoadingDone();
+            }
+            else
+            {
+                LaunchDynamo(true);
+            }
+        }
+
+        /// <summary>
+        /// Import setting file from chosen path
+        /// </summary>
+        /// <param name="fileContent"></param>
+        private void ImportSettings(string fileContent)
+        {
+            bool isImported = viewModel.PreferencesViewModel.importSettingsContent(fileContent);
+            if (isImported)
+            {
+                SetImportStatus(ImportStatus.success, Dynamo.Wpf.Properties.Resources.SplashScreenSettingsImported, string.Empty);
+            }
+            else
+            {
+                SetImportStatus(ImportStatus.error, Dynamo.Wpf.Properties.Resources.SplashScreenFailedImportSettings, Dynamo.Wpf.Properties.Resources.SplashScreenImportSettingsFailDescription);
+            }
+            Analytics.TrackEvent(Actions.ImportSettings, Categories.SplashScreenOperations, isImported.ToString());
+        }
+
+        /// <summary>
+        /// Returns true if the user was successfully logged in, else false.
+        /// </summary>
+        /// <param name="status">If set to false, it will only return the login status without performing the login function</param>
+        private bool SignIn()
+        {
+            authManager.Login();
+            bool ret = authManager.IsLoggedIn();
+            Analytics.TrackEvent(Actions.SignIn, Categories.SplashScreenOperations, ret.ToString());
+            return ret;
+        }
+
+        //Returns true if the user was successfully logged out, else false.
+        private bool SignOut()
+        {
+            authManager.Logout();
+            bool ret = !authManager.IsLoggedIn();
+            Analytics.TrackEvent(Actions.SignOut, Categories.SplashScreenOperations, ret.ToString());
+            return ret;
+        }
+
+        /// <summary>
+        /// Handler to launch Dynamo View
+        /// </summary>
+        /// <param name="isCheckboxChecked"></param>
+        private void LaunchDynamo(bool isCheckboxChecked)
+        {
+            viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
+            Close();
+            Application.Current.MainWindow = dynamoView;
+            dynamoView.Show();
+            dynamoView.Activate();
+        }
+
+        private void DynamoModel_RequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)
+        {
+            SetBarProperties(Dynamo.Utilities.AssemblyHelper.GetDynamoVersion().ToString(),
+                    args.LoadDescription, args.BarSize);
+        }
+
+        private string GetUserDirectory()
+        {
+            var version = AssemblyHelper.GetDynamoVersion();
+
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            return Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
+                            String.Format("{0}.{1}", version.Major, version.Minor));
         }
 
         protected override async void OnContentRendered(EventArgs e)
@@ -106,6 +241,7 @@ namespace Dynamo.UI.Views
             loadingTimer = null;
             await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
             await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime('{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms')");
+            Analytics.TrackStartupTime("DynamoSandbox", TimeSpan.FromMilliseconds(totalLoadingTime));
         }
 
         internal async void SetImportStatus(ImportStatus importStatus, string importSettingsTitle, string errorDescription)
