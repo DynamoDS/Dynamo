@@ -12,6 +12,21 @@
     <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
+
+  <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+      <Exec Command="npm install --prefix ./ @dynamods/splash-screen@latest" />
+  </Target>
+  <ItemGroup>
+    <None Remove="node_modules\%40dynamods\splash-screen\build\index.bundle.js" />
+    <None Remove="node_modules\%40dynamods\splash-screen\build\index.html" />
+    <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="node_modules\@dynamods\splash-screen\build\index.bundle.js" />
+    <EmbeddedResource Include="node_modules\@dynamods\splash-screen\build\index.html" />
+    <EmbeddedResource Include="Views\SplashScreen\WebApp\splashScreenBackground.png" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Remove="UI\Images\AboutWindow\logo_about_dark.png" />
     <None Remove="UI\Images\Alignment\align_bottom.png" />
@@ -287,6 +302,7 @@
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="Utilities\PreferencesPanelUtilities.cs" />
+    <Compile Include="Utilities\WebView2Utilities.cs" />
     <Compile Include="ViewModels\Core\AnnotationExtension.cs" />
     <Compile Include="ViewModels\Core\AnnotationViewModel.cs" />
     <Compile Include="Utilities\ResourceUtilities.cs" />
@@ -406,6 +422,9 @@
     </Compile>
     <Compile Include="Views\Search\LibraryView.xaml.cs">
       <DependentUpon>LibraryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SplashScreen\SplashScreen.xaml.cs">
+      <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\NodeView.xaml.cs">
       <DependentUpon>NodeView.xaml</DependentUpon>
@@ -1368,6 +1387,12 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\Core\WorkspaceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\SplashScreen\SplashScreen.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -3300,7 +3300,7 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Package Upload Scan</value>
   </data>
   <data name="ImportPreferencesInfo" xml:space="preserve">
-    <value>Your custom settings can be imported here. Settings will be applied once Dynamo and any host program restarts.</value>
+    <value>Your custom settings can be imported here. Settings not exposed via Preferences panel will be applied once Dynamo and any host program restarts.</value>
     <comment>Import Preferences Info.</comment>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
@@ -3374,6 +3374,12 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="RecentFileNumberInfo" xml:space="preserve">
     <value>Reducing this number will discard all recent files beyond your chosen number.</value>
   </data>
+  <data name="WebView2RequiredMessage" xml:space="preserve">
+    <value>Dynamo requires WebView2 Evergreen Runtime, which is not installed on your computer. Please use the link below to download the Evergreen Standalone Installer and install the program. Then relaunch Dynamo. \n\n#WebView2 Runtime Installer=https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-sectionedge/webview2/#download-section</value>
+  </data>
+  <data name="WebView2RequiredTitle" xml:space="preserve">
+    <value>WebView2 Required</value>
+  </data>
   <data name="DynamoViewFileMenuInsert" xml:space="preserve">
     <value>Insert...</value>
   </data>
@@ -3398,5 +3404,41 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="GroupStyleFontSizeToolTip" xml:space="preserve">
     <value>Font size</value>
+  </data>
+  <data name="SplashScreenFailedImportSettings" xml:space="preserve">
+    <value>Failed to Import Settings</value>
+  </data>
+  <data name="SplashScreenImportSettings" xml:space="preserve">
+    <value>Import Settings</value>
+  </data>
+  <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
+    <value>Something went wrong when importing your custom setting file. Please try again or proceed with default settings.</value>
+  </data>
+  <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
+    <value>Launching Dynamo View...</value>
+  </data>
+  <data name="SplashScreenLaunchTitle" xml:space="preserve">
+    <value>Launch Dynamo</value>
+  </data>
+  <data name="SplashScreenLoadingTimeLabel" xml:space="preserve">
+    <value>Loading time</value>
+  </data>
+  <data name="SplashScreenSettingsImported" xml:space="preserve">
+    <value>Settings imported</value>
+  </data>
+  <data name="SplashScreenShowScreenAgainLabel" xml:space="preserve">
+    <value>Don’t show this screen again</value>
+  </data>
+  <data name="SplashScreenSignIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="SplashScreenSignOut" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="SplashScreenWelcomeToDynamo" xml:space="preserve">
+    <value>Welcome to Dynamo!</value>
+  </data>
+  <data name="SplashScreenTotalLoadingTimeLabel" xml:space="preserve">
+    <value>Total loading time:</value>
   </data>
 </root>
