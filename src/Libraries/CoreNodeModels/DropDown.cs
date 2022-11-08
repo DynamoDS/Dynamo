@@ -97,7 +97,6 @@ namespace CoreNodeModels
                 //go out of range of the items collection
                 if (value > Items.Count - 1 || value < 0)
                 {
-                    Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
                     selectedIndex = -1;
                     selectedString = string.Empty;
                 }
@@ -197,6 +196,11 @@ namespace CoreNodeModels
             if (updateValueParams.PropertyName == "Value" && value != null)
             {
                 SelectedIndex = ParseSelectedIndex(value, Items);
+
+                if (SelectedIndex < 0)
+                {
+                    Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
+                }
 
                 return true;
             }
