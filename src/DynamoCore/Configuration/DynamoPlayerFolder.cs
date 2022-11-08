@@ -31,31 +31,6 @@ namespace Dynamo.Configuration
         /// The order of the folder
         /// </summary>
         public int Order { get; set; } = -1;
-
-        /// <summary>
-        /// Initialize a DynamoPlayerFolderItem
-        /// </summary>
-        /// <param name="path">The full path of the folder</param>
-        /// <param name="displayName">The display name of the folder</param>
-        /// <param name="id">The id of the folder</param>
-        /// <param name="isRemovable">The removalbe state of the folder</param>
-        /// <param name="order">The order of the folder in the UI</param>
-        public DynamoPlayerFolder(string path, string displayName, string id, bool isRemovable, int order)
-        {
-            Path = path;
-            DisplayName = displayName;
-            Id = id;
-            IsRemovable = isRemovable;
-            Order = order;
-        }
-
-        /// <summary>
-        /// Create an empty DynamoPlayerFolderItem
-        /// </summary>
-        public DynamoPlayerFolder()
-        {
-
-        }
     }
 
     /// <summary>
@@ -71,25 +46,6 @@ namespace Dynamo.Configuration
         /// <summary>
         /// The List of Folder Items for this group
         /// </summary>
-        public List<DynamoPlayerFolder> Folders { get; set; }
-
-        /// <summary>
-        /// Creates an empty DynamoPlayerFolderGroup
-        /// </summary>
-        public DynamoPlayerFolderGroup()
-        {
-            Folders = new List<DynamoPlayerFolder>();
-        }
-
-        /// <summary>
-        /// Initialize a DynamoPlayerFolderItem
-        /// </summary>
-        /// <param name="entryPoint">The name of the Player entry point</param>
-        /// <param name="folders">The list of Folder data</param>
-        public DynamoPlayerFolderGroup(string entryPoint, List<DynamoPlayerFolder> folders)
-        {
-            EntryPoint = entryPoint;
-            Folders = folders;
-        }
+        public List<DynamoPlayerFolder> Folders { get; set; } = new List<DynamoPlayerFolder>();
     }
 }
