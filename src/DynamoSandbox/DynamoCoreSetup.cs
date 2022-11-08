@@ -4,12 +4,16 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using Dynamo.Applications;
+using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
+using Dynamo.Wpf.ViewModels.Watch3D;
+using Microsoft.Web.WebView2.Core;
 
 namespace DynamoSandbox
 {
@@ -22,6 +26,7 @@ namespace DynamoSandbox
         private readonly string ASMPath;
         private readonly HostAnalyticsInfo analyticsInfo;
         private const string sandboxWikiPage = @"https://github.com/DynamoDS/Dynamo/wiki/How-to-Utilize-Dynamo-Builds";
+        private DynamoViewModel viewModel = null;
 
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
@@ -61,7 +66,8 @@ namespace DynamoSandbox
                     return;
                 StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
 
-                splashScreen = new Dynamo.UI.Views.SplashScreen(analyticsInfo, ASMPath, CERLocation, commandFilePath);
+                splashScreen = new Dynamo.UI.Views.SplashScreen();
+                splashScreen.webView.NavigationCompleted += LoadDynamoView;
                 splashScreen.Show();
                 app.Run();
 
@@ -81,7 +87,6 @@ namespace DynamoSandbox
                 try
                 {
 #if DEBUG
-                    var viewModel = splashScreen.viewModel;
                     // Display the recorded command XML when the crash happens, 
                     // so that it maybe saved and re-run later
                     if (viewModel != null)
@@ -124,6 +129,43 @@ namespace DynamoSandbox
 
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
+            }
+        }
+
+        private void LoadDynamoView(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            DynamoModel model;
+            model = StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
+
+            model.CERLocation = CERLocation;
+
+            viewModel = DynamoViewModel.Start(
+                   new DynamoViewModel.StartConfiguration()
+                   {
+                       CommandFilePath = commandFilePath,
+                       DynamoModel = model,
+                       Watch3DViewModel =
+                           HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
+                               null,
+                               new Watch3DViewModelStartupParams(model),
+                               model.Logger),
+                       ShowLogin = true
+                   });
+
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Dynamo.Wpf.Properties.Resources.SplashScreenLaunchingDynamo, 70));
+            splashScreen.dynamoView = new DynamoView(viewModel);
+            splashScreen.authManager = model.AuthenticationManager;
+            splashScreen.viewModel = viewModel;
+
+            // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
+            if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
+            {
+                splashScreen.SetSignInStatus(splashScreen.authManager.IsLoggedIn());
+                splashScreen.SetLoadingDone();
+            }
+            else
+            {
+                splashScreen.RequestLaunchDynamo.Invoke(true);
             }
         }
 

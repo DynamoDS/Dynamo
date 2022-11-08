@@ -4,14 +4,12 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
-using Dynamo.Applications;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels.Watch3D;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
@@ -25,23 +23,25 @@ namespace Dynamo.UI.Views
         private static readonly string backgroundImage = "Dynamo.Wpf.Views.SplashScreen.WebApp.splashScreenBackground.png";
         private static readonly string imageFileExtension = "png";
 
+        // Timer used for Splash Screen loading
         private Stopwatch loadingTimer;
-
         private long totalLoadingTime;
-
-        private readonly DirectoryInfo webBrowserUserDataFolder;
 
         internal Action<bool> RequestLaunchDynamo;
         internal Action<string> RequestImportSettings;
         internal Func<bool> RequestSignIn; 
         internal Func<bool> RequestSignOut;
         internal WebView2 webView;
-        private DynamoView dynamoView;
-        private AuthenticationManager authManager;
-        private readonly string ASMPath;
-        private readonly string CERPath;
-        private readonly string commandFilePath;
-        private readonly HostAnalyticsInfo hostAnalyticsInfo;
+
+        /// <summary>
+        /// Dynamo View reference
+        /// </summary>
+        public DynamoView dynamoView;
+
+        /// <summary>
+        /// Dynamo auth manager reference
+        /// </summary>
+        public AuthenticationManager authManager;
 
         /// <summary>
         /// Dynamo View Model reference
@@ -51,20 +51,12 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// Constructor
         /// </summary>
-        public SplashScreen(HostAnalyticsInfo info = new HostAnalyticsInfo(), string asmPath ="", string cerPath ="", string cmdFilePath ="")
+        public SplashScreen()
         {
-            ASMPath = asmPath;
-            CERPath = cerPath;
-            commandFilePath = cmdFilePath;
-            hostAnalyticsInfo = info;
             InitializeComponent();
 
             loadingTimer = new Stopwatch();
             loadingTimer.Start();
-
-            // When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
-            var userDataDir = new DirectoryInfo(GetUserDirectory());
-            webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
 
             webView = new WebView2();
             AddChild(webView);
@@ -80,46 +72,9 @@ namespace Dynamo.UI.Views
         private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
             SetLabels();
-            LoadDynamoView();
             if (webView != null)
             {
                 webView.NavigationCompleted -= WebView_NavigationCompleted;
-            }
-        }
-
-        private void LoadDynamoView()
-        {
-            DynamoModel model;
-            model = StartupUtils.MakeModel(false, ASMPath ?? string.Empty, hostAnalyticsInfo);
-
-            model.CERLocation = CERPath;
-
-            viewModel = DynamoViewModel.Start(
-                   new DynamoViewModel.StartConfiguration()
-                   {
-                       CommandFilePath = commandFilePath,
-                       DynamoModel = model,
-                       Watch3DViewModel =
-                           HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
-                               null,
-                               new Watch3DViewModelStartupParams(model),
-                               model.Logger),
-                       ShowLogin = true
-                   });
-
-            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Dynamo.Wpf.Properties.Resources.SplashScreenLaunchingDynamo, 70));
-            dynamoView = new DynamoView(viewModel);
-            authManager = model.AuthenticationManager;
-
-            // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
-            if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
-            {
-                SetSignInStatus(authManager.IsLoggedIn());
-                SetLoadingDone();
-            }
-            else
-            {
-                LaunchDynamo(true);
             }
         }
 
@@ -229,6 +184,10 @@ namespace Dynamo.UI.Views
             }
 
             htmlString = htmlString.Replace("mainJs", jsonString);
+
+            // When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+            var userDataDir = new DirectoryInfo(GetUserDirectory());
+            var webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
 
             webView.CreationProperties = new CoreWebView2CreationProperties
             {
