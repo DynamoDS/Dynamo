@@ -264,10 +264,8 @@
                            Margin="0 0 0 2"
                            VerticalAlignment="Bottom"
                            HorizontalAlignment="Stretch">
-                    <Hyperlink Click="OnLearnMoreClick">
-                        <TextBlock Name="LearnMore"
-                                   Foreground="#4790cd"
-                                   Text="{x:Static p:Resources.LearnMore}" />
+                    <Hyperlink Click="OnLearnMoreClick" Foreground="#4790cd">
+                        <TextBlock Name="LearnMore" Text="{x:Static p:Resources.LearnMore}" />
                     </Hyperlink>
                 </TextBlock>
 
