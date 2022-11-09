@@ -153,17 +153,8 @@ namespace DynamoSandbox
 
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Dynamo.Wpf.Properties.Resources.SplashScreenLaunchingDynamo, 70));
             splashScreen.DynamoView = new DynamoView(viewModel);
+            splashScreen.OnRequestStaticSplashScreen();
 
-            // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
-            if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
-            {
-                splashScreen.SetSignInStatus(splashScreen.authManager.IsLoggedIn());
-                splashScreen.SetLoadingDone();
-            }
-            else
-            {
-                splashScreen.RequestLaunchDynamo.Invoke(true);
-            }
             splashScreen.webView.NavigationCompleted -= LoadDynamoView;
         }
 

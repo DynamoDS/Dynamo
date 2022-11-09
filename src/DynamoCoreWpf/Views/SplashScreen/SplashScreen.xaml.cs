@@ -33,6 +33,16 @@ namespace Dynamo.UI.Views
         internal Func<bool> RequestSignOut;
         internal WebView2 webView;
 
+        /// <summary>
+        /// Dynamo auth manager reference
+        /// </summary>
+        internal AuthenticationManager authManager;
+
+        /// <summary>
+        /// Dynamo View Model reference
+        /// </summary>
+        internal DynamoViewModel viewModel;
+
         private DynamoView dynamoView;
         /// <summary>
         /// Dynamo View reference
@@ -52,14 +62,22 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
-        /// Dynamo auth manager reference
+        /// This delegate is used in StaticSplashScreenReady events
         /// </summary>
-        internal AuthenticationManager authManager;
+        internal delegate void StaticSplashScreenReadyHandler();
 
         /// <summary>
-        /// Dynamo View Model reference
+        /// Event to throw for Splash Screen to update Dynamo launching tasks
         /// </summary>
-        internal DynamoViewModel viewModel;
+        internal static event StaticSplashScreenReadyHandler StaticSplashScreenReady;
+
+        /// <summary>
+        /// Request to trigger StaticSplashScreenReady event
+        /// </summary>
+        public void OnRequestStaticSplashScreen()
+        {
+            StaticSplashScreenReady?.Invoke();
+        }
 
         /// <summary>
         /// Constructor
@@ -76,6 +94,7 @@ namespace Dynamo.UI.Views
             webView.NavigationCompleted += WebView_NavigationCompleted;
             DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
             // Bind event handlers
+            StaticSplashScreenReady += FinishLoadingDynamicScreen;
             RequestLaunchDynamo = LaunchDynamo;
             RequestImportSettings = ImportSettings;
             RequestSignIn = SignIn;
@@ -144,6 +163,23 @@ namespace Dynamo.UI.Views
             Application.Current.MainWindow = dynamoView;
             dynamoView.Show();
             dynamoView.Activate();
+        }
+
+        /// <summary>
+        /// Once main window is initialized, Dynamic Splash screen should finish loading
+        /// </summary>
+        private void FinishLoadingDynamicScreen()
+        {
+            // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
+            if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
+            {
+                SetSignInStatus(authManager.IsLoggedIn());
+                SetLoadingDone();
+            }
+            else
+            {
+                RequestLaunchDynamo.Invoke(true);
+            }
         }
 
         private void DynamoModel_RequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)
