@@ -45,7 +45,7 @@ namespace Dynamo.UI.Views
             webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
 
             webView = new WebView2();
-            AddChild(webView);
+            ShadowGrid.Children.Add(webView);
         }
 
         protected override async void OnContentRendered(EventArgs e)
@@ -143,6 +143,7 @@ namespace Dynamo.UI.Views
         private void CloseWindow()
         {
            Application.Current.Shutdown();
+           Process.GetCurrentProcess().Kill();
         }
 
         protected override void OnClosed(EventArgs e)
