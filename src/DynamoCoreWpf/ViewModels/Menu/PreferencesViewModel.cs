@@ -994,8 +994,23 @@ namespace Dynamo.ViewModels
                 }
             }
 
+            SanitizeValues();
             RaisePropertyChanged(string.Empty);
             return true;
+        }
+
+        /// <summary>
+        /// Checking for invalid values or tainted data and sanitize them
+        /// </summary>
+        internal void SanitizeValues()
+        {
+            foreach (var groupStyle in preferenceSettings.GroupStyleItemsList)
+            {
+                if (!GroupStyleFontSizeList.Contains(groupStyle.FontSize))
+                {
+                    groupStyle.FontSize = GroupStyleItem.DefaultGroupStyleItems.FirstOrDefault().FontSize;
+                }
+            }
         }
 
         /// <summary>
