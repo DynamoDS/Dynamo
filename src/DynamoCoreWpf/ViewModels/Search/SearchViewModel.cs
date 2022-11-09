@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -185,6 +185,41 @@ namespace Dynamo.ViewModels
             {
                 filteredResults = ToggleSelect(value);
                 RaisePropertyChanged(nameof(FilteredResults));
+            }
+        }
+
+        private IEnumerable<NodeSearchElementViewModel> filteredHighConfidenceResults;
+        /// <summary>
+        /// Filtered high confidence search results.
+        /// </summary>
+        internal IEnumerable<NodeSearchElementViewModel> FilteredHighConfidenceResults
+        {
+            get
+            {
+                return filteredHighConfidenceResults;
+            }
+            set
+            {
+                filteredHighConfidenceResults = ToggleSelect(value);
+                RaisePropertyChanged(nameof(FilteredHighConfidenceResults));
+            }
+        }
+
+
+        private IEnumerable<NodeSearchElementViewModel> filteredLowConfidenceResults;
+        /// <summary>
+        /// Filtered low confidence search results.
+        /// </summary>
+        internal IEnumerable<NodeSearchElementViewModel> FilteredLowConfidenceResults
+        {
+            get
+            {
+                return filteredLowConfidenceResults;
+            }
+            set
+            {
+                filteredLowConfidenceResults = ToggleSelect(value);
+                RaisePropertyChanged(nameof(FilteredLowConfidenceResults));
             }
         }
 

@@ -15,7 +15,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
-using Dynamo.Search.SearchElements;
+using SearchElements = Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
 using Dynamo.Updates;
@@ -2722,30 +2722,30 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var type = (ElementTypes)value;
+            var type = (SearchElements.ElementTypes)value;
 
             switch (type)
             {
-                case ElementTypes.Packaged:
+                case SearchElements.ElementTypes.Packaged:
                     return Resources.PackageTypeShortString;
 
-                case ElementTypes.Packaged | ElementTypes.ZeroTouch:
+                case SearchElements.ElementTypes.Packaged | SearchElements.ElementTypes.ZeroTouch:
                     return Resources.PackageTypeShortString;
 
-                case ElementTypes.Packaged | ElementTypes.CustomNode:
+                case SearchElements.ElementTypes.Packaged | SearchElements.ElementTypes.CustomNode:
                     return Resources.PackageTypeShortString;
 
-                case ElementTypes.Packaged | ElementTypes.ZeroTouch | ElementTypes.CustomNode:
+                case SearchElements.ElementTypes.Packaged | SearchElements.ElementTypes.ZeroTouch | SearchElements.ElementTypes.CustomNode:
                     return Resources.PackageTypeShortString;
 
-                case ElementTypes.ZeroTouch:
+                case SearchElements.ElementTypes.ZeroTouch:
                     return Resources.ZeroTouchTypeShortString;
 
-                case ElementTypes.CustomNode:
+                case SearchElements.ElementTypes.CustomNode:
                     return Resources.CustomNodeTypeShortString;
 
-                case ElementTypes.BuiltIn:
-                case ElementTypes.None:
+                case SearchElements.ElementTypes.BuiltIn:
+                case SearchElements.ElementTypes.None:
                 default:
                     return string.Empty;
             }
@@ -3155,22 +3155,22 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (!(value is SearchElementGroup))
+            if (!(value is SearchElements.SearchElementGroup))
             {
                 return null;
             }
 
-            var type = (SearchElementGroup)value;
+            var type = (SearchElements.SearchElementGroup)value;
 
             var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
 
             switch (type)
             {
-                case SearchElementGroup.Create:
+                case SearchElements.SearchElementGroup.Create:
                     return resourceDictionary["CreateMembersColor"] as SolidColorBrush;
-                case SearchElementGroup.Action:
+                case SearchElements.SearchElementGroup.Action:
                     return resourceDictionary["ActionMembersColor"] as SolidColorBrush;
-                case SearchElementGroup.Query:
+                case SearchElements.SearchElementGroup.Query:
                     return resourceDictionary["QueryMembersColor"] as SolidColorBrush;
                 default:
                     return null;

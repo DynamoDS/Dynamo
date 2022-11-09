@@ -4,12 +4,19 @@ using System.Diagnostics;
 using System.Linq;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Properties;
 using Dynamo.Search.SearchElements;
 using Dynamo.Wpf.ViewModels;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
+using Newtonsoft.Json;
+using System.Net;
+using System.IO;
+using System.Text;
+using Dynamo.Utilities;
+using Dynamo.PackageManager;
 
 namespace Dynamo.ViewModels
 {
@@ -26,6 +33,7 @@ namespace Dynamo.ViewModels
         private string noRecommendationsOrLowConfidenceTitle;
         private bool displayNoRecommendationsLowConfidence;
         private bool displayLowConfidence;
+        private int confidenceThreshold = 50;
 
         /// <summary>
         /// Cache of default node suggestions, use it in case where
@@ -155,15 +163,124 @@ namespace Dynamo.ViewModels
 
         internal void DisplayMachineLearningResults()
         {
-            // Case 1: no results (0 items)
-            FilteredResults = new List<NodeSearchElementViewModel>();
-            DisplayNoRecommendationsLowConfidence = true;
-            DisplayLowConfidence = false;
-            NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteNoRecommendationsTitle;
-            NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
+            // Intialize request for the the ML API
+            MLNodeAutoCompletionRequest request = new MLNodeAutoCompletionRequest();
 
-            // Case 2: the result has at least one item assuming each node could be by recommendation or by use
+            var nodeInfo = PortViewModel.PortModel.Owner;
+            var portInfo = PortViewModel.PortModel;
+
+            request.DynamoVersion = AssemblyHelper.GetDynamoVersion().ToString();
+            request.NumberOfResults = 5;
+
+            // Set node info
+            request.Node.Id = nodeInfo.GUID.ToString();
+            request.Node.Lacing = nodeInfo.ArgumentLacing.ToString();
+
+            if (nodeInfo is DSFunctionBase functionNode)
+            {
+                request.Node.Type.Id = functionNode.CreationName;
+            }
+            else if (nodeInfo is NodeModel nodeModel)
+            {
+                request.Node.Type.Id = nodeModel.CreationName;
+            }
+
+            // Set port info
+            request.Port.Direction = portInfo.PortType == PortType.Input ? PortType.Input.ToString().ToLower() : PortType.Output.ToString().ToLower();
+            request.Port.Name = portInfo.Name;
+            request.Port.KeepListStructure = portInfo.KeepListStructure.ToString();
+            request.Port.ListAtLevel = portInfo.Level;
+
+            // Set packages info
+            var packageManager = dynamoViewModel.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+
+            foreach (var pkg in packageManager.PackageLoader.LocalPackages)
+            {
+                request.Packages = request.Packages.Append(new PackageItem(pkg.Name, pkg.VersionName));
+            }
+
+            // Set context info
+            var connectors = nodeInfo.AllConnectors;
+
+            if (PortViewModel.PortModel.PortType == PortType.Input)
+            {
+                foreach (var connector in connectors)
+                {
+                    var startNodeId = connector.Start.Owner.GUID;
+                    if (startNodeId.Equals(nodeInfo.GUID))
+                    {
+                        // connectors info
+                        var connectorRequest = new ConnectionsRequest
+                        {
+                            StartNode = new ConnectorNodeItem(connector.Start.Owner.GUID.ToString(), connector.Start.Name),
+                            EndNode = new ConnectorNodeItem(connector.End.Owner.GUID.ToString(), connector.End.Name)
+                        };
+                        request.Context.Connections = request.Context.Connections.Append(connectorRequest);
+
+                        // connecting node info
+                        var nodeRequest = new NodeRequest
+                        {
+                            Id = connector.Start.Owner.GUID.ToString()
+                        };
+                        var startNode = connector.Start.Owner;
+                        if (startNode is DSFunctionBase node)
+                        {
+                            nodeRequest.Type.Id = node.CreationName;
+                        }
+                        request.Context.Nodes = request.Context.Nodes.Append(nodeRequest);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var connector in connectors)
+                {
+                    var endNodeId = connector.End.Owner.GUID;
+                    if (endNodeId.Equals(nodeInfo.GUID))
+                    {
+                        // connectors info
+                        var connectorRequest = new ConnectionsRequest
+                        {
+                            StartNode = new ConnectorNodeItem(connector.Start.Owner.GUID.ToString(), connector.Start.Name),
+                            EndNode = new ConnectorNodeItem(connector.End.Owner.GUID.ToString(), connector.End.Name)
+                        };
+                        request.Context.Connections = request.Context.Connections.Append(connectorRequest);
+
+                        // connecting node info
+                        var nodeRequest = new NodeRequest
+                        {
+                            Id = connector.Start.Owner.GUID.ToString()
+                        };
+                        var startNode = connector.Start.Owner;
+                        if (startNode is DSFunctionBase node)
+                        {
+                            nodeRequest.Type.Id = node.CreationName;
+                        }
+                        request.Context.Nodes = request.Context.Nodes.Append(nodeRequest);
+                    }
+                }
+            }
+
+            string jsonRequest = JsonConvert.SerializeObject(request);
+
+            var MLresults = GetMLNodeAutocompleteResults(jsonRequest);
+
+            var matchingResults = new List<NodeSearchElement>();
+            FilteredResults = new List<NodeSearchElementViewModel>();
+            var zeroTouchSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
+            var nodeModelSearchElements = Model.SearchEntries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
+
+            // Case 1: no results (0 items)
+            if (MLresults == null || MLresults.Results.Count() == 0)
+            {
+                DisplayNoRecommendationsLowConfidence = true;
+                DisplayLowConfidence = false;
+                NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteNoRecommendationsTitle;
+                NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
+            }
+
             /*
+            // Case 2: the result has at least one item assuming each node could be by recommendation or by use
             FilteredResults = DefaultResults.Where(e => e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
             foreach (var item in FilteredResults)
             {
@@ -173,30 +290,50 @@ namespace Dynamo.ViewModels
             DisplayNoRecommendationsLowConfidence = !FilteredResults.Where(n => n.Model.AutoCompletionNodeMachineLearningInfo.IsByRecommendation).Any();
             DisplayLowConfidence = false;
             NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteNoRecommendationsTitle;
-            NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
-            */
-
+            NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;*/
 
             // Case 3: Confidence score are under a threshold, assuming the minimum value is 50 and some result nodes are under it
-            /*
-            FilteredResults = DefaultResults.Where(e => e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
-
-            foreach (var item in FilteredResults)
+            if (MLresults.Results.Count() > 0)
             {
-                item.Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
-                item.Model.AutoCompletionNodeMachineLearningInfo.IsByUse = false;
+
+                foreach (var item in MLresults.Results)
+                {
+                    if (item.Node.Type.NodeType == "FunctionNode")
+                    {
+                        var element = zeroTouchSearchElements.FirstOrDefault(n => n.Descriptor.MangledName == item.Node.Type.Id);
+                        element.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = item.Score;
+                        matchingResults.Add(element);
+                    }
+                }
+
+                var results = GetViewModelForNodeSearchElements(matchingResults);
+
+                foreach (var result in results)
+                {
+                    if (result.Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= confidenceThreshold)
+                    {
+                        FilteredHighConfidenceResults = FilteredHighConfidenceResults.Append(result);
+                    }
+                    else {
+                        FilteredLowConfidenceResults = FilteredLowConfidenceResults.Append(result);
+                    }
+                }
+
+                if (MLresults.Results.All(n => n.Score > confidenceThreshold))
+                {
+                    DisplayLowConfidence = true;
+                    DisplayNoRecommendationsLowConfidence = true;
+                    NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteNoRecommendationsTitle;
+                    NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
+                }
+
+                FilteredResults = FilteredHighConfidenceResults;
+                //RaisePropertyChanged("ViewConfidenceScoreRecentUse");
+                DisplayLowConfidence = true;
             }
-            FilteredResults.ToList()[0].Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 50;
-            FilteredResults.ToList()[1].Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = 40;
-            RaisePropertyChanged("ViewConfidenceScoreRecentUse");
 
-            DisplayNoRecommendationsLowConfidence = !FilteredResults.Where(n => n.Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= 50).Any();
-            NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
-            DisplayLowConfidence = FilteredResults.Where(n => n.Model.AutoCompletionNodeMachineLearningInfo.IsByRecommendation).Count() == FilteredResults.Count();
-            */
-
-            // Case 4: Confidence score are under a threshold, assuming the minimum value is 50 and all results nodes are under it
             /*
+            // Case 4: Confidence score are under a threshold, assuming the minimum value is 50 and all results nodes are under it
             FilteredResults = DefaultResults.Where(e => e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
             foreach (var item in FilteredResults)
             {
@@ -214,8 +351,37 @@ namespace Dynamo.ViewModels
                 NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteLowConfidenceMessage;
                 LowConfidenceMessageAdditional = Resources.AutocompleteLowConfidenceMessageAditional;
                 DisplayLowConfidence = true;
+            }*/
+        }
+
+        private MLNodeAutoCompletionResponse GetMLNodeAutocompleteResults(string requestJSON)
+        {
+            MLNodeAutoCompletionResponse results;
+
+            var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, "MLNodeAutocomplete");
+            var token = DynamoUtilities.PathHelper.getServiceConfigValues(this, "token");
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            request.Method = "POST";
+
+            ASCIIEncoding encoding = new ASCIIEncoding();
+            byte[] byteArray = encoding.GetBytes(requestJSON);
+            request.ContentLength = byteArray.Length;
+
+            request.Headers.Add("Authorization", "Bearer " + token);
+
+            Stream newStream = request.GetRequestStream();
+            newStream.Write(byteArray, 0, byteArray.Length);
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (Stream stream = response.GetResponseStream())
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string jsonString = reader.ReadToEnd();
+                results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(jsonString);
             }
-            */
+
+            return results;
         }
 
         internal void PopulateAutoCompleteCandidates()
@@ -358,7 +524,7 @@ namespace Dynamo.ViewModels
 
             if (portType == null)
             {
-                return elements; 
+                return elements;
             }
 
             var core = dynamoViewModel.Model.LibraryServices.LibraryManagementCore;

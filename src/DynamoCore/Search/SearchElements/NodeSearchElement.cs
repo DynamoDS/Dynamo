@@ -309,7 +309,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// Rating of confidence
         /// </summary>
-        public int ConfidenceScore { get; set; }
+        public double ConfidenceScore { get; set; }
         /// <summary>
         /// Indicates if the Node is part of ML result per use
         /// </summary>
