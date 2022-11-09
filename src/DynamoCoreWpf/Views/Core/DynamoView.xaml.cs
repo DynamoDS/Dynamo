@@ -41,7 +41,6 @@ using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
-using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.FileTrust;
@@ -51,10 +50,10 @@ using Brush = System.Windows.Media.Brush;
 using Exception = System.Exception;
 using Image = System.Windows.Controls.Image;
 using Point = System.Windows.Point;
+using Res = Dynamo.Wpf.Properties.Resources;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Size = System.Windows.Size;
 using String = System.String;
-using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Controls
 {
