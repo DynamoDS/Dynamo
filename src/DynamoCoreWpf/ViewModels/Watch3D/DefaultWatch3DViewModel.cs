@@ -611,7 +611,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // If there is no attached model update for all render packages
             if (watchModel == null)
             {
-                //When Watch3D nodes are in canvis we need to ignore this even under certain situations. 
+                //When Watch3D nodes are in canvas we need to ignore the Node.RenderPackageUpdate event in some cases.
+                //The background preview does not request tesselation for non-visible nodes or the Watch / Watch3D nodes.
+                //When these nodes are connected to a Watch3D, tesselation is requested and the Node.RenderPacakgeUpdate 
+                //event will be raised.  The background preview needs to filter out those tesselation events.
                 if (node.IsVisible == false || node is Watch || node is Watch3DNodeModels.Watch3D)
                 {
                     return;
