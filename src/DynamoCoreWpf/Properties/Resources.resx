@@ -3441,4 +3441,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="SplashScreenTotalLoadingTimeLabel" xml:space="preserve">
     <value>Total loading time:</value>
   </data>
+  <data name="ExportSettingsFailedMessage" xml:space="preserve">
+    <value>Export Failed</value>
+  </data>
 </root>
