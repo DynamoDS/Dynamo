@@ -91,9 +91,9 @@ namespace Dynamo.UI.Views
 
             webView = new WebView2();
             AddChild(webView);
+            // Bind event handlers
             webView.NavigationCompleted += WebView_NavigationCompleted;
             DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
-            // Bind event handlers
             StaticSplashScreenReady += FinishLoadingDynamicScreen;
             RequestLaunchDynamo = LaunchDynamo;
             RequestImportSettings = ImportSettings;
@@ -158,8 +158,9 @@ namespace Dynamo.UI.Views
         private void LaunchDynamo(bool isCheckboxChecked)
         {
             viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
-            Close();
             DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
+            StaticSplashScreenReady -= FinishLoadingDynamicScreen;
+            Close();
             Application.Current.MainWindow = dynamoView;
             dynamoView.Show();
             dynamoView.Activate();
