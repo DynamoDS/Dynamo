@@ -468,6 +468,9 @@ namespace Dynamo.Wpf.Views
                 Owner = this
             };
 
+            //Saves the current settings before exporting the xml file
+            dynViewModel.PreferenceSettings.SaveInternal(dynViewModel.Model.PathManager.PreferenceFilePath);
+
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string selectedPathFile = Path.Combine(dialog.SelectedPath, PathManager.PreferenceSettingsFileName);

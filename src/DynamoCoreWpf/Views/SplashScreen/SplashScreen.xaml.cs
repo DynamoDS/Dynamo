@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Logging;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
@@ -138,12 +139,13 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
-        /// If the user wants to close the window, we shutdown the application and don't lanch Dynamo
+        /// If the user wants to close the window, we shutdown the application and don't launch Dynamo
         /// </summary>
         private void CloseWindow()
         {
            Application.Current.Shutdown();
            Process.GetCurrentProcess().Kill();
+           Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -186,6 +188,7 @@ namespace Dynamo.UI.Views
         public void LaunchDynamo(bool showScreenAgain)
         {
             RequestLaunchDynamo(showScreenAgain);
+            Analytics.TrackEvent(Actions.Start, Categories.SplashScreenOperations);
         }
 
         public void ImportSettings(string file)

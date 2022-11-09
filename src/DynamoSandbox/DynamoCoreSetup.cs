@@ -147,12 +147,11 @@ namespace DynamoSandbox
 
         private string GetUserDirectory()
         {
-            var majorFileVersion = 2;
-            var minorFileVersion = 17;
+            var version = AssemblyHelper.GetDynamoVersion();
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             return Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
-                            String.Format("{0}.{1}", majorFileVersion, minorFileVersion));
+                            String.Format("{0}.{1}", version.Major, version.Minor));
         }
 
         /// <summary>
@@ -229,7 +228,7 @@ namespace DynamoSandbox
             dynamoView = new DynamoView(viewModel);
             authManager = model.AuthenticationManager;
 
-            // If user lauching Dynamo first time or picked to always show splash screen, display it. Otherwise, display Dynamo view directly.
+            // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {
                 splashScreen.SetSignInStatus(authManager.IsLoggedIn());
