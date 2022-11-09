@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,21 +24,21 @@ namespace Dynamo.LibraryViewExtensionWebView2
         /// Used to get access to the iconResourceProvider and return a base64encoded string version of an icon.
         /// </summary>
         /// <param name="iconurl"></param>
-        public async void GetBase64StringFromPath(string iconurl)
+        public string GetBase64StringFromPath(string iconurl)
         {
 
             string ext;
             var iconAsBase64 = controller.iconProvider.GetResourceAsString(iconurl, out ext);
             if (string.IsNullOrEmpty(iconAsBase64))
             {
-                await LibraryViewController.ExecuteScriptFunctionAsync(controller.browser, "completeReplaceImages", "","");
+                return "";
             }
             if (ext.Contains("svg"))
             {
                 ext = "svg+xml";
             }
             //send back result.
-            await LibraryViewController.ExecuteScriptFunctionAsync(controller.browser, "completeReplaceImages", $"data:image/{ext};base64, {iconAsBase64}", iconurl);
+            return $"data:image/{ext};base64, {iconAsBase64}";
         }
 
         /// <summary>
