@@ -18,7 +18,7 @@ namespace Dynamo.Configuration
     static class ExtensionMethods
     {
         /// <summary>
-        /// Copy Properties from a PreferenceSettings instance to another iterating the Properties of the destination instance and populate them from their source counterparts, excluding the properties that are obsolete and only read.  
+        /// Copy Properties from a PreferenceSettings instance to another iterating the Properties of the destination instance and populate them from their source counterparts, excluding the properties that are obsolete and only read.
         /// </summary>
         /// <param name="source"></param>
         /// <param name="destination"></param>
@@ -84,7 +84,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Default time
         /// </summary>
-        public static readonly System.DateTime DynamoDefaultTime = new System.DateTime(1977, 4, 12, 12, 12, 0, 0);        
+        public static readonly System.DateTime DynamoDefaultTime = new System.DateTime(1977, 4, 12, 12, 12, 0, 0);
 
         #endregion
 
@@ -162,7 +162,7 @@ namespace Dynamo.Configuration
         public List<BackgroundPreviewActiveState> BackgroundPreviews { get; set; }
 
         /// <summary>
-        /// Returns active state of specified background preview 
+        /// Returns active state of specified background preview
         /// </summary>
         /// <param name="name">Background preview name</param>
         /// <returns>The active state</returns>
@@ -174,7 +174,7 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Sets active state of specified background preview 
+        /// Sets active state of specified background preview
         /// </summary>
         /// <param name="name">Background preview name</param>
         /// <param name="value">Active state</param>
@@ -373,7 +373,7 @@ namespace Dynamo.Configuration
             try
             {
                 return bool.Parse(preferenceSettingsElement.SelectSingleNode($@"//{nameof(DisableTrustWarnings)}").InnerText);
-                
+
             }
             catch (Exception ex)
             {
@@ -470,7 +470,7 @@ namespace Dynamo.Configuration
         public int BackupFilesCount { get; set; }
 
         /// <summary>
-        /// Indicates if the user has accepted the terms of 
+        /// Indicates if the user has accepted the terms of
         /// use for downloading packages from package manager.
         /// </summary>
         public bool PackageDownloadTouAccepted { get; set; }
@@ -644,7 +644,7 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// Limits the size of the tags used by the SearchDictionary
-        /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value 
+        /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value
         /// if found at deserialize time.
         /// </summary>
         internal static int nodeSearchTagSizeLimit = 300;
@@ -660,7 +660,7 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
-        /// This static property is not serialized and is assigned IronPythonResolveTargetVersion's value 
+        /// This static property is not serialized and is assigned IronPythonResolveTargetVersion's value
         /// if found at deserialize time.
         /// </summary>
         internal static Version ironPythonResolveTargetVersion = new Version(2, 4, 0);
@@ -678,6 +678,15 @@ namespace Dynamo.Configuration
         /// Stores the notification ids that was read by the user
         /// </summary>
         public List<string> ReadNotificationIds { get; set; }
+        #endregion
+
+        #region Dynamo Player and Generative Design settings
+
+        /// <summary>
+        /// Collections of folders used by individual Dynamo Player or Generative Design as entry points.
+        /// </summary>
+        public List<DynamoPlayerFolderGroup> DynamoPlayerFolderGroups { get; set; }
+
         #endregion
 
         /// <summary>
@@ -719,7 +728,7 @@ namespace Dynamo.Configuration
             BackupInterval = DefaultBackupInterval;
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
-                        
+
             CustomPackageFolders = new List<string>();
 
             PythonTemplateFilePath = "";
@@ -732,6 +741,7 @@ namespace Dynamo.Configuration
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
+            DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
         }
 
         /// <summary>
@@ -761,11 +771,11 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Saves PreferenceSettings in a default directory when no path is 
+        /// Saves PreferenceSettings in a default directory when no path is
         /// specified.
         /// </summary>
         /// <param name="preferenceFilePath">The file path to save preference
-        /// settings to. If this parameter is null or empty string, preference 
+        /// settings to. If this parameter is null or empty string, preference
         /// settings will be saved to the default path.</param>
         /// <returns>True if file is saved successfully, false if an error occurred.</returns>
         public bool SaveInternal(string preferenceFilePath)
@@ -1016,7 +1026,7 @@ namespace Dynamo.Configuration
             {
                 return false;
             }
-            
+
         }
 
         /// <summary>
