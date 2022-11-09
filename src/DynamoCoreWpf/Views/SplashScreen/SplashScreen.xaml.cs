@@ -33,20 +33,33 @@ namespace Dynamo.UI.Views
         internal Func<bool> RequestSignOut;
         internal WebView2 webView;
 
+        private DynamoView dynamoView;
         /// <summary>
         /// Dynamo View reference
         /// </summary>
-        public DynamoView dynamoView;
+        public DynamoView DynamoView
+        {
+            get
+            {
+                return dynamoView;
+            }
+            set
+            {
+                dynamoView = value;
+                viewModel = value.DataContext as DynamoViewModel;
+                authManager = viewModel.Model.AuthenticationManager;
+            }
+        }
 
         /// <summary>
         /// Dynamo auth manager reference
         /// </summary>
-        public AuthenticationManager authManager;
+        internal AuthenticationManager authManager;
 
         /// <summary>
         /// Dynamo View Model reference
         /// </summary>
-        public DynamoViewModel viewModel;
+        internal DynamoViewModel viewModel;
 
         /// <summary>
         /// Constructor

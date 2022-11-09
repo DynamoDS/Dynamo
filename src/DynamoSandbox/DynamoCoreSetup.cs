@@ -71,7 +71,7 @@ namespace DynamoSandbox
                 splashScreen.Show();
                 app.Run();
 
-                Dynamo.Applications.StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
+                StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
             }
             catch (DynamoServices.AssemblyBlockedException e)
             {
@@ -136,7 +136,6 @@ namespace DynamoSandbox
         {
             DynamoModel model;
             model = StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
-
             model.CERLocation = CERLocation;
 
             viewModel = DynamoViewModel.Start(
@@ -153,9 +152,7 @@ namespace DynamoSandbox
                    });
 
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Dynamo.Wpf.Properties.Resources.SplashScreenLaunchingDynamo, 70));
-            splashScreen.dynamoView = new DynamoView(viewModel);
-            splashScreen.authManager = model.AuthenticationManager;
-            splashScreen.viewModel = viewModel;
+            splashScreen.DynamoView = new DynamoView(viewModel);
 
             // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
@@ -167,6 +164,7 @@ namespace DynamoSandbox
             {
                 splashScreen.RequestLaunchDynamo.Invoke(true);
             }
+            splashScreen.webView.NavigationCompleted -= LoadDynamoView;
         }
 
         private void ASMPreloadFailureHandler(string failureMessage)
