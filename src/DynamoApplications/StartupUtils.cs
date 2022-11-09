@@ -104,9 +104,9 @@ namespace Dynamo.Applications
                 // and issue commands until the extension calls model.Shutdown().
                 bool keepAlive = false;
                 bool showHelp = false;
-                bool noConsoleCli = false;
-                string userDataFolderCli = string.Empty;
-                string commonDataFolderCli = string.Empty;
+                bool noConsole = false;
+                string userDataFolder = string.Empty;
+                string commonDataFolder = string.Empty;
 
                 // Disables all analytics (Google and ADP)
                 bool disableAnalytics = false;
@@ -134,9 +134,9 @@ namespace Dynamo.Applications
                 " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i => importPaths.Add(i))
                 .Add("gp=|GP=|geometrypath=|GeometryPath=", "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.", gp => asmPath = gp)
                 .Add("k|K|keepalive", "Keepalive mode, leave the Dynamo process running until a loaded extension shuts it down.", k => keepAlive = k != null)
-                .Add("nc|NC|noconsolecli", "Don't rely on the console window to interact with CLI in Keepalive mode", nc => noConsoleCli = nc != null)
-                .Add("ud=|UD=|userdatacli", "Specify user data folder to be used by PathResolver with CLI", ud => userDataFolderCli = ud)
-                .Add("cd=|CD=|commondatacli", "Specify common data folder to be used by PathResolver with CLI", cd => commonDataFolderCli = cd)
+                .Add("nc|NC|noconsole", "Don't rely on the console window to interact with CLI in Keepalive mode", nc => noConsole = nc != null)
+                .Add("ud=|UD=|userdata", "Specify user data folder to be used by PathResolver with CLI", ud => userDataFolder = ud)
+                .Add("cd=|CD=|commondata", "Specify common data folder to be used by PathResolver with CLI", cd => commonDataFolder = cd)
                 .Add("hn=|HN=|hostname", "Identify Dynamo variation associated with host", hn => hostname = hn)
                 .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
@@ -165,9 +165,9 @@ namespace Dynamo.Applications
                     ImportedPaths = importPaths,
                     ASMPath = asmPath,
                     KeepAlive = keepAlive,
-                    NoConsoleCli = noConsoleCli,
-                    UserDataFolderCli = userDataFolderCli,
-                    CommonDataFolderCli = commonDataFolderCli,
+                    NoConsole = noConsole,
+                    UserDataFolder = userDataFolder,
+                    CommonDataFolder = commonDataFolder,
                     DisableAnalytics = disableAnalytics,
                     AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname, ParentId = parentId, SessionId = sessionId },
                     CERLocation = cerLocation
@@ -189,9 +189,9 @@ namespace Dynamo.Applications
             public IEnumerable<String> ImportedPaths { get; set; }
             public string ASMPath { get; set; }
             public bool KeepAlive { get; set; }
-            public bool NoConsoleCli { get; set; }
-            public string UserDataFolderCli { get; set; }
-            public string CommonDataFolderCli { get; set; }
+            public bool NoConsole { get; set; }
+            public string UserDataFolder { get; set; }
+            public string CommonDataFolder { get; set; }
             [Obsolete("This property will be removed in Dynamo 3.0 - please use AnalyticsInfo")]
             public string HostName { get; set; }
             public bool DisableAnalytics { get; set; }
@@ -236,7 +236,7 @@ namespace Dynamo.Applications
         }
 
         /// <summary>
-        /// Use this overload to construct a DynamoModel in CLI context when the location of ASM to use is known and host analytics info is known.
+        /// Use this overload to construct a DynamoModel in CLI context when the location of ASM to use is known, host analytics info is known and you want to set data paths.
         /// </summary>
         /// <param name="asmPath">Path to directory containing geometry library binaries</param>
         /// <param name="userDataFolder">Path to be used by PathResolver for UserDataFolder</param>
@@ -247,7 +247,7 @@ namespace Dynamo.Applications
             // Preload ASM and display corresponding message on splash screen
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoCLIWithDefaultConfig(geometryFactoryPath, preloaderLocation, userDataFolder, commonDataFolder, info);
+            var model = StartDynamoWithDefaultConfig(true, userDataFolder, commonDataFolder, geometryFactoryPath, preloaderLocation, info);
             model.IsASMLoaded = isASMloaded;
             return model;
         }
@@ -262,7 +262,7 @@ namespace Dynamo.Applications
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", string hostName ="")
         {
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, new HostAnalyticsInfo() { HostName = hostName });
+            var model = StartDynamoWithDefaultConfig(CLImode, "", "", geometryFactoryPath, preloaderLocation, new HostAnalyticsInfo() { HostName = hostName });
             model.IsASMLoaded = isASMloaded;
             return model;
         }
@@ -279,7 +279,7 @@ namespace Dynamo.Applications
             // Preload ASM and display corresponding message on splash screen
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, info);
+            var model = StartDynamoWithDefaultConfig(CLImode, "", "", geometryFactoryPath, preloaderLocation, info);
             model.IsASMLoaded = isASMloaded;
             return model;
         }
@@ -295,7 +295,7 @@ namespace Dynamo.Applications
         public static DynamoModel MakeModel(bool CLImode, string asmPath)
         {
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
+            var model = StartDynamoWithDefaultConfig(CLImode, "", "", geometryFactoryPath, preloaderLocation);
             model.IsASMLoaded = isASMloaded;
             return model;
         }
@@ -305,7 +305,7 @@ namespace Dynamo.Applications
         public static DynamoModel MakeModel(bool CLImode)
         {
             var isASMloaded = PreloadASM(string.Empty, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
+            var model = StartDynamoWithDefaultConfig(CLImode, "", "", geometryFactoryPath, preloaderLocation);
             model.IsASMLoaded = isASMloaded;
             return model;
         }
@@ -363,27 +363,12 @@ namespace Dynamo.Applications
             }
         }
 
-        private static DynamoModel StartDynamoCLIWithDefaultConfig(string geometryFactoryPath,
-            string preloaderLocation,
+        private static DynamoModel StartDynamoWithDefaultConfig(bool CLImode,
             string userDataFolder,
             string commonDataFolder,
+            string geometryFactoryPath,
+            string preloaderLocation,
             HostAnalyticsInfo info = new HostAnalyticsInfo())
-        {
-            var config = new DynamoModel.DefaultStartConfiguration()
-            {
-                GeometryFactoryPath = geometryFactoryPath,
-                ProcessMode = TaskProcessMode.Synchronous,
-                HostAnalyticsInfo = info,
-                CLIMode = true,
-                StartInTestMode = true,
-                PathResolver = new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder)
-            };
-
-            var model = DynamoModel.Start(config);
-            return model;
-        }
-
-        private static DynamoModel StartDynamoWithDefaultConfig(bool CLImode, string geometryFactoryPath, string preloaderLocation, HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
             var config = new DynamoModel.DefaultStartConfiguration()
             {
@@ -395,7 +380,7 @@ namespace Dynamo.Applications
             config.AuthProvider = CLImode ? null : new Core.IDSDKManager();
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
             config.StartInTestMode = CLImode;
-            config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation, "", "") as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
+            config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
 
             var model = DynamoModel.Start(config);
             return model;

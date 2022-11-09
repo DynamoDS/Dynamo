@@ -18,7 +18,7 @@ namespace DynamoCLI
             try
             {
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
-                useConsole = !cmdLineArgs.NoConsoleCli;
+                useConsole = !cmdLineArgs.NoConsole;
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
                 if (cmdLineArgs.DisableAnalytics)
                 {
@@ -79,7 +79,7 @@ namespace DynamoCLI
             {
                 StartupDynamo(cmdLineArgs);
 
-                if (!cmdLineArgs.NoConsoleCli)
+                if (!cmdLineArgs.NoConsole)
                 {
                     Console.WriteLine("-----------------------------------------");
                     Console.WriteLine("DynamoCLI is running in keepalive mode");
@@ -103,8 +103,8 @@ namespace DynamoCLI
         {
             DynamoModel model;
             model = Dynamo.Applications.StartupUtils.MakeCLIModel(String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath,
-                cmdLineArgs.UserDataFolderCli,
-                cmdLineArgs.CommonDataFolderCli,
+                cmdLineArgs.UserDataFolder,
+                cmdLineArgs.CommonDataFolder,
                 cmdLineArgs.AnalyticsInfo);
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
