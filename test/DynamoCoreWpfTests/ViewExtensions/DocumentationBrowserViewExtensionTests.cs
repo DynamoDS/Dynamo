@@ -1,4 +1,4 @@
-﻿using Dynamo.Configuration;
+using Dynamo.Configuration;
 using Dynamo.DocumentationBrowser;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -28,11 +28,12 @@ namespace DynamoCoreWpfTests
         private const string indexPageHtmlHeader = "<h2>Dynamo Documentation Browser</h2>";
         private const string excelDocsFileHtmlHeader = "<h2>Excel not installed </h2>";
         private const string fileMissingHtmlHeader = "<h3>Error 404</h3>";
-        private const string nodeDocumentationInfoHeader = "<h2>Node Info</h2>";
-        private const string nodeDocumentationInfoNodeType = "<td class=\"table--noborder\">Node Type</td>";
-        private const string nodeDocumentationInfoNodeDescription = "<td class=\"table--noborder\">Description</td>";
-        private const string nodeDocumentationInfoNodeInputs = "<td class=\"table--noborder\">Inputs</td>";
-        private const string nodeDocumentationInfoNodeOutputs = "<td class=\"table--noborder\">Outputs</td>";
+        private const string nodeDocumentationInfoHeader = "<strong>Node Information</strong>";
+        private const string nodeDocumentationInfoNodeType = "<h2>Node Type</h2>";
+        private const string nodeDocumentationInfoNodeDescription = "<h2>Description</h2>";
+        private const string nodeDocumentationInfoNodeInputsAndOutputs = "<strong>Inputs and Outputs</strong>";
+        private const string nodeDocumentationInfoNodeInputs = "<h2>Inputs</h2>";
+        private const string nodeDocumentationInfoNodeOutputs = "<h2>Outputs</h2>";
 
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), @"core\docbrowser\pkgs"); } }
 
@@ -460,7 +461,6 @@ namespace DynamoCoreWpfTests
             var nodeName = "+";
             var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
             var expectedNodeDocumentationNamespace = $"<p><i>{nodeName}</i></p>";
-            var expectedAddtionalNodeDocumentation = @"<h2 id=""no-further-documentation-provided-for-this-node"">No further documentation provided for this node.</h2>";
        
             // Act
             this.ViewModel.ExecuteCommand(
@@ -484,9 +484,9 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoHeader));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeDescription));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeType));
+            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeInputsAndOutputs));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeInputs));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeOutputs));
-            Assert.IsTrue(htmlContent.Contains(expectedAddtionalNodeDocumentation));
         }
 
         [Test]
@@ -503,7 +503,8 @@ namespace DynamoCoreWpfTests
             var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
             var expectedNodeDocumentationNamespace = $"<p><i>Package.{nodeName}</i></p>";
             var expectedAddtionalNodeDocumentationHeader = @"<h1 id=""hello-dynamo"">Hello Dynamo!</h1>";
-            var expectedAddtionalNodeDocumentationImage = String.Format(@"<p><img src=""http://appassets/{0}"" alt=""Dynamo Icon image"" /></p>", Path.GetFileName(localImagePath));
+            var expectedAddtionalNodeDocumentationImage = String.Format(@"<img id='drag--img' class='resizable--img'  src=""http://appassets/{0}"" alt=""Dynamo Icon image"" />", Path.GetFileName(localImagePath));
+
 
             // Act
 
@@ -739,6 +740,11 @@ namespace DynamoCoreWpfTests
             {
                 // Act
                 var output = converter.SanitizeHtml(content);
+
+                if (!string.IsNullOrEmpty(output))
+                {
+                    var thisIsIt = output;
+                }
 
                 // Assert
                 Assert.IsNullOrEmpty(output);

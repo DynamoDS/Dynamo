@@ -61,7 +61,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Goto the Dynamo builds wiki site({0}) for more information..
+        ///   Looks up a localized string similar to Go to the Dynamo builds wiki site({0}) for more information..
         /// </summary>
         internal static string SandboxBuildsPageDialogMessage {
             get {
@@ -70,110 +70,11 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not start DynamoSandbox, unhandled exception..
+        ///   Looks up a localized string similar to Could not start Dynamo Sandbox, unhandled exception..
         /// </summary>
         internal static string SandboxCrashMessage {
             get {
                 return ResourceManager.GetString("SandboxCrashMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Migrating Settings ....
-        /// </summary>
-        internal static string SettingsMigrationDialogMessage {
-            get {
-                return ResourceManager.GetString("SettingsMigrationDialogMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to First Use Setup.
-        /// </summary>
-        internal static string SettingsMigrationDialogTitle {
-            get {
-                return ResourceManager.GetString("SettingsMigrationDialogTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to Import Settings.
-        /// </summary>
-        internal static string SplashScreenFailedImportSettings {
-            get {
-                return ResourceManager.GetString("SplashScreenFailedImportSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Something went wrong when importing your custom setting file. Please try again or proceed with default settings..
-        /// </summary>
-        internal static string SplashScreenImportSettingsFailDescription {
-            get {
-                return ResourceManager.GetString("SplashScreenImportSettingsFailDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Launching dynamo view....
-        /// </summary>
-        internal static string SplashScreenLaunchingDynamo {
-            get {
-                return ResourceManager.GetString("SplashScreenLaunchingDynamo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Launch Dynamo.
-        /// </summary>
-        internal static string SplashScreenLaunchTitle {
-            get {
-                return ResourceManager.GetString("SplashScreenLaunchTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Loading time.
-        /// </summary>
-        internal static string SplashScreenLoadingTimeLabel {
-            get {
-                return ResourceManager.GetString("SplashScreenLoadingTimeLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Settings imported.
-        /// </summary>
-        internal static string SplashScreenSettingsImported {
-            get {
-                return ResourceManager.GetString("SplashScreenSettingsImported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Don’t show this screen again.
-        /// </summary>
-        internal static string SplashScreenShowScreenAgainLabel {
-            get {
-                return ResourceManager.GetString("SplashScreenShowScreenAgainLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sign in.
-        /// </summary>
-        internal static string SplashScreenSignIn {
-            get {
-                return ResourceManager.GetString("SplashScreenSignIn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Welcome to Dynamo!.
-        /// </summary>
-        internal static string SplashScreenWelcomeToDynamo {
-            get {
-                return ResourceManager.GetString("SplashScreenWelcomeToDynamo", resourceCulture);
             }
         }
     }

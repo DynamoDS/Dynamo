@@ -64,13 +64,6 @@ namespace Dynamo.Models
                 action();
         }
 
-        internal static event SettingsMigrationHandler RequestMigrationStatusDialog;
-        internal static void OnRequestMigrationStatusDialog(SettingsMigrationEventArgs args)
-        {
-            if (RequestMigrationStatusDialog != null)
-                RequestMigrationStatusDialog(args);
-        }
-
         /// <summary>
         /// Event to throw for Splash Screen to update Dynamo launching tasks
         /// </summary>
@@ -534,6 +527,18 @@ namespace Dynamo.Models
                 ResetEngine(true);
             }
 
+        }
+
+        /// <summary>
+        /// This event is used to raise a toast notification from the DynamoViewModel 
+        /// </summary>
+        internal event Action<string> RequestNotification;
+        internal void OnRequestNotification(string notification)
+        {
+            if (RequestNotification != null)
+            {
+                RequestNotification(notification);
+            }
         }
 
         #endregion

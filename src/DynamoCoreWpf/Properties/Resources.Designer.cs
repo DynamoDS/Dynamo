@@ -160,15 +160,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign in to Autodesk A360 to access online services that integrate with your desktop software..
-        /// </summary>
-        public static string Autodesk360SignInButtonContentToolTip {
-            get {
-                return ResourceManager.GetString("Autodesk360SignInButtonContentToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Autodesk A360.
         /// </summary>
         public static string Autodesk360SignInButtonTitleToolTip {
@@ -1649,6 +1640,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert....
+        /// </summary>
+        public static string DynamoViewFileMenuInsert {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _New.
         /// </summary>
         public static string DynamoViewFileMenuNew {
@@ -1883,11 +1883,47 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Graph changes are executed in real time. Best suited for smaller graphs, known graphs, and Dynamo Sandbox..
+        /// </summary>
+        public static string DynamoViewRunTypesAutomaticToolTip {
+            get {
+                return ResourceManager.GetString("DynamoViewRunTypesAutomaticToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run mode can not be changed until warning is resolved.
         /// </summary>
         public static string DynamoViewRunTypesComboBoxToolTipDisabled {
             get {
                 return ResourceManager.GetString("DynamoViewRunTypesComboBoxToolTipDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run mode\n\nControls when graph changes are executed..
+        /// </summary>
+        public static string DynamoViewRunTypesComboBoxToolTipEnabled {
+            get {
+                return ResourceManager.GetString("DynamoViewRunTypesComboBoxToolTipEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host applications..
+        /// </summary>
+        public static string DynamoViewRunTypesManualToolTip {
+            get {
+                return ResourceManager.GetString("DynamoViewRunTypesManualToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph changes are executed at a specified interval. Only available when the graph contains specific nodes, such as DateTime.Now or WebRequest..
+        /// </summary>
+        public static string DynamoViewRunTypesPeriodicToolTip {
+            get {
+                return ResourceManager.GetString("DynamoViewRunTypesPeriodicToolTip", resourceCulture);
             }
         }
         
@@ -3291,6 +3327,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Font size.
+        /// </summary>
+        public static string GroupStyleFontSizeToolTip {
+            get {
+                return ResourceManager.GetString("GroupStyleFontSizeToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string GroupStylesCancelButtonText {
@@ -3336,7 +3381,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your custom settings can be imported here. Settings will be applied once Dynamo and any host program restarts..
+        ///   Looks up a localized string similar to Your custom settings can be imported here. Settings not exposed via Preferences panel will be applied once Dynamo and any host program restarts..
         /// </summary>
         public static string ImportPreferencesInfo {
             get {
@@ -3818,6 +3863,15 @@ namespace Dynamo.Wpf.Properties {
         public static string LoadedPackagesConflictMessageBoxTitle {
             get {
                 return ResourceManager.GetString("LoadedPackagesConflictMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign Out.
+        /// </summary>
+        public static string LogoutMenuItemText {
+            get {
+                return ResourceManager.GetString("LogoutMenuItemText", resourceCulture);
             }
         }
         
@@ -6428,6 +6482,19 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set the default run mode for your graphs. In Manual mode,  graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host programs.
+        ///
+        ///In Automatic mode, graph changes are executed in real time. This mode provides immediate feedback. 
+        ///
+        ///In certain complex graphs or host program scenarios, Automatic mode may cause instability issues or other problems. If this happens, try switching to Manual mode..
+        /// </summary>
+        public static string PreferencesViewDefaultRunSettingsInfoTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewDefaultRunSettingsInfoTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disable Loading Built-In Packages.
         /// </summary>
         public static string PreferencesViewDisableBuiltInPackages {
@@ -7602,7 +7669,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run whenever there is a change to the graph..
+        ///   Looks up a localized string similar to Graph changes are executed in real time. Best suited for smaller graphs, known graphs, and Dynamo Sandbox..
         /// </summary>
         public static string RunTypeToolTipAutomatically {
             get {
@@ -7611,7 +7678,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run whenever you press the Run button..
+        ///   Looks up a localized string similar to Graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host applications..
         /// </summary>
         public static string RunTypeToolTipManually {
             get {
@@ -7629,7 +7696,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run at the specified interval..
+        ///   Looks up a localized string similar to Graph changes are executed at a specified interval. Only available when the graph contains specific nodes, such as DateTime.Now or WebRequest..
         /// </summary>
         public static string RunTypeToolTipPeriodicallyEnabled {
             get {
@@ -7863,6 +7930,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sign in to access online services that integrate with your desktop software..
+        /// </summary>
+        public static string SignInButtonContentToolTip {
+            get {
+                return ResourceManager.GetString("SignInButtonContentToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign In.
+        /// </summary>
+        public static string SignInButtonText {
+            get {
+                return ResourceManager.GetString("SignInButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signing In.
+        /// </summary>
+        public static string SigningInButtonText {
+            get {
+                return ResourceManager.GetString("SigningInButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please update the permissions or go to Preferences &gt;Node and Package Paths...&apos; to change your default directory..
         /// </summary>
         public static string SolutionToFolderNotWritatbleError {
@@ -7872,11 +7966,119 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to Import Settings.
+        /// </summary>
+        public static string SplashScreenFailedImportSettings {
+            get {
+                return ResourceManager.GetString("SplashScreenFailedImportSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Settings.
+        /// </summary>
+        public static string SplashScreenImportSettings {
+            get {
+                return ResourceManager.GetString("SplashScreenImportSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong when importing your custom setting file. Please try again or proceed with default settings..
+        /// </summary>
+        public static string SplashScreenImportSettingsFailDescription {
+            get {
+                return ResourceManager.GetString("SplashScreenImportSettingsFailDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Launching Dynamo View....
+        /// </summary>
+        public static string SplashScreenLaunchingDynamo {
+            get {
+                return ResourceManager.GetString("SplashScreenLaunchingDynamo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Launch Dynamo.
+        /// </summary>
+        public static string SplashScreenLaunchTitle {
+            get {
+                return ResourceManager.GetString("SplashScreenLaunchTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading time.
+        /// </summary>
+        public static string SplashScreenLoadingTimeLabel {
+            get {
+                return ResourceManager.GetString("SplashScreenLoadingTimeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings imported.
+        /// </summary>
+        public static string SplashScreenSettingsImported {
+            get {
+                return ResourceManager.GetString("SplashScreenSettingsImported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don’t show this screen again.
+        /// </summary>
+        public static string SplashScreenShowScreenAgainLabel {
+            get {
+                return ResourceManager.GetString("SplashScreenShowScreenAgainLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign In.
+        /// </summary>
+        public static string SplashScreenSignIn {
+            get {
+                return ResourceManager.GetString("SplashScreenSignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign Out.
+        /// </summary>
+        public static string SplashScreenSignOut {
+            get {
+                return ResourceManager.GetString("SplashScreenSignOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total loading time:.
+        /// </summary>
+        public static string SplashScreenTotalLoadingTimeLabel {
+            get {
+                return ResourceManager.GetString("SplashScreenTotalLoadingTimeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading View Extensions....
         /// </summary>
         public static string SplashScreenViewExtensions {
             get {
                 return ResourceManager.GetString("SplashScreenViewExtensions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome to Dynamo!.
+        /// </summary>
+        public static string SplashScreenWelcomeToDynamo {
+            get {
+                return ResourceManager.GetString("SplashScreenWelcomeToDynamo", resourceCulture);
             }
         }
         
@@ -8648,6 +8850,24 @@ namespace Dynamo.Wpf.Properties {
         public static string WatchNodeRawDataMenu {
             get {
                 return ResourceManager.GetString("WatchNodeRawDataMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo requires WebView2 Evergreen Runtime, which is not installed on your computer. Please use the link below to download the Evergreen Standalone Installer and install the program. Then relaunch Dynamo. \n\n#WebView2 Runtime Installer=https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-sectionedge/webview2/#download-section.
+        /// </summary>
+        public static string WebView2RequiredMessage {
+            get {
+                return ResourceManager.GetString("WebView2RequiredMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WebView2 Required.
+        /// </summary>
+        public static string WebView2RequiredTitle {
+            get {
+                return ResourceManager.GetString("WebView2RequiredTitle", resourceCulture);
             }
         }
         
