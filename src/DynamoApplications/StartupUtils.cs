@@ -262,7 +262,7 @@ namespace Dynamo.Applications
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", string hostName ="")
         {
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(CLImode, "", "", geometryFactoryPath, preloaderLocation, new HostAnalyticsInfo() { HostName = hostName });
+            var model = StartDynamoWithDefaultConfig(CLImode, string.Empty, string.Empty, geometryFactoryPath, preloaderLocation, new HostAnalyticsInfo() { HostName = hostName });
             model.IsASMLoaded = isASMloaded;
             return model;
         }
@@ -279,7 +279,7 @@ namespace Dynamo.Applications
             // Preload ASM and display corresponding message on splash screen
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(CLImode, "", "", geometryFactoryPath, preloaderLocation, info);
+            var model = StartDynamoWithDefaultConfig(CLImode, string.Empty, string.Empty, geometryFactoryPath, preloaderLocation, info);
             model.IsASMLoaded = isASMloaded;
             return model;
         }
@@ -295,7 +295,7 @@ namespace Dynamo.Applications
         public static DynamoModel MakeModel(bool CLImode, string asmPath)
         {
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(CLImode, "", "", geometryFactoryPath, preloaderLocation);
+            var model = StartDynamoWithDefaultConfig(CLImode, string.Empty, string.Empty, geometryFactoryPath, preloaderLocation);
             model.IsASMLoaded = isASMloaded;
             return model;
         }
@@ -305,7 +305,7 @@ namespace Dynamo.Applications
         public static DynamoModel MakeModel(bool CLImode)
         {
             var isASMloaded = PreloadASM(string.Empty, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(CLImode, "", "", geometryFactoryPath, preloaderLocation);
+            var model = StartDynamoWithDefaultConfig(CLImode, string.Empty, string.Empty, geometryFactoryPath, preloaderLocation);
             model.IsASMLoaded = isASMloaded;
             return model;
         }
