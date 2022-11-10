@@ -67,7 +67,7 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// The WebView2 Browser instance used to display splash screen
         /// </summary>
-        public WebView2 webView;
+        internal WebView2 webView;
 
         /// <summary>
         /// This delegate is used in StaticSplashScreenReady events
@@ -75,9 +75,27 @@ namespace Dynamo.UI.Views
         internal delegate void StaticSplashScreenReadyHandler();
 
         /// <summary>
-        /// Event to throw for Splash Screen to update Dynamo launching tasks
+        /// This delegate is used in DynamicSplashScreenReady events
+        /// </summary>
+        internal delegate void DynamicSplashScreenReadyHandler();
+
+        /// <summary>
+        /// Event to throw for Splash Screen to show Dynamo static screen
         /// </summary>
         internal event StaticSplashScreenReadyHandler StaticSplashScreenReady;
+
+        /// <summary>
+        /// Event to throw for Splash Screen to update Dynamo launching tasks
+        /// </summary>
+        internal event DynamicSplashScreenReadyHandler DynamicSplashScreenReady;
+
+        /// <summary>
+        /// Request to trigger DynamicSplashScreenReady event
+        /// </summary>
+        public void OnRequestDynamicSplashScreen()
+        {
+            DynamicSplashScreenReady?.Invoke();
+        }
 
         /// <summary>
         /// Request to trigger StaticSplashScreenReady event
@@ -116,6 +134,7 @@ namespace Dynamo.UI.Views
             {
                 webView.NavigationCompleted -= WebView_NavigationCompleted;
             }
+            OnRequestDynamicSplashScreen();
         }
 
         /// <summary>
