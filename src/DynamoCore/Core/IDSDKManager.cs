@@ -1,4 +1,5 @@
 using System;
+using Autodesk.IDSDK;
 using Greg;
 using Greg.AuthProviders;
 using RestSharp;
@@ -121,11 +122,11 @@ namespace Dynamo.Core
             {
                 if (Initialize())
                 {
-                    //idsdk_status_code statusCode = Client.Login();
-                    //if (Client.IsSuccess(statusCode))
-                    //{
-                    //    return true;
-                    //}
+                    idsdk_status_code statusCode = Client.Login();
+                    if (Client.IsSuccess(statusCode))
+                    {
+                        return true;
+                    }
                 }
                 return false;
             }
@@ -134,8 +135,8 @@ namespace Dynamo.Core
         {
             if (Initialize())
             {
-                //bool ret = Client.IsLoggedIn();
-                //return ret;
+                bool ret = Client.IsLoggedIn();
+                return ret;
             }
             return false;
         }
@@ -143,99 +144,99 @@ namespace Dynamo.Core
         {
             if (IDSDK_IsLoggedIn())
             {
-                //idsdk_status_code statusCode = Client.Logout(idsdk_logout_flags.IDSDK_LOGOUT_MODE_SILENT);
-                //if (Client.IsSuccess(statusCode))
-                //{
-                //    Deinitialize();
-                //    return true;
-                //}
+                idsdk_status_code statusCode = Client.Logout(idsdk_logout_flags.IDSDK_LOGOUT_MODE_SILENT);
+                if (Client.IsSuccess(statusCode))
+                {
+                    Deinitialize();
+                    return true;
+                }
             }
             return false;
         }
         private IDSDK_User_Info IDSDK_GetUserInfo()
         {
-            //if (Client.IsInitialized() && Client.IsLoggedIn())
-            //{
-            //    idsdk_status_code statusCode = Client.GetUserInfo(out bool loginState, out string userId, out string userFirstName, out string userLastName,
-            //        out string userEmail, out string analyticsId, out string userName, out uint loginExpireDay);
+            if (Client.IsInitialized() && Client.IsLoggedIn())
+            {
+                idsdk_status_code statusCode = Client.GetUserInfo(out bool loginState, out string userId, out string userFirstName, out string userLastName,
+                    out string userEmail, out string analyticsId, out string userName, out uint loginExpireDay);
 
-            //    IDSDK_User_Info strUserInfo = null;
-            //    if (Client.IsSuccess(statusCode))
-            //    {
-            //        strUserInfo= new IDSDK_User_Info(userId, userFirstName, userLastName, userEmail, analyticsId, userName);
-            //    }
-            //    return strUserInfo;
-            //}
+                IDSDK_User_Info strUserInfo = null;
+                if (Client.IsSuccess(statusCode))
+                {
+                    strUserInfo = new IDSDK_User_Info(userId, userFirstName, userLastName, userEmail, analyticsId, userName);
+                }
+                return strUserInfo;
+            }
             return null;
         }
         #endregion
 
         #region IDSDK Utilities
-        //private bool SetProductConfigs(string productLineCode, idsdk_server server, string oauthKey)
-        //{
-        //    idsdk_status_code bRet = Client.SetProductConfig(oauthKey, "", productLineCode, DateTime.Now.Year.ToString(), "1.2.3.4", server);
-        //    return Client.IsSuccess(bRet);
-        //}
+        private bool SetProductConfigs(string productLineCode, idsdk_server server, string oauthKey)
+        {
+            idsdk_status_code bRet = Client.SetProductConfig(oauthKey, "", productLineCode, DateTime.Now.Year.ToString(), "1.2.3.4", server);
+            return Client.IsSuccess(bRet);
+        }
         /// <summary>
         /// Returns the OAuth2 token for the current session, or an empty string if token is not available.
         /// </summary>
         private string IDSDK_GetToken()
         {
-            //idsdk_status_code ret = Client.GetToken(out string strToken);
-            //if (Client.IsSuccess(ret))
-            //{
-            //    return strToken;
-            //}
+            idsdk_status_code ret = Client.GetToken(out string strToken);
+            if (Client.IsSuccess(ret))
+            {
+                return strToken;
+            }
             return String.Empty;
         }
         private bool Initialize()
         {
-            //idsdk_status_code bRet = Client.Init();
+            idsdk_status_code bRet = Client.Init();
 
-            //if (Client.IsSuccess(bRet))
-            //{
-            //    if (Client.IsInitialized())
-            //    {
-            //        bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
-            //        if (ret)
-            //        {
-            //            ret = SetProductConfigs("Dynamo", server, client_id);
-            //            return ret;
-            //        }
-            //    }
-            //}
+            if (Client.IsSuccess(bRet))
+            {
+                if (Client.IsInitialized())
+                {
+                    bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
+                    if (ret)
+                    {
+                        ret = SetProductConfigs("Dynamo", server, client_id);
+                        return ret;
+                    }
+                }
+            }
             return false;
         }
         private bool Deinitialize()
         {
-            //idsdk_status_code bRet = Client.DeInit();
+            idsdk_status_code bRet = Client.DeInit();
 
-            //if (Client.IsSuccess(bRet))
-            //{
-            //    return true;
-            //}
+            if (Client.IsSuccess(bRet))
+            {
+                return true;
+            }
             return false;
         }
-        //private bool GetClientIDAndServer(out idsdk_server server, out string client_id)
-        //{
-        //    server = idsdk_server.IDSDK_PRODUCTION_SERVER;
+        private bool GetClientIDAndServer(out idsdk_server server, out string client_id)
+        {
+            server = idsdk_server.IDSDK_PRODUCTION_SERVER;
                 
-        //    client_id = DynamoUtilities.PathHelper.getServiceConfigValues(this, "IDSDK_CLIENT_ID");
+            client_id = DynamoUtilities.PathHelper.getServiceConfigValues(this, "IDSDK_CLIENT_ID");
 
-        //    string env = DynamoUtilities.PathHelper.getServiceConfigValues(this, "IDSDK_ENVIRONMENT");
-        //    if (!string.IsNullOrEmpty(env))
-        //    {
-        //        if (env.Trim().ToLower() == "stg")
-        //        {
-        //            server = idsdk_server.IDSDK_STAGING_SERVER;
-        //        }
-        //        else if (env.Trim().ToLower() == "dev")
-        //        {
-        //            server = idsdk_server.IDSDK_DEVELOPMENT_SERVER;
-        //        }
-        //    }
-        //    return !string.IsNullOrEmpty(client_id);
-        //}
+            string env = DynamoUtilities.PathHelper.getServiceConfigValues(this, "IDSDK_ENVIRONMENT");
+            if (!string.IsNullOrEmpty(env))
+            {
+                if (env.Trim().ToLower() == "stg")
+                {
+                    server = idsdk_server.IDSDK_STAGING_SERVER;
+                }
+                else if (env.Trim().ToLower() == "dev")
+                {
+                    server = idsdk_server.IDSDK_DEVELOPMENT_SERVER;
+                }
+            }
+            return !string.IsNullOrEmpty(client_id);
+        }
         #endregion
     }
 }
