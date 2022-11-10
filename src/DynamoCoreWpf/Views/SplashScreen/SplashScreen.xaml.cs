@@ -4,6 +4,8 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Xml.Serialization;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Logging;
@@ -338,6 +340,69 @@ namespace Dynamo.UI.Views
                $"launchTitle: '{Wpf.Properties.Resources.SplashScreenLaunchTitle}'," +
                $"importSettingsTitle: '{Wpf.Properties.Resources.SplashScreenImportSettings}'," +
                $"showScreenAgainLabel: '{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
+        }
+
+        /// <summary>
+        /// At Dynamo startup process load the preferences settings file located in C:\ProgramData\Dynamo
+        /// </summary>
+        internal void LoadPreferencesFileAtStartup()
+        {
+            if (viewModel.PreferenceSettings.IsFirstRun == true)
+            {
+                //Move the current location two levels up
+                var programDataDir = Directory.GetParent(Directory.GetParent(viewModel.Model.PathManager.CommonDataDirectory).ToString()).ToString();
+                var listOfXmlFiles = Directory.GetFiles(programDataDir, "*.xml");
+                string PreferencesSettingFilePath = string.Empty;
+
+                //Find the first xml file name from the list that can be Deserialized to PreferenceSettings
+                foreach (var xmlFile in listOfXmlFiles)
+                {
+                    if (IsValidPreferencesFile(xmlFile))
+                    {
+                        PreferencesSettingFilePath = xmlFile;
+                        break;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(PreferencesSettingFilePath) && File.Exists(PreferencesSettingFilePath))
+                {
+                    var content = File.ReadAllText(PreferencesSettingFilePath);
+                    ImportSettings(content);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Try to Deserialize to PreferenceSettings the file content passed as parameter
+        /// </summary>
+        /// <param name="filePath">Full path to the xml file to be deserialized</param>
+        /// <returns>true if the file content was deserialized successfully otherwise returns false</returns>
+        private static bool IsValidPreferencesFile(string filePath)
+        {
+            string content = string.Empty;
+
+            if (File.Exists(filePath))
+            {
+                content = File.ReadAllText(filePath);
+            }
+
+            if (string.IsNullOrEmpty(content))
+                return false;
+
+            try
+            {
+                PreferenceSettings settings = null;
+                var serializer = new XmlSerializer(typeof(PreferenceSettings));
+                using (TextReader reader = new StringReader(content))
+                {
+                    settings = serializer.Deserialize(reader) as PreferenceSettings;
+                }
+                return settings != null ? true : false;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         /// <summary>
