@@ -202,7 +202,7 @@ namespace Dynamo.Logging
         /// <param name="debugSettings">Debug settings</param>
         /// <param name="logDirectory">Directory path where log file will be written</param>
         /// <param name="isTestMode">Test mode is true or false.</param>
-        /// <param name="isCLIMode">CLI mode is true or false.</param>
+        /// <param name="isCLIMode">We want to allow logging when CLI mode is true even if we are in test mode.</param>
         public DynamoLogger(DebugSettings debugSettings, string logDirectory, Boolean isTestMode, Boolean isCLIMode)
             :this(debugSettings, logDirectory, isTestMode)
         {
