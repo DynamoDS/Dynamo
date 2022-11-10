@@ -144,7 +144,6 @@ namespace Dynamo.UI.Views
         private void CloseWindow()
         {
            Application.Current.Shutdown();
-           Process.GetCurrentProcess().Kill();
            Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);
         }
 
