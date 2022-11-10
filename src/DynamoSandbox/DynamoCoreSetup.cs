@@ -13,7 +13,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using Microsoft.Web.WebView2.Core;
 
 namespace DynamoSandbox
 {
@@ -67,7 +66,7 @@ namespace DynamoSandbox
                 StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
 
                 splashScreen = new Dynamo.UI.Views.SplashScreen();
-                splashScreen.webView.NavigationCompleted += LoadDynamoView;
+                splashScreen.DynamicSplashScreenReady += LoadDynamoView;
                 splashScreen.Show();
                 app.Run();
 
@@ -132,7 +131,7 @@ namespace DynamoSandbox
             }
         }
 
-        private void LoadDynamoView(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        private void LoadDynamoView()
         {
             DynamoModel model;
             model = StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
@@ -155,7 +154,8 @@ namespace DynamoSandbox
             splashScreen.DynamoView = new DynamoView(viewModel);
             splashScreen.OnRequestStaticSplashScreen();
 
-            splashScreen.webView.NavigationCompleted -= LoadDynamoView;
+            splashScreen.DynamicSplashScreenReady -= LoadDynamoView;
+            Analytics.TrackStartupTime("DynamoSandbox", TimeSpan.FromMilliseconds(splashScreen.totalLoadingTime));
         }
 
         private void ASMPreloadFailureHandler(string failureMessage)
