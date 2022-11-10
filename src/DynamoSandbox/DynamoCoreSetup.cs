@@ -156,6 +156,7 @@ namespace DynamoSandbox
             splashScreen.OnRequestStaticSplashScreen();
 
             splashScreen.webView.NavigationCompleted -= LoadDynamoView;
+            Analytics.TrackStartupTime("DynamoSandbox", TimeSpan.FromMilliseconds(splashScreen.totalLoadingTime));
         }
 
         private void ASMPreloadFailureHandler(string failureMessage)
