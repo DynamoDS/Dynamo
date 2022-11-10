@@ -994,9 +994,10 @@ namespace Dynamo.ViewModels
                 }
             }
 
+            preferenceSettings.SanitizeValues();
             RaisePropertyChanged(string.Empty);
             return true;
-        }
+        }        
 
         /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
@@ -1032,18 +1033,7 @@ namespace Dynamo.ViewModels
             };
             SelectedFontSize = Wpf.Properties.Resources.ScalingMediumButton;
 
-            GroupStyleFontSizeList = new ObservableCollection<int>
-            {
-                14,
-                18,
-                24,
-                30,
-                36,
-                48,
-                60,
-                72,
-                96
-            };
+            GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 
             // Number format settings
             NumberFormatList = new ObservableCollection<string>

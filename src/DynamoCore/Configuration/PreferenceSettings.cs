@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -868,6 +869,43 @@ namespace Dynamo.Configuration
             settings.DeserializeInternalPrefsContent(content);
 
             return settings;
+        }
+
+        /// <summary>
+        /// Return the predefined Font size values
+        /// </summary>
+        [XmlIgnore]
+        public ObservableCollection<int> PredefinedGroupStyleFontSizes
+        {
+            get
+            {
+                return new ObservableCollection<int>
+            {
+                14,
+                18,
+                24,
+                30,
+                36,
+                48,
+                60,
+                72,
+                96
+            };
+            }
+        }
+
+        /// <summary>
+        /// Checking for invalid values or tainted data and sanitize them
+        /// </summary>
+        internal void SanitizeValues()
+        {
+            foreach (var groupStyle in GroupStyleItemsList)
+            {
+                if (!PredefinedGroupStyleFontSizes.Contains(groupStyle.FontSize))
+                {
+                    groupStyle.FontSize = GroupStyleItem.DefaultGroupStyleItems.FirstOrDefault().FontSize;
+                }
+            }
         }
 
         /// <summary>

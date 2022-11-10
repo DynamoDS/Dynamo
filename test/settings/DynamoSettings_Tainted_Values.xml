@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<PreferenceSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsFirstRun>false</IsFirstRun>
+  <IsAnalyticsReportingApproved>true</IsAnalyticsReportingApproved>
+  <LibraryWidth>304</LibraryWidth>
+  <ConsoleHeight>0</ConsoleHeight>
+  <ShowPreviewBubbles>true</ShowPreviewBubbles>
+  <ShowCodeBlockLineNumber>true</ShowCodeBlockLineNumber>
+  <ShowConnector>true</ShowConnector>
+  <ShowConnectorToolTip>true</ShowConnectorToolTip>
+  <ConnectorType>BEZIER</ConnectorType>
+  <BackgroundPreviews>
+    <BackgroundPreviewActiveState>
+      <Name>IsBackgroundPreviewActive</Name>
+      <IsActive>true</IsActive>
+    </BackgroundPreviewActiveState>
+  </BackgroundPreviews>
+  <IsBackgroundGridVisible>true</IsBackgroundGridVisible>
+  <RenderPrecision>240</RenderPrecision>
+  <ShowEdges>true</ShowEdges>
+  <ShowDetailedLayout>true</ShowDetailedLayout>
+  <WindowX>0</WindowX>
+  <WindowY>0</WindowY>
+  <WindowW>1024</WindowW>
+  <WindowH>768</WindowH>
+  <UseHardwareAcceleration>true</UseHardwareAcceleration>
+  <NumberFormat>f3</NumberFormat>
+  <MaxNumRecentFiles>10</MaxNumRecentFiles>
+  <RecentFiles />
+  <BackupFiles>
+    <string>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\backup\backup.DYN</string>
+  </BackupFiles>
+  <CustomPackageFolders>
+    <string>%BuiltInPackages%</string>
+    <string>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\2.16</string>
+    <string>C:\ProgramData\Dynamo\Dynamo Core\2.16\packages</string>
+  </CustomPackageFolders>
+  <DisableTrustWarnings>true</DisableTrustWarnings>
+  <TrustedLocations>
+    <string>C:\ProgramData\Autodesk</string>
+    <string>C:\Program Files\Autodesk</string>
+	<string>C:\Autodesk</string>
+  </TrustedLocations>
+  <PackageDirectoriesToUninstall />
+  <PythonTemplateFilePath />
+  <BackupInterval>60000</BackupInterval>
+  <BackupFilesCount>1</BackupFilesCount>
+  <PackageDownloadTouAccepted>false</PackageDownloadTouAccepted>
+  <OpenFileInManualExecutionMode>false</OpenFileInManualExecutionMode>
+  <IsIronPythonDialogDisabled>false</IsIronPythonDialogDisabled>
+  <ShowTabsAndSpacesInScriptEditor>false</ShowTabsAndSpacesInScriptEditor>
+  <EnableNodeAutoComplete>false</EnableNodeAutoComplete>
+  <EnableNotificationCenter>false</EnableNotificationCenter>
+  <DefaultPythonEngine />
+  <SelectedPackagePathForInstall>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\2.16</SelectedPackagePathForInstall>
+  <NamespacesToExcludeFromLibrary>
+    <string>ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline</string>
+  </NamespacesToExcludeFromLibrary>
+  <ViewExtensionSettings />
+  <DisableBuiltinPackages>false</DisableBuiltinPackages>
+  <DisableCustomPackageLocations>false</DisableCustomPackageLocations>
+  <DefaultRunType>Manual</DefaultRunType>
+  <ShowRunPreview>false</ShowRunPreview>
+  <GroupStyleItemsList>
+    <GroupStyleItem>
+      <Name>Actions</Name>
+      <HexColorString>B9F9E1</HexColorString>
+      <IsDefault>true</IsDefault>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Inputs</Name>
+      <HexColorString>FFB8D8</HexColorString>
+      <IsDefault>true</IsDefault>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Outputs</Name>
+      <HexColorString>FFC999</HexColorString>
+      <IsDefault>true</IsDefault>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Review</Name>
+      <HexColorString>A4E1FF</HexColorString>
+      <IsDefault>true</IsDefault>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>style 5</Name>
+      <HexColorString>646D2D</HexColorString>
+      <IsDefault>false</IsDefault>
+	  <FontSize>-1</FontSize>
+    </GroupStyleItem>
+	<GroupStyleItem>
+      <Name>style 6</Name>
+      <HexColorString>FFC999</HexColorString>
+      <IsDefault>false</IsDefault>
+	  <FontSize>7</FontSize>
+    </GroupStyleItem>
+  </GroupStyleItemsList>
+  <NodeSearchTagSizeLimit>300</NodeSearchTagSizeLimit>
+  <IronPythonResolveTargetVersion>2.1.0</IronPythonResolveTargetVersion>
+</PreferenceSettings>

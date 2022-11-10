@@ -450,5 +450,28 @@ namespace Dynamo.Tests.Configuration
             // checking the result
             Assert.IsTrue(result == PreferenceSettings.AskForTrustedLocationResult.Ask, $"Conditions info: is opened file : {isOpenedFile} | is file in trusted location : {isFileInTrustedLocation} | is home space : {isHomeSpace} | is show Start page : {isShowStartPage} | is disable trust warnings : {isDisableTrustWarnings}");
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestSanitizeValues()
+        {
+            string settingDirectory = Path.Combine(TestDirectory, "settings");
+            string settingslFilePath = Path.Combine(settingDirectory, "DynamoSettings_Tainted_Values.xml");
+
+            var settings = PreferenceSettings.Load(settingslFilePath);
+            settings.SanitizeValues();
+
+            bool allTheGroupStylesHaveAValidFontSize = true;
+            foreach (var groupStyle in settings.GroupStyleItemsList)
+            {
+                if (!settings.PredefinedGroupStyleFontSizes.Contains(groupStyle.FontSize))
+                {
+                    allTheGroupStylesHaveAValidFontSize = false;
+                    break;
+                }
+            }
+
+            Assert.IsTrue(allTheGroupStylesHaveAValidFontSize, $"All the GroupStyles have a valid Font size : {allTheGroupStylesHaveAValidFontSize}");
+        }
     }
 }
