@@ -31,7 +31,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             var iconAsBase64 = controller.iconProvider.GetResourceAsString(iconurl, out ext);
             if (string.IsNullOrEmpty(iconAsBase64))
             {
-                return "";
+                return string.Empty;
             }
             if (ext.Contains("svg"))
             {
