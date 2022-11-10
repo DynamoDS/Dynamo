@@ -24,14 +24,17 @@ namespace Dynamo.UI.Views
         private static readonly string imageFileExtension = "png";
 
         // Timer used for Splash Screen loading
-        private Stopwatch loadingTimer;
-        private long totalLoadingTime;
+        internal Stopwatch loadingTimer;
+
+        /// <summary>
+        /// Total loading time for the Dynamo loading tasks in milliseconds
+        /// </summary>
+        public long totalLoadingTime;
 
         internal Action<bool> RequestLaunchDynamo;
         internal Action<string> RequestImportSettings;
         internal Func<bool> RequestSignIn; 
         internal Func<bool> RequestSignOut;
-        internal WebView2 webView;
 
         /// <summary>
         /// Dynamo auth manager reference
@@ -62,14 +65,37 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
+        /// The WebView2 Browser instance used to display splash screen
+        /// </summary>
+        internal WebView2 webView;
+
+        /// <summary>
         /// This delegate is used in StaticSplashScreenReady events
         /// </summary>
         internal delegate void StaticSplashScreenReadyHandler();
 
         /// <summary>
+        /// This delegate is used in DynamicSplashScreenReady events
+        /// </summary>
+        internal delegate void DynamicSplashScreenReadyHandler();
+
+        /// <summary>
+        /// Event to throw for Splash Screen to show Dynamo static screen
+        /// </summary>
+        internal event StaticSplashScreenReadyHandler StaticSplashScreenReady;
+
+        /// <summary>
         /// Event to throw for Splash Screen to update Dynamo launching tasks
         /// </summary>
-        internal static event StaticSplashScreenReadyHandler StaticSplashScreenReady;
+        internal event DynamicSplashScreenReadyHandler DynamicSplashScreenReady;
+
+        /// <summary>
+        /// Request to trigger DynamicSplashScreenReady event
+        /// </summary>
+        public void OnRequestDynamicSplashScreen()
+        {
+            DynamicSplashScreenReady?.Invoke();
+        }
 
         /// <summary>
         /// Request to trigger StaticSplashScreenReady event
@@ -94,7 +120,7 @@ namespace Dynamo.UI.Views
             // Bind event handlers
             webView.NavigationCompleted += WebView_NavigationCompleted;
             DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
-            StaticSplashScreenReady += FinishLoadingDynamicScreen;
+            StaticSplashScreenReady += OnStaticScreenReady;
             RequestLaunchDynamo = LaunchDynamo;
             RequestImportSettings = ImportSettings;
             RequestSignIn = SignIn;
@@ -108,6 +134,7 @@ namespace Dynamo.UI.Views
             {
                 webView.NavigationCompleted -= WebView_NavigationCompleted;
             }
+            OnRequestDynamicSplashScreen();
         }
 
         /// <summary>
@@ -159,7 +186,7 @@ namespace Dynamo.UI.Views
         {
             viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
             DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
-            StaticSplashScreenReady -= FinishLoadingDynamicScreen;
+            StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
             Application.Current.MainWindow = dynamoView;
             dynamoView.Show();
@@ -169,8 +196,11 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// Once main window is initialized, Dynamic Splash screen should finish loading
         /// </summary>
-        private void FinishLoadingDynamicScreen()
+        private void OnStaticScreenReady()
         {
+            // Stop the timer in any case
+            loadingTimer.Stop();
+            loadingTimer = null;
             // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {
@@ -259,11 +289,8 @@ namespace Dynamo.UI.Views
 
         internal async void SetLoadingDone()
         {
-            loadingTimer.Stop();
-            loadingTimer = null;
             await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
             await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime('{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms')");
-            Analytics.TrackStartupTime("DynamoSandbox", TimeSpan.FromMilliseconds(totalLoadingTime));
         }
 
         /// <summary>
