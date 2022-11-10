@@ -294,6 +294,11 @@ namespace Dynamo.UI.Controls
             cm.IsOpen = true;
         }
 
+        private void ShowLowConfidenceResults(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ShowLowConfidenceResults();
+        }
+
         private void OnSuggestion_Click(object sender, RoutedEventArgs e)
         {
             MenuItem selectedSuggestion = sender as MenuItem;

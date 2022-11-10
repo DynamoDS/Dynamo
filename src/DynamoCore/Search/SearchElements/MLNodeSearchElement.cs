@@ -14,6 +14,7 @@ namespace Dynamo.Search.SearchElements
         {
             Node = new NodeRequest();
             Port = new PortRequest();
+            Host = new HostRequest();
             Context = new ContextRequest();
             Packages = new List<PackageItem>();
         }

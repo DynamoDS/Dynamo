@@ -162,7 +162,7 @@
                         </TextBlock>
                     </StackPanel>
              </StackPanel>
-             <StackPanel x:Name="LowConfidenceSpace" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,10,0,10"
+             <StackPanel x:Name="LowConfidenceSpace" MouseLeftButtonUp="ShowLowConfidenceResults" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,10,0,10"
                          Visibility="{Binding Path=DisplayLowConfidence, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Image HorizontalAlignment="Center"
                      Height="14"     
