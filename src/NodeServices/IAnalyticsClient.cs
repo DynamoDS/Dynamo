@@ -428,7 +428,12 @@ namespace Dynamo.Logging
         /// <summary>
         /// ImportSettings event, e.g. tracks the ImportSettings event
         /// </summary>
-        ImportSettings
+        ImportSettings,
+
+        /// <summary>
+        /// ExportSettings event, e.g. tracks the ExportSettings event
+        /// </summary>
+        ExportSettings
     }
 
     /// <summary>

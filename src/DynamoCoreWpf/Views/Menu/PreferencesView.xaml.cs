@@ -474,7 +474,6 @@ namespace Dynamo.Wpf.Views
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string selectedPathFile = Path.Combine(dialog.SelectedPath, PathManager.PreferenceSettingsFileName);
-
                 try
                 {
                     if (File.Exists(selectedPathFile))
@@ -488,13 +487,14 @@ namespace Dynamo.Wpf.Views
                     File.Copy(dynViewModel.Model.PathManager.PreferenceFilePath, selectedPathFile);
                     string argument = "/select, \"" + selectedPathFile + "\"";
                     System.Diagnostics.Process.Start("explorer.exe", argument);
+                    Analytics.TrackEvent(Actions.ExportSettings, Categories.Preferences);
                 }
                 catch (Exception ex)
                 {
                     Wpf.Utilities.MessageBoxService.Show(
                         this,
                         ex.Message,
-                        Res.ImportSettingsFailedMessage,
+                        Res.ExportSettingsFailedMessage,
                         MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
