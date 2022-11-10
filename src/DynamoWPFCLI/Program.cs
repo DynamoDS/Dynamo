@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using Dynamo.Applications;
@@ -21,7 +21,7 @@ namespace DynamoWPFCLI
             try
             {
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
-                useConsole = !cmdLineArgs.NoConsoleCli;
+                useConsole = !cmdLineArgs.NoConsole;
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
 
                 if (cmdLineArgs.DisableAnalytics)
@@ -83,14 +83,10 @@ namespace DynamoWPFCLI
         private static DynamoViewModel StartupDaynamo(StartupUtils.CommandLineArguments cmdLineArgs)
         {
             DynamoModel model;
-            if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
-            {
-                model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath, cmdLineArgs.AnalyticsInfo);
-            }
-            else
-            {
-                model = Dynamo.Applications.StartupUtils.MakeModel(true, string.Empty, cmdLineArgs.AnalyticsInfo);
-            }
+            model = Dynamo.Applications.StartupUtils.MakeCLIModel(String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath,
+                cmdLineArgs.UserDataFolder,
+                cmdLineArgs.CommonDataFolder,
+                cmdLineArgs.AnalyticsInfo);
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {
@@ -124,7 +120,7 @@ namespace DynamoWPFCLI
             {
                 StartupDaynamo(cmdLineArgs);
 
-                if (!cmdLineArgs.NoConsoleCli)
+                if (!cmdLineArgs.NoConsole)
                 {
                     Console.WriteLine("-----------------------------------------");
                     Console.WriteLine("DynamoWPFCLI is running in keepalive mode");

@@ -104,9 +104,8 @@
         LIBPLACEHOLDER
     </script>
 
-    <script>
+<script>
         var replaceImageDelayTime = 100;
-        var currentImage;
         let intervalId;
 
         // Disable the context menu
@@ -145,7 +144,7 @@
             for(var j = 0; j < allimages.length; j++){
 
                 var element = allimages[j];
-                currentImage = element;
+                let currentImage = element;
                 var src = element.src
                 if (element.orgSrc != null) {
                     src = element.orgSrc;
@@ -155,15 +154,12 @@
                      continue;
                 }
                 //request the icon from the extension.
-                await window.chrome.webview.hostObjects.bridgeTwoWay.GetBase64StringFromPath(src).sync();
+                var base64String = await window.chrome.webview.hostObjects.bridgeTwoWay.GetBase64StringFromPath(src);
+                if (currentImage != null) {
+                    currentImage.src = base64String;
+                }
             }
         }
-
-    function completeReplaceImages(base64String, img_src) {
-        if (currentImage != null) {
-            currentImage.src = base64String;
-        }
-    }
 
         function refreshLibViewFromData(loadedTypes,layoutSpec){
             var append = false; // Replace existing contents instead of appending.
