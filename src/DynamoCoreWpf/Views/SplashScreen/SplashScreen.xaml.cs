@@ -338,7 +338,7 @@ namespace Dynamo.UI.Views
                $"launchTitle: '{Wpf.Properties.Resources.SplashScreenLaunchTitle}'," +
                $"importSettingsTitle: '{Wpf.Properties.Resources.SplashScreenImportSettings}'," +
                $"showScreenAgainLabel: '{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}'," +
-               $"importSettingsTooltipDescription: '{Wpf.Properties.Resources.SplashScreenImportSettingsTooltip}'" + "})");
+               $"importSettingsTooltipDescription: '{Wpf.Properties.Resources.ImportPreferencesInfo}'" + "})");
         }
 
         /// <summary>

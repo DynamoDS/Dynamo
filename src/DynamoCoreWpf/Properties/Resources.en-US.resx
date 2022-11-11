@@ -3457,7 +3457,4 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Export Failed</value>
   </data>
-  <data name="SplashScreenImportSettingsTooltip" xml:space="preserve">
-    <value>You can import custom settings here, which will overwrite your current settings. If you\'d like to preserve a copy of your current settings, export them before importing new settings. Settings not shown in the Preferences panel will be applied once Dynamo and any host program restarts.</value>
-  </data>
 </root>

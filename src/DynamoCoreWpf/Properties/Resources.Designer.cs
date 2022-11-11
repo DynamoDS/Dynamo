@@ -8002,15 +8002,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can import custom settings here, which will overwrite your current settings. If you\&apos;d like to preserve a copy of your current settings, export them before importing new settings. Settings not shown in the Preferences panel will be applied once Dynamo and any host program restarts..
-        /// </summary>
-        public static string SplashScreenImportSettingsTooltip {
-            get {
-                return ResourceManager.GetString("SplashScreenImportSettingsTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Launching Dynamo View....
         /// </summary>
         public static string SplashScreenLaunchingDynamo {
