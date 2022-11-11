@@ -116,7 +116,7 @@ namespace Dynamo.UI.Views
             loadingTimer.Start();
 
             webView = new WebView2();
-            AddChild(webView);
+            ShadowGrid.Children.Add(webView);
             // Bind event handlers
             webView.NavigationCompleted += WebView_NavigationCompleted;
             DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
