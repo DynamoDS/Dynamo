@@ -127,8 +127,7 @@
                                         Content="{TemplateBinding Content}"
                                         ContentTemplate="{TemplateBinding ContentTemplate}"
                                         CanContentScroll="{TemplateBinding CanContentScroll}"
-                                        Grid.RowSpan="2"
-                                        />
+                                        Grid.RowSpan="2"/>
             <ScrollBar x:Name="PART_HorizontalScrollBar"
                        Orientation="Horizontal"
                        Grid.Row="1"
@@ -236,7 +235,7 @@
             <StackPanel Visibility="{Binding Path=Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock
                     HorizontalAlignment="Center"
-                    Width="24"
+                    Width="35"
                     FontSize="10"
                     Margin="5,12,0,0"
                     Visibility="{Binding Path=Model.AutoCompletionNodeMachineLearningInfo.IsByRecommendation, Converter={StaticResource BooleanToVisibilityConverter}}"

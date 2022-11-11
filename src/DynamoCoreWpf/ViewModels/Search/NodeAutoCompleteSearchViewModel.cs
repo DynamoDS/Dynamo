@@ -17,6 +17,8 @@ using System.IO;
 using System.Text;
 using Dynamo.Utilities;
 using Dynamo.PackageManager;
+using Dynamo.Core;
+using RestSharp;
 
 namespace Dynamo.ViewModels
 {
@@ -165,6 +167,7 @@ namespace Dynamo.ViewModels
         {
             // Intialize request for the the ML API
             MLNodeAutoCompletionRequest request = new MLNodeAutoCompletionRequest();
+            DisplayNoRecommendationsLowConfidence = false;
 
             var nodeInfo = PortViewModel.PortModel.Owner;
             var portInfo = PortViewModel.PortModel;
@@ -250,7 +253,7 @@ namespace Dynamo.ViewModels
             {
                 MLresults = GetMLNodeAutocompleteResults(jsonRequest);
             }
-            catch(Exception) {
+            catch(Exception e) {
                 DisplayNoRecommendationsLowConfidence = true;
                 DisplayLowConfidence = false;
                 NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteNoRecommendationsTitle;
@@ -287,12 +290,14 @@ namespace Dynamo.ViewModels
                         if (element != null)
                         {
                             element.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = item.Score;
+                            element.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
+                            element.AutoCompletionNodeMachineLearningInfo.IsByRecommendation = true;
                             matchingResults.Add(element);
                         }
                     }
                     else
                     {
-                        // Retreive assmblye name and full name from type id.
+                        // Retreive assembly name and full name from type id.
                         var typeInfo = item.Node.Type.Id.Split(',');
                         string fullName = typeInfo[0].Trim();
                         string assemblyName = typeInfo[1].Trim();
@@ -302,6 +307,8 @@ namespace Dynamo.ViewModels
                         if (matchingNode != null)
                         {
                             matchingNode.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = item.Score;
+                            matchingNode.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
+                            matchingNode.AutoCompletionNodeMachineLearningInfo.IsByRecommendation = true;
                             matchingResults.Add(matchingNode);
                         }
                     }
@@ -340,32 +347,55 @@ namespace Dynamo.ViewModels
 
         private MLNodeAutoCompletionResponse GetMLNodeAutocompleteResults(string requestJSON)
         {
-            MLNodeAutoCompletionResponse results;
-
+            MLNodeAutoCompletionResponse results = null;
             var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, "MLNodeAutocomplete");
             var token = DynamoUtilities.PathHelper.getServiceConfigValues(this, "token");
+            var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-            request.Method = "POST";
-
-            ASCIIEncoding encoding = new ASCIIEncoding();
-            byte[] byteArray = encoding.GetBytes(requestJSON);
-            request.ContentLength = byteArray.Length;
-
-            request.Headers.Add("Authorization", "Bearer " + token);
-
-            Stream newStream = request.GetRequestStream();
-            newStream.Write(byteArray, 0, byteArray.Length);
-
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
+            if (authProvider is IDSDKManager manager)
             {
-                string jsonString = reader.ReadToEnd();
-                results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(jsonString);
-            }
+                /*
+                var client = new RestClient(uri);
+                var request = new RestRequest(Method.POST);
+                request = request.AddJsonBody(requestJSON) as RestRequest;
+                request.RequestFormat = DataFormat.Json;
 
-            return results;
+                try
+                {
+                    manager.SignRequest(ref request, client);
+                    RestResponse response = client.Execute(request) as RestResponse;
+                }
+                catch (Exception e) {
+                    throw new Exception("Error sign-in");
+                }*/
+
+                var IDSDKtoken = manager.IDSDK_GetToken();
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+                request.Method = "POST";
+
+                ASCIIEncoding encoding = new ASCIIEncoding();
+                byte[] byteArray = encoding.GetBytes(requestJSON);
+                request.ContentLength = byteArray.Length;
+
+                request.Headers.Add("Authorization", "Bearer " + token);
+
+                Stream newStream = request.GetRequestStream();
+                newStream.Write(byteArray, 0, byteArray.Length);
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string jsonString = reader.ReadToEnd();
+                    results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(jsonString);
+                }
+
+                return results;
+            }
+            else
+            {
+                throw new Exception("Error fetting IDSDK token");
+            }
         }
 
         internal void ShowLowConfidenceResults()
@@ -389,7 +419,6 @@ namespace Dynamo.ViewModels
 
             if (IsDisplayingMLRecommendation)
             {
-                // TODO: Add a function call to send port and node info to get suggestions
                 DisplayMachineLearningResults();
             }
             else
@@ -405,11 +434,6 @@ namespace Dynamo.ViewModels
                 else
                 {
                     FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
-                }
-
-                foreach (var item in FilteredResults)
-                {
-                    item.Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = false;
                 }
             }
         }

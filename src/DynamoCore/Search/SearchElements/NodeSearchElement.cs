@@ -321,6 +321,7 @@ namespace Dynamo.Search.SearchElements
         {
             get
             { return !IsByUse; }
+            set { }
         }
     }
 
