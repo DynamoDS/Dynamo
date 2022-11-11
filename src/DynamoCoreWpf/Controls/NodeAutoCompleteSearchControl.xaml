@@ -8,7 +8,7 @@
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              mc:Ignorable="d"
-             MinWidth="256"
+             MinWidth="280"
              MaxWidth="400"
              IsVisibleChanged="OnNodeAutoCompleteSearchControlVisibilityChanged">
     <UserControl.Resources>
@@ -60,53 +60,60 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                    <Border Background="{StaticResource DarkMidGreyBrush}"
-                            CornerRadius="8,8,0,0">
+                <Border Background="{StaticResource DarkMidGreyBrush}"
+                        CornerRadius="8,8,0,0">
                     <Grid>
                         <StackPanel Name="AutoCompletionHeader"
-                                    Grid.ColumnSpan="1"
                                     Width="Auto"
                                     HorizontalAlignment="Left"
                                     Orientation="Horizontal">
                             <TextBlock Text="{x:Static resx:Resources.Autocomplete}"
-                                   TextWrapping="Wrap"
-                                   Padding="4"
-                                   Margin="80,2,0,0"
-                                   Foreground="{StaticResource AutocompletionWindowFontColor}"
-                                   Background="Transparent"
-                                   TextAlignment="Center"
-                                   FontSize="14">
+                                       TextWrapping="Wrap"
+                                       Padding="4"
+                                       Margin="80,2,0,0"
+                                       Foreground="{StaticResource AutocompletionWindowFontColor}"
+                                       Background="Transparent"
+                                       TextAlignment="Center"
+                                       FontSize="14">
                             </TextBlock>
-                            <Image Name="NodeAutoCompleteInfoIcon" 
-                                   Width="14" 
-                                   Height="14" 
-                                   MouseDown="OnMoreInfoClicked" 
-                                   Margin="40,5,10,5" 
-                                   HorizontalAlignment="Right" 
+                            <Image Name="NodeAutoCompleteInfoIcon"
+                                   Width="14"
+                                   Height="14"
+                                   MouseDown="OnMoreInfoClicked"
+                                   Margin="40,5,10,5"
+                                   HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
                                    Style="{StaticResource ToggleInfoStyle}">
 
                             </Image>
-                            <Image Width="14" Height="14" Margin="0,5,10,5" MouseDown="CloseAutocompletionWindow" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                    <Image.Style>
-                                        <Style TargetType="{x:Type Image}">
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="False">
-                                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-default-16px.png" />
-                                                </Trigger>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-hover-16px.png" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Image.Style>
-                                </Image>
+                            <Image Width="14"
+                                   Height="14"
+                                   Margin="0,5,0,5"
+                                   MouseDown="CloseAutocompletionWindow"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center">
+                                <Image.Style>
+                                    <Style TargetType="{x:Type Image}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="False">
+                                                <Setter Property="Source"
+                                                        Value="/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-default-16px.png" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="True">
+                                                <Setter Property="Source"
+                                                        Value="/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-hover-16px.png" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
                         </StackPanel>
                     </Grid>
                 </Border>
             </Grid>
 
-            
             <StackPanel Background="{StaticResource LibraryCommonBackground}"
                         Grid.Row="1"
                         Name="AutoCompleteCandidates"
@@ -133,10 +140,10 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <StackPanel Visibility="{Binding Path=DisplayNoRecommendationsLowConfidence, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Image Name="DisablePackageInstallIcon"
+                    <Image Name="NoRecommendations"
                            Width="205"
                            Height="120"
-                           Margin="0,30,0,0"
+                           Margin="0,10,0,0"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Top"
                            Source="/DynamoCoreWpf;component/UI/Images/no-recommendations.png">
@@ -150,7 +157,7 @@
                     </TextBlock>
                     <StackPanel Orientation="Vertical"
                                 MaxWidth="250"
-                                Margin="0,0,0,15">
+                                Margin="0,0,0,10">
                         <TextBlock Height="auto"
                                    TextWrapping="Wrap"
                                    FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -201,7 +208,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <Border BorderBrush="white" BorderThickness="0,0,0,2" Margin="-4,2,-2,2" Grid.RowSpan="2">
+            <Border BorderBrush="white" BorderThickness="0,0,0,1" Margin="-4,2,-2,2" Grid.RowSpan="2">
                 <Popup StaysOpen="True"
                        AllowsTransparency="True"
                        Placement="Right"
