@@ -77,7 +77,7 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// This delegate is used in DynamicSplashScreenReady events
         /// </summary>
-        internal delegate void DynamicSplashScreenReadyHandler();
+        public delegate void DynamicSplashScreenReadyHandler();
 
         /// <summary>
         /// Event to throw for Splash Screen to show Dynamo static screen
@@ -87,7 +87,7 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// Event to throw for Splash Screen to update Dynamo launching tasks
         /// </summary>
-        internal event DynamicSplashScreenReadyHandler DynamicSplashScreenReady;
+        public event DynamicSplashScreenReadyHandler DynamicSplashScreenReady;
 
         /// <summary>
         /// Request to trigger DynamicSplashScreenReady event
