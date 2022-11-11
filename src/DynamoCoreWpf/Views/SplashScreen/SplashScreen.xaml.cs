@@ -116,7 +116,6 @@ namespace Dynamo.UI.Views
             loadingTimer.Start();
 
             webView = new WebView2();
-            webView.Source = new Uri("http://localhost:8080");
             ShadowGrid.Children.Add(webView);
             // Bind event handlers
             webView.NavigationCompleted += WebView_NavigationCompleted;
@@ -275,7 +274,7 @@ namespace Dynamo.UI.Views
                 UserDataFolder = webBrowserUserDataFolder.FullName
             };
 
-            //webView.NavigateToString(htmlString);
+            webView.NavigateToString(htmlString);
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
                new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut, CloseWindow));
         }
