@@ -203,6 +203,10 @@ namespace Dynamo.UI.Views
             // Stop the timer in any case
             loadingTimer.Stop();
             loadingTimer = null;
+
+            //When a xml preferences settings file is located at C:\ProgramData\Dynamo will be read and deserialized so the settings can be set correctly.
+            LoadPreferencesFileAtStartup();
+
             // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {

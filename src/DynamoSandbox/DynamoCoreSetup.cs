@@ -154,9 +154,6 @@ namespace DynamoSandbox
             splashScreen.DynamoView = new DynamoView(viewModel);
             splashScreen.OnRequestStaticSplashScreen();
 
-            //When a xml preferences settings file is located at C:\ProgramData\Dynamo will be read and deserialized so the settings can be set correctly.
-            splashScreen.LoadPreferencesFileAtStartup();
-
             splashScreen.DynamicSplashScreenReady -= LoadDynamoView;
             Analytics.TrackStartupTime("DynamoSandbox", TimeSpan.FromMilliseconds(splashScreen.totalLoadingTime));
         }
