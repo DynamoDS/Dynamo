@@ -208,12 +208,15 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void Node_CameraDeserialization()
+        public void Node_PropertiesDeserialization()
         {
-            OpenVisualizationTest("HelixWatch3dNodeViewModel_Camera_Deserialization.dyn");
-            var helixNodeViewModel = FindFirstWatch3DNodeView().ViewModel as HelixWatch3DNodeViewModel;
+            OpenVisualizationTest("HelixWatch3dNodeViewModel_PropertiesDeserialization.dyn");
+            Watch3DView view = FindFirstWatch3DNodeView();
+            Assert.NotNull(view);
+            Assert.AreEqual(300.0, view.Width);
+            HelixWatch3DNodeViewModel helixNodeViewModel = view.ViewModel as HelixWatch3DNodeViewModel;
             Assert.NotNull(helixNodeViewModel);
-            Assert.AreEqual(helixNodeViewModel.Camera.Position.X, 48.66565, 0.01);
+            Assert.AreEqual(48.66565, helixNodeViewModel.Camera.Position.X, 0.01);
         }
 
         [Test]
