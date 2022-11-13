@@ -147,7 +147,6 @@
                     <Image Name="NoRecommendations"
                            Width="205"
                            Height="120"
-                           Margin="0,10,0,0"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Top"
                            Source="/DynamoCoreWpf;component/UI/Images/no-recommendations.png">
@@ -185,7 +184,7 @@
                             Orientation="Horizontal"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Left"
-                            Margin="0,10,0,10"
+                            Margin="0,10,0,20"
                             Visibility="{Binding Path=DisplayLowConfidence, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Image HorizontalAlignment="Center"
                            Height="14"
@@ -215,7 +214,6 @@
 
             <Border BorderBrush="white"
                     BorderThickness="0,0,0,1"
-                    Margin="-4,2,-2,2"
                     Grid.RowSpan="2">
                 <Popup StaysOpen="True"
                        AllowsTransparency="True"
@@ -234,7 +232,7 @@
                 </Grid.ColumnDefinitions>
                 <Border BorderThickness="1"
                         Background="{StaticResource WorkspaceBackgroundHomeBrush}"
-                        BorderBrush="{StaticResource outerBorderSelection}"
+                        CornerRadius="5"
                         Padding="5"
                         Margin="8,8,0,8"
                         Grid.Column="0">
@@ -280,8 +278,8 @@
                                  VerticalAlignment="Center"
                                  Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  MinWidth="200"
-                                 CaretBrush="{StaticResource CommonSidebarTextColor}"
-                                 Margin="20,0,10,0"
+                                 CaretBrush="{StaticResource WorkspaceBackgroundBrush}"
+                                 Margin="15,0,10,0"
                                  TextChanged="OnSearchTextBoxTextChanged" />
                     </Grid>
                 </Border>
