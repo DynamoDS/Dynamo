@@ -868,6 +868,13 @@ namespace Dynamo.ViewModels
             var foundNodes = Search(query);
             searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
+            FilteredResults = searchResults;
+
+            foreach (var item in FilteredResults)
+            {
+                item.Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = false;
+            }
+
             UpdateSearchCategories();
 
             RaisePropertyChanged("FilteredResults");
