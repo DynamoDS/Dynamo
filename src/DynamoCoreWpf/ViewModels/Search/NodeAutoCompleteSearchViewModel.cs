@@ -368,7 +368,7 @@ namespace Dynamo.ViewModels
                     throw new Exception("Error sign-in");
                 }*/
 
-                var IDSDKtoken = manager.IDSDK_GetToken();
+                //var IDSDKtoken = manager.IDSDK_GetToken();
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
                 request.Method = "POST";
 

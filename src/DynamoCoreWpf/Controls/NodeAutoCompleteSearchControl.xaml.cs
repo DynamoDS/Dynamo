@@ -108,12 +108,14 @@ namespace Dynamo.UI.Controls
         {
             if (!(sender is FrameworkElement fromSender)) return;
 
+            HighlightedItem.IsSelected = false;
             toolTipPopup.DataContext = fromSender.DataContext;
             toolTipPopup.IsOpen = true;
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
+            HighlightedItem.IsSelected = true;
             toolTipPopup.DataContext = null;
             toolTipPopup.IsOpen = false;
         }
