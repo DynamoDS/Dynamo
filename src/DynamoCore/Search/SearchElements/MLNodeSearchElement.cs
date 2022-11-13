@@ -161,6 +161,9 @@ namespace Dynamo.Search.SearchElements
         [DataMember(Name = "version")]
         internal string Version { get; set; }
 
+        [DataMember(Name = "numberOfResults")]
+        internal int NumberOfResults { get; set; }
+
         [DataMember(Name = "results")]
         internal IEnumerable<ResultItem> Results { get; set; }
     }
