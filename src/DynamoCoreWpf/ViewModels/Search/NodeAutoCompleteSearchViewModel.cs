@@ -29,7 +29,6 @@ namespace Dynamo.ViewModels
     {
         internal PortViewModel PortViewModel { get; set; }
         private List<NodeSearchElement> searchElementsCache;
-        private List<NodeSearchElement> defaultSearchElementsCache;
         private string lowConfidenceMessageAdditional;
         private string noRecommendationsOrLowConfidenceMessage;
         private string noRecommendationsOrLowConfidenceTitle;
@@ -398,11 +397,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Show the low confidence ML results.
+        /// </summary>
         internal void ShowLowConfidenceResults()
         {
             DisplayLowConfidence = false;
+            DisplayNoRecommendationsLowConfidence = false;
             IEnumerable<NodeSearchElementViewModel> allResults = FilteredHighConfidenceResults.Concat(FilteredLowConfidenceResults);
             FilteredResults = allResults;
+            // Save the filtered results for search.
+            searchElementsCache = FilteredResults.Select(x => x.Model).ToList();
         }
 
         private string GenerateTypeIdForNodeModelNode(string name)
@@ -417,6 +422,10 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel == null) return;
 
+            FilteredResults = new List<NodeSearchElementViewModel>();
+            FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
+            FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
+
             if (IsDisplayingMLRecommendation)
             {
                 DisplayMachineLearningResults();
@@ -424,18 +433,26 @@ namespace Dynamo.ViewModels
             else
             {
                 // Only call GetMatchingSearchElements() for object type match comparison
-                searchElementsCache = GetMatchingSearchElements().ToList();
+                var objectTypeMatchingElements = GetMatchingSearchElements().ToList();
                 // If node match searchElements found, use default suggestions. 
                 // These default suggestions will be populated based on the port type.
-                if (!searchElementsCache.Any())
+                if (!objectTypeMatchingElements.Any())
                 {
                     PopulateDefaultAutoCompleteCandidates();
                 }
                 else
                 {
-                    FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
+                    FilteredResults = GetViewModelForNodeSearchElements(objectTypeMatchingElements);
+                }
+
+                foreach (var item in FilteredResults)
+                {
+                    item.Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = false;
                 }
             }
+
+            // Save the filtered results for search.
+            searchElementsCache = FilteredResults.Select(x => x.Model).ToList();
         }
 
         internal void PopulateDefaultAutoCompleteCandidates()
@@ -465,8 +482,6 @@ namespace Dynamo.ViewModels
             {
                 FilteredResults = DefaultResults.Where(e => e.Name == "Watch" || e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
             }
-
-            defaultSearchElementsCache = FilteredResults.Select(x => x.Model).ToList();
         }
 
         /// <summary>
@@ -489,28 +504,16 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel == null) return;
 
-            if (input.Equals(""))
+            if (searchElementsCache.Any())
             {
-                if (searchElementsCache.Any())
+                if (string.IsNullOrEmpty(input))
                 {
                     FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
                 }
                 else
                 {
-                    PopulateDefaultAutoCompleteCandidates();
-                }
-            }
-            else 
-            {
-                //Providing the saved search results to limit the scope of the query search.
-                if (searchElementsCache.Any()) 
-                {
+                    // Providing the saved search results to limit the scope of the query search.
                     var foundNodes = Search(input, searchElementsCache);
-                    FilteredResults = new List<NodeSearchElementViewModel>(foundNodes).OrderBy(x => x.Name).ThenBy(x => x.Description);
-                }
-                else
-                {
-                    var foundNodes = Search(input, defaultSearchElementsCache);
                     FilteredResults = new List<NodeSearchElementViewModel>(foundNodes).OrderBy(x => x.Name).ThenBy(x => x.Description);
                 }
             }

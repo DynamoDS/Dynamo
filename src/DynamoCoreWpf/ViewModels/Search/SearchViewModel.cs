@@ -868,7 +868,6 @@ namespace Dynamo.ViewModels
             var foundNodes = Search(query);
             searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
-            FilteredResults = searchResults;
             UpdateSearchCategories();
 
             RaisePropertyChanged("FilteredResults");

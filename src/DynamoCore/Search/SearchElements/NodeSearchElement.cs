@@ -317,12 +317,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// Indicates if the Node is part of the ML result per recommendation
         /// </summary>
-        public Boolean IsByRecommendation
-        {
-            get
-            { return !IsByUse; }
-            set { }
-        }
+        public Boolean IsByRecommendation { get; set; }
     }
 
     /// <summary>
