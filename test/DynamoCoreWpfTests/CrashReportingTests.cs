@@ -198,7 +198,7 @@ namespace Dynamo.Tests
             CurrentDynamoModel.HostName = null;
             var name = CrashReportTool.GetHostAppName(CurrentDynamoModel);
             //if both hostname and hostinfo.hostname are null, then use proc name.
-            Assert.AreEqual("testhost.net48", name);
+            Assert.True(name.Contains("testhost") ||  name.Contains("nunit-agent"));
             CurrentDynamoModel.HostName = "dynamotestmock";
             name = CrashReportTool.GetHostAppName(CurrentDynamoModel);
             //use hostname over proc name
