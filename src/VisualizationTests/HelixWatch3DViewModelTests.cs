@@ -1199,19 +1199,23 @@ namespace WpfVisualizationTests
 
             var output = ViewModel.CurrentSpace.NodeFromWorkspace<CreateList>(Guid.Parse("04fcc9b7f80b43c99923b0dac8930e77"));
 
-            output.RenderPackagesUpdated += (NodeModel nodeModel, RenderPackageCache renderPackages) => {
-                if (renderPackages.Packages.FirstOrDefault() is HelixRenderPackage package)
-                {
-                    // The graph output contains 132 mesh vertices.
-                    // Before DYN-5329 we removed the parts of the mesh containing multiple texture maps after adding them to the scene.
-                    Assert.AreEqual(132, package.Mesh.Positions.Count);
-                } else
-                {
-                    throw new Exception("Could not find HelixRenderPackage?");
-                }
-            };
+            output.RenderPackagesUpdated += TestRenderPackageUpdate;
 
             output.RequestVisualUpdateAsync(ViewModel.Model.Scheduler, ViewModel.Model.EngineController, new HelixRenderPackageFactory(), true);
+        }
+
+        private void TestRenderPackageUpdate(NodeModel nodeModel, RenderPackageCache renderPackages) {
+            nodeModel.RenderPackagesUpdated -= TestRenderPackageUpdate;
+
+            if (renderPackages.Packages.FirstOrDefault() is HelixRenderPackage package)
+            {
+                // The graph output contains 132 mesh vertices.
+                // Before DYN-5329 we removed the parts of the mesh containing multiple texture maps after adding them to the scene.
+                Assert.AreEqual(132, package.Mesh.Positions.Count);
+            } else
+            {
+                throw new Exception("Could not find HelixRenderPackage?");
+            }
         }
 
         private async void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels, 
