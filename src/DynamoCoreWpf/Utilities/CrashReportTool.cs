@@ -238,11 +238,10 @@ namespace Dynamo.Wpf.Utilities
                     string appConfig = "";
                     if (model != null)
                     {
-                        var appName = string.IsNullOrEmpty(model.HostAnalyticsInfo.HostName) ? Process.GetCurrentProcess().ProcessName :
-                            model.HostAnalyticsInfo.HostName;
+                        var appName = GetHostAppName(model);
                         appConfig = $@"<ProductInformation name=\""{appName}\"" build_version=\""{model.Version}\"" " +
-                        $@"registry_version=\""{model.Version}\"" registry_localeID=\""{CultureInfo.CurrentCulture.LCID}\"" uptime=\""0\"" " +
-                        $@"session_start_count=\""0\"" session_clean_close_count=\""0\"" current_session_length=\""0\"" />";
+                                    $@"registry_version=\""{model.Version}\"" registry_localeID=\""{CultureInfo.CurrentCulture.LCID}\"" uptime=\""0\"" " +
+                                    $@"session_start_count=\""0\"" session_clean_close_count=\""0\"" current_session_length=\""0\"" />";
                     }
 
                     string dynConfig = string.Empty;
@@ -266,6 +265,23 @@ namespace Dynamo.Wpf.Utilities
                 model?.Logger?.LogError($"Failed to invoke CER with the following error : {ex.Message}");
             }
             return false;
+        }
+
+        internal static string GetHostAppName(DynamoModel model)
+        {
+            //default to app name being process name, but prefer HostAnalyticsInfo.HostName
+            //then legacy Model.HostName
+            var appName = Process.GetCurrentProcess().ProcessName;
+            if (!string.IsNullOrEmpty(model.HostAnalyticsInfo.HostName))
+            {
+                appName = model.HostAnalyticsInfo.HostName;
+            }
+            else if (!string.IsNullOrEmpty(model.HostName))
+            {
+                appName = model.HostName;
+            }
+
+            return appName;
         }
     }
 }
