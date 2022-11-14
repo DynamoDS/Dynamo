@@ -189,8 +189,9 @@ namespace Dynamo.ViewModels
             }
 
             // Set port info
+            // If the node is a Variable-input nodemodel or zero-touch node, then set the port name as empty.
+            request.Port.Name = (nodeInfo is VariableInputNode || nodeInfo is DSVarArgFunction) ? string.Empty : portInfo.Name;
             request.Port.Direction = portInfo.PortType == PortType.Input ? PortType.Input.ToString().ToLower() : PortType.Output.ToString().ToLower();
-            request.Port.Name = portInfo.Name;
             request.Port.KeepListStructure = portInfo.KeepListStructure.ToString();
             request.Port.ListAtLevel = portInfo.Level;
 
