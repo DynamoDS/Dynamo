@@ -11,7 +11,10 @@
     <DocumentationFile>$(OutputPath)\$(UICulture)\GeometryColor.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3107" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3176">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
