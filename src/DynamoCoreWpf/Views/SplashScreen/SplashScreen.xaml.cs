@@ -343,7 +343,8 @@ namespace Dynamo.UI.Views
                $"welcomeToDynamoTitle: '{Wpf.Properties.Resources.SplashScreenWelcomeToDynamo}'," +
                $"launchTitle: '{Wpf.Properties.Resources.SplashScreenLaunchTitle}'," +
                $"importSettingsTitle: '{Wpf.Properties.Resources.SplashScreenImportSettings}'," +
-               $"showScreenAgainLabel: '{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}'" + "})");
+               $"showScreenAgainLabel: '{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}'," +
+               $"importSettingsTooltipDescription: '{Wpf.Properties.Resources.ImportPreferencesInfo}'" + "})");
         }
 
         /// <summary>
