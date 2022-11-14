@@ -85,6 +85,15 @@
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
+        },
+        {
+          "Id": "1bf1f86df3b844448baca68fe3dedce4",
+          "Name": "item3",
+          "Description": "Item Index #3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Outputs": [
@@ -707,6 +716,122 @@
       ],
       "Replication": "Auto",
       "Description": "Display color values on a surface. The colors provided are converted internally to an image texture which is mapped to the surface.\n\nGeometryColor.BySurfaceColors (surface: Surface, colors: Color[][] = [[DSCore.Color.ByARGB(255, 255, 0, 0), DSCore.Color.ByARGB(255, 255, 255, 0)], [DSCore.Color.ByARGB(255, 0, 255, 255), DSCore.Color.ByARGB(255, 0, 0, 255)]]): GeometryColor"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "4..12..3;",
+      "Id": "98cbb5aae54e47ec908684bef1a7e5af",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e68e2e23871b4272895822949f900adb",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
+      "Id": "eebc48deafc7458db307ee66fb7d834c",
+      "Inputs": [
+        {
+          "Id": "4a8d5e674c7846baabfe009bd0a56b6b",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b0ff27f457c748b4ae1b60b12cd3f4c6",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2d300d75538a4d3185a2f97831dc9d9d",
+          "Name": "Point",
+          "Description": "Point created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cuboid.ByLengths@Autodesk.DesignScript.Geometry.Point,double,double,double",
+      "Id": "9836542372d74c31970967de6ef28c6d",
+      "Inputs": [
+        {
+          "Id": "4feaec60723a48bb95d601c0e3612186",
+          "Name": "origin",
+          "Description": "Origin point\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c56d164fe4574b8b9e00fb51aadbea59",
+          "Name": "width",
+          "Description": "Width of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a39ac00d11e841c0aba8bd779c993375",
+          "Name": "length",
+          "Description": "Length of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d59f9017386c4a9090112b87ee9eed70",
+          "Name": "height",
+          "Description": "Height of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c2b066c7db0b4a329527c3a6bd422ceb",
+          "Name": "Cuboid",
+          "Description": "Cuboid created by lengths",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Cuboid centered at input Point, with specified width, length, and height.\n\nCuboid.ByLengths (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), width: double = 1, length: double = 1, height: double = 1): Cuboid"
     }
   ],
   "Connectors": [
@@ -731,7 +856,7 @@
     {
       "Start": "006059aa5bf540b78306ec88b6f20fa3",
       "End": "44b7037048114a1ab8268abe1aa8cb1b",
-      "Id": "211fa641315448949b6fa1ec85e71e29",
+      "Id": "37f5f94a2a5f4598bfbe720e3dfda067",
       "IsHidden": "False"
     },
     {
@@ -869,7 +994,25 @@
     {
       "Start": "2579098dd71a413bb78e8647f2b9093d",
       "End": "81c7a9b08e55434e8b5635da7d156f8a",
-      "Id": "6a3dd1343b034bf3b055b898aea8b849",
+      "Id": "f2de7e0c20d34661ab9797204103aff5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e68e2e23871b4272895822949f900adb",
+      "End": "4a8d5e674c7846baabfe009bd0a56b6b",
+      "Id": "35453b7973f84babbe8cb30230cd7139",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2d300d75538a4d3185a2f97831dc9d9d",
+      "End": "4feaec60723a48bb95d601c0e3612186",
+      "Id": "b3deae88e8444981a0e723a9216f6314",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c2b066c7db0b4a329527c3a6bd422ceb",
+      "End": "1bf1f86df3b844448baca68fe3dedce4",
+      "Id": "16df34b354f4482ba5f88e3e0a26e612",
       "IsHidden": "False"
     }
   ],
@@ -910,15 +1053,15 @@
     },
     "Camera": {
       "Name": "_Background Preview",
-      "EyeX": 25.455158233642578,
-      "EyeY": 18.127677917480469,
-      "EyeZ": -30.891946792602539,
-      "LookX": -15.955158233642578,
-      "LookY": -18.127677917480469,
-      "LookZ": 24.391824722290039,
-      "UpX": -0.18272797763347626,
-      "UpY": 0.94264167547225952,
-      "UpZ": 0.27935138344764709
+      "EyeX": 12.744890213012695,
+      "EyeY": 17.05145263671875,
+      "EyeZ": -15.211426734924316,
+      "LookX": -4.7527933120727539,
+      "LookY": -15.304874420166016,
+      "LookZ": 10.220564842224121,
+      "UpX": -0.27801913022994995,
+      "UpY": 0.75183987617492676,
+      "UpZ": 0.59786462783813477
     },
     "ConnectorPins": [],
     "NodeViews": [
@@ -939,8 +1082,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2718.1294433687244,
-        "Y": 1252.7806178902911
+        "X": 2831.0419837791987,
+        "Y": 1317.5765811946774
       },
       {
         "Name": "Circle.ByCenterPointRadius",
@@ -1064,7 +1207,7 @@
       },
       {
         "Name": "Plane.XY",
-        "ShowGeometry": true,
+        "ShowGeometry": false,
         "Id": "bfd22773cdb641b0b58dfbead70dab26",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -1091,11 +1234,41 @@
         "Excluded": false,
         "X": 2013.02132246912,
         "Y": 1039.56201753821
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "98cbb5aae54e47ec908684bef1a7e5af",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1563.4578154481073,
+        "Y": 2183.3968556165664
+      },
+      {
+        "Name": "Point.ByCoordinates",
+        "ShowGeometry": true,
+        "Id": "eebc48deafc7458db307ee66fb7d834c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1787.3433722066427,
+        "Y": 2185.6129005079133
+      },
+      {
+        "Name": "Cuboid.ByLengths",
+        "ShowGeometry": false,
+        "Id": "9836542372d74c31970967de6ef28c6d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2085.4890795044203,
+        "Y": 2185.9413404758884
       }
     ],
     "Annotations": [],
-    "X": -196.112769300046,
-    "Y": -237.91348069914852,
-    "Zoom": 0.51099712368675942
+    "X": -193.21820925773693,
+    "Y": -278.35641941981169,
+    "Zoom": 0.43681698870973656
   }
 }

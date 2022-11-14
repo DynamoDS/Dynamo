@@ -1209,9 +1209,9 @@ namespace WpfVisualizationTests
 
             if (renderPackages.Packages.FirstOrDefault() is HelixRenderPackage package)
             {
-                // The graph output contains 132 mesh vertices.
+                // The graph output contains 168 mesh vertices.
                 // Before DYN-5329 we removed the parts of the mesh containing multiple texture maps after adding them to the scene.
-                Assert.AreEqual(132, package.Mesh.Positions.Count);
+                Assert.AreEqual(168, package.Mesh.Positions.Count);
             } else
             {
                 throw new Exception("Could not find HelixRenderPackage?");
