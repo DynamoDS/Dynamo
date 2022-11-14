@@ -19,6 +19,8 @@ using Dynamo.Utilities;
 using Dynamo.PackageManager;
 using Dynamo.Core;
 using RestSharp;
+using Dynamo.Graph.Nodes.CustomNodes;
+using System.Reflection;
 
 namespace Dynamo.ViewModels
 {
@@ -184,8 +186,8 @@ namespace Dynamo.ViewModels
             }
             else if (nodeInfo is NodeModel nodeModel)
             {
-                string typeId = GenerateTypeIdForNodeModelNode(nodeModel.GetType().AssemblyQualifiedName);
-                request.Node.Type.Id = typeId;
+                var typeID = new NodeModelTypeId(nodeModel.GetType().FullName, nodeModel.GetType().Assembly.GetName().Name);
+                request.Node.Type.Id = typeID.ToString();
             }
 
             // Set port info
@@ -196,15 +198,18 @@ namespace Dynamo.ViewModels
             request.Port.ListAtLevel = portInfo.Level;
 
             // Set host info
-            request.Host.Name = dynamoViewModel.Model.HostAnalyticsInfo.HostName;
+            request.Host.Name = string.IsNullOrEmpty(dynamoViewModel.Model.HostAnalyticsInfo.HostName) ? dynamoViewModel.Model.HostName : dynamoViewModel.Model.HostAnalyticsInfo.HostName;
             request.Host.Version = dynamoViewModel.Model.HostVersion;
 
             // Set packages info
             var packageManager = dynamoViewModel.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
 
-            foreach (var pkg in packageManager.PackageLoader.LocalPackages)
+            if (packageManager != null)
             {
-                request.Packages = request.Packages.Append(new PackageItem(pkg.Name, pkg.VersionName));
+                foreach (var pkg in packageManager.PackageLoader.LocalPackages)
+                {
+                    request.Packages = request.Packages.Append(new PackageItem(pkg.Name, pkg.VersionName));
+                }
             }
 
             // Set context info
@@ -238,8 +243,8 @@ namespace Dynamo.ViewModels
                     }
                     else if (nodeToAdd is NodeModel nodeModel)
                     {
-                        string typeId = GenerateTypeIdForNodeModelNode(nodeModel.GetType().AssemblyQualifiedName);
-                        nodeRequest.Type.Id = typeId;
+                        var typeID = new NodeModelTypeId(nodeModel.GetType().FullName, nodeModel.GetType().Assembly.GetName().Name);
+                        nodeRequest.Type.Id = typeID.ToString();
                     }
                     request.Context.Nodes = request.Context.Nodes.Append(nodeRequest);
                 }
@@ -253,7 +258,9 @@ namespace Dynamo.ViewModels
             {
                 MLresults = GetMLNodeAutocompleteResults(jsonRequest);
             }
-            catch(Exception e) {
+            catch(Exception ex)
+            {
+                dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
                 DisplayNoRecommendationsLowConfidence = true;
                 DisplayLowConfidence = false;
                 NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteNoRecommendationsTitle;
@@ -284,7 +291,7 @@ namespace Dynamo.ViewModels
 
                 foreach (var item in MLresults.Results)
                 {
-                    if (item.Node.Type.NodeType.Equals("FunctionNode"))
+                    if (item.Node.Type.NodeType.Equals(Function.FunctionNode))
                     {
                         var element = zeroTouchSearchElements.FirstOrDefault(n => n.Descriptor.MangledName == item.Node.Type.Id);
                         if (element != null)
@@ -298,10 +305,10 @@ namespace Dynamo.ViewModels
                     else
                     {
                         // Retreive assembly name and full name from type id.
-                        var typeInfo = item.Node.Type.Id.Split(',');
-                        string fullName = typeInfo[0].Trim();
-                        string assemblyName = typeInfo[1].Trim();
- 
+                        var typeInfo = GetInfoFromTypeId(item.Node.Type.Id);
+                        string fullName = typeInfo.FullName;
+                        string assemblyName = typeInfo.AssemblyName;
+
                         var nodesFromAssembly = nodeModelSearchElements.Where(n => Path.GetFileNameWithoutExtension(n.Assembly).Equals(assemblyName));
                         var matchingNode = nodesFromAssembly.FirstOrDefault(n => n.CreationName.Equals(fullName));
                         if (matchingNode != null)
@@ -411,12 +418,15 @@ namespace Dynamo.ViewModels
             searchElementsCache = FilteredResults.Select(x => x.Model).ToList();
         }
 
-        private string GenerateTypeIdForNodeModelNode(string name)
+        private NodeModelTypeId GetInfoFromTypeId(string typeId)
         {
-            // Combine full-name and assembly-name for type id.
-            int first = name.IndexOf(',');
-            int second = name.IndexOf(',', first + 1);
-            return name.Substring(0, second);
+            if (typeId.Contains(','))
+            {
+                var type = typeId.Split(',');
+                return new NodeModelTypeId(type[0].Trim(), type[1].Trim());
+            }
+
+            return new NodeModelTypeId(typeId);
         }
 
         internal void PopulateAutoCompleteCandidates()

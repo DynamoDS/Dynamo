@@ -209,4 +209,27 @@ namespace Dynamo.Search.SearchElements
         [DataMember(Name = "id")]
         internal string Id { get; set; }
     }
+
+    internal class NodeModelTypeId
+    {
+        internal NodeModelTypeId(string fullName)
+        {
+            FullName = fullName;
+        }
+
+        internal NodeModelTypeId(string fullName, string assemblyName)
+        {
+            FullName = fullName;
+            AssemblyName = assemblyName;
+        }
+
+        internal string FullName { get; set; }
+
+        internal string AssemblyName { get; set; }
+
+        public override string ToString()
+        {
+            return FullName + ", " + AssemblyName;
+        }
+    }
 }
