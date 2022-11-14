@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -6,18 +6,18 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Resources;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Events;
-using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PythonServices;
+using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.Core.Converters;
+using DynamoUtilities;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -49,11 +49,13 @@ namespace Dynamo.ViewModels
         private ObservableCollection<string> languagesList;
         private ObservableCollection<string> packagePathsForInstall;
         private ObservableCollection<string> fontSizeList;
+        private ObservableCollection<int> groupStyleFontSizeList;
         private ObservableCollection<string> numberFormatList;
         private StyleItem addStyleControl;
         private ObservableCollection<string> pythonEngineList;
 
         private RunType runSettingsIsChecked;
+        private NodeAutocompleteSuggestion nodeAutocompleteSuggestion;
         private Dictionary<string, TabSettings> preferencesTabs;
 
         private readonly PreferenceSettings preferenceSettings;
@@ -198,6 +200,39 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Time Interval for backup files in minutes
+        /// Serialized as milliseconds in preferences setting.
+        /// </summary>
+        public int BackupIntervalInMinutes
+        {
+            get
+            {
+                return preferenceSettings.BackupInterval/60000;
+            }
+            set
+            {
+                preferenceSettings.BackupInterval = value * 60000;
+                RaisePropertyChanged(nameof(BackupIntervalInMinutes));
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of recent files on startup page.
+        /// </summary>
+        public int MaxNumRecentFiles
+        {
+            get
+            {
+                return preferenceSettings.MaxNumRecentFiles;
+            }
+            set
+            {
+                preferenceSettings.MaxNumRecentFiles = value;
+                RaisePropertyChanged(nameof(MaxNumRecentFiles));
+            }
+        }
+
+        /// <summary>
         /// Controls the IsChecked property in the RunSettings radio button
         /// </summary>
         public bool RunSettingsIsChecked
@@ -223,6 +258,32 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls if the the Node autocomplete Machine Learning option is checked for the radio buttons
+        /// </summary>
+        public bool NodeAutocompleteMachineLearningIsChecked
+        {
+            get
+            {
+                return preferenceSettings.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;                
+            }
+            set
+            {
+                if (value)
+                {
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                }
+                else
+                {
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                }
+                dynamoViewModel.HomeSpaceViewModel.NodeAutoCompleteSearchViewModel.ResetAutoCompleteSearchViewState();
+                RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
+            }
+        }
+
+        /// <summary>
         /// Controls the IsChecked property in the Show Run Preview toogle button
         /// </summary>
         public bool RunPreviewIsChecked
@@ -236,6 +297,22 @@ namespace Dynamo.ViewModels
                 preferenceSettings.ShowRunPreview = value;
                 dynamoViewModel.ShowRunPreview = value;
                 RaisePropertyChanged(nameof(RunPreviewIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the Show Static Splash Screen toogle button
+        /// </summary>
+        public bool StaticSplashScreenEnabled
+        {
+            get
+            {
+                return preferenceSettings.EnableStaticSplashScreen;
+            }
+            set
+            {
+                preferenceSettings.EnableStaticSplashScreen = value;
+                RaisePropertyChanged(nameof(StaticSplashScreenEnabled));
             }
         }
 
@@ -390,6 +467,21 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(FontSizeList));
             }
         }
+        /// <summary>
+        /// GroupStyleFontSizeList contains the list of sizes for defined fonts to be applied to a GroupStyle
+        /// </summary>
+        public ObservableCollection<int> GroupStyleFontSizeList
+        {
+            get
+            {
+                return groupStyleFontSizeList;
+            }
+            set
+            {
+                groupStyleFontSizeList = value;
+                RaisePropertyChanged(nameof(GroupStyleFontSizeList));
+            }
+        }
 
         /// <summary>
         /// NumberFormatList contains the list of the format for numbers, right now in Dynamo has the next formats: 0, 0.0, 0.00, 0.000, 0.0000
@@ -429,9 +521,10 @@ namespace Dynamo.ViewModels
         /// <param name="style">style to be added</param>
         public void AddStyle(StyleItem style)
         {
-            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { 
-                HexColorString = style.HexColorString, 
-                Name = style.Name, 
+            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem {
+                HexColorString = style.HexColorString,
+                Name = style.Name,
+                FontSize = style.FontSize,
                 IsDefault = style.IsDefault
             });
             RaisePropertyChanged(nameof(StyleItemsList));
@@ -537,6 +630,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Control to use hardware acceleration
+        /// </summary>
+        public bool UseHardwareAcceleration
+        {
+            get
+            {
+                return dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration;
+            }
+            set
+            {
+                dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration = value;
+                RaisePropertyChanged(nameof(UseHardwareAcceleration));
+            }
+        }
+
+        /// <summary>
         /// Controls the binding for the IsolateSelectedGeometry toogle in the Preferences->Visual Settings->Display Settings section
         /// </summary>
         public bool IsolateSelectedGeometry
@@ -635,6 +744,22 @@ namespace Dynamo.ViewModels
 
         //This includes all the properties that can be set on the Features tab
         #region Features Properties
+        /// <summary>
+        /// Python Template File Path
+        /// </summary>
+        public string PythonTemplateFilePath
+        {
+            get
+            {
+                return preferenceSettings.PythonTemplateFilePath;
+            }
+            set
+            {
+                preferenceSettings.PythonTemplateFilePath = value;
+                RaisePropertyChanged(nameof(PythonTemplateFilePath));
+            }
+        }
+
         /// <summary>
         /// PythonEnginesList contains the list of Python engines available
         /// </summary>
@@ -808,6 +933,73 @@ namespace Dynamo.ViewModels
         public TrustedPathViewModel TrustedPathsViewModel { get; set; }
 
         /// <summary>
+        /// Returns a boolean value indicating if the Settings importing was successful or not
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public bool importSettings(string filePath)
+        {
+            var newPreferences = PreferenceSettings.Load(filePath);
+            if (!newPreferences.IsCreatedFromValidFile)
+            {
+                return false;
+            }
+            newPreferences.CopyProperties(preferenceSettings);
+
+            return setSettings(newPreferences);
+        }
+
+        /// <summary>
+        /// Returns a boolean value indicating if the Settings importing was successful or not by sending the content of the xml file
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public bool importSettingsContent(string content)
+        {
+            var newPreferences = PreferenceSettings.LoadContent(content);
+            if (!newPreferences.IsCreatedFromValidFile)
+            {
+                return false;
+            }
+            newPreferences.CopyProperties(preferenceSettings);
+
+            return setSettings(newPreferences);
+        }
+
+        private bool setSettings(PreferenceSettings newPreferences)
+        {
+            // Explicit copy
+            preferenceSettings.SetTrustWarningsDisabled(newPreferences.DisableTrustWarnings);
+            preferenceSettings.SetTrustedLocations(newPreferences.TrustedLocations);
+            TrustedPathsViewModel?.InitializeTrustedLocations();
+
+            // Set the not explicit Binding
+            runSettingsIsChecked = preferenceSettings.DefaultRunType;
+            var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
+            SelectedPythonEngine = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
+            dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = preferenceSettings.RenderPrecision;
+            dynamoViewModel.RenderPackageFactoryViewModel.ShowEdges = preferenceSettings.ShowEdges;
+            PackagePathsForInstall = null;
+            PackagePathsViewModel?.InitializeRootLocations();
+            SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
+
+            dynamoViewModel.IsShowingConnectors = preferenceSettings.ShowConnector;
+            dynamoViewModel.IsShowingConnectorTooltip = preferenceSettings.ShowConnectorToolTip;
+            foreach (var item in dynamoViewModel.Watch3DViewModels)
+            {
+                var preferenceItem = preferenceSettings.BackgroundPreviews.Where(i => i.Name == item.PreferenceWatchName).FirstOrDefault();
+                if (preferenceItem != null)
+                {
+                    item.Active = preferenceItem.IsActive;
+                }
+            }
+
+            preferenceSettings.SanitizeValues();
+            RaisePropertyChanged(string.Empty);
+            return true;
+        }        
+
+        /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
         /// </summary>
         public PreferencesViewModel(DynamoViewModel dynamoViewModel)
@@ -840,6 +1032,8 @@ namespace Dynamo.ViewModels
                 Wpf.Properties.Resources.ScalingExtraLargeButton
             };
             SelectedFontSize = Wpf.Properties.Resources.ScalingMediumButton;
+
+            GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 
             // Number format settings
             NumberFormatList = new ObservableCollection<string>
@@ -902,7 +1096,91 @@ namespace Dynamo.ViewModels
             WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
 
             PropertyChanged += Model_PropertyChanged;
+            InitializeCommands();
+        }
 
+        public event EventHandler<PythonTemplatePathEventArgs> RequestShowFileDialog;
+        public virtual void OnRequestShowFileDialog(object sender, PythonTemplatePathEventArgs e)
+        {
+            if (RequestShowFileDialog != null)
+            {
+                RequestShowFileDialog(sender, e);
+            }
+        }
+
+        public DelegateCommand AddPythonPathCommand { get; private set; }
+        public DelegateCommand DeletePythonPathCommand { get; private set; }
+        public DelegateCommand UpdatePythonPathCommand { get; private set; }
+
+        private void InitializeCommands()
+        {
+            AddPythonPathCommand = new DelegateCommand(p => AddPath());
+            DeletePythonPathCommand = new DelegateCommand(p => RemovePath(), p => CanDelete());
+            UpdatePythonPathCommand = new DelegateCommand(p => UpdatePathAt());
+        }
+
+        // Add python template path
+        private void AddPath()
+        {
+            var args = new PythonTemplatePathEventArgs();
+
+            ShowFileDialog(args);
+
+            if (args.Cancel)
+                return;
+
+            try
+            {
+                PathHelper.IsValidPath(args.Path);
+            }
+            catch (Exception)
+            {
+                // return
+                return;
+            }
+
+            PythonTemplateFilePath = args.Path;
+            RaiseCanExecuteChanged();
+        }
+
+        // Add python template path
+        private void RemovePath()
+        {
+            PythonTemplateFilePath = String.Empty;
+            RaiseCanExecuteChanged();
+        }
+
+        // Update Python path
+        private void UpdatePathAt()
+        {
+            var args = new PythonTemplatePathEventArgs
+            {
+                Path = PythonTemplateFilePath
+            };
+
+            ShowFileDialog(args);
+
+            if (args.Cancel)
+                return;
+
+            PythonTemplateFilePath = args.Path;
+        }
+
+        private bool CanDelete()
+        {
+            return !string.IsNullOrEmpty(PythonTemplateFilePath);
+        }
+
+        private void ShowFileDialog(PythonTemplatePathEventArgs e)
+        {
+            OnRequestShowFileDialog(this, e);
+        }
+
+        private void RaiseCanExecuteChanged()
+        {
+            AddPythonPathCommand.RaiseCanExecuteChanged();
+            DeletePythonPathCommand.RaiseCanExecuteChanged();
+            UpdatePythonPathCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
@@ -1052,6 +1330,19 @@ namespace Dynamo.ViewModels
                 case nameof(IsolateSelectedGeometry):
                     description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsIsolateSelectedGeo), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
+                case nameof(UseHardwareAcceleration):
+                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingHardwareAcceleration), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(BackupIntervalInMinutes):
+                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingBackupInterval), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(MaxNumRecentFiles):
+                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingMaxRecentFiles), System.Globalization.CultureInfo.InvariantCulture);
+                    UpdateRecentFiles();
+                    goto default;
+                case nameof(PythonTemplateFilePath):
+                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingCustomPythomTemplate), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
                 case nameof(TessellationDivisions):
                     description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsRenderPrecision), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
@@ -1142,8 +1433,7 @@ namespace Dynamo.ViewModels
         {
             IsEnabledAddStyleButton = true;
             IsSaveButtonEnabled = true;
-            AddStyleControl.Name = String.Empty;
-            AddStyleControl.HexColorString = GetRandomHexStringColor();
+            AddStyleControl = new StyleItem();
             IsWarningEnabled = false;
             IsVisibleAddStyleBorder = false;          
         }
@@ -1177,6 +1467,27 @@ namespace Dynamo.ViewModels
                 AddPythonEnginesOptions();
             }
         }
+
+        private void UpdateRecentFiles()
+        {
+            if (dynamoViewModel.RecentFiles.Count > MaxNumRecentFiles)
+            {
+                dynamoViewModel.RecentFiles.RemoveRange(MaxNumRecentFiles, dynamoViewModel.RecentFiles.Count - MaxNumRecentFiles);
+            }
+        }
+    }
+
+    public class PythonTemplatePathEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Indicate whether user wants to set the current path.
+        /// </summary>
+        public bool Cancel { get; set; }
+
+        /// <summary>
+        /// Indicate the path for Custom Python Template.
+        /// </summary>
+        public string Path { get; set; }
     }
 
     /// <summary>

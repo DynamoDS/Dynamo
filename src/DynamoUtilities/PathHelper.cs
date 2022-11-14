@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
@@ -393,13 +393,13 @@ namespace DynamoUtilities
         }
 
         /// <summary>
-        /// Returns the path configured for package manager to retrieve packages from 
-        /// as defined inside config file
+        /// Returns the path configured for the requested service to retrieve URL resources
+        /// as defined inside the config file
         /// </summary>
         /// <param name="o">The "this" object from where the function is being called from.</param>
         /// <param name="serviceKey">Service or feature for which the address is being requested. 
         /// It should match the key specified in the config file.</param>
-        /// <returns>Path that will be used to fetch packages</returns>
+        /// <returns>Path that will be used to fetch resources</returns>
         public static string getServiceBackendAddress(object o, string serviceKey)
         {
             string url = null;
@@ -420,6 +420,31 @@ namespace DynamoUtilities
                 }
             }
             return url;
+        }
+
+        /// <summary>
+        /// Returns the path configured for the requested service to retrieve resources value
+        /// as defined inside the config file
+        /// </summary>
+        /// <param name="o">The "this" object from where the function is being called from.</param>
+        /// <param name="serviceKey">Service or feature for which the resource is being requested. 
+        /// It should match the key specified in the config file.</param>
+        /// <returns>Value related to the key in the config file</returns>
+        public static string getServiceConfigValues(object o, string serviceKey)
+        {
+            string val = null;
+            if (o != null)
+            {
+                var path = o.GetType().Assembly.Location;
+                var config = ConfigurationManager.OpenExeConfiguration(path);
+                var key = config.AppSettings.Settings[serviceKey];
+
+                if (key != null)
+                {
+                    val = key.Value;
+                }
+            }
+            return val;
         }
     }
 }

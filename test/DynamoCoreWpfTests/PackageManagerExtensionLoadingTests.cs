@@ -65,7 +65,7 @@ namespace DynamoCoreWpfTests
                         "DynamoManipulationExtension",
                         "Graph Node Manager",
                         "Graph Status",
-                        "LibraryUI - MSWebBrowser", 
+                        "LibraryUI - WebView2", 
                         "Notifications", 
                         "Package Details",
                         "PackageManagerViewExtension",

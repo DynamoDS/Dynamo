@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -42,15 +41,13 @@ using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
-using Dynamo.Wpf.ViewModels.Core;
-using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.FileTrust;
-using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using Brush = System.Windows.Media.Brush;
+using Exception = System.Exception;
 using Image = System.Windows.Controls.Image;
 using Point = System.Windows.Point;
 using Res = Dynamo.Wpf.Properties.Resources;
@@ -76,7 +73,6 @@ namespace Dynamo.Controls
         private readonly Stopwatch _timer;
         private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
-        private GalleryView galleryView;
         private readonly LoginService loginService;
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
@@ -111,7 +107,7 @@ namespace Dynamo.Controls
             // The user's choice to enable hardware acceleration is now saved in
             // the Dynamo preferences. It is set to true by default. 
             // When the view is constructed, we enable or disable hardware acceleration based on that preference. 
-            //This preference is not exposed in the UI and can be used to debug hardware issues only
+            // This preference is not exposed in the UI and can be used to debug hardware issues only
             // by modifying the preferences xml.
             RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ?
                 RenderMode.Default : RenderMode.SoftwareOnly;
@@ -126,7 +122,7 @@ namespace Dynamo.Controls
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;
 
             //Initialize the ViewExtensionManager with the CommonDataDirectory so that view extensions found here are checked first for dll's with signed certificates
-            viewExtensionManager = new ViewExtensionManager(dynamoViewModel.Model.ExtensionManager,new[] { dynamoViewModel.Model.PathManager.CommonDataDirectory });
+            viewExtensionManager = new ViewExtensionManager(dynamoViewModel.Model.ExtensionManager, new[] { dynamoViewModel.Model.PathManager.CommonDataDirectory });
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -167,6 +163,7 @@ namespace Dynamo.Controls
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
             }
 
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Res.SplashScreenViewExtensions, 100));
             var viewExtensions = new List<IViewExtension>();
             foreach (var dir in dynamoViewModel.Model.PathManager.ViewExtensionsDirectories)
             {
@@ -186,7 +183,7 @@ namespace Dynamo.Controls
                         logSource.MessageLogged += Log;
                     }
 
-                    if(ext is INotificationSource notificationSource)
+                    if (ext is INotificationSource notificationSource)
                     {
                         notificationSource.NotificationLogged += LogNotification;
                     }
@@ -236,7 +233,12 @@ namespace Dynamo.Controls
             {
                 fileTrustWarningPopup = new FileTrustWarning(this);
             }
+            if (!DynamoModel.IsTestMode && Application.Current != null)
+            {
+                Application.Current.MainWindow = this;
+            }
         }
+
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
             if (!(workspace is HomeWorkspaceModel hws))
@@ -866,7 +868,6 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="isFirstRun">
         /// Indicates if it is the first time new Dynamo version runs.
-        /// It is used to decide whether the Gallery need to be shown on the StartPage.
         /// </param>
         private void InitializeStartPage(bool isFirstRun)
         {
@@ -937,7 +938,7 @@ namespace Dynamo.Controls
             // Do an initial load of the cursor collection
             CursorLibrary.GetCursor(CursorSet.ArcSelect);
 
-            //Backing up IsFirstRun to determine whether to show Gallery
+            //Backing up IsFirstRun to determine whether to do certain action
             var isFirstRun = dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
 
             // If first run, Collect Info Prompt will appear
@@ -1004,9 +1005,6 @@ namespace Dynamo.Controls
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow += DynamoViewModelRequestAboutWindow;
 
-            //SHOW or HIDE GALLERY
-            dynamoViewModel.RequestShowHideGallery += DynamoViewModelRequestShowHideGallery;
-
             LoadNodeViewCustomizations();
             SubscribeNodeViewCustomizationEvents();
 
@@ -1028,6 +1026,7 @@ namespace Dynamo.Controls
                 Converter = new BooleanToVisibilityConverter()
             };
             BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
+
             TrackStartupAnalytics();
 
             // In native host scenario (e.g. Revit), the "Application.Current" will be "null". Therefore, the InCanvasSearchControl.OnRequestShowInCanvasSearch
@@ -1038,7 +1037,7 @@ namespace Dynamo.Controls
             }
             loaded = true;
 
-            
+
             //The following code illustrates use of FeatureFlagsManager.
             //safe to remove.
             if (DynamoModel.FeatureFlags != null)
@@ -1050,7 +1049,6 @@ namespace Dynamo.Controls
             {
                 DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckTestFlags;
             }
-           
         }
 
         private void GuideFlowEvents_GuidedTourStart(GuidedTourStateEventArgs args)
@@ -1155,44 +1153,6 @@ namespace Dynamo.Controls
             aboutWindow.ShowDialog();
         }
 
-        private void OnGalleryBackgroundMouseClick(object sender, MouseButtonEventArgs e)
-        {
-            dynamoViewModel.CloseGalleryCommand.Execute(null);
-            e.Handled = true;
-        }
-
-        private void DynamoViewModelRequestShowHideGallery(bool showGallery)
-        {
-            if (showGallery)
-            {
-                if (galleryView == null) //On-demand instantiation
-                {
-                    galleryView = new GalleryView(new GalleryViewModel(dynamoViewModel));
-                    Grid.SetColumnSpan(galleryBackground, mainGrid.ColumnDefinitions.Count);
-                    Grid.SetRowSpan(galleryBackground, mainGrid.RowDefinitions.Count);
-                }
-
-                if (galleryView.ViewModel.HasContents)
-                {
-                    galleryBackground.Children.Clear();
-                    galleryBackground.Children.Add(galleryView);
-                    galleryBackground.Visibility = Visibility.Visible;
-                    galleryView.Focus(); //get keyboard focus
-                }
-            }
-            //hide gallery
-            else
-            {
-                if (galleryBackground != null)
-                {
-                    if (galleryView != null && galleryBackground.Children.Contains(galleryView))
-                        galleryBackground.Children.Remove(galleryView);
-
-                    galleryBackground.Visibility = Visibility.Hidden;
-                }
-            }
-        }
-
         private PublishPackageView _pubPkgView;
 
         private void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
@@ -1281,7 +1241,7 @@ namespace Dynamo.Controls
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
             var result = MessageBoxService.Show(this, dialogText,
-                Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle,
+                Dynamo.Wpf.Properties.Resources.UnsavedChangesMessageBoxTitle,
                 buttons, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
@@ -1337,11 +1297,24 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestSave3DImage(object sender, ImageSaveEventArgs e)
         {
-            // dpi aware, otherwise incorrect images are created
-            var scale = VisualTreeHelper.GetDpi(this);
-            var dpiX = scale.PixelsPerInchX;
-            var dpiY = scale.PixelsPerInchY;
+            var dpiX = 0.0;
+            var dpiY = 0.0;
 
+            // dpi aware, otherwise incorrect images are created
+            try
+            {
+                var scale = VisualTreeHelper.GetDpi(this);
+                dpiX = scale.PixelsPerInchX;
+                dpiY = scale.PixelsPerInchY;
+            }
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
+
+                dpiX = 96;
+                dpiY = 96;
+            }
+            
             var bitmapSource = BackgroundPreview.View.RenderBitmap();
             // this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
             var rtBitmap = new RenderTargetBitmap(bitmapSource.PixelWidth, bitmapSource.PixelHeight, dpiX, dpiY, PixelFormats.Pbgra32);
@@ -1563,7 +1536,7 @@ namespace Dynamo.Controls
             }
             else
             {
-                //Shutdown was cancelled
+                //Shutdown was canceled
                 return false;
             }
         }
@@ -1637,9 +1610,6 @@ namespace Dynamo.Controls
 
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow -= DynamoViewModelRequestAboutWindow;
-
-            //SHOW or HIDE GALLERY
-            dynamoViewModel.RequestShowHideGallery -= DynamoViewModelRequestShowHideGallery;
 
             //first all view extensions have their shutdown methods called
             //when this view is finally disposed, dispose will be called on them.

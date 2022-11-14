@@ -3183,22 +3183,21 @@
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border x:Name="mouseOverBorder"
-                                Margin="2"
                                 BorderThickness="2"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 Background="{TemplateBinding Background}"
+                                Margin="0,4,4,4"
                                 Visibility="Hidden"
                                 CornerRadius="2"/>
                         <Border x:Name="mousePressedBorder"
-                                Margin="0"
                                 BorderThickness="4"
                                 Visibility="Hidden"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="4"/>
                         <Border x:Name="border"
-                                Margin="4"
-                                Height="36px"
+                                Margin="0,4,4,4"
+                                Height="30px"
                                 Padding="8,0,8,0"
                                 BorderThickness="1"
                                 BorderBrush="{TemplateBinding BorderBrush}"
@@ -3240,14 +3239,13 @@
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border x:Name="mouseOverBorder"
-                                Margin="2"
+                                Margin="4"
                                 BorderThickness="2"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 Background="{TemplateBinding Background}"
                                 Visibility="Hidden"
                                 CornerRadius="2"/>
                         <Border x:Name="mousePressedBorder"
-                                Margin="0"
                                 BorderThickness="4"
                                 Visibility="Hidden"
                                 BorderBrush="{TemplateBinding BorderBrush}"
@@ -5444,4 +5442,35 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+    
+    <!-- TextBlock as a Link -->
+    <Style x:Key="TextBlockLink" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource TextBlockLinkForegroundColor}" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <!-- Common Information Icon -->
+    <Style x:Key="InformationIcon" TargetType="{x:Type Image}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/info-default-16px.png" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/info-hover-16px.png" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Common Question Icon -->
+    <Style x:Key="QuestionIcon" TargetType="{x:Type Image}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/question-default-16px.png" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/question-hover-16px.png" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

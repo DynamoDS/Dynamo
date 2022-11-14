@@ -1,4 +1,4 @@
-﻿using Dynamo.Graph;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Properties;
 using Dynamo.Utilities;
@@ -517,6 +517,106 @@ namespace Dynamo.Models
             {
                 this.dynamoModel = dynamoModel;
                 dynamoModel.OpenFileImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("XmlFilePath", FilePath);
+            }
+
+            internal override void TrackAnalytics()
+            {
+                // Log file open action and the number of nodes in the opened workspace
+                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                    FilePath,
+                    Logging.Actions.Open,
+                    dynamoModel.CurrentWorkspace.Nodes.Count());
+
+                // If there are unresolved nodes in the opened workspace, log the node names and count
+                var unresolvedNodes = dynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+                if (unresolvedNodes != null && unresolvedNodes.Any())
+                {
+                    Dynamo.Logging.Analytics.TrackEvent(
+                        Logging.Actions.Unresolved,
+                        Logging.Categories.NodeOperations,
+                        unresolvedNodes.Select(n => string.Format("{0}:{1}", n.LegacyAssembly, n.LegacyFullName))
+                            .Aggregate((x, y) => string.Format("{0}, {1}", x, y)),
+                        unresolvedNodes.Count());
+                }
+            }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// A command to open a file.
+        /// </summary>
+        [DataContract]
+        public class InsertFileCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            /// <summary>
+            /// Insert Graph or Custom Node from a file path into the current Workspace
+            /// </summary>
+            /// <param name="filePath">The path to the file.</param>
+            /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
+            public InsertFileCommand(string filePath, bool forceManualExecutionMode = false)
+            {
+                FilePath = filePath;
+                ForceManualExecutionMode = forceManualExecutionMode;
+            }
+
+            private static string TryFindFile(string xmlFilePath, string uriString = null)
+            {
+                if (File.Exists(xmlFilePath))
+                    return xmlFilePath;
+
+                var xmlFileName = Path.GetFileName(xmlFilePath);
+                if (uriString != null)
+                {
+                    // Try to find the file right next to the command XML file.
+                    Uri uri = new Uri(uriString);
+                    string directory = Path.GetDirectoryName(uri.AbsolutePath);
+                    xmlFilePath = Path.Combine(directory, xmlFileName);
+
+                    // If it still cannot be resolved, fall back to system search.
+                    if (!File.Exists(xmlFilePath))
+                        xmlFilePath = Path.GetFullPath(xmlFileName);
+
+                    if (File.Exists(xmlFilePath))
+                        return xmlFilePath;
+                }
+
+                var message = "Target file cannot be found!";
+                throw new FileNotFoundException(message, xmlFileName);
+            }
+
+            internal static InsertFileCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                string xmlFilePath = TryFindFile(helper.ReadString("XmlFilePath"), element.OwnerDocument.BaseURI);
+                return new InsertFileCommand(xmlFilePath);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            [DataMember]
+            internal string FilePath { get; private set; }
+            internal bool ForceManualExecutionMode { get; private set; }
+            private DynamoModel dynamoModel;
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                this.dynamoModel = dynamoModel;
+                dynamoModel.InsertFileImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
