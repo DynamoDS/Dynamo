@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Dynamo.Logging
 {
@@ -126,6 +126,11 @@ namespace Dynamo.Logging
         /// Events Category related to guided tours
         /// </summary>
         GuidedTourOperations,
+
+        /// <summary>
+        /// Events Category related to the splash screen
+        /// </summary>
+        SplashScreenOperations,
     }
 
     /// <summary>
@@ -409,6 +414,26 @@ namespace Dynamo.Logging
         /// TimeElapsed event, e.g. tracks the time elapsed since an event
         /// </summary>
         TimeElapsed,
+
+        /// <summary>
+        /// SignIn event, e.g. tracks the SignIn event
+        /// </summary>
+        SignIn,
+
+        /// <summary>
+        /// SignOut event, e.g. tracks the SignOut event
+        /// </summary>
+        SignOut,
+
+        /// <summary>
+        /// ImportSettings event, e.g. tracks the ImportSettings event
+        /// </summary>
+        ImportSettings,
+
+        /// <summary>
+        /// ExportSettings event, e.g. tracks the ExportSettings event
+        /// </summary>
+        ExportSettings
     }
 
     /// <summary>

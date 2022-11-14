@@ -64,17 +64,10 @@ namespace Dynamo.Models
                 action();
         }
 
-        internal static event SettingsMigrationHandler RequestMigrationStatusDialog;
-        internal static void OnRequestMigrationStatusDialog(SettingsMigrationEventArgs args)
-        {
-            if (RequestMigrationStatusDialog != null)
-                RequestMigrationStatusDialog(args);
-        }
-
         /// <summary>
         /// Event to throw for Splash Screen to update Dynamo launching tasks
         /// </summary>
-        internal static event SplashScreenHandler RequestUpdateLoadBarStatus;
+        internal static event SplashScreenLoadingHandler RequestUpdateLoadBarStatus;
         internal static void OnRequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)
         {
             RequestUpdateLoadBarStatus?.Invoke(args);

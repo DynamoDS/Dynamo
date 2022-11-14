@@ -642,7 +642,7 @@ namespace Dynamo.Models
             IsHeadless = config.IsHeadless;
 
             DebugSettings = new DebugSettings();
-            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode);
+            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode);
 
             foreach (var exception in exceptions)
             {

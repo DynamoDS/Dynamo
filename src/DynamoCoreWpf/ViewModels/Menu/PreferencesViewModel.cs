@@ -49,6 +49,7 @@ namespace Dynamo.ViewModels
         private ObservableCollection<string> languagesList;
         private ObservableCollection<string> packagePathsForInstall;
         private ObservableCollection<string> fontSizeList;
+        private ObservableCollection<int> groupStyleFontSizeList;
         private ObservableCollection<string> numberFormatList;
         private StyleItem addStyleControl;
         private ObservableCollection<string> pythonEngineList;
@@ -466,6 +467,21 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(FontSizeList));
             }
         }
+        /// <summary>
+        /// GroupStyleFontSizeList contains the list of sizes for defined fonts to be applied to a GroupStyle
+        /// </summary>
+        public ObservableCollection<int> GroupStyleFontSizeList
+        {
+            get
+            {
+                return groupStyleFontSizeList;
+            }
+            set
+            {
+                groupStyleFontSizeList = value;
+                RaisePropertyChanged(nameof(GroupStyleFontSizeList));
+            }
+        }
 
         /// <summary>
         /// NumberFormatList contains the list of the format for numbers, right now in Dynamo has the next formats: 0, 0.0, 0.00, 0.000, 0.0000
@@ -505,9 +521,10 @@ namespace Dynamo.ViewModels
         /// <param name="style">style to be added</param>
         public void AddStyle(StyleItem style)
         {
-            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { 
-                HexColorString = style.HexColorString, 
-                Name = style.Name, 
+            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem {
+                HexColorString = style.HexColorString,
+                Name = style.Name,
+                FontSize = style.FontSize,
                 IsDefault = style.IsDefault
             });
             RaisePropertyChanged(nameof(StyleItemsList));
@@ -964,6 +981,7 @@ namespace Dynamo.ViewModels
             dynamoViewModel.RenderPackageFactoryViewModel.ShowEdges = preferenceSettings.ShowEdges;
             PackagePathsForInstall = null;
             PackagePathsViewModel?.InitializeRootLocations();
+            SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
 
             dynamoViewModel.IsShowingConnectors = preferenceSettings.ShowConnector;
             dynamoViewModel.IsShowingConnectorTooltip = preferenceSettings.ShowConnectorToolTip;
@@ -976,9 +994,10 @@ namespace Dynamo.ViewModels
                 }
             }
 
+            preferenceSettings.SanitizeValues();
             RaisePropertyChanged(string.Empty);
             return true;
-        }
+        }        
 
         /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
@@ -1013,6 +1032,8 @@ namespace Dynamo.ViewModels
                 Wpf.Properties.Resources.ScalingExtraLargeButton
             };
             SelectedFontSize = Wpf.Properties.Resources.ScalingMediumButton;
+
+            GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 
             // Number format settings
             NumberFormatList = new ObservableCollection<string>
@@ -1412,8 +1433,7 @@ namespace Dynamo.ViewModels
         {
             IsEnabledAddStyleButton = true;
             IsSaveButtonEnabled = true;
-            AddStyleControl.Name = String.Empty;
-            AddStyleControl.HexColorString = GetRandomHexStringColor();
+            AddStyleControl = new StyleItem();
             IsWarningEnabled = false;
             IsVisibleAddStyleBorder = false;          
         }
