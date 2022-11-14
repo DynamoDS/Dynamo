@@ -219,6 +219,21 @@ namespace WpfVisualizationTests
             Assert.AreEqual(48.66565, helixNodeViewModel.Camera.Position.X, 0.01);
         }
 
+        /// <summary>
+        /// This test uses a Dynamo graph that has a sphere creation node (with Preview disabled) connected to a Watch3D node.
+        /// It ensures that the Watch3D still renders the sphere.
+        /// </summary>
+        [Test]
+        public void Node_IgnoreIsVisible()
+        {
+            OpenVisualizationTest("HelixWatch3dNodeViewModel_IgnoreIsVisible.dyn");
+            Watch3DView view = FindFirstWatch3DNodeView();
+            Assert.NotNull(view);
+            HelixWatch3DNodeViewModel helixNodeViewModel = view.ViewModel as HelixWatch3DNodeViewModel;
+            Assert.NotNull(helixNodeViewModel);
+            Assert.True(helixNodeViewModel.SceneItems.HasNumberOfPointsCurvesAndMeshes(0, 0, 1));
+        }
+
         [Test]
         public void Node_PreviewToggled_RenderingUpToDate()
         {
