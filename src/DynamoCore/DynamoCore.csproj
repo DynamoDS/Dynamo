@@ -23,8 +23,8 @@
   <ItemGroup>
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
     <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.0.2506" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3107" GeneratePathProperty="true" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.3115" GeneratePathProperty="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3176" GeneratePathProperty="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.3175" GeneratePathProperty="true" />
     <PackageReference Include="Greg" Version="2.3.0.2505" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
 	  <PackageReference Include="RestSharp" Version="106.12.0" CopyXML="true" />
