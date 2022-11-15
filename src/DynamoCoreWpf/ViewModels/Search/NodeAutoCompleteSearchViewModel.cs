@@ -31,7 +31,7 @@ namespace Dynamo.ViewModels
     public class NodeAutoCompleteSearchViewModel : SearchViewModel
     {
         internal PortViewModel PortViewModel { get; set; }
-        private List<NodeSearchElement> searchElementsCache;
+        private List<NodeSearchElementViewModel> searchElementsCache;
         private string lowConfidenceMessageAdditional;
         private string noRecommendationsOrLowConfidenceMessage;
         private string noRecommendationsOrLowConfidenceTitle;
@@ -300,9 +300,7 @@ namespace Dynamo.ViewModels
 
                         if (viewModelElement != null)
                         {
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = item.Score;
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo.IsByRecommendation = true;
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, item.Score);
                             results.Add(viewModelElement);
                         }
                     }
@@ -319,9 +317,7 @@ namespace Dynamo.ViewModels
 
                         if (viewModelElement != null)
                         {
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = item.Score;
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo.IsByRecommendation = true;
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, item.Score);
                             results.Add(viewModelElement);
                         }
                     }
@@ -419,7 +415,7 @@ namespace Dynamo.ViewModels
             IEnumerable<NodeSearchElementViewModel> allResults = FilteredHighConfidenceResults.Concat(FilteredLowConfidenceResults);
             FilteredResults = allResults;
             // Save the filtered results for search.
-            searchElementsCache = FilteredResults.Select(x => x.Model).ToList();
+            searchElementsCache = FilteredResults.ToList();
         }
 
         // Full name and assembly name 
@@ -471,7 +467,7 @@ namespace Dynamo.ViewModels
             }
 
             // Save the filtered results for search.
-            searchElementsCache = FilteredResults.Select(x => x.Model).ToList();
+            searchElementsCache = FilteredResults.ToList();
         }
 
         internal void PopulateDefaultAutoCompleteCandidates()
@@ -541,13 +537,27 @@ namespace Dynamo.ViewModels
             {
                 if (string.IsNullOrEmpty(input))
                 {
-                    FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
+                    FilteredResults = searchElementsCache;
                 }
                 else
                 {
                     // Providing the saved search results to limit the scope of the query search.
-                    var foundNodes = Search(input, searchElementsCache);
-                    FilteredResults = new List<NodeSearchElementViewModel>(foundNodes).OrderBy(x => x.Name).ThenBy(x => x.Description);
+                    var foundNodes = Search(input, searchElementsCache.Select(x => x.Model));
+                    var filteredSearchElements = new List<NodeSearchElementViewModel>();
+
+                    foreach (var node in foundNodes)
+                    {
+                        var matchingElement = searchElementsCache.FirstOrDefault(x => x.FullName.Equals(node.FullName));
+
+                        if (matchingElement != null)
+                        {
+                            node.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(matchingElement.AutoCompletionNodeMachineLearningInfo.DisplayIcon,
+                                                                                                                   matchingElement.AutoCompletionNodeMachineLearningInfo.IsByRecommendation,
+                                                                                                                   matchingElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore);
+                            filteredSearchElements.Add(node);
+                        }
+                    }
+                    FilteredResults = new List<NodeSearchElementViewModel>(filteredSearchElements).OrderBy(x => x.Name).ThenBy(x => x.Description);
                 }
             }
         }

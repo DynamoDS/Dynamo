@@ -299,9 +299,32 @@ namespace Dynamo.Search.SearchElements
     public class AutoCompletionNodeMachineLearningInfo
     {
         /// <summary>
-        /// Indicates if the user can view the confidence score or the recent use icon
+        /// default constructor
         /// </summary>
-        public Boolean ViewConfidenceScoreRecentUse { get; set; }
+        public AutoCompletionNodeMachineLearningInfo()
+        {
+            DisplayIcon = false;
+            IsByRecommendation = false;
+            IsByUse = false;
+        }
+
+        /// <summary>
+        /// Creates ML info object using DisplayIcon, IsByRecommendation and ConfidenceScore params
+        /// </summary>
+        /// <param name="displayIcon">True if the user can view the confidence score or the recent use icon, otherwise False</param>
+        /// <param name="isByRecommendation">True if the Node is part of the ML recommendation, otherwise False</param>
+        /// <param name="confidenceScore">Confidence Score</param>
+        public AutoCompletionNodeMachineLearningInfo(bool displayIcon, bool isByRecommendation, double confidenceScore)
+        {
+            DisplayIcon = displayIcon;
+            IsByRecommendation = isByRecommendation;
+            ConfidenceScore = confidenceScore;
+        }
+
+        /// <summary>
+        /// Indicates if the icon is displayed to show the condifent score or by-usage
+        /// </summary>
+        public bool DisplayIcon { get; set; }
         /// <summary>
         /// Rating of confidence
         /// </summary>
@@ -309,11 +332,11 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// Indicates if the Node is part of ML result per use
         /// </summary>
-        public Boolean IsByUse { get; set; }
+        public bool IsByUse { get; set; }
         /// <summary>
         /// Indicates if the Node is part of the ML result per recommendation
         /// </summary>
-        public Boolean IsByRecommendation { get; set; }
+        public bool IsByRecommendation { get; set; }
     }
 
     /// <summary>

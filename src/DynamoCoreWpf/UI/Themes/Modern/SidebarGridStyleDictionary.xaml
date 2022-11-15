@@ -232,7 +232,7 @@
         <StackPanel Name="ImageAndNodeName"
                     Orientation="Horizontal"
                     VerticalAlignment="Center">
-            <StackPanel Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.DisplayIcon, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock
                     HorizontalAlignment="Center"
                     Width="35"

@@ -229,7 +229,7 @@ namespace Dynamo.Search.SearchElements
 
         public override string ToString()
         {
-            return FullName + ", " + AssemblyName;
+            return string.Format("{0}, {1}", FullName, AssemblyName);
         }
     }
 }
