@@ -231,8 +231,8 @@ namespace WpfVisualizationTests
             Assert.NotNull(view);
             HelixWatch3DNodeViewModel helixNodeViewModel = view.ViewModel as HelixWatch3DNodeViewModel;
             Assert.NotNull(helixNodeViewModel);
-            Assert.Equals(helixNodeViewModel.SceneItems.TotalMeshes(), 1);
-            Assert.Equals(BackgroundPreviewGeometry.TotalMeshes(), 0);
+            Assert.AreEqual(helixNodeViewModel.SceneItems.TotalMeshes(), 1);
+            Assert.AreEqual(BackgroundPreviewGeometry.TotalMeshes(), 0);
         }
 
         [Test]
