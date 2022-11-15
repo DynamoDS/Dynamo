@@ -203,9 +203,11 @@ namespace Dynamo.DocumentationBrowser
         private static string CreateNodeInfo(OpenNodeAnnotationEventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            
-            sb.AppendLine($"<h2>{Resources.NodeDocumentationNodeType}</h2>");
-            sb.AppendLine($"<p>{e.Type}</p>");
+            if (!e.Type.Equals(e.OriginalName))
+            {
+                sb.AppendLine($"<h2>{Resources.NodeDocumentationOriginalNodeName}</h2>");
+                sb.AppendLine($"<p>{e.OriginalName}</p>");
+            }
             sb.AppendLine($"<h2>{Resources.NodeDocumentationDescription}</h2>");
             sb.AppendLine($"<p>{Regex.Replace(e.Description, @"\r\n?|\n", "<br>")}</p>");
             

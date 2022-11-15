@@ -306,11 +306,11 @@ namespace Dynamo.DocumentationBrowser
                 string breadCrumbs = string.Empty;
 
 
-                if(BreadCrumbsDictionary != null && !BreadCrumbsDictionary.TryGetValue(e.Type, out breadCrumbs))
+                if(BreadCrumbsDictionary != null && !BreadCrumbsDictionary.TryGetValue(e.OriginalName, out breadCrumbs))
                 {
                     foreach (var pair in BreadCrumbsDictionary)
                     {
-                        if (pair.Key.Contains(e.Type))
+                        if (pair.Key.Contains(e.OriginalName))
                         {
                             breadCrumbs = pair.Value;
                             break;

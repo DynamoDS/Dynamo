@@ -223,11 +223,11 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Node Type.
+        ///   Looks up a localized string similar to Original Node Name.
         /// </summary>
-        public static string NodeDocumentationNodeType {
+        public static string NodeDocumentationOriginalNodeName {
             get {
-                return ResourceManager.GetString("NodeDocumentationNodeType", resourceCulture);
+                return ResourceManager.GetString("NodeDocumentationOriginalNodeName", resourceCulture);
             }
         }
         

@@ -179,8 +179,8 @@
     <value>Node Information</value>
     <comment>Header in Node Info table</comment>
   </data>
-  <data name="NodeDocumentationNodeType" xml:space="preserve">
-    <value>Node Type</value>
+  <data name="NodeDocumentationOriginalNodeName" xml:space="preserve">
+    <value>Original Node Name</value>
     <comment>Header in Node Info table</comment>
   </data>
   <data name="NodeDocumentationOutputs" xml:space="preserve">
