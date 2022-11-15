@@ -3069,7 +3069,7 @@ namespace Dynamo.ViewModels
                     {
                         foreach (var annotation in CurrentSpaceViewModel.Annotations)
                         {
-                            if (annotation.GroupStyle == currentCustomGroupStyle.GroupStyleId)
+                            if (annotation.GroupStyleId == currentCustomGroupStyle.GroupStyleId)
                             {
                                 annotation.FontSize = currentCustomGroupStyle.FontSize;
                                 annotation.Background = (Color)ColorConverter.ConvertFromString("#" + currentCustomGroupStyle.HexColorString);

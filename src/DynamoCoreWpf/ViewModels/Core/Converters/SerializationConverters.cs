@@ -146,8 +146,8 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteValue(anno.Height);
             writer.WritePropertyName("FontSize");
             writer.WriteValue(anno.FontSize);
-            writer.WritePropertyName("GroupStyle");
-            writer.WriteValue(anno.GroupStyle);
+            writer.WritePropertyName("GroupStyleId");
+            writer.WriteValue(anno.GroupStyleId);
             writer.WritePropertyName("InitialTop");
             writer.WriteValue(anno.InitialTop);
             writer.WritePropertyName("InitialHeight");

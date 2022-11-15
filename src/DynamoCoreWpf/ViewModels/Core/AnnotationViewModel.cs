@@ -175,16 +175,19 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Id of the applied GroupStyle
+        /// </summary>
         [JsonIgnore]
-        public Guid GroupStyle
+        public Guid GroupStyleId
         {
             get
             {
-                return annotationModel.GroupStyle;
+                return annotationModel.GroupStyleId;
             }
             set
             {
-                annotationModel.GroupStyle = value;
+                annotationModel.GroupStyleId = value;
             }
         }
 
@@ -1077,7 +1080,7 @@ namespace Dynamo.ViewModels
 
             Background = (Color)ColorConverter.ConvertFromString("#" + itemEntryParameter.HexColorString);
             FontSize = (double)itemEntryParameter.FontSize;
-            GroupStyle = itemEntryParameter.GroupStyleId;
+            GroupStyleId = itemEntryParameter.GroupStyleId;
 
             WorkspaceViewModel.HasUnsavedChanges = true;
         }
