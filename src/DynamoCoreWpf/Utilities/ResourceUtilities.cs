@@ -519,24 +519,31 @@ namespace Dynamo.Utilities
         /// <param name="userDataFolder">the folder that WebView2 will use for storing cache info</param>
         internal static async void LoadWebBrowser(HtmlPage htmlPage, WebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string))
         {
-            var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(htmlPage.FileName, localAssembly, false, false);
-
-            bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage.Resources, resourcesPath);
-            bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", fontStylePath);
-
-            if (!string.IsNullOrEmpty(userDataFolder))
+            try
             {
-                //This indicates in which location will be created the WebView2 cache folder
-                webBrowserComponent.CreationProperties = new CoreWebView2CreationProperties()
-                {
-                    UserDataFolder = userDataFolder
-                };
-            }
+                var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(htmlPage.FileName, localAssembly, false, false);
 
-            await webBrowserComponent.EnsureCoreWebView2Async();
-            // Context menu disabled
-            webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-            webBrowserComponent.NavigateToString(bodyHtmlPage);
+                bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage.Resources, resourcesPath);
+                bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", fontStylePath);
+
+                if (!string.IsNullOrEmpty(userDataFolder))
+                {
+                    //This indicates in which location will be created the WebView2 cache folder
+                    webBrowserComponent.CreationProperties = new CoreWebView2CreationProperties()
+                    {
+                        UserDataFolder = userDataFolder
+                    };
+                }
+
+                await webBrowserComponent.EnsureCoreWebView2Async();
+                // Context menu disabled
+                webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                webBrowserComponent.NavigateToString(bodyHtmlPage);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>

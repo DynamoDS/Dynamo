@@ -245,6 +245,14 @@ namespace Dynamo.UI.Views
             string htmlString = string.Empty;
             string jsonString = string.Empty;
 
+            // When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+            var userDataDir = new DirectoryInfo(GetUserDirectory());
+            var webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
+
+            webView.CreationProperties = new CoreWebView2CreationProperties
+            {
+                UserDataFolder = webBrowserUserDataFolder.FullName
+            };
             await webView.EnsureCoreWebView2Async();
             // Context menu disabled
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
@@ -270,15 +278,6 @@ namespace Dynamo.UI.Views
             }
 
             htmlString = htmlString.Replace("mainJs", jsonString);
-
-            // When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
-            var userDataDir = new DirectoryInfo(GetUserDirectory());
-            var webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
-
-            webView.CreationProperties = new CoreWebView2CreationProperties
-            {
-                UserDataFolder = webBrowserUserDataFolder.FullName
-            };
 
             webView.NavigateToString(htmlString);
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
