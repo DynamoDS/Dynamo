@@ -108,12 +108,16 @@ namespace Dynamo.UI.Controls
         {
             if (!(sender is FrameworkElement fromSender)) return;
 
+            HighlightedItem.IsSelected = false;
             toolTipPopup.DataContext = fromSender.DataContext;
             toolTipPopup.IsOpen = true;
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
+            if (!(sender is FrameworkElement)) return;
+
+            HighlightedItem.IsSelected = true;
             toolTipPopup.DataContext = null;
             toolTipPopup.IsOpen = false;
         }
@@ -292,6 +296,11 @@ namespace Dynamo.UI.Controls
             var cm = this.SuggestionsContextMenu;
             cm.PlacementTarget = sender as Button;
             cm.IsOpen = true;
+        }
+
+        private void ShowLowConfidenceResults(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ShowLowConfidenceResults();
         }
 
         private void OnSuggestion_Click(object sender, RoutedEventArgs e)
