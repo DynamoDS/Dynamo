@@ -22,6 +22,7 @@ using RestSharp;
 using Dynamo.Graph.Nodes.CustomNodes;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Dynamo.Graph.Connectors;
 
 namespace Dynamo.ViewModels
 {
@@ -37,7 +38,9 @@ namespace Dynamo.ViewModels
         private string noRecommendationsOrLowConfidenceTitle;
         private bool displayNoRecommendationsLowConfidence;
         private bool displayLowConfidence;
-        private double confidenceThreshold = 0.5;
+        private double confidenceThreshold = 0.1;
+        private int numberOfResults = 10;
+
 
         /// <summary>
         /// Cache of default node suggestions, use it in case where
@@ -165,17 +168,13 @@ namespace Dynamo.ViewModels
             DefaultResults = candidates;
         }
 
-        internal void DisplayMachineLearningResults()
+        internal MLNodeAutoCompletionRequest GenerateRequestForMLAutocomplete()
         {
             // Intialize request for the the ML API
-            MLNodeAutoCompletionRequest request = new MLNodeAutoCompletionRequest();
-            DisplayNoRecommendationsLowConfidence = false;
+            MLNodeAutoCompletionRequest request = new MLNodeAutoCompletionRequest(AssemblyHelper.GetDynamoVersion().ToString(), numberOfResults);
 
             var nodeInfo = PortViewModel.PortModel.Owner;
             var portInfo = PortViewModel.PortModel;
-
-            request.DynamoVersion = AssemblyHelper.GetDynamoVersion().ToString();
-            request.NumberOfResults = 10;
 
             // Set node info
             request.Node.Id = nodeInfo.GUID.ToString();
@@ -213,53 +212,68 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            // Set context info
-            // Considering upstream nodes when the PortType is output and considering downstream nodes when the PortType is input. 
-            var connectors = nodeInfo.AllConnectors;
+            // Set context info which will contain all reachable nodes from the current node.
+            var upstreamNodes = nodeInfo.AllUpstreamNodes(new List<NodeModel>());
+            var downstreamNodes = nodeInfo.AllDownstreamNodes(new List<NodeModel>());
 
-            foreach (var connector in connectors)
+            var upstreamAndDownstreamNodes = new List<NodeModel>();
+            upstreamAndDownstreamNodes.AddRange(upstreamNodes);
+            upstreamAndDownstreamNodes.AddRange(downstreamNodes);
+
+            foreach (NodeModel nodeModel in upstreamAndDownstreamNodes)
             {
-                var revelantNode = PortViewModel.PortModel.PortType == PortType.Input ? connector.Start.Owner.GUID : connector.End.Owner.GUID;
-                if (revelantNode.Equals(nodeInfo.GUID))
+                var nodeRequest = new NodeRequest(nodeModel.GUID.ToString());
+
+                if (nodeModel is DSFunctionBase DSfunctionNode)
                 {
-                    // connectors info
+                    nodeRequest.Type.Id = DSfunctionNode.CreationName;
+                }
+                else if (nodeModel is NodeModel node)
+                {
+                    var typeID = new NodeModelTypeId(node.GetType().FullName, nodeModel.GetType().Assembly.GetName().Name);
+                    nodeRequest.Type.Id = typeID.ToString();
+                }
+                request.Context.Nodes = request.Context.Nodes.Append(nodeRequest);
+            }
+
+            // Set info regarding all the connectors in the reachable component.
+            var connectors = dynamoViewModel.CurrentSpaceViewModel.Model.Connectors;
+
+            foreach (ConnectorModel connector in connectors)
+            {
+                var startNode = connector.Start.Owner;
+                var endNode = connector.End.Owner;
+
+                if (startNode.Equals(nodeInfo) || endNode.Equals(nodeInfo) || upstreamAndDownstreamNodes.Contains(startNode) || upstreamAndDownstreamNodes.Contains(endNode))
+                {
                     var connectorRequest = new ConnectionsRequest
                     {
-                        StartNode = new ConnectorNodeItem(connector.Start.Owner.GUID.ToString(), connector.Start.Name),
-                        EndNode = new ConnectorNodeItem(connector.End.Owner.GUID.ToString(), connector.End.Name)
+                        StartNode = new ConnectorNodeItem(connector.Start.Owner.GUID.ToString(), ParseVariableInputPortName(connector.Start.Name)),
+                        EndNode = new ConnectorNodeItem(connector.End.Owner.GUID.ToString(), ParseVariableInputPortName(connector.End.Name))
                     };
+
                     request.Context.Connections = request.Context.Connections.Append(connectorRequest);
-
-                    // Add the relevant connecting node details to the context object. 
-                    var nodeToAdd = PortViewModel.PortModel.PortType == PortType.Input ? connector.End.Owner : connector.Start.Owner;
-
-                    var nodeRequest = new NodeRequest
-                    {
-                        Id = nodeToAdd.GUID.ToString()
-                    };
-
-                    if (nodeToAdd is DSFunctionBase node)
-                    {
-                        nodeRequest.Type.Id = node.CreationName;
-                    }
-                    else if (nodeToAdd is NodeModel nodeModel)
-                    {
-                        var typeID = new NodeModelTypeId(nodeModel.GetType().FullName, nodeModel.GetType().Assembly.GetName().Name);
-                        nodeRequest.Type.Id = typeID.ToString();
-                    }
-                    request.Context.Nodes = request.Context.Nodes.Append(nodeRequest);
                 }
             }
 
-            string jsonRequest = JsonConvert.SerializeObject(request);
+            return request;
+        }
+
+        internal void DisplayMachineLearningResults()
+        {
             MLNodeAutoCompletionResponse MLresults = null;
+            DisplayNoRecommendationsLowConfidence = false;
+
+            var request = GenerateRequestForMLAutocomplete();
+
+            string jsonRequest = JsonConvert.SerializeObject(request);
 
             // Get results from the ML API.
             try
             {
                 MLresults = GetMLNodeAutocompleteResults(jsonRequest);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
                 DisplayNoRecommendationsLowConfidence = true;
@@ -291,23 +305,40 @@ namespace Dynamo.ViewModels
                 FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
                 FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
 
-                foreach (var item in MLresults.Results)
+                foreach (var result in MLresults.Results)
                 {
-                    if (item.Node.Type.NodeType.Equals(Function.FunctionNode))
+                    var portName = result.Port.Name;
+
+                    // DS Function node
+                    if (result.Node.Type.NodeType.Equals(Function.FunctionNode))
                     {
-                        var element = zeroTouchSearchElements.FirstOrDefault(n => n.Descriptor.MangledName == item.Node.Type.Id);
+                        var element = zeroTouchSearchElements.FirstOrDefault(n => n.Descriptor.MangledName.Equals(result.Node.Type.Id));
+
+                        if (element != null)
+                        {
+                            foreach (var inputParameter in element.Descriptor.Parameters.Select((value, index) => (value, index)))
+                            {
+                                if (inputParameter.value.Name.Equals(portName))
+                                {
+                                    element.AutoCompletionNodeElementInfo.PortToConnect = element.Descriptor.Type == FunctionType.InstanceMethod ? inputParameter.index + 1 : inputParameter.index;
+                                    break;
+                                }
+                            }
+                        }
+
                         var viewModelElement = GetViewModelForNodeSearchElement(element);
 
                         if (viewModelElement != null)
                         {
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, item.Score);
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score);
                             results.Add(viewModelElement);
                         }
                     }
-                    else
+                    // NodeModel extension node
+                    else if (result.Node.Type.NodeType.Equals(NodeModel.ExtensionNode))
                     {
                         // Retreive assembly name and full name from type id.
-                        var typeInfo = GetInfoFromTypeId(item.Node.Type.Id);
+                        var typeInfo = GetInfoFromTypeId(result.Node.Type.Id);
                         string fullName = typeInfo.FullName;
                         string assemblyName = typeInfo.AssemblyName;
 
@@ -317,7 +348,7 @@ namespace Dynamo.ViewModels
 
                         if (viewModelElement != null)
                         {
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, item.Score);
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score);
                             results.Add(viewModelElement);
                         }
                     }
@@ -618,8 +649,9 @@ namespace Dynamo.ViewModels
                 return elements;
             }
 
-            //gather all ztsearchelements that are visible in search and filter using inputPortType and zt return type name.
+            //gather all ztsearchelements or nodemodel nodes that are visible in search and filter using inputPortType and zt return type name.
             var ztSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
+            var nodeModelSearchElements = Model.SearchEntries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
 
             if (PortViewModel.PortModel.PortType == PortType.Input)
             {
@@ -636,7 +668,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // NodeModel nodes, match any output return type to inputport type name
-                foreach (var element in Model.SearchEntries.OfType<NodeModelSearchElement>())
+                foreach (var element in nodeModelSearchElements)
                 {
                     if (element.OutputParameters.Any(op => op == portType))
                     {
@@ -660,7 +692,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // NodeModel nodes, match any output return type to inputport type name
-                foreach (var element in Model.SearchEntries.OfType<NodeModelSearchElement>())
+                foreach (var element in nodeModelSearchElements)
                 {
                     foreach (var inputParameter in element.InputParameters)
                     {

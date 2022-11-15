@@ -10,8 +10,10 @@ namespace Dynamo.Search.SearchElements
     [DataContract]
     internal class MLNodeAutoCompletionRequest
     {
-        internal MLNodeAutoCompletionRequest()
+        internal MLNodeAutoCompletionRequest(string dynamoVersion, int numberOfResults)
         {
+            DynamoVersion = dynamoVersion;
+            NumberOfResults = numberOfResults;
             Node = new NodeRequest();
             Port = new PortRequest();
             Host = new HostRequest();
@@ -49,6 +51,12 @@ namespace Dynamo.Search.SearchElements
             Type = new NodeTypeRequest();
         }
 
+        internal NodeRequest(string id)
+        {
+            Id = id;
+            Type = new NodeTypeRequest();
+        }
+
         [DataMember(Name = "id")]
         internal string Id { get; set; }
 
@@ -69,6 +77,17 @@ namespace Dynamo.Search.SearchElements
     [DataContract]
     internal class PortRequest
     {
+        internal PortRequest()
+        {
+            //nothing
+        }
+
+        internal PortRequest(string name, string direction)
+        {
+            Name = name;
+            Direction = direction;
+        }
+
         [DataMember(Name = "name")]
         internal string Name { get; set; }
 

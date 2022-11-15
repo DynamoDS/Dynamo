@@ -106,6 +106,7 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         internal const double HeaderHeight = 46;
+        internal static string ExtensionNode = "ExtensionNode";
 
         #region public members
 
@@ -136,7 +137,7 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return "ExtensionNode";
+                return ExtensionNode;
             }
         }
 
