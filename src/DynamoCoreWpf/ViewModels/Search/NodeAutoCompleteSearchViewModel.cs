@@ -542,6 +542,7 @@ namespace Dynamo.ViewModels
                 else
                 {
                     // Providing the saved search results to limit the scope of the query search.
+                    // Then add back the ML info on filterted nodes as the Search function accepts elements of type NodeSearchElement
                     var foundNodes = Search(input, searchElementsCache.Select(x => x.Model));
                     var filteredSearchElements = new List<NodeSearchElementViewModel>();
 
