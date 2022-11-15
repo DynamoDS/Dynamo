@@ -3005,6 +3005,7 @@ namespace Dynamo.Models
                 WidthAdjustment = model.WidthAdjustment,
                 Background = model.Background,
                 FontSize = model.FontSize,
+                GroupStyleId = model.GroupStyleId,
             };
 
             modelLookup.Add(model.GUID, annotationModel);

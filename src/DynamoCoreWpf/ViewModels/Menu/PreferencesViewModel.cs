@@ -525,6 +525,7 @@ namespace Dynamo.ViewModels
                 HexColorString = style.HexColorString,
                 Name = style.Name,
                 FontSize = style.FontSize,
+                GroupStyleId = style.GroupStyleId,
                 IsDefault = style.IsDefault
             });
             RaisePropertyChanged(nameof(StyleItemsList));

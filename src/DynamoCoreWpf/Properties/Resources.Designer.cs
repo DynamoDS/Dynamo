@@ -2234,7 +2234,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Static Splash Screen.
+        ///   Looks up a localized string similar to Pause Splash Screen.
         /// </summary>
         public static string DynamoViewSettingShowStaticSplashScreen {
             get {
@@ -6729,7 +6729,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This setting controls whether user will be directed to an extra static splash screen after the intial launch..
+        ///   Looks up a localized string similar to Pauses the splash screen when loading is complete, enabling you to launch Dynamo manually, sign in to your Autodesk account, or import settings..
         /// </summary>
         public static string PreferencesViewShowStaticSplashScreenTooltip {
             get {
