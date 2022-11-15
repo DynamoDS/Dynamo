@@ -229,8 +229,11 @@ namespace Dynamo.Notifications
 
         private void DynamoView_LocationChanged(object sender, EventArgs e)
         {
-            notificationUIPopup.Placement = PlacementMode.Bottom;
-            notificationUIPopup.UpdatePopupLocation();
+            if (notificationUIPopup != null)
+            {
+                notificationUIPopup.Placement = PlacementMode.Bottom;
+                notificationUIPopup.UpdatePopupLocation();
+            }
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
