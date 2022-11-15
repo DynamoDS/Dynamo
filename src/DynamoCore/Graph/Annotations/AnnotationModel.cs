@@ -622,13 +622,13 @@ namespace Dynamo.Graph.Annotations
 
             switch (name)
             {
-                case "FontSize":
+                case nameof(FontSize):
                     FontSize = Convert.ToDouble(value);
                     break;
-                case "GroupStyleId":
+                case nameof(GroupStyleId):
                     GroupStyleId = new Guid(value);
                     break;
-                case "Background":
+                case nameof(Background):
                     Background = value;
                     break;  
                 case "TextBlockText":
@@ -731,11 +731,11 @@ namespace Dynamo.Graph.Annotations
 
             //On any Undo Operation, current values are restored to previous values.
             //These properties should be Raised, so that they get the correct value on Undo.
-            RaisePropertyChanged("Background");
-            RaisePropertyChanged("FontSize");           
+            RaisePropertyChanged(nameof(Background));
+            RaisePropertyChanged(nameof(FontSize));           
             RaisePropertyChanged(nameof(GroupStyleId));
-            RaisePropertyChanged("AnnotationText");
-            RaisePropertyChanged("Nodes");
+            RaisePropertyChanged(nameof(AnnotationText));
+            RaisePropertyChanged(nameof(Nodes));
             this.ReportPosition();
         }
 

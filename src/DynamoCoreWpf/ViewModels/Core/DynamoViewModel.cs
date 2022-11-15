@@ -3060,16 +3060,16 @@ namespace Dynamo.ViewModels
             foreach (var originalCustomGroupStyle in originalCustomGroupStyles)
             {
                 var currentCustomGroupStyle = PreferenceSettings.GroupStyleItemsList.Where(
-                    groupStyle => groupStyle.GroupStyleId != Guid.Empty && groupStyle.GroupStyleId == originalCustomGroupStyle.GroupStyleId).FirstOrDefault();
+                    groupStyle => !groupStyle.GroupStyleId.Equals(Guid.Empty) && groupStyle.GroupStyleId.Equals(originalCustomGroupStyle.GroupStyleId)).FirstOrDefault();
 
                 if (currentCustomGroupStyle != null)
                 {
-                    if (originalCustomGroupStyle.HexColorString != currentCustomGroupStyle.HexColorString
-                        || originalCustomGroupStyle.FontSize != currentCustomGroupStyle.FontSize)
+                    if (!originalCustomGroupStyle.HexColorString.Equals(currentCustomGroupStyle.HexColorString)
+                        || !originalCustomGroupStyle.FontSize.Equals(currentCustomGroupStyle.FontSize))
                     {
                         foreach (var annotation in CurrentSpaceViewModel.Annotations)
                         {
-                            if (annotation.GroupStyleId == currentCustomGroupStyle.GroupStyleId)
+                            if (annotation.GroupStyleId.Equals(currentCustomGroupStyle.GroupStyleId))
                             {
                                 annotation.FontSize = currentCustomGroupStyle.FontSize;
                                 annotation.Background = (Color)ColorConverter.ConvertFromString("#" + currentCustomGroupStyle.HexColorString);
