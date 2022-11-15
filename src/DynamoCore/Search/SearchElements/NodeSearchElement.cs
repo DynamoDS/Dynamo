@@ -21,10 +21,6 @@ namespace Dynamo.Search.SearchElements
         private bool isVisibleInSearch = true;
 
         internal AutoCompletionNodeElementInfo AutoCompletionNodeElementInfo { get; set; } = new AutoCompletionNodeElementInfo();
-        /// <summary>
-        /// Machine Learning related info
-        /// </summary>
-        public AutoCompletionNodeMachineLearningInfo AutoCompletionNodeMachineLearningInfo { get; set; } = new AutoCompletionNodeMachineLearningInfo();
 
         /// <summary>
         /// Event is fired when a node visibility in library search was changed.

@@ -21,6 +21,7 @@ using Dynamo.Core;
 using RestSharp;
 using Dynamo.Graph.Nodes.CustomNodes;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Dynamo.ViewModels
 {
@@ -191,8 +192,8 @@ namespace Dynamo.ViewModels
             }
 
             // Set port info
-            // If the node is a Variable-input nodemodel or zero-touch node, then set the port name as empty.
-            request.Port.Name = (nodeInfo is VariableInputNode || nodeInfo is DSVarArgFunction) ? string.Empty : portInfo.Name;
+            // If the node is a Variable-input nodemodel or zero-touch node, then parse the port name to remove the digits at the end.
+            request.Port.Name = (nodeInfo is VariableInputNode || nodeInfo is DSVarArgFunction) ? ParseVariableInputPortName(portInfo.Name) : portInfo.Name;
             request.Port.Direction = portInfo.PortType == PortType.Input ? PortType.Input.ToString().ToLower() : PortType.Output.ToString().ToLower();
             request.Port.KeepListStructure = portInfo.KeepListStructure.ToString();
             request.Port.ListAtLevel = portInfo.Level;
@@ -268,11 +269,6 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            var matchingResults = new List<NodeSearchElement>();
-            FilteredResults = new List<NodeSearchElementViewModel>();
-            var zeroTouchSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
-            var nodeModelSearchElements = Model.SearchEntries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
-
             // no results
             if (MLresults == null || MLresults.Results.Count() == 0)
             {
@@ -282,6 +278,12 @@ namespace Dynamo.ViewModels
                 NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
                 return;
             }
+
+            var results = new List<NodeSearchElementViewModel>();
+            FilteredResults = new List<NodeSearchElementViewModel>();
+
+            var zeroTouchSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
+            var nodeModelSearchElements = Model.SearchEntries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
 
             // ML Results are categorized based on the threshold confidence score before displaying. 
             if (MLresults.Results.Count() > 0)
@@ -294,12 +296,14 @@ namespace Dynamo.ViewModels
                     if (item.Node.Type.NodeType.Equals(Function.FunctionNode))
                     {
                         var element = zeroTouchSearchElements.FirstOrDefault(n => n.Descriptor.MangledName == item.Node.Type.Id);
-                        if (element != null)
+                        var viewModelElement = GetViewModelForNodeSearchElement(element);
+
+                        if (viewModelElement != null)
                         {
-                            element.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = item.Score;
-                            element.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
-                            element.AutoCompletionNodeMachineLearningInfo.IsByRecommendation = true;
-                            matchingResults.Add(element);
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = item.Score;
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo.IsByRecommendation = true;
+                            results.Add(viewModelElement);
                         }
                     }
                     else
@@ -310,22 +314,22 @@ namespace Dynamo.ViewModels
                         string assemblyName = typeInfo.AssemblyName;
 
                         var nodesFromAssembly = nodeModelSearchElements.Where(n => Path.GetFileNameWithoutExtension(n.Assembly).Equals(assemblyName));
-                        var matchingNode = nodesFromAssembly.FirstOrDefault(n => n.CreationName.Equals(fullName));
-                        if (matchingNode != null)
+                        var element = nodesFromAssembly.FirstOrDefault(n => n.CreationName.Equals(fullName));
+                        var viewModelElement = GetViewModelForNodeSearchElement(element);
+
+                        if (viewModelElement != null)
                         {
-                            matchingNode.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = item.Score;
-                            matchingNode.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
-                            matchingNode.AutoCompletionNodeMachineLearningInfo.IsByRecommendation = true;
-                            matchingResults.Add(matchingNode);
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore = item.Score;
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = true;
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo.IsByRecommendation = true;
+                            results.Add(viewModelElement);
                         }
                     }
                 }
 
-                var results = GetViewModelForNodeSearchElements(matchingResults);
-
                 foreach (var result in results)
                 {
-                    if (result.Model.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= confidenceThreshold)
+                    if (result.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= confidenceThreshold)
                     {
                         FilteredHighConfidenceResults = FilteredHighConfidenceResults.Append(result);
                     }
@@ -418,6 +422,7 @@ namespace Dynamo.ViewModels
             searchElementsCache = FilteredResults.Select(x => x.Model).ToList();
         }
 
+        // Full name and assembly name 
         private NodeModelTypeId GetInfoFromTypeId(string typeId)
         {
             if (typeId.Contains(','))
@@ -427,6 +432,14 @@ namespace Dynamo.ViewModels
             }
 
             return new NodeModelTypeId(typeId);
+        }
+
+        // Remove the digits at the end of the portname for variable input node
+        private string ParseVariableInputPortName(string portName)
+        {
+            string pattern = @"\d+$";
+            Regex rgx = new Regex(pattern);
+            return rgx.Replace(portName, string.Empty);
         }
 
         internal void PopulateAutoCompleteCandidates()
@@ -454,11 +467,6 @@ namespace Dynamo.ViewModels
                 else
                 {
                     FilteredResults = GetViewModelForNodeSearchElements(objectTypeMatchingElements);
-                }
-
-                foreach (var item in FilteredResults)
-                {
-                    item.Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = false;
                 }
             }
 
@@ -506,6 +514,20 @@ namespace Dynamo.ViewModels
                 vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
                 return vm;
             });
+        }
+
+        /// <summary>
+        /// Returns a NodeSearchElementViewModel for a NodeSearchElement
+        /// </summary>
+        private NodeSearchElementViewModel GetViewModelForNodeSearchElement(NodeSearchElement nodeSearchElement)
+        {
+            if (nodeSearchElement != null)
+            {
+                var vm = new NodeSearchElementViewModel(nodeSearchElement, this);
+                vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                return vm;
+            }
+            return null;
         }
 
         /// <summary>

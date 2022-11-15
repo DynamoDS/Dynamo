@@ -46,7 +46,12 @@ namespace Dynamo.ViewModels
             if (SearchTextChanged != null)
                 SearchTextChanged(this, e);
 
-            SearchCommand?.Execute(null);
+            // If this is trigged from NodeAutoCompleteSearchViewModel, we don't want to execute this SearchCommand on all nodes.
+            // The Search will later be triggered on a subset of filtered results.
+            if (this is NodeAutoCompleteSearchViewModel is false)
+            {
+                SearchCommand?.Execute(null);
+            }
         }
 
         #endregion
@@ -869,11 +874,6 @@ namespace Dynamo.ViewModels
             searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
             FilteredResults = searchResults;
-
-            foreach (var item in FilteredResults)
-            {
-                item.Model.AutoCompletionNodeMachineLearningInfo.ViewConfidenceScoreRecentUse = false;
-            }
 
             UpdateSearchCategories();
 
