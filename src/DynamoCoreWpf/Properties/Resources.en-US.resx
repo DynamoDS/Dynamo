@@ -3370,10 +3370,10 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Loading View Extensions...</value>
   </data>
   <data name="DynamoViewSettingShowStaticSplashScreen" xml:space="preserve">
-    <value>Show Static Splash Screen</value>
+    <value>Pause Splash Screen</value>
   </data>
   <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
-    <value>This setting controls whether user will be directed to an extra static splash screen after the intial launch.</value>
+    <value>Pauses the splash screen when loading is complete, enabling you to launch Dynamo manually, sign in to your Autodesk account, or import settings.</value>
   </data>
   <data name="LogoutMenuItemText" xml:space="preserve">
     <value>Sign Out</value>
