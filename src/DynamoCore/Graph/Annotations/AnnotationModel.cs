@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -287,6 +287,23 @@ namespace Dynamo.Graph.Annotations
             {
                 fontSize = value;
                 RaisePropertyChanged("FontSize");
+            }
+        }
+
+        private Guid groupStyle;
+        /// <summary>
+        /// Returns the Groupstyle applied
+        /// </summary>
+        public Guid GroupStyle
+        {
+            get
+            {
+                return groupStyle;
+            }
+            set
+            {
+                groupStyle = value;
+                RaisePropertyChanged("GroupStyle");
             }
         }
 
@@ -608,6 +625,9 @@ namespace Dynamo.Graph.Annotations
                 case "FontSize":
                     FontSize = Convert.ToDouble(value);
                     break;
+                case "GroupStyle":
+                    GroupStyle = new Guid(value);
+                    break;
                 case "Background":
                     Background = value;
                     break;  
@@ -634,6 +654,7 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("width", this.Width);
             helper.SetAttribute("height", this.Height);
             helper.SetAttribute("fontSize", this.FontSize);
+            helper.SetAttribute("groupStyle", this.GroupStyle);
             helper.SetAttribute("InitialTop", this.InitialTop);
             helper.SetAttribute("InitialHeight", this.InitialHeight);
             helper.SetAttribute("TextblockHeight", this.TextBlockHeight);
@@ -666,6 +687,7 @@ namespace Dynamo.Graph.Annotations
             this.height = helper.ReadDouble("height", DoubleValue);
             this.background = helper.ReadString("backgrouund", "");
             this.fontSize = helper.ReadDouble("fontSize", fontSize);
+            this.groupStyle =  helper.ReadGuid("groupStyle", this.GroupStyle);
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
@@ -710,7 +732,8 @@ namespace Dynamo.Graph.Annotations
             //On any Undo Operation, current values are restored to previous values.
             //These properties should be Raised, so that they get the correct value on Undo.
             RaisePropertyChanged("Background");
-            RaisePropertyChanged("FontSize");
+            RaisePropertyChanged("FontSize");           
+            RaisePropertyChanged("GroupStyle");
             RaisePropertyChanged("AnnotationText");
             RaisePropertyChanged("Nodes");
             this.ReportPosition();

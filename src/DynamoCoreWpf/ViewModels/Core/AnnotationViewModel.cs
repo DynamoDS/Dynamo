@@ -176,6 +176,19 @@ namespace Dynamo.ViewModels
         }
 
         [JsonIgnore]
+        public Guid GroupStyle
+        {
+            get
+            {
+                return annotationModel.GroupStyle;
+            }
+            set
+            {
+                annotationModel.GroupStyle = value;
+            }
+        }
+
+        [JsonIgnore]
         public IEnumerable<ModelBase> Nodes
         {
             get { return annotationModel.Nodes; }
@@ -1064,6 +1077,7 @@ namespace Dynamo.ViewModels
 
             Background = (Color)ColorConverter.ConvertFromString("#" + itemEntryParameter.HexColorString);
             FontSize = (double)itemEntryParameter.FontSize;
+            GroupStyle = itemEntryParameter.GroupStyleId;
 
             WorkspaceViewModel.HasUnsavedChanges = true;
         }
