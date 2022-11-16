@@ -131,6 +131,12 @@ namespace Dynamo.Notifications
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
             AddNotifications(notificationsModel.Notifications);
+
+            string setTitle = String.Format("window.setTitle('{0}');", Properties.Resources.NotificationsCenterTitle);
+            InvokeJS(setTitle);
+
+            string setBottomButtonText = String.Format("window.setBottomButtonText('{0}');", Properties.Resources.NotificationsCenterBottomButtonText);
+            InvokeJS(setBottomButtonText);
         }
 
         private void AddNotifications(List<NotificationItemModel> notifications)
