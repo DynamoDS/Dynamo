@@ -233,8 +233,8 @@ namespace WpfVisualizationTests
             OpenVisualizationTest("HelixWatch3dNodeViewModel_IgnoreIsVisible.dyn");
             Watch3DView view = FindFirstWatch3DNodeView();
             HelixWatch3DNodeViewModel helixNodeViewModel = view.ViewModel as HelixWatch3DNodeViewModel;
-            Assert.AreEqual(helixNodeViewModel.SceneItems.TotalMeshes(), 1);
-            Assert.AreEqual(BackgroundPreviewGeometry.TotalMeshes(), 0);
+            Assert.AreEqual(1, helixNodeViewModel.SceneItems.TotalMeshes());
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalMeshes());
         }
 
         [Test]
