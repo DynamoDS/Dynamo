@@ -122,5 +122,23 @@ namespace Dynamo.Notifications.Properties {
                 return ResourceManager.GetString("NotificationCenterDisabledMsg", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark all as read.
+        /// </summary>
+        public static string NotificationsCenterBottomButtonText {
+            get {
+                return ResourceManager.GetString("NotificationsCenterBottomButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications.
+        /// </summary>
+        public static string NotificationsCenterTitle {
+            get {
+                return ResourceManager.GetString("NotificationsCenterTitle", resourceCulture);
+            }
+        }
     }
 }
