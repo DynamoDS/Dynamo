@@ -1,4 +1,4 @@
-﻿
+
 //UNCOMMENT THIS DEFINE TO UPDATE THE REFERENCE IMAGES.
 //#define UPDATEIMAGEDATA
 //UNCOMMENT TO SAVE DEBUG IMAGES.
@@ -331,6 +331,17 @@ namespace WpfVisualizationTests
             Model.LibraryServices.ImportLibrary("FFITarget.dll");
             //This DYN renders a class in FFITarget that implements instancing.
             OpenVisualizationTest("instancing_no_instance_data.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void RenderInstancingWithEdges()
+        {
+            // Regression test for DYN-5329: 
+            // Rendering instances and multiple texture maps fails when edges are on.
+
+            OpenVisualizationTest("MultipleTextureMaps.dyn");
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
             RunCurrentModel();
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }

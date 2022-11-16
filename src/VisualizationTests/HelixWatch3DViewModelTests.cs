@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -9,11 +9,13 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using System.Xml;
+using CoreNodeModels;
 using CoreNodeModels.Input;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -22,6 +24,8 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
+using Dynamo.Visualization;
+using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
@@ -1183,7 +1187,37 @@ namespace WpfVisualizationTests
             tagGeometryWhenClickingItem(new[] { 0 }, 11, "Watch", 
                 n => n.ViewModel.NodeModel.InPorts[0].Connectors[0].Start.Owner);
         }
-        
+
+        [Test]
+        [Category("RegressionTests")]
+        public void AggregateRenderPackagesDoesntMutateRenderPackage()
+        {
+            // Regression test for DYN-5329:
+            // HelixWatch3DViewModel.AggregateRenderPackages event handler shouldn't mutate render packages.
+
+            OpenVisualizationTest("MultipleTextureMaps.dyn");
+
+            var output = ViewModel.CurrentSpace.NodeFromWorkspace<CreateList>(Guid.Parse("04fcc9b7f80b43c99923b0dac8930e77"));
+
+            output.RenderPackagesUpdated += TestRenderPackageUpdate;
+
+            output.RequestVisualUpdateAsync(ViewModel.Model.Scheduler, ViewModel.Model.EngineController, new HelixRenderPackageFactory(), true);
+        }
+
+        private void TestRenderPackageUpdate(NodeModel nodeModel, RenderPackageCache renderPackages) {
+            nodeModel.RenderPackagesUpdated -= TestRenderPackageUpdate;
+
+            if (renderPackages.Packages.FirstOrDefault() is HelixRenderPackage package)
+            {
+                // The graph output contains 168 mesh vertices.
+                // Before DYN-5329 we removed the parts of the mesh containing multiple texture maps after adding them to the scene.
+                Assert.AreEqual(168, package.Mesh.Positions.Count);
+            } else
+            {
+                throw new Exception("Could not find HelixRenderPackage?");
+            }
+        }
+
         private async void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels, 
             string nodeName, Func<NodeView,NodeModel> getGeometryOwnerNode, bool expandPreviewBubble = false)
         {
@@ -1308,7 +1342,7 @@ namespace WpfVisualizationTests
             Assert.AreEqual(0, BackgroundPreviewGeometry.NumberOfVisibleCurves());
             ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
             //this graph displays a grid, cones, cone edges, cube instances, cube edge instances.
-            Assert.AreEqual(3, BackgroundPreviewGeometry.NumberOfVisibleCurves());
+            Assert.AreEqual(2, BackgroundPreviewGeometry.NumberOfVisibleCurves());
             //cone and mesh
             Assert.AreEqual(2, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
             
