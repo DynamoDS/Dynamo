@@ -325,10 +325,19 @@ namespace Dynamo.Search.SearchElements
         /// Indicates if the icon is displayed to show the condifent score or by-usage
         /// </summary>
         public bool DisplayIcon { get; set; }
+
+        private double confidenceScorePercentage;
         /// <summary>
-        /// Rating of confidence
+        /// Confidence score in percentage
         /// </summary>
-        public double ConfidenceScore { get; set; }
+        public double ConfidenceScore
+        {
+            get { return confidenceScorePercentage; }
+            set
+            {
+                confidenceScorePercentage = value * 100;
+            }
+        }
         /// <summary>
         /// Indicates if the Node is part of ML result per use
         /// </summary>

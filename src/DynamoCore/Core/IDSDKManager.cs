@@ -87,6 +87,20 @@ namespace Dynamo.Core
             m.AddHeader("Authorization", $"Bearer {IDSDK_GetToken()}");
         }
 
+        /// <summary>
+        /// Checks if the user is logged in and adds the token to request header.
+        /// </summary>
+        internal void LoginRequest(ref RestRequest m, RestClient client)
+        {
+            if (LoginState == LoginState.LoggedIn)
+            {
+                m.AddHeader("Authorization", $"Bearer {IDSDK_GetToken()}");          
+            }
+            else {
+                throw new Exception("You must be logged in, to use this service.");
+            }
+        }
+
         private void OnLoginStateChanged(LoginState state)
         {
             if (LoginStateChanged != null)
@@ -177,6 +191,7 @@ namespace Dynamo.Core
             idsdk_status_code bRet = Client.SetProductConfig(oauthKey, "", productLineCode, DateTime.Now.Year.ToString(), "1.2.3.4", server);
             return Client.IsSuccess(bRet);
         }
+
         /// <summary>
         /// Returns the OAuth2 token for the current session, or an empty string if token is not available.
         /// </summary>
@@ -189,6 +204,7 @@ namespace Dynamo.Core
             }
             return String.Empty;
         }
+
         private bool Initialize()
         {
             idsdk_status_code bRet = Client.Init();
