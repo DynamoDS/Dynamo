@@ -67,7 +67,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Event to throw for Splash Screen to update Dynamo launching tasks
         /// </summary>
-        internal static event SplashScreenHandler RequestUpdateLoadBarStatus;
+        internal static event SplashScreenLoadingHandler RequestUpdateLoadBarStatus;
         internal static void OnRequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)
         {
             RequestUpdateLoadBarStatus?.Invoke(args);

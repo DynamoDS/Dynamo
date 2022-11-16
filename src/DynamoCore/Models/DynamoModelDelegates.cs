@@ -45,6 +45,6 @@ namespace Dynamo.Models
     /// This delegate is used in Splash Screen events
     /// </summary>
     /// <param name="args"></param>
-    internal delegate void SplashScreenHandler(SplashScreenLoadEventArgs args);
+    internal delegate void SplashScreenLoadingHandler(SplashScreenLoadEventArgs args);
 
 }

@@ -2612,6 +2612,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export Failed.
+        /// </summary>
+        public static string ExportSettingsFailedMessage {
+            get {
+                return ResourceManager.GetString("ExportSettingsFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extension tab added to the extensions side bar..
         /// </summary>
         public static string ExtensionAdded {
@@ -3381,7 +3390,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your custom settings can be imported here. Settings will be applied once Dynamo and any host program restarts..
+        ///   Looks up a localized string similar to Your custom settings can be imported here. Settings not exposed via Preferences panel will be applied once Dynamo and any host program restarts..
         /// </summary>
         public static string ImportPreferencesInfo {
             get {
@@ -8052,6 +8061,15 @@ namespace Dynamo.Wpf.Properties {
         public static string SplashScreenSignOut {
             get {
                 return ResourceManager.GetString("SplashScreenSignOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total loading time:.
+        /// </summary>
+        public static string SplashScreenTotalLoadingTimeLabel {
+            get {
+                return ResourceManager.GetString("SplashScreenTotalLoadingTimeLabel", resourceCulture);
             }
         }
         

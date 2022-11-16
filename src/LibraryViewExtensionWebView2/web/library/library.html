@@ -104,9 +104,8 @@
         LIBPLACEHOLDER
     </script>
 
-    <script>
+<script>
         var replaceImageDelayTime = 100;
-        var currentImage;
         let intervalId;
 
         // Disable the context menu
@@ -140,12 +139,12 @@
             false
         );
 
-        function replaceImages() {
+    async function replaceImages() {
             var allimages = document.getElementsByTagName("img");
             for(var j = 0; j < allimages.length; j++){
 
                 var element = allimages[j];
-                currentImage = element;
+                let currentImage = element;
                 var src = element.src
                 if (element.orgSrc != null) {
                     src = element.orgSrc;
@@ -155,18 +154,11 @@
                      continue;
                 }
                 //request the icon from the extension.
-                window.chrome.webview.hostObjects.bridgeTwoWay.GetBase64StringFromPath(src);
-            }
-        }
-
-        function completeReplaceImages(base64String, img_src) {
-            var images = document.getElementsByTagName('img');
-            for (var i = 0; i < images.length; ++i) {
-                if (images[i].src == img_src) {
-                    images[i].src = base64String;
+                var base64String = await window.chrome.webview.hostObjects.bridgeTwoWay.GetBase64StringFromPath(src);
+                if (currentImage != null) {
+                    currentImage.src = base64String;
                 }
-                    
-            }     
+            }
         }
 
         function refreshLibViewFromData(loadedTypes,layoutSpec){
@@ -218,6 +210,9 @@
             setTimeout(function () {
                 replaceImages();
             }, replaceImageDelayTime);
+            setTimeout(function () {
+                replaceImages();
+            }, replaceImageDelayTime*5);
         }, true);
 
         libController.on(libController.ItemMouseEnterEventName, function (arg) {
