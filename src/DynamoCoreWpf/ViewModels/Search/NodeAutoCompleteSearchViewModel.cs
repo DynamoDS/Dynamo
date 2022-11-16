@@ -36,7 +36,7 @@ namespace Dynamo.ViewModels
         private bool displayNoRecommendationsLowConfidence;
         private bool displayLowConfidence;
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
-        private double confidenceThreshold = 0.1;
+        private double confidenceThresholdPercentage = 10;
         private int numberOfResults = 10;
 
 
@@ -331,7 +331,7 @@ namespace Dynamo.ViewModels
 
                         if (viewModelElement != null)
                         {
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score);
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score * 100);
                             results.Add(viewModelElement);
                         }
                     }
@@ -349,7 +349,7 @@ namespace Dynamo.ViewModels
 
                         if (viewModelElement != null)
                         {
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score);
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score * 100);
                             results.Add(viewModelElement);
                         }
                     }
@@ -357,7 +357,7 @@ namespace Dynamo.ViewModels
 
                 foreach (var result in results)
                 {
-                    if (result.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= confidenceThreshold)
+                    if (result.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= confidenceThresholdPercentage)
                     {
                         FilteredHighConfidenceResults = FilteredHighConfidenceResults.Append(result);
                     }

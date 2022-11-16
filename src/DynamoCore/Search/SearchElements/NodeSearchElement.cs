@@ -326,18 +326,11 @@ namespace Dynamo.Search.SearchElements
         /// </summary>
         public bool DisplayIcon { get; set; }
 
-        private double confidenceScorePercentage;
         /// <summary>
         /// Confidence score in percentage
         /// </summary>
-        public double ConfidenceScore
-        {
-            get { return confidenceScorePercentage; }
-            set
-            {
-                confidenceScorePercentage = value * 100;
-            }
-        }
+        public double ConfidenceScore { get; set; }
+
         /// <summary>
         /// Indicates if the Node is part of ML result per use
         /// </summary>
