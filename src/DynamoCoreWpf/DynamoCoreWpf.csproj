@@ -69,7 +69,7 @@
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3107" />
+  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3176" />
   <PackageReference Include="Greg" Version="2.3.0.2505" />
   <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

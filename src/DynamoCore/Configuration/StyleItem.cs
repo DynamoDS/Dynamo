@@ -1,4 +1,5 @@
 using Dynamo.Core;
+using System;
 
 namespace Dynamo.Configuration
 {
@@ -11,6 +12,7 @@ namespace Dynamo.Configuration
         private string name;
         private bool isDefault = false;
         private int fontSize = 36;
+        private Guid groupStyleId;
 
         /// This property will contain the Group Name of the stored style
         public string Name
@@ -57,6 +59,19 @@ namespace Dynamo.Configuration
             {
                 fontSize = value;
                 RaisePropertyChanged(nameof(FontSize));
+            }
+        }
+
+        /// <summary>
+        /// This property will support the id of the Groupstyle
+        /// </summary>
+        public Guid GroupStyleId
+        {
+            get { return groupStyleId; }
+            set
+            {
+                groupStyleId = value;
+                RaisePropertyChanged(nameof(GroupStyleId));
             }
         }
     }
