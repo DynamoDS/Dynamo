@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -81,13 +81,12 @@ namespace Watch3DNodeModelsWpf
 
         protected override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var node = sender as NodeModel;
-            if (node == null)
+            if (!(sender is NodeModel node))
             {
                 return;
             }
 
-            if(e.PropertyName == nameof(node.CachedValue))
+            if (e.PropertyName == nameof(node.CachedValue))
             {
                 var connecteNodes = watchModel.ImediateUpstreamNodes();
                 if (!connecteNodes.Contains(node))
