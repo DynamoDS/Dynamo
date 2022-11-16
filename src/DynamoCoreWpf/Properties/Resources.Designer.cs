@@ -6855,11 +6855,56 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This means that WPF applications get the benefits of hardware acceleration for smoother graphics and all-around better performance (due to work being offloaded to graphics processing units [GPUs] instead of central processor units [CPUs])..
+        /// </summary>
+        public static string PreferencesWindowHardwareAccelerationTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesWindowHardwareAccelerationTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This means selection of geometry node will highlight the geometry produced from such node only among the graph from geometry background..
+        /// </summary>
+        public static string PreferencesWindowIsolateSelectedGeoTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesWindowIsolateSelectedGeoTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional.
         /// </summary>
         public static string PreferencesWindowLanguages {
             get {
                 return ResourceManager.GetString("PreferencesWindowLanguages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This means the line number on the left of Code Block Node enditor will be displayed or not..
+        /// </summary>
+        public static string PreferencesWindowShowCodeBlockNodeLineNumberTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesWindowShowCodeBlockNodeLineNumberTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This means display more detailed edge on geometry from Topology subtypes..
+        /// </summary>
+        public static string PreferencesWindowShowEdgesTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesWindowShowEdgesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This means the preview bubble below node will be displayed or not..
+        /// </summary>
+        public static string PreferencesWindowShowPreviewBubblesTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesWindowShowPreviewBubblesTooltip", resourceCulture);
             }
         }
         
