@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -111,11 +111,12 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
 
             //before trying to create a uri we have to handle resources that might 
             //be embedded into the resources.dlls
-            //these paths will start with ./dist
-            if (url.StartsWith(@"./dist"))
+            //these paths will start with ./dist or http://localhost/dist
+            if (url.StartsWith(@"./dist") || url.StartsWith(@"http://localhost/dist"))
             {
+                var urlAbs = url;
                 //make relative url a full uri
-                var urlAbs = url.Replace(@"./dist", @"http://localhost/dist");
+                urlAbs = url.Replace(@"./dist", @"http://localhost/dist");
                 var ext = string.Empty;
                 var stream = embeddedDllResourceProvider.GetResource(urlAbs, out ext);
                 if (stream != null)

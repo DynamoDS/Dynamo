@@ -109,6 +109,7 @@ namespace Dynamo.Graph.Workspaces
         public IEnumerable<string> Nodes;
         public bool HasNestedGroups;
         public double FontSize;
+        public Guid GroupStyleId;
         public string Background;
         public string Id;
         public string PinnedNode;
@@ -139,6 +140,7 @@ namespace Dynamo.Graph.Workspaces
                 this.Nodes.SequenceEqual(other.Nodes) &&
                 this.HasNestedGroups == other.HasNestedGroups &&
                 this.FontSize == other.FontSize &&
+                this.GroupStyleId == other.GroupStyleId &&
                 this.Background == other.Background &&
                 this.WidthAdjustment == other.WidthAdjustment &&
                 this.HeightAdjustment == other.HeightAdjustment;
@@ -2667,6 +2669,7 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.AnnotationDescriptionText = annotationViewInfo.DescriptionText;
             annotationModel.IsExpanded = annotationViewInfo.IsExpanded;
             annotationModel.FontSize = annotationViewInfo.FontSize;
+            annotationModel.GroupStyleId = annotationViewInfo.GroupStyleId;
             annotationModel.Background = annotationViewInfo.Background;
             annotationModel.GUID = annotationGuidValue;
             annotationModel.HeightAdjustment = annotationViewInfo.HeightAdjustment;

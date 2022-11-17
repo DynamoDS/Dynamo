@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -738,6 +738,10 @@ namespace Dynamo.Views
             }
             else if (e.ChangedButton == MouseButton.Right && e.OriginalSource == zoomBorder)
             {
+                // Setting the focus back to workspace explicitly as the workspace-focus is lost after interacting with a WebView2 component.
+                this.Focusable = true;
+                this.Focus();
+
                 // open if workspace is right-clicked itself 
                 // (not node, note, not buttons from viewControlPanel such as zoom, pan and so on)
                 ContextMenuPopup.IsOpen = true;

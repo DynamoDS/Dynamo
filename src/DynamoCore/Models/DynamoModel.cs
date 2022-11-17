@@ -642,7 +642,7 @@ namespace Dynamo.Models
             IsHeadless = config.IsHeadless;
 
             DebugSettings = new DebugSettings();
-            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode);
+            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode);
 
             foreach (var exception in exceptions)
             {
@@ -3005,6 +3005,7 @@ namespace Dynamo.Models
                 WidthAdjustment = model.WidthAdjustment,
                 Background = model.Background,
                 FontSize = model.FontSize,
+                GroupStyleId = model.GroupStyleId,
             };
 
             modelLookup.Add(model.GUID, annotationModel);
