@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -99,7 +99,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         {
             get
             {
-                return "FunctionNode";
+                return FunctionNode;
             }
         }
 
@@ -309,6 +309,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 this.ClearErrorsAndWarnings();
             }
         }
+
+        internal static string FunctionNode = "FunctionNode";
 
         /// <summary>
         ///     Validates passed Custom Node definition and synchronizes node with it.
