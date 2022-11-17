@@ -1,9 +1,8 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
-
 using Dynamo.ViewModels;
-
 using Greg.AuthProviders;
+using Dynamo.Models;
 
 namespace Dynamo.Wpf.Controls
 {
@@ -12,12 +11,12 @@ namespace Dynamo.Wpf.Controls
     /// </summary>
     public partial class Login : UserControl
     {
-        private readonly PackageManagerClientViewModel _viewModel;
+        private readonly DynamoModel _viewModel;
 
-        public Login(PackageManagerClientViewModel viewModel)
+        public Login(DynamoModel model)
         {
-            this.DataContext = viewModel;
-            this._viewModel = viewModel;
+            this.DataContext = model;
+            this._viewModel = model;
 
             InitializeComponent();
         }
@@ -32,7 +31,7 @@ namespace Dynamo.Wpf.Controls
             }
             else if (_viewModel.AuthenticationManager.LoginState == LoginState.LoggedOut)
             {
-                _viewModel.ToggleLoginStateCommand.Execute(null);
+                _viewModel.AuthenticationManager.ToggleLoginState();
             }
         }
     }
