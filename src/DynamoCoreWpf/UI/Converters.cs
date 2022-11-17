@@ -1272,7 +1272,7 @@ namespace Dynamo.Controls
                 return 350;
             }
 
-            return 250;
+            return 280;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
