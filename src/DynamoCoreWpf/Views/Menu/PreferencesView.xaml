@@ -251,24 +251,24 @@
                                            FontWeight="Bold"
                                            Content="{x:Static p:Resources.PreferencesViewRunSettingsLabel}" 
                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        <Grid>
-                                            <Label
-                                                Content="?"
-                                                FontSize="7"
-                                                Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"/>
-                                            <Ellipse Width="12" Height="12"
-                                                     Stroke="{StaticResource PreferencesWindowFontColor}"
-                                                     StrokeThickness="0.5"
-                                                     Margin="0 1 0 0"
-                                                     UseLayoutRounding="True"
-                                                     HorizontalAlignment="Center"
-                                                     VerticalAlignment="Center"></Ellipse>
-                                            <Grid.ToolTip>
+                                        <Label HorizontalAlignment="Left"
+                                                   Name="RunSettingsInfoLabel"
+                                                   VerticalAlignment="Center" 
+                                                   Height="26" 
+                                                   Width="53"
+                                                   Margin="0 3 0 0">
+                                            <Label.ToolTip>
                                                 <ToolTip Content="{x:Static p:Resources.PreferencesViewDefaultRunSettingsInfoTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                                            </Grid.ToolTip>
-                                        </Grid>
+                                            </Label.ToolTip>
+                                            <Label.Content>
+                                                <fa:ImageAwesome Width="15" 
+                                                                Height="15" 
+                                                                VerticalAlignment="Bottom" 
+                                                                HorizontalAlignment="Left" 
+                                                                Icon="QuestionCircleOutline" 
+                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </Label.Content>
+                                        </Label>
                                     </WrapPanel>
                                     <Grid Grid.Row="1">
                                         <Grid.ColumnDefinitions>
@@ -991,6 +991,24 @@
                                                        VerticalAlignment="Center"
                                                        Margin="10,0,0,0"
                                                        Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Label HorizontalAlignment="Left"
+                                                   Name="HardwareAccelerationInfoLabel"
+                                                   VerticalAlignment="Center" 
+                                                   Height="26" 
+                                                   Width="53"
+                                                   Margin="0 3 0 0">
+                                            <Label.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.PreferencesWindowHardwareAccelerationTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Label.ToolTip>
+                                            <Label.Content>
+                                                <fa:ImageAwesome Width="15" 
+                                                                Height="15" 
+                                                                VerticalAlignment="Bottom" 
+                                                                HorizontalAlignment="Left" 
+                                                                Icon="QuestionCircleOutline" 
+                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </Label.Content>
+                                        </Label>
                                     </StackPanel>
                                     
                                     <StackPanel Orientation="Horizontal" 
@@ -1006,6 +1024,24 @@
                                                 Margin="10,0,0,0"
                                                 VerticalAlignment="Center"
                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Label HorizontalAlignment="Left"
+                                                   Name="IsolateSelectedGeoInfoLabel"
+                                                   VerticalAlignment="Center" 
+                                                   Height="26" 
+                                                   Width="53"
+                                                   Margin="0 3 0 0">
+                                            <Label.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.PreferencesWindowIsolateSelectedGeoTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Label.ToolTip>
+                                            <Label.Content>
+                                                <fa:ImageAwesome Width="15" 
+                                                                Height="15" 
+                                                                VerticalAlignment="Bottom" 
+                                                                HorizontalAlignment="Left" 
+                                                                Icon="QuestionCircleOutline" 
+                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </Label.Content>
+                                        </Label>
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" 
@@ -1021,6 +1057,24 @@
                                                VerticalAlignment="Center"
                                                Margin="10,0,0,0"
                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Label HorizontalAlignment="Left"
+                                                   Name="ShowEdgesInfoLabel"
+                                                   VerticalAlignment="Center" 
+                                                   Height="26" 
+                                                   Width="53"
+                                                   Margin="0 3 0 0">
+                                            <Label.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.PreferencesWindowShowEdgesTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Label.ToolTip>
+                                            <Label.Content>
+                                                <fa:ImageAwesome Width="15" 
+                                                                Height="15" 
+                                                                VerticalAlignment="Bottom" 
+                                                                HorizontalAlignment="Left" 
+                                                                Icon="QuestionCircleOutline" 
+                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </Label.Content>
+                                        </Label>
                                     </StackPanel>
                                     
                                     <StackPanel Orientation="Horizontal" 
@@ -1036,6 +1090,24 @@
                                                VerticalAlignment="Center"
                                                Margin="10,0,0,0"
                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Label HorizontalAlignment="Left"
+                                                   Name="ShowCodeBlockNodeLineNumberInfoLabel"
+                                                   VerticalAlignment="Center" 
+                                                   Height="26" 
+                                                   Width="53"
+                                                   Margin="0 3 0 0">
+                                            <Label.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.PreferencesWindowShowCodeBlockNodeLineNumberTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Label.ToolTip>
+                                            <Label.Content>
+                                                <fa:ImageAwesome Width="15" 
+                                                                Height="15" 
+                                                                VerticalAlignment="Bottom" 
+                                                                HorizontalAlignment="Left" 
+                                                                Icon="QuestionCircleOutline" 
+                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </Label.Content>
+                                        </Label>
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" 
@@ -1051,6 +1123,24 @@
                                                VerticalAlignment="Center"
                                                Margin="10,0,0,0"
                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Label HorizontalAlignment="Left"
+                                                   Name="ShowPreviewBubblesInfoLabel"
+                                                   VerticalAlignment="Center" 
+                                                   Height="26" 
+                                                   Width="53"
+                                                   Margin="0 3 0 0">
+                                            <Label.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.PreferencesWindowShowPreviewBubblesTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Label.ToolTip>
+                                            <Label.Content>
+                                                <fa:ImageAwesome Width="15" 
+                                                                Height="15" 
+                                                                VerticalAlignment="Bottom" 
+                                                                HorizontalAlignment="Left" 
+                                                                Icon="QuestionCircleOutline" 
+                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </Label.Content>
+                                        </Label>
                                     </StackPanel>
                                 </Grid>
                             </Expander>
