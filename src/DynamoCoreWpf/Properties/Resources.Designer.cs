@@ -6855,7 +6855,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This means that WPF applications get the benefits of hardware acceleration for smoother graphics and all-around better performance (due to work being offloaded to graphics processing units [GPUs] instead of central processor units [CPUs])..
+        ///   Looks up a localized string similar to When toggled on, Dynamo benefits from hardware acceleration to improve smoothness of graphics and overall performance, as work is offloaded from central processing units (CPUs) to graphics processing units (GPUs)..
         /// </summary>
         public static string PreferencesWindowHardwareAccelerationTooltip {
             get {
@@ -6864,7 +6864,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This means selection of geometry node will highlight the geometry produced from such node only among the graph from geometry background..
+        ///   Looks up a localized string similar to When toggled on, selecting a geometry node will highlight the geometry it produces in the background 3D preview..
         /// </summary>
         public static string PreferencesWindowIsolateSelectedGeoTooltip {
             get {
@@ -6882,7 +6882,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This means the line number on the left of Code Block Node enditor will be displayed or not..
+        ///   Looks up a localized string similar to When toggled on, line numbers will be displayed in the Code Block node editor..
         /// </summary>
         public static string PreferencesWindowShowCodeBlockNodeLineNumberTooltip {
             get {
@@ -6891,7 +6891,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This means display more detailed edge on geometry from Topology subtypes..
+        ///   Looks up a localized string similar to When toggled on, more detailed edges will be displayed for geometry from topology subtypes..
         /// </summary>
         public static string PreferencesWindowShowEdgesTooltip {
             get {
@@ -6900,7 +6900,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This means the preview bubble below node will be displayed or not..
+        ///   Looks up a localized string similar to When toggled on, a preview of the node’s output will be displayed when hovering over the bottom of a node..
         /// </summary>
         public static string PreferencesWindowShowPreviewBubblesTooltip {
             get {
