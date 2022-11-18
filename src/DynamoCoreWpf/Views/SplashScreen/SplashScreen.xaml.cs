@@ -12,6 +12,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
@@ -247,6 +248,7 @@ namespace Dynamo.UI.Views
 
             // When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
             var userDataDir = new DirectoryInfo(GetUserDirectory());
+            PathHelper.CreateFolderIfNotExist(userDataDir.ToString());
             var webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
 
             webView.CreationProperties = new CoreWebView2CreationProperties
@@ -289,13 +291,19 @@ namespace Dynamo.UI.Views
             var elapsedTime = loadingTimer.ElapsedMilliseconds;
             totalLoadingTime += elapsedTime;
             loadingTimer = Stopwatch.StartNew();
-            await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', '{Wpf.Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms')");
+            if (webView.CoreWebView2 != null)
+            {
+                await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', '{Wpf.Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms')");
+            }
         }
 
         internal async void SetLoadingDone()
         {
-            await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
-            await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime('{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms')");
+            if (webView.CoreWebView2 != null)
+            {
+                await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
+                await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime('{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms')");
+            }
         }
 
         /// <summary>
@@ -317,10 +325,13 @@ namespace Dynamo.UI.Views
                 errorDescription = Dynamo.Wpf.Properties.Resources.SplashScreenImportSettingsFailDescription;
             }
             // Update UI
-            await webView.CoreWebView2.ExecuteScriptAsync("window.setImportStatus({" +
+            if (webView.CoreWebView2 != null)
+            {
+                await webView.CoreWebView2.ExecuteScriptAsync("window.setImportStatus({" +
                 $"status: {(int)importStatus}," +
                 $"importSettingsTitle: '{importSettingsTitle}'," +
                 $"errorDescription: '{errorDescription}'" + "})");
+            }
         }
 
         /// <summary>
@@ -328,9 +339,12 @@ namespace Dynamo.UI.Views
         /// </summary>
         internal async void SetSignInStatus(bool status)
         {
-            await webView.CoreWebView2.ExecuteScriptAsync("window.setSignInStatus({" +
+            if (webView.CoreWebView2 != null)
+            {
+                await webView.CoreWebView2.ExecuteScriptAsync("window.setSignInStatus({" +
                 $"signInTitle: '" + (status ? Wpf.Properties.Resources.SplashScreenSignOut : Wpf.Properties.Resources.SplashScreenSignIn).ToString() + "'," +
                 $"signInStatus: '" + status + "'})");
+            }
         }
 
         /// <summary>
@@ -338,12 +352,15 @@ namespace Dynamo.UI.Views
         /// </summary>
         internal async void SetLabels()
         {
-            await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
-               $"welcomeToDynamoTitle: '{Wpf.Properties.Resources.SplashScreenWelcomeToDynamo}'," +
-               $"launchTitle: '{Wpf.Properties.Resources.SplashScreenLaunchTitle}'," +
-               $"importSettingsTitle: '{Wpf.Properties.Resources.SplashScreenImportSettings}'," +
-               $"showScreenAgainLabel: '{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}'," +
-               $"importSettingsTooltipDescription: '{Wpf.Properties.Resources.ImportPreferencesInfo}'" + "})");
+            if (webView.CoreWebView2 != null)
+            {
+                await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
+                   $"welcomeToDynamoTitle: '{Wpf.Properties.Resources.SplashScreenWelcomeToDynamo}'," +
+                   $"launchTitle: '{Wpf.Properties.Resources.SplashScreenLaunchTitle}'," +
+                   $"importSettingsTitle: '{Wpf.Properties.Resources.SplashScreenImportSettings}'," +
+                   $"showScreenAgainLabel: '{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}'," +
+                   $"importSettingsTooltipDescription: '{Wpf.Properties.Resources.ImportPreferencesInfo}'" + "})");
+            }
         }
 
         /// <summary>
@@ -414,8 +431,11 @@ namespace Dynamo.UI.Views
         /// </summary>
         private void CloseWindow()
         {
-           Application.Current.Shutdown();
-           Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);
+            if (Application.Current != null)
+            {
+                Application.Current.Shutdown();
+                Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);
+            }
         }
 
         protected override void OnClosed(EventArgs e)
