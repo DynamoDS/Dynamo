@@ -418,7 +418,7 @@ namespace Dynamo.UI.Views
                 {
                     settings = serializer.Deserialize(reader) as PreferenceSettings;
                 }
-                return settings != null ? true : false;
+                return settings != null;
             }
             catch
             {
