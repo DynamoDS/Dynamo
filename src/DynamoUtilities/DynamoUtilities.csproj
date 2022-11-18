@@ -11,9 +11,22 @@
     <RootNamespace>DynamoUtilities</RootNamespace>
     <AssemblyName>DynamoUtilities</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-	<PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
-	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  <ItemGroup Label="Common Depenedencies">
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+	  <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0">
+      <GeneratePathProperty>true</GeneratePathProperty>
+      <IncludeAssets>none</IncludeAssets>
+    </PackageReference>
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>$(PkgSystem_Collections_Immutable)\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
