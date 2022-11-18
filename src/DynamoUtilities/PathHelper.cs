@@ -10,6 +10,18 @@ using Newtonsoft.Json;
 
 namespace DynamoUtilities
 {
+    internal static class OSHelper
+    {
+        public static bool IsWindows()
+        {
+#if NET6_0_OR_GREATER
+            return OperatingSystem.IsWindows();
+#else
+            return true;// net48
+#endif
+
+        }
+    }
     public class PathHelper
     {
         private static readonly string sizeUnits = " KB";
@@ -60,12 +72,9 @@ namespace DynamoUtilities
                 // We mark the path read only when
                 // 1. file read-only
                 // 2. user does not have write access to the folder
-#if NET6_0_OR_GREATER
+
                 // We have no cross platform Directory access writes APIs.
-                bool hasWritePermissionOnDir = OperatingSystem.IsWindows() ? HasWritePermissionOnDir(Finfo.Directory.ToString()) : true;
-#else
-                bool hasWritePermissionOnDir = HasWritePermissionOnDir(Finfo.Directory.ToString());
-#endif
+                bool hasWritePermissionOnDir = OSHelper.IsWindows() ? HasWritePermissionOnDir(Finfo.Directory.ToString()) : true;
                 return Finfo.IsReadOnly || !hasWritePermissionOnDir;
             }
             else
@@ -357,8 +366,8 @@ namespace DynamoUtilities
                 throw new DirectoryNotFoundException($"The input path: {directoryPath} does not exist or is not a folder");
             }
 
-            // TODO: figure this out for Linux
-            if (OperatingSystem.IsWindows())
+            // TODO: figure out read/write permissions for Linux
+            if (OSHelper.IsWindows())
             {
                 if (read && !PathHelper.HasReadPermissionOnDir(directoryPath))
                 {
