@@ -18,6 +18,14 @@ using NDesk.Options;
 
 namespace Dynamo.Applications
 {
+#if NET6_0_OR_GREATER
+    // Add the same signature for the OptionSet.Add method as found in the NDesk.Options package for net48
+    internal static class OptionsExtensions
+    {
+        public static OptionSet Add(this OptionSet opts, string prototype, string description, Action<string> action) => opts.Add(prototype, description, action);
+    }
+#endif
+
     public class StartupUtils
     {
         //TODO internal?
@@ -121,27 +129,27 @@ namespace Dynamo.Applications
                 var parentId = string.Empty;
                 var sessionId = string.Empty;
 
-                var optionsSet = new OptionSet().Add("o=|O=", () => "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
-                .Add("c=|C=", () => "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path," +
+                var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
+                .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path," +
                 "this option is only supported when run from DynamoSandbox", c => commandFilePath = c)
-                .Add("l=|L=", () => "Running Dynamo under a different locale setting", l => locale = l)
-                .Add("v=|V=", () => "Verbose, Instruct Dynamo to output all evalautions it performs to an xml file at this path", v => verbose = v)
-                .Add("x|X", () => "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." +
+                .Add("l=|L=", "Running Dynamo under a different locale setting", l => locale = l)
+                .Add("v=|V=", "Verbose, Instruct Dynamo to output all evalautions it performs to an xml file at this path", v => verbose = v)
+                .Add("x|X", "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." +
                 "File will have the .json extension and be located in the same directory as the original file.", x => convertFile = x != null)
-                .Add("h|H|help", () => "Get some help", h => showHelp = h != null)
-                .Add("g=|G=|geometry", () => "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g)
-                .Add("i=|I=|import", () => "Import, Instruct Dynamo to import an assembly as a node library. This argument should be a filepath to a single .dll" +
+                .Add("h|H|help", "Get some help", h => showHelp = h != null)
+                .Add("g=|G=|geometry", "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g)
+                .Add("i=|I=|import", "Import, Instruct Dynamo to import an assembly as a node library. This argument should be a filepath to a single .dll" +
                 " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i => importPaths.Add(i))
-                .Add("gp=|GP=|geometrypath=|GeometryPath=", () => "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.", gp => asmPath = gp)
-                .Add("k|K|keepalive", () => "Keepalive mode, leave the Dynamo process running until a loaded extension shuts it down.", k => keepAlive = k != null)
-                .Add("nc|NC|noconsole", () => "Don't rely on the console window to interact with CLI in Keepalive mode", nc => noConsole = nc != null)
-                .Add("ud=|UD=|userdata", () => "Specify user data folder to be used by PathResolver with CLI", ud => userDataFolder = ud)
-                .Add("cd=|CD=|commondata", () => "Specify common data folder to be used by PathResolver with CLI", cd => commonDataFolder = cd)
-                .Add("hn=|HN=|hostname", () => "Identify Dynamo variation associated with host", hn => hostname = hn)
-                .Add("si=|SI=|sessionId", () => "Identify Dynamo host analytics session id", si => sessionId = si)
-                .Add("pi=|PI=|parentId", () => "Identify Dynamo host analytics parent id", pi => parentId = pi)
-                .Add("da|DA|disableAnalytics", () => "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
-                .Add("cr=|CR=|cerLocation", () => "Specify the crash error report tool location on disk ", cr => cerLocation = cr);
+                .Add("gp=|GP=|geometrypath=|GeometryPath=", "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.", gp => asmPath = gp)
+                .Add("k|K|keepalive", "Keepalive mode, leave the Dynamo process running until a loaded extension shuts it down.", k => keepAlive = k != null)
+                .Add("nc|NC|noconsole", "Don't rely on the console window to interact with CLI in Keepalive mode", nc => noConsole = nc != null)
+                .Add("ud=|UD=|userdata", "Specify user data folder to be used by PathResolver with CLI", ud => userDataFolder = ud)
+                .Add("cd=|CD=|commondata", "Specify common data folder to be used by PathResolver with CLI", cd => commonDataFolder = cd)
+                .Add("hn=|HN=|hostname", "Identify Dynamo variation associated with host", hn => hostname = hn)
+                .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
+                .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
+                .Add("da|DA|disableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
+                .Add("cr=|CR=|cerLocation", "Specify the crash error report tool location on disk ", cr => cerLocation = cr);
                 optionsSet.Parse(args);
 
                 if (showHelp)
