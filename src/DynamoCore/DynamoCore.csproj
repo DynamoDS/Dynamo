@@ -18,9 +18,6 @@
     <Compile Remove="Graph\ConnectorPinModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System.Configuration" />
   </ItemGroup>

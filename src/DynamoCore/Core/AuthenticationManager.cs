@@ -1,8 +1,6 @@
 using System;
-using System.Windows.Input;
 using Greg;
 using Greg.AuthProviders;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Core
 {
@@ -56,8 +54,6 @@ namespace Dynamo.Core
             get { return authProvider; }
         }
 
-        public ICommand ToggleLoginStateCommand { get; private set; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationManager"/> class.
         /// </summary>
@@ -71,7 +67,6 @@ namespace Dynamo.Core
             if (this.authProvider != null)
             {
                 this.authProvider.LoginStateChanged += OnLoginStateChanged;
-                ToggleLoginStateCommand = new DelegateCommand(ToggleLoginState, CanToggleLoginState);
             }
         }
 

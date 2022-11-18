@@ -161,13 +161,7 @@
                                         </TextBlock.Style>
                                     </TextBlock>
                                 </StackPanel>
-
-                                <Button.ContextMenu>
-                                    <ContextMenu Style="{StaticResource ContextMenuStyle}" Width="150" Height="90">
-                                        <MenuItem Name="Logout" Command="{Binding Data={RelativeSource Self}, Path=SignOutCommand}" Header="{x:Static p:Resources.LogoutMenuItemText}"></MenuItem>
-                                    </ContextMenu>
-                                </Button.ContextMenu>
-
+                                
                                 <Button.Style >
                                     <Style TargetType="Button">
                                         <Setter Property="Background" Value="{x:Null}" />
@@ -218,6 +212,14 @@
                                 </Button.ToolTip>
                             </Button>
                         </MenuItem.Header>
+                        <MenuItem Focusable="False"
+                                              Header="{x:Static p:Resources.LogoutMenuItemText}"
+                                              Command="{Binding SignOutCommand}"
+                                              Name="logoutOption">
+                            <MenuItem.ToolTip>
+                                <ToolTip Content="Sign Out" Style="{StaticResource GenericToolTipLight}"/>
+                            </MenuItem.ToolTip>
+                        </MenuItem>
                     </MenuItem>
                     <MenuItem Name="exportMenu"
                               Cursor="Hand"

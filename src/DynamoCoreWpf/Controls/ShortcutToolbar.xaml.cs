@@ -53,7 +53,11 @@ namespace Dynamo.UI.Controls
 
             DataContext = dm;
             this._viewModel = dm;
-            SignOutCommand = new DelegateCommand(SignOut, CanSignOut);
+            if (_viewModel.AuthenticationManager.HasAuthProvider)
+            {
+                SignOutCommand = new DelegateCommand(SignOut, CanSignOut);
+            }
+            
         }
 
         private void exportMenu_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -73,8 +77,13 @@ namespace Dynamo.UI.Controls
             if (_viewModel.AuthenticationManager.LoginState == LoginState.LoggedIn)
             {
                 var button = (Button)sender;
-                button.ContextMenu.DataContext = button.DataContext;
-                button.ContextMenu.IsOpen = true;
+                MenuItem mi = button.Parent as MenuItem;
+                if (mi != null)
+                {
+                    var mi2 = mi.Items.OfType<MenuItem>().FirstOrDefault();
+                    mi2.DataContext = this;
+                    mi.IsSubmenuOpen = !mi.IsSubmenuOpen;
+                }
             }
             else if (_viewModel.AuthenticationManager.LoginState == LoginState.LoggedOut)
             {
@@ -82,30 +91,24 @@ namespace Dynamo.UI.Controls
                 if (_viewModel.AuthenticationManager.IsLoggedIn()) {
                     var tb = (((sender as Button).Content as StackPanel).Children.OfType<TextBlock>().FirstOrDefault() as TextBlock);
                     tb.Text = _viewModel.AuthenticationManager.Username;
+                    logoutOption.Visibility = Visibility.Visible;
                 }
             }
         }
 
-        /// <summary>
-        /// Toggle current login state
-        /// </summary>
         internal void SignOut()
         {
-            _viewModel.AuthenticationManager.ToggleLoginStateCommand.Execute(null);
+            _viewModel.AuthenticationManager.ToggleLoginState();
             if (!_viewModel.AuthenticationManager.IsLoggedIn())
             {
                 txtSignIn.Text = Wpf.Properties.Resources.SignInButtonText;
             }
         }
 
-        /// <summary>
-        /// Check if able to toggle login state
-        /// </summary>
         internal bool CanSignOut()
         {
             return _viewModel.AuthenticationManager.CanToggleLoginState();
         }
-
     }
 
     /// <summary>
