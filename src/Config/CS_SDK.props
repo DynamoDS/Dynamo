@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <Platforms>AnyCPU;NET60_ANYCPU</Platforms>
+    <Platforms>AnyCPU;NET60_Windows;NET60_Linux;</Platforms>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
@@ -35,6 +35,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('NET60'))" >
     <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform.Contains('Windows'))" >
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
   </PropertyGroup>
   <PropertyGroup>
     <BaseIntermediateOutputPath>int\$(TargetFramework)\</BaseIntermediateOutputPath>
