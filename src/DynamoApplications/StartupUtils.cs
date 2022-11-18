@@ -23,7 +23,7 @@ namespace Dynamo.Applications
     // Add the same signature for the OptionSet.Add method as found in the NDesk.Options package for net48
     internal static class OptionsExtensions
     {
-        public static OptionSet Add(this OptionSet opts, string prototype, string description, Action<string> action) => opts.Add(prototype, description, action);
+        public static OptionSet Add(this OptionSet opts, string prototype, string description, Action<string> action) => opts.Add(prototype, () => description, action);
     }
 #endif
 

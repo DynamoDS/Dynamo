@@ -57,11 +57,6 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
   </ItemGroup>
-  <ItemDefinitionGroup>
-    <ProjectReference>
-      <Private>false</Private>
-    </ProjectReference>
-  </ItemDefinitionGroup>
   <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
     <TestDependenciesPath>$(OutputPath)\..\..\..\test\test_dependencies</TestDependenciesPath>
   </PropertyGroup>

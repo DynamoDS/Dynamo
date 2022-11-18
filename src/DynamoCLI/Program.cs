@@ -15,11 +15,6 @@ namespace DynamoCLI
         [STAThread]
         static internal void Main(string[] args)
         {
-            var executingAssemblyPathName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var ass = System.Reflection.Assembly.LoadFile(Path.Combine(executingAssemblyPathName, "DynamoApplications.dll"));
-            System.Console.WriteLine("");
-            var cmdLineArgs = DynamoUtilities.OSHelper.IsWindows();
-            /*
             bool useConsole = true;
             
             try
@@ -78,7 +73,7 @@ namespace DynamoCLI
                     Console.WriteLine(e.StackTrace);
                 }
 
-            }*/
+            }
         }
 
         private static void RunKeepAlive(StartupUtils.CommandLineArguments cmdLineArgs)
