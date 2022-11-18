@@ -13,6 +13,7 @@ using Dynamo.Scheduler;
 using Dynamo.Updates;
 using DynamoApplications.Properties;
 using DynamoShapeManager;
+using DynamoUtilities;
 using Microsoft.Win32;
 using NDesk.Options;
 
@@ -33,7 +34,10 @@ namespace Dynamo.Applications
         /// Raised when loading of the ASM binaries fails. A failure message is passed as a parameter.
         /// </summary>
         public static event Action<string> ASMPreloadFailure;
-        
+
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         internal class SandboxLookUp : DynamoLookUp
         {
             public override IEnumerable<string> GetDynamoInstallLocations()
@@ -213,6 +217,9 @@ namespace Dynamo.Applications
         /// </summary>
         /// <param name="geometryFactoryPath">libG ProtoInterface path</param>
         /// <param name="preloaderLocation">libG folder path</param>
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
         {
             var exePath = Assembly.GetExecutingAssembly().Location;
@@ -235,6 +242,9 @@ namespace Dynamo.Applications
         ///for now, building an updatemanager instance requires finding Dynamo install location
         ///which if we are running on mac os or *nix will use different logic then SandboxLookup 
         /// </summary>
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         private static IUpdateManager InitializeUpdateManager()
         {
             var cfg = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
@@ -320,7 +330,7 @@ namespace Dynamo.Applications
 
         private static bool PreloadASM(string asmPath, out string geometryFactoryPath, out string preloaderLocation )
         {
-            if (string.IsNullOrEmpty(asmPath))
+            if (string.IsNullOrEmpty(asmPath) && OSHelper.IsWindows())
             {
                 geometryFactoryPath = string.Empty;
                 preloaderLocation = string.Empty;
@@ -386,7 +396,7 @@ namespace Dynamo.Applications
                 CLIMode = CLImode
             };
             config.AuthProvider = CLImode ? null : new Core.IDSDKManager();
-            config.UpdateManager = CLImode ? null : InitializeUpdateManager();
+            config.UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null;
             config.StartInTestMode = CLImode;
             config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
 

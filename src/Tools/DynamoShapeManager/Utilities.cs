@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 
 namespace DynamoShapeManager
@@ -174,6 +175,9 @@ namespace DynamoShapeManager
         /// or None otherwise.</returns>
         /// 
         [Obsolete("Please use version of this method which accepts precise collection of version objects.")]
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         public static LibraryVersion GetInstalledAsmVersion(List<LibraryVersion> versions, ref string location, string rootFolder)
         {
             if (string.IsNullOrEmpty(rootFolder))
@@ -248,7 +252,9 @@ namespace DynamoShapeManager
         /// of Tuples - these represent versions of ASM which are located on the user's machine.</param>
         /// <returns>Returns System.Version of ASM if any installed ASM is found, 
         /// or null otherwise.</returns>
-        /// 
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         public static Version GetInstalledAsmVersion2(IEnumerable<Version> versions, ref string location, string rootFolder, Func<string, IEnumerable> getASMInstallsFunc = null)
         {
             if (string.IsNullOrEmpty(rootFolder))
@@ -553,6 +559,9 @@ namespace DynamoShapeManager
         }
 
 
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         private static IEnumerable GetAsmInstallations(string rootFolder)
         {
             var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));

@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using Dynamo.Applications;
 using Dynamo.Models;
@@ -13,6 +15,11 @@ namespace DynamoCLI
         [STAThread]
         static internal void Main(string[] args)
         {
+            var executingAssemblyPathName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var ass = System.Reflection.Assembly.LoadFile(Path.Combine(executingAssemblyPathName, "DynamoApplications.dll"));
+            System.Console.WriteLine("");
+            var cmdLineArgs = DynamoUtilities.OSHelper.IsWindows();
+            /*
             bool useConsole = true;
             
             try
@@ -30,7 +37,8 @@ namespace DynamoCLI
                     var thread = new Thread(() => RunKeepAlive(cmdLineArgs));
 
                     thread.Name = "DynamoModelKeepAlive";
-                    thread.SetApartmentState(ApartmentState.STA);
+                    if (DynamoUtilities.OSHelper.IsWindows())
+                        thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
 
                     if (!useConsole)
@@ -70,7 +78,7 @@ namespace DynamoCLI
                     Console.WriteLine(e.StackTrace);
                 }
 
-            }
+            }*/
         }
 
         private static void RunKeepAlive(StartupUtils.CommandLineArguments cmdLineArgs)
@@ -85,8 +93,6 @@ namespace DynamoCLI
                     Console.WriteLine("DynamoCLI is running in keepalive mode");
                     Console.WriteLine("Press Enter to shutdown...");
                 }
-
-                System.Windows.Threading.Dispatcher.Run();
             }
             catch
             {

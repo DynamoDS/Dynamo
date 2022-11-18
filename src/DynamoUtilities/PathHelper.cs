@@ -12,12 +12,13 @@ namespace DynamoUtilities
 {
     internal static class OSHelper
     {
+        [SupportedOSPlatformGuard("windows")]
         public static bool IsWindows()
         {
 #if NET6_0_OR_GREATER
             return OperatingSystem.IsWindows();
 #else
-            return true;// net48
+            return true;// net48, assuming we will no deliver net48 on anything else but windows (also no more mono builds)
 #endif
 
         }
