@@ -23,7 +23,7 @@ namespace Dynamo.Configuration
         public string Id { get; set; }
 
         /// <summary>
-        /// Whether this folder is removable from the settings (Built-in folders are non-removable)
+        /// Is this folder is removable from the settings (Built-in folders are non-removable)
         /// </summary>
         public bool IsRemovable { get; set; } = true;
 
@@ -31,6 +31,16 @@ namespace Dynamo.Configuration
         /// The order of the folder
         /// </summary>
         public int Order { get; set; } = -1;
+
+        /// <summary>
+        /// Is the folder path a valid path
+        /// </summary>
+        public bool IsValid { get; set; } = true;
+
+        /// <summary>
+        /// Is the folder path the defualt directory of the list
+        /// </summary>
+        public bool IsDefault { get; set; }
     }
 
     /// <summary>
