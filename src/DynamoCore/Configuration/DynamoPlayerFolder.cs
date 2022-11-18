@@ -23,7 +23,7 @@ namespace Dynamo.Configuration
         public string Id { get; set; }
 
         /// <summary>
-        /// Is this folder is removable from the settings (Built-in folders are non-removable)
+        /// Is this folder removable from the settings (Built-in folders are non-removable)
         /// </summary>
         public bool IsRemovable { get; set; } = true;
 
@@ -38,13 +38,13 @@ namespace Dynamo.Configuration
         public bool IsValid { get; set; } = true;
 
         /// <summary>
-        /// Is the folder path the defualt directory of the list
+        /// Is the folder path the default directory of the list
         /// </summary>
         public bool IsDefault { get; set; }
     }
 
     /// <summary>
-    /// This Class defines a group of folders assciated with a Dynamo Player or Generative Design entry point.
+    /// This class defines a group of folders associated with a Dynamo Player or Generative Design entry point.
     /// </summary>
     public class DynamoPlayerFolderGroup
     {
