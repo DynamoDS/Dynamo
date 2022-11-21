@@ -12,7 +12,9 @@ namespace DynamoUtilities
 {
     internal static class OSHelper
     {
+#if NET6_0_OR_GREATER
         [SupportedOSPlatformGuard("windows")]
+#endif
         public static bool IsWindows()
         {
 #if NET6_0_OR_GREATER
