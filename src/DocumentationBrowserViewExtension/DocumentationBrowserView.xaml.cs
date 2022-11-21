@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,6 +23,9 @@ namespace Dynamo.DocumentationBrowser
         private readonly DocumentationBrowserViewModel viewModel;
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
+
+        private bool MessageIsHandled { get; set; }
+        private const int MESSAGE_HANDLE_DELAY = 2000;
 
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
@@ -150,8 +154,18 @@ namespace Dynamo.DocumentationBrowser
             if (string.Equals(message, "insert"))
             {
                 // Insert the graph inside the current worskspace
+                if (MessageIsHandled) return;
                 this.viewModel.InsertGraph();
             }
+
+            MessageIsHandled = true;
+            HandleInsert();
+        }
+
+        private async void HandleInsert()
+        {
+            await Task.Delay(MESSAGE_HANDLE_DELAY);
+            MessageIsHandled = false;
         }
 
         /// <summary>
