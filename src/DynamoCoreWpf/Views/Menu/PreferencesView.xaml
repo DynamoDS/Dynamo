@@ -748,9 +748,10 @@
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
+                                                <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
                                             <Label Grid.Row="0"
-                                                Margin="-8,0,10,0"
+                                                Margin="-8,0,10,3"
                                                 FontWeight="Normal"
                                                 Content="{x:Static p:Resources.PreferencesNodeAutocompleteMethod}" 
                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
@@ -772,6 +773,62 @@
                                                      IsChecked="{Binding Path=NodeAutocompleteMachineLearningIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
                                                      Content="{x:Static p:Resources.MachineLearning}"
                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
+                                            </Grid>
+                                            <Grid Grid.Row="2">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <StackPanel Margin="-60,10,0,0" Orientation="Horizontal" Grid.Row="0">
+                                                    <ToggleButton Name="MLRecommendationConfidenceThresholdToogle"
+                                                        Width="{StaticResource ToggleButtonWidth}"
+                                                        Height="{StaticResource ToggleButtonHeight}"
+                                                        VerticalAlignment="Center"
+                                                        IsChecked="{Binding Path=HideNodesBelowSpecificConfidenceLevelIsChecked}"
+                                                        Style="{StaticResource EllipseToggleButton1}"
+                                                        IsEnabled="{Binding Path=NodeAutocompleteMachineLearningIsChecked}"/>
+                                                    <Label Content="{x:Static p:Resources.HideNodesBelowSpecificConfidenceLevel}" 
+                                                        Margin="10,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        FontWeight="Regular"/>
+                                                    <Image Name="MLRecommendationConfidenceThresholdToolTip"
+                                                        Margin="5,5,0,0"
+                                                        Width="14"
+                                                        Height="14"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Style="{StaticResource QuestionIcon}"
+                                                        ToolTipService.ShowDuration="30000">
+                                                        <Image.ToolTip>
+                                                            <ToolTip Content="{x:Static p:Resources.HideNodesBelowSpecificConfidenceLevelInfo}" Style="{StaticResource GenericToolTipLight}"/>
+                                                        </Image.ToolTip>
+                                                    </Image>
+                                                </StackPanel>
+                                                <StackPanel Margin="-10,0,0,0" Orientation="Horizontal" Grid.Row="1">
+                                                    <Slider Width="300"
+                                                        Minimum="0"
+                                                        Maximum="100"
+                                                        Value="{Binding Path=MLRecommendationConfidenceLevel, Mode=TwoWay}" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0">
+                                                    </Slider>
+                                                </StackPanel>
+                                                <StackPanel Margin="-10,0,0,0" Orientation="Horizontal" Grid.Row="2">
+                                                    <Label Content="Number of results" FontWeight="Regular"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                    <TextBox Name="MLRecommendationResultsNumber"                                                        
+                                                        HorizontalAlignment="Left"
+                                                        Margin="2,0,0,0"
+                                                        MinWidth="25"
+                                                        Height="20"
+                                                        FontWeight="Regular"
+                                                        Text="{Binding BackupIntervalInMinutes}"
+                                                        Background="{StaticResource PreferencesWindowBackgroundColor}"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        BorderThickness="0,0,0,2"
+                                                        PreviewTextInput="NumberValidationTextBox"/>
+                                                </StackPanel>
                                             </Grid>
                                         </Grid>
                                     </StackPanel>

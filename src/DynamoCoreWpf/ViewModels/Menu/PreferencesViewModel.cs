@@ -280,6 +280,7 @@ namespace Dynamo.ViewModels
                 }
                 dynamoViewModel.HomeSpaceViewModel.NodeAutoCompleteSearchViewModel.ResetAutoCompleteSearchViewState();
                 RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
+                RaisePropertyChanged(nameof(NodeAutocompleteMachineLearningIsChecked));
             }
         }
 
@@ -850,6 +851,38 @@ namespace Dynamo.ViewModels
             {
                 preferenceSettings.EnableNodeAutoComplete = value;
                 RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Hide nodes below a specific confidence level" toogle button
+        /// </summary>
+        public bool HideNodesBelowSpecificConfidenceLevelIsChecked
+        {
+            get
+            {
+                return preferenceSettings.HideNodesBelowSpecificConfidenceLevel;
+            }
+            set
+            {
+                preferenceSettings.HideNodesBelowSpecificConfidenceLevel = value;
+                RaisePropertyChanged(nameof(HideNodesBelowSpecificConfidenceLevelIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Contais the confidence level of a ML recommendation
+        /// </summary>
+        public int MLRecommendationConfidenceLevel
+        {
+            get
+            {
+                return preferenceSettings.MLRecommendationConfidenceLevel;
+            }
+            set
+            {
+                preferenceSettings.MLRecommendationConfidenceLevel = value;
+                RaisePropertyChanged(nameof(MLRecommendationConfidenceLevel));
             }
         }
 

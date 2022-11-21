@@ -3372,6 +3372,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide nodes below a specified confidence level.
+        /// </summary>
+        public static string HideNodesBelowSpecificConfidenceLevel {
+            get {
+                return ResourceManager.GetString("HideNodesBelowSpecificConfidenceLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes..
+        /// </summary>
+        public static string HideNodesBelowSpecificConfidenceLevelInfo {
+            get {
+                return ResourceManager.GetString("HideNodesBelowSpecificConfidenceLevelInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide Wires.
         /// </summary>
         public static string HideWiresPopupMenuItem {
