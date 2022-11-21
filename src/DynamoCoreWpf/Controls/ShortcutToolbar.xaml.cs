@@ -1,15 +1,15 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
-using Greg.AuthProviders;
 using Dynamo.Wpf.ViewModels.Core;
 using Microsoft.Practices.Prism.ViewModel;
+using Greg.AuthProviders;
+using System.Linq;
+using System.Windows;
 
 namespace Dynamo.UI.Controls
 {
@@ -37,7 +37,6 @@ namespace Dynamo.UI.Controls
             get { return shortcutBarRightSideItems; }
         }
         private readonly Core.AuthenticationManager authManager;
-        public ICommand SignOutCommand { get; private set; }
 
         /// <summary>
         /// Construct a ShortcutToolbar.
@@ -82,27 +81,13 @@ namespace Dynamo.UI.Controls
             }
             else if (authManager.LoginState == LoginState.LoggedOut)
             {
-                authManager.ToggleLoginState();
+                authManager.ToggleLoginState(null);
                 if (authManager.IsLoggedIn()) {
                     var tb = (((sender as Button).Content as StackPanel).Children.OfType<TextBlock>().FirstOrDefault() as TextBlock);
                     tb.Text = authManager.Username;
                     logoutOption.Visibility = Visibility.Visible;
                 }
             }
-        }
-
-        internal void SignOut()
-        {
-            authManager.ToggleLoginState();
-            if (!authManager.IsLoggedIn())
-            {
-                txtSignIn.Text = Wpf.Properties.Resources.SignInButtonText;
-            }
-        }
-
-        internal bool CanSignOut()
-        {
-            return authManager.CanToggleLoginState();
         }
     }
 
@@ -121,7 +106,7 @@ namespace Dynamo.UI.Controls
         /// <summary>
         /// The Command that will be executed by this shortcut item.
         /// </summary>
-        public Commands.DelegateCommand ShortcutCommand { get; set; }
+        public DelegateCommand ShortcutCommand { get; set; }
 
         /// <summary>
         /// The path to the image for the disabled state of this shortcut item.

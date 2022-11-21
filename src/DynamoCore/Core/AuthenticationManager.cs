@@ -74,7 +74,7 @@ namespace Dynamo.Core
         /// <summary>
         /// Toggle current login state
         /// </summary>
-        internal void ToggleLoginState()
+        internal void ToggleLoginState(object o)
         {
             if (LoginState == LoginState.LoggedIn)
             {

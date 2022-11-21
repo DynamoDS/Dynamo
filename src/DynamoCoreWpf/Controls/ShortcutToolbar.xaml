@@ -150,10 +150,10 @@
                                             <Style TargetType="{x:Type TextBlock}">
                                                 <Setter Property="Text" Value="{x:Static p:Resources.SignInButtonText}" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding AuthenticationManager.LoginState}" Value="LoggedIn">
-                                                        <Setter Property="Text" Value="{Binding AuthenticationManager.Username}" />
+                                                    <DataTrigger Binding="{Binding LoginState}" Value="LoggedIn">
+                                                        <Setter Property="Text" Value="{Binding Username}" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding AuthenticationManager.LoginState}" Value="LoggingIn">
+                                                    <DataTrigger Binding="{Binding LoginState}" Value="LoggingIn">
                                                         <Setter Property="Text" Value="{x:Static p:Resources.SigningInButtonText}" />
                                                     </DataTrigger>
                                                 </Style.Triggers>

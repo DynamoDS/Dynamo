@@ -70,7 +70,7 @@ namespace Dynamo.Tests
 
             var authManager = new AuthenticationManager(authProviderMock.Object);
 
-            authManager.ToggleLoginState();
+            authManager.ToggleLoginState(null);
             Assert.True(loginCalled);
         }
 
