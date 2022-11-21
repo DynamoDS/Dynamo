@@ -1,0 +1,254 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByLengths",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "a7e2011e54174a1e9c7f881cf59addb7",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "7.3",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "c03ffe059a8449d9a79a1a0a0f882e2b",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "11.8",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "25161e6273e240baa88be4051c93a19f",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "5.7",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cuboid.ByLengths@double,double,double",
+      "Id": "053f62cfe4d542fc95be3fc6fbfae00f",
+      "Inputs": [
+        {
+          "Id": "ae9fc35cddb44590a31ea22355ecc7f5",
+          "Name": "width",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "18d3836ee41b4393a9ceac8b05de6767",
+          "Name": "length",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "29059e81f8f54ab0add77e184f5d29db",
+          "Name": "height",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c77ca1cb5297492198daa36908c48978",
+          "Name": "Cuboid",
+          "Description": "Cuboid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Cuboid centered at WCS origin, with width, length, and height.\n\nCuboid.ByLengths (width: double = 1, length: double = 1, height: double = 1): Cuboid"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 7.3,
+      "Id": "a7e2011e54174a1e9c7f881cf59addb7",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "30e2319e01ec49b09e5f3f8b46ceca45",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 11.8,
+      "Id": "c03ffe059a8449d9a79a1a0a0f882e2b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d1e0c0fba5084c04b45f2de8e68a5c47",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 5.7,
+      "Id": "25161e6273e240baa88be4051c93a19f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8456149bd4b74047be12bf5ef84d04db",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "30e2319e01ec49b09e5f3f8b46ceca45",
+      "End": "ae9fc35cddb44590a31ea22355ecc7f5",
+      "Id": "05ac2b41b6a043ad81d7a93d9204c8cb"
+    },
+    {
+      "Start": "d1e0c0fba5084c04b45f2de8e68a5c47",
+      "End": "18d3836ee41b4393a9ceac8b05de6767",
+      "Id": "cacd7bc282934118a407e6caac87af79"
+    },
+    {
+      "Start": "8456149bd4b74047be12bf5ef84d04db",
+      "End": "29059e81f8f54ab0add77e184f5d29db",
+      "Id": "6d03e0508a704be18eaf15b27c555040"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -15.261693000793457,
+      "EyeY": 12.899435997009277,
+      "EyeZ": 22.199378967285156,
+      "LookX": 16.40080451965332,
+      "LookY": -6.5293159484863281,
+      "LookZ": -19.483917236328125,
+      "UpX": 0.022474637255072594,
+      "UpY": 0.99939084053039551,
+      "UpZ": -0.026699542999267578
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Cuboid.ByLengths",
+        "Id": "053f62cfe4d542fc95be3fc6fbfae00f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 225.223757328193,
+        "Y": 7.90761350404313
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "a7e2011e54174a1e9c7f881cf59addb7",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -229.607919828025,
+        "Y": -24.4225701019238
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "c03ffe059a8449d9a79a1a0a0f882e2b",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -230.325555038155,
+        "Y": 32.6781429452228
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "25161e6273e240baa88be4051c93a19f",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -229.600733299942,
+        "Y": 90.7404303017535
+      }
+    ],
+    "Annotations": [],
+    "X": 463.676278586848,
+    "Y": 86.259061459222,
+    "Zoom": 0.948768827037605
+  }
+}

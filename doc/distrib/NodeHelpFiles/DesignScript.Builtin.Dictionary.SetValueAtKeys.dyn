@@ -1,0 +1,255 @@
+{
+  "Uuid": "e3059fb4-41be-4a9c-9329-5a813488751d",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "SetValueAtKeys",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DesignScript.Builtin.Dictionary.ByKeysValues@string[],var[]..[]",
+      "Id": "93b6e9e5a82a4e309ab4fa403cf19fd4",
+      "Inputs": [
+        {
+          "Id": "e9e147f158fa4aa3b0cb6cf86b9fc3af",
+          "Name": "keys",
+          "Description": "The string keys of the Dictionary\n\nstring[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d24b13de140d4ba29d4eb6aee57105c4",
+          "Name": "values",
+          "Description": "The values of the Dictionary\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "934ad766df1c4805b137b9d85e535c7d",
+          "Name": "dictionary",
+          "Description": "The result Dictionary",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a Dictionary with the supplied keys and values. The number of entries is the shorter of keys or values.\n\nDictionary.ByKeysValues (keys: string[], values: var[]..[]): Dictionary"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[\"foo\",\"bar\"];\n[1,2];",
+      "Id": "e7418f4696fd4e7db18d7b9dc77c2070",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "08a7005048ea4bff96562623e7a7c54d",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c3d5a60c8a054af18e4e71a0de10b4f7",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"bar\";\n42;",
+      "Id": "5d1bfe6158fb40b8916e8a4b284aba48",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cf59c168469945338a5358ba88876aea",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "39d586c387ab47b5aeca4aa12363e9f3",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DesignScript.Builtin.Dictionary.SetValueAtKeys@string[],var[]..[]",
+      "Id": "e70e2d3adaba48aea99d817fed9c76d1",
+      "Inputs": [
+        {
+          "Id": "b6502637cf92416ba3f9229a40ad2eb5",
+          "Name": "dictionary",
+          "Description": "DesignScript.Builtin.Dictionary",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6b0b249e876a468cafec069e4c7a4ccd",
+          "Name": "keys",
+          "Description": "The keys in the Dictionary to set. If the same key already exists, the value at that key will be modified.\n\nstring[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "02e70bccc8fb4d51a7eee9ae3201641d",
+          "Name": "values",
+          "Description": "The corresponding values to insert.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "caba3fc4ccee4345b9f7b7d428bac3cd",
+          "Name": "dictionary",
+          "Description": "A new Dictionary with the entries inserted.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produce a new Dictionary with a list of keys set to the new values, possibly overwriting existing key-value pairs. These two lists are expected to be of the same length. If not, the shorter of the two bounds the number of insertions.\n\nDictionary.SetValueAtKeys (keys: string[], values: var[]..[]): Dictionary"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "934ad766df1c4805b137b9d85e535c7d",
+      "End": "b6502637cf92416ba3f9229a40ad2eb5",
+      "Id": "206c6f8876f14c14acea488db8a4e84e"
+    },
+    {
+      "Start": "08a7005048ea4bff96562623e7a7c54d",
+      "End": "e9e147f158fa4aa3b0cb6cf86b9fc3af",
+      "Id": "469d5c2654784489ab9b63a93459feb0"
+    },
+    {
+      "Start": "c3d5a60c8a054af18e4e71a0de10b4f7",
+      "End": "d24b13de140d4ba29d4eb6aee57105c4",
+      "Id": "5c7e42505c2042bdb398c61bd8773249"
+    },
+    {
+      "Start": "cf59c168469945338a5358ba88876aea",
+      "End": "6b0b249e876a468cafec069e4c7a4ccd",
+      "Id": "406d2acd6e314901b24b7757ec58140d"
+    },
+    {
+      "Start": "39d586c387ab47b5aeca4aa12363e9f3",
+      "End": "02e70bccc8fb4d51a7eee9ae3201641d",
+      "Id": "e5f3e804a03b4b1a8f1180b70258ee11"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Dictionary.ByKeysValues",
+        "Id": "93b6e9e5a82a4e309ab4fa403cf19fd4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 616.5,
+        "Y": 377.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e7418f4696fd4e7db18d7b9dc77c2070",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 412.0,
+        "Y": 377.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "5d1bfe6158fb40b8916e8a4b284aba48",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 755.5,
+        "Y": 500.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Dictionary.SetValueAtKeys",
+        "Id": "e70e2d3adaba48aea99d817fed9c76d1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 931.5,
+        "Y": 427.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

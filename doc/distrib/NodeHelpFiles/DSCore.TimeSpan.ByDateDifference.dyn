@@ -1,0 +1,216 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByDateDifference",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "e076964d70cd4ed7ae9050a1e16001b5",
+      "Name": "Date Time",
+      "Type": "date",
+      "Value": "2000-11-14T11:57:00Z",
+      "Description": "Create a DateTime object from a formatted date and time string. Date and time must be of the format \"April 12, 1977 12:00 PM\""
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.TimeSpan.ByDateDifference@var,var",
+      "Id": "1533dcdf037b4368b18cf507a3c9b8a0",
+      "Inputs": [
+        {
+          "Id": "56637ddc7c5e4a76b9b98f52c1aaf5a6",
+          "Name": "date1",
+          "Description": "Starting DateTime.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5108c7f7ee4b45cd90d87ba1092629d0",
+          "Name": "date2",
+          "Description": "Ending DateTime.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ee01248324d141a99140721012eb4da7",
+          "Name": "timeSpan",
+          "Description": "TimeSpan",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Yields a new TimeSpan calculated from the time difference between two DateTimes.\n\nTimeSpan.ByDateDifference (date1: var, date2: var): var"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.Now",
+      "Id": "5260aee71aea4955a336fa5cdb8a1aee",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "156002a8d90145528ee88210e258a96a",
+          "Name": "dateTime",
+          "Description": "DateTime",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The current system date and time.\n\nDateTime.Now: var"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DateTime, CoreNodeModels",
+      "NodeType": "DateTimeInputNode",
+      "InputValue": "2000-11-14T11:57:00Z",
+      "Id": "e076964d70cd4ed7ae9050a1e16001b5",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6a488f66eec2427d956dc6205cb1f58c",
+          "Name": "",
+          "Description": "DateTime",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Create a DateTime object from a formatted date and time string. Date and time must be of the format \"April 12, 1977 12:00 PM\""
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "12247a152dc74bbd8532e5e836e0f451",
+      "Inputs": [
+        {
+          "Id": "6dfcdc28da9f409d803827301313e37e",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "85001e7ab10c441495c9f85a41489d28",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ee01248324d141a99140721012eb4da7",
+      "End": "6dfcdc28da9f409d803827301313e37e",
+      "Id": "3d32cf065a1043b5a89bdb81e62a7fb5"
+    },
+    {
+      "Start": "156002a8d90145528ee88210e258a96a",
+      "End": "56637ddc7c5e4a76b9b98f52c1aaf5a6",
+      "Id": "370fab6377c046bd87eb27a6eec2cd64"
+    },
+    {
+      "Start": "6a488f66eec2427d956dc6205cb1f58c",
+      "End": "5108c7f7ee4b45cd90d87ba1092629d0",
+      "Id": "131526e97ee3405c8fcaf88fa7805a24"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.1650753021240234,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.053885128349065781,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.068501941859722137
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "TimeSpan.ByDateDifference",
+        "Id": "1533dcdf037b4368b18cf507a3c9b8a0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 6.14391349339752,
+        "Y": 2773.9388341529825
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.Now",
+        "Id": "5260aee71aea4955a336fa5cdb8a1aee",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -312.85608650660248,
+        "Y": 2732.19395200666
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Date Time",
+        "Id": "e076964d70cd4ed7ae9050a1e16001b5",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -312.85608650660248,
+        "Y": 2840.19395200666
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "12247a152dc74bbd8532e5e836e0f451",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 318.14391349339752,
+        "Y": 2773.19395200666
+      }
+    ],
+    "Annotations": [],
+    "X": 656.450561331817,
+    "Y": -3554.84936606465,
+    "Zoom": 1.34249425219329
+  }
+}

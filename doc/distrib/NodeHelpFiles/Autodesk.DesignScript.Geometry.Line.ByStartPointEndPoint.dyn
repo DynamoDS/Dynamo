@@ -1,0 +1,346 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByStartPointEndPoint",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "5cc557ebe34a42df87df0d90e57975e9",
+      "Inputs": [
+        {
+          "Id": "f8d1279df7124c53ae2dc3e8a58a2480",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "351c1852b50a4938b479b7f2c76d2400",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "92275421294f442f86718d70a0f55d11",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b1b06a9c3cf8472d88e56883311f38ed",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "3;\n7;\n2;",
+      "Id": "c9a08a8c0caf4e21b0b93e7791ee1805",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7c1ace18b2bc4a8b8bb13dd480600d7b",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d5ecc476a14e438291e8b94143b2935e",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "87e82634db894a82a889f774bf988afd",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Id": "bfa96139bdff40088a47763072de4ee7",
+      "Inputs": [
+        {
+          "Id": "3e8ee5b038da4cf88e797fc421333414",
+          "Name": "startPoint",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "dd35b9308ec54197b114d773bd0557a1",
+          "Name": "endPoint",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "67380f7d54884f53afb77f6375a319b3",
+          "Name": "Line",
+          "Description": "Line",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "b5cf396cf89c4bf7bb6880e71acbc44c",
+      "Inputs": [
+        {
+          "Id": "849e087a46dd48e998fbc57498ca8b88",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ff293077dc11458ebc8b140300d1a2d2",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3c0f73376bb945d89fe5ed46448181fe",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0697c18927aa41a7a60e87e2067ed684",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1;\n7;\n-2;",
+      "Id": "c5beb26ea32047bab3245fad113c0e20",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c08879c04b5b41839cc8df5be0b0ef5b",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7d45c989b8214e05b9967a4aa4260734",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e371ff900c1241b9b21e85b59a148c99",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "b1b06a9c3cf8472d88e56883311f38ed",
+      "End": "3e8ee5b038da4cf88e797fc421333414",
+      "Id": "3bb6a1a643ac4f6193bde538be2cb3e8"
+    },
+    {
+      "Start": "7c1ace18b2bc4a8b8bb13dd480600d7b",
+      "End": "f8d1279df7124c53ae2dc3e8a58a2480",
+      "Id": "680188e228e2450089a7a0bbda9c44dc"
+    },
+    {
+      "Start": "d5ecc476a14e438291e8b94143b2935e",
+      "End": "351c1852b50a4938b479b7f2c76d2400",
+      "Id": "20bbc2be6103413e88b5fd06d82ef555"
+    },
+    {
+      "Start": "87e82634db894a82a889f774bf988afd",
+      "End": "92275421294f442f86718d70a0f55d11",
+      "Id": "98ae4b9e829241c285ab8c7f8da84140"
+    },
+    {
+      "Start": "0697c18927aa41a7a60e87e2067ed684",
+      "End": "dd35b9308ec54197b114d773bd0557a1",
+      "Id": "32a1245d7e354c2ca2db1cbb97bf6583"
+    },
+    {
+      "Start": "c08879c04b5b41839cc8df5be0b0ef5b",
+      "End": "849e087a46dd48e998fbc57498ca8b88",
+      "Id": "cdfa0dd9a0554143b408e58aab86068b"
+    },
+    {
+      "Start": "7d45c989b8214e05b9967a4aa4260734",
+      "End": "ff293077dc11458ebc8b140300d1a2d2",
+      "Id": "e4d8a9778dd743a7bb7300bec8cf8f43"
+    },
+    {
+      "Start": "e371ff900c1241b9b21e85b59a148c99",
+      "End": "3c0f73376bb945d89fe5ed46448181fe",
+      "Id": "da71a0eceb3d4e16a731b02389035086"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -9.87255559137316,
+      "EyeY": 4.68470249882679,
+      "EyeZ": 2.421449176642561,
+      "LookX": 4.839860049438478,
+      "LookY": -4.1547846954345706,
+      "LookZ": -10.774523431396485,
+      "UpX": 0.04993642121553421,
+      "UpY": 0.99254614114761353,
+      "UpZ": -0.11116874217987061
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "5cc557ebe34a42df87df0d90e57975e9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 261.884188249431,
+        "Y": -35.7186010755869
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "c9a08a8c0caf4e21b0b93e7791ee1805",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 153.491957819154,
+        "Y": -24.3366222112187
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Line.ByStartPointEndPoint",
+        "Id": "bfa96139bdff40088a47763072de4ee7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 551.65737560365051,
+        "Y": -36.667099314284243
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "b5cf396cf89c4bf7bb6880e71acbc44c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 261.884188249431,
+        "Y": 109.483166432463
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "c5beb26ea32047bab3245fad113c0e20",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 153.491957819154,
+        "Y": 120.865145296831
+      }
+    ],
+    "Annotations": [],
+    "X": 278.173702852672,
+    "Y": 76.6580573566929,
+    "Zoom": 1.05429821501133
+  }
+}

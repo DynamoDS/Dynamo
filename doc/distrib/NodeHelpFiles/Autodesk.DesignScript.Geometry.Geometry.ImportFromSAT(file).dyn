@@ -1,0 +1,31 @@
+<Workspace Version="1.0.0.1180" X="-45.759785098264" Y="-138.129954252474" zoom="1.22704736140834" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="29fab6f7-87b1-4d21-85ae-0b20d640a552" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Geometry.ImportFromSAT" x="623.954753889028" y="244.983638554215" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT@var" />
+    <CoreNodeModels.Input.StringInput guid="25939faa-f460-4614-8897-c187a64a4ed3" type="CoreNodeModels.Input.StringInput" nickname="String" x="207.121488446358" y="244.983638554215" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>C:\Users\Username\Desktop\example.sat</System.String>
+      <System.String value="C:\Users\Username\Desktop\example.sat" />
+    </CoreNodeModels.Input.StringInput>
+    <CoreNodeModels.Input.StringInput guid="5d7c8bea-d404-44b1-a155-2c14c6adce59" type="CoreNodeModels.Input.StringInput" nickname="String" x="-1666.58233311069" y="468.434296100389" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>C:\Users\Christopher\Desktop\test.sat</System.String>
+      <System.String value="C:\Users\Christopher\Desktop\test.sat" />
+    </CoreNodeModels.Input.StringInput>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="db85456a-504c-4e40-afae-532a3db0c2c7" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Geometry.ImportFromSAT" x="-1224.35873670761" y="442.87097184357" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT@var" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="81a2250f-231e-4b22-aaf6-1fd4a414c5e3" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Geometry.ImportFromSAT" x="604.754753889028" y="147.025766882479" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT@string" />
+    <CoreNodeModels.Input.Filename guid="a93498fc-2496-430a-86ed-dddf8fc84591" type="CoreNodeModels.Input.Filename" nickname="File Path" x="279.921488446358" y="147.025766882479" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>No file selected.</System.String>
+      <HintPath>No file selected.</HintPath>
+    </CoreNodeModels.Input.Filename>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="25939faa-f460-4614-8897-c187a64a4ed3" start_index="0" end="29fab6f7-87b1-4d21-85ae-0b20d640a552" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="5d7c8bea-d404-44b1-a155-2c14c6adce59" start_index="0" end="db85456a-504c-4e40-afae-532a3db0c2c7" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="a93498fc-2496-430a-86ed-dddf8fc84591" start_index="0" end="81a2250f-231e-4b22-aaf6-1fd4a414c5e3" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-0.643929535495439" eyeY="4.45627700118537" eyeZ="5.83865487816769" lookX="2.17122895308702" lookY="-2.3521646991776" lookZ="-10.4942732732539" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

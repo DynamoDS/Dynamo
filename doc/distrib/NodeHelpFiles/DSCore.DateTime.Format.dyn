@@ -1,0 +1,172 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Format",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "bc22ee1442c24426871e3ba069ea4bc1",
+      "Name": "Date Time",
+      "Type": "date",
+      "Value": "2015-03-14T21:26:00Z",
+      "Description": "Create a DateTime object from a formatted date and time string. Date and time must be of the format \"April 12, 1977 12:00 PM\""
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DateTime, CoreNodeModels",
+      "NodeType": "DateTimeInputNode",
+      "InputValue": "2015-03-14T21:26:00Z",
+      "Id": "bc22ee1442c24426871e3ba069ea4bc1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "20fc74cb27d14e6983136c9b57e6db76",
+          "Name": "",
+          "Description": "DateTime",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Create a DateTime object from a formatted date and time string. Date and time must be of the format \"April 12, 1977 12:00 PM\""
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.Format@var,string",
+      "Id": "9a8da385a6ec4fe0bddf2dbfac6e2975",
+      "Inputs": [
+        {
+          "Id": "4479aee6baf04bdeb97c4aef763391e4",
+          "Name": "dateTime",
+          "Description": "The DateTime to format.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "02918d5774a04457ae9e21370b943f3c",
+          "Name": "format",
+          "Description": "String representation of the date format. Uses InvariantCulture, which outputs independent of the user's operating system language. Defaults to standard format \"F\" : \"Tuesday, 21 February 2017 23:02:43\" Search \"MSDN Custom Date and Time Format Strings\" for a comprehensive list of format specifiers.\n\nstring\nDefault value : \"F\"",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e2dac6aab0fd4b0b87e1861510687bfc",
+          "Name": "string",
+          "Description": "The specified date and time as a string, in the specified format.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Return a specified date and time as a string, in the specified format.\n\nDateTime.Format (dateTime: var, format: string = \"F\"): string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"yyyyddMM\";",
+      "Id": "43db830e63d04c8189c090ac790a119e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4c0100b2ea234953b2b7790f1fb9b636",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "20fc74cb27d14e6983136c9b57e6db76",
+      "End": "4479aee6baf04bdeb97c4aef763391e4",
+      "Id": "cbb94bf42a6543b5bd9361527ceca101"
+    },
+    {
+      "Start": "4c0100b2ea234953b2b7790f1fb9b636",
+      "End": "02918d5774a04457ae9e21370b943f3c",
+      "Id": "f805a3e3a5124fc585c858464e8341e5"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Date Time",
+        "Id": "bc22ee1442c24426871e3ba069ea4bc1",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 346.27380043508651,
+        "Y": 102.281334036998
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.Format",
+        "Id": "9a8da385a6ec4fe0bddf2dbfac6e2975",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 634.81353961026946,
+        "Y": 119.03287730021196
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "43db830e63d04c8189c090ac790a119e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 444.27380043508651,
+        "Y": 166.95013484115776
+      }
+    ],
+    "Annotations": [],
+    "X": -255.37954568727059,
+    "Y": 127.05189670556376,
+    "Zoom": 1.2484436539722277
+  }
+}

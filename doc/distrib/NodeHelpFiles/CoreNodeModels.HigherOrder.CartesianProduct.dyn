@@ -1,0 +1,197 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CartesianProduct",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1..5;",
+      "Id": "932235efc635433497bdb360a8831611",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fa38f48e3221409eb0762d6c8ac36d7c",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.HigherOrder.CartesianProduct, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "8fc027716e8541debcc14dbfba123b01",
+      "Inputs": [
+        {
+          "Id": "232a56ba04d44b409eb4fcb4a581f1b2",
+          "Name": "comb",
+          "Description": "Combinator",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9377a417b431464a90555bd9204b2cca",
+          "Name": "list1",
+          "Description": "List #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ee8506cc37f148e9be5e0fe9f09b36d3",
+          "Name": "list2",
+          "Description": "List #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e65338eeb7b544f28a7c5389f71b0484",
+          "Name": "combined",
+          "Description": "Combined lists",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Applies a combinator to each pair in the cartesian product of two sequences"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "+@var[]..[],var[]..[]",
+      "Id": "abcf67be169a47ff857e22c61831ff02",
+      "Inputs": [
+        {
+          "Id": "bfdb1c4aa9a44f6499e0b34a3836c023",
+          "Name": "x",
+          "Description": "x value.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "155a081618eb4cf385b2d1261479f002",
+          "Name": "y",
+          "Description": "y value.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1e60e06a8764408184738daea230c269",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Adds x to y.\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "fa38f48e3221409eb0762d6c8ac36d7c",
+      "End": "9377a417b431464a90555bd9204b2cca",
+      "Id": "8a6f73a83175434aae4c9c2753714c05"
+    },
+    {
+      "Start": "fa38f48e3221409eb0762d6c8ac36d7c",
+      "End": "ee8506cc37f148e9be5e0fe9f09b36d3",
+      "Id": "94a279e23bad4a62890e585873f418f9"
+    },
+    {
+      "Start": "1e60e06a8764408184738daea230c269",
+      "End": "232a56ba04d44b409eb4fcb4a581f1b2",
+      "Id": "e504f389c0ee4a0db05437e93abac13e"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.2.6826",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "932235efc635433497bdb360a8831611",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 687.0,
+        "Y": 264.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.CartesianProduct",
+        "Id": "8fc027716e8541debcc14dbfba123b01",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1029.7300154148579,
+        "Y": 103.42113755835899
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "+",
+        "Id": "abcf67be169a47ff857e22c61831ff02",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 748.70224369747393,
+        "Y": 73.026471917578576
+      }
+    ],
+    "Annotations": [],
+    "X": -69.664047953591648,
+    "Y": 2.4185881744339213,
+    "Zoom": 1.130842140625
+  }
+}

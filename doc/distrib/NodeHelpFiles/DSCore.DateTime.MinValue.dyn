@@ -1,0 +1,119 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "MinValue",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "24a8b5ecbae94670a6126866cf966c41",
+      "Inputs": [
+        {
+          "Id": "7cae14ed4853486c8229afff3474aeef",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "debf1206ca6d414493113e5d8445784c",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.MinValue",
+      "Id": "fdebd33c16444ce68350713d956e2d9a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ad65338a090549d18dbba6999226c1ad",
+          "Name": "dateTime",
+          "Description": "DateTime",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The earliest date and time that can be represented.\n\nDateTime.MinValue: var"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ad65338a090549d18dbba6999226c1ad",
+      "End": "7cae14ed4853486c8229afff3474aeef",
+      "Id": "8ad4de4ccdc64021858f560020809b65"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.1650753021240234,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.053885128349065781,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.068501941859722137
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "24a8b5ecbae94670a6126866cf966c41",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 208.827291595598,
+        "Y": 2730.62574389097
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.MinValue",
+        "Id": "fdebd33c16444ce68350713d956e2d9a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 38.793061180206593,
+        "Y": 2730.62574389097
+      }
+    ],
+    "Annotations": [],
+    "X": 62.733745553587994,
+    "Y": -4780.49245727919,
+    "Zoom": 1.78921269716459
+  }
+}

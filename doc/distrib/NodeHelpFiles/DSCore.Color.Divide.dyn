@@ -1,0 +1,434 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Divide",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "61a5d01511424186ab98ddb0a4e0f414",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "255",
+      "MaximumValue": 255.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "dc64ca0cf122445f9e9c9a2958bf1eae",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "255",
+      "MaximumValue": 255.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "d999c8512c7744d2bf2f55ab3423e3f0",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "2",
+      "MaximumValue": 10.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cuboid.ByLengths@double,double,double",
+      "Id": "d2e5d53ec88b419eb295e0e4c22c7e9f",
+      "Inputs": [
+        {
+          "Id": "b679cb44a34348929847c8c10e1847a6",
+          "Name": "width",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3977955183a843d385d0e89bc31204cf",
+          "Name": "length",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "80ba047b7c684cd9a0e08d8fa394568b",
+          "Name": "height",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fc9dc82fec0d4ccfa9fc5aa8e987abb8",
+          "Name": "Cuboid",
+          "Description": "Cuboid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Cuboid centered at WCS origin, with width, length, and height.\n\nCuboid.ByLengths (width: double = 1, length: double = 1, height: double = 1): Cuboid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Modifiers.GeometryColor.ByGeometryColor@Autodesk.DesignScript.Geometry.Geometry,DSCore.Color",
+      "Id": "08e38b61b5dc4d80af4807779acb98e8",
+      "Inputs": [
+        {
+          "Id": "41aee8829f8c4b79b4d4db049a6cc8f1",
+          "Name": "geometry",
+          "Description": "Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "483031cf2b76471b9c197d86fe414e95",
+          "Name": "color",
+          "Description": "Color",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "06c8b8fecba6400eb2a3857e696c2e9d",
+          "Name": "GeometryColor",
+          "Description": "GeometryColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "GeometryColor.ByGeometryColor (geometry: Geometry, color: Color): GeometryColor"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Color.ByARGB@int,int,int,int",
+      "Id": "1b541642e79940c9a57917ed58fdb3ca",
+      "Inputs": [
+        {
+          "Id": "b2e8897fe05c4ca58f8f2649915e8206",
+          "Name": "a",
+          "Description": "The alpha value.\n\nint\nDefault value : 255",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f16fee5d54634dbf8c6c63c976e9538a",
+          "Name": "r",
+          "Description": "The red value.\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "14bac61803dd4ed5987876a0f4935b38",
+          "Name": "g",
+          "Description": "The green value.\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8a5c4e9edf2845509bc722a85434e6ee",
+          "Name": "b",
+          "Description": "The blue value.\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9512c313d5fe4c9cb3f6e18f8a465fc8",
+          "Name": "color",
+          "Description": "Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Construct a color by alpha, red, green, and blue components.\n\nColor.ByARGB (a: int = 255, r: int = 0, g: int = 0, b: int = 0): Color"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 255.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "InputValue": 255.0,
+      "Id": "61a5d01511424186ab98ddb0a4e0f414",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "21d5f0b0024e420ca2aa0cf6e69e00d6",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 255.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "InputValue": 255.0,
+      "Id": "dc64ca0cf122445f9e9c9a2958bf1eae",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "994e1d1b47f4415bad029d0a031592a3",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Color.Divide@DSCore.Color,double",
+      "Id": "0b37d7adddff47c5a327a366d52c80cd",
+      "Inputs": [
+        {
+          "Id": "0c9850bf19704aaa88ee44210a21041b",
+          "Name": "c1",
+          "Description": "Color",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a0530594e158447ca06cb44492a1cf90",
+          "Name": "div",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7e09fdaf97c0492eb13aaa7fbc455a1c",
+          "Name": "Color",
+          "Description": "Color",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Divide an input color with a number divider to produce a brighter color and remove color tint\n\nColor.Divide (c1: Color, div: double): Color"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 10.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 2.0,
+      "Id": "d999c8512c7744d2bf2f55ab3423e3f0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "35fc5c99f9e446e081bdce59ad1cfa92",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "fc9dc82fec0d4ccfa9fc5aa8e987abb8",
+      "End": "41aee8829f8c4b79b4d4db049a6cc8f1",
+      "Id": "b206afd886284ea4b808a0f74e196619"
+    },
+    {
+      "Start": "9512c313d5fe4c9cb3f6e18f8a465fc8",
+      "End": "0c9850bf19704aaa88ee44210a21041b",
+      "Id": "b9b247a5c06d48c0b137893f14ff5bb4"
+    },
+    {
+      "Start": "21d5f0b0024e420ca2aa0cf6e69e00d6",
+      "End": "b2e8897fe05c4ca58f8f2649915e8206",
+      "Id": "aebe61d2e2e9413c961a0c65cb58e591"
+    },
+    {
+      "Start": "994e1d1b47f4415bad029d0a031592a3",
+      "End": "f16fee5d54634dbf8c6c63c976e9538a",
+      "Id": "687a92afbb7b47a785f5da6a72587ce2"
+    },
+    {
+      "Start": "7e09fdaf97c0492eb13aaa7fbc455a1c",
+      "End": "483031cf2b76471b9c197d86fe414e95",
+      "Id": "6de056e169b8482f95a167d7c8b7d199"
+    },
+    {
+      "Start": "35fc5c99f9e446e081bdce59ad1cfa92",
+      "End": "a0530594e158447ca06cb44492a1cf90",
+      "Id": "32480d59973d4c98aa9964fb8a97fa5e"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -2.2293465137481689,
+      "EyeY": 2.0006663799285889,
+      "EyeZ": 3.4291989803314209,
+      "LookX": 4.28852653503418,
+      "LookY": -2.5877583026885986,
+      "LookZ": -7.3715720176696777,
+      "UpX": 0.039453908801078796,
+      "UpY": 0.99691730737686157,
+      "UpZ": -0.067817538976669312
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Cuboid.ByLengths",
+        "Id": "d2e5d53ec88b419eb295e0e4c22c7e9f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 720.700031022527,
+        "Y": 111.257071948509
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "GeometryColor.ByGeometryColor",
+        "Id": "08e38b61b5dc4d80af4807779acb98e8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 936.300020681685,
+        "Y": 176.999948295788
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Color.ByARGB",
+        "Id": "1b541642e79940c9a57917ed58fdb3ca",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 523.75753728642,
+        "Y": 196.714330032182
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "61a5d01511424186ab98ddb0a4e0f414",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 166.25753728642,
+        "Y": 196.714330032182
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "dc64ca0cf122445f9e9c9a2958bf1eae",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 166.25753728642,
+        "Y": 253.047663365515
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Color.Divide",
+        "Id": "0b37d7adddff47c5a327a366d52c80cd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 750.700031022527,
+        "Y": 256.182829366714
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "d999c8512c7744d2bf2f55ab3423e3f0",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 325.061512518108,
+        "Y": 359.925602305569
+      }
+    ],
+    "Annotations": [],
+    "X": 116.23724958120521,
+    "Y": 62.2601267195652,
+    "Zoom": 1.06060772236021
+  }
+}

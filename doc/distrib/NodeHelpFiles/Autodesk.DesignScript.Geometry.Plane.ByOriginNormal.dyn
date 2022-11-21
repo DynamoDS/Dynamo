@@ -1,0 +1,255 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByOriginNormal",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "5;\n1;\n-3;",
+      "Id": "18c8e8a5711a4e80b88f8e6c02e95b4a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5e79da9662a24a38a4e8f87f38bc0e06",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0c90629452b04407b1073f89a7505442",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d2724367d1c64a3e963f97cc380cb298",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Plane.ByOriginNormal@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector",
+      "Id": "8932f38e76764f23a7814126e3478ef6",
+      "Inputs": [
+        {
+          "Id": "be853ac8921a4686a90903b6f93b0103",
+          "Name": "origin",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "50efe81b740a4b08ad4814ed9521a61e",
+          "Name": "normal",
+          "Description": "Vector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e440c0e224564ec989887f2880e53ac1",
+          "Name": "Plane",
+          "Description": "Plane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Plane centered at root Point, with input normal Vector.\n\nPlane.ByOriginNormal (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), normal: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)): Plane"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "1dfa0f01a0ff4e7c9bf2683b3d460649",
+      "Inputs": [
+        {
+          "Id": "71ac86b202a84e14a2e3870fb4a6916a",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "553d57a2012f4d46b65fce39e6e5006d",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f6e595c6d446453a9e15edc80f9d0cf3",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "001e2c283b5b42a595de2cb3567af00b",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.YAxis",
+      "Id": "2acfc8fcc6d64b6f887ded308fcc1d2b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9fcb03f27188419eb976faaca5d112f1",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the canonical Y axis Vector (0,1,0)\n\nVector.YAxis ( ): Vector"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "5e79da9662a24a38a4e8f87f38bc0e06",
+      "End": "71ac86b202a84e14a2e3870fb4a6916a",
+      "Id": "4c343dd4e28d4d719bab6c9eb8d73159"
+    },
+    {
+      "Start": "0c90629452b04407b1073f89a7505442",
+      "End": "553d57a2012f4d46b65fce39e6e5006d",
+      "Id": "ecb4f8ef48fd4648a032bed900d376c4"
+    },
+    {
+      "Start": "d2724367d1c64a3e963f97cc380cb298",
+      "End": "f6e595c6d446453a9e15edc80f9d0cf3",
+      "Id": "ccda76bab9734fedac430d98854f8bce"
+    },
+    {
+      "Start": "001e2c283b5b42a595de2cb3567af00b",
+      "End": "be853ac8921a4686a90903b6f93b0103",
+      "Id": "85897ca269c84d1083a2d5816bcc9885"
+    },
+    {
+      "Start": "9fcb03f27188419eb976faaca5d112f1",
+      "End": "50efe81b740a4b08ad4814ed9521a61e",
+      "Id": "671d5918783b404f856ae82f8dbcfb09"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -16.278566360473633,
+      "EyeY": 8.8992633819580078,
+      "EyeZ": 15.316742897033691,
+      "LookX": 23.252426147460937,
+      "LookY": -1.2338912487030029,
+      "LookZ": -16.470115661621094,
+      "UpX": -0.14029937982559204,
+      "UpY": 0.98510932922363281,
+      "UpZ": 0.099376566708087921
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "18c8e8a5711a4e80b88f8e6c02e95b4a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -682.556669987375,
+        "Y": 350.83330062054
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Plane.ByOriginNormal",
+        "Id": "8932f38e76764f23a7814126e3478ef6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -311.460232025625,
+        "Y": 338.391504424072
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "1dfa0f01a0ff4e7c9bf2683b3d460649",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -587.929061855738,
+        "Y": 338.391504424072
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.YAxis",
+        "Id": "2acfc8fcc6d64b6f887ded308fcc1d2b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -547.129061855738,
+        "Y": 473.353156312315
+      }
+    ],
+    "Annotations": [],
+    "X": 967.770158448171,
+    "Y": -269.053498940698,
+    "Zoom": 1.06696975018683
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Center",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "8f335c73856340f8ab161a8c0eda22f1",
+      "Name": "String",
+      "Type": "string",
+      "Value": "Hello World",
+      "Description": "Creates a string."
+    },
+    {
+      "Id": "f683b059dc594ba5af756cb25dff6917",
+      "Name": "Integer Slider",
+      "Type": "number",
+      "Value": "30",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "NumberType": "Integer",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "Id": "38e5b017705d455eb63654c288c14fcd",
+      "Name": "String",
+      "Type": "string",
+      "Value": "_",
+      "Description": "Creates a string."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.String.Center@string,int,string",
+      "Id": "e8ec5af75c5f446db908b446a9b5110a",
+      "Inputs": [
+        {
+          "Id": "1e14a4dbfdfe4400848f0a59a40d1bf6",
+          "Name": "str",
+          "Description": "String to center.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b17abb5ccc1e440e9f1704d9ffa4b72a",
+          "Name": "newWidth",
+          "Description": "Total length of the string after centering.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4682a23e2da6475d98978368af7287be",
+          "Name": "padChars",
+          "Description": "Character to center with, defaults to space.\n\nstring\nDefault value : \" \"",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4440e39a4b844ba5ab95849872b04811",
+          "Name": "str",
+          "Description": "Strings center-aligned by padding them with leading and trailing whitespaces for a specified total length.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Increases the width of a string by encasing the original characters with spaces on either side.\n\nString.Center (str: string, newWidth: int, padChars: string = \" \"): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "Hello World",
+      "Id": "8f335c73856340f8ab161a8c0eda22f1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3c395765d2d647dabdb4e81566c426ed",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "1f79f9e394fc4650ad0f49067625f89a",
+      "Inputs": [
+        {
+          "Id": "1fbf20d018cd4a53a0461ad8c5107fed",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "014e2f11e988464eb49ce502249a0d3c",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 30,
+      "MaximumValue": 100,
+      "MinimumValue": 0,
+      "StepValue": 1,
+      "Id": "f683b059dc594ba5af756cb25dff6917",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4a1cad5ebda241a8ae7507d4e53c67b1",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "_",
+      "Id": "38e5b017705d455eb63654c288c14fcd",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f68209a0a5d24dc7abbb8be0555bf18e",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "4440e39a4b844ba5ab95849872b04811",
+      "End": "1fbf20d018cd4a53a0461ad8c5107fed",
+      "Id": "fcc3a7f30f5e435aad753785a564c7d2"
+    },
+    {
+      "Start": "3c395765d2d647dabdb4e81566c426ed",
+      "End": "1e14a4dbfdfe4400848f0a59a40d1bf6",
+      "Id": "073d5051c1f94ceb82c73534f2abd02d"
+    },
+    {
+      "Start": "4a1cad5ebda241a8ae7507d4e53c67b1",
+      "End": "b17abb5ccc1e440e9f1704d9ffa4b72a",
+      "Id": "7b15d977b1aa446cb2189f1b08bc469c"
+    },
+    {
+      "Start": "f68209a0a5d24dc7abbb8be0555bf18e",
+      "End": "4682a23e2da6475d98978368af7287be",
+      "Id": "220ba3a7a6b5486b9e2a3be47e135ae4"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "String.Center",
+        "Id": "e8ec5af75c5f446db908b446a9b5110a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 522.0,
+        "Y": 224.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "8f335c73856340f8ab161a8c0eda22f1",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 340.0,
+        "Y": 224.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "1f79f9e394fc4650ad0f49067625f89a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 740.0,
+        "Y": 224.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Integer Slider",
+        "Id": "f683b059dc594ba5af756cb25dff6917",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 135.2,
+        "Y": 286.10626349892
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "38e5b017705d455eb63654c288c14fcd",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 375.2,
+        "Y": 348.21252699784
+      }
+    ],
+    "Annotations": [],
+    "X": -37.9808792393352,
+    "Y": -124.527715137203,
+    "Zoom": 1.130842140625
+  }
+}

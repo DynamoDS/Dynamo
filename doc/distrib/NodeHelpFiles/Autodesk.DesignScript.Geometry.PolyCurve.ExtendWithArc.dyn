@@ -1,0 +1,649 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ExtendWithArc",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "3744bfef54b844c3b50f8425f2d04d13",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Value": "false",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "Id": "1e33542e4c434f15ba3711d93f1cba71",
+      "Name": "Integer Slider",
+      "Type": "number",
+      "Value": "6",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "NumberType": "Integer",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "Id": "5b0665a10d394469baac16b6929a9cde",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "13.1",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "56994e4d48274a729a3d4d70abbb276b",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "6.3",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "8bd46a0f32df4acb95f85ec5b6ac347d",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Value": "false",
+      "Description": "Selection between a true and false."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": false,
+      "Id": "3744bfef54b844c3b50f8425f2d04d13",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "313d38f092fa423fb28eee5395bcbfe0",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool",
+      "Id": "86d2818c43e0495e94d3242a29069bb1",
+      "Inputs": [
+        {
+          "Id": "d44962afba954a79aa64b304feaa411e",
+          "Name": "points",
+          "Description": "Points to make polycurve\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f8908548dc6c45ac9ffe528ad297078b",
+          "Name": "connectLastToFirst",
+          "Description": "make close or open polycurve\n\nbool\nDefault value : false (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a65e4651f2b84ce09d59f18a3fe8e900",
+          "Name": "PolyCurve",
+          "Description": "PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Make PolyCurve by connecting points. Set the 'connectLastToFirst' input to true to close the PolyCurve.\n\nPolyCurve.ByPoints (points: Point[], connectLastToFirst: bool = false): PolyCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "cc1de45ac0d44faebfa3f9ad55d58153",
+      "Inputs": [
+        {
+          "Id": "a25b40d5987547a99b39e479266513c4",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "25637f9a1aa64a9fb963979cdf7e3397",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 6,
+      "MaximumValue": 20,
+      "MinimumValue": 0,
+      "StepValue": 1,
+      "Id": "1e33542e4c434f15ba3711d93f1cba71",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3e6b59651cb348909cf5aa1fbea416c7",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x*10;",
+      "Id": "e0ce4d4dbdd94116b94618c2018bfeb0",
+      "Inputs": [
+        {
+          "Id": "972d633309ee459aa5aec40d57cf0037",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "559f4afc7f8948d6a4a552b0838e3642",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "3fa2b3e705334b71b1f5343ee35bf045",
+      "Inputs": [
+        {
+          "Id": "cc85032a54e741aab549885fc3a1232d",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0e10dc0ada2c4e37987ec2e1b7bf8b3a",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x*10;",
+      "Id": "1564e181f7854225b481e1b982ed4208",
+      "Inputs": [
+        {
+          "Id": "616979245e6942718d6ad2da6f06c30b",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "33d18c1be4344d94a42cba13d84775bb",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "c49423a1f24a47fdb6fb0c9bcfed8189",
+      "Inputs": [
+        {
+          "Id": "4c48ae1431af470da888fda468c26056",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "20190f1a375841e5acf14a1f1a009bd4",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f4f8405fd6c74a30ac651471086f6655",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6711ee0c633b49b19e105ad87caab189",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc@double,double,bool",
+      "Id": "e2545d12489b4646a80481b1eeb0bdb5",
+      "Inputs": [
+        {
+          "Id": "e2fa35844a424c70a1cb726c33d2e4b6",
+          "Name": "polyCurve",
+          "Description": "Autodesk.DesignScript.Geometry.PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1ddff290d9e5492cb60d7f73fc9fd9d4",
+          "Name": "length",
+          "Description": "Length of extension arc\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "28aade24beeb4828ab9d89b930136a3d",
+          "Name": "radius",
+          "Description": "Radius of arc\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fa56fa12c00941c797334d182b08e12b",
+          "Name": "endOrStart",
+          "Description": "extending end or start of the polycurve\n\nbool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2f21a56ecd6d4b3fa8878a66e7b8f8eb",
+          "Name": "PolyCurve",
+          "Description": "PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Extends polycurve by tangent arc\n\nPolyCurve.ExtendWithArc (length: double, radius: double, endOrStart: bool): PolyCurve"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 13.1,
+      "Id": "5b0665a10d394469baac16b6929a9cde",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "607f401eb41240e19329696e14013e66",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 6.3,
+      "Id": "56994e4d48274a729a3d4d70abbb276b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "737f22f83cc048dea32dab16d2c6b1cc",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": false,
+      "Id": "8bd46a0f32df4acb95f85ec5b6ac347d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "08dc7bdc3e0f46989d085039b7785819",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "313d38f092fa423fb28eee5395bcbfe0",
+      "End": "f8908548dc6c45ac9ffe528ad297078b",
+      "Id": "6e12b43c3ee044bf90cbae8f38d36d17"
+    },
+    {
+      "Start": "a65e4651f2b84ce09d59f18a3fe8e900",
+      "End": "e2fa35844a424c70a1cb726c33d2e4b6",
+      "Id": "c2f8eac04dd04cb1968617aabb10b32b"
+    },
+    {
+      "Start": "25637f9a1aa64a9fb963979cdf7e3397",
+      "End": "972d633309ee459aa5aec40d57cf0037",
+      "Id": "1ac1c2d99cef4fd09e3156c2c172d842"
+    },
+    {
+      "Start": "3e6b59651cb348909cf5aa1fbea416c7",
+      "End": "a25b40d5987547a99b39e479266513c4",
+      "Id": "e6ad5ce55e0544bc96b6b1fb6d3d8d4b"
+    },
+    {
+      "Start": "3e6b59651cb348909cf5aa1fbea416c7",
+      "End": "cc85032a54e741aab549885fc3a1232d",
+      "Id": "414afabee8b3490987e6153afe124412"
+    },
+    {
+      "Start": "559f4afc7f8948d6a4a552b0838e3642",
+      "End": "4c48ae1431af470da888fda468c26056",
+      "Id": "d4d01fc72a194773934062d46501af06"
+    },
+    {
+      "Start": "0e10dc0ada2c4e37987ec2e1b7bf8b3a",
+      "End": "616979245e6942718d6ad2da6f06c30b",
+      "Id": "8f32fddac30640f289f49032d0d765a4"
+    },
+    {
+      "Start": "33d18c1be4344d94a42cba13d84775bb",
+      "End": "20190f1a375841e5acf14a1f1a009bd4",
+      "Id": "e2423853a169402ba000d41413c5f29d"
+    },
+    {
+      "Start": "6711ee0c633b49b19e105ad87caab189",
+      "End": "d44962afba954a79aa64b304feaa411e",
+      "Id": "95ddbbf182034ec5990e56605db3dd87"
+    },
+    {
+      "Start": "607f401eb41240e19329696e14013e66",
+      "End": "1ddff290d9e5492cb60d7f73fc9fd9d4",
+      "Id": "ab5e256142344a8090ed1aa2379ce5e8"
+    },
+    {
+      "Start": "737f22f83cc048dea32dab16d2c6b1cc",
+      "End": "28aade24beeb4828ab9d89b930136a3d",
+      "Id": "b8ed86c1f5774935a89fd7476f26e385"
+    },
+    {
+      "Start": "08dc7bdc3e0f46989d085039b7785819",
+      "End": "fa56fa12c00941c797334d182b08e12b",
+      "Id": "1aec7c9f35264e7e9af26cbd7b0d8800"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 5.7303622809176,
+      "EyeY": 17.7426477499341,
+      "EyeZ": 22.1052161130049,
+      "LookX": 10.424342155456543,
+      "LookY": -8.106964111328125,
+      "LookZ": -17.287881851196289,
+      "UpX": 0.085226356983184814,
+      "UpY": 0.98628556728363037,
+      "UpZ": -0.14134065806865692
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Boolean",
+        "Id": "3744bfef54b844c3b50f8425f2d04d13",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 258.873064815848,
+        "Y": 1499.50215223322
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "PolyCurve.ByPoints",
+        "Id": "86d2818c43e0495e94d3242a29069bb1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 516.873064815848,
+        "Y": 1406.50215223322
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.RandomList",
+        "Id": "cc1de45ac0d44faebfa3f9ad55d58153",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -247.126935184152,
+        "Y": 1298.50215223322
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Integer Slider",
+        "Id": "1e33542e4c434f15ba3711d93f1cba71",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -646.126935184152,
+        "Y": 1352.50215223322
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e0ce4d4dbdd94116b94618c2018bfeb0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 68.873064815848011,
+        "Y": 1302.7154855665533
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.RandomList",
+        "Id": "3fa2b3e705334b71b1f5343ee35bf045",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -247.126935184152,
+        "Y": 1406.50215223322
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "1564e181f7854225b481e1b982ed4208",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 68.873064815848011,
+        "Y": 1410.7154855665533
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "c49423a1f24a47fdb6fb0c9bcfed8189",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 258.873064815848,
+        "Y": 1339.50215223322
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "PolyCurve.ExtendWithArc",
+        "Id": "e2545d12489b4646a80481b1eeb0bdb5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 915.873064815848,
+        "Y": 1530.50215223322
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "5b0665a10d394469baac16b6929a9cde",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 516.873064815848,
+        "Y": 1540.50215223322
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "56994e4d48274a729a3d4d70abbb276b",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 516.873064815848,
+        "Y": 1623.50215223322
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Boolean",
+        "Id": "8bd46a0f32df4acb95f85ec5b6ac347d",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 516.873064815848,
+        "Y": 1707.50215223322
+      }
+    ],
+    "Annotations": [],
+    "X": 599.24018060844492,
+    "Y": -774.668690295122,
+    "Zoom": 0.669413901604543
+  }
+}

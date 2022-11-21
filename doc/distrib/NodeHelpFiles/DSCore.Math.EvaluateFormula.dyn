@@ -1,0 +1,208 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "EvaluateFormula",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.EvaluateFormula@string,string[],var[]",
+      "Id": "9e5307dd06ed45f99c4ce4d0617d810b",
+      "Inputs": [
+        {
+          "Id": "3b4e402f9a2d4278942c0e10d62e03f6",
+          "Name": "formulaString",
+          "Description": "NCalc formula\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "44b3bab3ec4d4f1babd326e52d309f38",
+          "Name": "parameters",
+          "Description": "Variable names\n\nstring[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "55cdb022b16045c68ee0ec2ce3d21f84",
+          "Name": "args",
+          "Description": "Variable bindings\n\nvar[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "292ea70116cb4d02841c3f0046a67375",
+          "Name": "result",
+          "Description": "Result of the formula calculation.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Evaluates an NCalc formula with given parameter mappings.\n\nMath.EvaluateFormula (formulaString: string, parameters: string[], args: var[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "a*(b+c)",
+      "Id": "0181c32a1aae4892ae67cd0e7b9f7576",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fe84f98db87948bda8ae359f0359f863",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"a\"..\"c\";",
+      "Id": "570a5321c244481ca9d428b45ea21b3d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8dc2a50864e2455589612b8b41c6287e",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1..3;",
+      "Id": "fbf84b82be8c401db9dab68ebe361c04",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7611f466d2be46589878b9c1aae094d0",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "fe84f98db87948bda8ae359f0359f863",
+      "End": "3b4e402f9a2d4278942c0e10d62e03f6",
+      "Id": "333d26b91c314c8eb72bd6e93123828d"
+    },
+    {
+      "Start": "8dc2a50864e2455589612b8b41c6287e",
+      "End": "44b3bab3ec4d4f1babd326e52d309f38",
+      "Id": "737b7c8d2c2e4efbaa78f868688df534"
+    },
+    {
+      "Start": "7611f466d2be46589878b9c1aae094d0",
+      "End": "55cdb022b16045c68ee0ec2ce3d21f84",
+      "Id": "0daeff9ce6b04e1aa6147a7076a0a743"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.0.5357",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Math.EvaluateFormula",
+        "Id": "9e5307dd06ed45f99c4ce4d0617d810b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 684.0,
+        "Y": 380.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "0181c32a1aae4892ae67cd0e7b9f7576",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 425.0,
+        "Y": 358.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "570a5321c244481ca9d428b45ea21b3d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 392.0,
+        "Y": 434.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "fbf84b82be8c401db9dab68ebe361c04",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 417.0,
+        "Y": 518.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
