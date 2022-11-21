@@ -104,11 +104,6 @@ namespace Dynamo.UI.Controls
             get { return shortcutToolTip; }
             set { shortcutToolTip = value; }
         }
-
-        public void Test()
-        {
-
-        }
     }
 
     internal partial class ImageExportShortcutBarItem : ShortcutBarItem
