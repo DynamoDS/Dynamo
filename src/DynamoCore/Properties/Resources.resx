@@ -887,9 +887,6 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>We are not very confident that the nodes below will work, you may try them or</value>
   </data>
-  <data name="AutocompleteLowConfidenceMessageAditional" xml:space="preserve">
-    <value>to view more options</value>
-  </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Show Recommendations below the threshold confidence score</value>
   </data>

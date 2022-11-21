@@ -35,7 +35,7 @@ namespace Dynamo.ViewModels
         private bool displayAutocompleteMLStaticPage;
         private bool displayLowConfidence;
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
-        private double confidenceThresholdPercentage = 20;
+        private double confidenceThresholdPercentage = 10;
         private int numberOfResults = 10;
 
 
@@ -180,8 +180,13 @@ namespace Dynamo.ViewModels
             request.Port.ListAtLevel = portInfo.Level;
 
             // Set host info
-            request.Host.Name = string.IsNullOrEmpty(dynamoViewModel.Model.HostAnalyticsInfo.HostName) ? dynamoViewModel.Model.HostName : dynamoViewModel.Model.HostAnalyticsInfo.HostName;
-            request.Host.Version = dynamoViewModel.Model.HostVersion;
+            var hostName = string.IsNullOrEmpty(dynamoViewModel.Model.HostAnalyticsInfo.HostName) ? dynamoViewModel.Model.HostName : dynamoViewModel.Model.HostAnalyticsInfo.HostName;
+            var hostNameEnum = GetHostNameEnum(hostName);
+
+            if (hostNameEnum != HostNames.None)
+            {
+                request.Host = new HostRequest(hostNameEnum.ToString(), dynamoViewModel.Model.HostVersion);
+            }
 
             // Set packages info
             var packageManager = dynamoViewModel.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
@@ -422,6 +427,28 @@ namespace Dynamo.ViewModels
             string pattern = @"\d+$";
             Regex rgx = new Regex(pattern);
             return rgx.Replace(portName, string.Empty);
+        }
+
+        // Get the host name from the enum list.
+        internal HostNames GetHostNameEnum(string HostName)
+        {
+            switch (HostName)
+            {
+                case string name when name.IndexOf("Revit", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.Revit;
+                case string name when name.IndexOf("Civil", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.Civil3d;
+                case string name when name.IndexOf("Alias", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.Alias;
+                case string name when name.IndexOf("FormIt", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.FormIt;
+                case string name when name.IndexOf("Steel", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.AdvanceSteel;
+                case string name when name.IndexOf("RSA", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.RSA;
+                default:
+                    return HostNames.None;
+            }
         }
 
         internal void PopulateAutoCompleteCandidates()

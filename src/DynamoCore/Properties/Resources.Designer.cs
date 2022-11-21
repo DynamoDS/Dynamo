@@ -98,15 +98,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to to view more options.
-        /// </summary>
-        public static string AutocompleteLowConfidenceMessageAditional {
-            get {
-                return ResourceManager.GetString("AutocompleteLowConfidenceMessageAditional", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Low confidence.
         /// </summary>
         public static string AutocompleteLowConfidenceTitle {
