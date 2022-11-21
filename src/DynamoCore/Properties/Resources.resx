@@ -888,7 +888,7 @@ This package likely contains an assembly that is blocked. You will need to load 
     <value>We are not very confident that the nodes below will work, you may try them or</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
-    <value>Show Recommendations below the threshold confidence score</value>
+    <value>Show Recommendations below the confidence score threshold.</value>
   </data>
   <data name="LoginNeededTitle" xml:space="preserve">
     <value>Not authenticated</value>

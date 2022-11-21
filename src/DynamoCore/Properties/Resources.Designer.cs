@@ -107,7 +107,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Recommendations below the threshold confidence score.
+        ///   Looks up a localized string similar to Show Recommendations below the confidence score threshold..
         /// </summary>
         public static string AutocompleteLowConfidenceTooltip {
             get {
