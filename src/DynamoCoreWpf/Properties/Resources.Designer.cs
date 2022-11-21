@@ -4514,6 +4514,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Numbers of results.
+        /// </summary>
+        public static string MLRecommendationNumberOfResults {
+            get {
+                return ResourceManager.GetString("MLRecommendationNumberOfResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to More.
         /// </summary>
         public static string MoreButton {
@@ -6644,6 +6653,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewMarkdownDirectoryTooltip {
             get {
                 return ResourceManager.GetString("PreferencesViewMarkdownDirectoryTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Autocomplete.
+        /// </summary>
+        public static string PreferencesViewNodeAutocomplete {
+            get {
+                return ResourceManager.GetString("PreferencesViewNodeAutocomplete", resourceCulture);
             }
         }
         
