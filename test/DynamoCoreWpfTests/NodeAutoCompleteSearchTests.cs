@@ -505,10 +505,10 @@ namespace DynamoCoreWpfTests
 
             // As there is no authentication in test fixture, no results are shown.
             searchViewModel.PopulateAutoCompleteCandidates();
-            searchViewModel.DisplayNoRecommendationsLowConfidence = true;
+            searchViewModel.DisplayAutocompleteMLStaticPage = true;
             searchViewModel.DisplayLowConfidence = false;
-            searchViewModel.NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteNoRecommendationsTitle;
-            searchViewModel.NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
+            searchViewModel.AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
+            searchViewModel.AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
         }
     }
 }

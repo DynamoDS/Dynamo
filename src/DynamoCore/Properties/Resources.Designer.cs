@@ -116,7 +116,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Low Confidence Tooltip.
+        ///   Looks up a localized string similar to Show Recommendations below the threshold confidence score.
         /// </summary>
         public static string AutocompleteLowConfidenceTooltip {
             get {
@@ -1161,6 +1161,24 @@ namespace Dynamo.Properties {
         public static string LocateInDisk {
             get {
                 return ResourceManager.GetString("LocateInDisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to login to your account to view recommendations, please log in or.
+        /// </summary>
+        public static string LoginNeededMessage {
+            get {
+                return ResourceManager.GetString("LoginNeededMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not authenticated.
+        /// </summary>
+        public static string LoginNeededTitle {
+            get {
+                return ResourceManager.GetString("LoginNeededTitle", resourceCulture);
             }
         }
         

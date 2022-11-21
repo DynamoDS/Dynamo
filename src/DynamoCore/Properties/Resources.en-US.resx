@@ -888,7 +888,13 @@ This package likely contains an assembly that is blocked. You will need to load 
     <value>to view more options</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
-    <value>Low Confidence Tooltip</value>
+    <value>Show Recommendations below the threshold confidence score</value>
+  </data>
+  <data name="LoginNeededTitle" xml:space="preserve">
+    <value>Not authenticated</value>
+  </data>
+  <data name="LoginNeededMessage" xml:space="preserve">
+    <value>You need to login to your account to view recommendations, please log in or</value>
   </data>
   <data name="FailedInsertFileNodeExistNotification" xml:space="preserve">
     <value>Failed to insert the file as some of the nodes already exist in the current worspace.</value>

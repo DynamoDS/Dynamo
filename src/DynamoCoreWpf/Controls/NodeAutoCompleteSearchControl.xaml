@@ -143,15 +143,15 @@
                     </ListBox>
                 </Border>
 
-                <StackPanel Visibility="{Binding Path=DisplayNoRecommendationsLowConfidence, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Visibility="{Binding Path=DisplayAutocompleteMLStaticPage, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Image Name="NoRecommendations"
                            Width="205"
                            Height="120"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Top"
-                           Source="/DynamoCoreWpf;component/UI/Images/no-recommendations.png">
+                           Source="{Binding Path=AutocompleteMLTitle, Converter={StaticResource NodeAutocompleteImageConverter}}">
                     </Image>
-                    <TextBlock Text="{Binding Path=NoRecommendationsOrLowConfidenceTitle}"
+                    <TextBlock Text="{Binding Path=AutocompleteMLTitle}"
                                Background="Transparent"
                                Padding="5"
                                Foreground="{StaticResource AutocompletionWindowFontColor}"
@@ -166,14 +166,11 @@
                                    FontFamily="{StaticResource ArtifaktElementRegular}"
                                    Foreground="#F5F5F5"
                                    FontSize="11">
-                             <Run Text="{Binding Path=NoRecommendationsOrLowConfidenceMessage}"
+                             <Run Text="{Binding Path=AutocompleteMLMessage}"
                                   Foreground="{StaticResource AutocompletionWindowFontColor}">
                              </Run>
                              <Run Text="{x:Static resx:Resources.AutocompleteSwitchToObjectTypeMessage}"
                                   Foreground="{StaticResource Blue400Brush}">
-                             </Run>
-                             <Run Text="{Binding Path=LowConfidenceMessageAdditional}"
-                                  Foreground="{StaticResource AutocompletionWindowFontColor}">
                              </Run>
                         </TextBlock>
                     </StackPanel>
@@ -202,7 +199,7 @@
                            Height="14"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
-                           Style="{StaticResource InformationIcon}"
+                           Style="{StaticResource ToggleInfoStyle}"
                            ToolTipService.ShowDuration="10000">
                         <Image.ToolTip>
                             <ToolTip Content="{x:Static resx:Resources.AutocompleteLowConfidenceTooltip}"
