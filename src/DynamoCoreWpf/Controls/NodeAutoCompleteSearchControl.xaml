@@ -169,9 +169,6 @@
                              <Run Text="{Binding Path=AutocompleteMLMessage}"
                                   Foreground="{StaticResource AutocompletionWindowFontColor}">
                              </Run>
-                             <Run Text="{x:Static resx:Resources.AutocompleteSwitchToObjectTypeMessage}"
-                                  Foreground="{StaticResource Blue400Brush}">
-                             </Run>
                         </TextBlock>
                     </StackPanel>
                 </StackPanel>
