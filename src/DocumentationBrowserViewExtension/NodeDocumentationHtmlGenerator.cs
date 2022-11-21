@@ -121,11 +121,11 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine(imageRow);
             sb.AppendLine("<div class=\"btn--container\">");
             sb.AppendLine(
+                $"<button type=\"button\" id=\"zoomfit\" class=\"button fitIcon\"  title=\"{Resources.ImageFitToolTip}\" ></button>");
+            sb.AppendLine(
                 $"<button type=\"button\" id=\"zoomin\" class=\"button plusIcon\" title=\"{Resources.ImageZoomInToolTip}\" ></button>\r\n");
             sb.AppendLine(
                 $"<button type=\"button\" id=\"zoomout\" class=\"button minusIcon\" title=\"{Resources.ImageZoomOutToolTip}\" ></button>\r\n");
-            sb.AppendLine(
-                $"<button type=\"button\" id=\"zoomfit\" class=\"button fitIcon\"  title=\"{Resources.ImageFitToolTip}\" ></button>");
             sb.AppendLine(@"</div>");
             sb.AppendLine("<div class=\"btn--insert--container\">");
 
