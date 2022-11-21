@@ -69,8 +69,5 @@ namespace Dynamo.Wpf.ViewModels.Core
                 return true;
             }
         }
-
-
-
     }
 }
