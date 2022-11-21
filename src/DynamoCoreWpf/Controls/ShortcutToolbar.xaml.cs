@@ -6,11 +6,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Dynamo.Models;
 using Dynamo.ViewModels;
 using Greg.AuthProviders;
+using Dynamo.Wpf.ViewModels.Core;
 using Microsoft.Practices.Prism.ViewModel;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.UI.Controls
 {
@@ -37,27 +36,23 @@ namespace Dynamo.UI.Controls
         {
             get { return shortcutBarRightSideItems; }
         }
-        private readonly DynamoModel _viewModel;
+        private readonly Core.AuthenticationManager authManager;
         public ICommand SignOutCommand { get; private set; }
 
         /// <summary>
         /// Construct a ShortcutToolbar.
         /// </summary>
         /// <param name="updateManager"></param>
-        public ShortcutToolbar(DynamoModel dm)
+        public ShortcutToolbar(DynamoViewModel dynamoViewModel)
         {
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
             shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();    
 
-            InitializeComponent();
+            InitializeComponent();         
 
-            DataContext = dm;
-            this._viewModel = dm;
-            if (_viewModel.AuthenticationManager.HasAuthProvider)
-            {
-                SignOutCommand = new DelegateCommand(SignOut, CanSignOut);
-            }
-            
+            var shortcutToolbar = new ShortcutToolbarViewModel(dynamoViewModel);
+            DataContext = shortcutToolbar;
+            authManager = dynamoViewModel.Model.AuthenticationManager;
         }
 
         private void exportMenu_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -74,7 +69,7 @@ namespace Dynamo.UI.Controls
 
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (_viewModel.AuthenticationManager.LoginState == LoginState.LoggedIn)
+            if (authManager.LoginState == LoginState.LoggedIn)
             {
                 var button = (Button)sender;
                 MenuItem mi = button.Parent as MenuItem;
@@ -85,12 +80,12 @@ namespace Dynamo.UI.Controls
                     mi.IsSubmenuOpen = !mi.IsSubmenuOpen;
                 }
             }
-            else if (_viewModel.AuthenticationManager.LoginState == LoginState.LoggedOut)
+            else if (authManager.LoginState == LoginState.LoggedOut)
             {
-                _viewModel.AuthenticationManager.ToggleLoginState();
-                if (_viewModel.AuthenticationManager.IsLoggedIn()) {
+                authManager.ToggleLoginState();
+                if (authManager.IsLoggedIn()) {
                     var tb = (((sender as Button).Content as StackPanel).Children.OfType<TextBlock>().FirstOrDefault() as TextBlock);
-                    tb.Text = _viewModel.AuthenticationManager.Username;
+                    tb.Text = authManager.Username;
                     logoutOption.Visibility = Visibility.Visible;
                 }
             }
@@ -98,8 +93,8 @@ namespace Dynamo.UI.Controls
 
         internal void SignOut()
         {
-            _viewModel.AuthenticationManager.ToggleLoginState();
-            if (!_viewModel.AuthenticationManager.IsLoggedIn())
+            authManager.ToggleLoginState();
+            if (!authManager.IsLoggedIn())
             {
                 txtSignIn.Text = Wpf.Properties.Resources.SignInButtonText;
             }
@@ -107,7 +102,7 @@ namespace Dynamo.UI.Controls
 
         internal bool CanSignOut()
         {
-            return _viewModel.AuthenticationManager.CanToggleLoginState();
+            return authManager.CanToggleLoginState();
         }
     }
 
