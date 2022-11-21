@@ -32,10 +32,6 @@ namespace DynamoCLI
                     var thread = new Thread(() => RunKeepAlive(cmdLineArgs));
 
                     thread.Name = "DynamoModelKeepAlive";
-
-                    // TODO: Why do we need to hqve a STA on DynamoCLI ?
-                    if (DynamoUtilities.OSHelper.IsWindows())
-                        thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
 
                     if (!useConsole)
