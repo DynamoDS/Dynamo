@@ -125,7 +125,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There’s no node that we can recommend to you, you may try.
+        ///   Looks up a localized string similar to There are no nodes that we can recommend, you may try to.
         /// </summary>
         public static string AutocompleteNoRecommendationsMessage {
             get {
@@ -152,7 +152,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to switching to Object Type Autocomplete.
+        ///   Looks up a localized string similar to switch to Object Type Autocomplete.
         /// </summary>
         public static string AutocompleteSwitchToObjectTypeMessage {
             get {

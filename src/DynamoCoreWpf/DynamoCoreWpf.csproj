@@ -69,7 +69,7 @@
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3107" />
+  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3176" />
   <PackageReference Include="Greg" Version="2.3.0.2505" />
   <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -1445,6 +1445,11 @@
     <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
       <Name>VMDataBridge</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj">
+      <Project>{31183026-DE70-49CB-BC7C-0DFD0A088F62}</Project>
+      <Name>Watch3DNodeModels</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
