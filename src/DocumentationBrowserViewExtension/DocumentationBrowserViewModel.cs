@@ -245,7 +245,7 @@ namespace Dynamo.DocumentationBrowser
             if (link == null || link.Equals(new Uri(String.Empty, UriKind.Relative))) return string.Empty;
             try
             {
-                string graphPath = link.AbsolutePath.Replace(".md", ".dyn");
+                string graphPath = DynamoGraphFromMDFilePath(link.AbsolutePath);
                 return File.Exists(graphPath) ? graphPath : null;
             }
             catch (Exception)
@@ -362,7 +362,7 @@ namespace Dynamo.DocumentationBrowser
                 }
                 else
                 {
-                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(Resources.FileNotFoundFailureMessage, this.Link.AbsolutePath));
+                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(Resources.FileNotFoundFailureMessage, DynamoGraphFromMDFilePath(this.Link.AbsolutePath)));
                     return;
                 }
             }
@@ -370,6 +370,11 @@ namespace Dynamo.DocumentationBrowser
 
         internal delegate void InsertDocumentationLinkEventHandler(object sender, InsertDocumentationLinkEventArgs e);
         internal event InsertDocumentationLinkEventHandler HandleInsertFile;
+
+        private string DynamoGraphFromMDFilePath(string path)
+        {
+            return path.Replace(".md", ".dyn").Replace("%20", " ");
+        }
 
         #endregion
 
