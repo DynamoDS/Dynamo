@@ -13,7 +13,6 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
-    <Platforms>NET60_Windows;NET60_Linux</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <None Update="AssemblySharedInfo.tt">
