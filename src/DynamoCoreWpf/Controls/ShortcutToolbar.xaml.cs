@@ -49,7 +49,7 @@ namespace Dynamo.UI.Controls
 
             InitializeComponent();         
 
-            var shortcutToolbar = new ShortcutToolbarViewModel(dynamoViewModel);
+            var shortcutToolbar = new ShortcutToolbarViewModel(this, dynamoViewModel);
             DataContext = shortcutToolbar;
             authManager = dynamoViewModel.Model.AuthenticationManager;
         }
@@ -74,8 +74,6 @@ namespace Dynamo.UI.Controls
                 MenuItem mi = button.Parent as MenuItem;
                 if (mi != null)
                 {
-                    var mi2 = mi.Items.OfType<MenuItem>().FirstOrDefault();
-                    mi2.DataContext = this;
                     mi.IsSubmenuOpen = !mi.IsSubmenuOpen;
                 }
             }
