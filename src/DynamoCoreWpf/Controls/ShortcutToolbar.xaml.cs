@@ -41,7 +41,7 @@ namespace Dynamo.UI.Controls
         /// <summary>
         /// Construct a ShortcutToolbar.
         /// </summary>
-        /// <param name="updateManager"></param>
+        /// <param name="dynamoViewModel"></param>
         public ShortcutToolbar(DynamoViewModel dynamoViewModel)
         {
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
@@ -52,16 +52,19 @@ namespace Dynamo.UI.Controls
             var shortcutToolbar = new ShortcutToolbarViewModel(dynamoViewModel);
             DataContext = shortcutToolbar;
             authManager = dynamoViewModel.Model.AuthenticationManager;
-            authManager.LoginStateChanged += (o) => SignOutHandler();
+            if (authManager.IsLoggedIn()) {
+                authManager.LoginStateChanged += SignOutHandler;
+            }
         }
 
-        private void SignOutHandler()
+        private void SignOutHandler(LoginState status)
         {
-            if (!authManager.IsLoggedIn())
+            if (status == LoginState.LoggedOut)
             {
                 LoginButton.ToolTip = Wpf.Properties.Resources.SignInButtonContentToolTip;
                 txtSignIn.Text = Wpf.Properties.Resources.SignInButtonText;
                 logoutOption.Visibility = Visibility.Collapsed;
+                authManager.LoginStateChanged -= SignOutHandler;
             }
         }
 
@@ -96,6 +99,7 @@ namespace Dynamo.UI.Controls
                     tb.Text = authManager.Username;
                     logoutOption.Visibility = Visibility.Visible;
                     LoginButton.ToolTip = null;
+                    authManager.LoginStateChanged += SignOutHandler;
                 }
             }
         }
