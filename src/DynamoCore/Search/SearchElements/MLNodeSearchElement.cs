@@ -206,6 +206,9 @@ namespace Dynamo.Search.SearchElements
     {
         [DataMember(Name = "name")]
         internal string Name { get; set; }
+
+        [DataMember(Name = "index")]
+        internal int Index { get; set; }
     }
 
     [DataContract]

@@ -290,15 +290,22 @@ namespace Dynamo.ViewModels
             {
                 foreach (var result in MLresults.Results)
                 {
-                    var portName = result.Port.Name;
+                    var portName = result.Port != null ? result.Port.Name : string.Empty;
+                    var portIndex = result.Port != null ? result.Port.Index : 0;
 
                     // DS Function node
                     if (result.Node.Type.NodeType.Equals(Function.FunctionNode))
                     {
                         var element = zeroTouchSearchElements.FirstOrDefault(n => n.Descriptor.MangledName.Equals(result.Node.Type.Id));
 
+                        // Set PortToConnect for each element based on port-index and port-name
                         if (element != null)
                         {
+                            element.AutoCompletionNodeElementInfo = new AutoCompletionNodeElementInfo
+                            {
+                                PortToConnect = portIndex
+                            };
+
                             foreach (var inputParameter in element.Descriptor.Parameters.Select((value, index) => (value, index)))
                             {
                                 if (inputParameter.value.Name.Equals(portName))
@@ -327,6 +334,15 @@ namespace Dynamo.ViewModels
 
                         var nodesFromAssembly = nodeModelSearchElements.Where(n => Path.GetFileNameWithoutExtension(n.Assembly).Equals(assemblyName));
                         var element = nodesFromAssembly.FirstOrDefault(n => n.CreationName.Equals(fullName));
+
+                        if (element != null)
+                        {
+                            element.AutoCompletionNodeElementInfo = new AutoCompletionNodeElementInfo
+                            {
+                                PortToConnect = portIndex
+                            };
+                        }
+
                         var viewModelElement = GetViewModelForNodeSearchElement(element);
 
                         if (viewModelElement != null)
