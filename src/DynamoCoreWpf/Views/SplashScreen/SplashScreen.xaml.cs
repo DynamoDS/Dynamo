@@ -190,7 +190,6 @@ namespace Dynamo.UI.Views
             DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
-            Application.Current.MainWindow = dynamoView;
             dynamoView.Show();
             dynamoView.Activate();
         }
