@@ -255,34 +255,7 @@ namespace Dynamo.ViewModels
                 }
                 RaisePropertyChanged(nameof(RunSettingsIsChecked));
             }
-        }
-
-        /// <summary>
-        /// Controls if the the Node autocomplete Machine Learning option is checked for the radio buttons
-        /// </summary>
-        public bool NodeAutocompleteMachineLearningIsChecked
-        {
-            get
-            {
-                return preferenceSettings.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;                
-            }
-            set
-            {
-                if (value)
-                {
-                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
-                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
-                }
-                else
-                {
-                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
-                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
-                }
-                dynamoViewModel.HomeSpaceViewModel.NodeAutoCompleteSearchViewModel.ResetAutoCompleteSearchViewState();
-                RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
-                RaisePropertyChanged(nameof(NodeAutocompleteMachineLearningIsChecked));
-            }
-        }
+        }        
 
         /// <summary>
         /// Controls the IsChecked property in the Show Run Preview toogle button
@@ -531,9 +504,7 @@ namespace Dynamo.ViewModels
             });
             RaisePropertyChanged(nameof(StyleItemsList));
         }
-
-      
-
+     
         /// <summary>
         /// This flag will be in true when the Style that user is trying to add already exists (otherwise will be false - Default)
         /// </summary>
@@ -839,6 +810,24 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls the IsChecked property in the "Notification Center" toogle button
+        /// </summary>
+        public bool NotificationCenterIsChecked
+        {
+            get
+            {
+                return preferenceSettings.EnableNotificationCenter;
+            }
+            set
+            {
+                preferenceSettings.EnableNotificationCenter = value;
+                RaisePropertyChanged(nameof(NotificationCenterIsChecked));
+            }
+        }
+
+        #region [ Node Autocomplete ]
+
+        /// <summary>
         /// Controls the IsChecked property in the "Node autocomplete" toogle button
         /// </summary>
         public bool NodeAutocompleteIsChecked
@@ -851,6 +840,54 @@ namespace Dynamo.ViewModels
             {
                 preferenceSettings.EnableNodeAutoComplete = value;
                 RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
+                RaisePropertyChanged(nameof(EnableHideNodesToggle));
+                RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+            }
+        }
+
+        /// <summary>
+        /// Controls if the the Node autocomplete Machine Learning option is checked for the radio buttons
+        /// </summary>
+        public bool NodeAutocompleteMachineLearningIsChecked
+        {
+            get
+            {
+                return preferenceSettings.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;
+            }
+            set
+            {
+                if (value)
+                {
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                }
+                else
+                {
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                }
+
+                dynamoViewModel.HomeSpaceViewModel.NodeAutoCompleteSearchViewModel.ResetAutoCompleteSearchViewState();
+                RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
+                RaisePropertyChanged(nameof(NodeAutocompleteMachineLearningIsChecked));
+                RaisePropertyChanged(nameof(EnableHideNodesToggle));
+                RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+            }
+        }
+
+        /// <summary>
+        /// Contains the numbers of result of the ML recommendation
+        /// </summary>
+        public int MLRecommendationNumberOfResults
+        {
+            get
+            {
+                return preferenceSettings.MLRecommendationNumberOfResults;
+            }
+            set
+            {
+                preferenceSettings.MLRecommendationNumberOfResults = value;
+                RaisePropertyChanged(nameof(MLRecommendationNumberOfResults));
             }
         }
 
@@ -867,11 +904,12 @@ namespace Dynamo.ViewModels
             {
                 preferenceSettings.HideNodesBelowSpecificConfidenceLevel = value;
                 RaisePropertyChanged(nameof(HideNodesBelowSpecificConfidenceLevelIsChecked));
+                RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
             }
-        }
+        }        
 
         /// <summary>
-        /// Contais the confidence level of a ML recommendation
+        /// Contains the confidence level of a ML recommendation
         /// </summary>
         public int MLRecommendationConfidenceLevel
         {
@@ -887,20 +925,28 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Notification Center" toogle button
+        /// If the user can click on the Hide Nodes toggle
         /// </summary>
-        public bool NotificationCenterIsChecked
+        public bool EnableHideNodesToggle
         {
             get
             {
-                return preferenceSettings.EnableNotificationCenter;
-            }
-            set
-            {
-                preferenceSettings.EnableNotificationCenter = value;
-                RaisePropertyChanged(nameof(NotificationCenterIsChecked));
+                return NodeAutocompleteIsChecked && NodeAutocompleteMachineLearningIsChecked;
             }
         }
+
+        /// <summary>
+        /// If the user can click on the confidence level Slider
+        /// </summary>
+        public bool EnableConfidenceLevelSlider
+        {
+            get
+            {
+                return NodeAutocompleteIsChecked && NodeAutocompleteMachineLearningIsChecked && HideNodesBelowSpecificConfidenceLevelIsChecked;
+            }
+        }
+
+        #endregion        
 
         /// <summary>
         /// Controls the IsChecked property in the "Enable T-spline nodes" toogle button

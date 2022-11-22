@@ -508,6 +508,11 @@ namespace Dynamo.Configuration
         public int MLRecommendationConfidenceLevel { get; set; }
 
         /// <summary>
+        /// This defines the number of results of the  ML recommendation
+        /// </summary>
+        public int MLRecommendationNumberOfResults { get; set; }
+
+        /// <summary>
         /// This defines if user wants to see the enabled Dynamo Notification Center.
         /// </summary>
         public bool EnableNotificationCenter
@@ -748,6 +753,7 @@ namespace Dynamo.Configuration
             EnableNodeAutoComplete = true;
             HideNodesBelowSpecificConfidenceLevel = false;
             MLRecommendationConfidenceLevel = 10;
+            MLRecommendationNumberOfResults = 5;
             EnableNotificationCenter = true;
             isStaticSplashScreenEnabled = true;
             DefaultPythonEngine = string.Empty;

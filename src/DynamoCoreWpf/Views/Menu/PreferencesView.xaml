@@ -777,6 +777,7 @@
                                                     <RowDefinition Height="*" />
                                                     <RowDefinition Height="*" />
                                                     <RowDefinition Height="*" />
+                                                    <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
                                                 <StackPanel Margin="-10,5,0,0" Orientation="Horizontal" Grid.Row="0">
                                                     <Label Content="{x:Static p:Resources.MLRecommendationNumberOfResults}"
@@ -789,7 +790,7 @@
                                                         MinWidth="25"
                                                         Height="20"
                                                         FontWeight="Regular"
-                                                        Text="{Binding BackupIntervalInMinutes}"
+                                                        Text="{Binding MLRecommendationNumberOfResults}"
                                                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                                                         Foreground="{StaticResource PreferencesWindowFontColor}"
                                                         BorderThickness="0,0,0,2"
@@ -803,14 +804,14 @@
                                                         VerticalAlignment="Center"
                                                         IsChecked="{Binding Path=HideNodesBelowSpecificConfidenceLevelIsChecked}"
                                                         Style="{StaticResource EllipseToggleButton1}"
-                                                        IsEnabled="{Binding Path=NodeAutocompleteMachineLearningIsChecked}"/>
+                                                        IsEnabled="{Binding Path=EnableHideNodesToggle}"/>
                                                     <Label Content="{x:Static p:Resources.HideNodesBelowSpecificConfidenceLevel}" 
                                                         Margin="10,0,0,0"
                                                         VerticalAlignment="Center"
                                                         Foreground="{StaticResource PreferencesWindowFontColor}"
                                                         FontWeight="Regular"/>
                                                     <Image Name="MLRecommendationConfidenceThresholdToolTip"
-                                                        Margin="5,5,0,0"
+                                                        Margin="5,3,0,0"
                                                         Width="14"
                                                         Height="14"
                                                         HorizontalAlignment="Center"
@@ -823,12 +824,33 @@
                                                     </Image>
                                                 </StackPanel>
                                                 <StackPanel Margin="-10,5,0,0" Orientation="Horizontal" Grid.Row="2">
+                                                    <Label Content="0%"
+                                                        Name="lblConfidenceLevelLabelStart"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        FontWeight="Regular"/>
                                                     <Slider Width="300"
                                                         Minimum="0"
                                                         Maximum="100"
-                                                        Value="{Binding Path=MLRecommendationConfidenceLevel, Mode=TwoWay}" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0"
-                                                        IsEnabled="{Binding Path=NodeAutocompleteMachineLearningIsChecked}">
+                                                        Value="{Binding Path=MLRecommendationConfidenceLevel, Mode=TwoWay}"
+                                                        IsEnabled="{Binding Path=EnableConfidenceLevelSlider}"
+                                                        ValueChanged="sliderConfidenceLevel_ValueChanged">
                                                     </Slider>
+                                                    <Label Content="100%" 
+                                                        Margin="0,-5,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        FontWeight="Regular"/>
+                                                </StackPanel>
+                                                <StackPanel Margin="-10,5,0,0" Orientation="Horizontal" Grid.Row="3">
+                                                    <Label
+                                                        Name="lblConfidenceLevel"
+                                                        Width="30"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalContentAlignment="Center"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        FontWeight="Regular"
+                                                        Content="{Binding Path=MLRecommendationConfidenceLevel, Mode=TwoWay}"/>
                                                 </StackPanel>
                                             </Grid>
                                         </Grid>
