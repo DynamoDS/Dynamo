@@ -258,6 +258,9 @@ namespace Dynamo.UI.Views
             await webView.EnsureCoreWebView2Async();
             // Context menu disabled
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            // Zoom control disabled
+            webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+
             var assembly = Assembly.GetExecutingAssembly();
 
             using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))
@@ -284,7 +287,6 @@ namespace Dynamo.UI.Views
             webView.NavigateToString(htmlString);
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
                new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut, CloseWindow));
-            webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
         }
 
         internal async void SetBarProperties(string version, string loadingDescription, float barSize)

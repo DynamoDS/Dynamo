@@ -22,6 +22,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             authManager = dynamoViewModel.Model.AuthenticationManager;
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(dynamoViewModel.ShowSaveImageDialogAndSaveResult);
             SignOutCommand = new DelegateCommand(authManager.ToggleLoginState);
+            PropertyChanged += (sender, args) => { };
         }
 
         /// <summary>
