@@ -4,10 +4,12 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Dynamo.UI.Commands;
-using Dynamo.Updates;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Microsoft.Practices.Prism.ViewModel;
+using Greg.AuthProviders;
+using System.Linq;
+using System.Windows;
 
 namespace Dynamo.UI.Controls
 {
@@ -34,6 +36,7 @@ namespace Dynamo.UI.Controls
         {
             get { return shortcutBarRightSideItems; }
         }
+        private readonly Core.AuthenticationManager authManager;
 
         /// <summary>
         /// Construct a ShortcutToolbar.
@@ -44,11 +47,11 @@ namespace Dynamo.UI.Controls
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
             shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();    
 
-            InitializeComponent();
-            UpdateControl.DataContext = dynamoViewModel.Model.UpdateManager;            
+            InitializeComponent();         
 
             var shortcutToolbar = new ShortcutToolbarViewModel(dynamoViewModel);
             DataContext = shortcutToolbar;
+            authManager = dynamoViewModel.Model.AuthenticationManager;
         }
 
         private void exportMenu_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -61,6 +64,30 @@ namespace Dynamo.UI.Controls
         {
             this.HeaderText.FontFamily = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
             this.Icon.Source = new BitmapImage(new System.Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/image-icon-default.png"));
+        }
+
+        private void LoginButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (authManager.LoginState == LoginState.LoggedIn)
+            {
+                var button = (Button)sender;
+                MenuItem mi = button.Parent as MenuItem;
+                if (mi != null)
+                {
+                    var mi2 = mi.Items.OfType<MenuItem>().FirstOrDefault();
+                    mi2.DataContext = this;
+                    mi.IsSubmenuOpen = !mi.IsSubmenuOpen;
+                }
+            }
+            else if (authManager.LoginState == LoginState.LoggedOut)
+            {
+                authManager.ToggleLoginState(null);
+                if (authManager.IsLoggedIn()) {
+                    var tb = (((sender as Button).Content as StackPanel).Children.OfType<TextBlock>().FirstOrDefault() as TextBlock);
+                    tb.Text = authManager.Username;
+                    logoutOption.Visibility = Visibility.Visible;
+                }
+            }
         }
     }
 

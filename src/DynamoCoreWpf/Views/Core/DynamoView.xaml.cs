@@ -785,15 +785,6 @@ namespace Dynamo.Controls
             }
         }
 
-        private void InitializeLogin()
-        {
-            if (dynamoViewModel.ShowLogin && dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
-            {
-                var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
-                loginGrid.Children.Add(login);
-            }
-        }
-
         private void InitializeShortcutBar()
         {
             shortcutBar = new ShortcutToolbar(this.dynamoViewModel) { Name = "ShortcutToolbar" };
@@ -958,7 +949,6 @@ namespace Dynamo.Controls
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
                                                                      _timer.Elapsed, dynamoViewModel.BrandingResourceProvider.ProductName));
-            InitializeLogin();
             InitializeShortcutBar();
             InitializeStartPage(isFirstRun);
 
