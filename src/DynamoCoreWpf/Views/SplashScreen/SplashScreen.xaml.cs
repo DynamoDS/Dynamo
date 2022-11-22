@@ -284,6 +284,7 @@ namespace Dynamo.UI.Views
             webView.NavigateToString(htmlString);
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
                new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut, CloseWindow));
+            webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
         }
 
         internal async void SetBarProperties(string version, string loadingDescription, float barSize)
