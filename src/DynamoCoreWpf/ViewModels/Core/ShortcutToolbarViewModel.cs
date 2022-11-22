@@ -15,19 +15,17 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         public DelegateCommand SignOutCommand { get; set; }
         private AuthenticationManager authManager;
-        private ShortcutToolbar shortcutToolbarView;
 
         private int notificationsNumber;
 
 
-        public ShortcutToolbarViewModel(ShortcutToolbar view, DynamoViewModel dynamoViewModel)
+        public ShortcutToolbarViewModel(DynamoViewModel dynamoViewModel)
         {
             NotificationsNumber = 0;
-            shortcutToolbarView = view;
             authManager = dynamoViewModel.Model.AuthenticationManager;
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(dynamoViewModel.ShowSaveImageDialogAndSaveResult);
             SignOutCommand = new DelegateCommand(authManager.ToggleLoginState);
-            authManager.LoginStateChanged += (o) => { SignOutHandler(); RaisePropertyChanged(nameof(LoginState)); };
+            authManager.LoginStateChanged += (o) => { RaisePropertyChanged(nameof(LoginState)); };
         }
 
         /// <summary>
@@ -73,13 +71,6 @@ namespace Dynamo.Wpf.ViewModels.Core
                     return false;
                 }
                 return true;
-            }
-        }
-        private void SignOutHandler()
-        {
-            if (!authManager.IsLoggedIn()) {
-                shortcutToolbarView.txtSignIn.Text = Properties.Resources.SignInButtonText;
-                shortcutToolbarView.logoutOption.Visibility = Visibility.Collapsed;
             }
         }
     }

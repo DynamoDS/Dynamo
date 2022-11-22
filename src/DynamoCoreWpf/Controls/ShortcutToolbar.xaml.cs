@@ -49,9 +49,20 @@ namespace Dynamo.UI.Controls
 
             InitializeComponent();         
 
-            var shortcutToolbar = new ShortcutToolbarViewModel(this, dynamoViewModel);
+            var shortcutToolbar = new ShortcutToolbarViewModel(dynamoViewModel);
             DataContext = shortcutToolbar;
             authManager = dynamoViewModel.Model.AuthenticationManager;
+            authManager.LoginStateChanged += (o) => SignOutHandler();
+        }
+
+        private void SignOutHandler()
+        {
+            if (!authManager.IsLoggedIn())
+            {
+                LoginButton.ToolTip = Wpf.Properties.Resources.SignInButtonContentToolTip;
+                txtSignIn.Text = Wpf.Properties.Resources.SignInButtonText;
+                logoutOption.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void exportMenu_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -84,6 +95,7 @@ namespace Dynamo.UI.Controls
                     var tb = (((sender as Button).Content as StackPanel).Children.OfType<TextBlock>().FirstOrDefault() as TextBlock);
                     tb.Text = authManager.Username;
                     logoutOption.Visibility = Visibility.Visible;
+                    LoginButton.ToolTip = null;
                 }
             }
         }
