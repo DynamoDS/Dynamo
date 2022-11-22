@@ -263,4 +263,16 @@ namespace Dynamo.Search.SearchElements
         RSA,
         None
     };
+
+    // Node types for different nodemodel nodes.
+    internal enum NodeModelNodeTypes
+    {
+        FunctionNode,
+        ExtensionNode,
+        NumberInputNode,
+        StringInputNode,
+        BooleanInputNode,
+        DateTimeInputNode,
+        FormulaNode
+    };
 }

@@ -317,8 +317,8 @@ namespace Dynamo.ViewModels
                             results.Add(viewModelElement);
                         }
                     }
-                    // NodeModel extension node
-                    else if (result.Node.Type.NodeType.Equals(NodeModel.ExtensionNode))
+                    // Matching known node types of node-model nodes.
+                    else if (Enum.IsDefined(typeof(NodeModelNodeTypes), result.Node.Type.NodeType))
                     {
                         // Retreive assembly name and full name from type id.
                         var typeInfo = GetInfoFromTypeId(result.Node.Type.Id);
