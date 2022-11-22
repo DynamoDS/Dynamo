@@ -18,7 +18,6 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         private int notificationsNumber;
 
-
         public ShortcutToolbarViewModel(DynamoViewModel dynamoViewModel)
         {
             NotificationsNumber = 0;
