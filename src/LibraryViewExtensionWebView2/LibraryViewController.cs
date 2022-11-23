@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -266,6 +266,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             twoWayScriptingObject = new ScriptingObject(this);
             //register the interop object into the browser.
             this.browser.CoreWebView2.AddHostObjectToScript("bridgeTwoWay", twoWayScriptingObject);
+            browser.CoreWebView2.Settings.IsZoomControlEnabled = true;
         }
 
         private void CoreWebView2_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs args)
