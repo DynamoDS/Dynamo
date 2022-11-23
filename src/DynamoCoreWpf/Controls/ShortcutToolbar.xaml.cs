@@ -41,7 +41,7 @@ namespace Dynamo.UI.Controls
         /// <summary>
         /// Construct a ShortcutToolbar.
         /// </summary>
-        /// <param name="updateManager"></param>
+        /// <param name="dynamoViewModel"></param>
         public ShortcutToolbar(DynamoViewModel dynamoViewModel)
         {
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
@@ -52,6 +52,20 @@ namespace Dynamo.UI.Controls
             var shortcutToolbar = new ShortcutToolbarViewModel(dynamoViewModel);
             DataContext = shortcutToolbar;
             authManager = dynamoViewModel.Model.AuthenticationManager;
+            if (authManager.IsLoggedIn()) {
+                authManager.LoginStateChanged += SignOutHandler;
+            }
+        }
+
+        private void SignOutHandler(LoginState status)
+        {
+            if (status == LoginState.LoggedOut)
+            {
+                LoginButton.ToolTip = Wpf.Properties.Resources.SignInButtonContentToolTip;
+                txtSignIn.Text = Wpf.Properties.Resources.SignInButtonText;
+                logoutOption.Visibility = Visibility.Collapsed;
+                authManager.LoginStateChanged -= SignOutHandler;
+            }
         }
 
         private void exportMenu_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -74,8 +88,6 @@ namespace Dynamo.UI.Controls
                 MenuItem mi = button.Parent as MenuItem;
                 if (mi != null)
                 {
-                    var mi2 = mi.Items.OfType<MenuItem>().FirstOrDefault();
-                    mi2.DataContext = this;
                     mi.IsSubmenuOpen = !mi.IsSubmenuOpen;
                 }
             }
@@ -86,6 +98,8 @@ namespace Dynamo.UI.Controls
                     var tb = (((sender as Button).Content as StackPanel).Children.OfType<TextBlock>().FirstOrDefault() as TextBlock);
                     tb.Text = authManager.Username;
                     logoutOption.Visibility = Visibility.Visible;
+                    LoginButton.ToolTip = null;
+                    authManager.LoginStateChanged += SignOutHandler;
                 }
             }
         }
