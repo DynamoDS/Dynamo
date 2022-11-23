@@ -2262,7 +2262,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
   </data>
   <data name="PreferencesViewEnableNodeAutoComplete" xml:space="preserve">
-    <value>Node Autocomplete</value>
+    <value>Enable Node Autocomplete</value>
     <comment>Preferences | Features | Experimental | Enable Node Auto Complete</comment>
   </data>
   <data name="ErrorLoadingIcon" xml:space="preserve">
@@ -2321,15 +2321,15 @@ Uninstall the following packages: {0}?</value>
     <comment>Label used in the general tab</comment>
   </data>
   <data name="PreferencesNodeAutocompleteMethod" xml:space="preserve">
-    <value>Default method</value>
+    <value>Default Ranking Method</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="ObjectType" xml:space="preserve">
-    <value>Object type</value>
+    <value>Node Type Match</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="MachineLearning" xml:space="preserve">
-    <value>ML Recommendation</value>
+    <value>Recommended Nodes</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">

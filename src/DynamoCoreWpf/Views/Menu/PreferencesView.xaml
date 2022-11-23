@@ -722,7 +722,8 @@
                                                       VerticalAlignment="Center"
                                                       IsChecked="{Binding Path=NodeAutocompleteIsChecked}"
                                                       Style="{StaticResource EllipseToggleButton1}"/>
-                                        <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoComplete}" 
+                                        <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoComplete}"
+                                               FontWeight="Normal"
                                                Margin="10,0,0,0"
                                                VerticalAlignment="Center"
                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
@@ -749,8 +750,7 @@
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
                                             <Label Grid.Row="0"
-                                                Margin="-8,0,10,3"
-                                                FontWeight="Normal"
+                                                Margin="-8,15,10,3"                                               
                                                 Content="{x:Static p:Resources.PreferencesNodeAutocompleteMethod}" 
                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                             <Grid Grid.Row="1">
