@@ -769,7 +769,7 @@
                                                      MinWidth="90"
                                                      Style="{StaticResource RunSettingsRadioButtons}"
                                                      IsChecked="{Binding Path=NodeAutocompleteMachineLearningIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
-                                                     Content="{x:Static p:Resources.MachineLearning}"
+                                                     Content="{x:Static p:Resources.RecommendedNodes}"
                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
                                             </Grid>
                                             <Grid Grid.Row="2">

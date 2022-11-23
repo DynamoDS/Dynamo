@@ -2328,7 +2328,7 @@ Uninstall the following packages: {0}?</value>
     <value>Node Type Match</value>
     <comment>Label used in the features tab</comment>
   </data>
-  <data name="MachineLearning" xml:space="preserve">
+  <data name="RecommendedNodes" xml:space="preserve">
     <value>Recommended Nodes</value>
     <comment>Label used in the features tab</comment>
   </data>

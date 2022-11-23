@@ -3903,15 +3903,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recommended Nodes.
-        /// </summary>
-        public static string MachineLearning {
-            get {
-                return ResourceManager.GetString("MachineLearning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to You must provide a Major version as a non-negative integer..
         /// </summary>
         public static string MajorVersionNonNegative {
@@ -7602,6 +7593,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RecentFileNumberInfo {
             get {
                 return ResourceManager.GetString("RecentFileNumberInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recommended Nodes.
+        /// </summary>
+        public static string RecommendedNodes {
+            get {
+                return ResourceManager.GetString("RecommendedNodes", resourceCulture);
             }
         }
         
