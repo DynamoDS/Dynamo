@@ -314,7 +314,7 @@ namespace Dynamo.UI.Controls
             {
                 ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.ObjectType;
             }
-            ViewModel.ResetAutoCompleteSearchViewState();
+            ViewModel.PopulateAutoCompleteCandidates();
         }
     }
 }
