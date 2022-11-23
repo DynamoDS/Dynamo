@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -831,6 +831,8 @@ namespace Dynamo.Graph.Workspaces
             EngineController.ProcessPendingCustomNodeSyncData(scheduler);
             
             var task = new UpdateGraphAsyncTask(scheduler, verboseLogging);
+
+            OnEvaluationStarted(EventArgs.Empty);
             if (task.Initialize(EngineController, this))
             {
                 task.Completed += OnUpdateGraphCompleted;
@@ -845,7 +847,6 @@ namespace Dynamo.Graph.Workspaces
                 // The workspace has been built for the first time
                 silenceNodeModifications = false;
 
-                OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
 
                 // Setting this to true as the task is scheduled now and will be 
