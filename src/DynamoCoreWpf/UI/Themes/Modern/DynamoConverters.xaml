@@ -79,6 +79,7 @@
     <controls:PortTypeToClipConverter x:Key="PortTypeToClipConverter" />
     <controls:ConsoleHeightConverter x:Key="ConsoleHeightConverter" />
     <controls:NodeAutocompleteWidthConverter x:Key="NodeAutocompleteWidthConverter" />
+    <controls:NodeAutocompleteImageConverter x:Key="NodeAutocompleteImageConverter" />
     <controls:BoolToFullscreenWatchVisibilityConverter x:Key="BoolToFullscreenWatchVisibilityConverter" />
     <controls:BoolToCanvasCursorConverter x:Key="BoolToCanvasCursorConverter" />
     <controls:LacingToVisibilityConverter x:Key="LacingToVisibilityConverter" />

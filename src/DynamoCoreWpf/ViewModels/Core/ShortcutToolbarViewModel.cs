@@ -1,6 +1,8 @@
 using Dynamo.Core;
 using Dynamo.UI.Commands;
+using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
+using System.Windows;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
@@ -22,6 +24,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             authManager = dynamoViewModel.Model.AuthenticationManager;
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(dynamoViewModel.ShowSaveImageDialogAndSaveResult);
             SignOutCommand = new DelegateCommand(authManager.ToggleLoginState);
+            authManager.LoginStateChanged += (o) => { RaisePropertyChanged(nameof(LoginState)); };
         }
 
         /// <summary>
