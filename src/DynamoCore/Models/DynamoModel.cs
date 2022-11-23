@@ -1931,8 +1931,9 @@ namespace Dynamo.Models
                             //Raise an event to deserialize the view parameters before
                             //setting the graph to run
                             OnComputeModelDeserialized();
-
                             SetPeriodicEvaluation(ws);
+
+                            WorkspaceReady?.Invoke(ws);
                         }
                     }
                 }
@@ -2006,6 +2007,8 @@ namespace Dynamo.Models
                             // Set up workspace cameras here
                             OnWorkspaceOpening(xmlDoc);
                             SetPeriodicEvaluation(ws);
+
+                            WorkspaceReady?.Invoke(ws);
                         }
                     }
                 }
@@ -2074,6 +2077,7 @@ namespace Dynamo.Models
             AddWorkspace(ws);
             CurrentWorkspace = ws;
             OnWorkspaceOpened(ws);
+
         }
 
         private void InsertWorkspace(WorkspaceModel ws, ExtraWorkspaceViewInfo viewInfo = null)
@@ -2134,8 +2138,7 @@ namespace Dynamo.Models
                 {
                     hws.StartPeriodicEvaluation();
                 }
-            }
-        }
+            }      }
 
         private bool OpenJsonFile(
           string filePath,

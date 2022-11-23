@@ -1,8 +1,12 @@
-﻿using System.IO;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Engine;
+using Dynamo.Events;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Wpf.Extensions;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -19,13 +23,15 @@ namespace DynamoCoreWpfTests
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
             extensionManager.Add(viewExtension);
-           
+
             // Open first file.
             Open(@"core\CustomNodes\add.dyf");
+
             // Open next file.
             Open(@"core\CustomNodes\bar.dyf");
 
-            Assert.AreEqual(2, viewExtension.Counter);
+            Assert.AreEqual(2, viewExtension.ChangedCounter);
+            Assert.AreEqual(2, viewExtension.ReadyCounter);
         }
 
         [Test]
@@ -350,7 +356,9 @@ namespace DynamoCoreWpfTests
 
     public class DummyViewExtension : IViewExtension
     {
-        public int Counter { get; private set; }
+        public int ChangedCounter { get; private set; }
+        public int ReadyCounter { get; private set; }
+        public EngineController engine { get; private set; }
         public bool SetOwner { get; set; } = true;
         public bool WindowClosed { get; private set; }
         public Window Content { get; private set; }
@@ -370,11 +378,36 @@ namespace DynamoCoreWpfTests
             // Do nothing for now
         }
 
+        private void ExecutionEvents_GraphPostExecution(Dynamo.Session.IExecutionSession session)
+        {
+            Assert.IsNotNull(engine);
+            Assert.IsFalse(engine.IsDisposed);
+        }
+
         public void Loaded(ViewLoadedParams p)
         {
+            Dynamo.Events.ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
+
             p.CurrentWorkspaceChanged += (ws) =>
             {
-                Counter++;
+                ChangedCounter++;
+
+                if (ws is HomeWorkspaceModel hwm)
+                {
+                    Assert.NotNull(hwm.EngineController);
+                    engine = hwm.EngineController;
+                }
+            };
+
+            p.CurrentWorkspaceReady += (ws) =>
+            {
+                /*if (ws is HomeWorkspaceModel hwm)
+                {
+                    Assert.NotNull(hwm.EngineController);
+                    engine = hwm.EngineController;
+                }*/
+                
+                ReadyCounter++;
             };
 
             var window = new Window();
@@ -394,7 +427,7 @@ namespace DynamoCoreWpfTests
 
         public void Shutdown()
         {
-
+            Dynamo.Events.ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
         }
 
         public void Dispose()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Dynamo.Graph.Workspaces;
@@ -28,6 +28,7 @@ namespace Dynamo.Extensions
             dynamoModel.WorkspaceClearingStarted += OnCurrentWorkspaceModelClearingStarted;
             dynamoModel.WorkspaceCleared += OnCurrentWorkspaceModelCleared;
             dynamoModel.WorkspaceRemoveStarted += OnCurrentWorkspaceRemoveStarted;
+            dynamoModel.WorkspaceReady += OnCurrentWorkspaceModelReady;
             dynamoM.Logger.NotificationLogged += OnNotificationRecieved;
             startupParams = new StartupParams(dynamoModel);
         }
@@ -89,6 +90,15 @@ namespace Dynamo.Extensions
         private void OnNotificationRecieved(Logging.NotificationMessage notification)
         {
             NotificationRecieved?.Invoke(notification);
+        }
+
+        /// <summary>
+        /// Occurs when current workspace is ready to run a graph
+        /// </summary>
+        public event Action<IWorkspaceModel> CurrentWorkspaceReady;
+        private void OnCurrentWorkspaceModelReady(IWorkspaceModel ws)
+        {
+            CurrentWorkspaceReady?.Invoke(ws);
         }
 
         /// <summary>
@@ -154,6 +164,7 @@ namespace Dynamo.Extensions
             dynamoModel.WorkspaceCleared -= OnCurrentWorkspaceModelCleared;
             dynamoModel.WorkspaceRemoveStarted -= OnCurrentWorkspaceRemoveStarted;
             dynamoModel.Logger.NotificationLogged -= OnNotificationRecieved;
+            dynamoModel.WorkspaceReady -= OnCurrentWorkspaceModelReady;
         }
     }
 }

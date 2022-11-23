@@ -479,6 +479,11 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Occurs when a workspaces is ready to run graphs.
+        /// </summary>
+        internal event WorkspaceHandler WorkspaceReady;
+
+        /// <summary>
         /// This event is raised right before the shutdown of DynamoModel started.
         /// When this event is raised, the shutdown is guaranteed to take place
         /// (i.e. user has had a chance to save the work and decided to proceed
