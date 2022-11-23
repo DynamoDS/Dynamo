@@ -753,7 +753,7 @@ namespace Dynamo.Configuration
             EnableNodeAutoComplete = true;
             HideNodesBelowSpecificConfidenceLevel = false;
             MLRecommendationConfidenceLevel = 10;
-            MLRecommendationNumberOfResults = 5;
+            MLRecommendationNumberOfResults = 10;
             EnableNotificationCenter = true;
             isStaticSplashScreenEnabled = true;
             DefaultPythonEngine = string.Empty;
