@@ -143,8 +143,7 @@ namespace Dynamo.DocumentationBrowser
 
             this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
             this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
-            this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = false;
-            this.documentationBrowser.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
         }
 
         private void CoreWebView2OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
