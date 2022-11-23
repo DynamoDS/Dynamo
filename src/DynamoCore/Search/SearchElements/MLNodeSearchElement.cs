@@ -12,7 +12,6 @@ namespace Dynamo.Search.SearchElements
             NumberOfResults = numberOfResults;
             Node = new NodeRequest();
             Port = new PortRequest();
-            Host = new HostRequest();
             Context = new ContextRequest();
             Packages = new List<PackageItem>();
         }
@@ -100,6 +99,12 @@ namespace Dynamo.Search.SearchElements
     [DataContract]
     internal class HostRequest
     {
+        internal HostRequest(string name, string version)
+        {
+            Name = name;
+            Version = version;
+        }
+
         [DataMember(Name = "name")]
         internal string Name { get; set; }
 
@@ -201,6 +206,9 @@ namespace Dynamo.Search.SearchElements
     {
         [DataMember(Name = "name")]
         internal string Name { get; set; }
+
+        [DataMember(Name = "index")]
+        internal int Index { get; set; }
     }
 
     [DataContract]
@@ -247,4 +255,27 @@ namespace Dynamo.Search.SearchElements
             return string.Format("{0}, {1}", FullName, AssemblyName);
         }
     }
+
+    internal enum HostNames
+    {
+        Revit,
+        AdvanceSteel,
+        Civil3d,
+        FormIt,
+        Alias,
+        RSA,
+        None
+    };
+
+    // Node types for different nodemodel nodes.
+    internal enum NodeModelNodeTypes
+    {
+        FunctionNode,
+        ExtensionNode,
+        NumberInputNode,
+        StringInputNode,
+        BooleanInputNode,
+        DateTimeInputNode,
+        FormulaNode
+    };
 }
