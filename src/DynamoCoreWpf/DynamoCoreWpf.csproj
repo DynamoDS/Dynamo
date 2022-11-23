@@ -1596,6 +1596,7 @@
     <Resource Include="UI\Images\bubble-arrow.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
     <Resource Include="UI\Images\no-recommendations.png" />
+    <Resource Include="UI\Images\not-authenticated.png" />
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
