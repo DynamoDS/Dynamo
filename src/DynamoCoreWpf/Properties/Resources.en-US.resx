@@ -3313,7 +3313,7 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Package Upload Scan</value>
   </data>
   <data name="ImportPreferencesInfo" xml:space="preserve">
-    <value>Your custom settings can be imported here. Settings not exposed via Preferences panel will be applied once Dynamo and any host program restarts.</value>
+    <value>You can import custom settings here, which will overwrite your current settings. If you'd like to preserve a copy of your current settings, export them before importing new settings. Settings not shown in the Preferences panel will be applied once Dynamo and any host program restarts.</value>
     <comment>Import Preferences Info.</comment>
   </data>
   <data name="PreferencesViewNodeAutocomplete" xml:space="preserve">
@@ -3469,5 +3469,20 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Export Failed</value>
+  </data>
+  <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
+    <value>When toggled on, Dynamo benefits from hardware acceleration to improve smoothness of graphics and overall performance, as work is offloaded from central processing units (CPUs) to graphics processing units (GPUs).</value>
+  </data>
+  <data name="PreferencesWindowIsolateSelectedGeoTooltip" xml:space="preserve">
+    <value>When toggled on, selecting a geometry node will highlight the geometry it produces in the background 3D preview.</value>
+  </data>
+  <data name="PreferencesWindowShowCodeBlockNodeLineNumberTooltip" xml:space="preserve">
+    <value>When toggled on, line numbers will be displayed in the Code Block node editor.</value>
+  </data>
+  <data name="PreferencesWindowShowEdgesTooltip" xml:space="preserve">
+    <value>When toggled on, more detailed edges will be displayed for geometry from topology subtypes.</value>
+  </data>
+  <data name="PreferencesWindowShowPreviewBubblesTooltip" xml:space="preserve">
+    <value>When toggled on, a preview of the node’s output will be displayed when hovering over the bottom of a node.</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -125,9 +125,6 @@
     </Compile>
     <Compile Include="Controls\InfiniteGridView.xaml.cs">
       <DependentUpon>InfiniteGridView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Login.xaml.cs">
-      <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\HeaderStrip.xaml.cs">
       <DependentUpon>HeaderStrip.xaml</DependentUpon>
@@ -579,10 +576,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\InfiniteGridView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1446,6 +1439,11 @@
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
       <Name>VMDataBridge</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj">
+      <Project>{31183026-DE70-49CB-BC7C-0DFD0A088F62}</Project>
+      <Name>Watch3DNodeModels</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
@@ -1591,6 +1589,7 @@
     <Resource Include="UI\Images\bubble-arrow.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
     <Resource Include="UI\Images\no-recommendations.png" />
+    <Resource Include="UI\Images\not-authenticated.png" />
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />

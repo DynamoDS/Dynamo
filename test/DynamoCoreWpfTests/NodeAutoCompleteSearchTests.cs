@@ -4,6 +4,7 @@ using System.Linq;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.Properties;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -483,6 +484,31 @@ namespace DynamoCoreWpfTests
             searchViewModel.PopulateAutoCompleteCandidates();
             Assert.AreEqual(2, searchViewModel.FilteredResults.Count());
             Assert.AreEqual("Number Slider", searchViewModel.FilteredResults.FirstOrDefault().Name);
+        }
+
+        [Test]
+        public void NoMLAutocompleteRecommendations()
+        {
+            Open(@"UI\builtin_inputport_suggestion.dyn");
+
+            // Get the node view for a CoreNodeModels.Sequence node
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("17b1efe0cdea4ce48cafc2da689f79a4").ToString());
+
+            var outPorts = nodeView.ViewModel.OutPorts;
+            Assert.AreEqual(1, outPorts.Count());
+
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
+            searchViewModel.PortViewModel = outPorts[0];
+
+            // Set the suggestion to ML
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+
+            // As there is no authentication in test fixture, no results are shown.
+            searchViewModel.PopulateAutoCompleteCandidates();
+            searchViewModel.DisplayAutocompleteMLStaticPage = true;
+            searchViewModel.DisplayLowConfidence = false;
+            searchViewModel.AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
+            searchViewModel.AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
         }
     }
 }

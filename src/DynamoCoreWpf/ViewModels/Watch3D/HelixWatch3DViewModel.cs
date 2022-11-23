@@ -1092,7 +1092,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestViewRefresh();
         }
    
-        private KeyValuePair<string, Element3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
+        internal KeyValuePair<string, Element3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
         {
             KeyValuePair<string, Element3D>[] geometryModels;
 
@@ -1118,7 +1118,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return geometryModels;
         }
 
-        private void SetGeometryFrozen(HashSet<NodeModel> gathered)
+        internal void SetGeometryFrozen(HashSet<NodeModel> gathered)
         {
             
             foreach (var node in gathered)
