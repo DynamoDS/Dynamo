@@ -50,7 +50,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynamoViewModel.MLRecommendationConfidenceLevel.DefaultNodeAutocompleteSuggestion == Models.NodeAutocompleteSuggestion.MLRecommendation;
+                return dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion == Models.NodeAutocompleteSuggestion.MLRecommendation;
             }
         }
 
