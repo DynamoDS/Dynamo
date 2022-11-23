@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections;
+using System.Reflection;
 
 namespace Autodesk.DesignScript.Runtime
 {
@@ -302,7 +303,29 @@ namespace Autodesk.DesignScript.Runtime
         public IsObsoleteAttribute(string message) 
         { 
             Message = message; 
-        } 
+        }
+
+        /// <summary>
+        /// Attribute constructor which enables localized message lookup.
+        /// </summary>
+        /// <param name="descriptionResourceID">resx id for this resource</param>
+        /// <param name="resourceType">type of resource assembly we are looking in for the above id.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public IsObsoleteAttribute(string descriptionResourceID, Type resourceType)
+        {
+            if (resourceType == null)
+                throw new ArgumentNullException(nameof(resourceType));
+
+            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
+            if (prop != null && prop.PropertyType == typeof(string))
+            {
+                Message = prop.GetValue(null, null) as string;
+            }
+            else
+            {
+                Message = descriptionResourceID;
+            }
+        }
     } 
 
 
