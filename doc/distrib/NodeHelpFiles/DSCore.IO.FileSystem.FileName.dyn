@@ -1,0 +1,390 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.FileSystem.FileName_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Temp\\Sample.txt",
+      "InputValue": "..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\Temp\\Sample.txt",
+      "NodeType": "ExtensionNode",
+      "Id": "054c8c81f54e4af0923e74a37e16a17e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "23eecdd98600468fbe84b2f0a0f4d20f",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.DirectoryName@string",
+      "Id": "298b9cf1cd3143eeb771b13cd9e65509",
+      "Inputs": [
+        {
+          "Id": "9431f2371bcd4cebb104d7e34ba532ed",
+          "Name": "path",
+          "Description": "Path to get directory information of\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c49d63d098f74f95b24163f6232b567e",
+          "Name": "string",
+          "Description": "Directory name of file path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the directory name of a file path.\n\nFileSystem.DirectoryName (path: string): string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.FileName@string,bool",
+      "Id": "f1a423b99f9a42d8999d360eb7fde538",
+      "Inputs": [
+        {
+          "Id": "73fbbd3b43694dc292eb0c1bb0229b9b",
+          "Name": "path",
+          "Description": "Path to get the file name of\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2205834e769941acbd4b580f9f53fa3c",
+          "Name": "withExtension",
+          "Description": "Toggle to include extension in result\n\nbool\nDefault value : true",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1e9768a5e1f94c5b8a6712a835928015",
+          "Name": "string",
+          "Description": "File name from file path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the file name of a file path.\n\nFileSystem.FileName (path: string, withExtension: bool = true): string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.FileExtension@string",
+      "Id": "e459049a601845fbb5725f2e47ac9810",
+      "Inputs": [
+        {
+          "Id": "b5641773759c40c69912ca15b74da96b",
+          "Name": "path",
+          "Description": "Path to get extension of\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "73c24db3a49c4fb0957036d5b489f325",
+          "Name": "string",
+          "Description": "Extension of file",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the extension from a file path.\n\nFileSystem.FileExtension (path: string): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "a2a3694489d74a5991e459f75fb28d07",
+      "Inputs": [
+        {
+          "Id": "194709e5dda440fd89627c836fee76ae",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f5f6090a0bbe4f369ec20175005f84a7",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "22f0f8b30a5c46679438da5035193eeb",
+      "Inputs": [
+        {
+          "Id": "3230ffe9702e4b1db500759a81548c13",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "824c51a8c206493c87ca134e64495861",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "36d45c9c9cac49dd808856d8498df079",
+      "Inputs": [
+        {
+          "Id": "891c633b280d4d7ea560bb4ad274e7f5",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8be71aa434764be0b8eefcffb738c94d",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "23eecdd98600468fbe84b2f0a0f4d20f",
+      "End": "9431f2371bcd4cebb104d7e34ba532ed",
+      "Id": "0b693c195aa743c0a5289916dffea753",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "23eecdd98600468fbe84b2f0a0f4d20f",
+      "End": "73fbbd3b43694dc292eb0c1bb0229b9b",
+      "Id": "70de67f6e2ef4aa5844d576be801f1a7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "23eecdd98600468fbe84b2f0a0f4d20f",
+      "End": "b5641773759c40c69912ca15b74da96b",
+      "Id": "b08d523e9e2f4298920449df0fb14fae",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c49d63d098f74f95b24163f6232b567e",
+      "End": "194709e5dda440fd89627c836fee76ae",
+      "Id": "655e708a68814d9a9fc8d618e0e40632",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1e9768a5e1f94c5b8a6712a835928015",
+      "End": "3230ffe9702e4b1db500759a81548c13",
+      "Id": "08d1ea97ace147fe9b3af61ddbcf7bf2",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "73c24db3a49c4fb0957036d5b489f325",
+      "End": "891c633b280d4d7ea560bb4ad274e7f5",
+      "Id": "ee3c825ad27645c6b5fcbf40c31bf51f",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "File Path",
+        "ShowGeometry": true,
+        "Id": "054c8c81f54e4af0923e74a37e16a17e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3291.444180727779,
+        "Y": 3792.8606381754057
+      },
+      {
+        "Name": "FileSystem.DirectoryName",
+        "ShowGeometry": true,
+        "Id": "298b9cf1cd3143eeb771b13cd9e65509",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3647.7688027420168,
+        "Y": 3793.6903255915636
+      },
+      {
+        "Name": "FileSystem.FileName",
+        "ShowGeometry": true,
+        "Id": "f1a423b99f9a42d8999d360eb7fde538",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3660.2141139843811,
+        "Y": 3970.4137452331383
+      },
+      {
+        "Name": "FileSystem.FileExtension",
+        "ShowGeometry": true,
+        "Id": "e459049a601845fbb5725f2e47ac9810",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3670.1703629782728,
+        "Y": 4173.6871621917571
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "a2a3694489d74a5991e459f75fb28d07",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3991.2593930312742,
+        "Y": 3793.6903255915631
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "22f0f8b30a5c46679438da5035193eeb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3987.9406433666427,
+        "Y": 3969.58405781698
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "36d45c9c9cac49dd808856d8498df079",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3981.3031440373825,
+        "Y": 4172.0277873594414
+      }
+    ],
+    "Annotations": [],
+    "X": -3150.8463573187423,
+    "Y": -3022.7465969587029,
+    "Zoom": 0.96421855318101279
+  }
+}

@@ -1,0 +1,556 @@
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Arc.ByBestFitThroughPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Arc.ByCenterPointRadiusAngle.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointEndPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointSweepAngle.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Arc.ByFillet.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Arc.ByFilletTangentToCurve.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Arc.ByStartEndAndTangencies.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Arc.ByStartPointEndPointStartTangent.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Arc.ByThreePoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Arc.CenterPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Arc.Radius.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Arc.StartAngle.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Arc.SweepAngle.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.BoundingBox.ByCorners.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.BoundingBox.Contains.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.BoundingBox.Intersection.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.BoundingBox.Intersects.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.BoundingBox.IsEmpty.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.BoundingBox.MaxPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.BoundingBox.MinPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.BoundingBox.ToCuboid.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.BoundingBox.ToPolySurface.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Circle.ByBestFitThroughPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadiusNormal.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Circle.ByPlaneRadius.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Circle.ByThreePoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Circle.CenterPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Circle.Radius.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadii.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadius.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cone.ByPointsRadii.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cone.ByPointsRadius.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cone.EndPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cone.EndRadius.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cone.Height.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cone.RadiusRatio.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cone.StartPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cone.StartRadius.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.ByCylindricalCoordinates.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(origin).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(x, y).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(x, y, z).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(origin, xAxis, yAxis).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(origin, xAxis, yAxis, zAxis).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.ByPlane.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Determinant.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Identity.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Inverse.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.IsEqualTo.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.IsScaledOrtho.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.IsSingular.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.IsUniscaledOrtho.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Mirror.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Origin.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.PostMultiplyBy.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.PreMultiplyBy.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(origin, axis, degrees).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(plane, degrees).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(amount).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(basePoint, from, to).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(plane, xamount, yamount, zamount).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(xamount, yamount, zamount).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Scale1D.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Scale2D.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.ScaleFactor.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(coordinateSystem, coordinateSystem).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(coordinateSystem, fromCoordinateSystem, contextCoordinateSystem).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(direction).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(direction, distance).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(xTranslation, yTranslation, zTranslation).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.XAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.XScaleFactor.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.XYPlane.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.YAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.YScaleFactor.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.YZPlane.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.ZAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.ZScaleFactor.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.CoordinateSystem.ZXPlane.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cuboid.ByCorners.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cuboid.ByLengths(coordinateSystem, width, length, height).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cuboid.ByLengths(origin, width, length, height).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cuboid.ByLengths(width, length, height).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cuboid.Height.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cuboid.Length.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cuboid.Width.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.ByIsoCurveOnSurface.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.ByParameterLineOnSurface.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.EndParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.EndPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.Extend.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.ExtendEnd.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.ExtendStart.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.Extrude(direction).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.Extrude(direction, distance).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.Extrude(distance).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(direction).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(direction, distance).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(distance).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.HorizontalFrameAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.IsClosed.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.IsPlanar.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.Join.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.Length.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.Normal.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.NormalAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.Offset.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.ParameterAtChordLength.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.Patch.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.PointAtChordLength.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.PointAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.Project.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.PullOntoPlane.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.PullOntoSurface.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.Reverse.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.SegmentLengthAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.Simplify.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.SplitByParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.SplitByPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.StartParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.StartPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.SweepAsSolid.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.SweepAsSurface.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.TangentAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.TrimByParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.TrimByStartParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.TrimInteriorByParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(parameters).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(parameters, discardEvenSegments).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cylinder.Axis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cylinder.ByPointsRadius.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cylinder.ByRadiusHeight.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cylinder.Height.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Cylinder.Radius.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Edge.AdjacentFaces.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Edge.CurveGeometry.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Edge.EndVertex.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Edge.StartVertex.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Ellipse.ByCoordinateSystemRadii.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Ellipse.ByOriginRadii.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Ellipse.ByOriginVectors.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Ellipse.ByPlaneRadii.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Ellipse.CenterPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Ellipse.MajorAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Ellipse.MinorAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiAngles.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.EllipseArc.CenterPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.EllipseArc.MajorAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.EllipseArc.MinorAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.EllipseArc.Plane.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.EllipseArc.StartAngle.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.EllipseArc.SweepAngle.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Face.Edges.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Face.SurfaceGeometry.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Face.Vertices.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.BoundingBox.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.ClosestPointTo.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.ContextCoordinateSystem.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.DeserializeFromSAB.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.DistanceTo.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.DoesIntersect.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Explode.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.ExportToSAT.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT(file).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT(filePath).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Intersect.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.IntersectAll.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.IsAlmostEqualTo.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Mirror.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Rotate(basePlane, degrees).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Rotate(origin, axis, degrees).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Scale(amount).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Scale(basePoint, from, to).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Scale(plane, xamount, yamount, zamount).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Scale(xamount, yamount, zamount).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Scale1D.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Scale2D.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Split.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Transform(geometry, cs).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Transform(geometry, fromCoordinateSystem, contextCoordinateSystem).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Translate(direction).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Translate(direction, distance).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Translate(xTranslation, yTranslation, zTranslation).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Geometry.Trim.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Helix.Angle.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Helix.AxisDirection.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Helix.AxisPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Helix.ByAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Helix.Pitch.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Helix.Radius.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.IndexGroup.A.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.IndexGroup.B.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.IndexGroup.ByIndices(a, b, c).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.IndexGroup.ByIndices(a, b, c, d).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.IndexGroup.C.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.IndexGroup.Count.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.IndexGroup.D.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Line.ByBestFitThroughPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Line.ByTangency.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Line.Direction.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Mesh.ByPointsFaceIndices.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Mesh.FaceIndices.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Mesh.VertexNormals.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Mesh.VertexPositions.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(points).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(points, degree).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(points, degree, closeCurve).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPointsWeightsKnots.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(points).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(points, closeCurve).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(points, degree).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.ByPointsTangents.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.Degree.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.IsPeriodic.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.IsRational.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.Knots.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsCurve.Weights.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPointsWeightsKnots.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.ByPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangents.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangentsKnotsDerivatives.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.ControlPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.DegreeU.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.DegreeV.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.IsPeriodicInU.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.IsPeriodicInV.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.IsRational.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.NumControlPointsU.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.NumControlPointsV.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.UKnots.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.VKnots.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.NurbsSurface.Weights.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.ByBestFitThroughPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.ByLineAndPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.ByOriginNormal.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.ByOriginNormalXAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.ByOriginXAxisYAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.ByThreePoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.Normal.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.Offset.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.Origin.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.ToCoordinateSystem.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.XAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.XY.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.XZ.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.YAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Plane.YZ.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.Add.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.AsVector.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.ByCartesianCoordinates.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, y).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, y, z).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.ByCylindricalCoordinates.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.BySphericalCoordinates.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.Origin.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.Project.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.PruneDuplicates.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.Subtract.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.X.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.Y.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Point.Z.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolyCurve.BasePlane.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolyCurve.ByPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLine.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolyCurve.CurveAtIndex.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolyCurve.Curves.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolyCurve.Fillet.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolyCurve.Offset.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Polygon.ByPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Polygon.Center.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Polygon.ContainmentTest.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Polygon.Corners.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Polygon.PlaneDeviation.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Polygon.Points.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Polygon.RegularPolygon.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Polygon.SelfIntersections.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolySurface.ByJoinedSurfaces.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolySurface.ByLoft(crossSections).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolySurface.ByLoft(crossSections, guideCurve).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolySurface.ByLoftGuides.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolySurface.BySolid.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolySurface.EdgeCount.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolySurface.ExtractSolids.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.PolySurface.VertexCount.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(p1, p2, p3, p4).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(points).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(plane, width, length).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(width, length).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Rectangle.Height.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Rectangle.Width.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.Area.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.ByJoinedSurfaces.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.ByLoft(crossSections).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.ByLoft(crossSections, guideCurves).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.ByRevolve.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.BySweep.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.BySweep2Rails.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.ByUnion.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.Centroid.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.Chamfer.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.Difference.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.DifferenceAll.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.Fillet.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.ThinShell.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.Union.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Solid.Volume.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Sphere.ByBestFit.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Sphere.ByFourPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Sphere.CenterPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Sphere.Radius.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.Area.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.ByLoft(crossSections).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.ByPatch.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.ByRevolve.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.ByRuledLoft.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.BySweep.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.BySweep2Rails.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.Closed.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.ClosedInU.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.ClosedInV.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.CoordinateSystemAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.DerivativesAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.GaussianCurvatureAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.GetIsoline.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.NormalAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.NormalAtPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.Offset.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.Perimeter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.PerimeterCurves.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.PointAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.SubtractFrom.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.TangentAtUParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.TangentAtVParameter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.Thicken(thickness).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.Thicken(thickness, both_sides).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Topology.Edges.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Topology.Faces.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Topology.Vertices.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.UV.ByCoordinates.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.UV.U.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.UV.V.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Add.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.AngleWithVector.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.AsPoint.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.ByCoordinates(x, y, z).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.ByCoordinates(x, y, z, normalized).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.ByTwoPoints.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Cross.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Dot.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.IsAlmostEqualTo.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.IsParallel.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Length.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Normalized.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Reverse.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Rotate(axis, degrees).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Rotate(plane, degrees).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Scale(scale_factor).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Scale(xScaleFactor, yScaleFactor, zScaleFactor).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Subtract.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Transform.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.X.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.XAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Y.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.YAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.Z.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vector.ZAxis.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vertex.AdjacentEdges.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vertex.AdjacentFaces.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\Autodesk.DesignScript.Geometry.Vertex.PointGeometry.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.HigherOrder.ApplyFunction.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.HigherOrder.CartesianProduct.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.HigherOrder.Combine.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.HigherOrder.ComposeFunctions.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.HigherOrder.Filter.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.HigherOrder.LaceLongest.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.HigherOrder.LaceShortest.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.HigherOrder.Map.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.HigherOrder.Reduce.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.Input.BoolSelector.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.Input.DoubleInput.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.Input.DoubleSlider.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.Input.IntegerSlider64Bit.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.Input.StringInput.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.Logic.And.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\CoreNodeModels.Logic.Or.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DesignScript.Builtin.Dictionary.ByKeysValues.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DesignScript.Builtin.Dictionary.Components.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DesignScript.Builtin.Dictionary.Count.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DesignScript.Builtin.Dictionary.Keys.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DesignScript.Builtin.Dictionary.RemoveKeys.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DesignScript.Builtin.Dictionary.SetValueAtKeys.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DesignScript.Builtin.Dictionary.ValueAtKey.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DesignScript.Builtin.Dictionary.Values.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Color.Add.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Color.Alpha.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Color.Blue.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Color.Brightness.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Color.ByARGB.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Color.Components.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Color.Divide.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Color.Green.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Color.Hue.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Color.Multiply.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Color.Red.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Color.Saturation.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.AddTimeSpan.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.ByDate.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.ByDateAndTime.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.Components.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.Date.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.DayOfWeek.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.DayOfYear.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.DaysInMonth.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.Format.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.FromString.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.IsDaylightSavingsTime.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.IsLeapYear.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.MaxValue.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.MinValue.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.Now.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.SubtractTimeSpan.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.TimeOfDay.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.DateTime.Today.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Acos.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Asin.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Atan.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Atan2.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Average.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Ceiling.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Cos.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Cosh.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.DegreesToRadians.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.DivRem.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.E.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.EvaluateFormula.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Exp.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Factorial.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Floor.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.GoldenRatio.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Log(number).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Log(number, logBase).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Log10.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Map.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.MapTo.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Max(int1, int2).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Max(value1, value2).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Min(int1, int2).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Min(value1, value2).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.PiTimes2.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Pow.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.RadiansToDegrees.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Rand.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Random(seed).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Random(value1, value2).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.RemapRange.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Round(number).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Round(number, digits).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Sign(number).dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Sin.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Sinh.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Sqrt.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Sum.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Tan.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Math.Tanh.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Object.Identity.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Object.IsNull.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Object.Type.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.AllIndicesOf.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.Center.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.ChangeCase.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.Concat.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.Contains.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.CountOccurrences.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.EndsWith.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.IndexOf.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.Insert.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.Join.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.LastIndexOf.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.Length.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.PadLeft.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.PadRight.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.Remove.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.Replace.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.Split.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.StartsWith.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.Substring.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.ToLower.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.ToNumber.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.ToUpper.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.TrimLeadingWhitespace.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.TrimTrailingWhitespace.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.String.TrimWhitespace.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.Thread.Pause.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.Add.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.ByDateDifference.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.Components.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.Create.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.FromString.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.MaxValue.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.MinValue.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.Negate.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.Scale.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.Subtract.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.TotalDays.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.TotalHours.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.TotalMilliseconds.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.TotalMinutes.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.TotalSeconds.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DSCore.TimeSpan.Zero.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DynamoUnits.Location.ByLatitudeAndLongitude.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DynamoUnits.Location.Latitude.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DynamoUnits.Location.Longitude.dyn
+C:\Users\dneno\OneDrive\Documents\Dynamo Export Images\Examples\Dynamo Graph Exports\Final Exports\DN Compare\DynamoUnits.Location.Name.dyn
+Successfully exported 555 images.
