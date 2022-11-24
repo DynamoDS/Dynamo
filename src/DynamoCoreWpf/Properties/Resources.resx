@@ -2482,7 +2482,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
   </data>
   <data name="PreferencesViewEnableNodeAutoComplete" xml:space="preserve">
-    <value>Node Autocomplete</value>
+    <value>Enable Node Autocomplete</value>
     <comment>Preferences | Features | Experimental | Enable Node Auto Complete</comment>
   </data>
   <data name="ErrorLoadingIcon" xml:space="preserve">
@@ -2537,15 +2537,15 @@ Uninstall the following packages: {0}?</value>
     <comment>Label used in the general tab</comment>
   </data>
   <data name="PreferencesNodeAutocompleteMethod" xml:space="preserve">
-    <value>Default method</value>
+    <value>Default Ranking Method</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="ObjectType" xml:space="preserve">
-    <value>Object type</value>
+    <value>Node Type Match</value>
     <comment>Label used in the features tab</comment>
   </data>
-  <data name="MachineLearning" xml:space="preserve">
-    <value>ML Recommendation</value>
+  <data name="RecommendedNodes" xml:space="preserve">
+    <value>Recommended Nodes</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
@@ -3302,6 +3302,19 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="ImportPreferencesInfo" xml:space="preserve">
     <value>You can import custom settings here, which will overwrite your current settings. If you'd like to preserve a copy of your current settings, export them before importing new settings. Settings not shown in the Preferences panel will be applied once Dynamo and any host program restarts.</value>
     <comment>Import Preferences Info.</comment>
+  </data>
+  <data name="PreferencesViewNodeAutocomplete" xml:space="preserve">
+    <value>Node Autocomplete</value>
+    <comment>Preferences | Features | Node Autocomplete</comment>
+  </data>
+  <data name="HideNodesBelowSpecificConfidenceLevel" xml:space="preserve">
+    <value>Hide nodes below a specified confidence level</value>
+  </data>
+  <data name="HideNodesBelowSpecificConfidenceLevelInfo" xml:space="preserve">
+    <value>Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes.</value>
+  </data>
+  <data name="MLRecommendationNumberOfResults" xml:space="preserve">
+    <value>Numbers of results</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Import</value>
