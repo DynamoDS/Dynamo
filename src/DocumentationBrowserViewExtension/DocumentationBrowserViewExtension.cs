@@ -176,6 +176,11 @@ namespace Dynamo.DocumentationBrowser
             this.DynamoViewModel = (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel);
         }
 
+        public void Shutdown()
+        {
+            Dispose();
+        }
+
         private void OnInsertFile(object sender, InsertDocumentationLinkEventArgs e)
         {
             if (e.Data.Equals(Resources.FileNotFoundFailureMessage))
@@ -202,7 +207,6 @@ namespace Dynamo.DocumentationBrowser
             this.DynamoViewModel.Model.InsertFileFromPath(e.Data);
 
             if (!DynamoSelection.Instance.Selection.Any()) return;
-            DoEvents();
 
             GroupInsertedGraph(existingGroups, e.Name);
             DoEvents();
@@ -210,10 +214,7 @@ namespace Dynamo.DocumentationBrowser
             // We have selected all the nodes and notes from the inserted graph
             // Now is the time to auto layout the inserted nodes
             this.DynamoViewModel.GraphAutoLayoutCommand.Execute(null);
-            DoEvents();
-
-            this.DynamoViewModel.FitViewCommand.Execute(null);
-            DoEvents();
+            this.DynamoViewModel.FitViewCommand.Execute(false);
         }
 
 
@@ -231,16 +232,15 @@ namespace Dynamo.DocumentationBrowser
             {
                 selection.RemoveAll(x => group.AnnotationModel.ContainsModel(x as ModelBase));
             }
-
+            
             DynamoSelection.Instance.Selection.AddRange(selection);
             DynamoSelection.Instance.Selection.AddRange(hostGroups.Select(x => x.AnnotationModel));
-            DoEvents();
 
+            // Add the inserted nodes into a group
             var annotation = this.DynamoViewModel.Model.CurrentWorkspace.AddAnnotation(Resources.InsertedGroupSubTitle, Guid.NewGuid());
             if (annotation != null)
             {
                 annotation.AnnotationText = graphName;
-                DoEvents();
 
                 var annotationViewModel = DynamoViewModel.CurrentSpaceViewModel.Annotations
                         .First(x => x.AnnotationModel == annotation);
@@ -251,12 +251,13 @@ namespace Dynamo.DocumentationBrowser
 
                 DynamoSelection.Instance.ClearSelection();
                 DynamoSelection.Instance.Selection.AddRange(annotation.Nodes);
-                if(annotation.HasNestedGroups)
+                DynamoSelection.Instance.Selection.Add(annotation);
+
+                if (annotation.HasNestedGroups)
+                {
                     DynamoSelection.Instance.Selection.AddRange(annotation.Nodes.OfType<AnnotationModel>().SelectMany(x => x.Nodes));
-
-                DoEvents();
+                }
             }
-
         }
 
         private List<AnnotationViewModel> GetAllHostingGroups(List<AnnotationViewModel> existingGroups)
@@ -275,28 +276,47 @@ namespace Dynamo.DocumentationBrowser
             return hostGroups;
         }
 
+        /// <summary>
+        /// This method will return a reorganized version of the current selection
+        /// discarding nodes if they are in groups, selecting the group instead
+        /// </summary>
+        /// <returns></returns>
         private List<ISelectable> GetCurrentSelection()
         {
             List<ISelectable> selection = new List<ISelectable>();
 
             foreach (var selected in DynamoSelection.Instance.Selection)
             {
-                foreach (var group in this.DynamoViewModel.CurrentSpaceViewModel.Annotations)
+                var nodeOrGroup = SelectNodeOrGroup(selected, selection);
+                if (nodeOrGroup != null)
                 {
-                    if (group.Nodes.Contains(selected))
-                    {
-                        if(!selection.Contains(group.AnnotationModel))
-                            selection.Add(group.AnnotationModel);
-                        goto SkipSelection;
-                    }
+                    selection.Add(nodeOrGroup);
                 }
-                selection.Add(selected);
-                SkipSelection:
-                    continue;
             }
 
             return selection;
         }
+
+        private ISelectable SelectNodeOrGroup(ISelectable selected, List<ISelectable> selection)
+        {
+            foreach (var group in this.DynamoViewModel.CurrentSpaceViewModel.Annotations)
+            {
+                // Check if the current selected element is part of a group
+                if (group.Nodes.Contains(selected))
+                {
+                    // If that's the case, and the group is not part of the selection set yet, add the group to the selection set
+                    if (!selection.Contains(group.AnnotationModel))
+                    {
+                        return group.AnnotationModel;
+                    }
+                    // Else (if the element is part of a group, and the group has been added already to the selection set) skip this iteration
+                    return null;
+                }
+            }
+            // if the element was not part of a group, add it to the selection set
+            return selected;
+        }
+
         private List<AnnotationViewModel> GetExistingGroups()
         {
             List<AnnotationViewModel> result = new List<AnnotationViewModel>();
@@ -380,7 +400,6 @@ namespace Dynamo.DocumentationBrowser
 
         private void MenuItemCheckHandler(object sender, RoutedEventArgs e)
         {
-
             AddToSidebar(true);
         }
 

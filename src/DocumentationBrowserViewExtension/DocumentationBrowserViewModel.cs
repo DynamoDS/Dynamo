@@ -373,7 +373,7 @@ namespace Dynamo.DocumentationBrowser
 
         private string DynamoGraphFromMDFilePath(string path)
         {
-            return path.Replace(".md", ".dyn").Replace("%20", " ");
+            return Path.GetFileNameWithoutExtension(path).Replace("%20", " ") + (".dyn");
         }
 
         #endregion
