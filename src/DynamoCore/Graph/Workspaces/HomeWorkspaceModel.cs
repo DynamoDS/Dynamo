@@ -832,11 +832,16 @@ namespace Dynamo.Graph.Workspaces
             
             var task = new UpdateGraphAsyncTask(scheduler, verboseLogging);
 
+            // Start of graph evaluation (includes task.Initialize)
+            // Set these flags to false so that we do not get into infinite loop scenarios
+            // if listeners of EvaluationStarted decide to call RequestRun
+            RunSettings.RunEnabled = false; // Disable 'Run' button.
+            executingTask = false; // Not yet executing.
             OnEvaluationStarted(EventArgs.Empty);
+
             if (task.Initialize(EngineController, this))
             {
                 task.Completed += OnUpdateGraphCompleted;
-                RunSettings.RunEnabled = false; // Disable 'Run' button.
 
                 // Reset node states
                 foreach (var node in Nodes)
@@ -855,6 +860,8 @@ namespace Dynamo.Graph.Workspaces
             }
             else
             {
+                RunSettings.RunEnabled = true; // Re-enable 'Run' button.
+
                 // Notify handlers that evaluation did not take place.
                 var e = new EvaluationCompletedEventArgs(false);
                 OnEvaluationCompleted(e);
