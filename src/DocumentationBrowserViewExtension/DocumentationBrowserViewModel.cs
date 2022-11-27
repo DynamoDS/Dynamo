@@ -303,20 +303,7 @@ namespace Dynamo.DocumentationBrowser
 
                 // Convert the markdown file to html
                 var mkDown = MarkdownHandlerInstance.ParseToHtml(e.MinimumQualifiedName, e.PackageName);
-                string breadCrumbs = string.Empty;
-
-
-                if(BreadCrumbsDictionary != null && !BreadCrumbsDictionary.TryGetValue(e.OriginalName, out breadCrumbs))
-                {
-                    foreach (var pair in BreadCrumbsDictionary)
-                    {
-                        if (pair.Key.Contains(e.OriginalName))
-                        {
-                            breadCrumbs = pair.Value;
-                            break;
-                        }
-                    }
-                }
+                string breadCrumbs = GetBreadCrumbsValue(e);
 
                 writer.WriteLine(NodeDocumentationHtmlGenerator.OpenDocument());
                 // Get the Node info section
@@ -344,6 +331,63 @@ namespace Dynamo.DocumentationBrowser
             {
                 writer?.Dispose();
             }
+        }
+
+        private const string GEOMETRY_NAMESPACE = "Autodesk.DesignScript.Geometry";
+        private const string GEOMETRY_TESSELLATION_NAMESPACE = "Geometry.Tessellation";
+
+        private string GetBreadCrumbsValue(OpenNodeAnnotationEventArgs e)
+        {
+            string breadCrumbs = null;
+
+            if (BreadCrumbsDictionary == null) return String.Empty;
+            if (e.MinimumQualifiedName.Contains(GEOMETRY_NAMESPACE))
+            {
+                var category = e.Category.Split('.');
+                if (category.Length < 3) return null;
+
+                var cat = category[0];
+                var group = category[1];
+                var type = category[2];
+
+                var lookupName = cat + "." + group;
+
+                if (BreadCrumbsDictionary.TryGetValue(lookupName, out breadCrumbs))
+                {
+                    breadCrumbs += " / " + group;
+                }
+
+                return breadCrumbs;
+            }
+            else if (e.Category.Contains(GEOMETRY_TESSELLATION_NAMESPACE))
+            {
+                var category = e.Category.Split('.');
+                if (category.Length < 4) return null;
+
+                var cat = category[0];
+                var group = category[1];
+                var none = category[2];
+                var type = category[3];
+
+                breadCrumbs = cat + " / " + group + " / " + none;
+                return breadCrumbs;
+            }
+            else
+            {
+                if (!BreadCrumbsDictionary.TryGetValue(e.OriginalName, out breadCrumbs))
+                {
+                    foreach (var pair in BreadCrumbsDictionary)
+                    {
+                        if (pair.Key.Contains(e.OriginalName))
+                        {
+                            breadCrumbs = pair.Value;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return breadCrumbs;
         }
 
         /// <summary>
