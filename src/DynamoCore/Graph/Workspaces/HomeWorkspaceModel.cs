@@ -176,6 +176,9 @@ namespace Dynamo.Graph.Workspaces
 
         /// <summary>
         /// Notifies listeners that graph evaluation is started.
+        /// At this stage, the graph has not been analyzed yet
+        /// so Dynamo could find that the Graph does not need to be executed at all,
+        /// or only part of it could be executed (delta compute)
         /// </summary>
         public event EventHandler<EventArgs> EvaluationStarted;
 
