@@ -1,0 +1,307 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.FileSystem.GetDirectoryContents_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
+      "HintPath": "C:\\Temp\\NewFolder",
+      "InputValue": "C:\\Temp\\NewFolder",
+      "NodeType": "ExtensionNode",
+      "Id": "ec53b459c7cd474d9abcae8e5bc7e4d4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "78b2f0a4d2794dda81f5ca278ebc8924",
+          "Name": "",
+          "Description": "Directory path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a directory on the system and returns its path"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DirectoryObject, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "d177b8d87b5b4706b913d720ae4d09d6",
+      "Inputs": [
+        {
+          "Id": "70bb80d89c2d4a24904fae709b5f9071",
+          "Name": "path",
+          "Description": "Path to the directory (type: string)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4883cd2ac4c54c64893b0077a7a714c4",
+          "Name": "directory",
+          "Description": "Directory object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a directory object from the given path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.GetDirectoryContents@var,string,bool",
+      "Id": "938f6c1b1d5442ecbb18de0fe2f383a0",
+      "Inputs": [
+        {
+          "Id": "feffab90e0b24550832ed5cfbf18aeea",
+          "Name": "directory",
+          "Description": "Directory to get contents of\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d8ec2938394b4030ba3ba4c28e855542",
+          "Name": "searchString",
+          "Description": "Search string used to filter results\n\nstring\nDefault value : \"*.*\"",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f4cbb174f0ac44e3a8c4257736b9bff8",
+          "Name": "includeSubdirectories",
+          "Description": "Set to true to include files and folders in subdirectories (recursive) or set to false to include results from top-level of given directory only.\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4f41ec231d084363a99ca5a09bb6bf23",
+          "Name": "files",
+          "Description": "Resulting files from query",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0774e5bab4b74ca6b163036fe584d1a5",
+          "Name": "directories",
+          "Description": "Resulting directories from query",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Will return a list of files and directories that are contained within a given directory. An optional searchString can be used to filter the results.\n\nFileSystem.GetDirectoryContents (directory: var, searchString: string = \"*.*\", includeSubdirectories: bool = false): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"*.txt\";",
+      "Id": "f921d231c55e475abee880247c963521",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9f9c481b2ac248c68f5b479714bd79ff",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "bed10cfd48a74ee494035713db49f65a",
+      "Inputs": [
+        {
+          "Id": "9a9dfc6369c44d618bc3281d1ddd8ed4",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c9b9a8e513514ba8be943fe3861c0400",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "78b2f0a4d2794dda81f5ca278ebc8924",
+      "End": "70bb80d89c2d4a24904fae709b5f9071",
+      "Id": "5af448f8f22c4cf785fb8c7c0b67ebbd",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4883cd2ac4c54c64893b0077a7a714c4",
+      "End": "feffab90e0b24550832ed5cfbf18aeea",
+      "Id": "c0a4750acd9d41ccae22d10471652998",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4f41ec231d084363a99ca5a09bb6bf23",
+      "End": "9a9dfc6369c44d618bc3281d1ddd8ed4",
+      "Id": "f960280ff3964d03bb22d09e694a1330",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9f9c481b2ac248c68f5b479714bd79ff",
+      "End": "d8ec2938394b4030ba3ba4c28e855542",
+      "Id": "56e1a97adddb4221b5337237b632fb85",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Directory Path",
+        "ShowGeometry": true,
+        "Id": "ec53b459c7cd474d9abcae8e5bc7e4d4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3381.4391421554178,
+        "Y": 3889.1043784496906
+      },
+      {
+        "Name": "Directory From Path",
+        "ShowGeometry": true,
+        "Id": "d177b8d87b5b4706b913d720ae4d09d6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3630.3453670027056,
+        "Y": 3889.9340658658484
+      },
+      {
+        "Name": "FileSystem.GetDirectoryContents",
+        "ShowGeometry": true,
+        "Id": "938f6c1b1d5442ecbb18de0fe2f383a0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4007.853141354426,
+        "Y": 3889.9340658658475
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "f921d231c55e475abee880247c963521",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3694.4921719891609,
+        "Y": 4048.8750201221696
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "bed10cfd48a74ee494035713db49f65a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4378.7234163768853,
+        "Y": 3888.2746910335331
+      }
+    ],
+    "Annotations": [],
+    "X": -3562.0463573187417,
+    "Y": -3026.7465969587029,
+    "Zoom": 0.96421855318101279
+  }
+}

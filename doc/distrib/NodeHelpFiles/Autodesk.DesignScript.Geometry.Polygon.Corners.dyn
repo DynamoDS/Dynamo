@@ -1,0 +1,483 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Corners",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "4fd25c7abb42406eb64183323b390da8",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "7",
+      "MaximumValue": 10.0,
+      "MinimumValue": 3.0,
+      "StepValue": 1.0,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Polygon.ByPoints@Autodesk.DesignScript.Geometry.Point[]",
+      "Id": "7a41bd10f7f64c1192b9b35775af8803",
+      "Inputs": [
+        {
+          "Id": "56cd574035c6439fa9dac71fe71c9d95",
+          "Name": "points",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3c07751682e447f09c2280562c2e6e92",
+          "Name": "Polygon",
+          "Description": "Polygon",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Construct a Polygon Curve by connecting Points.\n\nPolygon.ByPoints (points: Point[]): Polygon"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "1d2c81b61c9f4392a480c371469110ff",
+      "Inputs": [
+        {
+          "Id": "a3d7ca63684744f49de3f40026a99693",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "96e14deb671b4a228a0a8115c0f3e394",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "7d7435f4dcd14a1bb0693f701ecda485",
+      "Inputs": [
+        {
+          "Id": "8abd8443819b4cb4a810147f6c4d7296",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bd7b736a5624483281ef48c1dec47e66",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 10.0,
+      "MinimumValue": 3.0,
+      "StepValue": 1.0,
+      "InputValue": 7.0,
+      "Id": "4fd25c7abb42406eb64183323b390da8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "22a29f3668fa458b8f17af94aac72d20",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCylindricalCoordinates@Autodesk.DesignScript.Geometry.CoordinateSystem,double,double,double",
+      "Id": "11d18d7068564c249a8beb42837e0216",
+      "Inputs": [
+        {
+          "Id": "3d05e0eaeaa646f2a714deb0c740b4c8",
+          "Name": "cs",
+          "Description": "The coordinate system to build the point in\n\nCoordinateSystem\nDefault value : Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a876e6233bd0410ebc9f915e04a7ae49",
+          "Name": "angle",
+          "Description": "The angle is the rotation from the X axis in the coordinate system around the Z axis in degrees\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a82840c9f30e4661bda89d06ae8ad533",
+          "Name": "elevation",
+          "Description": "The elevation of the point above the XY plane\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "380836af5cb54b2f80deef7d71af3536",
+          "Name": "radius",
+          "Description": "The distance from the origin of the coordinate system\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4d5ab7d698fb43a09d6aea993b9b3f09",
+          "Name": "Point",
+          "Description": "A new Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point in the given coordinate system given its position in cylindrical coordinates.\n\nPoint.ByCylindricalCoordinates (cs: CoordinateSystem = Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(0, 0, 0), angle: double = 0, elevation: double = 0, radius: double = 1): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x*360;",
+      "Id": "403c70ad0cb443cc82e7c920b8c41695",
+      "Inputs": [
+        {
+          "Id": "1dd26b6a3bba4f55ab323085a7fd7d1a",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1c551fbc7a474b4eaaac08be34cfb108",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Sort@var[]",
+      "Id": "75729cfa9ee348219f16ced422dabc65",
+      "Inputs": [
+        {
+          "Id": "2c1438f06aac46d9991f7853993d5ba5",
+          "Name": "list",
+          "Description": "The list of items to be sorted.\n\nvar[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0a2178640074466399e7136325bcc3f4",
+          "Name": "newList",
+          "Description": "The indices of the items in the sorted list.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Sorts a list by the items and return their indices.\n\nList.Sort (list: var[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x*5;",
+      "Id": "7ba7b96cdf3e43f2a51ba6620e80f8e9",
+      "Inputs": [
+        {
+          "Id": "3660b11ffafc4bf189e2749edb61174e",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4fb2ae16e2b340479500a1bc5ee9c220",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Polygon.Corners",
+      "Id": "0b427246322945dc984917657a18c3f9",
+      "Inputs": [
+        {
+          "Id": "aa24530b5322493598bd00e4a2be5ca8",
+          "Name": "polygon",
+          "Description": "Autodesk.DesignScript.Geometry.Polygon",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "34aaa1e7d59d42678e0c8523dd57bc6f",
+          "Name": "Point[]",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns corners of polygon\n\nPolygon.Corners ( ): Point[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "3c07751682e447f09c2280562c2e6e92",
+      "End": "aa24530b5322493598bd00e4a2be5ca8",
+      "Id": "5df03c1d88ae47cab21a6f31de5e30a3"
+    },
+    {
+      "Start": "96e14deb671b4a228a0a8115c0f3e394",
+      "End": "2c1438f06aac46d9991f7853993d5ba5",
+      "Id": "536366e9384f48c9bb20f3359a13d0d4"
+    },
+    {
+      "Start": "bd7b736a5624483281ef48c1dec47e66",
+      "End": "3660b11ffafc4bf189e2749edb61174e",
+      "Id": "314ffc3d7f7d4530a08cc07a402f80ae"
+    },
+    {
+      "Start": "22a29f3668fa458b8f17af94aac72d20",
+      "End": "a3d7ca63684744f49de3f40026a99693",
+      "Id": "c73c239ad94447c2bd52cc757d47bff3"
+    },
+    {
+      "Start": "22a29f3668fa458b8f17af94aac72d20",
+      "End": "8abd8443819b4cb4a810147f6c4d7296",
+      "Id": "a1e0270b7aed42b48af9a2ce137bf035"
+    },
+    {
+      "Start": "4d5ab7d698fb43a09d6aea993b9b3f09",
+      "End": "56cd574035c6439fa9dac71fe71c9d95",
+      "Id": "5de2aa5c79734335b2ae45e344c638d3"
+    },
+    {
+      "Start": "1c551fbc7a474b4eaaac08be34cfb108",
+      "End": "a876e6233bd0410ebc9f915e04a7ae49",
+      "Id": "84d86bce60bb430498fa241aacce1fbe"
+    },
+    {
+      "Start": "0a2178640074466399e7136325bcc3f4",
+      "End": "1dd26b6a3bba4f55ab323085a7fd7d1a",
+      "Id": "413cf02a409243fd9edf0a5c5f4bb3a2"
+    },
+    {
+      "Start": "4fb2ae16e2b340479500a1bc5ee9c220",
+      "End": "380836af5cb54b2f80deef7d71af3536",
+      "Id": "d0447cd6074b4e0ba67743306b0de3dc"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -7.8574566841125488,
+      "EyeY": 8.5899848937988281,
+      "EyeZ": 8.3376655578613281,
+      "LookX": 14.66131591796875,
+      "LookY": -9.382904052734375,
+      "LookZ": -12.482449531555176,
+      "UpX": 0.17904144525527954,
+      "UpY": 0.97196096181869507,
+      "UpZ": -0.15243349969387054
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Polygon.ByPoints",
+        "Id": "7a41bd10f7f64c1192b9b35775af8803",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 621.44825773206344,
+        "Y": 78.897004517715771
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.RandomList",
+        "Id": "1d2c81b61c9f4392a480c371469110ff",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -514.55174226793656,
+        "Y": 75.897004517715757
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.RandomList",
+        "Id": "7d7435f4dcd14a1bb0693f701ecda485",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -198.55174226793656,
+        "Y": 185.89700451771574
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "4fd25c7abb42406eb64183323b390da8",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -913.55174226793656,
+        "Y": 130.89700451771574
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCylindricalCoordinates",
+        "Id": "11d18d7068564c249a8beb42837e0216",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 315.44825773206344,
+        "Y": 78.897004517715771
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "403c70ad0cb443cc82e7c920b8c41695",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 117.44825773206344,
+        "Y": 81.110337851049081
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.Sort",
+        "Id": "75729cfa9ee348219f16ced422dabc65",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -198.55174226793656,
+        "Y": 75.897004517715757
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "7ba7b96cdf3e43f2a51ba6620e80f8e9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 117.44825773206344,
+        "Y": 189.11033785104911
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Polygon.Corners",
+        "Id": "0b427246322945dc984917657a18c3f9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 926.44825773206344,
+        "Y": 78.897004517715771
+      }
+    ],
+    "Annotations": [],
+    "X": 820.421834521886,
+    "Y": 163.73642199562437,
+    "Zoom": 0.789531730130973
+  }
+}

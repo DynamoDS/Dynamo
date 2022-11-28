@@ -1,0 +1,200 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByWidthLength",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Autodesk.DesignScript.Geometry.Vector": {
+        "Key": "Autodesk.DesignScript.Geometry.Vector",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [
+    {
+      "Id": "e9f3d7e52ead46588db67b95b63967d3",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "4.4",
+      "MaximumValue": 10.0,
+      "MinimumValue": 1.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "06f823916bf84015a549df8d6286af82",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "2.8",
+      "MaximumValue": 10.0,
+      "MinimumValue": 1.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength@double,double",
+      "Id": "17cf0a72ecfb48da948f50d145f7a4fc",
+      "Inputs": [
+        {
+          "Id": "56aa7d9b003045f0999e2dd14d139ee0",
+          "Name": "width",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cb4fa3e1d48a4deab322fc9aa639852f",
+          "Name": "length",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ff353cb8faa44abc8807224cfe0f1e93",
+          "Name": "Rectangle",
+          "Description": "Rectangle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and length (Y Axis length).\n\nRectangle.ByWidthLength (width: double = 1, length: double = 1): Rectangle"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 10.0,
+      "MinimumValue": 1.0,
+      "StepValue": 0.1,
+      "InputValue": 4.4,
+      "Id": "e9f3d7e52ead46588db67b95b63967d3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f4fe95197bd04fc18eecc53a3305330c",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 10.0,
+      "MinimumValue": 1.0,
+      "StepValue": 0.1,
+      "InputValue": 2.8,
+      "Id": "06f823916bf84015a549df8d6286af82",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5c5ec40f2cdb446dac36de30624d3cad",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f4fe95197bd04fc18eecc53a3305330c",
+      "End": "56aa7d9b003045f0999e2dd14d139ee0",
+      "Id": "1168788cde9447eeabec6b090caaf73d"
+    },
+    {
+      "Start": "5c5ec40f2cdb446dac36de30624d3cad",
+      "End": "cb4fa3e1d48a4deab322fc9aa639852f",
+      "Id": "d082fafb7a284b67ab1c7ca68547fe7c"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -3.7591266632080078,
+      "EyeY": 3.1215903759002686,
+      "EyeZ": 3.2547216415405273,
+      "LookX": 3.2829258441925049,
+      "LookY": -2.3455789089202881,
+      "LookZ": -3.2612965106964111,
+      "UpX": 0.17762959003448486,
+      "UpY": 0.9681476354598999,
+      "UpZ": -0.17645928263664246
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Rectangle.ByWidthLength",
+        "Id": "17cf0a72ecfb48da948f50d145f7a4fc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 17.492407768981593,
+        "Y": -56.0504367481049
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "e9f3d7e52ead46588db67b95b63967d3",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -381.50759223101841,
+        "Y": -85.0504367481049
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "06f823916bf84015a549df8d6286af82",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -381.50759223101841,
+        "Y": -1.0504367481049002
+      }
+    ],
+    "Annotations": [],
+    "X": 924.403691516477,
+    "Y": 430.983352601861,
+    "Zoom": 1.67813424616858
+  }
+}

@@ -1,0 +1,331 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByLoft",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Autodesk.DesignScript.Geometry.Vector": {
+        "Key": "Autodesk.DesignScript.Geometry.Vector",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Solid.ByLoft@Autodesk.DesignScript.Geometry.Curve[]",
+      "Id": "09d3a33e01cf4599a54ffa540a64a9be",
+      "Inputs": [
+        {
+          "Id": "d84bade15f9a4b7ea3bdd7a52b2db315",
+          "Name": "crossSections",
+          "Description": "Curve[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "82cdf514b58e43b89a43c318599eee0e",
+          "Name": "Solid",
+          "Description": "Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Solid by lofting between input cross section closed Curves.\n\nSolid.ByLoft (crossSections: Curve[]): Solid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "9357ee99526a4bcd9ecd5235252545a9",
+      "Inputs": [
+        {
+          "Id": "4f4104902b254a6991a0814bad6a35a2",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "340ace4764984200b0fa85973d7d3e89",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2761b3c38dd8461394a614b119521832",
+          "Name": "Circle",
+          "Description": "Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
+      "Id": "0119b2a7d688492c8ea83644adaf6870",
+      "Inputs": [
+        {
+          "Id": "4c44ead856574a468bb473f635e837b2",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a464eee7687e47e8ade5d484d0deb578",
+          "Name": "xTranslation",
+          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1b54331ecfa14f4ba74b95f91842dbc2",
+          "Name": "yTranslation",
+          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5d81df556fda4974969d01a0e67146bf",
+          "Name": "zTranslation",
+          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "432b02c7442f4544a35bb2ad3d9404e6",
+          "Name": "Geometry",
+          "Description": "Transformed Geometry.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..10..0.5;",
+      "Id": "dc7921878ba440e5a52297e53bc674ef",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "53e7f775c6154db4a9c8fec84f0e6019",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..360..36;",
+      "Id": "feafa196b21044569910ea304fc10f9d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3e01814a752b47a688afbc414c57cf77",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.Sin@double",
+      "Id": "8c3eea1a38f642faa618ddcbb3afe9af",
+      "Inputs": [
+        {
+          "Id": "bf2a807fdab146c39ce22ad25c6de426",
+          "Name": "angle",
+          "Description": "Angle in degrees to take the sine of.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7808d3edbe544546a95e47ee092efbd6",
+          "Name": "sin",
+          "Description": "Sine of the angle.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Finds the sine of an angle.\n\nMath.Sin (angle: double): double"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "2761b3c38dd8461394a614b119521832",
+      "End": "4c44ead856574a468bb473f635e837b2",
+      "Id": "e3c0b1e7b44b4075869ad1daed4af347"
+    },
+    {
+      "Start": "432b02c7442f4544a35bb2ad3d9404e6",
+      "End": "d84bade15f9a4b7ea3bdd7a52b2db315",
+      "Id": "0360e80de61e4f639392fc7d2e933bb6"
+    },
+    {
+      "Start": "53e7f775c6154db4a9c8fec84f0e6019",
+      "End": "5d81df556fda4974969d01a0e67146bf",
+      "Id": "e405a0f427bb4445abd30453ad7e0eb5"
+    },
+    {
+      "Start": "3e01814a752b47a688afbc414c57cf77",
+      "End": "bf2a807fdab146c39ce22ad25c6de426",
+      "Id": "920afc65124f4fec82edb042f219f9a0"
+    },
+    {
+      "Start": "7808d3edbe544546a95e47ee092efbd6",
+      "End": "a464eee7687e47e8ade5d484d0deb578",
+      "Id": "c3e3c1f0bc0f4923b717db795d8b8541"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 7.8695554733276367,
+      "EyeY": 9.2523403167724609,
+      "EyeZ": 5.7603316307067871,
+      "LookX": -8.1850528717041016,
+      "LookY": -5.696718692779541,
+      "LookZ": -6.5784506797790527,
+      "UpX": -0.216154083609581,
+      "UpY": 0.96077913045883179,
+      "UpZ": -0.17372632026672363
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Solid.ByLoft",
+        "Id": "09d3a33e01cf4599a54ffa540a64a9be",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 200.778515214104,
+        "Y": 276.33543438933083
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Circle.ByCenterPointRadius",
+        "Id": "9357ee99526a4bcd9ecd5235252545a9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -476.221484785896,
+        "Y": 186.33543438933083
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Geometry.Translate",
+        "Id": "0119b2a7d688492c8ea83644adaf6870",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -153.221484785896,
+        "Y": 276.33543438933083
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "dc7921878ba440e5a52297e53bc674ef",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -476.221484785896,
+        "Y": 429.54876772266414
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "feafa196b21044569910ea304fc10f9d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -697.221484785896,
+        "Y": 325.54876772266414
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.Sin",
+        "Id": "8c3eea1a38f642faa618ddcbb3afe9af",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -476.221484785896,
+        "Y": 321.33543438933089
+      }
+    ],
+    "Annotations": [],
+    "X": 662.413975108841,
+    "Y": -153.206196237879,
+    "Zoom": 0.933975419957197
+  }
+}
