@@ -1,0 +1,468 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "IsEmpty",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Display": {
+        "Key": "Display.Display",
+        "Value": "Display.dll"
+      },
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Sphere": {
+        "Key": "Autodesk.DesignScript.Geometry.Sphere",
+        "Value": "ProtoGeometry.dll"
+      },
+      "BoundingBox": {
+        "Key": "Autodesk.DesignScript.Geometry.BoundingBox",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Cuboid": {
+        "Key": "Autodesk.DesignScript.Geometry.Cuboid",
+        "Value": "ProtoGeometry.dll"
+      },
+      "GeometryColor": {
+        "Key": "Modifiers.GeometryColor",
+        "Value": "GeometryColor.dll"
+      }
+    }
+  },
+  "Inputs": [
+    {
+      "Id": "467a8b9eddff440f98059a08a3499911",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "3.1",
+      "MaximumValue": 10.0,
+      "MinimumValue": 1.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values.",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.IsEmpty",
+      "Id": "804dc11d435e43d88775980df40914f7",
+      "Inputs": [
+        {
+          "Id": "55b645aff30d47bcb40cfc731b04b5da",
+          "Name": "boundingBox",
+          "Description": "Autodesk.DesignScript.Geometry.BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f30b0e871ee24728be2d775537756804",
+          "Name": "bool",
+          "Description": "Returns true if the bounding box is empty",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Determine if the BoundingBox is empty\n\nBoundingBox.IsEmpty ( ): bool"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "color = Color.ByARGB(100,141,198,217);\nGeometryColor.ByGeometryColor(geometry, color);",
+      "Id": "4e4d1ad7cebf42918dcf96e569e66816",
+      "Inputs": [
+        {
+          "Id": "ad9679ae35a946a0a1356adc35466e62",
+          "Name": "geometry",
+          "Description": "geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "041c9444406a4ce4876659df91d24202",
+          "Name": "",
+          "Description": "color",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b570984f99b1486f8d7e3da59ce1e79f",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x = Math.RandomList(1)*multiplier;\ny = Math.RandomList(1)*multiplier;\nz = Math.RandomList(1)*multiplier;\npts = Point.ByCoordinates(x,y,z);\nSphere.ByCenterPointRadius(pts,1);",
+      "Id": "8767cc81a58a4b0a91e126ebd18484a2",
+      "Inputs": [
+        {
+          "Id": "b11874f145d84f17a92559ecc20a930a",
+          "Name": "multiplier",
+          "Description": "multiplier",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ecad971ad5d045e8b5a3d85f13a1fc22",
+          "Name": "",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "acd76a995a9c41349eea19654664d39f",
+          "Name": "",
+          "Description": "y",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f4d6a966c4374a86b734b1e0e99468ff",
+          "Name": "",
+          "Description": "z",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ede3760e6a57477d84d46c9c5e2e2e00",
+          "Name": "",
+          "Description": "pts",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c617b919053e49868a20e723add75be1",
+          "Name": "",
+          "Description": "Value of expression at line 5",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 10.0,
+      "MinimumValue": 1.0,
+      "StepValue": 0.1,
+      "InputValue": 3.1,
+      "Id": "467a8b9eddff440f98059a08a3499911",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6809321024974d9f958de19bd4ac2074",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.ByCorners@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Id": "7820c0326fa94fe5a106bd2f2639c4a8",
+      "Inputs": [
+        {
+          "Id": "2747269865de467dbcf32bd3fd849d1b",
+          "Name": "min",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2d1b909d3f6a47068f7b4f29d96e806c",
+          "Name": "max",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9636f595f7ff47b6a95abdb561dd9bcd",
+          "Name": "BoundingBox",
+          "Description": "BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates the an axis-aligned BoundingBox spanning between the minimum Point and the maximum Point.\n\nBoundingBox.ByCorners (min: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), max: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1, 1)): BoundingBox"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.ToCuboid",
+      "Id": "78c39ca68fd543c1aebc4ddc5c052b6c",
+      "Inputs": [
+        {
+          "Id": "d6f36a23d32d45cdb0570c351857c858",
+          "Name": "boundingBox",
+          "Description": "Autodesk.DesignScript.Geometry.BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "82625a44da624cd2a9c7e570103337c3",
+          "Name": "Cuboid",
+          "Description": "Returns cuboid representation of the bounding box.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the bounding box as a solid cuboid.\n\nBoundingBox.ToCuboid ( ): Cuboid"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "9ae83bb6f1754abd9799745e2659a0f0",
+      "Inputs": [
+        {
+          "Id": "9959ebb5060b413b9e141963ea4b7de0",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "514e6fe55b204481bc4a8cad86e7c002",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f30b0e871ee24728be2d775537756804",
+      "End": "9959ebb5060b413b9e141963ea4b7de0",
+      "Id": "4219eeabecdd4c15b43d9b404066561d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6809321024974d9f958de19bd4ac2074",
+      "End": "b11874f145d84f17a92559ecc20a930a",
+      "Id": "78521631919d4b1282b00e5e4da43574",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9636f595f7ff47b6a95abdb561dd9bcd",
+      "End": "55b645aff30d47bcb40cfc731b04b5da",
+      "Id": "ea22c680d8814e03b3bfadc8d65db86b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9636f595f7ff47b6a95abdb561dd9bcd",
+      "End": "d6f36a23d32d45cdb0570c351857c858",
+      "Id": "69d3cbfbaf704165b0387dede1e2d96b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "82625a44da624cd2a9c7e570103337c3",
+      "End": "ad9679ae35a946a0a1356adc35466e62",
+      "Id": "d8fdf5e9b2de4544b9c2362bcd9dc290",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.16",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.2403",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 8.8973684310913086,
+      "EyeY": 9.6733560562133789,
+      "EyeZ": 6.3268375396728516,
+      "LookX": -3.3121461868286133,
+      "LookY": -5.58310604095459,
+      "LookZ": -10.067653656005859,
+      "UpX": -0.08298926055431366,
+      "UpY": 0.9640953540802002,
+      "UpZ": -0.25225546956062317
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "BoundingBox.IsEmpty",
+        "ShowGeometry": true,
+        "Id": "804dc11d435e43d88775980df40914f7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 288.97905109483941,
+        "Y": 2594.14241309939
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "4e4d1ad7cebf42918dcf96e569e66816",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 569.75717949585692,
+        "Y": 2710.1106900149011
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "8767cc81a58a4b0a91e126ebd18484a2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -125.137986191773,
+        "Y": 2458.15591463183
+      },
+      {
+        "Name": "Number Slider",
+        "ShowGeometry": true,
+        "Id": "467a8b9eddff440f98059a08a3499911",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -472.378462698123,
+        "Y": 2454.07553455065
+      },
+      {
+        "Name": "BoundingBox.ByCorners",
+        "ShowGeometry": true,
+        "Id": "7820c0326fa94fe5a106bd2f2639c4a8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -13.690544099135082,
+        "Y": 2653.6181315135714
+      },
+      {
+        "Name": "BoundingBox.ToCuboid",
+        "ShowGeometry": false,
+        "Id": "78c39ca68fd543c1aebc4ddc5c052b6c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 290.31209055876,
+        "Y": 2710.1106900149011
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "9ae83bb6f1754abd9799745e2659a0f0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 544.23010080065319,
+        "Y": 2587.5242815858187
+      }
+    ],
+    "Annotations": [],
+    "X": 507.08049014571839,
+    "Y": -1463.3061269454447,
+    "Zoom": 0.75016533798555551
+  }
+}

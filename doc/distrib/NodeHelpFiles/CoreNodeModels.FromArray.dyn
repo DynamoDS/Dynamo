@@ -1,0 +1,139 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CoreNodeModels.FromArray_img",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1..5;",
+      "Id": "6a4f93ba48434844a59d497ae23dc6c4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "09f7835e2f934e6bbb1668e43b36b296",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.FromArray, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "eff10404331d411aa650253a65d7eab1",
+      "Inputs": [
+        {
+          "Id": "cdc0495c71cf40798bea627b203832fc",
+          "Name": "array",
+          "Description": "The array of object to be serialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bbe45172aecc42489f5367a3ecf0715e",
+          "Name": "string",
+          "Description": "String representation of the array",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Converts an array to a string representation"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "09f7835e2f934e6bbb1668e43b36b296",
+      "End": "cdc0495c71cf40798bea627b203832fc",
+      "Id": "786e9a82e8e5441fb89ba54c858fb83e",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -11.702650547027588,
+      "EyeY": 20.44056510925293,
+      "EyeZ": -24.494302749633789,
+      "LookX": 12.377099990844727,
+      "LookY": -14.715733528137207,
+      "LookZ": 6.1681365966796875,
+      "UpX": 0.50565505027771,
+      "UpY": 0.82511365413665771,
+      "UpZ": 0.25199323892593384
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "6a4f93ba48434844a59d497ae23dc6c4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 381.12280385078236,
+        "Y": 1158.7102779064744
+      },
+      {
+        "Name": "String from Array",
+        "ShowGeometry": true,
+        "Id": "eff10404331d411aa650253a65d7eab1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 635.52280385078234,
+        "Y": 1158.8827779064743
+      }
+    ],
+    "Annotations": [],
+    "X": -171.0475697440325,
+    "Y": -512.3157082318786,
+    "Zoom": 0.95599654874892148
+  }
+}

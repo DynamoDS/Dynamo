@@ -1,0 +1,618 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Pitch",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "69233b6864d24fbd974f5960f256ed37",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "3.1",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "d9ab1a6b152f4ee989016f98a9f98ddb",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "608",
+      "MaximumValue": 1000.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "338dffad54d0425b905bc79348b27b06",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "4.4",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "f4ab28e3ab524c81ba4a8ceedae9476b",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "2.7",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "52c530d87ce7420181bc52c2efdbb259",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "1.8",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Helix.ByAxis@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,double,double",
+      "Id": "fa502e08bd1c4a09b5fe6036868ba93b",
+      "Inputs": [
+        {
+          "Id": "6a5a1826224b497b9977a2d382c6cb6a",
+          "Name": "axisPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "707f43a6e93844009df96fe35d38385d",
+          "Name": "axisDirection",
+          "Description": "Vector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "280fb9f59b7641ab874dac3dc7b6edec",
+          "Name": "startPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4cd3f853a95f4885b0a04abffed1ab10",
+          "Name": "pitch",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ab6c6433026f41a1ace518606a41f8b8",
+          "Name": "angleTurns",
+          "Description": "double\nDefault value : 360",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c042d88043cc4ea1b7bc110ee05ea32d",
+          "Name": "Helix",
+          "Description": "Helix",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Helix. The helix always rotates clockwise about the supplied axis direction. If viewing along the axis direction, the viewer will see the point turning clockwise around the axis as it moves along the curve in the direction of increasing parameter. Pitch is Distance the helix moves in the axis direction per turn. This can be positive or negative.\n\nHelix.ByAxis (axisPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), axisDirection: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1), startPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 0, 0), pitch: double = 1, angleTurns: double = 360): Helix"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 3.1,
+      "Id": "69233b6864d24fbd974f5960f256ed37",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "832216f7b9bd4402996ea586f3351ebb",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 1000.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 608.0,
+      "Id": "d9ab1a6b152f4ee989016f98a9f98ddb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1c1a148242a8419aa9fdc989e3c56cf0",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
+      "Id": "7ebb544739144ec7b80c071c9422d841",
+      "Inputs": [
+        {
+          "Id": "086cbc14731e46fab8ecc9375e200e1a",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "46dbc1bbf4a94ed7b142be2670fa6bc2",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d3c0c3b778284cebbc87df4d6117d072",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.YAxis",
+      "Id": "9f0660f0a5034031958c6be28874cdc9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3863e639aa3747b6a7a04c0bf0bd2355",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the canonical Y axis Vector (0,1,0)\n\nVector.YAxis ( ): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "3;\n5;",
+      "Id": "11873f80676347b094823c1cc6593454",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5fa9aabfd40844b28f747a9bf794e979",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c4cf9adba8454bc7b1fada04b52ec75f",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 4.4,
+      "Id": "338dffad54d0425b905bc79348b27b06",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3028d633aa234820b5ea99a3355ba017",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 2.7,
+      "Id": "f4ab28e3ab524c81ba4a8ceedae9476b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6a104cdb8db042e0870fca7d8e367562",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "9db316862ca14cf8a747a4714e89318b",
+      "Inputs": [
+        {
+          "Id": "9cbfe33606c04a45b1d18506a6359f66",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "402c6b166fbd48d39455cb570d55de58",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "12dcd00a0aa0408bb277b29a5932eb46",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d9ed89afedbe49c095b05978a59b163c",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 1.8,
+      "Id": "52c530d87ce7420181bc52c2efdbb259",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0f98a5c9de3b4c1380c90ae77bac473f",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Helix.Pitch",
+      "Id": "92452eacafe443768446155d4c06def2",
+      "Inputs": [
+        {
+          "Id": "882eecc8e02e4d329459ce5a212ee67f",
+          "Name": "helix",
+          "Description": "Autodesk.DesignScript.Geometry.Helix",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8b24fb962989449a9da96d4d0a75a911",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The pitch of the helix\n\nHelix.Pitch: double"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "c042d88043cc4ea1b7bc110ee05ea32d",
+      "End": "882eecc8e02e4d329459ce5a212ee67f",
+      "Id": "05a594cfb27142a4aef6398aa7ec063b"
+    },
+    {
+      "Start": "832216f7b9bd4402996ea586f3351ebb",
+      "End": "4cd3f853a95f4885b0a04abffed1ab10",
+      "Id": "e7da6ab664bb4c6cbc473e7c7368c205"
+    },
+    {
+      "Start": "1c1a148242a8419aa9fdc989e3c56cf0",
+      "End": "ab6c6433026f41a1ace518606a41f8b8",
+      "Id": "eccb63cb040a44c7ae8734bb3f81889c"
+    },
+    {
+      "Start": "d3c0c3b778284cebbc87df4d6117d072",
+      "End": "6a5a1826224b497b9977a2d382c6cb6a",
+      "Id": "b4d179ff640b42e2ba375a0ff3f808b9"
+    },
+    {
+      "Start": "3863e639aa3747b6a7a04c0bf0bd2355",
+      "End": "707f43a6e93844009df96fe35d38385d",
+      "Id": "b4eb3484f1df432e8aa14009ed05501c"
+    },
+    {
+      "Start": "5fa9aabfd40844b28f747a9bf794e979",
+      "End": "086cbc14731e46fab8ecc9375e200e1a",
+      "Id": "fd9a13fdf5c14eacac82aabc6064706c"
+    },
+    {
+      "Start": "c4cf9adba8454bc7b1fada04b52ec75f",
+      "End": "46dbc1bbf4a94ed7b142be2670fa6bc2",
+      "Id": "cc05551833e14ed19ffba6c19ebce358"
+    },
+    {
+      "Start": "3028d633aa234820b5ea99a3355ba017",
+      "End": "9cbfe33606c04a45b1d18506a6359f66",
+      "Id": "69339fdd3ab240b0a5cec0ff87fc447f"
+    },
+    {
+      "Start": "6a104cdb8db042e0870fca7d8e367562",
+      "End": "402c6b166fbd48d39455cb570d55de58",
+      "Id": "bd8bdd4f328c419baf95e61e5ac34659"
+    },
+    {
+      "Start": "d9ed89afedbe49c095b05978a59b163c",
+      "End": "280fb9f59b7641ab874dac3dc7b6edec",
+      "Id": "c6261f11b88748e3ae7d9d44e7fea5a3"
+    },
+    {
+      "Start": "0f98a5c9de3b4c1380c90ae77bac473f",
+      "End": "12dcd00a0aa0408bb277b29a5932eb46",
+      "Id": "1f6e18384e2845ccb92d1fbcd1d44ce6"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -28.28812487040684,
+      "EyeY": 10.660484808486871,
+      "EyeZ": 4.3124046301939991,
+      "LookX": 15.580609311523439,
+      "LookY": -3.6961684777832051,
+      "LookZ": -21.691204315429687,
+      "UpX": -0.045772291719913483,
+      "UpY": 0.99691730737686157,
+      "UpZ": 0.063723832368850708
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Helix.ByAxis",
+        "Id": "fa502e08bd1c4a09b5fe6036868ba93b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 724.25,
+        "Y": 56.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "69233b6864d24fbd974f5960f256ed37",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 325.25,
+        "Y": 258.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "d9ab1a6b152f4ee989016f98a9f98ddb",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 325.25,
+        "Y": 341.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "7ebb544739144ec7b80c071c9422d841",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 325.25,
+        "Y": -145.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.YAxis",
+        "Id": "9f0660f0a5034031958c6be28874cdc9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 325.25,
+        "Y": -11.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "11873f80676347b094823c1cc6593454",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -73.75,
+        "Y": -136.57333333333332
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "338dffad54d0425b905bc79348b27b06",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -73.75,
+        "Y": 40.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "f4ab28e3ab524c81ba4a8ceedae9476b",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -73.75,
+        "Y": 123.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "9db316862ca14cf8a747a4714e89318b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 325.25,
+        "Y": 97.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "52c530d87ce7420181bc52c2efdbb259",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -73.75,
+        "Y": 206.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Helix.Pitch",
+        "Id": "92452eacafe443768446155d4c06def2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1052.25,
+        "Y": 56.0
+      }
+    ],
+    "Annotations": [],
+    "X": 283.0,
+    "Y": 87.0,
+    "Zoom": 1.0
+  }
+}

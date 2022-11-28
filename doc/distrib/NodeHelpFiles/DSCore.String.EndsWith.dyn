@@ -1,0 +1,274 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "EndsWith",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "8f335c73856340f8ab161a8c0eda22f1",
+      "Name": "String",
+      "Type": "string",
+      "Value": "Hello World",
+      "Description": "Creates a string."
+    },
+    {
+      "Id": "76b24f0487ce4d7893211ecce93be062",
+      "Name": "String",
+      "Type": "string",
+      "Value": "orld",
+      "Description": "Creates a string."
+    },
+    {
+      "Id": "8e1f5a53820842dd92293d423e4f0f60",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Value": "true",
+      "Description": "Selection between a true and false."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "Hello World",
+      "Id": "8f335c73856340f8ab161a8c0eda22f1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "397ac36db9c743c5a9b3309516817607",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "1f79f9e394fc4650ad0f49067625f89a",
+      "Inputs": [
+        {
+          "Id": "37bc43f91fdc473ea01795bbd4c79120",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "273874c44f2b42f197d91a07b0df4700",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "orld",
+      "Id": "76b24f0487ce4d7893211ecce93be062",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "697ee537a39b478a801da7302c456e3b",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "8e1f5a53820842dd92293d423e4f0f60",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1e4fc93fb3744d24a971cff7fdd03ff3",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.String.EndsWith@string,string,bool",
+      "Id": "4c8af7d61aff44e28fafddac1c85eba6",
+      "Inputs": [
+        {
+          "Id": "bddf556050a14da790cd0029e04b9dcd",
+          "Name": "str",
+          "Description": "String to search the end of.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3d88458a28d548e491cbb77dab7db69f",
+          "Name": "searchFor",
+          "Description": "Substring to search the end for.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6f9a94962bc74cbfbd8ec028c2ad9978",
+          "Name": "ignoreCase",
+          "Description": "Whether or not comparison takes case into account.\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5447febccfbe4322a91ff46b633099f3",
+          "Name": "bool",
+          "Description": "Whether the string ends with the substring.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Determines if the given string ends with the given substring.\n\nString.EndsWith (str: string, searchFor: string, ignoreCase: bool = false): bool"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "397ac36db9c743c5a9b3309516817607",
+      "End": "bddf556050a14da790cd0029e04b9dcd",
+      "Id": "2aed6d5bc0f0427da0a76e346693262c"
+    },
+    {
+      "Start": "697ee537a39b478a801da7302c456e3b",
+      "End": "3d88458a28d548e491cbb77dab7db69f",
+      "Id": "dcde718c9e6641cb9a794baf9c580078"
+    },
+    {
+      "Start": "1e4fc93fb3744d24a971cff7fdd03ff3",
+      "End": "6f9a94962bc74cbfbd8ec028c2ad9978",
+      "Id": "601c01f9ac31424ebc986a5caba7b415"
+    },
+    {
+      "Start": "5447febccfbe4322a91ff46b633099f3",
+      "End": "37bc43f91fdc473ea01795bbd4c79120",
+      "Id": "1ab668b5605545c5893f5c25a4de9c6a"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "8f335c73856340f8ab161a8c0eda22f1",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 218.497240390363,
+        "Y": 200.75276678235548
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "1f79f9e394fc4650ad0f49067625f89a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 767.497240390363,
+        "Y": 257.75276678235548
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "76b24f0487ce4d7893211ecce93be062",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 218.497240390363,
+        "Y": 283.75276678235548
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "8e1f5a53820842dd92293d423e4f0f60",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 218.497240390363,
+        "Y": 366.75276678235548
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String.EndsWith",
+        "Id": "4c8af7d61aff44e28fafddac1c85eba6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 453.497240390363,
+        "Y": 257.75276678235548
+      }
+    ],
+    "Annotations": [],
+    "X": -146.730057853078,
+    "Y": -171.137886737402,
+    "Zoom": 1.30764135636719
+  }
+}

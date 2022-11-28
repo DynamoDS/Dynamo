@@ -1,0 +1,209 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "IsDaylightSavingsTime",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.FromString@string",
+      "Id": "3a35b85992784784864c77a3bab9b18e",
+      "Inputs": [
+        {
+          "Id": "f8435a2ebe2f4a4f90e7e12f359b773f",
+          "Name": "str",
+          "Description": "String representation of a DateTime.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e1f8433126a742219782020f4d05a86a",
+          "Name": "dateTime",
+          "Description": "DateTime",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Attempts to parse a DateTime from a string.\n\nDateTime.FromString (str: string): var"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"November 14, 2016 12:36 PM\";",
+      "Id": "016a763235064ccc82c2e8b525837ee4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "48ab0b2c4ac842da87cf6dba3991ab83",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.IsDaylightSavingsTime@var",
+      "Id": "b59170d724e44f8aad859ba1cf2437cb",
+      "Inputs": [
+        {
+          "Id": "42957740ef00494f8f93566b0cf56414",
+          "Name": "dateTime",
+          "Description": "A DateTime.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f802094f64164568b537ac50928f0af6",
+          "Name": "bool",
+          "Description": "bool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Determines if it is Daylight Savings Time at the given DateTime.\n\nDateTime.IsDaylightSavingsTime (dateTime: var): bool"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "0927c47219f44e3c9dea2946132e459e",
+      "Inputs": [
+        {
+          "Id": "39bbf48803754828add6a8559a783c2b",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4979d8b1fa97486ca7eba552c287d1d5",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "e1f8433126a742219782020f4d05a86a",
+      "End": "42957740ef00494f8f93566b0cf56414",
+      "Id": "3fe6cbe563e54b62b73b2b403dec9851"
+    },
+    {
+      "Start": "48ab0b2c4ac842da87cf6dba3991ab83",
+      "End": "f8435a2ebe2f4a4f90e7e12f359b773f",
+      "Id": "3ea08c2363654edfa29fb8f99f18d56b"
+    },
+    {
+      "Start": "f802094f64164568b537ac50928f0af6",
+      "End": "39bbf48803754828add6a8559a783c2b",
+      "Id": "ae5bd9b4b7c243909c8718ebfb423d5c"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.1650753021240234,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.053885128349065781,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.068501941859722137
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.FromString",
+        "Id": "3a35b85992784784864c77a3bab9b18e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -86.00109244026703,
+        "Y": 2600.02112349089
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "016a763235064ccc82c2e8b525837ee4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -455.00109244026703,
+        "Y": 2604.2344568242233
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.IsDaylightSavingsTime",
+        "Id": "b59170d724e44f8aad859ba1cf2437cb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 205.99890755973297,
+        "Y": 2600.02112349089
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "0927c47219f44e3c9dea2946132e459e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 519.998907559733,
+        "Y": 2600.02112349089
+      }
+    ],
+    "Annotations": [],
+    "X": 97.893686819037043,
+    "Y": -4446.39080704605,
+    "Zoom": 1.78921269716459
+  }
+}

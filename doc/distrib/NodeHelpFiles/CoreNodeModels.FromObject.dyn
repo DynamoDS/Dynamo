@@ -1,0 +1,213 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CoreNodeModels.FromObject_img",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cuboid.ByLengths@double,double,double",
+      "Id": "cc19fb40a9a9400bac37d2b8496fb2d6",
+      "Inputs": [
+        {
+          "Id": "c93c582accef49799bf92cd255bb6b1e",
+          "Name": "width",
+          "Description": "Width of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "26091f140b3c450ebc1a1f28d6294342",
+          "Name": "length",
+          "Description": "Length of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6da281a656be45649659be7017984333",
+          "Name": "height",
+          "Description": "Height of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "111932ef5e9b49a886bf449526df074a",
+          "Name": "Cuboid",
+          "Description": "Cuboid created by lengths",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Cuboid centered at WCS origin, with width, length, and height.\n\nCuboid.ByLengths (width: double = 1, length: double = 1, height: double = 1): Cuboid"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.FromObject, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "ae5326a2d1b44b7da0c4863a7c0f9ee9",
+      "Inputs": [
+        {
+          "Id": "853f5cf5081046c3aa6531d25b951bd9",
+          "Name": "object",
+          "Description": "Object to be serialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4c909f9c275f4a219e89c13e91d5d990",
+          "Name": "string",
+          "Description": "String representation of the object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Converts an object to a string representation"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Object.Type@var",
+      "Id": "df8f01270aa54a3493071c148256725b",
+      "Inputs": [
+        {
+          "Id": "b52bd0db1cee4c9384d64d5b9ff97f0e",
+          "Name": "object",
+          "Description": "Object to query type\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9ca585a636a348a0a76e0d90ee42d010",
+          "Name": "string",
+          "Description": "Type of object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the type of object represented as string.\n\nObject.Type (object: var): string"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "111932ef5e9b49a886bf449526df074a",
+      "End": "853f5cf5081046c3aa6531d25b951bd9",
+      "Id": "db512cb36c2e44288b6face631cf9dd9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4c909f9c275f4a219e89c13e91d5d990",
+      "End": "b52bd0db1cee4c9384d64d5b9ff97f0e",
+      "Id": "99bb23331125483788fef51c50fa0ef5",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -11.702650547027588,
+      "EyeY": 20.44056510925293,
+      "EyeZ": -24.494302749633789,
+      "LookX": 12.377099990844727,
+      "LookY": -14.715733528137207,
+      "LookZ": 6.1681365966796875,
+      "UpX": 0.50565505027771,
+      "UpY": 0.82511365413665771,
+      "UpZ": 0.25199323892593384
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Cuboid.ByLengths",
+        "ShowGeometry": false,
+        "Id": "cc19fb40a9a9400bac37d2b8496fb2d6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 330.02864019253929,
+        "Y": 1323.1836695313602
+      },
+      {
+        "Name": "String from Object",
+        "ShowGeometry": true,
+        "Id": "ae5326a2d1b44b7da0c4863a7c0f9ee9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 639.62864019253925,
+        "Y": 1323.1836695313602
+      },
+      {
+        "Name": "Object.Type",
+        "ShowGeometry": true,
+        "Id": "df8f01270aa54a3493071c148256725b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 950.8286401925393,
+        "Y": 1323.1836695313602
+      }
+    ],
+    "Annotations": [],
+    "X": -241.66559712977215,
+    "Y": -417.89655366983573,
+    "Zoom": 0.80498705780845559
+  }
+}

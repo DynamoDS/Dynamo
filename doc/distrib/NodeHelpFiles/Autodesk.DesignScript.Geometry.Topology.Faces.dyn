@@ -1,0 +1,646 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Faces",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Rectangle": {
+        "Key": "Autodesk.DesignScript.Geometry.Rectangle",
+        "Value": "ProtoGeometry.dll"
+      },
+      "PolyCurve": {
+        "Key": "Autodesk.DesignScript.Geometry.PolyCurve",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Cuboid": {
+        "Key": "Autodesk.DesignScript.Geometry.Cuboid",
+        "Value": "ProtoGeometry.dll"
+      },
+      "PolySurface": {
+        "Key": "Autodesk.DesignScript.Geometry.PolySurface",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Geometry": {
+        "Key": "Autodesk.DesignScript.Geometry.Geometry",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Vector": {
+        "Key": "Autodesk.DesignScript.Geometry.Vector",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Topology.Faces",
+      "Id": "d9bdbac4548140779b7e73b7a4c2fbdb",
+      "Inputs": [
+        {
+          "Id": "64a60750004f4896a5ed74acd12dffa5",
+          "Name": "topology",
+          "Description": "Autodesk.DesignScript.Geometry.Topology",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0e6efc57d6fa49e3860c2d1061fa6726",
+          "Name": "Face[]",
+          "Description": "Face[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The Faces of the Topology\n\nTopology.Faces: Face[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1.2;",
+      "Id": "c23f46ae05da4666bb46fb3b91b9d842",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9d94e1a45d044e4490bef1367f86620b",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0.3;",
+      "Id": "fbcbe6cc01e349c291228d8ab434eef9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "41417c07804a4ec391816595cc10fafe",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Topology.Faces",
+      "Id": "5fffa15f96e843e28d7ddf277c73f511",
+      "Inputs": [
+        {
+          "Id": "2188d9a2ee0f49bb8f74718b0588173d",
+          "Name": "topology",
+          "Description": "Autodesk.DesignScript.Geometry.Topology",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5b84b98c1728412da6d32129ae7334ae",
+          "Name": "Face[]",
+          "Description": "Face[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The Faces of the Topology\n\nTopology.Faces: Face[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "abe0c77f86f24ed98aa8685134ba6434",
+      "Inputs": [
+        {
+          "Id": "43355d2ceaf0445d8b7f8aff360cb818",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c423cad45dce4a24a989a6b72e0ed54b",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "57ea76d0b8914d3da848f446ceaccd47",
+      "Inputs": [
+        {
+          "Id": "3729590bafe146cd91026cffb1802038",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "065048fbdd7a482a8a5d204ed97a47e2",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "cube = Cuboid.ByLengths(4,4,4);\nPolySurface.BySolid(cube);",
+      "Id": "49b0f047db4a44e8ac73a7104365d554",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5c6c78438a474b7fa0aa2626e42ef6d4",
+          "Name": "",
+          "Description": "cube",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "69d9cd70486e4212bd82fc20b1f7c2d1",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolySurface.Chamfer@Autodesk.DesignScript.Geometry.Edge[],double",
+      "Id": "9e17723d21d6444abe07c41d40ae0d3f",
+      "Inputs": [
+        {
+          "Id": "65b8aa5479ce4dc2b3106b73616c370f",
+          "Name": "polySurface",
+          "Description": "Autodesk.DesignScript.Geometry.PolySurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "19cd95f7c76943a596c43b1f5fad7a46",
+          "Name": "edges",
+          "Description": "Edge[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5f89fd85f53c4d6bb5f3d5727d159fbb",
+          "Name": "offset",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f922fb1f5d89499ba6e1967dc7319a2b",
+          "Name": "PolySurface",
+          "Description": "PolySurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Chamfers a PolySurface along input Edges with a given offset from the edge corner.\n\nPolySurface.Chamfer (edges: Edge[], offset: double): PolySurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolySurface.Chamfer@Autodesk.DesignScript.Geometry.Edge[],double",
+      "Id": "b70b4ab7b675424e84a3fec2e228a7ad",
+      "Inputs": [
+        {
+          "Id": "8cdee54c3eb44cb5803013089af6d1ef",
+          "Name": "polySurface",
+          "Description": "Autodesk.DesignScript.Geometry.PolySurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8789ad4f18f24f7db7ed26ac192628c8",
+          "Name": "edges",
+          "Description": "Edge[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d60d516591264724b9929e5ccc634e49",
+          "Name": "offset",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bb285d34997a455ea216a3b81eced74d",
+          "Name": "PolySurface",
+          "Description": "PolySurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Chamfers a PolySurface along input Edges with a given offset from the edge corner.\n\nPolySurface.Chamfer (edges: Edge[], offset: double): PolySurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "vect = Vector.XAxis();\ndist = 5;\nGeometry.Translate(geo, vect, dist);",
+      "Id": "d55121d962ff41578fe272194bcea520",
+      "Inputs": [
+        {
+          "Id": "1676001d6b9c428a897f450c54fdd0d2",
+          "Name": "geo",
+          "Description": "geo",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8f296c4e052841a89dee3f8a51754315",
+          "Name": "",
+          "Description": "vect",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "62594141caad47bfa82aa4ef701c53db",
+          "Name": "",
+          "Description": "dist",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1f55c66b3d8b4973bebc1fb4abb39a07",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Topology.Edges",
+      "Id": "49ca33abc0ed43858c06921fa9887098",
+      "Inputs": [
+        {
+          "Id": "e3b5956e73674819a090fec8b94fdfa1",
+          "Name": "topology",
+          "Description": "Autodesk.DesignScript.Geometry.Topology",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5ea41aa3fda941ee892fdfc7769c9316",
+          "Name": "Edge[]",
+          "Description": "Edge[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The Edges of the Topology\n\nTopology.Edges: Edge[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Topology.Edges",
+      "Id": "08dfd839b26d4febba3d082423f175e7",
+      "Inputs": [
+        {
+          "Id": "589180a5f08e4cf681f89922e0dc69e3",
+          "Name": "topology",
+          "Description": "Autodesk.DesignScript.Geometry.Topology",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ddf86e536b954b1d9a19ff4d4cbb2508",
+          "Name": "Edge[]",
+          "Description": "Edge[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The Edges of the Topology\n\nTopology.Edges: Edge[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "0e6efc57d6fa49e3860c2d1061fa6726",
+      "End": "43355d2ceaf0445d8b7f8aff360cb818",
+      "Id": "457c48441f904092b48f4dfed3de7f61"
+    },
+    {
+      "Start": "9d94e1a45d044e4490bef1367f86620b",
+      "End": "5f89fd85f53c4d6bb5f3d5727d159fbb",
+      "Id": "bca0307cbf4f4ff7b386d846dead43c6"
+    },
+    {
+      "Start": "41417c07804a4ec391816595cc10fafe",
+      "End": "d60d516591264724b9929e5ccc634e49",
+      "Id": "d3e653bba51e41e386c9d2938fb0198f"
+    },
+    {
+      "Start": "5b84b98c1728412da6d32129ae7334ae",
+      "End": "3729590bafe146cd91026cffb1802038",
+      "Id": "c2af750669954129b514803809d28edf"
+    },
+    {
+      "Start": "69d9cd70486e4212bd82fc20b1f7c2d1",
+      "End": "65b8aa5479ce4dc2b3106b73616c370f",
+      "Id": "a8afc575c1674053b715d7eb8be9d9e8"
+    },
+    {
+      "Start": "69d9cd70486e4212bd82fc20b1f7c2d1",
+      "End": "e3b5956e73674819a090fec8b94fdfa1",
+      "Id": "50da4e55ecfd4773b0874febc6d70ea8"
+    },
+    {
+      "Start": "f922fb1f5d89499ba6e1967dc7319a2b",
+      "End": "64a60750004f4896a5ed74acd12dffa5",
+      "Id": "cba879994584452c89621edd439a770f"
+    },
+    {
+      "Start": "f922fb1f5d89499ba6e1967dc7319a2b",
+      "End": "8cdee54c3eb44cb5803013089af6d1ef",
+      "Id": "4d33fba0a9bb46c18aa6b3fce9f12955"
+    },
+    {
+      "Start": "f922fb1f5d89499ba6e1967dc7319a2b",
+      "End": "589180a5f08e4cf681f89922e0dc69e3",
+      "Id": "357e82496c8d409198525d030cb19da8"
+    },
+    {
+      "Start": "bb285d34997a455ea216a3b81eced74d",
+      "End": "2188d9a2ee0f49bb8f74718b0588173d",
+      "Id": "71c20ba434d34d8ca8e0b1906d0cf29f"
+    },
+    {
+      "Start": "bb285d34997a455ea216a3b81eced74d",
+      "End": "1676001d6b9c428a897f450c54fdd0d2",
+      "Id": "dd9cba63fc09493bb0279d636c3ce825"
+    },
+    {
+      "Start": "5ea41aa3fda941ee892fdfc7769c9316",
+      "End": "19cd95f7c76943a596c43b1f5fad7a46",
+      "Id": "e46ddf8b6df84eeb840bcfd468f7c402"
+    },
+    {
+      "Start": "ddf86e536b954b1d9a19ff4d4cbb2508",
+      "End": "8789ad4f18f24f7db7ed26ac192628c8",
+      "Id": "3c3c53ea05e84c5094b4407f519147c6"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 5.3275046348571777,
+      "EyeY": 8.1694765090942383,
+      "EyeZ": 7.09610652923584,
+      "LookX": -0.21275520324707031,
+      "LookY": -10.451247215270996,
+      "LookZ": -13.385160446166992,
+      "UpX": -0.0068670655600726604,
+      "UpY": 0.9018324613571167,
+      "UpZ": -0.43203115463256836
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Topology.Faces",
+        "Id": "d9bdbac4548140779b7e73b7a4c2fbdb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1841.5270742383873,
+        "Y": 208.68599153985372
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "c23f46ae05da4666bb46fb3b91b9d842",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 823.6307058892578,
+        "Y": 405.121465613221
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "fbcbe6cc01e349c291228d8ab434eef9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1388.3485790039981,
+        "Y": 408.28053471490688
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Topology.Faces",
+        "Id": "5fffa15f96e843e28d7ddf277c73f511",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1842.8632607967552,
+        "Y": 297.46678457702291
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "abe0c77f86f24ed98aa8685134ba6434",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2203.9636253590979,
+        "Y": 253.77941327671658
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "57ea76d0b8914d3da848f446ceaccd47",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2069.424999126179,
+        "Y": 360.76497600886427
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "49b0f047db4a44e8ac73a7104365d554",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 368.531821155165,
+        "Y": 232.851273521974
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "PolySurface.Chamfer",
+        "Id": "9e17723d21d6444abe07c41d40ae0d3f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 946.820686013343,
+        "Y": 256.902631572595
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "PolySurface.Chamfer",
+        "Id": "b70b4ab7b675424e84a3fec2e228a7ad",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1542.413121376348,
+        "Y": 281.16609693635587
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "d55121d962ff41578fe272194bcea520",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1841.5001659795871,
+        "Y": 95.5371735800787
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Topology.Edges",
+        "Id": "49ca33abc0ed43858c06921fa9887098",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 692.6307058892578,
+        "Y": 313.47116113004216
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Topology.Edges",
+        "Id": "08dfd839b26d4febba3d082423f175e7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1256.8774076641944,
+        "Y": 325.9845974611631
+      }
+    ],
+    "Annotations": [],
+    "X": -331.58733629047265,
+    "Y": 351.47124887921672,
+    "Zoom": 0.828477476518275
+  }
+}

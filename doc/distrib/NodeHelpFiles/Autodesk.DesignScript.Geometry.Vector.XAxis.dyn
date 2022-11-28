@@ -1,0 +1,208 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "XAxis",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,double",
+      "Id": "b6634695d043471a9cbf0ced8aceee53",
+      "Inputs": [
+        {
+          "Id": "176636ec1701492cb44b8b69b917e3f1",
+          "Name": "startPoint",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9c88e4eceaf745a393a441209aa7c33e",
+          "Name": "direction",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f6cc0f9886e24286a528b6c3e07abdf7",
+          "Name": "length",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1cb8488e0ac44362ba3853ce784cbfa5",
+          "Name": "Line",
+          "Description": "Line",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a straight Line starting at start Point, extending in Vector direction by specified length.\n\nLine.ByStartPointDirectionLength (startPoint: Point, direction: Vector, length: double = 1): Line"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Origin",
+      "Id": "9dc32158b425493fbecfb00a0e875fb6",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "83e5792ba18a46818f91dc751ce6ab2d",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the Origin point (0,0,0)\n\nPoint.Origin ( ): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "10;",
+      "Id": "25fbf82215174c7b9a922dee97e7a163",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1f08f62ffc2a49f28397d06279d54dd2",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.XAxis",
+      "Id": "b26d610dd4a1431d96ef3c52b2e36620",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b76456448f36495d8334704365f555c0",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the canonical X axis Vector (1,0,0)\n\nVector.XAxis ( ): Vector"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "83e5792ba18a46818f91dc751ce6ab2d",
+      "End": "176636ec1701492cb44b8b69b917e3f1",
+      "Id": "9a4c3830923947d69d856b3fbe289ca6"
+    },
+    {
+      "Start": "1f08f62ffc2a49f28397d06279d54dd2",
+      "End": "f6cc0f9886e24286a528b6c3e07abdf7",
+      "Id": "d6b7480f3e1a4899a69ea431635e6a6b"
+    },
+    {
+      "Start": "b76456448f36495d8334704365f555c0",
+      "End": "9c88e4eceaf745a393a441209aa7c33e",
+      "Id": "0982543a65f5485d8790a07aa63d95ce"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -2.8132946491241455,
+      "EyeY": 9.2838802337646484,
+      "EyeZ": 7.0295681953430176,
+      "LookX": 1.3816546201705933,
+      "LookY": -10.222626686096191,
+      "LookZ": -12.740361213684082,
+      "UpX": 0.047600913792848587,
+      "UpY": 0.89725834131240845,
+      "UpZ": -0.43893229961395264
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Line.ByStartPointDirectionLength",
+        "Id": "b6634695d043471a9cbf0ced8aceee53",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2804.81559672174,
+        "Y": 3862.40742624707
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.Origin",
+        "Id": "9dc32158b425493fbecfb00a0e875fb6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2665.04512846787,
+        "Y": 3799.36082494063
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "25fbf82215174c7b9a922dee97e7a163",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2670.64512846787,
+        "Y": 3975.74095848038
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.XAxis",
+        "Id": "b26d610dd4a1431d96ef3c52b2e36620",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2657.84512846787,
+        "Y": 3887.55089171051
+      }
+    ],
+    "Annotations": [],
+    "X": -3387.666131166613,
+    "Y": -4805.1291404698522,
+    "Zoom": 1.3424942521932886
+  }
+}

@@ -1,0 +1,252 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByLatitudeAndLongitude",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DynamoUnits.Location.ByLatitudeAndLongitude@double,double,string",
+      "Id": "f100f63863a445c3b6246f414ee8aed2",
+      "Inputs": [
+        {
+          "Id": "3b6aed9c1116432ba8d527a4172d2b3c",
+          "Name": "latitude",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1892bba3c0374c989a356c536dd73856",
+          "Name": "longitude",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2523dba9605b474eb1865d0d411a7631",
+          "Name": "name",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ae16b1d6d4fd42f7b76650fdf797a037",
+          "Name": "Location",
+          "Description": "Location",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Location.ByLatitudeAndLongitude (latitude: double, longitude: double, name: string): Location"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "45.5231;",
+      "Id": "2c9be40e1f094ae79c1c080387f8ada6",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e098b5e2c93341e6bbcbf70d79a89744",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "-122.679565;",
+      "Id": "943bcfa7f5f4489783f0df7a88396437",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c69fd1aa50a14a89b945443010dbb4b0",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"Portland\";",
+      "Id": "c7c6087687dd41d19fdbe02a2a61f083",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "10b57ed3bfe540d5b750429e188d223b",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "b812f2f0b7cf462ba21c8d400c86f9c9",
+      "Inputs": [
+        {
+          "Id": "5e669383f22e442cadb8bc4367b7a2de",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0c9931fd4925412994fc40fd499ad840",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ae16b1d6d4fd42f7b76650fdf797a037",
+      "End": "5e669383f22e442cadb8bc4367b7a2de",
+      "Id": "9c22035f839d467684566214291f1586"
+    },
+    {
+      "Start": "e098b5e2c93341e6bbcbf70d79a89744",
+      "End": "3b6aed9c1116432ba8d527a4172d2b3c",
+      "Id": "cef23adf12bb405b9ce44dbcafdbd9d8"
+    },
+    {
+      "Start": "c69fd1aa50a14a89b945443010dbb4b0",
+      "End": "1892bba3c0374c989a356c536dd73856",
+      "Id": "193a6fcfd3cd4a709066a7bbb0e3ddff"
+    },
+    {
+      "Start": "10b57ed3bfe540d5b750429e188d223b",
+      "End": "2523dba9605b474eb1865d0d411a7631",
+      "Id": "819968b09a0244b4a6f132da1ef9d868"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -7.7047104835510254,
+      "EyeY": 8.497960090637207,
+      "EyeZ": 19.619060516357422,
+      "LookX": 16.613174438476562,
+      "LookY": -5.0187773704528809,
+      "LookZ": -21.119640350341797,
+      "UpX": -0.019420096650719643,
+      "UpY": 0.99950653314590454,
+      "UpZ": 0.024687962606549263
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Location.ByLatitudeAndLongitude",
+        "Id": "f100f63863a445c3b6246f414ee8aed2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1806.1001647637149,
+        "Y": 3581.0375206593972
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "2c9be40e1f094ae79c1c080387f8ada6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1577.1001647637149,
+        "Y": 3503.2508539927303
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "943bcfa7f5f4489783f0df7a88396437",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1577.1001647637149,
+        "Y": 3611.2508539927303
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "c7c6087687dd41d19fdbe02a2a61f083",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1577.1001647637149,
+        "Y": 3719.2508539927303
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "b812f2f0b7cf462ba21c8d400c86f9c9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2134.1001647637149,
+        "Y": 3581.0375206593972
+      }
+    ],
+    "Annotations": [],
+    "X": -1716.28432081627,
+    "Y": -4391.34421245482,
+    "Zoom": 1.27425021902012
+  }
+}

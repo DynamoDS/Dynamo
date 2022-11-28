@@ -1,0 +1,260 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Subtract",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Autodesk.DesignScript.Geometry.Vector": {
+        "Key": "Autodesk.DesignScript.Geometry.Vector",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1;\n5;\n1;",
+      "Id": "c11389c52c1744688bc833dcd74a386d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "445d4596242245ca9df9f3848aab464f",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3afbbc4e5ac9465983905ee727a0fc29",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7535b0067c9742aaa4292e19558cd5e7",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "339e12beebd14fedad6cdcbc2998d131",
+      "Inputs": [
+        {
+          "Id": "58d111d742b14482927c6a4440c0d7a8",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2890ca1bbe2d4bbcaa3df021aaacf20f",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2785c259ef674e9cbb3aa65e103a8224",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "04addd6a334d42bfb11460c0a76c1a03",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.XAxis",
+      "Id": "e81e96b5f0414d759486495c0867f1cc",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "da4c8d5da0ce467999dd89781c1d76f7",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the canonical X axis Vector (1,0,0)\n\nVector.XAxis ( ): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Subtract@Autodesk.DesignScript.Geometry.Vector",
+      "Id": "3b64459470e04bbca1213c47e7f290d5",
+      "Inputs": [
+        {
+          "Id": "74a0469a3dd04bc19de79ff84da3f550",
+          "Name": "point",
+          "Description": "Autodesk.DesignScript.Geometry.Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7c5d0dd81c244ddcbb763c30a8c9cb96",
+          "Name": "vectorToSubtract",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "60af5c75c94c45cdac7b9d07dd272f5d",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Subtract a vector from a point. The same as Translate(-Vector).\n\nPoint.Subtract (vectorToSubtract: Vector): Point"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "445d4596242245ca9df9f3848aab464f",
+      "End": "58d111d742b14482927c6a4440c0d7a8",
+      "Id": "7ffdeb244dcb44049a4314ed878b5371"
+    },
+    {
+      "Start": "3afbbc4e5ac9465983905ee727a0fc29",
+      "End": "2890ca1bbe2d4bbcaa3df021aaacf20f",
+      "Id": "f9295003dc164477bc796ba8c7ef836c"
+    },
+    {
+      "Start": "7535b0067c9742aaa4292e19558cd5e7",
+      "End": "2785c259ef674e9cbb3aa65e103a8224",
+      "Id": "2bafbd9920b644d4900e1b621fbca208"
+    },
+    {
+      "Start": "04addd6a334d42bfb11460c0a76c1a03",
+      "End": "74a0469a3dd04bc19de79ff84da3f550",
+      "Id": "19c9b2fc6d1f4ed18d2443d65fe62f59"
+    },
+    {
+      "Start": "da4c8d5da0ce467999dd89781c1d76f7",
+      "End": "7c5d0dd81c244ddcbb763c30a8c9cb96",
+      "Id": "5a20aae4815c4b989c3ee67470539cb2"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -13.03602409362793,
+      "EyeY": 10.51179027557373,
+      "EyeZ": 20.148031234741211,
+      "LookX": 22.126602172851563,
+      "LookY": -3.6155929565429687,
+      "LookZ": -31.378820419311523,
+      "UpX": -0.070230931043624878,
+      "UpY": 0.99254608154296875,
+      "UpZ": 0.099597930908203125
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "c11389c52c1744688bc833dcd74a386d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -144.545278146457,
+        "Y": -449.101247127267
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "339e12beebd14fedad6cdcbc2998d131",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 36.2225701107665,
+        "Y": -454.472748436365
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.XAxis",
+        "Id": "e81e96b5f0414d759486495c0867f1cc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 77.0225701107665,
+        "Y": -297.441614580814
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.Subtract",
+        "Id": "3b64459470e04bbca1213c47e7f290d5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 336.500137312916,
+        "Y": -454.472748436365
+      }
+    ],
+    "Annotations": [],
+    "X": 393.435735522498,
+    "Y": 470.892223939551,
+    "Zoom": 0.894603212514687
+  }
+}
