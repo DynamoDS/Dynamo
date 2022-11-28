@@ -1,0 +1,261 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT(filePath)",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "25939faaf46046148897c187a64a4ed3",
+      "Name": "String",
+      "Type": "string",
+      "Type2": "string",
+      "Value": "C:\\Users\\dneno\\OneDrive\\Desktop\\Export\\export.sat",
+      "Description": "Creates a string",
+      "SelectedIndex": 0
+    },
+    {
+      "Id": "a93498fc2496430a86eddddf8fc84591",
+      "Name": "File Path",
+      "Type": "string",
+      "Type2": "string",
+      "Value": "..\\..\\..\\..\\..\\..\\Desktop\\Export\\export.sat",
+      "Description": "Allows you to select a file on the system and returns its file path",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "C:\\Users\\dneno\\OneDrive\\Desktop\\Export\\export.sat",
+      "Id": "25939faaf46046148897c187a64a4ed3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6ff274c623484ea384977124935e3a7c",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Users\\dneno\\OneDrive\\Desktop\\Export\\export.sat",
+      "InputValue": "..\\..\\..\\..\\..\\..\\Desktop\\Export\\export.sat",
+      "NodeType": "ExtensionNode",
+      "Id": "a93498fc2496430a86eddddf8fc84591",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "01fc4db8e84b4a8f81fa43736c0c8f53",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path"
+    },
+    {
+      "ConcreteType": "GeometryUI.ImportFromSATWithUnits, GeometryUI",
+      "NodeType": "ExtensionNode",
+      "Id": "9c9d30ec1b2f4275af5d02496875bdb5",
+      "Inputs": [
+        {
+          "Id": "57aaa113026c47aaaf93563474e9a5e1",
+          "Name": "file|filePath",
+          "Description": "Filepath or File object to import .SAT from.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "751f3e12535c449fa78affad0f4163e1",
+          "Name": "dynamoUnit",
+          "Description": "A forge unit length, if left null, geometry will be imported as unitless.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8c8523b42727471a9cbfd25ae0cfeefa",
+          "Name": "geometry",
+          "Description": "Loaded geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file."
+    },
+    {
+      "ConcreteType": "GeometryUI.ImportFromSATWithUnits, GeometryUI",
+      "NodeType": "ExtensionNode",
+      "Id": "0227e5969a7f4484929c014d8d9e78ca",
+      "Inputs": [
+        {
+          "Id": "e819058d26aa45f8bce6634aa0fac1e9",
+          "Name": "file|filePath",
+          "Description": "Filepath or File object to import .SAT from.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "797e840491bc463ca5154fbc9164de5e",
+          "Name": "dynamoUnit",
+          "Description": "A forge unit length, if left null, geometry will be imported as unitless.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e66f5bb34a7741b7ba5aee5a0e0987d8",
+          "Name": "geometry",
+          "Description": "Loaded geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6ff274c623484ea384977124935e3a7c",
+      "End": "e819058d26aa45f8bce6634aa0fac1e9",
+      "Id": "ffdcf820a00241b9a991d1a0c2d2570e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "01fc4db8e84b4a8f81fa43736c0c8f53",
+      "End": "57aaa113026c47aaaf93563474e9a5e1",
+      "Id": "63d8130fe2c64c15ac1364563607b049",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "export.sat",
+      "ReferenceType": "External",
+      "Nodes": [
+        "25939faaf46046148897c187a64a4ed3",
+        "a93498fc2496430a86eddddf8fc84591"
+      ]
+    }
+  ],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 0.8829966137805112,
+      "EyeY": 7.9814848374931335,
+      "EyeZ": 9.3534666574551562,
+      "LookX": 2.338485990961539,
+      "LookY": -2.5333599519340515,
+      "LookZ": -11.302682546432207,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "25939faaf46046148897c187a64a4ed3",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 181.45918197917848,
+        "Y": 322.28427405213858
+      },
+      {
+        "Name": "File Path",
+        "ShowGeometry": true,
+        "Id": "a93498fc2496430a86eddddf8fc84591",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 207.51054039697755,
+        "Y": 3.3474455451889611
+      },
+      {
+        "Name": "Geometry.ImportFromSATWithUnits",
+        "ShowGeometry": true,
+        "Id": "9c9d30ec1b2f4275af5d02496875bdb5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 591.5105403969776,
+        "Y": 3.3474455451889611
+      },
+      {
+        "Name": "Geometry.ImportFromSATWithUnits",
+        "ShowGeometry": true,
+        "Id": "0227e5969a7f4484929c014d8d9e78ca",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 489.45918197917848,
+        "Y": 322.28427405213858
+      }
+    ],
+    "Annotations": [],
+    "X": 277.24750672210132,
+    "Y": 182.50449509884879,
+    "Zoom": 1.2137330163344211
+  }
+}

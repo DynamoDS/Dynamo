@@ -1,0 +1,164 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "FromString",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.FromString@string",
+      "Id": "3a35b85992784784864c77a3bab9b18e",
+      "Inputs": [
+        {
+          "Id": "591ff8706cbe4afcb093eacab56aba1d",
+          "Name": "str",
+          "Description": "String representation of a DateTime.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cb33078d0fd64073920d217f407ff6ae",
+          "Name": "dateTime",
+          "Description": "DateTime",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Attempts to parse a DateTime from a string.\n\nDateTime.FromString (str: string): var"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"November 14, 2016 12:36 PM\";",
+      "Id": "016a763235064ccc82c2e8b525837ee4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fc71f51271fa463aac22fe87646d1f8e",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "8c5fe85e8e0d41669f7b74aa83786354",
+      "Inputs": [
+        {
+          "Id": "2c39c45f4a054bf2b10c8d6d7af7fbf1",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e612bb1a47ed47a1ac8de4f26b54b948",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "cb33078d0fd64073920d217f407ff6ae",
+      "End": "2c39c45f4a054bf2b10c8d6d7af7fbf1",
+      "Id": "f01f892b00d5400f96ac060c5fb0bf99"
+    },
+    {
+      "Start": "fc71f51271fa463aac22fe87646d1f8e",
+      "End": "591ff8706cbe4afcb093eacab56aba1d",
+      "Id": "67ec52983fc44aef992629fff36c8f17"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.1650753021240234,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.053885128349065781,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.068501941859722137
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.FromString",
+        "Id": "3a35b85992784784864c77a3bab9b18e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -22.897139716386505,
+        "Y": 2600.02112349089
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "016a763235064ccc82c2e8b525837ee4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -391.8971397163865,
+        "Y": 2604.2344568242233
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "8c5fe85e8e0d41669f7b74aa83786354",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 269.1028602836135,
+        "Y": 2600.02112349089
+      }
+    ],
+    "Annotations": [],
+    "X": 712.893686819037,
+    "Y": -4510.39080704605,
+    "Zoom": 1.78921269716459
+  }
+}
