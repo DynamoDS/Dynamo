@@ -257,6 +257,9 @@ namespace Dynamo.UI.Views
             await webView.EnsureCoreWebView2Async();
             // Context menu disabled
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            // Zoom control disabled
+            webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+
             var assembly = Assembly.GetExecutingAssembly();
 
             using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))

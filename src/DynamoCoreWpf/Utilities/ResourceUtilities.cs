@@ -539,6 +539,9 @@ namespace Dynamo.Utilities
                 // Context menu disabled
                 webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
                 webBrowserComponent.NavigateToString(bodyHtmlPage);
+
+                webBrowserComponent.CoreWebView2.Settings.IsZoomControlEnabled = false;
+                webBrowserComponent.CoreWebView2.Settings.IsPinchZoomEnabled = false;
             }
             catch (Exception ex)
             {

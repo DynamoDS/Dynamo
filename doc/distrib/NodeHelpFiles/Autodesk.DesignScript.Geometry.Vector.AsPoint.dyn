@@ -1,0 +1,255 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "AsPoint",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "10;\n5;\n6;",
+      "Id": "e8f92713af7c4d309b92caecd37793f0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0a7ac3ed8b374a5696a16c57468b91cf",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "76858fc0b6c94fc4910b30ff7506e9d4",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6a546f635db24131871a108b42712842",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double",
+      "Id": "a1b0d1014b274207bab7292145e92136",
+      "Inputs": [
+        {
+          "Id": "7156ad5eaab24e7eb31046dd82174e69",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "698a7a26b8eb4086987317eb3f5d22cb",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c3193b10d6a04ce2b4a93a840f15f488",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0971b0fa9ec349389f9fad17e395aff7",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Vector by 3 Euclidean coordinates\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.AsPoint",
+      "Id": "ceebdb91441d452495949d13daf268b7",
+      "Inputs": [
+        {
+          "Id": "9ae4aea974d94467915baa3789d28359",
+          "Name": "vector",
+          "Description": "Autodesk.DesignScript.Geometry.Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e71f03169682456e87dbc4626d554c16",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the Point with the same X, Y, and Z component\n\nVector.AsPoint ( ): Point"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "52f111992ed54153b2ba380f0adc7f34",
+      "Inputs": [
+        {
+          "Id": "18e9a595d55a4433973808d56d2e4df6",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3087d2e69f564764bad921b436013b06",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "0a7ac3ed8b374a5696a16c57468b91cf",
+      "End": "7156ad5eaab24e7eb31046dd82174e69",
+      "Id": "3991e8f80b02418384c1ad6351f56531"
+    },
+    {
+      "Start": "76858fc0b6c94fc4910b30ff7506e9d4",
+      "End": "698a7a26b8eb4086987317eb3f5d22cb",
+      "Id": "4ebc54abb2454d1b884033b33b8b9de2"
+    },
+    {
+      "Start": "6a546f635db24131871a108b42712842",
+      "End": "c3193b10d6a04ce2b4a93a840f15f488",
+      "Id": "13bf1a67a45a436b89e21ed8b68c692f"
+    },
+    {
+      "Start": "0971b0fa9ec349389f9fad17e395aff7",
+      "End": "9ae4aea974d94467915baa3789d28359",
+      "Id": "2d531312cbec4aa3a135146b047fb726"
+    },
+    {
+      "Start": "e71f03169682456e87dbc4626d554c16",
+      "End": "18e9a595d55a4433973808d56d2e4df6",
+      "Id": "49715a4deb6346f39f53f4a50f8a5ce0"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 12.029681205749512,
+      "EyeY": 6.0260553359985352,
+      "EyeZ": -5.21686315536499,
+      "LookX": -8.744537353515625,
+      "LookY": -0.656927227973938,
+      "LookZ": 2.0849571228027344,
+      "UpX": 0.13873985409736633,
+      "UpY": 0.98977619409561157,
+      "UpZ": -0.033079694956541061
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e8f92713af7c4d309b92caecd37793f0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2631.237006328,
+        "Y": 4254.05719639995
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.ByCoordinates",
+        "Id": "a1b0d1014b274207bab7292145e92136",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2759.21161023204,
+        "Y": 4238.84071160296
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.AsPoint",
+        "Id": "ceebdb91441d452495949d13daf268b7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2937.212421596786,
+        "Y": 4238.84071160296
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "52f111992ed54153b2ba380f0adc7f34",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3166.2760257182749,
+        "Y": 4238.84071160296
+      }
+    ],
+    "Annotations": [],
+    "X": -2182.1787743888094,
+    "Y": -3700.703223262688,
+    "Zoom": 0.95714108837055112
+  }
+}

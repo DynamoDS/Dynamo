@@ -62,6 +62,9 @@
   <IsIronPythonDialogDisabled>true</IsIronPythonDialogDisabled>
   <ShowTabsAndSpacesInScriptEditor>true</ShowTabsAndSpacesInScriptEditor>
   <EnableNodeAutoComplete>false</EnableNodeAutoComplete>
+  <HideNodesBelowSpecificConfidenceLevel>true</HideNodesBelowSpecificConfidenceLevel>
+  <MLRecommendationConfidenceLevel>99</MLRecommendationConfidenceLevel>
+  <MLRecommendationNumberOfResults>5</MLRecommendationNumberOfResults>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
   <DefaultPythonEngine/>

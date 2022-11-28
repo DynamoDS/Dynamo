@@ -1,0 +1,420 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Radius",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "2a61114a1e8140658f6b94427cb7458a",
+      "Name": "Integer Slider",
+      "Type": "number",
+      "Value": "8",
+      "MaximumValue": 20.0,
+      "MinimumValue": 3.0,
+      "StepValue": 1.0,
+      "NumberType": "Integer",
+      "Description": "A slider that produces integer values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 8,
+      "MaximumValue": 20,
+      "MinimumValue": 3,
+      "StepValue": 1,
+      "Id": "2a61114a1e8140658f6b94427cb7458a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0954df2e630f43b985d221565cf3901f",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "d2c6445400444896ad8e6e1ce0e3da35",
+      "Inputs": [
+        {
+          "Id": "f3e8abbd105c4b1baa924d60dc28c45a",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b7b1ea1ceca54f348f4cff676fe46926",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "14f00a1f88f444b99489d25a4dc5208b",
+      "Inputs": [
+        {
+          "Id": "1396281bb1ff40a4b5a1f36863a81296",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bc43bd6474304db880fe2b4c4ed92801",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x*2;",
+      "Id": "b83ebabf1885480cafa1f31eb3a23a58",
+      "Inputs": [
+        {
+          "Id": "c7780a49903d4f63b6231805193a0820",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "25796c2c2ae34163a6e29bed97c0ce6c",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "y*3;",
+      "Id": "06016472791742319ad732c504d3408a",
+      "Inputs": [
+        {
+          "Id": "9628fda594394a1eb98f110d5fa2712e",
+          "Name": "y",
+          "Description": "y",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "797a2f143dc846b7b6c51853eb82c307",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
+      "Id": "1f03ccc7993f42ea88d9b18b1f4134c9",
+      "Inputs": [
+        {
+          "Id": "6a4fffdd884548ed8263aa9bb6957231",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "19f44818dab148d38060644cb70a4163",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9302369370b84fe88e68d72e1b9db091",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByBestFitThroughPoints@Autodesk.DesignScript.Geometry.Point[]",
+      "Id": "0f3fe47719644c22a0f351663d48fdb8",
+      "Inputs": [
+        {
+          "Id": "1941db57b8434bdeb9225afe39c51095",
+          "Name": "points",
+          "Description": "Points to fit\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3e278dca679040cd93c7ad681a66ae04",
+          "Name": "Circle",
+          "Description": "Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Best fit Circle through Points\n\nCircle.ByBestFitThroughPoints (points: Point[]): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.Radius",
+      "Id": "a2159273006743aabc139545ed74c181",
+      "Inputs": [
+        {
+          "Id": "123072255dcd43c5a6e48e441e49ee11",
+          "Name": "circle",
+          "Description": "Autodesk.DesignScript.Geometry.Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b66734d64c54426c9adbde9c560a0af1",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The radius of the circle\n\nCircle.Radius: double"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "0954df2e630f43b985d221565cf3901f",
+      "End": "f3e8abbd105c4b1baa924d60dc28c45a",
+      "Id": "cb9fb6fd03314533a8adc9284b974ab5"
+    },
+    {
+      "Start": "0954df2e630f43b985d221565cf3901f",
+      "End": "1396281bb1ff40a4b5a1f36863a81296",
+      "Id": "88be91565b7342318c77d4add4046a28"
+    },
+    {
+      "Start": "b7b1ea1ceca54f348f4cff676fe46926",
+      "End": "9628fda594394a1eb98f110d5fa2712e",
+      "Id": "d43f64cf48fe4651a0ab591e5510b88c"
+    },
+    {
+      "Start": "bc43bd6474304db880fe2b4c4ed92801",
+      "End": "c7780a49903d4f63b6231805193a0820",
+      "Id": "b74407e9de824c57b839d37bd00fcf3a"
+    },
+    {
+      "Start": "25796c2c2ae34163a6e29bed97c0ce6c",
+      "End": "6a4fffdd884548ed8263aa9bb6957231",
+      "Id": "c237d755b1e44d33880bd67af1c38bff"
+    },
+    {
+      "Start": "797a2f143dc846b7b6c51853eb82c307",
+      "End": "19f44818dab148d38060644cb70a4163",
+      "Id": "83407ebbce67476aa63d5116af908967"
+    },
+    {
+      "Start": "9302369370b84fe88e68d72e1b9db091",
+      "End": "1941db57b8434bdeb9225afe39c51095",
+      "Id": "cfe85ded3c81421d9e29f972141b98b7"
+    },
+    {
+      "Start": "3e278dca679040cd93c7ad681a66ae04",
+      "End": "123072255dcd43c5a6e48e441e49ee11",
+      "Id": "2b5ac2d7985c46e7b313ba233fd9c5eb"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -2.5940642356872559,
+      "EyeY": 5.44261360168457,
+      "EyeZ": 5.123988151550293,
+      "LookX": 2.9485023021698,
+      "LookY": -2.6569583415985107,
+      "LookZ": -5.7397847175598145,
+      "UpX": 0.079345569014549255,
+      "UpY": 0.98480772972106934,
+      "UpZ": -0.15446026623249054
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Integer Slider",
+        "Id": "2a61114a1e8140658f6b94427cb7458a",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -535.640083341234,
+        "Y": 4182.6568054675135
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.RandomList",
+        "Id": "d2c6445400444896ad8e6e1ce0e3da35",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -136.640083341234,
+        "Y": 4236.6568054675135
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.RandomList",
+        "Id": "14f00a1f88f444b99489d25a4dc5208b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -136.640083341234,
+        "Y": 4128.6568054675135
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "b83ebabf1885480cafa1f31eb3a23a58",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 179.359916658766,
+        "Y": 4132.8701388008467
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "06016472791742319ad732c504d3408a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 179.359916658766,
+        "Y": 4240.8701388008467
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "1f03ccc7993f42ea88d9b18b1f4134c9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 361.359916658766,
+        "Y": 4169.6568054675135
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Circle.ByBestFitThroughPoints",
+        "Id": "0f3fe47719644c22a0f351663d48fdb8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 619.359916658766,
+        "Y": 4169.6568054675135
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Circle.Radius",
+        "Id": "a2159273006743aabc139545ed74c181",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 918.359916658766,
+        "Y": 4169.6568054675135
+      }
+    ],
+    "Annotations": [],
+    "X": 375.686629909135,
+    "Y": -3750.27461380455,
+    "Zoom": 0.930530431064715
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Zero",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "53539fc39aa4437b92e736348f8955c2",
+      "Inputs": [
+        {
+          "Id": "041d8f43d86d40a68a7b5f40c3d45606",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2adec0b9b4df4b88b0955f3aab48bbb4",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.TimeSpan.Zero",
+      "Id": "47fc9fd3f3e1430fa915abb7657f8000",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d4bc0b938846447a9be727415ea6acf5",
+          "Name": "timeSpan",
+          "Description": "TimeSpan",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "A TimeSpan representing an elapsed time of Zero.\n\nTimeSpan.Zero: var"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "d4bc0b938846447a9be727415ea6acf5",
+      "End": "041d8f43d86d40a68a7b5f40c3d45606",
+      "Id": "812230fd04144c709b52980137981d53"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.1650753021240234,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.053885128349065781,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.068501941859722137
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "53539fc39aa4437b92e736348f8955c2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 101.683355614431,
+        "Y": 2781.36189992462
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "TimeSpan.Zero",
+        "Id": "47fc9fd3f3e1430fa915abb7657f8000",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -40.3241270954626,
+        "Y": 2781.36189992462
+      }
+    ],
+    "Annotations": [],
+    "X": 590.111079949333,
+    "Y": -5068.81945179402,
+    "Zoom": 1.87273140367666
+  }
+}

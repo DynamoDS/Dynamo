@@ -330,7 +330,7 @@
                 <Grid.ContextMenu>
                     <ContextMenu Name="SuggestionsContextMenu"
                                  Style="{StaticResource ContextMenuStyle}">
-                        <MenuItem Header="{x:Static p:Resources.MachineLearning}"
+                        <MenuItem Header="{x:Static p:Resources.RecommendedNodes}"
                                   x:Name="miMLRecommendation"
                                   Click="OnSuggestion_Click"
                                   IsCheckable="True"

@@ -1,0 +1,239 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByPlaneRadii",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "a7e2011e54174a1e9c7f881cf59addb7",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "5.5",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "c03ffe059a8449d9a79a1a0a0f882e2b",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "6.4",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 5.5,
+      "Id": "a7e2011e54174a1e9c7f881cf59addb7",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "27f8522236f04c09bff594b269403980",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 6.4,
+      "Id": "c03ffe059a8449d9a79a1a0a0f882e2b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "289471c5b3b64302b01d1faab283df83",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Ellipse.ByPlaneRadii@Autodesk.DesignScript.Geometry.Plane,double,double",
+      "Id": "5ee091ab8cc04049ab69e5854de7f9c6",
+      "Inputs": [
+        {
+          "Id": "fe23e8d50bc249c6afe5867c7c2930f4",
+          "Name": "plane",
+          "Description": "Plane\nDefault value : Autodesk.DesignScript.Geometry.Plane.XY() (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "432a73697f3e42798be1640db3ba81eb",
+          "Name": "xAxisRadius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "158b5bf0ede04a3080affb4f0e312ca1",
+          "Name": "yAxisRadius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "03642f5dc8024283a130569c824b948c",
+          "Name": "Ellipse",
+          "Description": "Ellipse",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create an Ellipse centered and aligned with input Plane, with a x_radius radius in the Plane X axis direction, and y_radius radius in the Plane Y axis direction.\n\nEllipse.ByPlaneRadii (plane: Plane = Autodesk.DesignScript.Geometry.Plane.XY(), xAxisRadius: double = 1, yAxisRadius: double = 1): Ellipse"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Plane.YZ",
+      "Id": "5e4cf7339f9148dc87676acf898bd2c4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5f0af72c97c544a48220f686851a59d1",
+          "Name": "Plane",
+          "Description": "Plane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a plane in the world YZ\n\nPlane.YZ ( ): Plane"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "27f8522236f04c09bff594b269403980",
+      "End": "432a73697f3e42798be1640db3ba81eb",
+      "Id": "d96cbb30cad2472fba0511c736602851"
+    },
+    {
+      "Start": "289471c5b3b64302b01d1faab283df83",
+      "End": "158b5bf0ede04a3080affb4f0e312ca1",
+      "Id": "d25b8e10ade34a0a89689922d29a7180"
+    },
+    {
+      "Start": "5f0af72c97c544a48220f686851a59d1",
+      "End": "fe23e8d50bc249c6afe5867c7c2930f4",
+      "Id": "e448f980741f4629bf4c9de015eaf29e"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -30.657729097962623,
+      "EyeY": 2.6198531895743074,
+      "EyeZ": 12.476207311402824,
+      "LookX": 16.843772888183594,
+      "LookY": -7.061241626739502,
+      "LookZ": -18.912099838256836,
+      "UpX": 0.03712642565369606,
+      "UpY": 0.99844080209732056,
+      "UpZ": -0.041685357689857483
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "a7e2011e54174a1e9c7f881cf59addb7",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -315.114191723088,
+        "Y": 28.2756161224093
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "c03ffe059a8449d9a79a1a0a0f882e2b",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -315.114191723088,
+        "Y": 90.4014544178242
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Ellipse.ByPlaneRadii",
+        "Id": "5ee091ab8cc04049ab69e5854de7f9c6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 130.81806088728604,
+        "Y": -6.5162503048891409
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Plane.YZ",
+        "Id": "5e4cf7339f9148dc87676acf898bd2c4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -92.714191723088,
+        "Y": -60.2258214549009
+      }
+    ],
+    "Annotations": [],
+    "X": 572.183608032089,
+    "Y": 111.038112021614,
+    "Zoom": 0.883851929302206
+  }
+}

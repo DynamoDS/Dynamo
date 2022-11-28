@@ -79,6 +79,7 @@ namespace Dynamo.Wpf.Views
             scaleValue = dynViewModel.ScaleFactorLog;
             ResetGroupStyleForm();
             StoreOriginalCustomGroupStyles();
+            displayConfidenceLevel();
 
             viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
         }
@@ -548,6 +549,44 @@ namespace Dynamo.Wpf.Views
         internal void Dispose()
         {
             viewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
+        }
+
+        int getExtraLeftSpace(int confidenceLevel)
+        {
+            int value = 16;
+
+            for (int i = 1; i <= 9; i++)
+            {
+                if (confidenceLevel <= 9)
+                {
+                    break;
+                }               
+                else
+                {
+                    value--;
+                    if ((confidenceLevel == 10) || confidenceLevel >= (i * 10) + 1 && confidenceLevel <= (i + 1) * 10)
+                    {                        
+                        break;
+                    }
+                }
+            }
+            return value;
+        }       
+
+        private void sliderConfidenceLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            displayConfidenceLevel();
+        }
+
+        private void displayConfidenceLevel()
+        {
+            if (this.lblConfidenceLevel != null && this.lblConfidenceLevelLabelStart != null)
+            {
+                int confidenceLevel = (int)lblConfidenceLevel.Content;
+
+                int left = ((int)lblConfidenceLevel.Content * 3) + getExtraLeftSpace(confidenceLevel);
+                this.lblConfidenceLevel.Margin = new Thickness(left, -15, 0, 0);
+            }
         }
     }
 }

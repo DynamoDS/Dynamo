@@ -1,0 +1,367 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.Image.Pixels_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Temp\\sample.png",
+      "InputValue": "..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\Temp\\sample.png",
+      "NodeType": "ExtensionNode",
+      "Id": "8f587ca896eb4ba2bf51294c06f5e357",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d48400d7c5a143fb83265dc4ed33cc15",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "5914586d958d4ca79b25dd3cd9694449",
+      "Inputs": [
+        {
+          "Id": "52cb670ac3e34ffa8cf4af13a33937a2",
+          "Name": "path",
+          "Description": "Path to the file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "baecffde41d849119c230e42db0f7e2f",
+          "Name": "file",
+          "Description": "File object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a file object from the given path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.Image.ReadFromFile@var",
+      "Id": "a0bff0c5ee654c2c96910b11ce4f802c",
+      "Inputs": [
+        {
+          "Id": "9c79ebc9b4fc468783f1defeedd03451",
+          "Name": "file",
+          "Description": "File object to load image from\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "65ad6fbd05fe46d4b9f8f332b086801b",
+          "Name": "image",
+          "Description": "Image object from file",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Loads the file as a bitmap.\n\nImage.ReadFromFile (file: var): var"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.Image.Pixels@var,int,int",
+      "Id": "a9c2908cc9f24b508164873b1bb3735d",
+      "Inputs": [
+        {
+          "Id": "f241e7683b5844cead92caccdd50a1cf",
+          "Name": "image",
+          "Description": "Image object to get pixel colors from\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7c3ccc4b36514a9ca45b022cf7d607f8",
+          "Name": "xSamples",
+          "Description": "Number of sample grid points in the X direction.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "33b12c5ca6fa4a7bb935507f1c705980",
+          "Name": "ySamples",
+          "Description": "Number of sample grid points in the Y direction.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "42f3ac9f70234e488128f04d1fc5b221",
+          "Name": "colors",
+          "Description": "Colors at the specified grid points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Reads an image file and returns the color values at the specified grid locations.\n\nImage.Pixels (image: var, xSamples: int, ySamples: int): Color[][]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "100;\n100;",
+      "Id": "686cbbd4a1ef48639d43ee883caf6816",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c313a56a7aff4c4095ee7bd733429de0",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "18d4565a7c67456fad425aff8f063764",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "753ba170658845278070d5544c1a9859",
+      "Inputs": [
+        {
+          "Id": "6ae5da5f2a264005a82ee29ec66e0d7b",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a163f3cdf53e4afeb8850b6e33c3af4c",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "d48400d7c5a143fb83265dc4ed33cc15",
+      "End": "52cb670ac3e34ffa8cf4af13a33937a2",
+      "Id": "593bdb6b30bc49a2b7d4e37edd9f6cf7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "baecffde41d849119c230e42db0f7e2f",
+      "End": "9c79ebc9b4fc468783f1defeedd03451",
+      "Id": "e5c490d9ab1a4a05aba1356156433308",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "65ad6fbd05fe46d4b9f8f332b086801b",
+      "End": "f241e7683b5844cead92caccdd50a1cf",
+      "Id": "0a891a4df65943bba38c80b29d71869f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "42f3ac9f70234e488128f04d1fc5b221",
+      "End": "6ae5da5f2a264005a82ee29ec66e0d7b",
+      "Id": "3b31c8dbd23344e2a844e653f07b3d53",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c313a56a7aff4c4095ee7bd733429de0",
+      "End": "7c3ccc4b36514a9ca45b022cf7d607f8",
+      "Id": "ae16ee5b6b924497bcd13e667e669b2a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "18d4565a7c67456fad425aff8f063764",
+      "End": "33b12c5ca6fa4a7bb935507f1c705980",
+      "Id": "c5a8d80d3fd14649a53e8b1edd951092",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "sample.png",
+      "ReferenceType": "External",
+      "Nodes": [
+        "8f587ca896eb4ba2bf51294c06f5e357"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "File Path",
+        "ShowGeometry": true,
+        "Id": "8f587ca896eb4ba2bf51294c06f5e357",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3637.4871951607811,
+        "Y": 4349.6285821179545
+      },
+      {
+        "Name": "File From Path",
+        "ShowGeometry": true,
+        "Id": "5914586d958d4ca79b25dd3cd9694449",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3942.2871951607813,
+        "Y": 4349.6285821179545
+      },
+      {
+        "Name": "Image.ReadFromFile",
+        "ShowGeometry": true,
+        "Id": "a0bff0c5ee654c2c96910b11ce4f802c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4222.2871951607813,
+        "Y": 4349.6285821179545
+      },
+      {
+        "Name": "Image.Pixels",
+        "ShowGeometry": true,
+        "Id": "a9c2908cc9f24b508164873b1bb3735d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4548.6871951607809,
+        "Y": 4402.6285821179545
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "686cbbd4a1ef48639d43ee883caf6816",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4222.2871951607813,
+        "Y": 4498.2835821179542
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "753ba170658845278070d5544c1a9859",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4871.0871951607805,
+        "Y": 4402.6285821179545
+      }
+    ],
+    "Annotations": [],
+    "X": -2007.4235899312389,
+    "Y": -1670.3688487085806,
+    "Zoom": 0.55445920154895112
+  }
+}
