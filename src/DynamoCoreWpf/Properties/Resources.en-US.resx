@@ -3327,7 +3327,7 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Numbers of results</value>
+    <value>Number of results</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Import</value>
