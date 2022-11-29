@@ -201,6 +201,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(emptyListNodesCount, emptyListNodesImageCount);
             Assert.AreEqual(nullNodesCount, nullNodesImageCount);
         }
+
         #endregion
 
         #region Utilities
