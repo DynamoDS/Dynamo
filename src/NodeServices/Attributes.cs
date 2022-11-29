@@ -290,7 +290,7 @@ namespace Autodesk.DesignScript.Runtime
     /// <summary> 
     /// This attribute indicates the node is obsolete
     /// </summary> 
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Method| AttributeTargets.Constructor | AttributeTargets.Property)]
     public class IsObsoleteAttribute : Attribute
     {
         public string Message { get; protected set; }
