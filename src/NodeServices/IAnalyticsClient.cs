@@ -433,7 +433,27 @@ namespace Dynamo.Logging
         /// <summary>
         /// ExportSettings event, e.g. tracks the ExportSettings event
         /// </summary>
-        ExportSettings
+        ExportSettings,
+
+        /// <summary>
+        /// Ajusting the confidence level threshold in the Preferences panel
+        /// </summary>
+        AdjustConfidenceLevel,
+
+        /// <summary>
+        /// Click in the Low Confidence Level option will open the list of possible nodes
+        /// </summary>
+        ExpandConfidenceLevel,
+
+        /// <summary>
+        /// The user selected Object Type then it will affect the node autocomplete results
+        /// </summary>
+        SelectObjectType,
+
+        /// <summary>
+        /// The user selected Machine Learning then it will affect the node autocomplete results
+        /// </summary>
+        SelectMachineLearning
     }
 
     /// <summary>

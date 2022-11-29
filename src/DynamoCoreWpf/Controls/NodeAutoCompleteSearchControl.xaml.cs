@@ -301,6 +301,11 @@ namespace Dynamo.UI.Controls
         private void ShowLowConfidenceResults(object sender, RoutedEventArgs e)
         {
             ViewModel.ShowLowConfidenceResults();
+            //Tracking Analytics when the Low Confidence combobox (located in the Autocomplete popup)  is clicked
+            Analytics.TrackEvent(
+                    Actions.ExpandConfidenceLevel,
+                    Categories.NodeAutoCompleteOperations,
+                    "LowConfidenceResults");
         }
 
         private void OnSuggestion_Click(object sender, RoutedEventArgs e)
