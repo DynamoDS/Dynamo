@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -166,7 +166,7 @@ namespace Dynamo.PackageManager
                 // determine which folder to put the file in
                 string targetFolder = extraDirPath;
 
-                if (Path.GetDirectoryName(file).EndsWith(DocumentationDirectoryName))
+                if (Path.GetDirectoryName(file).EndsWith(DocumentationDirectoryName) || file.EndsWith(".md"))
                 {
                     targetFolder = docDirPath;
                 }

@@ -656,6 +656,11 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Optional Markdown files list
+        /// </summary>
+        internal List<string> MarkdownFiles;
+
+        /// <summary>
         /// Dependencies property </summary>
         /// <value>
         /// Computed and manually added package dependencies</value>
@@ -1082,7 +1087,7 @@ namespace Dynamo.PackageManager
             // union with additional files
             files = files.Union(AdditionalFiles);
             // union with optional markdown files from directory
-            files = files.Union(MarkdownFilesDirectory);
+            files = files.Union(MarkdownFiles);
             files = files.Union(Assemblies.Select(x => x.Assembly.Location));
 
             return files;
@@ -1326,26 +1331,13 @@ namespace Dynamo.PackageManager
             MarkdownFilesDirectory = directoryPath;
 
             // Append all md files from the directory to files list without affect the package content UI
-            List<string> filePaths = Directory
+            MarkdownFiles = Directory
                 .GetFiles
                 (
                     directoryPath,
                     "*.md",
                     SearchOption.AllDirectories
                 ).ToList();
-
-            if (filePaths.Count < 1) return;
-
-            List<string> existingPackageContents = PackageContents
-                .Where(x => x.FileInfo != null)
-                .Select(x => x.FileInfo.FullName)
-                .ToList();
-
-            foreach (var filePath in filePaths)
-            {
-                if (existingPackageContents.Contains(filePath)) continue;
-                AddFile(filePath);
-            }
         }
 
         /// <summary>
