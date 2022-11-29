@@ -9,8 +9,16 @@
     <!-- input::-ms-clear setting is to disable unnecessary close button of search bar -->
     <style>
 
-        html {
-            font-size: 14px !important;
+        @media (min-height: 551px) {
+            html {
+                font-size: 14px !important;
+            }
+        }
+
+        @media (max-height: 450px) {
+            html {
+                font-size: 8px !important;
+            }
         }
 
         body {
