@@ -201,52 +201,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(emptyListNodesCount, emptyListNodesImageCount);
             Assert.AreEqual(nullNodesCount, nullNodesImageCount);
         }
-
-        /// <summary>
-        /// Test if the number of nodes displayed in the extension is equal to current number of nodes
-        /// </summary>
-        [Test]
-        public void TestGraphEvaluationEvents()
-        {
-            RaiseLoadedEvent(this.View);
-            var extensionManager = View.viewExtensionManager;
-            var viewExt = extensionManager.ViewExtensions
-                    .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
-                as GraphNodeManagerViewExtension;
-
-            var hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
-
-            // Arrange
-            LoadExtension(viewExt);
-
-            var view = viewExt.ManagerView;
-
-            int counter = 0;
-            hwm.EvaluationStarted += (object sender, EventArgs args) =>
-            {
-                counter++;
-                Assert.IsFalse(hwm.RunSettings.RunEnabled);
-
-                // Test that we do not get into an infinite loop
-                hwm.RequestRun();
-            };
-
-            hwm.EvaluationCompleted += (object sender, EvaluationCompletedEventArgs args) => {
-                counter++;
-                Assert.IsTrue(hwm.RunSettings.RunEnabled);
-            };
-
-            var rootFolder = new DirectoryInfo(ExecutingDirectory).Parent.Parent.Parent.FullName;
-            Open(Path.Combine(rootFolder, "test","core","math", "Add.dyn"));
-
-            hwm.RequestRun();
-
-            hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
-            Utility.DispatcherUtil.DoEvents();
-
-            Assert.AreEqual(2, counter++);
-        }
-
         #endregion
 
         #region Utilities

@@ -1,8 +1,15 @@
-﻿using System.IO;
+using System;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Engine;
+using Dynamo.Graph.Workspaces;
+using Dynamo.GraphNodeManager;
+using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -346,6 +353,44 @@ namespace DynamoCoreWpfTests
 
             eventMethod.Invoke(element, new object[] { args });
         }
+
+        /// <summary>
+        /// Test if the number of nodes displayed in the extension is equal to current number of nodes
+        /// </summary>
+        [Test]
+        public void TestGraphEvaluationEvents()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+
+            EngineController controller = null;
+            int counter = 0;
+            viewExtension.OnOpenEvaluationStarted += (HomeWorkspaceModel hwm, EventArgs args) =>
+            {
+                counter++;
+                Assert.IsFalse(hwm.RunSettings.RunEnabled);
+
+                Assert.IsNotNull(hwm.EngineController);
+                Assert.IsFalse(hwm.EngineController.IsDisposed);
+
+                controller = hwm.EngineController;
+                // Test that we do not get into an infinite loop
+                hwm.RequestRun();
+            };
+
+            viewExtension.OnOpenEvaluationEnded += (HomeWorkspaceModel hwm, EventArgs args) => {
+                counter++;
+
+                Assert.IsTrue(hwm.RunSettings.RunEnabled);
+                Assert.AreEqual(controller, hwm.EngineController);
+            };
+
+            // Open first file.
+            Open(@"core\node2code\numberRange.dyn");
+
+            Assert.AreEqual(2, counter);
+        }
     }
 
     public class DummyViewExtension : IViewExtension
@@ -354,6 +399,9 @@ namespace DynamoCoreWpfTests
         public bool SetOwner { get; set; } = true;
         public bool WindowClosed { get; private set; }
         public Window Content { get; private set; }
+
+        public event Action<HomeWorkspaceModel, EventArgs> OnOpenEvaluationStarted;
+        public event Action<HomeWorkspaceModel, EventArgs> OnOpenEvaluationEnded;
 
         public string UniqueId
         {
@@ -374,6 +422,12 @@ namespace DynamoCoreWpfTests
         {
             p.CurrentWorkspaceChanged += (ws) =>
             {
+                if (ws is HomeWorkspaceModel hwm)
+                {
+                    hwm.EvaluationStarted += (object sender, EventArgs args) => { OnOpenEvaluationStarted?.Invoke(hwm, args); };
+                    hwm.EvaluationCompleted += (object sender, EvaluationCompletedEventArgs args) => { OnOpenEvaluationEnded?.Invoke(hwm, args); };
+                }
+   
                 Counter++;
             };
 
