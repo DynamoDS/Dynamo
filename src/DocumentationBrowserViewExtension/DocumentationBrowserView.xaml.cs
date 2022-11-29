@@ -157,7 +157,11 @@ namespace Dynamo.DocumentationBrowser
                 if (MessageIsHandled) return;
                 this.viewModel.InsertGraph();
             }
-
+            else if (message.Contains("expandcollapse"))
+            {
+                var breadCrumbText = message.Split('-')[1];
+                this.viewModel.CollapseExpandPackage(breadCrumbText);
+            }
             MessageIsHandled = true;
             HandleInsert();
         }
@@ -176,5 +180,10 @@ namespace Dynamo.DocumentationBrowser
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        //private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        //{
+        //    this.viewModel.CollapseExpandPackage(string.Empty);
+        //}
     }
 }

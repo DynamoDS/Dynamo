@@ -67,7 +67,22 @@ namespace Dynamo.DocumentationBrowser
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"<h1>{e.Type}</h1>");
             sb.AppendLine($"<p><i>{e.MinimumQualifiedName}</i></p>");
-            if(!string.IsNullOrEmpty(breadCrumbs)) sb.AppendLine($"<p>{breadCrumbs}</p>");
+            if (!string.IsNullOrEmpty(breadCrumbs))
+            {
+                sb.AppendLine("<p>");
+                var breadCrumbsStringArray = breadCrumbs.Replace(" ", string.Empty).Split('/');
+                var last = breadCrumbsStringArray.Last();
+                foreach (var crumb in breadCrumbsStringArray)
+                {
+                    sb.AppendLine($"<a class=\"breadcrumb\">{crumb}</a>");
+                    if (!crumb.Equals(last))
+                    {
+                        sb.AppendLine(" / ");
+                    }
+                }
+                //sb.AppendLine($"<p>{breadCrumbs}</p>");
+                sb.AppendLine("</p>");
+            }
 
             return sb.ToString();
         }

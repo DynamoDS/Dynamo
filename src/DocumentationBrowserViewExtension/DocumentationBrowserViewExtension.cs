@@ -174,7 +174,11 @@ namespace Dynamo.DocumentationBrowser
             }
 
             this.DynamoViewModel = (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel);
+
+            // set the viewmodel UIElement property to be used for Nodes Library manipulation
+            this.ViewModel.DynamoView = viewLoadedParams.DynamoWindow;
         }
+
 
         public void Shutdown()
         {

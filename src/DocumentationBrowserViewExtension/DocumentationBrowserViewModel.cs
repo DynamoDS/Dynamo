@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
@@ -127,6 +128,8 @@ namespace Dynamo.DocumentationBrowser
         
         internal Action<ILogMessage> MessageLogged;
         private OpenDocumentationLinkEventArgs openDocumentationLinkEventArgs;
+
+        internal UIElement DynamoView { get; set; }
 
         #endregion
 
@@ -303,11 +306,11 @@ namespace Dynamo.DocumentationBrowser
 
                 // Convert the markdown file to html
                 var mkDown = MarkdownHandlerInstance.ParseToHtml(e.MinimumQualifiedName, e.PackageName);
-                string breadCrumbs = GetBreadCrumbsValue(e);
+                BreadCrumbs = GetBreadCrumbsValue(e);
 
                 writer.WriteLine(NodeDocumentationHtmlGenerator.OpenDocument());
                 // Get the Node info section
-                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e, breadCrumbs, mkDown);
+                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e, BreadCrumbs, mkDown);
                 writer.WriteLine(nodeDocumentation);
                 writer.WriteLine(NodeDocumentationHtmlGenerator.CloseDocument());
 
@@ -332,6 +335,8 @@ namespace Dynamo.DocumentationBrowser
                 writer?.Dispose();
             }
         }
+
+        public string BreadCrumbs { get; set; }
 
         private const string GEOMETRY_NAMESPACE = "Autodesk.DesignScript.Geometry";
         private const string GEOMETRY_TESSELLATION_NAMESPACE = "Geometry.Tessellation";
@@ -419,6 +424,30 @@ namespace Dynamo.DocumentationBrowser
         {
             return Path.GetFileNameWithoutExtension(path).Replace("%20", " ") + (".dyn");
         }
+
+
+        internal void CollapseExpandPackage(string section)
+        {
+            string sectionType;
+            var breadBrumbsArray = BreadCrumbs.Replace(" ", string.Empty).Split('/');
+
+            // We need to expand sequentially all root levels before reaching the desired section
+            for (var i = 0; i < breadBrumbsArray.Length; i++)
+            {
+                sectionType = i == 0 ? "LibraryItemText" : "LibraryItemGroupText";
+
+                object[] jsParameters = new object[] { breadBrumbsArray[i], sectionType, "true" };
+                //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
+                object[] parametersInvokeScript = new object[] { "collapseExpandPackage", jsParameters };
+
+                ResourceUtilities.ExecuteJSFunction(DynamoView, parametersInvokeScript);
+
+                // After we have reached the desired section, we can exit the method
+                if (section.Equals(breadBrumbsArray[i]))
+                    return;
+            }
+        }
+
 
         #endregion
 
