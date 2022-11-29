@@ -658,7 +658,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Optional Markdown files list
         /// </summary>
-        internal List<string> MarkdownFiles;
+        internal IEnumerable<string> MarkdownFiles;
 
         /// <summary>
         /// Dependencies property </summary>
@@ -753,6 +753,7 @@ namespace Dynamo.PackageManager
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
             Dependencies.CollectionChanged += DependenciesOnCollectionChanged;
             Assemblies = new List<PackageAssembly>();
+            MarkdownFiles = new List<string>();
             PropertyChanged += ThisPropertyChanged;
             RefreshPackageContents();
             RefreshDependencyNames();
@@ -834,6 +835,7 @@ namespace Dynamo.PackageManager
             this.IsNewVersion = false;
             this.MoreExpanded = false;
             this.ClearPackageContents();
+            this.ClearMarkdownDirectory();
             this.UploadState = PackageUploadHandle.State.Ready;
             this.AdditionalFiles = new ObservableCollection<string>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
