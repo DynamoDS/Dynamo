@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -15,6 +14,7 @@ using Dynamo.Properties;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
+using Greg;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
@@ -382,31 +382,32 @@ namespace Dynamo.ViewModels
             MLNodeAutoCompletionResponse results = null;
             var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
 
-            if (authProvider is IDSDKManager manager)
+            if (authProvider is IOAuth2AuthProvider auth2AuthProvider)
             {
-                var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
-                var client = new RestClient(uri);
-                var request = new RestRequest(Method.POST);
-
                 try
                 {
-                    manager.LoginRequest(ref request, client);
+                    RestRequest restRequest = new RestRequest();
+                    RestClient restClient = new RestClient();
+                    auth2AuthProvider.SignRequest(ref restRequest, restClient);
+
+                    var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
+                    var client = new RestClient(uri);
+                    var request = new RestRequest(Method.POST);
+
+                    request.AddHeader("Authorization", restRequest.Parameters.FirstOrDefault(n => n.Name.Equals("Authorization")).Value.ToString());
                     request = request.AddJsonBody(requestJSON) as RestRequest;
                     request.RequestFormat = DataFormat.Json;
                     RestResponse response = client.Execute(request) as RestResponse;
                     results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(response.Content);
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     dynamoViewModel.Model.Logger.Log(ex.Message);
                     throw new Exception("Authentication failed.");
                 }
+            }
 
-                return results;
-            }
-            else
-            {
-                throw new Exception("Failed to access IDSDK manager.");
-            }
+            return results;
         }
 
         /// <summary>
