@@ -117,8 +117,15 @@ namespace Dynamo.DocumentationBrowser
                 this.documentationBrowser.Dispose();
             }
             this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
-            if(this.documentationBrowser.CoreWebView2 != null)
-                this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
+            try
+            {
+                if (this.documentationBrowser.CoreWebView2 != null)
+                    this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
+            }
+            catch (Exception)
+            {
+                return;
+            }
         }
 
         async void InitializeAsync()
@@ -150,6 +157,7 @@ namespace Dynamo.DocumentationBrowser
         // TODO: This event fires twice causing issues down the line
         private void CoreWebView2OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
+            if (MessageIsHandled) return;
             var message = e.TryGetWebMessageAsString();
             if (string.Equals(message, "insert"))
             {
@@ -161,7 +169,6 @@ namespace Dynamo.DocumentationBrowser
                 var breadCrumbText = message.Split('-')[1];
                 this.viewModel.CollapseExpandPackage(breadCrumbText);
             }
-            if (MessageIsHandled) return;
             MessageIsHandled = true;
             HandleInsert();
         }
