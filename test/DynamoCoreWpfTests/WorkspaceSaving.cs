@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,6 +17,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -1405,6 +1406,23 @@ namespace Dynamo.Tests
             //Verify that the CustomNode name remains in the same value that was created previously
             Assert.True(initialNodeName == customNodeInstance.Name);
             Assert.False(Path.GetFileNameWithoutExtension(savePath) == customNodeInstance.Name);
+        }
+
+        [Test]
+        public void CustomNodeWorkspaceViewTestAfterSaving()
+        {
+            ViewModel.Model.OpenFileFromPath(Path.Combine(TestDirectory, @"core\combine", "Sequence_Json.dyf"));
+
+            var newFilePath = GetNewFileNameOnTempPath("dyf");
+            ViewModel.SaveAs(newFilePath, SaveContext.SaveAs);
+
+            var oldJSON = File.ReadAllText(newFilePath);
+            var oldJObject = JObject.Parse(oldJSON);
+
+            var newJSON = File.ReadAllText(newFilePath);
+            var newJObject = JObject.Parse(newJSON);
+
+            Assert.AreEqual(oldJObject["View"], newJObject["View"]);
         }
         #endregion
     }

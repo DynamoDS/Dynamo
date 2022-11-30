@@ -1835,16 +1835,7 @@ namespace Dynamo.ViewModels
             try
             {
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
-
-                // If the current workspace is a CustomNodeWorkspaceModel, then call the save method on it.
-                if (CurrentSpaceViewModel.Model is CustomNodeWorkspaceModel)
-                {
-                    CurrentSpaceViewModel.Model.Save(path, false, Model.EngineController);
-                }
-                else
-                {
-                    CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
-                }
+                CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
 
                 if (!isBackup) AddToRecentFiles(path);
             }
@@ -2163,7 +2154,8 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = fi.DirectoryName;
                     _fileDialog.FileName = fi.Name;
                 }
-                else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
+
+                if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
                 {
                     var pathManager = vm.model.PathManager;
                     _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
