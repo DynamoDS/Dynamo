@@ -1361,7 +1361,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CustomNodeWorkspaceViewsTestAfterSaving()
+        public void CustomNodeWorkspaceViewTestAfterSaving()
         {
             ViewModel.Model.OpenFileFromPath(Path.Combine(TestDirectory, @"core\combine", "Sequence_Json.dyf"));
 
