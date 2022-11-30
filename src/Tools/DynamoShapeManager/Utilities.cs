@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 
 namespace DynamoShapeManager
@@ -597,6 +596,9 @@ namespace DynamoShapeManager
         /// <param name="filePaths">Files found on an ASM installation location.</param>
         /// <param name="majorVersion">Major version of ASM found in the specified location.</param>
         /// <returns>Whether the files represent a complete ASM installation or not.</returns>
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         internal static bool IsASMInstallationComplete(IEnumerable<string> filePaths, int majorVersion)
         {
             var fileNames = filePaths.Select(path => Path.GetFileName(path).ToUpper());
@@ -620,12 +622,30 @@ namespace DynamoShapeManager
         /// <returns></returns>
         /// <param name="searchPattern">optional - to be used for testing - default is the ASM search pattern</param>
         /// <returns></returns>
-        public static Version GetVersionFromPath(string asmPath, string searchPattern = "ASMAHL*.dll")
+        public static Version GetVersionFromPath(string asmPath, string searchPattern = "*ASMAHL*.*")
         {
             var ASMFilePath = Directory.GetFiles(asmPath, searchPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
             if (ASMFilePath != null && File.Exists(ASMFilePath))
             {
+#if NET6_0_OR_GREATER
+                if (!OperatingSystem.IsWindows())
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(ASMFilePath);
+   
+                    var version = new string(fileName
+                        .SkipWhile(c => !char.IsDigit(c))
+                        .TakeWhile(c => char.IsDigit(c))
+                        .Take(3).ToArray());
+
+                    if (string.IsNullOrEmpty(version))
+                    {
+                        throw new Exception($"Cannot extract ASM version. Bad version format found for file {fileName}");
+                    }
+                    return new Version($"{version}.0.0");
+                }
+#endif
                 var asmVersion = FileVersionInfo.GetVersionInfo(ASMFilePath);
+                System.Console.WriteLine("asmVersion " + $"{asmVersion.FileMajorPart}{asmVersion.FileMinorPart}{asmVersion.FileBuildPart}");
                 var libGversion = new Version(asmVersion.FileMajorPart, asmVersion.FileMinorPart, asmVersion.FileBuildPart);
                 return libGversion;
             }
