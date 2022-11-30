@@ -423,7 +423,9 @@ namespace Dynamo.DocumentationBrowser
 
         private string DynamoGraphFromMDFilePath(string path)
         {
-            return Path.GetFileNameWithoutExtension(path).Replace("%20", " ") + (".dyn");
+            var dynPath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path).Replace("%20", " ")) + ".dyn";
+            return dynPath;
+            return path.Replace("%20", " ").Replace(".md", ".dyn");
         }
 
 
