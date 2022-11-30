@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -210,20 +210,8 @@ namespace Dynamo.Graph.Nodes
         {
         }
 
-        public NodeObsoleteAttribute(string descriptionResourceID, Type resourceType)
+        public NodeObsoleteAttribute(string descriptionResourceID, Type resourceType):base(descriptionResourceID, resourceType)
         {
-            if (resourceType == null)
-                throw new ArgumentNullException("resourceType");
-
-            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
-            if (prop != null && prop.PropertyType == typeof(String))
-            {
-                Message = (string)prop.GetValue(null, null);
-            }
-            else
-            {
-                Message = descriptionResourceID;
-            }
         }
     }
 
