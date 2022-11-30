@@ -476,7 +476,7 @@ namespace Dynamo.ViewModels
                 DisplayMachineLearningResults();
                 //Tracking Analytics when raising Node Autocomplete with the Recommended Nodes option selected (Machine Learning)
                 Analytics.TrackEvent(
-                    Actions.SelectMachineLearning,
+                    Actions.Select,
                     Categories.NodeAutoCompleteOperations,
                     "DisplayingMLRecommendations");
             }
@@ -484,7 +484,7 @@ namespace Dynamo.ViewModels
             {
                 //Tracking Analytics when raising Node Autocomplete with the Object Types option selected.
                 Analytics.TrackEvent(
-                    Actions.SelectObjectType,
+                    Actions.Select,
                     Categories.NodeAutoCompleteOperations,
                     "DisplayingObjectTypeRecomendations");
                 // Only call GetMatchingSearchElements() for object type match comparison

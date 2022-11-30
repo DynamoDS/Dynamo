@@ -426,34 +426,14 @@ namespace Dynamo.Logging
         SignOut,
 
         /// <summary>
-        /// ImportSettings event, e.g. tracks the ImportSettings event
+        /// Import event, e.g. tracks the ImportSettings event
         /// </summary>
-        ImportSettings,
+        Import,
 
         /// <summary>
-        /// ExportSettings event, e.g. tracks the ExportSettings event
+        /// Export event, e.g. tracks the ExportSettings event
         /// </summary>
-        ExportSettings,
-
-        /// <summary>
-        /// Ajusting the confidence level threshold in the Preferences panel
-        /// </summary>
-        AdjustConfidenceLevel,
-
-        /// <summary>
-        /// Click in the Low Confidence Level option will open the list of possible nodes
-        /// </summary>
-        ExpandConfidenceLevel,
-
-        /// <summary>
-        /// The user selected Object Type then it will affect the node autocomplete results
-        /// </summary>
-        SelectObjectType,
-
-        /// <summary>
-        /// The user selected Machine Learning then it will affect the node autocomplete results
-        /// </summary>
-        SelectMachineLearning
+        Export
     }
 
     /// <summary>

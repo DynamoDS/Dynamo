@@ -155,7 +155,7 @@ namespace Dynamo.UI.Views
             {
                 SetImportStatus(ImportStatus.error);
             }
-            Analytics.TrackEvent(Actions.ImportSettings, Categories.SplashScreenOperations, isImported.ToString());
+            Analytics.TrackEvent(Actions.Import, Categories.SplashScreenOperations, isImported.ToString());
         }
 
         /// <summary>

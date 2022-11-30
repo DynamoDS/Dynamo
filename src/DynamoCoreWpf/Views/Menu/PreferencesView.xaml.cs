@@ -467,7 +467,7 @@ namespace Dynamo.Wpf.Views
                         Wpf.Utilities.MessageBoxService.Show(
                             this, Res.ImportSettingsFailedMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
-                    Analytics.TrackEvent(Actions.ImportSettings, Categories.Preferences, isImported.ToString());
+                    Analytics.TrackEvent(Actions.Import, Categories.Preferences, isImported.ToString());
                 }
                 catch (Exception ex)
                 {
@@ -504,7 +504,7 @@ namespace Dynamo.Wpf.Views
                     File.Copy(dynViewModel.Model.PathManager.PreferenceFilePath, selectedPathFile);
                     string argument = "/select, \"" + selectedPathFile + "\"";
                     System.Diagnostics.Process.Start("explorer.exe", argument);
-                    Analytics.TrackEvent(Actions.ExportSettings, Categories.Preferences);
+                    Analytics.TrackEvent(Actions.Export, Categories.Preferences);
                 }
                 catch (Exception ex)
                 {
@@ -578,8 +578,8 @@ namespace Dynamo.Wpf.Views
             displayConfidenceLevel();
             //Tracking Analytics when changing the ML Confidence Level in the Preferences panel
             Analytics.TrackEvent(
-                    Actions.AdjustConfidenceLevel,
-                    Categories.NodeAutoCompleteOperations,
+                    Actions.Set,
+                    Categories.Preferences,
                     "ConfidendeLevel");
         }
 
