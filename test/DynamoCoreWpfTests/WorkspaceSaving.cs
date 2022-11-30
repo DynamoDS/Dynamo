@@ -1,23 +1,23 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Search.SearchElements;
-using Dynamo.Wpf.ViewModels;
-
-using NUnit.Framework;
-using Dynamo.ViewModels;
-using Dynamo.Utilities;
-using CoreNodeModels.Input;
-using Dynamo.Graph.Connectors;
-using Dynamo.Graph.Nodes;
-using Dynamo.Wpf;
 using Dynamo.PackageManager;
+using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf;
+using Dynamo.Wpf.ViewModels;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
@@ -1358,6 +1358,23 @@ namespace Dynamo.Tests
             Assert.AreEqual(oldNumPorts+1, nodeInstance.OutPorts.Count());
             Assert.IsTrue(nodeInstance.OutPorts.LastOrDefault().Name.StartsWith("anewoutput"));
 
+        }
+
+        [Test]
+        public void CustomNodeWorkspaceViewsTestAfterSaving()
+        {
+            ViewModel.Model.OpenFileFromPath(Path.Combine(TestDirectory, @"core\combine", "Sequence_Json.dyf"));
+
+            var newFilePath = GetNewFileNameOnTempPath("dyf");
+            ViewModel.SaveAs(newFilePath, SaveContext.SaveAs);
+
+            var oldJSON = File.ReadAllText(newFilePath);
+            var oldJObject = JObject.Parse(oldJSON);
+
+            var newJSON = File.ReadAllText(newFilePath);
+            var newJObject = JObject.Parse(newJSON);
+
+            Assert.AreEqual(oldJObject["View"], newJObject["View"]);
         }
         #endregion
     }
