@@ -319,7 +319,10 @@ namespace Autodesk.DesignScript.Runtime
         /// Attribute constructor which enables localized message lookup.
         /// </summary>
         /// <param name="descriptionResourceID">resx id for this resource</param>
-        /// <param name="typeName">name of type that contains resource strings.</param>
+        /// <param name="typeName">name of type that contains resource strings.
+        /// !!!Please note that in some .net contexts you must use the fully assembly qualified type name
+        /// including version,culture info etc. In others only the type, assembly name are required.
+        ///  <see cref="Type.AssemblyQualifiedName"/> </param>
         /// <exception cref="ArgumentNullException"></exception>
         public IsObsoleteAttribute(string descriptionResourceID, string typeName)
         {
