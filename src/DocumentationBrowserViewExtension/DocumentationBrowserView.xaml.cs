@@ -152,6 +152,10 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.documentationBrowser.NavigateToString(htmlContent);
             }));
+
+            this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
+            this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
+            this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
         }
 
         // TODO: This event fires twice causing issues down the line

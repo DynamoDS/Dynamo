@@ -2,7 +2,7 @@
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "EvaluateFormula",
+  "Name": "DSCore.Math.EvaluateFormula",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -35,7 +35,7 @@
         },
         {
           "Id": "55cdb022b16045c68ee0ec2ce3d21f84",
-          "Name": "args",
+          "Name": "arguments",
           "Description": "Variable bindings\n\nvar[]",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -47,7 +47,7 @@
         {
           "Id": "292ea70116cb4d02841c3f0046a67375",
           "Name": "result",
-          "Description": "Result of the formula calculation.",
+          "Description": "type: var[]..[] (result of the formula calculation)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Evaluates an NCalc formula with given parameter mappings.\n\nMath.EvaluateFormula (formulaString: string, parameters: string[], args: var[]): var[]..[]"
+      "Description": "Evaluates an NCalc formula with given parameter mappings.\n\nMath.EvaluateFormula (formulaString: string, parameters: string[], arguments: var[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -75,7 +75,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string."
+      "Description": "Creates a string"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -122,32 +122,53 @@
     {
       "Start": "fe84f98db87948bda8ae359f0359f863",
       "End": "3b4e402f9a2d4278942c0e10d62e03f6",
-      "Id": "333d26b91c314c8eb72bd6e93123828d"
+      "Id": "333d26b91c314c8eb72bd6e93123828d",
+      "IsHidden": "False"
     },
     {
       "Start": "8dc2a50864e2455589612b8b41c6287e",
       "End": "44b3bab3ec4d4f1babd326e52d309f38",
-      "Id": "737b7c8d2c2e4efbaa78f868688df534"
+      "Id": "737b7c8d2c2e4efbaa78f868688df534",
+      "IsHidden": "False"
     },
     {
       "Start": "7611f466d2be46589878b9c1aae094d0",
       "End": "55cdb022b16045c68ee0ec2ce3d21f84",
-      "Id": "0daeff9ce6b04e1aa6147a7076a0a743"
+      "Id": "0daeff9ce6b04e1aa6147a7076a0a743",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.1.0.5357",
-      "RunType": "Automatic",
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "_Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -158,46 +179,47 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
         "Name": "Math.EvaluateFormula",
+        "ShowGeometry": true,
         "Id": "9e5307dd06ed45f99c4ce4d0617d810b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 684.0,
-        "Y": 380.0
+        "X": 665.59999999999991,
+        "Y": 404.08625
       },
       {
-        "ShowGeometry": true,
         "Name": "String",
+        "ShowGeometry": true,
         "Id": "0181c32a1aae4892ae67cd0e7b9f7576",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 425.0,
-        "Y": 358.0
+        "X": 410.4,
+        "Y": 291.08625
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "570a5321c244481ca9d428b45ea21b3d",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 392.0,
-        "Y": 434.0
+        "X": 410.4,
+        "Y": 437.91375
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "fbf84b82be8c401db9dab68ebe361c04",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 417.0,
-        "Y": 518.0
+        "X": 410.4,
+        "Y": 584.91374999999994
       }
     ],
     "Annotations": [],

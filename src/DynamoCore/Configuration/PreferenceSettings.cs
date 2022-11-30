@@ -498,6 +498,21 @@ namespace Dynamo.Configuration
         public bool EnableNodeAutoComplete { get; set; }
 
         /// <summary>
+        /// This defines if user wants to hide the nodes below a specific confidenc level.
+        /// </summary>
+        public bool HideNodesBelowSpecificConfidenceLevel { get; set; }
+
+        /// <summary>
+        /// This defines the level of confidence related to the ML recommendation.
+        /// </summary>
+        public int MLRecommendationConfidenceLevel { get; set; }
+
+        /// <summary>
+        /// This defines the number of results of the  ML recommendation
+        /// </summary>
+        public int MLRecommendationNumberOfResults { get; set; }
+
+        /// <summary>
         /// This defines if user wants to see the enabled Dynamo Notification Center.
         /// </summary>
         public bool EnableNotificationCenter
@@ -736,6 +751,9 @@ namespace Dynamo.Configuration
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
+            HideNodesBelowSpecificConfidenceLevel = false;
+            MLRecommendationConfidenceLevel = 10;
+            MLRecommendationNumberOfResults = 10;
             EnableNotificationCenter = true;
             isStaticSplashScreenEnabled = true;
             DefaultPythonEngine = string.Empty;

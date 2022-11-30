@@ -11,7 +11,6 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Core;
@@ -3006,6 +3005,7 @@ namespace Dynamo.Models
                 WidthAdjustment = model.WidthAdjustment,
                 Background = model.Background,
                 FontSize = model.FontSize,
+                GroupStyleId = model.GroupStyleId,
             };
 
             modelLookup.Add(model.GUID, annotationModel);

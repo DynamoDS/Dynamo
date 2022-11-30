@@ -2,7 +2,7 @@
   "Uuid": "e3059fb4-41be-4a9c-9329-5a813488751d",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "Count",
+  "Name": "DesignScript.Builtin.Dictionary.Count",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -18,7 +18,7 @@
         {
           "Id": "e9e147f158fa4aa3b0cb6cf86b9fc3af",
           "Name": "keys",
-          "Description": "The string keys of the Dictionary\n\nstring[]",
+          "Description": "Keys of dictionary\n\nstring[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -27,7 +27,7 @@
         {
           "Id": "d24b13de140d4ba29d4eb6aee57105c4",
           "Name": "values",
-          "Description": "The values of the Dictionary\n\nvar[]..[]",
+          "Description": "Values of dictionary\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -38,7 +38,7 @@
         {
           "Id": "934ad766df1c4805b137b9d85e535c7d",
           "Name": "dictionary",
-          "Description": "The result Dictionary",
+          "Description": "Dictionary from keys and values",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -112,32 +112,53 @@
     {
       "Start": "934ad766df1c4805b137b9d85e535c7d",
       "End": "3d88babe4c0049e0a9885baf29be541f",
-      "Id": "f2e8b2eefbad46598271c344290558af"
+      "Id": "f2e8b2eefbad46598271c344290558af",
+      "IsHidden": "False"
     },
     {
       "Start": "08a7005048ea4bff96562623e7a7c54d",
       "End": "e9e147f158fa4aa3b0cb6cf86b9fc3af",
-      "Id": "469d5c2654784489ab9b63a93459feb0"
+      "Id": "469d5c2654784489ab9b63a93459feb0",
+      "IsHidden": "False"
     },
     {
       "Start": "c3d5a60c8a054af18e4e71a0de10b4f7",
       "End": "d24b13de140d4ba29d4eb6aee57105c4",
-      "Id": "5c7e42505c2042bdb398c61bd8773249"
+      "Id": "5c7e42505c2042bdb398c61bd8773249",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.1.5055",
-      "RunType": "Automatic",
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "_Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -148,41 +169,42 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
         "Name": "Dictionary.ByKeysValues",
+        "ShowGeometry": true,
         "Id": "93b6e9e5a82a4e309ab4fa403cf19fd4",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 616.5,
+        "X": 605.25,
         "Y": 377.0
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "e7418f4696fd4e7db18d7b9dc77c2070",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 412.0,
-        "Y": 377.0
+        "X": 311.65000000000003,
+        "Y": 385.655
       },
       {
-        "ShowGeometry": true,
         "Name": "Dictionary.Count",
+        "ShowGeometry": true,
         "Id": "a5179b806dec40848f5ade1b1ac29782",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 862.5,
+        "X": 962.85000000000014,
         "Y": 377.0
       }
     ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
+    "X": 6.4000000000000909,
+    "Y": 27.200000000000045,
     "Zoom": 1.0
   }
 }

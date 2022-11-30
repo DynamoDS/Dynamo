@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -170,6 +170,31 @@ namespace Dynamo.PackageManager.Tests
 
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(dyfDir, "file1.dyf"))));
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(dyfDir, "file2.dyf"))));
+        }
+
+        [Test]
+        public void BuildPackageDirectory_CopiesMarkDownFiles()
+        {
+            var files = new[] { @"C:\file1.md", @"C:\file2.md" };
+            var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
+
+            var fs = new RecordedFileSystem((fn) => files.Contains(fn));
+
+            var pr = new Mock<IPathRemapper>();
+            var db = new PackageDirectoryBuilder(fs, pr.Object);
+
+            var pkgsDir = @"C:\dynamopackages";
+
+            db.BuildDirectory(pkg, pkgsDir, files);
+
+            var mdDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.DocumentationDirectoryName);
+
+            Assert.AreEqual(2, fs.CopiedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedDirectories.Count());
+
+            Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(mdDir, "file1.md"))));
+            Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(mdDir, "file2.md"))));
         }
 
         [Test]

@@ -1272,7 +1272,32 @@ namespace Dynamo.Controls
                 return 350;
             }
 
-            return 250;
+            return 280;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class NodeAutocompleteImageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (string.IsNullOrEmpty(value as string))
+            {
+                return string.Empty;
+            }
+
+            if (value is string && value.ToString().Equals(Properties.Resources.LoginNeededTitle))
+            {
+                return "/DynamoCoreWpf;component/UI/Images/not-authenticated.png";
+            }
+
+            return "/DynamoCoreWpf;component/UI/Images/no-recommendations.png";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,

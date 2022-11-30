@@ -2,7 +2,7 @@
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "CartesianProduct",
+  "Name": "CoreNodeModels.HigherOrder.CartesianProduct",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -75,7 +75,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Applies a combinator to each pair in the cartesian product of two sequences"
+      "Description": "Applies a combinator to each pair in the Cartesian product of two sequences"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -86,7 +86,7 @@
         {
           "Id": "bfdb1c4aa9a44f6499e0b34a3836c023",
           "Name": "x",
-          "Description": "x value.\n\nvar[]..[]",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -95,7 +95,7 @@
         {
           "Id": "155a081618eb4cf385b2d1261479f002",
           "Name": "y",
-          "Description": "y value.\n\nvar[]..[]",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -105,8 +105,8 @@
       "Outputs": [
         {
           "Id": "1e60e06a8764408184738daea230c269",
-          "Name": "var[]..[]",
-          "Description": "var[]..[]",
+          "Name": "var",
+          "Description": "The sum of two input numbers, or the concatenation of two strings",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -114,39 +114,60 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Adds x to y.\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
     }
   ],
   "Connectors": [
     {
       "Start": "fa38f48e3221409eb0762d6c8ac36d7c",
       "End": "9377a417b431464a90555bd9204b2cca",
-      "Id": "8a6f73a83175434aae4c9c2753714c05"
+      "Id": "8a6f73a83175434aae4c9c2753714c05",
+      "IsHidden": "False"
     },
     {
       "Start": "fa38f48e3221409eb0762d6c8ac36d7c",
       "End": "ee8506cc37f148e9be5e0fe9f09b36d3",
-      "Id": "94a279e23bad4a62890e585873f418f9"
+      "Id": "94a279e23bad4a62890e585873f418f9",
+      "IsHidden": "False"
     },
     {
       "Start": "1e60e06a8764408184738daea230c269",
       "End": "232a56ba04d44b409eb4fcb4a581f1b2",
-      "Id": "e504f389c0ee4a0db05437e93abac13e"
+      "Id": "e504f389c0ee4a0db05437e93abac13e",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.2.6826",
+      "Version": "2.17.0.3255",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "_Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -157,10 +178,11 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "932235efc635433497bdb360a8831611",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -169,8 +191,8 @@
         "Y": 264.0
       },
       {
-        "ShowGeometry": true,
         "Name": "List.CartesianProduct",
+        "ShowGeometry": true,
         "Id": "8fc027716e8541debcc14dbfba123b01",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -179,8 +201,8 @@
         "Y": 103.42113755835899
       },
       {
-        "ShowGeometry": true,
         "Name": "+",
+        "ShowGeometry": true,
         "Id": "abcf67be169a47ff857e22c61831ff02",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -190,8 +212,8 @@
       }
     ],
     "Annotations": [],
-    "X": -69.664047953591648,
-    "Y": 2.4185881744339213,
+    "X": -223.26404795359156,
+    "Y": 304.018588174434,
     "Zoom": 1.130842140625
   }
 }

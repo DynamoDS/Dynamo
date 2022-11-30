@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Engine;
@@ -2000,16 +2001,7 @@ namespace Dynamo.ViewModels
             try
             {
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
-
-                // If the current workspace is a CustomNodeWorkspaceModel, then call the save method on it.
-                if (CurrentSpaceViewModel.Model is CustomNodeWorkspaceModel)
-                {
-                    CurrentSpaceViewModel.Model.Save(path, false, Model.EngineController);
-                }
-                else
-                {
-                    CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
-                }
+                CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
 
                 if (!isBackup) AddToRecentFiles(path);
             }
@@ -2338,7 +2330,8 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = fi.DirectoryName;
                     _fileDialog.FileName = fi.Name;
                 }
-                else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
+
+                if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
                 {
                     var pathManager = vm.model.PathManager;
                     _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
@@ -3053,6 +3046,35 @@ namespace Dynamo.ViewModels
         {
             CurrentSpaceViewModel.CancelActiveState();
             BackgroundPreviewViewModel.RefreshState();
+        }
+
+        /// <summary>
+        /// Checking if a custom Group style has been updated, if so it will update the styling of the existing groups
+        /// </summary>
+        /// <param name="originalCustomGroupStyles"></param>
+        public void CheckCustomGroupStylesChanges(List<GroupStyleItem> originalCustomGroupStyles)
+        {
+            foreach (var originalCustomGroupStyle in originalCustomGroupStyles)
+            {
+                var currentCustomGroupStyle = PreferenceSettings.GroupStyleItemsList.Where(
+                    groupStyle => !groupStyle.GroupStyleId.Equals(Guid.Empty) && groupStyle.GroupStyleId.Equals(originalCustomGroupStyle.GroupStyleId)).FirstOrDefault();
+
+                if (currentCustomGroupStyle != null)
+                {
+                    if (!originalCustomGroupStyle.HexColorString.Equals(currentCustomGroupStyle.HexColorString)
+                        || !originalCustomGroupStyle.FontSize.Equals(currentCustomGroupStyle.FontSize))
+                    {
+                        foreach (var annotation in CurrentSpaceViewModel.Annotations)
+                        {
+                            if (annotation.GroupStyleId.Equals(currentCustomGroupStyle.GroupStyleId))
+                            {
+                                annotation.FontSize = currentCustomGroupStyle.FontSize;
+                                annotation.Background = (Color)ColorConverter.ConvertFromString("#" + currentCustomGroupStyle.HexColorString);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         internal bool CanEscape(object parameter)

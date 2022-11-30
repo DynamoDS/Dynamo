@@ -28,6 +28,7 @@ namespace Dynamo.Wpf.Views
         private readonly PreferencesViewModel viewModel;
         private readonly DynamoViewModel dynViewModel;
         private int scaleValue = 0;
+        private List<GroupStyleItem> originalCustomGroupStyles { get; set; }
 
         // Used for tracking the manage package command event
         // This is not a command any more but we keep it
@@ -35,13 +36,27 @@ namespace Dynamo.Wpf.Views
         private IDisposable managePackageCommandEvent;
 
         /// <summary>
+        /// Storing the original custom styles before the user could update them
+        /// </summary>
+        private void StoreOriginalCustomGroupStyles()
+        {
+            originalCustomGroupStyles = new List<GroupStyleItem>();
+            foreach (var groupStyle in dynViewModel.PreferenceSettings.GroupStyleItemsList)
+            {
+                if (!groupStyle.IsDefault)
+                {
+                    originalCustomGroupStyles.Add(new GroupStyleItem() { GroupStyleId = groupStyle.GroupStyleId, HexColorString = groupStyle.HexColorString, FontSize = groupStyle.FontSize });
+                }                
+            }
+        }
+
+        /// <summary>
         /// Constructor of Preferences View
         /// </summary>
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
         public PreferencesView(DynamoView dynamoView)
-        {
-            dynViewModel = dynamoView.DataContext as DynamoViewModel;
-            
+        {            
+            dynViewModel = dynamoView.DataContext as DynamoViewModel;            
             SetupPreferencesViewModel(dynViewModel);
 
             DataContext = dynViewModel.PreferencesViewModel;
@@ -63,6 +78,8 @@ namespace Dynamo.Wpf.Views
             //We need to store the ScaleFactor value in a temporary variable always when the Preferences dialog is created.
             scaleValue = dynViewModel.ScaleFactorLog;
             ResetGroupStyleForm();
+            StoreOriginalCustomGroupStyles();
+            displayConfidenceLevel();
 
             viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
         }
@@ -139,6 +156,7 @@ namespace Dynamo.Wpf.Views
             RunGraphWhenScaleFactorUpdated();
 
             dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
+            dynViewModel.CheckCustomGroupStylesChanges(originalCustomGroupStyles);
 
             Close();
         }
@@ -213,12 +231,11 @@ namespace Dynamo.Wpf.Views
             var grid = (saveChangesButton.Parent as Grid).Parent as Grid;
 
             var groupNameLabel = grid.FindName("groupNameBox") as TextBox;
-
             var colorHexString = grid.FindName("colorHexVal") as Label;
-
             var groupStyleFontSize = grid.FindName("groupStyleFontSize") as ComboBox;
+            var groupStyleId = Guid.NewGuid();
 
-            var newItem = new StyleItem() { Name = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString(), FontSize = Convert.ToInt32(groupStyleFontSize.SelectedValue) };
+            var newItem = new StyleItem() { Name = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString(), FontSize = Convert.ToInt32(groupStyleFontSize.SelectedValue), GroupStyleId = groupStyleId };
 
             if (string.IsNullOrEmpty(newItem.Name))
                 newItem.Name = "Input";
@@ -532,6 +549,44 @@ namespace Dynamo.Wpf.Views
         internal void Dispose()
         {
             viewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
+        }
+
+        int getExtraLeftSpace(int confidenceLevel)
+        {
+            int value = 16;
+
+            for (int i = 1; i <= 9; i++)
+            {
+                if (confidenceLevel <= 9)
+                {
+                    break;
+                }               
+                else
+                {
+                    value--;
+                    if ((confidenceLevel == 10) || confidenceLevel >= (i * 10) + 1 && confidenceLevel <= (i + 1) * 10)
+                    {                        
+                        break;
+                    }
+                }
+            }
+            return value;
+        }       
+
+        private void sliderConfidenceLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            displayConfidenceLevel();
+        }
+
+        private void displayConfidenceLevel()
+        {
+            if (this.lblConfidenceLevel != null && this.lblConfidenceLevelLabelStart != null)
+            {
+                int confidenceLevel = (int)lblConfidenceLevel.Content;
+
+                int left = ((int)lblConfidenceLevel.Content * 3) + getExtraLeftSpace(confidenceLevel);
+                this.lblConfidenceLevel.Margin = new Thickness(left, -15, 0, 0);
+            }
         }
     }
 }

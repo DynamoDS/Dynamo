@@ -108,12 +108,16 @@ namespace Dynamo.UI.Controls
         {
             if (!(sender is FrameworkElement fromSender)) return;
 
+            HighlightedItem.IsSelected = false;
             toolTipPopup.DataContext = fromSender.DataContext;
             toolTipPopup.IsOpen = true;
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
+            if (!(sender is FrameworkElement)) return;
+
+            HighlightedItem.IsSelected = true;
             toolTipPopup.DataContext = null;
             toolTipPopup.IsOpen = false;
         }
@@ -294,6 +298,11 @@ namespace Dynamo.UI.Controls
             cm.IsOpen = true;
         }
 
+        private void ShowLowConfidenceResults(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ShowLowConfidenceResults();
+        }
+
         private void OnSuggestion_Click(object sender, RoutedEventArgs e)
         {
             MenuItem selectedSuggestion = sender as MenuItem;
@@ -305,7 +314,7 @@ namespace Dynamo.UI.Controls
             {
                 ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.ObjectType;
             }
-            ViewModel.ResetAutoCompleteSearchViewState();
+            ViewModel.PopulateAutoCompleteCandidates();
         }
     }
 }

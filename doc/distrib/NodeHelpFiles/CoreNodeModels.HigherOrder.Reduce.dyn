@@ -2,7 +2,7 @@
   "Uuid": "a7144dee-0c0a-413f-9e6f-983d44b38ffd",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "Reduce",
+  "Name": "CoreNodeModels.HigherOrder.Reduce",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -55,7 +55,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Reduces a list into a new value by combining each element with an accumulated result."
+      "Description": "Reduces a list into a new value by combining each element with an accumulated result"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -95,7 +95,7 @@
         {
           "Id": "f5b547d3006c44c9b52691175dc0f16a",
           "Name": "x",
-          "Description": "x value.\n\nvar[]..[]",
+          "Description": "Integer or double value\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -104,7 +104,7 @@
         {
           "Id": "3c2596d749694ecdaeaafcf6ea2940e1",
           "Name": "y",
-          "Description": "y value.\n\nvar[]..[]",
+          "Description": "Integer or double value\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -114,8 +114,8 @@
       "Outputs": [
         {
           "Id": "e89d64f5000a4037b79f56098edf838d",
-          "Name": "var[]..[]",
-          "Description": "var[]..[]",
+          "Name": "number",
+          "Description": "Result of the y input subtracted from the x input",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -123,39 +123,95 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "x subtract y.\n\n- (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Returns subtraction of x minus y\n\n- (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "d18d3d367c4947cd944d273710319bc2",
+      "Inputs": [
+        {
+          "Id": "a6b18694dc114b8f8a52d1d04589df18",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d861cdfe3e9b4caeadb123a768eb37c9",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
     }
   ],
   "Connectors": [
     {
+      "Start": "fbf04f211cac4006a86f0487076d0a4e",
+      "End": "a6b18694dc114b8f8a52d1d04589df18",
+      "Id": "a8adaeb71954436fa5f58a0301735753",
+      "IsHidden": "False"
+    },
+    {
       "Start": "3ecec8e5199f4d8f88e277897cfaaedd",
       "End": "ed3e3d48603840fa973568d242487e9c",
-      "Id": "8d7a9794c88a4a25be273d210bb3b874"
+      "Id": "8d7a9794c88a4a25be273d210bb3b874",
+      "IsHidden": "False"
     },
     {
       "Start": "5c3a8a14a9314b138968df5090f147ec",
       "End": "663c8a5213204a8cb17ce931923c3f46",
-      "Id": "fa2aa87efa1641aebd0497288fd53d3f"
+      "Id": "fa2aa87efa1641aebd0497288fd53d3f",
+      "IsHidden": "False"
     },
     {
       "Start": "e89d64f5000a4037b79f56098edf838d",
       "End": "4f8723fe61c744a291d4ea8dc6dd95a8",
-      "Id": "14b646d082d44aaf9f2092151ad8ef01"
+      "Id": "14b646d082d44aaf9f2092151ad8ef01",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.2.6826",
-      "RunType": "Automatic",
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "_Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -166,41 +222,52 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
         "Name": "List.Reduce",
+        "ShowGeometry": true,
         "Id": "ac175d6bf132461584690acaa6ffb00a",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 380.0,
-        "Y": 398.0
+        "X": 412.10000000000008,
+        "Y": 674.0725
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "d284bd6d273a4a2d9ed9e738e544f321",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 218.0,
-        "Y": 460.0
+        "X": 128.10000000000008,
+        "Y": 784.7275
       },
       {
-        "ShowGeometry": true,
         "Name": "-",
+        "ShowGeometry": true,
         "Id": "cbf624563f8f4fd1a83d921459a5ab1b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 125.0,
-        "Y": 338.0
+        "X": 128.10000000000008,
+        "Y": 606.0725
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "d18d3d367c4947cd944d273710319bc2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 715.30000000000018,
+        "Y": 674.07249999999988
       }
     ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
+    "X": 207.20000000000005,
+    "Y": -28.800000000000068,
     "Zoom": 1.0
   }
 }

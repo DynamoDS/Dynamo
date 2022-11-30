@@ -2234,7 +2234,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Static Splash Screen.
+        ///   Looks up a localized string similar to Pause Splash Screen.
         /// </summary>
         public static string DynamoViewSettingShowStaticSplashScreen {
             get {
@@ -3372,6 +3372,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide nodes below a specified confidence level.
+        /// </summary>
+        public static string HideNodesBelowSpecificConfidenceLevel {
+            get {
+                return ResourceManager.GetString("HideNodesBelowSpecificConfidenceLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes..
+        /// </summary>
+        public static string HideNodesBelowSpecificConfidenceLevelInfo {
+            get {
+                return ResourceManager.GetString("HideNodesBelowSpecificConfidenceLevelInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide Wires.
         /// </summary>
         public static string HideWiresPopupMenuItem {
@@ -3390,7 +3408,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your custom settings can be imported here. Settings not exposed via Preferences panel will be applied once Dynamo and any host program restarts..
+        ///   Looks up a localized string similar to You can import custom settings here, which will overwrite your current settings. If you&apos;d like to preserve a copy of your current settings, export them before importing new settings. Settings not shown in the Preferences panel will be applied once Dynamo and any host program restarts..
         /// </summary>
         public static string ImportPreferencesInfo {
             get {
@@ -3881,15 +3899,6 @@ namespace Dynamo.Wpf.Properties {
         public static string LogoutMenuItemText {
             get {
                 return ResourceManager.GetString("LogoutMenuItemText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ML Recommendation.
-        /// </summary>
-        public static string MachineLearning {
-            get {
-                return ResourceManager.GetString("MachineLearning", resourceCulture);
             }
         }
         
@@ -4496,6 +4505,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Number of results.
+        /// </summary>
+        public static string MLRecommendationNumberOfResults {
+            get {
+                return ResourceManager.GetString("MLRecommendationNumberOfResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to More.
         /// </summary>
         public static string MoreButton {
@@ -4838,7 +4856,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Object type.
+        ///   Looks up a localized string similar to Node Type Match.
         /// </summary>
         public static string ObjectType {
             get {
@@ -6401,7 +6419,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Default method.
+        ///   Looks up a localized string similar to Default Ranking Method.
         /// </summary>
         public static string PreferencesNodeAutocompleteMethod {
             get {
@@ -6531,7 +6549,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Node Autocomplete.
+        ///   Looks up a localized string similar to Enable Node Autocomplete.
         /// </summary>
         public static string PreferencesViewEnableNodeAutoComplete {
             get {
@@ -6626,6 +6644,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewMarkdownDirectoryTooltip {
             get {
                 return ResourceManager.GetString("PreferencesViewMarkdownDirectoryTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Autocomplete.
+        /// </summary>
+        public static string PreferencesViewNodeAutocomplete {
+            get {
+                return ResourceManager.GetString("PreferencesViewNodeAutocomplete", resourceCulture);
             }
         }
         
@@ -6729,7 +6756,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This setting controls whether user will be directed to an extra static splash screen after the intial launch..
+        ///   Looks up a localized string similar to Pauses the splash screen when loading is complete, enabling you to launch Dynamo manually, sign in to your Autodesk account, or import settings..
         /// </summary>
         public static string PreferencesViewShowStaticSplashScreenTooltip {
             get {
@@ -6855,11 +6882,56 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to When toggled on, Dynamo benefits from hardware acceleration to improve smoothness of graphics and overall performance, as work is offloaded from central processing units (CPUs) to graphics processing units (GPUs)..
+        /// </summary>
+        public static string PreferencesWindowHardwareAccelerationTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesWindowHardwareAccelerationTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When toggled on, selecting a geometry node will highlight the geometry it produces in the background 3D preview..
+        /// </summary>
+        public static string PreferencesWindowIsolateSelectedGeoTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesWindowIsolateSelectedGeoTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional.
         /// </summary>
         public static string PreferencesWindowLanguages {
             get {
                 return ResourceManager.GetString("PreferencesWindowLanguages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When toggled on, line numbers will be displayed in the Code Block node editor..
+        /// </summary>
+        public static string PreferencesWindowShowCodeBlockNodeLineNumberTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesWindowShowCodeBlockNodeLineNumberTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When toggled on, more detailed edges will be displayed for geometry from topology subtypes..
+        /// </summary>
+        public static string PreferencesWindowShowEdgesTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesWindowShowEdgesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When toggled on, a preview of the node’s output will be displayed when hovering over the bottom of a node..
+        /// </summary>
+        public static string PreferencesWindowShowPreviewBubblesTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesWindowShowPreviewBubblesTooltip", resourceCulture);
             }
         }
         
@@ -7521,6 +7593,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RecentFileNumberInfo {
             get {
                 return ResourceManager.GetString("RecentFileNumberInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recommended Nodes.
+        /// </summary>
+        public static string RecommendedNodes {
+            get {
+                return ResourceManager.GetString("RecommendedNodes", resourceCulture);
             }
         }
         

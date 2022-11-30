@@ -2,7 +2,7 @@
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "CloseWithLineAndTangentArcs",
+  "Name": "Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -11,23 +11,27 @@
       "Id": "8ef52e86f93d4aa9a554bece174ed779",
       "Name": "Number Slider",
       "Type": "number",
+      "Type2": "number",
       "Value": "0.9",
       "MaximumValue": 4.0,
       "MinimumValue": 0.1,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "A slider that produces numeric values."
+      "Description": "Produces numeric values",
+      "SelectedIndex": 0
     },
     {
       "Id": "a27a10318aa94968a2b90daf19caa22e",
       "Name": "Number Slider",
       "Type": "number",
+      "Type2": "number",
       "Value": "1.2",
       "MaximumValue": 4.0,
       "MinimumValue": 0.1,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "A slider that produces numeric values."
+      "Description": "Produces numeric values",
+      "SelectedIndex": 0
     }
   ],
   "Outputs": [],
@@ -41,7 +45,7 @@
         {
           "Id": "83b7ee31f29041da9988ddfe915613cf",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -50,7 +54,7 @@
         {
           "Id": "995f54e19fed4a0b9e40dc0bfff37871",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -59,7 +63,7 @@
         {
           "Id": "7bd03e6093c14831a0d231bcb88db0d1",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -70,7 +74,7 @@
         {
           "Id": "f793c748398b4ca48099f03fd8da00d4",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -146,7 +150,7 @@
         {
           "Id": "75717d4fd8564ac29e8fff93412a433b",
           "Name": "connectLastToFirst",
-          "Description": "make close or open polycurve\n\nbool\nDefault value : false",
+          "Description": "True to connect last point to first point, false to leave open\n\nbool\nDefault value : false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -157,7 +161,7 @@
         {
           "Id": "0755fefad00140eca29971cc7e766e8d",
           "Name": "PolyCurve",
-          "Description": "PolyCurve",
+          "Description": "Polycurve created by points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -176,7 +180,7 @@
         {
           "Id": "4fcca0da03b74b1991557f6dbdd65a88",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -185,7 +189,7 @@
         {
           "Id": "7b78ab5f088d4cf3bdfb5f2ce2dd8b0c",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -194,7 +198,7 @@
         {
           "Id": "0023062708a847529f9932830d3a0aa0",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -205,7 +209,7 @@
         {
           "Id": "5f4ed48624fd40bbaa1b91e4fb0cb425",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -224,7 +228,7 @@
         {
           "Id": "bcfac5674b604334a50ac1566409f3f3",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -233,7 +237,7 @@
         {
           "Id": "41e1e135a3dc42689e4c53f717297f08",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -242,7 +246,7 @@
         {
           "Id": "95c239708772483097c25674725997fa",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -253,7 +257,7 @@
         {
           "Id": "88b3fd9d9e514da69873bec0b33a328f",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -369,7 +373,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Makes a new list out of the given inputs"
+      "Description": "Makes a new list from the given inputs"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -393,7 +397,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "A slider that produces numeric values."
+      "Description": "Produces numeric values"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -417,89 +421,120 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "A slider that produces numeric values."
+      "Description": "Produces numeric values"
     }
   ],
   "Connectors": [
     {
       "Start": "f793c748398b4ca48099f03fd8da00d4",
       "End": "eedd9e0c9d0e4a728a5b261b716d6906",
-      "Id": "a2dcdec4295e4d1b9a2ddfbe8a4583cd"
+      "Id": "a2dcdec4295e4d1b9a2ddfbe8a4583cd",
+      "IsHidden": "False"
     },
     {
       "Start": "0755fefad00140eca29971cc7e766e8d",
       "End": "60da0014da614ad786a06f34b97e61a0",
-      "Id": "3fe75b6e13d344bfbbdd15e2a3ce0f91"
+      "Id": "3fe75b6e13d344bfbbdd15e2a3ce0f91",
+      "IsHidden": "False"
     },
     {
       "Start": "5f4ed48624fd40bbaa1b91e4fb0cb425",
       "End": "c1791debe74b49cea66d63c8b66eed6b",
-      "Id": "04414b67161643ada0cbcdc5fb7a2847"
+      "Id": "04414b67161643ada0cbcdc5fb7a2847",
+      "IsHidden": "False"
     },
     {
       "Start": "88b3fd9d9e514da69873bec0b33a328f",
       "End": "b88f05e326a5473993fa20edb2e2e69a",
-      "Id": "80ef3d4433544e1197a45307573b7427"
+      "Id": "80ef3d4433544e1197a45307573b7427",
+      "IsHidden": "False"
     },
     {
       "Start": "d9f62876f0f941a0902e5196d0cb9bc3",
       "End": "83b7ee31f29041da9988ddfe915613cf",
-      "Id": "e3679dbf0f0149b2acf061646d333713"
+      "Id": "e3679dbf0f0149b2acf061646d333713",
+      "IsHidden": "False"
     },
     {
       "Start": "d9f62876f0f941a0902e5196d0cb9bc3",
       "End": "41e1e135a3dc42689e4c53f717297f08",
-      "Id": "ec86c129193a4428bfc8e74ae7871ecf"
+      "Id": "ec86c129193a4428bfc8e74ae7871ecf",
+      "IsHidden": "False"
     },
     {
       "Start": "c40d82a57cf1417aafbc75ef544380ef",
       "End": "995f54e19fed4a0b9e40dc0bfff37871",
-      "Id": "97b501637e484fbc9c483300d76ead57"
+      "Id": "97b501637e484fbc9c483300d76ead57",
+      "IsHidden": "False"
     },
     {
       "Start": "c40d82a57cf1417aafbc75ef544380ef",
       "End": "4fcca0da03b74b1991557f6dbdd65a88",
-      "Id": "b2719aa250a542b6ba6d95fda5905a38"
+      "Id": "b2719aa250a542b6ba6d95fda5905a38",
+      "IsHidden": "False"
     },
     {
       "Start": "06adc52a0e6b40cf965f873dd5bd3ec7",
       "End": "7b78ab5f088d4cf3bdfb5f2ce2dd8b0c",
-      "Id": "c4bd6424836b4f0a911637ab850e550d"
+      "Id": "c4bd6424836b4f0a911637ab850e550d",
+      "IsHidden": "False"
     },
     {
       "Start": "06adc52a0e6b40cf965f873dd5bd3ec7",
       "End": "bcfac5674b604334a50ac1566409f3f3",
-      "Id": "ca5625ae01944cff916acbb5b92866a6"
+      "Id": "ca5625ae01944cff916acbb5b92866a6",
+      "IsHidden": "False"
     },
     {
       "Start": "4eaf22cfaa644fd7a899c003b73aa677",
       "End": "b32ddf52d3574dc58ed3cfaa41ef8e1e",
-      "Id": "4d887ff462d64c1eb9ace25fb80f13ae"
+      "Id": "4d887ff462d64c1eb9ace25fb80f13ae",
+      "IsHidden": "False"
     },
     {
       "Start": "6a667078b78140b7ae5137d70c6b52a5",
       "End": "244ab2b748874e53b9d3793ca0f4fed9",
-      "Id": "e8d84104fb934a239122d0c481beec2b"
+      "Id": "e8d84104fb934a239122d0c481beec2b",
+      "IsHidden": "False"
     },
     {
       "Start": "41ba48eed4b640a0b5f65d8e4934407f",
       "End": "2c7f3141a4394bafba9e9110c0d7a428",
-      "Id": "ffee2833aeeb4965bf29453625994961"
+      "Id": "ffee2833aeeb4965bf29453625994961",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.1.5055",
-      "RunType": "Automatic",
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "_Background Preview",
       "EyeX": -7.58302401669194,
       "EyeY": 7.1859033539135622,
       "EyeZ": 4.8200228143646857,
@@ -510,121 +545,122 @@
       "UpY": 0.78585686102620245,
       "UpZ": -0.55681459846981507
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
         "Name": "Point.ByCoordinates",
+        "ShowGeometry": true,
         "Id": "4225d425ed6f4518b9f61f001a291862",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 219.1628831579385,
-        "Y": 302.41191074202504
+        "X": 178.5628831579385,
+        "Y": 242.71191074202511
       },
       {
-        "ShowGeometry": true,
         "Name": "PolyCurve.CloseWithLineAndTangentArcs",
+        "ShowGeometry": true,
         "Id": "6eb78994cba24a98b48e17a4bf3acacd",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1096.1628831579385,
-        "Y": 526.47509307062239
+        "X": 1212.1628831579385,
+        "Y": 555.71191074202511
       },
       {
-        "ShowGeometry": true,
         "Name": "PolyCurve.ByPoints",
+        "ShowGeometry": true,
         "Id": "e6cbac67c08d44dca01483cf8579f3b9",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 697.1628831579385,
-        "Y": 436.41191074202504
+        "X": 763.36288315793854,
+        "Y": 421.71191074202511
       },
       {
-        "ShowGeometry": true,
         "Name": "Point.ByCoordinates",
+        "ShowGeometry": true,
         "Id": "9569eb0bdbb340f6906707ecf02e541b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 219.1628831579385,
-        "Y": 622.41191074202516
+        "X": 178.5628831579385,
+        "Y": 668.71191074202511
       },
       {
-        "ShowGeometry": true,
         "Name": "Point.ByCoordinates",
+        "ShowGeometry": true,
         "Id": "01cef731c4db45f3930c286759798396",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 219.1628831579385,
-        "Y": 462.41191074202504
+        "X": 178.5628831579385,
+        "Y": 455.71191074202511
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "b1b791c4a5d543f79c3527792d38a3f8",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 40.162883157938495,
-        "Y": 371.62524407535841
+        "X": -75.8371168420615,
+        "Y": 326.0394107420251
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "4c711c58f4e84dc295e172a58c5f05f8",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 40.162883157938495,
-        "Y": 479.62524407535841
+        "X": -75.8371168420615,
+        "Y": 472.5394107420251
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "687fc71573b94f9a834ebe44735dee0a",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 40.162883157938495,
-        "Y": 587.62524407535841
+        "X": -75.8371168420615,
+        "Y": 619.0394107420251
       },
       {
-        "ShowGeometry": true,
         "Name": "List.Create",
+        "ShowGeometry": true,
         "Id": "3e99f5bf5c0c4fddaf5c1461bdabe021",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 477.1628831579385,
-        "Y": 436.41191074202504
+        "X": 503.36288315793854,
+        "Y": 421.71191074202511
       },
       {
-        "ShowGeometry": true,
         "Name": "Number Slider",
+        "ShowGeometry": true,
         "Id": "8ef52e86f93d4aa9a554bece174ed779",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 697.1628831579385,
-        "Y": 570.411910742025
+        "X": 763.36288315793854,
+        "Y": 599.71191074202511
       },
       {
-        "ShowGeometry": true,
         "Name": "Number Slider",
+        "ShowGeometry": true,
         "Id": "a27a10318aa94968a2b90daf19caa22e",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 697.1628831579385,
-        "Y": 653.41191074202516
+        "X": 763.36288315793854,
+        "Y": 747.71191074202511
       }
     ],
     "Annotations": [],
-    "X": 39.045009869105996,
-    "Y": -204.78103243169699,
-    "Zoom": 1.06744357042575
+    "X": 186.90654042644326,
+    "Y": 20.242962707328957,
+    "Zoom": 0.63555245909566782
   }
 }

@@ -2,7 +2,7 @@
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "Offset",
+  "Name": "Autodesk.DesignScript.Geometry.Curve.Offset",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -11,46 +11,18 @@
       "Id": "5bef03ebe900471ba2467bf8b32e0188",
       "Name": "Number Slider",
       "Type": "number",
-      "Value": "-0.71",
+      "Type2": "number",
+      "Value": "0.7",
       "MaximumValue": 1.0,
       "MinimumValue": -1.0,
       "StepValue": 0.01,
       "NumberType": "Double",
-      "Description": "A slider that produces numeric values."
+      "Description": "Produces numeric values",
+      "SelectedIndex": 0
     }
   ],
   "Outputs": [],
   "Nodes": [
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[]",
-      "Id": "5a4f36d5dab54fd0b6bb9bbfdeb58052",
-      "Inputs": [
-        {
-          "Id": "ca04fcd52f624f34ac01be046a1bf453",
-          "Name": "points",
-          "Description": "Point[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "807d46ad152147c09125edf0224c22ba",
-          "Name": "NurbsCurve",
-          "Description": "NurbsCurve",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use a PolyCurve instead. NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.\n\nNurbsCurve.ByControlPoints (points: Point[]): NurbsCurve"
-    },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
@@ -198,7 +170,7 @@
       "MaximumValue": 1.0,
       "MinimumValue": -1.0,
       "StepValue": 0.01,
-      "InputValue": -0.71,
+      "InputValue": 0.7,
       "Id": "5bef03ebe900471ba2467bf8b32e0188",
       "Inputs": [],
       "Outputs": [
@@ -213,46 +185,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "A slider that produces numeric values."
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.Offset@double",
-      "Id": "18e8ddfa559344fe95bfa297706c3784",
-      "Inputs": [
-        {
-          "Id": "bb8eff7de80c4a4c9e07288d4a774a5f",
-          "Name": "curve",
-          "Description": "Autodesk.DesignScript.Geometry.Curve",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "b4a68db362d34c2a9466978b71fcb66d",
-          "Name": "distance",
-          "Description": "A positive or negative distance to offset\n\ndouble\nDefault value : 1",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "f1e2a2380cf44801a8c28d479cfe9c3b",
-          "Name": "Curve",
-          "Description": "new offsetted curves",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Offset a Curve by a specified amount. Curve must be planar, and, if a BSplineCurve/NurbsCurve, must have degree > 1.\n\nCurve.Offset (distance: double = 1): Curve"
+      "Description": "Produces numeric values"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -263,7 +196,7 @@
         {
           "Id": "28455a9a90aa4efb9058332465bfe241",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -272,7 +205,7 @@
         {
           "Id": "5e0aa8fb8b2b443d96e4808178465988",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -283,7 +216,7 @@
         {
           "Id": "ddff99680cbe4de0a2800959f357f525",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -292,71 +225,246 @@
       ],
       "Replication": "Auto",
       "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "9107a84e566f43de9a334c70b29ff8b6",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1d1aa8a0f40e41ef830edd8ca10ad27a",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool",
+      "Id": "fe6cf1babb9c46d38bbc277eafed9ae1",
+      "Inputs": [
+        {
+          "Id": "484b8f601b314fad91594d5baed06c35",
+          "Name": "points",
+          "Description": "Points to make polycurve\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3c40f0e9f3d24d45a9a1101a432a323a",
+          "Name": "connectLastToFirst",
+          "Description": "True to connect last point to first point, false to leave open\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e3cd4f8ec34a4a5c99cd9e1c1a88c20e",
+          "Name": "PolyCurve",
+          "Description": "Polycurve created by points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Make PolyCurve by connecting points. Set the 'connectLastToFirst' input to true to close the PolyCurve.\n\nPolyCurve.ByPoints (points: Point[], connectLastToFirst: bool = false): PolyCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany@double,bool,Autodesk.DesignScript.Geometry.Vector",
+      "Id": "e3ef0911075c454d83e072128cf1026d",
+      "Inputs": [
+        {
+          "Id": "ccd7fc48baaa4f9c960c5f317f7d76f4",
+          "Name": "polyCurve",
+          "Description": "Autodesk.DesignScript.Geometry.PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "808707d87f5f4226bd7ca23e066ab36f",
+          "Name": "signedDistance",
+          "Description": "A positive offset distance applies in the direction of the cross product between the polycurve's tangent and the plane's normal vector, while a negative offset applies in the opposite direction.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8e051ba967764972992419a1c3f547bc",
+          "Name": "extendCircular",
+          "Description": "If there are gaps between the offset component curves then, depending on the gap closure settings, they may be filled either by circular arcs (true value) to give smooth corners, or by extending (false value) the offset curves.\n\nbool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "38d4af06f252419fb98a2134079cd8d7",
+          "Name": "planeNormal",
+          "Description": "The curve's plane normal. Defaults to the input curve's plane normal\n\nVector\nDefault value : null",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f48b55aa07694865affdf43d3158ec38",
+          "Name": "Curve[]..[]",
+          "Description": "One or more offset polycurves",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create one or more Polycurves by offsetting a planar polycurve by the given distance in a plane defined by the plane normal. The \"planeNormal\" input argument defaults to the normal of the plane containing the curve but an explicit normal parallel to the original curve normal can be provided to better control the direction of the offset. For example, if a consistent offset direction is required for multiple curves sharing the same plane, the \"planeNormal\" can be used to override individual curve normals and force all curves to be offset in the same direction. Reversing the normal reverses the direction of the offset.\n\nPolyCurve.OffsetMany (signedDistance: double, extendCircular: bool, planeNormal: Vector = null): Curve[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": false,
+      "Id": "bf55b123fd284aa3b0995050687e6e7f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7acf1620880342efa1ef22a38d9ea767",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False"
     }
   ],
   "Connectors": [
     {
-      "Start": "807d46ad152147c09125edf0224c22ba",
-      "End": "bb8eff7de80c4a4c9e07288d4a774a5f",
-      "Id": "9d2fa44e10834ccc8f7d7d12f73083ad"
-    },
-    {
       "Start": "97428455494b4094aa75ee5e67ac5bf4",
       "End": "d85c800b7032461c8ebd9644b76c3699",
-      "Id": "25b72a36667d44b8a274e1ceb3e07a6b"
+      "Id": "25b72a36667d44b8a274e1ceb3e07a6b",
+      "IsHidden": "False"
     },
     {
       "Start": "41abfac82a0145b8b0ac2f0a1873a992",
       "End": "dff4fdbaba154c02a6838530aa2556f8",
-      "Id": "620dde6472f34f2b9cbacb4722dc250d"
+      "Id": "620dde6472f34f2b9cbacb4722dc250d",
+      "IsHidden": "False"
     },
     {
       "Start": "41abfac82a0145b8b0ac2f0a1873a992",
       "End": "bbfb60ae11a2470c8d7baec3b59f2018",
-      "Id": "7def04c3ab464386a666b452f92cf590"
+      "Id": "7def04c3ab464386a666b452f92cf590",
+      "IsHidden": "False"
     },
     {
       "Start": "af98cb3571d54fce8045d0bd39c21d30",
       "End": "e8aa8a3b39e9482ab682327a2eb795ac",
-      "Id": "cc9df02adaa34e2e8182fae6cdc5df38"
+      "Id": "cc9df02adaa34e2e8182fae6cdc5df38",
+      "IsHidden": "False"
     },
     {
       "Start": "51b82b46a5d645d8a436f522a412db7c",
       "End": "28455a9a90aa4efb9058332465bfe241",
-      "Id": "97df55a397b64af2904d4f3ab8345b70"
+      "Id": "97df55a397b64af2904d4f3ab8345b70",
+      "IsHidden": "False"
     },
     {
       "Start": "3b061c5ba81644c693ab1f6a5d7a14eb",
       "End": "5e0aa8fb8b2b443d96e4808178465988",
-      "Id": "3f0f5fe2044c4a8dadee7ad87bf6cc2c"
+      "Id": "3f0f5fe2044c4a8dadee7ad87bf6cc2c",
+      "IsHidden": "False"
     },
     {
       "Start": "5b27fb0840f84d05b03c93b457f59720",
-      "End": "b4a68db362d34c2a9466978b71fcb66d",
-      "Id": "1ed245f99dbc4851875e01090b7432cb"
+      "End": "808707d87f5f4226bd7ca23e066ab36f",
+      "Id": "b43bb59ed4b443bbaff412208769bcd4",
+      "IsHidden": "False"
     },
     {
       "Start": "ddff99680cbe4de0a2800959f357f525",
-      "End": "ca04fcd52f624f34ac01be046a1bf453",
-      "Id": "33d2ba6251264b85a64c63e82fb520df"
+      "End": "484b8f601b314fad91594d5baed06c35",
+      "Id": "bd0e1a679d71450c8cc731bba22283c9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1d1aa8a0f40e41ef830edd8ca10ad27a",
+      "End": "3c40f0e9f3d24d45a9a1101a432a323a",
+      "Id": "f9f6334000ca41449c69ee4f57561a5d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e3cd4f8ec34a4a5c99cd9e1c1a88c20e",
+      "End": "ccd7fc48baaa4f9c960c5f317f7d76f4",
+      "Id": "96c032651dc14df085b07d0d2c26c4d4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7acf1620880342efa1ef22a38d9ea767",
+      "End": "8e051ba967764972992419a1c3f547bc",
+      "Id": "1ed0572553e54b0e961c6e46186ad4d0",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.1.5055",
-      "RunType": "Automatic",
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
-      "EyeX": -3.4816887378692627,
-      "EyeY": 9.2835006713867187,
-      "EyeZ": 3.9581344127655029,
+      "Name": "_Background Preview",
+      "EyeX": -5.1269042491912842,
+      "EyeY": 6.4709243774414063,
+      "EyeZ": 4.3033256530761719,
       "LookX": 7.4863224029541016,
       "LookY": -5.3477129936218262,
       "LookZ": -7.8918704986572266,
@@ -364,101 +472,122 @@
       "UpY": 0.9711342453956604,
       "UpZ": -0.17305652797222137
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "NurbsCurve.ByControlPoints",
-        "Id": "5a4f36d5dab54fd0b6bb9bbfdeb58052",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 294.251806087437,
-        "Y": -3591.0920860791302
-      },
-      {
-        "ShowGeometry": true,
         "Name": "Math.RandomList",
+        "ShowGeometry": true,
         "Id": "f587b83e0d07416cb9350712885cc887",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -469.748193912563,
-        "Y": -3632.0920860791302
+        "X": -306.051856941015,
+        "Y": -3745.4590487936866
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "d369ad03bc9b4f1a9579a4fab115de61",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -648.748193912563,
-        "Y": -3573.8787527457971
+        "X": -560.451856941015,
+        "Y": -3671.6315487936868
       },
       {
-        "ShowGeometry": true,
         "Name": "Math.RandomList",
+        "ShowGeometry": true,
         "Id": "9c959d980d3045f195287592e1cd2172",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -469.748193912563,
-        "Y": -3524.0920860791302
+        "X": -306.051856941015,
+        "Y": -3597.4590487936866
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "86db2f7f59ca4a8c9c68e2484a7cf3c7",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -153.748193912563,
-        "Y": -3627.8787527457971
+        "X": 14.748143058985079,
+        "Y": -3744.4590487936866
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "476aa99fdfeb4698ac69fe9e7934b586",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -153.748193912563,
-        "Y": -3519.8787527457971
+        "X": 14.748143058985079,
+        "Y": -3598.4590487936866
       },
       {
-        "ShowGeometry": true,
         "Name": "Number Slider",
+        "ShowGeometry": true,
         "Id": "5bef03ebe900471ba2467bf8b32e0188",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 294.251806087437,
-        "Y": -3483.0920860791302
+        "X": 593.94814305898512,
+        "Y": -3438.2865487936865
       },
       {
-        "ShowGeometry": true,
-        "Name": "Curve.Offset",
-        "Id": "18e8ddfa559344fe95bfa297706c3784",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 693.251806087437,
-        "Y": -3550.0920860791302
-      },
-      {
-        "ShowGeometry": true,
         "Name": "Point.ByCoordinates",
+        "ShowGeometry": true,
         "Id": "7b79785b29494e31ab029a851ecf37d9",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 36.251806087436989,
-        "Y": -3591.0920860791302
+        "X": 269.14814305898506,
+        "Y": -3688.2865487936865
+      },
+      {
+        "Name": "Boolean",
+        "ShowGeometry": true,
+        "Id": "9107a84e566f43de9a334c70b29ff8b6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 269.14814305898506,
+        "Y": -3510.2865487936865
+      },
+      {
+        "Name": "PolyCurve.ByPoints",
+        "ShowGeometry": true,
+        "Id": "fe6cf1babb9c46d38bbc277eafed9ae1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 593.94814305898512,
+        "Y": -3616.2865487936865
+      },
+      {
+        "Name": "PolyCurve.OffsetMany",
+        "ShowGeometry": true,
+        "Id": "e3ef0911075c454d83e072128cf1026d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1042.7481430589851,
+        "Y": -3482.2865487936865
+      },
+      {
+        "Name": "Boolean",
+        "ShowGeometry": true,
+        "Id": "bf55b123fd284aa3b0995050687e6e7f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 593.94814305898512,
+        "Y": -3290.2865487936865
       }
     ],
     "Annotations": [],
-    "X": 861.68294681111,
-    "Y": 4126.0639724503,
-    "Zoom": 1.10882815557737
+    "X": 614.89779002158571,
+    "Y": 3084.3770059205322,
+    "Zoom": 0.790632183908046
   }
 }

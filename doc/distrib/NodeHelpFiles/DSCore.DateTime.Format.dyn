@@ -2,7 +2,7 @@
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "Format",
+  "Name": "DSCore.DateTime.Format",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -11,8 +11,10 @@
       "Id": "bc22ee1442c24426871e3ba069ea4bc1",
       "Name": "Date Time",
       "Type": "date",
+      "Type2": "date",
       "Value": "2015-03-14T21:26:00Z",
-      "Description": "Create a DateTime object from a formatted date and time string. Date and time must be of the format \"April 12, 1977 12:00 PM\""
+      "Description": "Creates a dateTime object from a formatted date and time string. Date and time must be in the default DateTime format \"MMMM dd, yyyy h:mm tt\", e.g. \"April 02, 1977 12:00 PM\"",
+      "SelectedIndex": 0
     }
   ],
   "Outputs": [],
@@ -35,7 +37,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Create a DateTime object from a formatted date and time string. Date and time must be of the format \"April 12, 1977 12:00 PM\""
+      "Description": "Creates a dateTime object from a formatted date and time string. Date and time must be in the default DateTime format \"MMMM dd, yyyy h:mm tt\", e.g. \"April 02, 1977 12:00 PM\""
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -46,7 +48,7 @@
         {
           "Id": "4479aee6baf04bdeb97c4aef763391e4",
           "Name": "dateTime",
-          "Description": "The DateTime to format.\n\nvar",
+          "Description": "DateTime to format\n\nvar",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -66,7 +68,7 @@
         {
           "Id": "e2dac6aab0fd4b0b87e1861510687bfc",
           "Name": "string",
-          "Description": "The specified date and time as a string, in the specified format.",
+          "Description": "DateTime represented as a string",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -101,27 +103,47 @@
     {
       "Start": "20fc74cb27d14e6983136c9b57e6db76",
       "End": "4479aee6baf04bdeb97c4aef763391e4",
-      "Id": "cbb94bf42a6543b5bd9361527ceca101"
+      "Id": "cbb94bf42a6543b5bd9361527ceca101",
+      "IsHidden": "False"
     },
     {
       "Start": "4c0100b2ea234953b2b7790f1fb9b636",
       "End": "02918d5774a04457ae9e21370b943f3c",
-      "Id": "f805a3e3a5124fc585c858464e8341e5"
+      "Id": "f805a3e3a5124fc585c858464e8341e5",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.1.5055",
-      "RunType": "Automatic",
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "_Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -132,36 +154,37 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
         "Name": "Date Time",
+        "ShowGeometry": true,
         "Id": "bc22ee1442c24426871e3ba069ea4bc1",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 346.27380043508651,
-        "Y": 102.281334036998
+        "X": 322.143670022678,
+        "Y": 60.701984439077876
       },
       {
-        "ShowGeometry": true,
         "Name": "DateTime.Format",
+        "ShowGeometry": true,
         "Id": "9a8da385a6ec4fe0bddf2dbfac6e2975",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 634.81353961026946,
-        "Y": 119.03287730021196
+        "X": 658.943670022678,
+        "Y": 117.70198443907788
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "43db830e63d04c8189c090ac790a119e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 444.27380043508651,
-        "Y": 166.95013484115776
+        "X": 322.143670022678,
+        "Y": 208.52948443907786
       }
     ],
     "Annotations": [],

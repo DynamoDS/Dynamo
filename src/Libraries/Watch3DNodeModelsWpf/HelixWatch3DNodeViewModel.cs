@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -50,18 +50,23 @@ namespace Watch3DNodeModelsWpf
 
         protected override void PortConnectedHandler(PortModel arg1, ConnectorModel arg2)
         {
-            UpdateUpstream();
+            if (arg1.PortType == PortType.Input && watchModel == arg1.Owner)
+            {
+                UpdateUpstream();
+            }
         }
 
         protected internal override void UpdateUpstream()
         {
             OnClear();
 
-            var gathered = new List<NodeModel>();
-            watchModel.VisibleUpstreamNodes(gathered);
+            var connectedNodes = watchModel.ImediateUpstreamNodes();
 
-            gathered.ForEach(n => n.WasRenderPackageUpdatedAfterExecution = false);
-            gathered.ForEach(n => n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory));
+            foreach(var n in connectedNodes)
+            {
+                n.WasRenderPackageUpdatedAfterExecution = false;
+                n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, false, true);
+            }
         }
 
         protected override void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -74,22 +79,54 @@ namespace Watch3DNodeModelsWpf
             }
         }
 
+        protected override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (!(sender is NodeModel node))
+            {
+                return;
+            }
+
+            if (e.PropertyName == nameof(node.CachedValue))
+            {
+                var connecteNodes = watchModel.ImediateUpstreamNodes();
+                if (!connecteNodes.Contains(node))
+                {
+                    return;
+                }
+
+                node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true, true);
+            }
+
+            if (e.PropertyName == "IsFrozen")
+            {
+                if (!watchModel.UpstreamCache.Contains(node))
+                { 
+                    return;
+                }
+
+                var gathered = new HashSet<NodeModel>();
+                node.GetDownstreamNodes(node, gathered);
+                SetGeometryFrozen(gathered);
+            }
+
+            node.WasRenderPackageUpdatedAfterExecution = false;
+        }
+
         protected override void PortDisconnectedHandler(PortModel obj)
         {
-            OnClear();
+            if (obj.PortType == PortType.Input  && watchModel == obj.Owner)
+            {
+                OnClear();
+            }
         }
 
         
         protected override void OnRenderPackagesUpdated(NodeModel node,
             RenderPackageCache renderPackages)
         {
-            var updatedNode = dynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == node.GUID);
-            if (updatedNode == null) return;
+            var connectedNodes = watchModel.ImediateUpstreamNodes();
 
-            var visibleUpstream = new List<NodeModel>();
-            watchModel.VisibleUpstreamNodes(visibleUpstream);
-
-            if (!visibleUpstream.Contains(updatedNode))
+            if (!connectedNodes.Contains(node))
             {
                 return;
             }
