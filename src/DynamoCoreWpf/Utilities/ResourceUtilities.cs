@@ -94,7 +94,7 @@ namespace Dynamo.Utilities
                 document.getElementById('insert').removeEventListener('click', insert);
                 let message = 'insert';
                 window.chrome.webview.postMessage(message);
-                document.getElementById('insert').addEventListener('click', insert);
+                document.getElementById('insert')?.addEventListener('click', insert);
             }
 
             function zoom(zoomtype)
@@ -204,17 +204,17 @@ namespace Dynamo.Utilities
                 document.addEventListener('mouseup', pan_end);
             }
 
-            document.getElementById('zoomout').addEventListener('click', function() {
+            document.getElementById('zoomout')?.addEventListener('click', function() {
                 zoom('out');
             });
-            document.getElementById('zoomin').addEventListener('click', function() {
+            document.getElementById('zoomin')?.addEventListener('click', function() {
                 zoom('in');
             });
-            document.getElementById('zoomfit').addEventListener('click', function() {
+            document.getElementById('zoomfit')?.addEventListener('click', function() {
               fit();
             });
-            document.getElementById('insert').addEventListener('click', insert);
-            document.getElementById('img--container').addEventListener('wheel', scroll);
+            document.getElementById('insert')?.addEventListener('click', insert);
+            document.getElementById('img--container')?.addEventListener('wheel', scroll);
             document.querySelectorAll('.container').forEach(pannable);
 
             const crumbs = document.querySelectorAll('.breadcrumb');

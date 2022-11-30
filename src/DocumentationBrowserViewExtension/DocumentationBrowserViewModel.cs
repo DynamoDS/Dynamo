@@ -357,7 +357,8 @@ namespace Dynamo.DocumentationBrowser
 
                 var lookupName = cat + "." + group;
 
-                if (BreadCrumbsDictionary.TryGetValue(lookupName, out breadCrumbs))
+                // For some reason, Geometry / Modifiers / Geometry already contains the correct amount of information, so we can skip it
+                if (BreadCrumbsDictionary.TryGetValue(lookupName, out breadCrumbs) && !breadCrumbs.Contains("Modifiers"))
                 {
                     breadCrumbs += " / " + group;
                 }
@@ -429,7 +430,7 @@ namespace Dynamo.DocumentationBrowser
         internal void CollapseExpandPackage(string section)
         {
             string sectionType;
-            var breadBrumbsArray = BreadCrumbs.Replace(" ", string.Empty).Split('/');
+            var breadBrumbsArray = BreadCrumbs.Replace(" / ", "/").Split('/');
 
             // We need to expand sequentially all root levels before reaching the desired section
             for (var i = 0; i < breadBrumbsArray.Length; i++)

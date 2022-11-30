@@ -154,7 +154,6 @@ namespace Dynamo.DocumentationBrowser
             if (string.Equals(message, "insert"))
             {
                 // Insert the graph inside the current worskspace
-                if (MessageIsHandled) return;
                 this.viewModel.InsertGraph();
             }
             else if (message.Contains("expandcollapse"))
@@ -162,6 +161,7 @@ namespace Dynamo.DocumentationBrowser
                 var breadCrumbText = message.Split('-')[1];
                 this.viewModel.CollapseExpandPackage(breadCrumbText);
             }
+            if (MessageIsHandled) return;
             MessageIsHandled = true;
             HandleInsert();
         }
@@ -180,10 +180,5 @@ namespace Dynamo.DocumentationBrowser
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-
-        //private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        //{
-        //    this.viewModel.CollapseExpandPackage(string.Empty);
-        //}
     }
 }

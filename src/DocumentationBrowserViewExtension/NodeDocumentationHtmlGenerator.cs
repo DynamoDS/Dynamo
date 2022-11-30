@@ -71,16 +71,15 @@ namespace Dynamo.DocumentationBrowser
             {
                 sb.AppendLine("<p>");
                 var breadCrumbsStringArray = breadCrumbs.Replace(" ", string.Empty).Split('/');
-                var last = breadCrumbsStringArray.Last();
-                foreach (var crumb in breadCrumbsStringArray)
+                for (var i = 0; i < breadCrumbsStringArray.Length; i++)
                 {
-                    sb.AppendLine($"<a class=\"breadcrumb\">{crumb}</a>");
-                    if (!crumb.Equals(last))
+                    sb.AppendLine($"<a class=\"breadcrumb\">{breadCrumbsStringArray[i]}</a>");
+                    if (i == breadCrumbsStringArray.Length - 1)
                     {
-                        sb.AppendLine(" / ");
+                        break;
                     }
+                    sb.AppendLine(" / ");
                 }
-                //sb.AppendLine($"<p>{breadCrumbs}</p>");
                 sb.AppendLine("</p>");
             }
 
