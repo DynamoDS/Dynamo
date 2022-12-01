@@ -50,7 +50,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             content = content.Replace(baseName, shortName);
             var path = Path.GetDirectoryName(file);
             var newFile = Path.Combine(path, shortName + ".md");
-            File.WriteAllText(newFile, content);
+            File.WriteAllText(newFile, $"<!--- {baseName} --->\n" + content);
             File.Delete(file);
 
             var allSupportFiles = Directory.GetFiles(path, baseName + ".*", SearchOption.TopDirectoryOnly)
