@@ -267,6 +267,7 @@ namespace Dynamo.ViewModels
                 DisplayAutocompleteMLStaticPage = true;
                 AutocompleteMLTitle = Resources.LoginNeededTitle;
                 AutocompleteMLMessage = Resources.LoginNeededMessage;
+                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
                 return;
             }
 
@@ -276,6 +277,7 @@ namespace Dynamo.ViewModels
                 DisplayAutocompleteMLStaticPage = true;
                 AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
                 AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
+                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NoRecommendation");
                 return;
             }
 
