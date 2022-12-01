@@ -9,6 +9,8 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Properties;
 using Dynamo.Search.SearchElements;
@@ -265,6 +267,7 @@ namespace Dynamo.ViewModels
                 DisplayAutocompleteMLStaticPage = true;
                 AutocompleteMLTitle = Resources.LoginNeededTitle;
                 AutocompleteMLMessage = Resources.LoginNeededMessage;
+                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
                 return;
             }
 
@@ -274,6 +277,7 @@ namespace Dynamo.ViewModels
                 DisplayAutocompleteMLStaticPage = true;
                 AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
                 AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
+                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NoRecommendation");
                 return;
             }
 
@@ -468,6 +472,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Key function to populate node autocomplete results to display
+        /// </summary>
         internal void PopulateAutoCompleteCandidates()
         {
             if (PortViewModel == null) return;
@@ -477,9 +484,19 @@ namespace Dynamo.ViewModels
             if (IsDisplayingMLRecommendation)
             {
                 DisplayMachineLearningResults();
+                //Tracking Analytics when raising Node Autocomplete with the Recommended Nodes option selected (Machine Learning)
+                Analytics.TrackEvent(
+                    Actions.Show,
+                    Categories.NodeAutoCompleteOperations,
+                    nameof(NodeAutocompleteSuggestion.MLRecommendation));
             }
             else
             {
+                //Tracking Analytics when raising Node Autocomplete with the Object Types option selected.
+                Analytics.TrackEvent(
+                    Actions.Show,
+                    Categories.NodeAutoCompleteOperations,
+                    nameof(NodeAutocompleteSuggestion.ObjectType));
                 // Only call GetMatchingSearchElements() for object type match comparison
                 var objectTypeMatchingElements = GetMatchingSearchElements().ToList();
                 // If node match searchElements found, use default suggestions. 
