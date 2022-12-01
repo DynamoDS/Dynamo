@@ -11,6 +11,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Properties;
 using Dynamo.Search.SearchElements;
@@ -476,17 +477,17 @@ namespace Dynamo.ViewModels
                 DisplayMachineLearningResults();
                 //Tracking Analytics when raising Node Autocomplete with the Recommended Nodes option selected (Machine Learning)
                 Analytics.TrackEvent(
-                    Actions.Select,
+                    Actions.Show,
                     Categories.NodeAutoCompleteOperations,
-                    "DisplayingMLRecommendations");
+                    nameof(NodeAutocompleteSuggestion.MLRecommendation));
             }
             else
             {
                 //Tracking Analytics when raising Node Autocomplete with the Object Types option selected.
                 Analytics.TrackEvent(
-                    Actions.Select,
+                    Actions.Show,
                     Categories.NodeAutoCompleteOperations,
-                    "DisplayingObjectTypeRecomendations");
+                    nameof(NodeAutocompleteSuggestion.ObjectType));
                 // Only call GetMatchingSearchElements() for object type match comparison
                 var objectTypeMatchingElements = GetMatchingSearchElements().ToList();
                 // If node match searchElements found, use default suggestions. 
