@@ -466,6 +466,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Key function to populate node autocomplete results to display
+        /// </summary>
         internal void PopulateAutoCompleteCandidates()
         {
             if (PortViewModel == null) return;

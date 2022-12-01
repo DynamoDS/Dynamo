@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
@@ -314,10 +315,12 @@ namespace Dynamo.UI.Controls
             if (selectedSuggestion.Name.Contains(nameof(Models.NodeAutocompleteSuggestion.MLRecommendation)))
             {
                 ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.MLRecommendation;
+                Analytics.TrackEvent(Actions.Select, Categories.Preferences, nameof(NodeAutocompleteSuggestion.MLRecommendation));
             }
             else
             {
                 ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.ObjectType;
+                Analytics.TrackEvent(Actions.Select, Categories.Preferences, nameof(NodeAutocompleteSuggestion.ObjectType));
             }
             ViewModel.PopulateAutoCompleteCandidates();
         }
