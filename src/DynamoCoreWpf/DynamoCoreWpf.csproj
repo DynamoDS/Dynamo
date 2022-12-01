@@ -14,16 +14,27 @@
   </PropertyGroup>
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
-      <Exec Command="npm install --prefix ./ @dynamods/splash-screen@latest" />
+      <Exec Command="npm pack @dynamods/splash-screen@latest" />
   </Target>
+
+    <Target Name="ExtractTGZFile" BeforeTargets="BeforeBuild">
+        <ItemGroup>
+            <TGZFiles Include="./*.tgz" />
+        </ItemGroup>
+        <ItemGroup>
+            <Reversed Include="@(TGZFiles)" />
+        </ItemGroup>
+        <PropertyGroup>
+            <Last>%(Reversed.Identity)</Last>
+        </PropertyGroup>
+
+        <Exec Command="tar -xzf @(TGZFiles)"></Exec>
+    </Target>
+    
   <ItemGroup>
-    <None Remove="node_modules\%40dynamods\splash-screen\build\index.bundle.js" />
-    <None Remove="node_modules\%40dynamods\splash-screen\build\index.html" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="node_modules\@dynamods\splash-screen\build\index.bundle.js" />
-    <EmbeddedResource Include="node_modules\@dynamods\splash-screen\build\index.html" />
     <EmbeddedResource Include="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
 
