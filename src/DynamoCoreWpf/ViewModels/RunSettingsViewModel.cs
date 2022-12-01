@@ -149,9 +149,9 @@ namespace Dynamo.Wpf.ViewModels
         {
             get
             {
-                return Model.RunEnabled &&
-                    Model.RunType != RunType.Automatic &&
-                    Model.RunType != RunType.Periodic;
+                return Model.RunEnabled && // Running graphs is enabled
+                    !Model.GraphIsRunning && // Not during graph execution
+                    Model.RunType == RunType.Manual; // Is in manual mode
             }
         }
 
@@ -301,10 +301,14 @@ namespace Dynamo.Wpf.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "RunEnabled":
-                    RaisePropertyChanged("RunEnabled");
+                case nameof(RunSettings.RunEnabled):
+                case nameof(RunSettings.GraphIsRunning):
+                    if (e.PropertyName == nameof(RunSettings.RunEnabled))
+                        RaisePropertyChanged("RunEnabled");
+
                     RaisePropertyChanged("RunButtonEnabled");
                     RaisePropertyChanged("RunButtonToolTip");
+
                     if (Application.Current != null)
                     {
                         Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -320,7 +324,6 @@ namespace Dynamo.Wpf.ViewModels
                 case "RunType":
                     RaisePropertyChanged("RunPeriod");
                     RaisePropertyChanged("RunEnabled");
-                    RaisePropertyChanged("RunButtonEnabled");
                     RaisePropertyChanged("RunButtonToolTip");
                     RaisePropertyChanged("RunPeriodInputVisibility");
                     RaisePropertyChanged("RunButtonEnabled");
