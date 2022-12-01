@@ -860,11 +860,13 @@ namespace Dynamo.ViewModels
                 {
                     preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
                     nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                    Analytics.TrackEvent(Actions.Select,Categories.Preferences,nameof(NodeAutocompleteSuggestion.MLRecommendation));
                 }
                 else
                 {
                     preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
                     nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                    Analytics.TrackEvent(Actions.Select, Categories.Preferences, nameof(NodeAutocompleteSuggestion.ObjectType));
                 }
 
                 dynamoViewModel.HomeSpaceViewModel.NodeAutoCompleteSearchViewModel.ResetAutoCompleteSearchViewState();
