@@ -8119,7 +8119,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do not show this screen again.
+        ///   Looks up a localized string similar to Don&apos;t show this again.
         /// </summary>
         public static string SplashScreenShowScreenAgainLabel {
             get {
