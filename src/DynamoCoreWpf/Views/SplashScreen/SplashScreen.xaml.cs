@@ -293,7 +293,7 @@ namespace Dynamo.UI.Views
             var elapsedTime = loadingTimer.ElapsedMilliseconds;
             totalLoadingTime += elapsedTime;
             loadingTimer = Stopwatch.StartNew();
-            if (webView.CoreWebView2 != null)
+            if (webView?.CoreWebView2 != null)
             {
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties(\"{version}\",\"{loadingDescription}\", \"{barSize}%\", \"{Wpf.Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms\")");
             }
@@ -301,7 +301,7 @@ namespace Dynamo.UI.Views
 
         internal async void SetLoadingDone()
         {
-            if (webView.CoreWebView2 != null)
+            if (webView?.CoreWebView2 != null)
             {
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime(\"{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms\")");
@@ -345,7 +345,7 @@ namespace Dynamo.UI.Views
         /// </summary>
         internal async void SetSignInStatus(bool status)
         {
-            if (webView.CoreWebView2 != null)
+            if (webView?.CoreWebView2 != null)
             {
                 await webView.CoreWebView2.ExecuteScriptAsync("window.setSignInStatus({" +
                 $"signInTitle: \"" + (status ? Wpf.Properties.Resources.SplashScreenSignOut : Wpf.Properties.Resources.SplashScreenSignIn).ToString() + "\"," +
