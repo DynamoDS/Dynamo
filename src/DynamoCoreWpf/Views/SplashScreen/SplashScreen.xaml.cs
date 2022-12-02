@@ -314,25 +314,18 @@ namespace Dynamo.UI.Views
         /// <param name="importStatus"></param>
         internal async void SetImportStatus(ImportStatus importStatus)
         {
-            string importSettingsTitle = string.Empty;
+            string importSettingsTitle = Dynamo.Wpf.Properties.Resources.SplashScreenImportSettings;
             string errorDescription = string.Empty;
 
             switch (importStatus)
             {
                 case ImportStatus.none:
-                    importSettingsTitle = Dynamo.Wpf.Properties.Resources.SplashScreenImportSettings;
                     errorDescription = Dynamo.Wpf.Properties.Resources.ImportPreferencesInfo;
                     break;
                 case ImportStatus.error:
-                    importSettingsTitle = Dynamo.Wpf.Properties.Resources.SplashScreenFailedImportSettings;
                     errorDescription = Dynamo.Wpf.Properties.Resources.SplashScreenImportSettingsFailDescription;
                     break;
-                case ImportStatus.success:
-                    importSettingsTitle = Wpf.Properties.Resources.SplashScreenSettingsImported;
-                    errorDescription = string.Empty;
-                    break;
                 default:
-                    importSettingsTitle = Dynamo.Wpf.Properties.Resources.SplashScreenImportSettings;
                     errorDescription = Dynamo.Wpf.Properties.Resources.ImportPreferencesInfo;
                     break;
             }
@@ -342,7 +335,7 @@ namespace Dynamo.UI.Views
             {
                 await webView.CoreWebView2.ExecuteScriptAsync("window.setImportStatus({" +
                 $"status: {(int)importStatus}," +
-                $"importSettingsTitle: \"Import Settings\"," +
+                $"importSettingsTitle: \"{importSettingsTitle}\"," +
                 $"errorDescription: \"{errorDescription}\"" + "})");
             }
         }
@@ -370,7 +363,7 @@ namespace Dynamo.UI.Views
                 await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
                    $"welcomeToDynamoTitle: \"{Wpf.Properties.Resources.SplashScreenWelcomeToDynamo}\"," +
                    $"launchTitle: \"{Wpf.Properties.Resources.SplashScreenLaunchTitle}\"," +
-                   $"importSettingsTitle: \"Import Settings\"," +
+                   $"importSettingsTitle: \"{Wpf.Properties.Resources.ImportSettingsDialogTitle}\"," +
                    $"showScreenAgainLabel: \"{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}\"," +
                    $"importSettingsTooltipDescription: \"{Wpf.Properties.Resources.ImportPreferencesInfo}\"" + "})");
             }
