@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using SharpDX.Text;
 
 namespace Dynamo.Tests.Core
 {
@@ -59,6 +60,19 @@ namespace Dynamo.Tests.Core
             //Passing a non-string property
             resourceNames = new string[] { "TestInt" };
             Assert.Throws<InvalidOperationException>(() => ResourceLoader.Load(typeof(TestResource), "TestInt"));
+        }
+        /// <summary>
+        /// Test the Hash class
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void HashTest()
+        {
+            var testStr = "Test";
+
+            var filename = Hash.GetHashFilenameFromString(testStr);
+
+            Assert.AreEqual("640ab2bae07bedc4c163f679a746f7ab7fb5d1fa", filename);
         }
     }
 }
