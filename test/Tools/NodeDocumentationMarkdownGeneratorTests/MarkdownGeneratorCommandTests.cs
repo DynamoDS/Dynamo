@@ -491,7 +491,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
             var originalOutDir = new DirectoryInfo(Path.Combine(toolsTestFilesDirectory, originalOutDirName));
 
             var targetMdFile = "CoreNodeModels.HigherOrder.Map.md";
-            var renamedTargetMdFile = "9f025a24dfd6ba7c48fa2aae3b2de4dc55bffefc.md";
+            var renamedTargetMdFile = "SVLKFMPW6YIPCHS5TA2H3KJQQTSPUZOGUBWJG3VEPVFVB7DMGFDQ.md";
 
             tempDirectory = CreateTempOutputDirectory();
             Assert.That(tempDirectory.Exists);
@@ -527,9 +527,9 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             var expectedFileNames = new List<string>
             {
-                "9f025a24dfd6ba7c48fa2aae3b2de4dc55bffefc.md",
-                "a59af38c09c453c044bf71005801411da91022a7.md",
-                "d2c757f59d3747af7b432dab748f472c3632de14.md",
+                "FGRJU5ZIMM4EKNHFEXZGHJTKI73262KTH4CSUBI2IEXVH46TACRA.md",
+                "HEG35EENB6LZZUAB4OKNCYCDHDTBEF7IR2YWCH7I4EOIQPFOJGFQ.md",
+                "SVLKFMPW6YIPCHS5TA2H3KJQQTSPUZOGUBWJG3VEPVFVB7DMGFDQ.md",
                 "list.rank.md",
                 "loopwhile.md"
             };

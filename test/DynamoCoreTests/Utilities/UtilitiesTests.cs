@@ -72,7 +72,7 @@ namespace Dynamo.Tests.Core
 
             var filename = Hash.GetHashFilenameFromString(testStr);
 
-            Assert.AreEqual("640ab2bae07bedc4c163f679a746f7ab7fb5d1fa", filename);
+            Assert.AreEqual("KMXKVPMVOSEA3P3WXG4MYAEDFQQKN3ARHVUCFGKVBV5G4DZULYSQ", filename);
         }
     }
 }

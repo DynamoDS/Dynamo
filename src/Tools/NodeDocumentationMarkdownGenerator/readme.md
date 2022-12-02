@@ -17,7 +17,7 @@ There are three different high level commands:
 3. Used by package authors to stub out documentation for nodes.
 third parties can run the --FromPackage command to stub out empty markdown files in the /doc folder of their package. Then the package author can manually fill in the markddown file with detailed documentation, images, gifs etc.
 
-4. The name/path of a resulting documentaion package sometimes gets too long and causes problems for CI/CD and installers. The rename options can then be used on a case by case basis for shorten the base filename to a fixed length name based on a hash value. The MD file and all support files gets renamed and the original base name is added to the new MD file as a comment making it searchable.
+4. The name/path of a resulting documentaion package sometimes gets too long and causes problems for CI/CD and installers. The rename options can then be used on a case by case basis for shorten the base filename to a name based on a hash value. The MD file and all support files gets renamed and the original base name is added to the new MD file as a comment making it searchable.
 
 ## How to use the Generated Docs
 
@@ -103,9 +103,9 @@ frompackage
 ### rename - flags
 | Short name | Long name      | Optional | Description                                                                     |
 | ---------- | -------------- | :------: | ------------------------------------------------------------------------------- |
-| `-f`       | `--file`       |    ✅     | Input MD file. Renames a single MD file including any support files to a fix length (40 character) base file name.                                                            |
+| `-f`       | `--file`       |    ✅     | Input MD file. Renames a single MD file including any support files to a shorter length (~56-60 characters) base file name.                                                            |
 | `-d`       | `--directory`  |    ✅     | Input directory. Inspects all MD files in a directory and renames all MD files with a base name longer that maxlength (see below).   |
-| `-m`       | `--maxlength`  |    ✅     | Max length of the base file name before renaming to a fix length (40 characters) base file name. Defaults to 50. |
+| `-m`       | `--maxlength`  |    ✅     | Max length of the base file name before renaming to a shorter length (~56-60 characters) base file name. Defaults to 70. |
 
 
 ### Rename examples
