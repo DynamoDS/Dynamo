@@ -1975,9 +1975,6 @@ Want to publish a different package?</value>
   <data name="StartPageShowSamples" xml:space="preserve">
     <value>Show Samples In Folder</value>
   </data>
-  <data name="StartPageStart" xml:space="preserve">
-    <value>Start</value>
-  </data>
   <data name="StartPageVideoTutorials" xml:space="preserve">
     <value>Video Tutorials</value>
     <comment>Start page | Link to videos</comment>
