@@ -774,13 +774,15 @@
                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
                                                 <!--Beta tag-->
                                                 <Label Grid.Column="2"
+                                                    Name="NodeRecommendationBetaTag"
                                                     Content="{x:Static p:Resources.PreferencesViewBetaTag}"
                                                     Background="{StaticResource SecondaryGray}"
                                                     Foreground="{StaticResource PreferencesWindowFontColor}"
                                                     Margin="10,-5,0,0"
                                                     FontSize="12"
-                                                    FontWeight="SemiBold">
-                                                    <Label.Resources>
+                                                    FontWeight="SemiBold"
+                                                    Visibility="{Binding NodeAutocompleteMachineLearningIsBeta, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <Label.Resources>
                                                         <Style TargetType="Border">
                                                             <Setter Property="CornerRadius" Value="10"></Setter>
                                                         </Style>
