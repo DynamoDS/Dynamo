@@ -41,6 +41,25 @@ namespace Dynamo.Graph.Workspaces
 
         private IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> historicalTraceData;
 
+        private bool graphRunInProgress;
+
+        /// <summary>
+        /// A flag which indicates whether Dynamo is currently running a graph.
+        /// This flag is set to true when execution starts and is set to false
+        /// when execution is completed.
+        /// </summary>
+        internal bool GraphRunInProgress
+        {
+            get { return graphRunInProgress; }
+            set
+            {
+                if (graphRunInProgress == value) return;
+
+                graphRunInProgress = value;
+                RaisePropertyChanged("GraphRunInProgress");
+            }
+        }
+
         /// <summary>
         ///     Returns <see cref="EngineController"/> object assosiated with thisPreloadedTraceData home workspace
         /// to coordinate the interactions between some DesignScript
@@ -186,10 +205,19 @@ namespace Dynamo.Graph.Workspaces
         public virtual void OnEvaluationStarted(EventArgs e)
         {
             this.HasRunWithoutCrash = false;
-            RunSettings.GraphIsRunning = true;
+            GraphRunInProgress = true;
 
-            var handler = EvaluationStarted;
-            if (handler != null) handler(this, e);
+            try
+            {
+                // Do not allow graph runs to be trigered from the EvaluationStarted event.
+                // Use a simple internal flag like ForceBlockRun (RunEnabled would notify WPF of changes and that would incur peformance penalties without any benefit)
+                RunSettings.ForceBlockRun = true;
+                EvaluationStarted?.Invoke(this, e);
+            }
+            finally
+            {
+                RunSettings.ForceBlockRun = false;
+            }
         }
 
         /// <summary>
@@ -205,7 +233,7 @@ namespace Dynamo.Graph.Workspaces
         public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
         {
             this.HasRunWithoutCrash = e.EvaluationSucceeded;
-            RunSettings.GraphIsRunning = false;
+            GraphRunInProgress = false;
             EvaluationCount++;
 
             var handler = EvaluationCompleted;

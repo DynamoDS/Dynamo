@@ -369,7 +369,7 @@ namespace DynamoCoreWpfTests
             viewExtension.OnOpenEvaluationStarted += (HomeWorkspaceModel hwm, EventArgs args) =>
             {
                 counter++;
-                Assert.IsFalse(hwm.RunSettings.RunEnabled);
+                Assert.IsTrue(hwm.GraphRunInProgress);
 
                 Assert.IsNotNull(hwm.EngineController);
                 Assert.IsFalse(hwm.EngineController.IsDisposed);
@@ -382,7 +382,7 @@ namespace DynamoCoreWpfTests
             viewExtension.OnOpenEvaluationEnded += (HomeWorkspaceModel hwm, EventArgs args) => {
                 counter++;
 
-                Assert.IsTrue(hwm.RunSettings.RunEnabled);
+                Assert.IsFalse(hwm.GraphRunInProgress);
                 Assert.AreEqual(controller, hwm.EngineController);
             };
 

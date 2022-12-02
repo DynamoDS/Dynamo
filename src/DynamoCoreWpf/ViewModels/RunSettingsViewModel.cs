@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 using Dynamo.Core;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
@@ -150,7 +151,7 @@ namespace Dynamo.Wpf.ViewModels
             get
             {
                 return Model.RunEnabled && // Running graphs is enabled
-                    !Model.GraphIsRunning && // Not during graph execution
+                    !(workspaceViewModel.Model as HomeWorkspaceModel).GraphRunInProgress && // Not during graph execution
                     Model.RunType == RunType.Manual; // Is in manual mode
             }
         }
@@ -266,6 +267,8 @@ namespace Dynamo.Wpf.ViewModels
             Model.PropertyChanged += Model_PropertyChanged;
 
             this.workspaceViewModel = workspaceViewModel;
+            workspaceViewModel.Model.PropertyChanged += HomeWorkspaceModel_PropertyChanged;
+
             this.dynamoViewModel = dynamoViewModel;
 
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
@@ -293,6 +296,26 @@ namespace Dynamo.Wpf.ViewModels
         #region private and internal methods
 
         /// <summary>
+        /// Notifies all relevant Dynamo features (UI elements, commands) that the Graph exection has been enabled/disabled. 
+        /// </summary>
+        void NotifyOfGraphRunChanged()
+        {
+            RaisePropertyChanged("RunButtonEnabled");
+            RaisePropertyChanged("RunButtonToolTip");
+
+            if (Application.Current != null)
+            {
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    dynamoViewModel.ShowOpenDialogAndOpenResultCommand.RaiseCanExecuteChanged();
+                    dynamoViewModel.NewHomeWorkspaceCommand.RaiseCanExecuteChanged();
+                    dynamoViewModel.OpenRecentCommand.RaiseCanExecuteChanged();
+                    dynamoViewModel.CloseHomeWorkspaceCommand.RaiseCanExecuteChanged();
+                }));
+            }
+        }
+
+        /// <summary>
         /// Called when the RunSettings model has property changes.
         /// </summary>
         /// <param name="sender"></param>
@@ -302,23 +325,8 @@ namespace Dynamo.Wpf.ViewModels
             switch (e.PropertyName)
             {
                 case nameof(RunSettings.RunEnabled):
-                case nameof(RunSettings.GraphIsRunning):
-                    if (e.PropertyName == nameof(RunSettings.RunEnabled))
-                        RaisePropertyChanged("RunEnabled");
-
-                    RaisePropertyChanged("RunButtonEnabled");
-                    RaisePropertyChanged("RunButtonToolTip");
-
-                    if (Application.Current != null)
-                    {
-                        Application.Current.Dispatcher.Invoke(new Action(() =>
-                        {
-                            dynamoViewModel.ShowOpenDialogAndOpenResultCommand.RaiseCanExecuteChanged();
-                            dynamoViewModel.NewHomeWorkspaceCommand.RaiseCanExecuteChanged();
-                            dynamoViewModel.OpenRecentCommand.RaiseCanExecuteChanged();
-                            dynamoViewModel.CloseHomeWorkspaceCommand.RaiseCanExecuteChanged();
-                        }));
-                    }
+                    RaisePropertyChanged("RunEnabled");
+                    NotifyOfGraphRunChanged();
                     break;
                 case "RunPeriod":
                 case "RunType":
@@ -337,6 +345,16 @@ namespace Dynamo.Wpf.ViewModels
                     break;
                 case "RunTypesComboBoxToolTipIsEnabled":
                     RaisePropertyChanged("RunTypesComboBoxToolTip");
+                    break;
+            }
+        }
+
+        void HomeWorkspaceModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(HomeWorkspaceModel.GraphRunInProgress):
+                    NotifyOfGraphRunChanged();
                     break;
             }
         }

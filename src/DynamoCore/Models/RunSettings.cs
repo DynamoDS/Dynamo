@@ -24,7 +24,6 @@ namespace Dynamo.Models
         private int runPeriod;
         private RunType runType;
         private bool runEnabled;
-        private bool graphIsRunning;
         private bool runTypesEnabled;
 
         /// <summary>
@@ -83,23 +82,6 @@ namespace Dynamo.Models
 
                 runEnabled = value;
                 RaisePropertyChangeWithDebug("RunEnabled");
-            }
-        }
-
-        /// <summary>
-        /// A flag which indicates whether Dynamo is currently running a graph.
-        /// This flag is set to true when execution starts and is set to false
-        /// when execution is completed.
-        /// </summary>
-        internal bool GraphIsRunning
-        {
-            get { return graphIsRunning; }
-            set
-            {
-                if (graphIsRunning == value) return;
-
-                graphIsRunning = value;
-                RaisePropertyChangeWithDebug("GraphIsRunning");
             }
         }
 
