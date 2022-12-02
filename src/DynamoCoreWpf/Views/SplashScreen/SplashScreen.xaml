@@ -5,11 +5,9 @@
         Width="654"
         Height="452"
         WindowStartupLocation="CenterScreen"
-        WindowStyle="None"
-        AllowsTransparency="True"
+        Style="{DynamicResource DynamoWindowStyle}"
         Background="Transparent">
-
-    <Grid Margin="20" x:Name="ShadowGrid" Background="White">
+    <Grid x:Name="ShadowGrid" Background="White">
         <Grid.Effect>
             <DropShadowEffect BlurRadius="15" Direction="-90"
                               RenderingBias="Quality" ShadowDepth="2"/>

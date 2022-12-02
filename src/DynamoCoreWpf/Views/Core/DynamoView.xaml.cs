@@ -37,7 +37,6 @@ using Dynamo.ViewModels;
 using Dynamo.Views;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Authentication;
-using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
@@ -1502,7 +1501,7 @@ namespace Dynamo.Controls
             newDialog.ShowDialog();
         }
 
-        private bool PerformShutdownSequenceOnViewModel()
+        internal bool PerformShutdownSequenceOnViewModel()
         {
             // Test cases that make use of views (e.g. recorded tests) have 
             // their own tear down logic as part of the test set-up (mainly 
@@ -1640,6 +1639,84 @@ namespace Dynamo.Controls
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
         }
+
+        /*
+        internal void WindowClosed()
+        {
+            dynamoViewModel.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
+            dynamoViewModel.RequestViewOperation -= DynamoViewModelRequestViewOperation;
+
+            //PACKAGE MANAGER
+            dynamoViewModel.RequestPackagePublishDialog -= DynamoViewModelRequestRequestPackageManagerPublish;
+            dynamoViewModel.RequestPackageManagerSearchDialog -= DynamoViewModelRequestShowPackageManagerSearch;
+
+            //FUNCTION NAME PROMPT
+            dynamoViewModel.Model.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
+
+            //Preset Name Prompt
+            dynamoViewModel.Model.RequestPresetsNamePrompt -= DynamoViewModelRequestPresetNamePrompt;
+            dynamoViewModel.RequestPresetsWarningPrompt -= DynamoViewModelRequestPresetWarningPrompt;
+
+            dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
+            dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;
+            dynamoViewModel.RequestSave3DImage -= DynamoViewModelRequestSave3DImage;
+
+            dynamoViewModel.SidebarClosed -= DynamoViewModelSidebarClosed;
+
+            DynamoSelection.Instance.Selection.CollectionChanged -= Selection_CollectionChanged;
+
+            dynamoViewModel.RequestUserSaveWorkflow -= DynamoViewModelRequestUserSaveWorkflow;
+            GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
+
+            if (dynamoViewModel.Model != null)
+            {
+                dynamoViewModel.Model.RequestsCrashPrompt -= Controller_RequestsCrashPrompt;
+                dynamoViewModel.Model.RequestTaskDialog -= Controller_RequestTaskDialog;
+                dynamoViewModel.Model.ClipBoard.CollectionChanged -= ClipBoard_CollectionChanged;
+            }
+
+            //ABOUT WINDOW
+            dynamoViewModel.RequestAboutWindow -= DynamoViewModelRequestAboutWindow;
+
+            //first all view extensions have their shutdown methods called
+            //when this view is finally disposed, dispose will be called on them.
+            foreach (var ext in viewExtensionManager.ViewExtensions)
+            {
+                if (ext is ILogSource logSource)
+                {
+                    logSource.MessageLogged -= Log;
+                }
+
+                if (ext is INotificationSource notificationSource)
+                {
+                    notificationSource.NotificationLogged -= LogNotification;
+                }
+
+                try
+                {
+                    ext.Shutdown();
+                }
+                catch (Exception exc)
+                {
+                    Log($"{ext.Name} :  {exc.Message} during shutdown");
+                }
+            }
+
+
+            viewExtensionManager.MessageLogged -= Log;
+            BackgroundPreview = null;
+            background_grid.Children.Clear();
+
+            //COMMANDS
+            this.dynamoViewModel.RequestPaste -= OnRequestPaste;
+            this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
+            this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
+            this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
+            DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckTestFlags;
+
+            this.Dispose();
+            sharedViewExtensionLoadedParams?.Dispose();
+        }*/
 
         // the key press event is being intercepted before it can get to
         // the active workspace. This code simply grabs the key presses and

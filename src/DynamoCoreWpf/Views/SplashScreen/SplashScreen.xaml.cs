@@ -442,7 +442,19 @@ namespace Dynamo.UI.Views
                 Application.Current.Shutdown();
                 Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);
             }
+            else if (this is SplashScreen)
+            {
+                //dynamoView.Close();
+                //this.close();
+                dynamoView.PerformShutdownSequenceOnViewModel();
+            }
         }
+
+        /*
+        private void WindowClosing(object sender, CancelEventArgs e)
+        {
+            dynamoView.WindowClosed();
+        }*/
 
         protected override void OnClosed(EventArgs e)
         {
