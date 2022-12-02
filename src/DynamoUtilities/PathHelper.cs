@@ -101,7 +101,7 @@ namespace DynamoUtilities
                 DirectoryInfo dInfo = new DirectoryInfo(folderPath);
                 if (dInfo == null)
                     return false;
-                var accessControlList = dInfo.GetAccessControl(AccessControlSections.All);
+                var accessControlList = dInfo.GetAccessControl();
                 if (accessControlList == null)
                     return false;
                 var accessRules = accessControlList.GetAccessRules(true, true,
@@ -147,7 +147,7 @@ namespace DynamoUtilities
                 DirectoryInfo dInfo = new DirectoryInfo(folderPath);
                 if (dInfo == null)
                     return false;
-                var accessControlList = dInfo.GetAccessControl(AccessControlSections.All);
+                var accessControlList = dInfo.GetAccessControl();
                 if (accessControlList == null)
                     return false;
 
