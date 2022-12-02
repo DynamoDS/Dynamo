@@ -779,7 +779,7 @@
                                                     Background="{StaticResource SecondaryGray}"
                                                     Foreground="{StaticResource PreferencesWindowFontColor}"
                                                     Margin="10,-5,0,0"
-                                                    FontSize="12"
+                                                    FontSize="10"
                                                     FontWeight="SemiBold"
                                                     Visibility="{Binding NodeAutocompleteMachineLearningIsBeta, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                 <Label.Resources>
