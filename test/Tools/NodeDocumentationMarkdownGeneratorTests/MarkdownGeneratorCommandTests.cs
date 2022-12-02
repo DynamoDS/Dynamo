@@ -483,6 +483,75 @@ namespace NodeDocumentationMarkdownGeneratorTests
             Assert.IsTrue(Program.ReferenceAssemblyPaths.Select(x => new FileInfo(x).Name).Contains("SampleLibraryUI.dll"));
         }
 
+        [Test]
+        public void CanRenameFile()
+        {
+            // Arrange
+            var originalOutDirName = "fallback_docs";
+            var originalOutDir = new DirectoryInfo(Path.Combine(toolsTestFilesDirectory, originalOutDirName));
+
+            var targetMdFile = "CoreNodeModels.HigherOrder.Map.md";
+            var renamedTargetMdFile = "9f025a24dfd6ba7c48fa2aae3b2de4dc55bffefc.md";
+
+            tempDirectory = CreateTempOutputDirectory();
+            Assert.That(tempDirectory.Exists);
+
+            CopyFilesRecursively(originalOutDir, tempDirectory);
+            var mdFile = Path.Combine(tempDirectory.FullName, targetMdFile);
+            var renamedMdFile = Path.Combine(tempDirectory.FullName, renamedTargetMdFile);
+
+            // Act
+            var opts = new RenameOptions
+            {
+                InputMdFile = mdFile
+            };
+
+            RenameCommand.HandleRename(opts);
+
+            // Assert
+            var mdFiles = tempDirectory.GetFiles("*.md", SearchOption.TopDirectoryOnly)
+                .Select(x => x.Name);
+
+            var content = File.ReadAllText(renamedMdFile);
+
+            Assert.IsTrue(mdFiles.Contains(renamedTargetMdFile));
+            Assert.IsTrue(content.Contains("CoreNodeModels.HigherOrder.Map"));
+        }
+
+        [Test]
+        public void CanRenameFilesInADirectory()
+        {
+            // Arrange
+            var originalOutDirName = "fallback_docs";
+            var originalOutDir = new DirectoryInfo(Path.Combine(toolsTestFilesDirectory, originalOutDirName));
+
+            var expectedFileNames = new List<string>
+            {
+                "9f025a24dfd6ba7c48fa2aae3b2de4dc55bffefc.md",
+                "a59af38c09c453c044bf71005801411da91022a7.md",
+                "d2c757f59d3747af7b432dab748f472c3632de14.md",
+                "list.rank.md",
+                "loopwhile.md"
+            };
+
+            tempDirectory = CreateTempOutputDirectory();
+            Assert.That(tempDirectory.Exists);
+
+            CopyFilesRecursively(originalOutDir, tempDirectory);
+
+            // Act
+            var opts = new RenameOptions
+            {
+                InputMdDirectory = tempDirectory.FullName,
+                MaxLength = 15
+            };
+
+            RenameCommand.HandleRename(opts);
+
+            // Assert
+            CollectionAssert.AreEquivalent(expectedFileNames, tempDirectory.GetFiles().Select(x => x.Name));
+        }
+
         #region Helpers
         internal void AssertMdFileInfos(List<MdFileInfo> mdFileInfos, FileInfo[] coreNodeModelMdFiles)
         {
