@@ -18,16 +18,17 @@
         <ItemGroup>
             <TGZFiles Include="./*.tgz" />
         </ItemGroup>
+
         <ItemGroup>
-            <Reversed Include="@(TGZFiles)" />
+            <Reversed Include="@(TGZFiles->Reverse())" />
         </ItemGroup>
+
         <PropertyGroup>
-            <Last>%(Reversed.Identity)</Last>
+            <Last>%(TGZFiles.Identity)</Last>
         </PropertyGroup>
 
-        <Exec Command="tar -xzf @(TGZFiles)"></Exec>
+        <Exec Command="tar -xzf $(Last)"></Exec>
     </Target>
-
 	<ItemGroup>
 		<None Remove="package\package.json" />
 		<None Remove="package\README.md" />
