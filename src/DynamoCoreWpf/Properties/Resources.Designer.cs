@@ -8353,15 +8353,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start.
-        /// </summary>
-        public static string StartPageStart {
-            get {
-                return ResourceManager.GetString("StartPageStart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Video Tutorials.
         /// </summary>
         public static string StartPageVideoTutorials {

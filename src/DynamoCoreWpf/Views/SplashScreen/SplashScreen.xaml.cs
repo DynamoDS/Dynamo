@@ -293,7 +293,7 @@ namespace Dynamo.UI.Views
             var elapsedTime = loadingTimer.ElapsedMilliseconds;
             totalLoadingTime += elapsedTime;
             loadingTimer = Stopwatch.StartNew();
-            if (webView.CoreWebView2 != null)
+            if (webView != null && webView.CoreWebView2 != null)
             {
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties(\"{version}\",\"{loadingDescription}\", \"{barSize}%\", \"{Wpf.Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms\")");
             }
