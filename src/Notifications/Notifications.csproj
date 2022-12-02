@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<ImportGroup Label="PropertySheets">
 		<Import Project="$(SolutionDir)Config\CS_SDK.props" />
 	</ImportGroup>
@@ -10,18 +10,32 @@
 		<AssemblyName>Notifications</AssemblyName>
 	</PropertyGroup>
 
-	<Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
-		<Exec Command="npm install --prefix ./ @dynamods/notifications-center@latest" />
-	</Target>
+    <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+        <Exec Command="npm pack @dynamods/notifications-center@latest" />
+    </Target>
+
+    <Target Name="ExtractTGZFile" BeforeTargets="BeforeBuild">
+        <ItemGroup>
+            <TGZFiles Include="./*.tgz" />
+        </ItemGroup>
+        <ItemGroup>
+            <Reversed Include="@(TGZFiles)" />
+        </ItemGroup>
+        <PropertyGroup>
+            <Last>%(Reversed.Identity)</Last>
+        </PropertyGroup>
+
+        <Exec Command="tar -xzf @(TGZFiles)"></Exec>
+    </Target>
 
 	<ItemGroup>
-		<None Remove="node_modules\%40dynamods\package.json" />
-		<None Remove="node_modules\%40dynamods\README.md" />
+		<None Remove="package\package.json" />
+		<None Remove="package\README.md" />
 		<None Remove="View\NotificationUI.xaml" />
 	</ItemGroup>
 	<ItemGroup>
-		<EmbeddedResource Include="node_modules\@dynamods\notifications-center\build\index.bundle.js" />
-		<EmbeddedResource Include="node_modules\@dynamods\notifications-center\build\index.html" />
+		<EmbeddedResource Include="package\build\index.bundle.js" />
+		<EmbeddedResource Include="package\build\index.html" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />

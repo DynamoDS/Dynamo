@@ -261,6 +261,7 @@ namespace Dynamo.UI.Views
             webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
 
             var assembly = Assembly.GetExecutingAssembly();
+            var files = assembly.GetReferencedAssemblies();
 
             using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))
             using (StreamReader reader = new StreamReader(stream))

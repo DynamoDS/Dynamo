@@ -32,9 +32,13 @@
     </Target>
     
   <ItemGroup>
+    <None Remove="package\build\index.bundle.js" />
+    <None Remove="package\build\index.html" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="package\build\index.bundle.js" />
+    <EmbeddedResource Include="package\build\index.html" />
     <EmbeddedResource Include="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
 

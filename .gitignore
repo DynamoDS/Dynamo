@@ -106,3 +106,5 @@ test/core/migration/writetext.txt
 logo.png
 /src/DynamoCoreWpf/package
 dynamods-splash-screen-*.tgz
+/src/Notifications/package
+/src/Notifications/dynamods-notifications-center-*.tgz
