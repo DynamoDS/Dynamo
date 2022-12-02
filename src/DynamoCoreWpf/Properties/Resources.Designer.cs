@@ -8056,15 +8056,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to Import Settings.
-        /// </summary>
-        public static string SplashScreenFailedImportSettings {
-            get {
-                return ResourceManager.GetString("SplashScreenFailedImportSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Import Settings.
         /// </summary>
         public static string SplashScreenImportSettings {
@@ -8106,15 +8097,6 @@ namespace Dynamo.Wpf.Properties {
         public static string SplashScreenLoadingTimeLabel {
             get {
                 return ResourceManager.GetString("SplashScreenLoadingTimeLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Settings imported.
-        /// </summary>
-        public static string SplashScreenSettingsImported {
-            get {
-                return ResourceManager.GetString("SplashScreenSettingsImported", resourceCulture);
             }
         }
         

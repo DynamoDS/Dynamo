@@ -3418,9 +3418,6 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="GroupStyleFontSizeToolTip" xml:space="preserve">
     <value>Font size</value>
   </data>
-  <data name="SplashScreenFailedImportSettings" xml:space="preserve">
-    <value>Failed to Import Settings</value>
-  </data>
   <data name="SplashScreenImportSettings" xml:space="preserve">
     <value>Import Settings</value>
   </data>
@@ -3435,9 +3432,6 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="SplashScreenLoadingTimeLabel" xml:space="preserve">
     <value>Loading time</value>
-  </data>
-  <data name="SplashScreenSettingsImported" xml:space="preserve">
-    <value>Settings imported</value>
   </data>
   <data name="SplashScreenShowScreenAgainLabel" xml:space="preserve">
     <value>Don't show this again</value>
