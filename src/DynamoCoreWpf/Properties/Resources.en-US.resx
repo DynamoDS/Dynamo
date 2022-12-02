@@ -3322,7 +3322,7 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="HideNodesBelowSpecificConfidenceLevel" xml:space="preserve">
     <value>Hide nodes below a specified confidence level</value>
-  </data>    
+  </data>
   <data name="HideNodesBelowSpecificConfidenceLevelInfo" xml:space="preserve">
     <value>Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes.</value>
   </data>
@@ -3431,9 +3431,6 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="GroupStyleFontSizeToolTip" xml:space="preserve">
     <value>Font size</value>
   </data>
-  <data name="SplashScreenFailedImportSettings" xml:space="preserve">
-    <value>Failed to Import Settings</value>
-  </data>
   <data name="SplashScreenImportSettings" xml:space="preserve">
     <value>Import Settings</value>
   </data>
@@ -3449,11 +3446,8 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="SplashScreenLoadingTimeLabel" xml:space="preserve">
     <value>Loading time</value>
   </data>
-  <data name="SplashScreenSettingsImported" xml:space="preserve">
-    <value>Settings imported</value>
-  </data>
   <data name="SplashScreenShowScreenAgainLabel" xml:space="preserve">
-    <value>Don’t show this screen again</value>
+    <value>Don't show this again</value>
   </data>
   <data name="SplashScreenSignIn" xml:space="preserve">
     <value>Sign In</value>

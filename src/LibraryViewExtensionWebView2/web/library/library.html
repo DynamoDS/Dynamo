@@ -9,10 +9,6 @@
     <!-- input::-ms-clear setting is to disable unnecessary close button of search bar -->
     <style>
 
-        html {
-            font-size: 14px !important;
-        }
-
         body {
             padding: 0;
             margin: 0;
@@ -236,6 +232,10 @@
              window.chrome.webview.postMessage(JSON.stringify({"func":"logEventsToInstrumentation","data":["Filter-Categories",categories.join(",")]}));
         });
 
+
+        function setLibraryFontSize(fontSize) {
+            document.getElementsByTagName('html')[0].style.fontSize = fontSize + 'px';
+        }
 
         //This will find a specific div in the html and then it will apply the glow animation on it
         function highlightLibraryItem(itemName, enableHighlight) {
