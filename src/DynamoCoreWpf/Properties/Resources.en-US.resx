@@ -3322,7 +3322,7 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="HideNodesBelowSpecificConfidenceLevel" xml:space="preserve">
     <value>Hide nodes below a specified confidence level</value>
-  </data>    
+  </data>
   <data name="HideNodesBelowSpecificConfidenceLevelInfo" xml:space="preserve">
     <value>Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes.</value>
   </data>
@@ -3484,5 +3484,8 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="PreferencesWindowShowPreviewBubblesTooltip" xml:space="preserve">
     <value>When toggled on, a preview of the node’s output will be displayed when hovering over the bottom of a node.</value>
+  </data>
+  <data name="PreferencesViewBetaTag" xml:space="preserve">
+    <value>Beta</value>
   </data>
 </root>

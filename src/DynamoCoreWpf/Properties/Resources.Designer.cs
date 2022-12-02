@@ -6500,6 +6500,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Beta.
+        /// </summary>
+        public static string PreferencesViewBetaTag {
+            get {
+                return ResourceManager.GetString("PreferencesViewBetaTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default Python Engine.
         /// </summary>
         public static string PreferencesViewDefaultPythonEngine {

@@ -282,7 +282,7 @@
                         Click="DisplaySuggestions"
                         Grid.Column="1">
                     <Button.ToolTip>
-                        <ToolTip Content="{x:Static p:Resources.NodeAutocomplete}"
+                        <ToolTip Content="{x:Static p:Resources.PreferencesNodeAutocompleteMethod}"
                                  Style="{StaticResource GenericToolTipLight}" />
                     </Button.ToolTip>
                     <Button.Style>
