@@ -1,4 +1,4 @@
-﻿using Dynamo.Utilities;
+using Dynamo.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -73,6 +73,13 @@ namespace DynamoUtilities
             }
         }
 
+        /// <summary>
+        /// Check feature flag value, if not exist, return defaultval
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="featureFlagKey"></param>
+        /// <param name="defaultval"></param>
+        /// <returns></returns>
         internal T CheckFeatureFlag<T>(string featureFlagKey, T defaultval)
         {
             if(!(defaultval is bool || defaultval is string)){

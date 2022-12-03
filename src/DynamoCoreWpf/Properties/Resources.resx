@@ -3463,4 +3463,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="PreferencesWindowShowPreviewBubblesTooltip" xml:space="preserve">
     <value>When toggled on, a preview of the node’s output will be displayed when hovering over the bottom of a node.</value>
   </data>
+  <data name="PreferencesViewBetaTag" xml:space="preserve">
+    <value>Beta</value>
+  </data>
 </root>

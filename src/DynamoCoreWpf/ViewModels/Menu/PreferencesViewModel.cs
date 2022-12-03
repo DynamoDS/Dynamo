@@ -878,6 +878,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls if the the Node autocomplete Machine Learning option is beta from feature flag
+        /// </summary>
+        public bool NodeAutocompleteMachineLearningIsBeta
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags.CheckFeatureFlag("NodeAutocompleteMachineLearningIsBeta", false);
+            }
+        }
+
+        /// <summary>
         /// Contains the numbers of result of the ML recommendation
         /// </summary>
         public int MLRecommendationNumberOfResults
