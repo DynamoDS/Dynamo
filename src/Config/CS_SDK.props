@@ -15,7 +15,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <UICulture>en-US</UICulture>
-    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <!--GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute-->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TestProjectDefaults Condition="$(MSBuildProjectDirectory.Contains('test'))">true</TestProjectDefaults>
     <TestProjectDefaults Condition=" '$(TestProjectDefaults)' == '' ">false</TestProjectDefaults>
@@ -63,6 +63,11 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemDefinitionGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <ProjectReference>
+      <Private>false</Private>
+    </ProjectReference>
+  </ItemDefinitionGroup>
   <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
     <TestDependenciesPath>$(OutputPath)\..\..\..\test\test_dependencies</TestDependenciesPath>
   </PropertyGroup>

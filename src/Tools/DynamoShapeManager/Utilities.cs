@@ -175,7 +175,7 @@ namespace DynamoShapeManager
         /// 
         [Obsolete("Please use version of this method which accepts precise collection of version objects.")]
 #if NET6_0_OR_GREATER
-        [SupportedOSPlatform("windows")]
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
         public static LibraryVersion GetInstalledAsmVersion(List<LibraryVersion> versions, ref string location, string rootFolder)
         {
@@ -252,7 +252,7 @@ namespace DynamoShapeManager
         /// <returns>Returns System.Version of ASM if any installed ASM is found, 
         /// or null otherwise.</returns>
 #if NET6_0_OR_GREATER
-        [SupportedOSPlatform("windows")]
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
         public static Version GetInstalledAsmVersion2(IEnumerable<Version> versions, ref string location, string rootFolder, Func<string, IEnumerable> getASMInstallsFunc = null)
         {
@@ -559,7 +559,7 @@ namespace DynamoShapeManager
 
 
 #if NET6_0_OR_GREATER
-        [SupportedOSPlatform("windows")]
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
         private static IEnumerable GetAsmInstallations(string rootFolder)
         {
@@ -597,7 +597,7 @@ namespace DynamoShapeManager
         /// <param name="majorVersion">Major version of ASM found in the specified location.</param>
         /// <returns>Whether the files represent a complete ASM installation or not.</returns>
 #if NET6_0_OR_GREATER
-        [SupportedOSPlatform("windows")]
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
         internal static bool IsASMInstallationComplete(IEnumerable<string> filePaths, int majorVersion)
         {

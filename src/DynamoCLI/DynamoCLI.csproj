@@ -9,10 +9,10 @@
     <RootNamespace>DynamoCLI</RootNamespace>
     <AssemblyName>DynamoCLI</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup Condition="$(Platform.Contains('Windows'))" >
+  <PropertyGroup Condition="$(Platform.Contains('Windows'))">
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
-  <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
+  <PropertyGroup Condition="$(Platform.Contains('Linux'))">
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
