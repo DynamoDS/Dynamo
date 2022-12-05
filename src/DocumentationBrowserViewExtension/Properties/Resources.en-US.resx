@@ -180,7 +180,7 @@
     <comment>Header in Node Info table</comment>
   </data>
   <data name="NodeDocumentationOriginalNodeName" xml:space="preserve">
-    <value>Original Node Name</value>
+    <value>Node Type</value>
     <comment>Header in Node Info table</comment>
   </data>
   <data name="NodeDocumentationOutputs" xml:space="preserve">
