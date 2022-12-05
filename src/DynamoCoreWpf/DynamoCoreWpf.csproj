@@ -21,7 +21,7 @@
     <Target Name="ExtractTGZFile" BeforeTargets="BeforeBuild">
         <!--Locates the .tgz files-->
         <ItemGroup>
-            <TGZFiles Include="./*.tgz" />
+            <TGZFiles Include="./dynamods-splash-screen-*.tgz" />
         </ItemGroup>
 
         <!--Reverse the order of the files to get the higher version-->
@@ -36,6 +36,9 @@
 
         <!--Extracts the file to /package-->
         <Exec Command="tar -xzf $(Last)"></Exec>
+
+        <!--Deletes the tgz file-->
+        <Delete Files="$(Last)" />
     </Target>
     
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<ImportGroup Label="PropertySheets">
 		<Import Project="$(SolutionDir)Config\CS_SDK.props" />
 	</ImportGroup>
@@ -18,7 +18,7 @@
     <Target Name="ExtractTGZFile" BeforeTargets="BeforeBuild">
         <!--Locates the .tgz files-->
         <ItemGroup>
-            <TGZFiles Include="./*.tgz" />
+            <TGZFiles Include="./dynamods-notifications-center-*.tgz" />
         </ItemGroup>
 
         <!--Reverse the order of the files to get the higher version-->
@@ -33,6 +33,9 @@
 
         <!--Extracts the file to /package-->
         <Exec Command="tar -xzf $(Last)"></Exec>
+
+        <!--Deletes the tgz file-->
+        <Delete Files="$(Last)" />
     </Target>
 	<ItemGroup>
 		<None Remove="package\package.json" />
