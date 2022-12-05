@@ -645,7 +645,6 @@ namespace DynamoShapeManager
                 }
 #endif
                 var asmVersion = FileVersionInfo.GetVersionInfo(ASMFilePath);
-                System.Console.WriteLine("asmVersion " + $"{asmVersion.FileMajorPart}{asmVersion.FileMinorPart}{asmVersion.FileBuildPart}");
                 var libGversion = new Version(asmVersion.FileMajorPart, asmVersion.FileMinorPart, asmVersion.FileBuildPart);
                 return libGversion;
             }
