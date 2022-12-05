@@ -10,7 +10,6 @@
     <AssemblyName>CoreNodeModels</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
     <DocumentationFile>$(OutputPath)\CoreNodeModels.XML</DocumentationFile>
-    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ReferenceCopyLocalPaths>

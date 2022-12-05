@@ -15,7 +15,6 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <UICulture>en-US</UICulture>
-    <!--GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute-->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TestProjectDefaults Condition="$(MSBuildProjectDirectory.Contains('test'))">true</TestProjectDefaults>
     <TestProjectDefaults Condition=" '$(TestProjectDefaults)' == '' ">false</TestProjectDefaults>
@@ -37,7 +36,7 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('Windows'))" >
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
@@ -47,6 +46,7 @@
     <IntermediateOutputPath>obj\$(TargetFramework)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('NET60'))" >
+    <!--Needed to copy nuget package assemblies to output folder. Anet6 issue-->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <ItemGroup>
