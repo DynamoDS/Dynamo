@@ -19,7 +19,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             }
             else
             {
-                Console.WriteLine("Invalid options: You can rename a single file using the file option\nor renaming multiple files in a directory (if they are longer than max length)\nusing the directory option");
+                Console.WriteLine("Invalid options: You can rename a single file using the file option\nor rename multiple files in a directory (if they are longer than max length)\nusing the directory option");
             }
         }
 
@@ -50,7 +50,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             content = content.Replace(baseName, shortName);
             var path = Path.GetDirectoryName(file);
             var newFile = Path.Combine(path, shortName + ".md");
-            File.WriteAllText(newFile, $"<!--- {baseName} --->\n" + content);
+            File.WriteAllText(newFile, $"<!--- {baseName} --->\n<!--- {shortName} --->\n" + content);
             File.Delete(file);
 
             var allSupportFiles = Directory.GetFiles(path, baseName + ".*", SearchOption.TopDirectoryOnly)

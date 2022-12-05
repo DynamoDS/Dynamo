@@ -35,10 +35,10 @@ namespace Dynamo.Utilities
         /// Get a valid filename for a hash
         /// </summary>
         /// <param name="bytes">hash as a byte array</param>
-        /// <returns>hash a valid filename string</returns>
+        /// <returns>hash as a valid filename string</returns>
         internal static string GetFilenameFromHash(byte[] bytes)
         {
-            return ToBase32String(bytes, false);
+            return ToBase32String(bytes);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Dynamo.Utilities
         /// https://github.com/google/google-authenticator/wiki/Key-Uri-Format indicates that padding SHOULD be omitted.
         /// To meet both requirements, you can omit padding when required.
         /// </remarks>
-        internal static string ToBase32String(byte[] input, bool addPadding = true)
+        internal static string ToBase32String(byte[] input, bool addPadding = false)
         {
             if (input == null || input.Length == 0)
             {
