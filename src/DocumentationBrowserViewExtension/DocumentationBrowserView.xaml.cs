@@ -23,9 +23,8 @@ namespace Dynamo.DocumentationBrowser
         private readonly DocumentationBrowserViewModel viewModel;
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
-
-        private bool MessageIsHandled { get; set; }
-        private const int MESSAGE_HANDLE_DELAY = 2000;
+        private bool hasBeenInitialized;
+        private ScriptingObject comScriptingObject;
 
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
@@ -121,6 +120,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 if (this.documentationBrowser.CoreWebView2 != null)
                     this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
+
             }
             catch (Exception)
             {
@@ -130,21 +130,33 @@ namespace Dynamo.DocumentationBrowser
 
         async void InitializeAsync()
         {
-            if (!string.IsNullOrEmpty(WebBrowserUserDataFolder))
+            // Only initialize once 
+            if (!hasBeenInitialized)
             {
-                //This indicates in which location will be created the WebView2 cache folder
-                documentationBrowser.CreationProperties = new CoreWebView2CreationProperties()
+                if (!string.IsNullOrEmpty(WebBrowserUserDataFolder))
                 {
-                    UserDataFolder = WebBrowserUserDataFolder
-                };
+                    //This indicates in which location will be created the WebView2 cache folder
+                    documentationBrowser.CreationProperties = new CoreWebView2CreationProperties()
+                    {
+                        UserDataFolder = WebBrowserUserDataFolder
+                    };
+                }
+
+                //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
+                await documentationBrowser.EnsureCoreWebView2Async();
+
+                //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
+                this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, FallbackDirectoryName, CoreWebView2HostResourceAccessKind.DenyCors);
+                this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
+                comScriptingObject = new ScriptingObject(this.viewModel);
+                //register the interop object into the browser.
+                this.documentationBrowser.CoreWebView2.AddHostObjectToScript("bridge", comScriptingObject);
+
+                this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
+                this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
+
+                hasBeenInitialized = true;
             }
-
-            //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
-            await documentationBrowser.EnsureCoreWebView2Async();
-
-            //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
-            this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, FallbackDirectoryName, CoreWebView2HostResourceAccessKind.DenyCors);
-            this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
 
             string htmlContent = this.viewModel.GetContent();
 
@@ -152,37 +164,14 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.documentationBrowser.NavigateToString(htmlContent);
             }));
-
-            this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
-            this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
-            this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
         }
 
-        // TODO: This event fires twice causing issues down the line
         private void CoreWebView2OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
-            if (MessageIsHandled) return;
             var message = e.TryGetWebMessageAsString();
-            if (string.Equals(message, "insert"))
-            {
-                // Insert the graph inside the current worskspace
-                this.viewModel.InsertGraph();
-            }
-            else if (message.Contains("expandcollapse"))
-            {
-                var breadCrumbText = message.Split('-')[1];
-                this.viewModel.CollapseExpandPackage(breadCrumbText);
-            }
-            MessageIsHandled = true;
-            HandleInsert();
+            comScriptingObject.Notify(message);
         }
-
-        private async void HandleInsert()
-        {
-            await Task.Delay(MESSAGE_HANDLE_DELAY);
-            MessageIsHandled = false;
-        }
-
+        
         /// <summary>
         /// Dispose function for DocumentationBrowser
         /// </summary>
