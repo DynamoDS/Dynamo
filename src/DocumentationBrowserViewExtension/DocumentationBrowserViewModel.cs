@@ -444,9 +444,10 @@ namespace Dynamo.DocumentationBrowser
                 object[] parametersInvokeScript = new object[] { "collapseExpandPackage", jsParameters };
 
                 ResourceUtilities.ExecuteJSFunction(DynamoView, parametersInvokeScript);
-
+                
                 // After we have reached the desired section, we can exit the method
-                if (section.Equals(breadBrumbsArray[i]))
+                // Also check if we have more than one occurrence, i.e Geometry / Modifiers / Geometry 
+                if (section.Equals(breadBrumbsArray[i]) && breadBrumbsArray.Count(x => x.Equals(section)) == 1)
                     return;
             }
         }
