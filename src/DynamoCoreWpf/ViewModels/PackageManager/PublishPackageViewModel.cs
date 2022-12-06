@@ -1337,7 +1337,7 @@ namespace Dynamo.PackageManager
                 .GetFiles
                 (
                     directoryPath,
-                    "*.md",
+                    "*",
                     SearchOption.AllDirectories
                 ).ToList();
         }

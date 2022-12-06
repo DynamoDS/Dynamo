@@ -34,11 +34,8 @@ namespace Dynamo.PackageManager
         /// <param name="pathRemapper">For modifying custom node paths</param>
         internal PackageDirectoryBuilder(IFileSystem fileSystem, IPathRemapper pathRemapper) 
         {
-            if (fileSystem == null) throw new ArgumentNullException("fileSystem");
-            if (pathRemapper == null) throw new ArgumentNullException("pathRemapper");
-
-            this.fileSystem = fileSystem;
-            this.pathRemapper = pathRemapper;
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.pathRemapper = pathRemapper ?? throw new ArgumentNullException(nameof(pathRemapper));
         }
 
         #region Public Class Operational Methods
