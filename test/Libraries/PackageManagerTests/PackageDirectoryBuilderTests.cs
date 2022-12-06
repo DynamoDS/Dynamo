@@ -176,7 +176,7 @@ namespace Dynamo.PackageManager.Tests
         public void BuildPackageDirectory_CopiesMarkDownFiles()
         {
             var files = new[] { @"C:\file1.dyn", @"C:\file2.dyn" };
-            var markdownFiles = new[] { @"C:\file1.md", @"C:\file2.md" };
+            var markdownFiles = new[] { @"C:\file1.md", @"C:\file2.md", @"C:\image\file3.jpg" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
 
             var fs = new RecordedFileSystem((fn) => files.Contains(fn));
@@ -190,12 +190,13 @@ namespace Dynamo.PackageManager.Tests
 
             var mdDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.DocumentationDirectoryName);
 
-            Assert.AreEqual(4, fs.CopiedFiles.Count());
+            Assert.AreEqual(5, fs.CopiedFiles.Count());
             Assert.AreEqual(0, fs.DeletedFiles.Count());
             Assert.AreEqual(0, fs.DeletedDirectories.Count());
 
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(mdDir, "file1.md"))));
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(mdDir, "file2.md"))));
+            Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(mdDir, "file3.jpg"))));
         }
 
         [Test]
