@@ -139,7 +139,7 @@ namespace Dynamo.PackageManager.Tests
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
 
-            Assert.Throws<Exception>(() => pub.NewPackageUpload(pkg, pkgsDir, files, handle));
+            Assert.Throws<Exception>(() => pub.NewPackageUpload(pkg, pkgsDir, files, Enumerable.Empty<string>(), handle));
         }
 
         [Test]
