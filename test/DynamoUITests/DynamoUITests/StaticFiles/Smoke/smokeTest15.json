@@ -1,0 +1,14 @@
+{
+  "SmokeTest15": {
+    "fileMenu": {
+      "accessibilityId": "fileMenu",
+      "Menus": [
+        {
+          "text": "Import Library...",
+          "accessibilityId": "importLibrary"
+        }
+      ]
+    },
+    "dllRoute": "ImportDll\\WebUiDllTest.dll"
+  }
+}

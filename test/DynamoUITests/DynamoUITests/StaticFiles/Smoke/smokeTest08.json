@@ -1,0 +1,16 @@
+{
+  "SmokeTest08": {
+    "FileContent": "",
+    "FilesPathStatic": "StaticFiles",
+    "FilesPathDynamo": "DynamoFiles",
+    "FileTypeAutomatic": "Auto",
+    "FileTypeManual": "Man",
+    "TextForFirstCodeBlock": "\"A very long text that will be shown on the node preview.\"",
+    "TextForSecondCodeBlock": "x;",
+    "FileToOpen": [
+      {
+        "FileName": "FileToTest_Auto_1.dyn"
+      }
+    ]
+  }
+}

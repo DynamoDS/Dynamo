@@ -1,0 +1,31 @@
+{
+  "SmokeTest07": {
+    "FilePath": "FileTest.txt",
+    "FileContent": "",
+    "FilesPathStatic": "StaticFiles",
+    "FilesPathDynamo": "DynamoFiles",
+    "FileTypeAutomatic": "Auto",
+    "FileTypeManual": "Man",
+    "FileToOpen": [
+      {
+        "FileName": "FileToTest_Auto_1.dyn"
+      },
+      {
+        "FileName": "FileToTest_Auto_2.dyn"
+      },
+      {
+        "FileName": "FileToTest_Auto_3.dyn"
+      },
+      {
+        "FileName": "FileToTest_Manual_1.dyn"
+      },
+      {
+        "FileName": "FileToTest_Manual_2.dyn"
+      },
+      {
+        "FileName": "FileToTest_Manual_3.dyn"
+      }
+
+    ]
+  }
+}

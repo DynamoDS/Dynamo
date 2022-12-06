@@ -1,0 +1,30 @@
+{
+  "SmokeTestGuidedTours": {
+    "ClosePopupButtonAutomationId": "CloseButton",
+    "NextButtonAutomationId": "NextButton",
+    "StartTourButtonAutomationId": "StartTourButton",
+    "HelpSubMenuItem":"Interactive Guides",
+    "Guides": [
+      {
+        "Name": "Get Started",
+        "Popups": [
+          {
+            "Name": "welcome",
+            "Title": "Welcome To Dynamo",
+            "Content": ""
+          },
+          {
+            "Name": "exit",
+            "Title": "",
+            "Content": "You can return to this guide later from the Help menu."
+          },
+          {
+            "Name": "survey",
+            "Title": "",
+            "Content": "Finished"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,276 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "FileToTest_Manual_2",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "This is the content of the new Manual file 2.",
+      "Id": "186841c2350f4afdbe1b47a25321fc96",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d7c6c83158f14ff8aee00b3110f2533f",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.AppendText@string,string",
+      "Id": "7d4297b7940d4e29849fe180fe14b1c2",
+      "Inputs": [
+        {
+          "Id": "c5468e9bfda14d65ab177e742ddaceb1",
+          "Name": "filePath",
+          "Description": "Path to write to\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "85daf1c5e8cf4a58a5d3f322ce70c300",
+          "Name": "text",
+          "Description": "Text content\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0412564893064267ba7899476a8b4a0f",
+          "Name": "void",
+          "Description": "void",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Append the text content to a file specified by the path\n\nFileSystem.AppendText (filePath: string, text: string): void"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.FileExists@string",
+      "Id": "8e19bf0d080f40fe97cecf5974e779ac",
+      "Inputs": [
+        {
+          "Id": "8d38498d10d44dcba7eea740d08abbec",
+          "Name": "path",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0af3cf0fe6ed4eb4a6209f8b8a235556",
+          "Name": "bool",
+          "Description": "bool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Determines if a file exists at the given path.\n\nFileSystem.FileExists (path: string): bool"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.If, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "c8e3ad06124844e5b9bcbcb9ced2754a",
+      "Inputs": [
+        {
+          "Id": "0e9ff5fb386c4757a5574cee6f652cde",
+          "Name": "test",
+          "Description": "Test block",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "172542dc2a5248cba563bfc8a8d988a4",
+          "Name": "true",
+          "Description": "True block",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4c1258cc75644218ad4beba9ab062c1b",
+          "Name": "false",
+          "Description": "False block",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1937dc28be624589acecc914d91714a6",
+          "Name": "result",
+          "Description": "result",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Conditional statement"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "FileTest.txt",
+      "Id": "b342ad85ee9246cb8353ad25bc0e1057",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "416892075e1f45d297368215f48b275c",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "d7c6c83158f14ff8aee00b3110f2533f",
+      "End": "85daf1c5e8cf4a58a5d3f322ce70c300",
+      "Id": "43722ebebb7c4be28b8824fad71e9ca7"
+    },
+    {
+      "Start": "0412564893064267ba7899476a8b4a0f",
+      "End": "172542dc2a5248cba563bfc8a8d988a4",
+      "Id": "1f676ced438246b186234f7cce41edd7"
+    },
+    {
+      "Start": "0af3cf0fe6ed4eb4a6209f8b8a235556",
+      "End": "0e9ff5fb386c4757a5574cee6f652cde",
+      "Id": "b472b9be9f494893b616a75e023d5fa0"
+    },
+    {
+      "Start": "416892075e1f45d297368215f48b275c",
+      "End": "8d38498d10d44dcba7eea740d08abbec",
+      "Id": "083eaf52eeda44c0838b8d1e4675b6b3"
+    },
+    {
+      "Start": "416892075e1f45d297368215f48b275c",
+      "End": "c5468e9bfda14d65ab177e742ddaceb1",
+      "Id": "7d090c7f70004b7ca3117a8252388c2e"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.2.0.4377",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "contentOfFile",
+        "Id": "186841c2350f4afdbe1b47a25321fc96",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 27.5,
+        "Y": 208.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "FileSystem.AppendText",
+        "Id": "7d4297b7940d4e29849fe180fe14b1c2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 271.5,
+        "Y": 384.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "FileSystem.FileExists",
+        "Id": "8e19bf0d080f40fe97cecf5974e779ac",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 261.5,
+        "Y": 166.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "If",
+        "Id": "c8e3ad06124844e5b9bcbcb9ced2754a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 493.5,
+        "Y": 234.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "b342ad85ee9246cb8353ad25bc0e1057",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 24.5,
+        "Y": 27.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

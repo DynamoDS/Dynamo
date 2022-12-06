@@ -1,0 +1,6 @@
+{
+  "SmokeTest03": {
+    "InstrumentationDialogIsDisplayed": "true",
+    "InstrumentationDialogIsNotDisplayed": "true"
+  }
+}

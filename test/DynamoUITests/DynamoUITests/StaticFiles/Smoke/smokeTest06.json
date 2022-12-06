@@ -1,0 +1,76 @@
+{
+  "SmokeTest06": {
+    "nodeText": "boolean",
+    "nodeList": "topControl",
+    "logScroller": "LogScroller",
+    "panLeftMenu": {
+      "accessibilityId": "viewMenu",
+      "menus": [
+        {
+          "text": "Pan",
+          "accessibilityId": "panMenu",
+          "subMenus": [
+            {
+              "text": "Pan Left (Mouse wheel drag left)",
+              "accessibilityId": ""
+            }
+          ]
+        }
+      ]
+    },
+    "panRightMenu": {
+      "accessibilityId": "viewMenu",
+      "menus": [
+        {
+          "text": "Pan",
+          "accessibilityId": "panMenu",
+          "subMenus": [
+            {
+              "text": "Pan Right (Mouse wheel drag right)",
+              "accessibilityId": ""
+            }
+          ]
+        }
+      ]
+    },
+    "panUpMenu": {
+      "accessibilityId": "viewMenu",
+      "menus": [
+        {
+          "text": "Pan",
+          "accessibilityId": "panMenu",
+          "subMenus": [
+            {
+              "text": "Pan Up (Mouse wheel drag up)",
+              "accessibilityId": ""
+            }
+          ]
+        }
+      ]
+    },
+    "panDownMenu": {
+      "accessibilityId": "viewMenu",
+      "menus": [
+        {
+          "text": "Pan",
+          "accessibilityId": "panMenu",
+          "subMenus": [
+            {
+              "text": "Pan Down (Mouse wheel drag down)",
+              "accessibilityId": ""
+            }
+          ]
+        }
+      ]
+    },
+    "showConsoleMenu": {
+      "accessibilityId": "viewMenu",
+      "menus": [
+        {
+          "text": "Show Console",
+          "accessibilityId": ""
+        }
+      ]
+    }
+  }
+}

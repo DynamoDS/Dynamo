@@ -1,0 +1,198 @@
+{
+  "SmokeTest02": {
+    "DynamoMenu": {
+      "accessibilityId": "dynamoMenu",
+      "Menus": [
+        {
+          "text": "About",
+          "accessibilityId": ""
+        },
+        {
+          "text": "Preferences...",
+          "accessibilityId": "preferencesOption"
+        },
+        {
+          "text": "Exit Dynamo",
+          "accessibilityId": "exit"
+        }
+      ]
+    },
+    "FileMenu": {
+      "accessibilityId": "fileMenu",
+      "Menus": [
+        {
+          "text": "New",
+          "accessibilityId": "newMenu"
+        },
+        {
+          "text": "Open...",
+          "accessibilityId": "openButton"
+        },
+        {
+          "text": "Open Recent Files",
+          "accessibilityId": ""
+        },
+        {
+          "text": "Save",
+          "accessibilityId": "saveThisButton"
+        },
+        {
+          "text": "Save As...",
+          "accessibilityId": "saveButton"
+        },
+        {
+          "text": "Import Library...",
+          "accessibilityId": "importLibrary"
+        },
+        {
+          "text": "Export",
+          "accessibilityId": "exportMenu"
+        }
+      ]
+    },
+    "EditMenu": {
+      "accessibilityId": "editMenu",
+      "Menus": [
+        {
+          "text": "Undo",
+          "accessibilityId": "undo",
+          "IsHighlightedOnStart": false
+        },
+        {
+          "text": "Redo",
+          "accessibilityId": "redo",
+          "IsHighlightedOnStart": false
+        },
+        {
+          "text": "Copy",
+          "accessibilityId": "copy",
+          "IsHighlightedOnStart": false
+        },
+        {
+          "text": "Paste",
+          "accessibilityId": "paste",
+          "IsHighlightedOnStart": false
+        },
+        {
+          "text": "Create Note",
+          "accessibilityId": "noteMenuItem",
+          "IsHighlightedOnStart": true
+        },
+        {
+          "text": "Create Group",
+          "accessibilityId": "noteMenuAnnotation",
+          "IsHighlightedOnStart": false
+        },
+        {
+          "text": "Ungroup",
+          "accessibilityId": "ungroupGroup",
+          "IsHighlightedOnStart": false
+        },
+        {
+          "text": "Select All",
+          "accessibilityId": "selectAll",
+          "IsHighlightedOnStart": true
+        },
+        {
+          "text": "Delete Selected",
+          "accessibilityId": "deleteSelected",
+          "IsHighlightedOnStart": false
+        },
+        {
+          "text": "Align Selection",
+          "accessibilityId": "Align",
+          "IsHighlightedOnStart": true
+        },
+        {
+          "text": "Cleanup Node Layout",
+          "accessibilityId": "GraphAutoLayout",
+          "IsHighlightedOnStart": true
+        }
+      ]
+    },
+    "ViewMenu": {
+      "accessibilityId": "viewMenu",
+      "Menus": [
+        {
+          "text": "Zoom",
+          "accessibilityId": "zoomMenu"
+        },
+        {
+          "text": "Pan",
+          "accessibilityId": "panMenu"
+        },
+        {
+          "text": "Show Console",
+          "accessibilityId": ""
+        },
+        {
+          "text": "Connectors",
+          "accessibilityId": "connectorMenu"
+        },
+        {
+          "text": "Background 3D Preview",
+          "accessibilityId": "background3dMenu"
+        }
+      ]
+    },
+    "PackagesMenu": {
+      "accessibilityId": "PackageManagerMenu",
+      "Menus": [
+        {
+          "text": "Search for a Package...",
+          "accessibilityId": "showPMSearch"
+        },
+        {
+          "text": "Publish New Package...",
+          "accessibilityId": "publishNewPackage"
+        },
+        {
+          "text": "Publish Selected Nodes...",
+          "accessibilityId": "publishSelected"
+        },
+        {
+          "text": "Publish Current Workspace...",
+          "accessibilityId": "publishCurrent"
+        }
+      ]
+    },
+    "HelpMenu": {
+      "text": "Help",
+      "accessibilityId": "",
+      "Menus": [
+        {
+          "text": "Getting Started",
+          "accessibilityId": ""
+        },
+        {
+          "text": "Interactive Guides",
+          "accessibilityId": "InteractiveGuidesMenuItem"
+        },
+        {
+          "text": "Samples",
+          "accessibilityId": "SamplesMenu"
+        },
+        {
+          "text": "Dynamo Dictionary",
+          "accessibilityId": ""
+        },
+        {
+          "text": "Dynamo Website",
+          "accessibilityId": ""
+        },
+        {
+          "text": "Dynamo Project Wiki",
+          "accessibilityId": ""
+        },
+        {
+          "text": "Display Start Page",
+          "accessibilityId": ""
+        },
+        {
+          "text": "Report A Bug",
+          "accessibilityId": ""
+        }
+      ]
+    }
+  }
+}

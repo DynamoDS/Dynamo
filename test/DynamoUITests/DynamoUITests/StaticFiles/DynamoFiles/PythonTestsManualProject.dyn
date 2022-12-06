@@ -1,0 +1,166 @@
+{
+  "Uuid": "0a74f382-3634-48f1-8558-c76f0b3e574c",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "ManualProjectPath",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 5.0,
+      "Id": "5e9fb4d19b514ab896c12cbb93856c52",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c2d1178cb7bd4afa8d9c2e6059d23c8f",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\n\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\nt = IN[0]\r\n\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = t * 10",
+      "VariableInputPorts": true,
+      "Id": "13168edcbaad4d0cb2a8440ab7d4b779",
+      "Inputs": [
+        {
+          "Id": "71e4b441cf564ecb88cf70f29fdc12a8",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "26140a748b044cf69fa8de6afe17cd3b",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "73d81d6c1d274da9a8d3ba6699240fd2",
+      "Inputs": [
+        {
+          "Id": "c71bd2d82d5d44dfae2f015a1ee05836",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5e77d41aed6b450dadc3cacf8adf095e",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "c2d1178cb7bd4afa8d9c2e6059d23c8f",
+      "End": "71e4b441cf564ecb88cf70f29fdc12a8",
+      "Id": "c07d9bfce6e644d98918083fdba727f5"
+    },
+    {
+      "Start": "26140a748b044cf69fa8de6afe17cd3b",
+      "End": "c71bd2d82d5d44dfae2f015a1ee05836",
+      "Id": "f1365108675e40bd81dedcab494fa741"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.3.0.4901",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "5e9fb4d19b514ab896c12cbb93856c52",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 422.0,
+        "Y": 275.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "13168edcbaad4d0cb2a8440ab7d4b779",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 584.0,
+        "Y": 275.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "73d81d6c1d274da9a8d3ba6699240fd2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 808.0,
+        "Y": 275.5
+      }
+    ],
+    "Annotations": [],
+    "X": -295.0,
+    "Y": -33.0,
+    "Zoom": 1.0
+  }
+}

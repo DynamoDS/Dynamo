@@ -1,0 +1,89 @@
+{
+  "SmokeTestPreferencesWindow": {
+    "TextForCodeBlock": "100000",
+    "WrongGeometryScaleText": "Your inputs lie outside of the allowable modeling range",
+    "TempFolderPath": "C:\\temp\\",
+    "ExportImageFormat": ".png",
+    "Tabs": [
+      {
+        "TabName": "General",
+        "TabAutomationId": "",
+        "TabControls": [
+          {
+            "ControlName": "Language",
+            "ControlAutomationId": "",
+            "ControlErrorMsg": ""        
+          }
+        ]
+      },
+      {
+        "TabName": "Features",
+        "TabAutomationId": "",
+        "TabControls": [
+          {
+            "ControlName": "Python",
+            "ControlAutomationId": "PythonExpander",
+            "ControlErrorMsg": "",
+            "SubControls": [
+              {
+                "SubControlName": "Default Python Engine",
+                "SubControlAutomationId": ""
+              }
+            ]
+          },
+          {
+            "ControlName": "Experimental",
+            "ControlAutomationId": "ExperimentalExpander",
+            "ControlErrorMsg": "",
+            "SubControls": [
+            ]
+          }
+        ]
+      },
+      {
+        "TabName": "Visual Settings",
+        "TabAutomationId": "",
+        "TabControls": [
+          {
+            "ControlName": "Render Precision",
+            "ControlAutomationId": "Precision",
+            "ControlErrorMsg": "The Render Precision functionality is NOT working",
+            "SubControls": [
+              {
+                "SubControlName": "Slider",
+                "SubControlAutomationId": "Thumb"
+              }
+            ]
+          },
+          {
+            "ControlName": "Display Settings",
+            "ControlAutomationId": "Display",
+            "ControlErrorMsg": "The Display Settings functionality is NOT working",
+            "SubControls": [
+            ]
+          }
+        ]
+      },
+      {
+        "TabName": "Package Manager",
+        "TabAutomationId": "",
+        "TabControls": [
+          {
+            "ControlName": "Node and Package Paths",
+            "ControlAutomationId": "PackagePathsExpander",
+            "ControlErrorMsg": "Package Paths Error",
+            "SubControls": [
+            ]
+          },
+          {
+            "ControlName": "Installed Packages",
+            "ControlAutomationId": "InstalledPackagesExpander",
+            "ControlErrorMsg": "InstalledPackages error",
+            "SubControls": [
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

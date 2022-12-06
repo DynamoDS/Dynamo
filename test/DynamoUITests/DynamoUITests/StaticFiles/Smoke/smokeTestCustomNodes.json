@@ -1,0 +1,6 @@
+{
+  "SmokeTestCustomNodes": {
+    "CustomNodeFilePath": "DynamoFiles\\MultiplyByTwo.dyf",
+    "CustomNodeProjectFilePath": "DynamoFiles\\CustomNodeProject.dyn"
+  }
+}

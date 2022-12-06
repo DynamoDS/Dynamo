@@ -1,0 +1,199 @@
+{
+  "Uuid": "5de47da2-537c-435c-9b86-4feb972e6120",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "FileUsingAmpersandPackage",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "a5429857-6217-41d8-b77f-1c90f4cdf8dd",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "5993dbcc57d444be9e2ffd91ffb98c98",
+      "Inputs": [
+        {
+          "Id": "7cb34fbecf3c46619a4c3da807b7f458",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b08c2d83b8864a70bdcf13b1091a145e",
+          "Name": "radius",
+          "Description": "double\nDefault value : 10",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4554b41c04f147fca32d5d4b7b5fc0a5",
+          "Name": "polyCurve",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "5288d2f3-2393-4b77-9178-c1bda79e1b24",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "5c0e37cfea034ee083f5e9514b5180f3",
+      "Inputs": [
+        {
+          "Id": "4035c0bb4854493881882790cba38fb6",
+          "Name": "polyCurve",
+          "Description": "PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a306cb54992142d7b02c921b5ce5b040",
+          "Name": "polyCurve",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "bc4c004fbba64dc6a503beb1079fa6df",
+      "Inputs": [
+        {
+          "Id": "7377980c2cd741178fb72f1a4299a8c4",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "85adc7f7c9cd4b28b0fae28fed611345",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "4554b41c04f147fca32d5d4b7b5fc0a5",
+      "End": "4035c0bb4854493881882790cba38fb6",
+      "Id": "79e41ea6aa504fd0a2c35628e5aafd23"
+    },
+    {
+      "Start": "a306cb54992142d7b02c921b5ce5b040",
+      "End": "7377980c2cd741178fb72f1a4299a8c4",
+      "Id": "2ba67f41998d4affae26b764d06db12e"
+    }
+  ],
+  "Dependencies": [
+    "a5429857-6217-41d8-b77f-1c90f4cdf8dd",
+    "5288d2f3-2393-4b77-9178-c1bda79e1b24"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Ampersand",
+      "Version": "2019.5.20",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "5993dbcc57d444be9e2ffd91ffb98c98",
+        "5c0e37cfea034ee083f5e9514b5180f3"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.4.0.6040",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "Id": "5993dbcc57d444be9e2ffd91ffb98c98",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "[&] Misc.Pentagram",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 118.5,
+        "Y": 32.0
+      },
+      {
+        "Id": "5c0e37cfea034ee083f5e9514b5180f3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "[&] PolyCurve.ConvexHull",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 121.5,
+        "Y": 149.0
+      },
+      {
+        "Id": "bc4c004fbba64dc6a503beb1079fa6df",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 115.5,
+        "Y": 247.5
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

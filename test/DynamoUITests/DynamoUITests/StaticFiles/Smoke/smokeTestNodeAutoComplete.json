@@ -1,0 +1,10 @@
+{
+  "SmokeTestNodeAutoComplete": {
+    "NodeAutocompleteToggle": "NodeAutocompleteToggle",
+    "MenuOption": "_Preferences...",
+    "FeaturesTab": "Features",
+    "ExperimentalExpander": "Experimental",
+    "CloseButton": "CloseButton",
+    "WatchResult": "Circle(Normal = Vector(X = 0.000, Y = 0.000, Z = 1.000, Length = 1.000), CenterPoint = Point(X = 30.000, Y = 50.000, Z = 0.000), Radius = 50.000)"
+  }
+}

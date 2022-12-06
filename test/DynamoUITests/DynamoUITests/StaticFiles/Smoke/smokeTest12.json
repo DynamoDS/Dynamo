@@ -1,0 +1,73 @@
+{
+  "SmokeTest12": {
+    "searchPackagesMenu": {
+      "accessibilityId": "PackageManagerMenu",
+      "Menus": [
+        {
+          "text": "Search for a Package...",
+          "accessibilityId": "showPMSearch"
+        }
+      ]
+    },
+
+    "PackagesList": [
+      {
+        "Name": "Clockwork for Dynamo 2.x",
+        "SearchTerm": "Clockwork for Dynamo 2.x",
+        "HasDependency": true
+      },
+      {
+        "Name": "LunchBox for Dynamo",
+        "SearchTerm": "LunchBox for Dynamo",
+        "HasDependency": false
+      }
+    ],
+    "LoadCommandsListPass2": [
+      {
+        "CommandId": "InstallButton",
+        "MessageBox1Id": "",
+        "MessageBox2Id": ""
+      }
+    ],
+    "LoadCommandsListPass1": [
+      {
+        "CommandId": "InstallButton",
+        "MessageBox1Id": "Cannot Load Package",
+        "MessageBox2Id": ""
+      },
+      {
+        "CommandId": "",
+        "MessageBox1Id": "",
+        "MessageBox2Id": ""
+      }
+    ],
+    "DeleteCommandsList": [
+      {
+        "CommandId": "UninstallButton",
+        "MessageBox1Id": "Unloading Package",
+        "MessageBox2Id": ""
+      },
+      {
+        "CommandId": "UninstallButton",
+        "MessageBox1Id": "Deleting Package",
+        "MessageBox2Id": "Deleting Package"
+      },
+      {
+        "CommandId": "",
+        "MessageBox1Id": "",
+        "MessageBox2Id": ""
+      },
+      {
+        "CommandId": "UninstallButton",
+        "MessageBox1Id": "Deleting Package",
+        "MessageBox2Id": "Deleting Package"
+      },
+      {
+        "CommandId": "UninstallButton",
+        "MessageBox1Id": "Deleting Package",
+        "MessageBox2Id": ""
+      }
+    ]
+
+  }
+}

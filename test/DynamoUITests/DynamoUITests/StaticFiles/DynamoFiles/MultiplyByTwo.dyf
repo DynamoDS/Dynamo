@@ -1,0 +1,208 @@
+{
+  "Uuid": "be333ac8-7c2c-4780-9a0b-9abbd546d6a6",
+  "IsCustomNode": true,
+  "Category": "Custom Nodes",
+  "Description": "Multiplies input number by two",
+  "Name": "MultiplyByTwo",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "",
+      "Id": "1953058b18ee48309d24af1813e05001",
+      "Inputs": [
+        {
+          "Id": "20af2968f6ea41e498ef71305769be94",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "*@var[]..[],var[]..[]",
+      "Id": "d882c84663024a32af27df283d483766",
+      "Inputs": [
+        {
+          "Id": "f56e3ee9fe6a4a978d5387a1d607164f",
+          "Name": "x",
+          "Description": "x value.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2e4794852f4c40679e925b94c7763227",
+          "Name": "y",
+          "Description": "y value.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "513119a81dab4068bf655e500bbd5660",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Multiplies x by y.\n\n* (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 2.0,
+      "Id": "6a3d20e6e19a4b8380bc0563646887a8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ce4f1d1f90d04d51826a263328c02452",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "input",
+        "TypeName": "int",
+        "TypeRank": 0,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "614097b42aba471788148c188133445f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1af704ad257141d1808337ab1c60a25c",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "513119a81dab4068bf655e500bbd5660",
+      "End": "20af2968f6ea41e498ef71305769be94",
+      "Id": "bb67e9b33e1c416e93c55a030b30b375"
+    },
+    {
+      "Start": "ce4f1d1f90d04d51826a263328c02452",
+      "End": "2e4794852f4c40679e925b94c7763227",
+      "Id": "9f93ee27ef1d40c4b1de61b709351162"
+    },
+    {
+      "Start": "1af704ad257141d1808337ab1c60a25c",
+      "End": "f56e3ee9fe6a4a978d5387a1d607164f",
+      "Id": "2e3cabed08e349e49ae3eda32a74f1a2"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.3.0.4525",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "1953058b18ee48309d24af1813e05001",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 605.0,
+        "Y": 182.57166666666669
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "*",
+        "Id": "d882c84663024a32af27df283d483766",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 336.0,
+        "Y": 182.57166666666669
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "6a3d20e6e19a4b8380bc0563646887a8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 124.0,
+        "Y": 237.57166666666669
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "614097b42aba471788148c188133445f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 124.0,
+        "Y": 153.57166666666669
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

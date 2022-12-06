@@ -1,0 +1,23 @@
+{
+  "SmokeTest09": {
+    "FileImagePath": "StaticFiles\\DynamoFiles\\Car.jpg",
+    "TextToFind": "Manuel Saldivar",
+    "ValueToCompare": "37",
+    "TextForCodeBlock": "edge = 37;",
+    "TextForNote": "SmokeTest9",
+    "NumberToTest": "5252",
+    "RangeNumberStart": "1",
+    "RangeNumberEnd": "10",
+    "RangeNumberStep": "1",
+    "ValueToMoveBar": "40",
+    "FileExcelToTest": "StaticFiles\\DynamoFiles\\People.xlsx",
+    "LineNumbersTest": "TestOne = \"TestOne\";\nTestTwo = \"TestTwo\";\nTest3 = \"Test3\";",
+    "ShowLineNumbers": "Show CodeBlockNode Line Numbers",
+    "DynamoMenu": "dynamoMenu",
+    "PreferencesOption": "_Preferences...",
+    "VisualSettingsTab": "Visual Settings",
+    "DisplaySettingsExpander": "Display Settings",
+    "CBN_LN_Toggle": "CodeBlockNodeLineNumbersToggle",
+    "CloseButton": "CloseButton"
+  }
+}

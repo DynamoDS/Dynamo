@@ -1,0 +1,5 @@
+{
+  "SmokeTest16": {
+    "ScriptPath": "DynamoFiles\\st16_script.txt"
+  }
+}

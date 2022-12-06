@@ -1,0 +1,7 @@
+{
+  "SmokeTestPythonNodes": {
+    "AutoProjectPath": "DynamoFiles\\PythonTestsAutoProject.dyn",
+    "ManualProjectPath": "DynamoFiles\\PythonTestsManualProject.dyn",
+    "ScriptPath": "DynamoFiles\\PythonTestsScript.py"
+  }
+}
