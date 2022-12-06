@@ -1330,7 +1330,7 @@ namespace Dynamo.PackageManager
             }
             MarkdownFilesDirectory = directoryPath;
 
-            // Append all md files from the directory to files list without affect the package content UI
+            // Store all files paths from the markdown directory to list without affecting the package content UI
             MarkdownFiles = Directory
                 .GetFiles
                 (
