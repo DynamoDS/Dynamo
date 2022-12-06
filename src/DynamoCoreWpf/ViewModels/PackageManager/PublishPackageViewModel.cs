@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -656,6 +656,11 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Optional Markdown files list
+        /// </summary>
+        internal IEnumerable<string> MarkdownFiles;
+
+        /// <summary>
         /// Dependencies property </summary>
         /// <value>
         /// Computed and manually added package dependencies</value>
@@ -748,6 +753,7 @@ namespace Dynamo.PackageManager
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
             Dependencies.CollectionChanged += DependenciesOnCollectionChanged;
             Assemblies = new List<PackageAssembly>();
+            MarkdownFiles = new List<string>();
             PropertyChanged += ThisPropertyChanged;
             RefreshPackageContents();
             RefreshDependencyNames();
@@ -829,6 +835,7 @@ namespace Dynamo.PackageManager
             this.IsNewVersion = false;
             this.MoreExpanded = false;
             this.ClearPackageContents();
+            this.ClearMarkdownDirectory();
             this.UploadState = PackageUploadHandle.State.Ready;
             this.AdditionalFiles = new ObservableCollection<string>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
@@ -1081,6 +1088,8 @@ namespace Dynamo.PackageManager
 
             // union with additional files
             files = files.Union(AdditionalFiles);
+            // union with optional markdown files from directory
+            files = files.Union(MarkdownFiles);
             files = files.Union(Assemblies.Select(x => x.Assembly.Location));
 
             return files;
@@ -1322,6 +1331,15 @@ namespace Dynamo.PackageManager
                 return;
             }
             MarkdownFilesDirectory = directoryPath;
+
+            // Append all md files from the directory to files list without affect the package content UI
+            MarkdownFiles = Directory
+                .GetFiles
+                (
+                    directoryPath,
+                    "*.md",
+                    SearchOption.AllDirectories
+                ).ToList();
         }
 
         /// <summary>

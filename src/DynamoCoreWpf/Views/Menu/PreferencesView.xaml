@@ -546,6 +546,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <!--This Grid row contains the Python section-->
@@ -701,16 +702,15 @@
                                     </StackPanel>
                                 </Grid>
                             </Expander>
-                            
-                            <!--This Grid row contains the Experimental section-->
-                            <Expander x:Name="ExperimentalExpander" 
+
+                            <!--This Grid row contains the Node Autocomplete section-->
+                            <Expander x:Name="NodeAutocompleteExpander" 
                                       Style="{StaticResource MenuExpanderStyle}" 
-                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExperimentalExpander}"
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=NodeAutocompleteExpander}"
                                       Grid.Row="2"
-                                      Header="{x:Static p:Resources.PreferencesViewExperimentalLabel}">
+                                      Header="{x:Static p:Resources.PreferencesViewNodeAutocomplete}">
                                 <Grid>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
@@ -722,42 +722,42 @@
                                                       VerticalAlignment="Center"
                                                       IsChecked="{Binding Path=NodeAutocompleteIsChecked}"
                                                       Style="{StaticResource EllipseToggleButton1}"/>
-                                        <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoComplete}" 
+                                        <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoComplete}"
+                                               FontWeight="Normal"
                                                Margin="10,0,0,0"
                                                VerticalAlignment="Center"
                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        <Label HorizontalAlignment="Left" 
-                                               Name="Titleinfo" 
-                                               VerticalAlignment="Center" 
-                                               Height="26" 
-                                               Width="53" 
-                                               Margin="0 3 0 0" 
-                                               MouseLeftButtonUp="OnMoreInfoClicked">
-                                            <Label.ToolTip>
+                                        <Image Name="MLNodeAutocompleteToolTip"
+                                                        Margin="5,3,0,0"
+                                                        Width="14"
+                                                        Height="14"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Style="{StaticResource QuestionIcon}"
+                                                        ToolTipService.ShowDuration="30000">
+                                            <Image.ToolTip>
                                                 <ToolTip Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
-                                            </Label.ToolTip>
-                                            <Label.Content>
-                                                <fa:ImageAwesome Width="15" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Left" Icon="QuestionCircleOutline" Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            </Label.Content>
-                                        </Label>
+                                            </Image.ToolTip>
+                                        </Image>
                                     </StackPanel>
-                                    
+
                                     <StackPanel Orientation="Horizontal" Margin="0,-5,0,0" Grid.Row="1">
                                         <!-- This Grid contains controls for selecting the Node autocomplete method -->
                                         <Grid Margin="60,0,0,0">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
+                                                <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
                                             <Label Grid.Row="0"
-                                                Margin="-8,0,10,0"
-                                                FontWeight="Normal"
+                                                Margin="-8,15,10,3"                                               
                                                 Content="{x:Static p:Resources.PreferencesNodeAutocompleteMethod}" 
                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                             <Grid Grid.Row="1">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition x:Name="colObjectType" Width="Auto"/>
                                                     <ColumnDefinition x:Name="colMachineLearning" Width="Auto"/>
+                                                    <ColumnDefinition x:Name="colMLbetaTag" Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <RadioButton Grid.Column="0" 
                                                      MinWidth="90"
@@ -770,13 +770,123 @@
                                                      MinWidth="90"
                                                      Style="{StaticResource RunSettingsRadioButtons}"
                                                      IsChecked="{Binding Path=NodeAutocompleteMachineLearningIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
-                                                     Content="{x:Static p:Resources.MachineLearning}"
+                                                     Content="{x:Static p:Resources.RecommendedNodes}"
                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
+                                                <!--Beta tag-->
+                                                <Label Grid.Column="2"
+                                                    Name="NodeRecommendationBetaTag"
+                                                    Content="{x:Static p:Resources.PreferencesViewBetaTag}"
+                                                    Background="{StaticResource SecondaryGray}"
+                                                    Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                    Margin="10,-5,0,0"
+                                                    FontSize="10"
+                                                    FontWeight="SemiBold"
+                                                    Visibility="{Binding NodeAutocompleteMachineLearningIsBeta, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <Label.Resources>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="CornerRadius" Value="10"></Setter>
+                                                        </Style>
+                                                    </Label.Resources>
+                                                </Label>
+                                            </Grid>
+                                            <Grid Grid.Row="2">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <StackPanel Margin="-10,5,0,0" Orientation="Horizontal" Grid.Row="0">
+                                                    <Label Content="{x:Static p:Resources.MLRecommendationNumberOfResults}"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        FontWeight="Normal"/>
+                                                    <TextBox Name="MLRecommendationResultsNumber"                                                        
+                                                        HorizontalAlignment="Left"
+                                                        Margin="2,0,0,0"
+                                                        MinWidth="25"
+                                                        Height="20"
+                                                        FontWeight="Regular"
+                                                        Text="{Binding MLRecommendationNumberOfResults}"
+                                                        Background="{StaticResource PreferencesWindowBackgroundColor}"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        BorderThickness="0,0,0,2"
+                                                        PreviewTextInput="NumberValidationTextBox"
+                                                        IsEnabled="{Binding Path=NodeAutocompleteMachineLearningIsChecked}"/>
+                                                </StackPanel>
+                                                <StackPanel Margin="-60,10,0,0" Orientation="Horizontal" Grid.Row="1">
+                                                    <ToggleButton Name="MLRecommendationConfidenceThresholdToogle"
+                                                        Width="{StaticResource ToggleButtonWidth}"
+                                                        Height="{StaticResource ToggleButtonHeight}"
+                                                        VerticalAlignment="Center"
+                                                        IsChecked="{Binding Path=HideNodesBelowSpecificConfidenceLevelIsChecked}"
+                                                        Style="{StaticResource EllipseToggleButton1}"
+                                                        IsEnabled="{Binding Path=EnableHideNodesToggle}"/>
+                                                    <Label Content="{x:Static p:Resources.HideNodesBelowSpecificConfidenceLevel}" 
+                                                        Margin="10,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        FontWeight="Regular"/>
+                                                    <Image Name="MLRecommendationConfidenceThresholdToolTip"
+                                                        Margin="5,3,0,0"
+                                                        Width="14"
+                                                        Height="14"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Style="{StaticResource QuestionIcon}"
+                                                        ToolTipService.ShowDuration="30000">
+                                                        <Image.ToolTip>
+                                                            <ToolTip Content="{x:Static p:Resources.HideNodesBelowSpecificConfidenceLevelInfo}" Style="{StaticResource GenericToolTipLight}"/>
+                                                        </Image.ToolTip>
+                                                    </Image>
+                                                </StackPanel>
+                                                <StackPanel Margin="-10,5,0,0" Orientation="Horizontal" Grid.Row="2">
+                                                    <Label Content="0%"
+                                                        Name="lblConfidenceLevelLabelStart"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        FontWeight="Regular"/>
+                                                    <Slider Width="300"
+                                                        Minimum="0"
+                                                        Maximum="100"
+                                                        Value="{Binding Path=MLRecommendationConfidenceLevel, Mode=TwoWay}"
+                                                        IsEnabled="{Binding Path=EnableConfidenceLevelSlider}"
+                                                        ValueChanged="sliderConfidenceLevel_ValueChanged">
+                                                    </Slider>
+                                                    <Label Content="100%" 
+                                                        Margin="0,-5,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        FontWeight="Regular"/>
+                                                </StackPanel>
+                                                <StackPanel Margin="-10,5,0,0" Orientation="Horizontal" Grid.Row="3">
+                                                    <Label
+                                                        Name="lblConfidenceLevel"
+                                                        Width="30"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalContentAlignment="Center"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        FontWeight="Regular"
+                                                        Content="{Binding Path=MLRecommendationConfidenceLevel, Mode=TwoWay}"/>
+                                                </StackPanel>
                                             </Grid>
                                         </Grid>
                                     </StackPanel>
+                                </Grid>
+                            </Expander>
+                            
+                            <!--This Grid row contains the Experimental section-->
+                            <Expander x:Name="ExperimentalExpander" 
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExperimentalExpander}"
+                                      Grid.Row="3"
+                                      Header="{x:Static p:Resources.PreferencesViewExperimentalLabel}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="2">
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
                                         <ToggleButton Name="EnableTSplineToggle"
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
@@ -833,7 +943,8 @@
                                                 Style="{StaticResource SolidButtonStyleSmaller}"      
                                                 HorizontalAlignment="Left"
                                                 Grid.Row="0"
-                                                Width="100"
+                                                MaxWidth="120"
+                                                MinWidth="100"
                                                 Margin="0,5,0,5"
                                                 Click="AddStyleButton_Click"
                                                 IsEnabled="{Binding IsEnabledAddStyleButton}"

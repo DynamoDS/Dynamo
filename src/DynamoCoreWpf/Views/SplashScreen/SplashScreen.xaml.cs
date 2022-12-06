@@ -155,7 +155,7 @@ namespace Dynamo.UI.Views
             {
                 SetImportStatus(ImportStatus.error);
             }
-            Analytics.TrackEvent(Actions.ImportSettings, Categories.SplashScreenOperations, isImported.ToString());
+            Analytics.TrackEvent(Actions.Import, Categories.SplashScreenOperations, isImported.ToString());
         }
 
         /// <summary>
@@ -191,7 +191,6 @@ namespace Dynamo.UI.Views
             DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
-            Application.Current.MainWindow = dynamoView;
             dynamoView.Show();
             dynamoView.Activate();
         }
@@ -258,6 +257,9 @@ namespace Dynamo.UI.Views
             await webView.EnsureCoreWebView2Async();
             // Context menu disabled
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            // Zoom control disabled
+            webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+
             var assembly = Assembly.GetExecutingAssembly();
 
             using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))
@@ -291,18 +293,18 @@ namespace Dynamo.UI.Views
             var elapsedTime = loadingTimer.ElapsedMilliseconds;
             totalLoadingTime += elapsedTime;
             loadingTimer = Stopwatch.StartNew();
-            if (webView.CoreWebView2 != null)
+            if (webView?.CoreWebView2 != null)
             {
-                await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', '{Wpf.Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms')");
+                await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties(\"{version}\",\"{loadingDescription}\", \"{barSize}%\", \"{Wpf.Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms\")");
             }
         }
 
         internal async void SetLoadingDone()
         {
-            if (webView.CoreWebView2 != null)
+            if (webView?.CoreWebView2 != null)
             {
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
-                await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime('{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms')");
+                await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime(\"{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms\")");
             }
         }
 
@@ -312,25 +314,29 @@ namespace Dynamo.UI.Views
         /// <param name="importStatus"></param>
         internal async void SetImportStatus(ImportStatus importStatus)
         {
-            string importSettingsTitle;
-            string errorDescription;
-            if (importStatus == ImportStatus.success)
+            string importSettingsTitle = Dynamo.Wpf.Properties.Resources.SplashScreenImportSettings;
+            string errorDescription = string.Empty;
+
+            switch (importStatus)
             {
-                importSettingsTitle = Wpf.Properties.Resources.SplashScreenSettingsImported;
-                errorDescription = string.Empty;
+                case ImportStatus.none:
+                    errorDescription = Dynamo.Wpf.Properties.Resources.ImportPreferencesInfo;
+                    break;
+                case ImportStatus.error:
+                    errorDescription = Dynamo.Wpf.Properties.Resources.SplashScreenImportSettingsFailDescription;
+                    break;
+                default:
+                    errorDescription = Dynamo.Wpf.Properties.Resources.ImportPreferencesInfo;
+                    break;
             }
-            else
-            {
-                importSettingsTitle = Dynamo.Wpf.Properties.Resources.SplashScreenFailedImportSettings;
-                errorDescription = Dynamo.Wpf.Properties.Resources.SplashScreenImportSettingsFailDescription;
-            }
+
             // Update UI
             if (webView.CoreWebView2 != null)
             {
                 await webView.CoreWebView2.ExecuteScriptAsync("window.setImportStatus({" +
                 $"status: {(int)importStatus}," +
-                $"importSettingsTitle: '{importSettingsTitle}'," +
-                $"errorDescription: '{errorDescription}'" + "})");
+                $"importSettingsTitle: \"{importSettingsTitle}\"," +
+                $"errorDescription: \"{errorDescription}\"" + "})");
             }
         }
 
@@ -339,11 +345,11 @@ namespace Dynamo.UI.Views
         /// </summary>
         internal async void SetSignInStatus(bool status)
         {
-            if (webView.CoreWebView2 != null)
+            if (webView?.CoreWebView2 != null)
             {
                 await webView.CoreWebView2.ExecuteScriptAsync("window.setSignInStatus({" +
-                $"signInTitle: '" + (status ? Wpf.Properties.Resources.SplashScreenSignOut : Wpf.Properties.Resources.SplashScreenSignIn).ToString() + "'," +
-                $"signInStatus: '" + status + "'})");
+                $"signInTitle: \"" + (status ? Wpf.Properties.Resources.SplashScreenSignOut : Wpf.Properties.Resources.SplashScreenSignIn).ToString() + "\"," +
+                $"signInStatus: \"" + status + "\"})");
             }
         }
 
@@ -355,11 +361,11 @@ namespace Dynamo.UI.Views
             if (webView.CoreWebView2 != null)
             {
                 await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
-                   $"welcomeToDynamoTitle: '{Wpf.Properties.Resources.SplashScreenWelcomeToDynamo}'," +
-                   $"launchTitle: '{Wpf.Properties.Resources.SplashScreenLaunchTitle}'," +
-                   $"importSettingsTitle: '{Wpf.Properties.Resources.SplashScreenImportSettings}'," +
-                   $"showScreenAgainLabel: '{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}'," +
-                   $"importSettingsTooltipDescription: '{Wpf.Properties.Resources.ImportPreferencesInfo}'" + "})");
+                   $"welcomeToDynamoTitle: \"{Wpf.Properties.Resources.SplashScreenWelcomeToDynamo}\"," +
+                   $"launchTitle: \"{Wpf.Properties.Resources.SplashScreenLaunchTitle}\"," +
+                   $"importSettingsTitle: \"{Wpf.Properties.Resources.ImportSettingsDialogTitle}\"," +
+                   $"showScreenAgainLabel: \"{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}\"," +
+                   $"importSettingsTooltipDescription: \"{Wpf.Properties.Resources.ImportPreferencesInfo}\"" + "})");
             }
         }
 

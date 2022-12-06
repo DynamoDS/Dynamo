@@ -20,7 +20,6 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
@@ -610,6 +609,12 @@ namespace Dynamo.ViewModels
                 {
                     Model.FileName = filePath;
                     Model.OnSaved();
+                }
+
+                // If a new CustomNodeWorkspaceModel is created, store that info in CustomNodeManager without creating an instance of the custom node.
+                if (this.Model is CustomNodeWorkspaceModel customNodeWorkspaceModel)
+                {
+                    customNodeWorkspaceModel.SetInfo(Path.GetFileNameWithoutExtension(filePath));
                 }
             }
             catch (Exception ex)

@@ -1,0 +1,193 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CoreNodeModels.Input.FileObject_img",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Temp\\sample.csv",
+      "InputValue": "..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\Temp\\sample.csv",
+      "NodeType": "ExtensionNode",
+      "Id": "bf5b07166ee14559ad5c2913b729cecc",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3c577647facc4572946c61fb01a5a570",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "61351017879f4cf493d0cdfce19ce02b",
+      "Inputs": [
+        {
+          "Id": "b19de0accdad48b8b8f6fb6b003358b8",
+          "Name": "path",
+          "Description": "Path to the file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "289cbc14af1546c7ac24f5804ed2d975",
+          "Name": "file",
+          "Description": "File object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a file object from the given path"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "09a33eec74034b00a656efc728351731",
+      "Inputs": [
+        {
+          "Id": "a27928bd5d3440dc97420f34df04b3dd",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ab6bdf3faf6148b29eed9db6d00dfe2e",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "3c577647facc4572946c61fb01a5a570",
+      "End": "b19de0accdad48b8b8f6fb6b003358b8",
+      "Id": "3f2f36761e764e04b53c204acb380040",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "289cbc14af1546c7ac24f5804ed2d975",
+      "End": "a27928bd5d3440dc97420f34df04b3dd",
+      "Id": "8e0e7af578564d1bb55aa4b00e57044c",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "sample.csv",
+      "ReferenceType": "External",
+      "Nodes": [
+        "bf5b07166ee14559ad5c2913b729cecc"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -11.702650547027588,
+      "EyeY": 20.44056510925293,
+      "EyeZ": -24.494302749633789,
+      "LookX": 12.377099990844727,
+      "LookY": -14.715733528137207,
+      "LookZ": 6.1681365966796875,
+      "UpX": 0.50565505027771,
+      "UpY": 0.82511365413665771,
+      "UpZ": 0.25199323892593384
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "File Path",
+        "ShowGeometry": true,
+        "Id": "bf5b07166ee14559ad5c2913b729cecc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 825.29362574507581,
+        "Y": 1420.8606995156995
+      },
+      {
+        "Name": "File From Path",
+        "ShowGeometry": true,
+        "Id": "61351017879f4cf493d0cdfce19ce02b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1125.2936257450758,
+        "Y": 1420.8606995156995
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "09a33eec74034b00a656efc728351731",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1405.2936257450758,
+        "Y": 1420.8606995156995
+      }
+    ],
+    "Annotations": [],
+    "X": -608.7735569711956,
+    "Y": -496.21166017684118,
+    "Zoom": 0.79079942412653
+  }
+}

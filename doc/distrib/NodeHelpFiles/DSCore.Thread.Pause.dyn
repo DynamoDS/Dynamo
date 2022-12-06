@@ -1,0 +1,27 @@
+<Workspace Version="1.1.0.2093" X="-252.62457563365" Y="-5365.34465883074" zoom="1.85109103118127" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="fe5418e2-2c8d-444a-8752-9660399eb6c1" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Thread.Pause" x="441.803594627201" y="2958.314413319" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Thread.Pause@var,int" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="8f3d5107-0795-4377-afe9-f3b09ae89311" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="309.840034390508" y="3076.60885536842" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="5000;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="85389099-bff9-40dd-94cf-f6c88914564e" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Circle.ByCenterPointRadius" x="219.440034390508" y="2958.314413319" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="e65f677f-222a-46bb-9046-6eb3ff466811" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Curve.Extrude" x="636.967154863894" y="2958.314413319" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.Extrude@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="fe5418e2-2c8d-444a-8752-9660399eb6c1" start_index="0" end="e65f677f-222a-46bb-9046-6eb3ff466811" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="8f3d5107-0795-4377-afe9-f3b09ae89311" start_index="0" end="fe5418e2-2c8d-444a-8752-9660399eb6c1" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="85389099-bff9-40dd-94cf-f6c88914564e" start_index="0" end="fe5418e2-2c8d-444a-8752-9660399eb6c1" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="2.04438488082594" eyeY="3.42517022027913" eyeZ="-3.57619988771816" lookX="-0.820013003732593" lookY="-2.92299900364733" lookZ="4.95900811761975" upX="-0.0498720119259374" upY="0.952129380042912" upZ="0.301599719565784" />
+  </Cameras>
+</Workspace>
